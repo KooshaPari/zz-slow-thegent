@@ -28,11 +28,25 @@ def git_repo(tmp_path: Path) -> Path:
     repo = tmp_path / "test_repo"
     repo.mkdir()
     subprocess.run(["git", "init"], cwd=repo, check=True, capture_output=True)
-    subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=repo, check=True, capture_output=True)
-    subprocess.run(["git", "config", "user.name", "Test User"], cwd=repo, check=True, capture_output=True)
+    subprocess.run(
+        ["git", "config", "user.email", "test@example.com"],
+        cwd=repo,
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ["git", "config", "user.name", "Test User"],
+        cwd=repo,
+        check=True,
+        capture_output=True,
+    )
     (repo / "README.md").write_text("# Test\n")
-    subprocess.run(["git", "add", "README.md"], cwd=repo, check=True, capture_output=True)
-    subprocess.run(["git", "commit", "-m", "initial"], cwd=repo, check=True, capture_output=True)
+    subprocess.run(
+        ["git", "add", "README.md"], cwd=repo, check=True, capture_output=True
+    )
+    subprocess.run(
+        ["git", "commit", "-m", "initial"], cwd=repo, check=True, capture_output=True
+    )
     return repo
 
 
@@ -49,7 +63,9 @@ class TestFullWorkflow:
         assert len(sha1) == 40
 
         (git_repo / "file1.txt").write_text("content 1 updated\n")
-        sha2 = journal.record_file_change("file1.txt", b"content 1 updated\n", action="modified")
+        sha2 = journal.record_file_change(
+            "file1.txt", b"content 1 updated\n", action="modified"
+        )
         assert sha2 != sha1
 
         journal.record_snapshot("mid-session snapshot")
@@ -115,11 +131,16 @@ class TestSessionPruning:
         new_j.finalize_session("new")
 
         initial_sha = subprocess.run(
-            ["git", "rev-list", "--max-parents=0", "HEAD"], cwd=git_repo, capture_output=True, text=True
+            ["git", "rev-list", "--max-parents=0", "HEAD"],
+            cwd=git_repo,
+            capture_output=True,
+            text=True,
         ).stdout.strip()
         if initial_sha:
             subprocess.run(
-                ["git", "update-ref", "refs/audit/old-session", initial_sha], cwd=git_repo, capture_output=True
+                ["git", "update-ref", "refs/audit/old-session", initial_sha],
+                cwd=git_repo,
+                capture_output=True,
             )
 
         pruned = GitJournal.prune_old_sessions(git_repo, max_age_days=0)
@@ -137,11 +158,17 @@ class TestAuditLogIntegrity:
         shas = []
         for i in range(5):
             (git_repo / f"file_{i}.txt").write_text(f"content {i}\n")
-            shas.append(journal.record_file_change(f"file_{i}.txt", f"content {i}\n".encode(), action="created"))
+            shas.append(
+                journal.record_file_change(
+                    f"file_{i}.txt", f"content {i}\n".encode(), action="created"
+                )
+            )
         journal.finalize_session()
 
         for sha in shas:
-            result = subprocess.run(["git", "cat-file", "-t", sha], cwd=git_repo, capture_output=True)
+            result = subprocess.run(
+                ["git", "cat-file", "-t", sha], cwd=git_repo, capture_output=True
+            )
             assert result.returncode == 0
 
 
@@ -153,14 +180,18 @@ class TestInterruptedSessionRecovery:
         """Test recovery from interrupted session."""
         journal = GitJournal(git_repo, session_id="interrupt-recovery")
         (git_repo / "important.txt").write_text("important data\n")
-        journal.record_file_change("important.txt", b"important data\n", action="created")
+        journal.record_file_change(
+            "important.txt", b"important data\n", action="created"
+        )
         stored_parent = journal._parent_sha
 
         recovery_journal = GitJournal(git_repo, session_id="interrupt-recovery")
         assert recovery_journal._parent_sha == stored_parent
 
         (git_repo / "recovery.txt").write_text("recovered\n")
-        recovery_journal.record_file_change("recovery.txt", b"recovered\n", action="created")
+        recovery_journal.record_file_change(
+            "recovery.txt", b"recovered\n", action="created"
+        )
         recovery_journal.finalize_session()
         assert len(recovery_journal.get_audit_log()) >= 2
 
@@ -172,18 +203,29 @@ class TestRealGitOperations:
         """Test GitJournal works with git worktree operations."""
         worktree_path = git_repo.parent / "test_worktree"
         subprocess.run(
-            ["git", "worktree", "add", str(worktree_path), "HEAD"], cwd=git_repo, check=True, capture_output=True
+            ["git", "worktree", "add", str(worktree_path), "HEAD"],
+            cwd=git_repo,
+            check=True,
+            capture_output=True,
         )
         try:
             journal = GitJournal(worktree_path, session_id="worktree-test")
             (worktree_path / "file.txt").write_text("worktree content\n")
-            sha = journal.record_file_change("file.txt", b"worktree content\n", action="created")
+            sha = journal.record_file_change(
+                "file.txt", b"worktree content\n", action="created"
+            )
             assert sha
-            result = subprocess.run(["git", "show-ref", "refs/audit/worktree-test"], cwd=git_repo, capture_output=True)
+            result = subprocess.run(
+                ["git", "show-ref", "refs/audit/worktree-test"],
+                cwd=git_repo,
+                capture_output=True,
+            )
             assert result.returncode == 0
         finally:
             subprocess.run(
-                ["git", "worktree", "remove", "--force", str(worktree_path)], cwd=git_repo, capture_output=True
+                ["git", "worktree", "remove", "--force", str(worktree_path)],
+                cwd=git_repo,
+                capture_output=True,
             )
 
     def test_file_deletion_tracking(self, git_repo: Path) -> None:
@@ -202,10 +244,14 @@ class TestEnhancedGitJournal:
 
     def test_enhanced_with_attestation(self, git_repo: Path) -> None:
         """Test GitJournalEnhanced with attestation enabled."""
-        journal = GitJournalEnhanced(git_repo, session_id="attest-test", enable_attestation=True, batch_size=3)
+        journal = GitJournalEnhanced(
+            git_repo, session_id="attest-test", enable_attestation=True, batch_size=3
+        )
         for i in range(3):
             (git_repo / f"attest_{i}.txt").write_text(f"content {i}\n")
-            journal.record_file_change(f"attest_{i}.txt", f"content {i}\n".encode(), action="created")
+            journal.record_file_change(
+                f"attest_{i}.txt", f"content {i}\n".encode(), action="created"
+            )
         journal.finalize_session()
 
         attestations = journal.get_attestations()
@@ -215,7 +261,9 @@ class TestEnhancedGitJournal:
 
     def test_enhanced_with_batching(self, git_repo: Path) -> None:
         """Test GitJournalEnhanced with batching."""
-        journal = GitJournalEnhanced(git_repo, session_id="batch-test", batch_size=2, auto_commit=False)
+        journal = GitJournalEnhanced(
+            git_repo, session_id="batch-test", batch_size=2, auto_commit=False
+        )
         for i in range(3):
             (git_repo / f"batch_{i}.txt").write_text(f"batch {i}\n")
             journal.record_file_change(f"batch_{i}.txt", f"batch {i}\n".encode())

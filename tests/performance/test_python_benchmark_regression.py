@@ -77,7 +77,10 @@ def test_find_regressions_rejects_non_list_benchmarks() -> None:
 
 def test_find_regressions_can_require_complete_baseline() -> None:
     baseline = _payload(10.0, 20.0)
-    current = {"suite": "python-benchmark-suite-v1", "benchmarks": [{"label": "a", "avg_microseconds": 10.0}]}
+    current = {
+        "suite": "python-benchmark-suite-v1",
+        "benchmarks": [{"label": "a", "avg_microseconds": 10.0}],
+    }
     regressions = find_regressions(
         baseline,
         current,
@@ -96,7 +99,9 @@ def test_find_regressions_can_require_complete_baseline() -> None:
 
 
 @pytest.mark.parametrize("invalid_avg", [float("nan"), float("inf"), -1.0])
-def test_find_regressions_rejects_non_finite_or_negative_averages(invalid_avg: float) -> None:
+def test_find_regressions_rejects_non_finite_or_negative_averages(
+    invalid_avg: float,
+) -> None:
     baseline = {"benchmarks": [{"label": "a", "avg_microseconds": invalid_avg}]}
     current = {"benchmarks": [{"label": "a", "avg_microseconds": 1.0}]}
     with pytest.raises(ValueError, match="finite and >= 0"):
@@ -124,7 +129,9 @@ def test_find_regressions_allows_zero_current_average() -> None:
 
 
 @pytest.mark.parametrize("invalid_threshold", [float("nan"), float("inf"), -0.1])
-def test_find_regressions_rejects_invalid_max_regression_pct(invalid_threshold: float) -> None:
+def test_find_regressions_rejects_invalid_max_regression_pct(
+    invalid_threshold: float,
+) -> None:
     baseline = _payload(10.0, 20.0)
     current = _payload(10.0, 20.0)
     with pytest.raises(ValueError, match="max_regression_pct must be finite and >= 0"):

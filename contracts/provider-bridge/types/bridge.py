@@ -7,7 +7,9 @@ from typing import Any, Literal, Protocol, TypedDict
 
 Capability = Literal["chat_completion", "embeddings", "rerank", "tool_execution"]
 LaneID = Literal["litellm_donut", "bifrost", "native"]
-EventType = Literal["chunk", "tool_call", "tool_result", "route_change", "error", "done"]
+EventType = Literal[
+    "chunk", "tool_call", "tool_result", "route_change", "error", "done"
+]
 
 
 class Intent(TypedDict):
@@ -131,7 +133,13 @@ class RouteCandidate(TypedDict):
     route_id: str
     provider_id: str
     subprovider_id: str
-    provider_class: Literal["local_inference", "cloud_direct", "cloud_aggregator", "account_api", "internal_custom"]
+    provider_class: Literal[
+        "local_inference",
+        "cloud_direct",
+        "cloud_aggregator",
+        "account_api",
+        "internal_custom",
+    ]
     model: str
     priority: int
     constraints: RouteConstraints
@@ -175,7 +183,9 @@ class MetaproviderAdapter(ProviderAdapter, Protocol):
 class Middleware(Protocol):
     def name(self) -> str: ...
 
-    def handle(self, req: ExecutionRequest, next_handler: Handler) -> ExecutionResponse: ...
+    def handle(
+        self, req: ExecutionRequest, next_handler: Handler
+    ) -> ExecutionResponse: ...
 
 
 class Handler(Protocol):

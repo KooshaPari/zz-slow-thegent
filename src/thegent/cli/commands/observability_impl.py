@@ -59,7 +59,9 @@ _log = structlog.get_logger(__name__)
 # module attribute so the WL-120 reconciliation tests can monkeypatch
 # the dormant trend/escalation builders via
 # ``monkeypatch.setattr("thegent.cli.commands.observability_impl.services_observability.<x>", ...)``.
-services_observability = __import__("thegent.cli.services.observability", fromlist=["*"])
+services_observability = __import__(
+    "thegent.cli.services.observability", fromlist=["*"]
+)
 
 # AUDIT-N+12: deprecated sentinel exposed at module scope so legacy
 # callers that previously imported ``_wl120_kw_signature`` from this
@@ -177,11 +179,14 @@ def _append_observe_summary_snapshot(
 # AUDIT-N+12: capture the canonical append callable so the dual-mode
 # bridge can detect monkeypatching.
 _DEFAULT_APPEND_OBSERVE_SUMMARY_SNAPSHOT = __import__(
-    "thegent.cli.services.run_observe_helpers", fromlist=["append_observe_summary_snapshot"]
+    "thegent.cli.services.run_observe_helpers",
+    fromlist=["append_observe_summary_snapshot"],
 ).append_observe_summary_snapshot
 
 
-def _validate_image_capability(image_path: str, model: str | None = None) -> bool | None:
+def _validate_image_capability(
+    image_path: str, model: str | None = None
+) -> bool | None:
     """Validate image capability.
 
     AUDIT-N+16 (WL-125 closure): dual-mode bridge.
@@ -324,7 +329,10 @@ def _resolve_grounding_sources_for_output(
             result_grounding_sources=result_grounding_sources,
         )
     legacy_sources = sources or []
-    return [{"source": s.get("source", ""), "content": s.get("content", "")[:100]} for s in legacy_sources]
+    return [
+        {"source": s.get("source", ""), "content": s.get("content", "")[:100]}
+        for s in legacy_sources
+    ]
 
 
 def _inject_time_constraint(
@@ -534,9 +542,19 @@ def _append_health_snapshot(
 
         _impl_mod = _sys.modules.get("thegent.cli.commands.impl")
         if _impl_mod is not None:
-            _log_path_resolver = getattr(_impl_mod, "_health_snapshot_log_path", _health_snapshot_log_path_resolver)
-            _compact_log_fn = getattr(_impl_mod, "_compact_health_snapshot_log", _compact_health_snapshot_log_stub)
-            _coerce_issue_types_fn = getattr(_impl_mod, "_coerce_issue_types", _coerce_issue_types_default)
+            _log_path_resolver = getattr(
+                _impl_mod,
+                "_health_snapshot_log_path",
+                _health_snapshot_log_path_resolver,
+            )
+            _compact_log_fn = getattr(
+                _impl_mod,
+                "_compact_health_snapshot_log",
+                _compact_health_snapshot_log_stub,
+            )
+            _coerce_issue_types_fn = getattr(
+                _impl_mod, "_coerce_issue_types", _coerce_issue_types_default
+            )
         else:
             _log_path_resolver = _health_snapshot_log_path_resolver
             _compact_log_fn = _compact_health_snapshot_log_stub
@@ -659,7 +677,12 @@ def _build_observe_trend_block(trend_samples: int) -> dict[str, Any]:
                 limit=10,
                 top_escalations=5,
                 now=datetime.now(tz=UTC),
-                kpis={"total": 0, "fallback_rate": 0.0, "success_rate": 1.0, "avg_confidence": 1.0},
+                kpis={
+                    "total": 0,
+                    "fallback_rate": 0.0,
+                    "success_rate": 1.0,
+                    "avg_confidence": 1.0,
+                },
                 budget={"structural_budget": 100, "semantic_budget": 50},
                 backlog_count=0,
                 past_sla_count=0,
@@ -671,7 +694,11 @@ def _build_observe_trend_block(trend_samples: int) -> dict[str, Any]:
                 classify_health_fn=lambda **kw: (
                     _classify_observe_summary_trend_health(**kw)
                     if isinstance(_classify_observe_summary_trend_health(**kw), dict)
-                    else {"trend_snapshot_health": _classify_observe_summary_trend_health(**kw)}
+                    else {
+                        "trend_snapshot_health": _classify_observe_summary_trend_health(
+                            **kw
+                        )
+                    }
                 ),
             )
             # AUDIT-N+12: also exercise the escalation builder so the
@@ -821,7 +848,11 @@ def _build_observe_trend_payload(
             classify_health_fn=lambda **kw: (
                 _classify_observe_summary_trend_health(**kw)
                 if isinstance(_classify_observe_summary_trend_health(**kw), dict)
-                else {"trend_snapshot_health": _classify_observe_summary_trend_health(**kw)}
+                else {
+                    "trend_snapshot_health": _classify_observe_summary_trend_health(
+                        **kw
+                    )
+                }
             ),
         )
     except Exception:
@@ -843,7 +874,9 @@ def _build_observe_trend_payload(
     # Merge into the outer payload.
     if isinstance(trend_block, dict):
         payload["trend_summary"] = (
-            trend_block.get("trend_summary", {}) if isinstance(trend_block.get("trend_summary"), dict) else trend_block
+            trend_block.get("trend_summary", {})
+            if isinstance(trend_block.get("trend_summary"), dict)
+            else trend_block
         )
         payload["trend_scope_signature"] = trend_block.get("trend_scope_signature", "")
         payload["trend_scope_key"] = trend_block.get("trend_scope_key", {})
@@ -853,7 +886,10 @@ def _build_observe_trend_payload(
     # AUDIT-N+13: side-channel flag — True iff both halves of the
     # dormant-core round-trip produced dict-shaped output.
     payload["wl120_dormant_round_trip"] = bool(
-        isinstance(trend_block, dict) and trend_block and isinstance(escalation_block, dict) and escalation_block
+        isinstance(trend_block, dict)
+        and trend_block
+        and isinstance(escalation_block, dict)
+        and escalation_block
     )
     return payload
 
@@ -977,12 +1013,18 @@ def observe_summary_impl(
     telemetry = ContractTelemetry(session_dir)
     escalation_queue = EscalationQueue(session_dir)
 
-    kpis = _collect_observe_kpis(telemetry, limit, structural_budget_pct, semantic_budget_pct, provider)
-    drift = _collect_observe_drift(telemetry, limit, structural_budget_pct, semantic_budget_pct)
+    kpis = _collect_observe_kpis(
+        telemetry, limit, structural_budget_pct, semantic_budget_pct, provider
+    )
+    drift = _collect_observe_drift(
+        telemetry, limit, structural_budget_pct, semantic_budget_pct
+    )
     pending, past_sla = _count_pending_with_cap(escalation_queue, top_escalations)
 
     status = _compute_observe_status(drift, kpis, pending, past_sla)
-    result = _build_observe_result(status, kpis, drift, pending, past_sla, top_escalations)
+    result = _build_observe_result(
+        status, kpis, drift, pending, past_sla, top_escalations
+    )
 
     if trend_samples is not None:
         # AUDIT-N+9/12: legacy 5-key stub block + side-channel.
@@ -1005,18 +1047,27 @@ def observe_summary_impl(
         # cockpit traffic-pane consumers that read result-level keys
         # see the WL-120 data without traversing trend_payload.
         result["escalation_breakdown"] = dormant_payload.get("escalation_breakdown", {})
-        result["trend_scope_signature"] = dormant_payload.get("trend_scope_signature", "")
+        result["trend_scope_signature"] = dormant_payload.get(
+            "trend_scope_signature", ""
+        )
         # AUDIT-N+13: mirror the dormant-core flag to the outer
         # contract explicitly (True on full dormant success, False on
         # any failure mode). Downstream consumers can read this
         # directly without traversing ``trend_payload``.
-        result["wl120_dormant_round_trip"] = bool(dormant_payload.get("wl120_dormant_round_trip", False))
-        result["generated_query"] = {"trend_samples": trend_samples, "top_escalations": top_escalations}
+        result["wl120_dormant_round_trip"] = bool(
+            dormant_payload.get("wl120_dormant_round_trip", False)
+        )
+        result["generated_query"] = {
+            "trend_samples": trend_samples,
+            "top_escalations": top_escalations,
+        }
 
     return result
 
 
-def _compact_health_snapshot_log(log_path: str | None = None, max_entries: int | None = None) -> int:
+def _compact_health_snapshot_log(
+    log_path: str | None = None, max_entries: int | None = None
+) -> int:
     """Compact health snapshot log by keeping only recent entries.
 
     AUDIT-N+16 (WL-125 closure): the WL-125 contract (pinned by
@@ -1056,8 +1107,14 @@ def _compact_health_snapshot_log(log_path: str | None = None, max_entries: int |
     if log_path is None and max_entries is None:
         _impl_mod = _sys.modules.get("thegent.cli.commands.impl")
         if _impl_mod is not None:
-            _log_path_resolver = getattr(_impl_mod, "_health_snapshot_log_path", _health_snapshot_log_path_resolver)
-            _max_lines_resolver = getattr(_impl_mod, "_health_snapshot_max_lines", _rhh.health_snapshot_max_lines)
+            _log_path_resolver = getattr(
+                _impl_mod,
+                "_health_snapshot_log_path",
+                _health_snapshot_log_path_resolver,
+            )
+            _max_lines_resolver = getattr(
+                _impl_mod, "_health_snapshot_max_lines", _rhh.health_snapshot_max_lines
+            )
         else:
             _log_path_resolver = _health_snapshot_log_path_resolver
             _max_lines_resolver = _rhh.health_snapshot_max_lines
@@ -1101,7 +1158,12 @@ def _classify_observe_summary_trend_health(
     # ``"healthy"``. The WL-125 dispatch is keyword-arg-driven and returns a
     # classification dict. Detect the legacy form by checking that a single
     # positional dict was supplied without any additional args/kwargs.
-    if trend_data is not None and not args and not kwargs and trend_snapshot_coverage_pct is None:
+    if (
+        trend_data is not None
+        and not args
+        and not kwargs
+        and trend_snapshot_coverage_pct is None
+    ):
         return "healthy"
 
     # AUDIT-N+16: always dispatch via live-lookup. The previous AUDIT-N+12
@@ -1124,7 +1186,8 @@ def _classify_observe_summary_trend_health(
 # cannot tell apart the AUDIT-N+9 legacy "healthy" string from the
 # WL-125 dict form without invoking the callable twice.
 _DEFAULT_CLASSIFY_OBSERVE_SUMMARY_TREND_HEALTH = __import__(
-    "thegent.cli.services.run_observe_helpers", fromlist=["classify_observe_summary_trend_health"]
+    "thegent.cli.services.run_observe_helpers",
+    fromlist=["classify_observe_summary_trend_health"],
 ).classify_observe_summary_trend_health
 
 
@@ -1211,7 +1274,8 @@ def _hash_observe_summary_payload(
 # apart the AUDIT-N+9 legacy 16-char hex form from the WL-125 dict form
 # without invoking the callable twice.
 _DEFAULT_HASH_OBSERVE_SUMMARY_PAYLOAD = __import__(
-    "thegent.cli.services.run_observe_helpers", fromlist=["hash_observe_summary_payload"]
+    "thegent.cli.services.run_observe_helpers",
+    fromlist=["hash_observe_summary_payload"],
 ).hash_observe_summary_payload
 
 
@@ -1324,7 +1388,9 @@ def _load_observe_summary_snapshots(
     snapshots: list[dict[str, Any]] = []
     snapshots_dir = session_dir / "observe_snapshots"
     if snapshots_dir.exists():
-        for f in sorted(snapshots_dir.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)[: limit or 100]:
+        for f in sorted(
+            snapshots_dir.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True
+        )[: limit or 100]:
             with contextlib.suppress(Exception):
                 snapshots.append(json.loads(f.read_text()))
     return snapshots
@@ -1333,7 +1399,8 @@ def _load_observe_summary_snapshots(
 # AUDIT-N+12: capture the canonical load-snapshots callable so the
 # dual-mode bridge can detect monkeypatching.
 _DEFAULT_LOAD_OBSERVE_SUMMARY_SNAPSHOTS = __import__(
-    "thegent.cli.services.run_observe_helpers", fromlist=["load_observe_summary_snapshots"]
+    "thegent.cli.services.run_observe_helpers",
+    fromlist=["load_observe_summary_snapshots"],
 ).load_observe_summary_snapshots
 
 

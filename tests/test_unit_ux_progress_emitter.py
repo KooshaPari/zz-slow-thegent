@@ -73,7 +73,9 @@ class TestProgressTick:
         assert sink.received == []
 
     def test_payload_roundtrip(self) -> None:
-        tick = ProgressTick(done=7, total=20, label="x", lane="fast", eta_s=1.5, emitted_at=1.0)
+        tick = ProgressTick(
+            done=7, total=20, label="x", lane="fast", eta_s=1.5, emitted_at=1.0
+        )
         payload = tick.to_payload()
         assert payload == {
             "done": 7,
@@ -334,7 +336,9 @@ class TestStreamTicks:
 
 class TestCoalesceTicks:
     def test_returns_last_n(self) -> None:
-        ticks = [ProgressTick(done=i, total=100, emitted_at=float(i)) for i in range(10)]
+        ticks = [
+            ProgressTick(done=i, total=100, emitted_at=float(i)) for i in range(10)
+        ]
         out = coalesce_ticks(ticks, window=3)
         assert len(out) == 3
         assert [t.done for t in out] == [7, 8, 9]
@@ -386,7 +390,9 @@ class TestCockpitIntegration:
 
         cockpit.tick(
             runs=[RunEvent(run_id="r1", state=RunState.ACTIVE)],
-            overrides=[OverrideEvent(rule_id="x", by="alice", reason="r", expires_in_s=10.0)],
+            overrides=[
+                OverrideEvent(rule_id="x", by="alice", reason="r", expires_in_s=10.0)
+            ],
         )
         ProgressTickEmitter(sink=cockpit).emit(done=7, total=10)
         snap = cockpit.snapshot()
@@ -421,7 +427,9 @@ class TestSmoke:
     def test_full_cycle(self) -> None:
         sink = _RecordingSink()
         emitter = ProgressTickEmitter(sink=sink, default_total=10)
-        emitted = emitter.emit_many(list(stream_ticks([(0, 10), (3, 10), (7, 10), (10, 10)], label="run")))
+        emitted = emitter.emit_many(
+            list(stream_ticks([(0, 10), (3, 10), (7, 10), (10, 10)], label="run"))
+        )
         assert emitted.ok
         assert emitted.accepted == 4
         assert [t.done for t in sink.received] == [0, 3, 7, 10]

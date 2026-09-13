@@ -232,7 +232,9 @@ def canonical_to_openrouter_fixture(monkeypatch: pytest.MonkeyPatch) -> dict[str
 
 
 @pytest.mark.requirement("FR-REQEXT-047")
-def test_inject_proxy_models_adds_missing(canonical_to_openrouter_fixture: dict[str, str]) -> None:
+def test_inject_proxy_models_adds_missing(
+    canonical_to_openrouter_fixture: dict[str, str],
+) -> None:
     """Canonical aliases not in the models list are injected."""
     models: list[dict] = [{"id": "gpt-4o", "object": "model"}]
     result = inject_proxy_models(models)
@@ -247,16 +249,22 @@ def test_inject_proxy_models_adds_missing(canonical_to_openrouter_fixture: dict[
 
 
 @pytest.mark.requirement("FR-REQEXT-047")
-def test_inject_proxy_models_no_duplicates(canonical_to_openrouter_fixture: dict[str, str]) -> None:
+def test_inject_proxy_models_no_duplicates(
+    canonical_to_openrouter_fixture: dict[str, str],
+) -> None:
     """Aliases already present in the list are not duplicated."""
     # Seed list with all canonical aliases
-    initial = [{"id": alias, "object": "model"} for alias in canonical_to_openrouter_fixture]
+    initial = [
+        {"id": alias, "object": "model"} for alias in canonical_to_openrouter_fixture
+    ]
     result = inject_proxy_models(initial)
 
     # IDs should appear exactly once each
     ids = [m["id"] for m in result]
     for alias in canonical_to_openrouter_fixture:
-        assert ids.count(alias) == 1, f"Alias {alias!r} appears {ids.count(alias)} times"
+        assert ids.count(alias) == 1, (
+            f"Alias {alias!r} appears {ids.count(alias)} times"
+        )
 
 
 @pytest.mark.requirement("FR-REQEXT-047")
@@ -264,7 +272,9 @@ def test_inject_proxy_models_complete_canonical_set_is_noop(
     canonical_to_openrouter_fixture: dict[str, str],
 ) -> None:
     """When all canonical aliases already exist, no new entries are injected."""
-    initial = [{"id": alias, "object": "model"} for alias in canonical_to_openrouter_fixture]
+    initial = [
+        {"id": alias, "object": "model"} for alias in canonical_to_openrouter_fixture
+    ]
     result = inject_proxy_models(initial)
 
     assert result == initial
@@ -317,7 +327,11 @@ def test_inject_proxy_models_preserves_existing_model_order_on_injection(
 
     # New entries are appended in deterministic mapping order.
     injected_ids = result_ids[len(existing_ids) :]
-    expected_injected = [alias for alias in canonical_to_openrouter_fixture if alias not in set(existing_ids)]
+    expected_injected = [
+        alias
+        for alias in canonical_to_openrouter_fixture
+        if alias not in set(existing_ids)
+    ]
     assert injected_ids == expected_injected
 
 
@@ -338,7 +352,11 @@ def test_inject_proxy_models_stable_append_order_for_multiple_injected_aliases(
     assert result_ids[: len(existing)] == ["o3-mini", "custom-model"]
 
     # Multiple missing aliases are appended in fixture mapping order.
-    expected_appended = [alias for alias in canonical_to_openrouter_fixture if alias not in {"o3-mini", "custom-model"}]
+    expected_appended = [
+        alias
+        for alias in canonical_to_openrouter_fixture
+        if alias not in {"o3-mini", "custom-model"}
+    ]
     assert result_ids[len(existing) :] == expected_appended
 
 
@@ -357,11 +375,15 @@ def test_inject_proxy_models_repeated_noop_idempotency_three_calls(
 
     ids = [m["id"] for m in third]
     for alias in canonical_to_openrouter_fixture:
-        assert ids.count(alias) == 1, f"Alias {alias!r} appears {ids.count(alias)} times"
+        assert ids.count(alias) == 1, (
+            f"Alias {alias!r} appears {ids.count(alias)} times"
+        )
 
 
 @pytest.mark.requirement("FR-REQEXT-047")
-def test_inject_proxy_models_empty_list(canonical_to_openrouter_fixture: dict[str, str]) -> None:
+def test_inject_proxy_models_empty_list(
+    canonical_to_openrouter_fixture: dict[str, str],
+) -> None:
     """Starting from an empty list injects all canonical aliases."""
     result = inject_proxy_models([])
 
@@ -410,7 +432,11 @@ def test_inject_proxy_models_preserves_non_target_model_names_untouched(
 
     result = inject_proxy_models(existing)
 
-    assert result[0] == {"id": "vendor-x/custom-model-v2", "object": "model", "extra": "keep"}
+    assert result[0] == {
+        "id": "vendor-x/custom-model-v2",
+        "object": "model",
+        "extra": "keep",
+    }
     assert result[1] == {"id": "another-provider/model.alpha", "object": "model"}
 
 

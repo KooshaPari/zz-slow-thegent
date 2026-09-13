@@ -34,7 +34,9 @@ class OSUserAdapter:
         except Exception as e:
             return False, str(e)
 
-    def create_os_user(self, username: str, home_dir: Path | None = None) -> tuple[bool, str]:
+    def create_os_user(
+        self, username: str, home_dir: Path | None = None
+    ) -> tuple[bool, str]:
         """Create a new OS user for agent isolation."""
         if self.system == "Linux":
             return self._create_linux_user(username, home_dir)
@@ -44,7 +46,9 @@ class OSUserAdapter:
             return self._create_windows_user(username, home_dir)
         return False, f"Unsupported OS: {self.system}"
 
-    def _create_linux_user(self, username: str, home_dir: Path | None) -> tuple[bool, str]:
+    def _create_linux_user(
+        self, username: str, home_dir: Path | None
+    ) -> tuple[bool, str]:
         """Create a user on Linux using useradd."""
         cmd = ["useradd", "-m"]
         if home_dir:
@@ -53,13 +57,17 @@ class OSUserAdapter:
 
         return self._run_privileged(cmd)
 
-    def _create_macos_user(self, username: str, home_dir: Path | None) -> tuple[bool, str]:
+    def _create_macos_user(
+        self, username: str, home_dir: Path | None
+    ) -> tuple[bool, str]:
         """Create a user on macOS using dscl."""
         # Note: macOS user creation via dscl is complex and needs a unique UID
         # This is a simplified version; in production, we'd need to find the next available UID
         uid = "501"  # Placeholder for discovery logic
 
-        success, next_uid = self._run_privileged(["dscl", ".", "-list", "/Users", "UniqueID"])
+        success, next_uid = self._run_privileged(
+            ["dscl", ".", "-list", "/Users", "UniqueID"]
+        )
         if success:
             uids = []
             for value in next_uid.splitlines():
@@ -75,10 +83,31 @@ class OSUserAdapter:
         commands = [
             ["dscl", ".", "-create", f"/Users/{username}"],
             ["dscl", ".", "-create", f"/Users/{username}", "UserShell", "/bin/zsh"],
-            ["dscl", ".", "-create", f"/Users/{username}", "RealName", f"Agent User {username}"],
+            [
+                "dscl",
+                ".",
+                "-create",
+                f"/Users/{username}",
+                "RealName",
+                f"Agent User {username}",
+            ],
             ["dscl", ".", "-create", f"/Users/{username}", "UniqueID", uid],
-            ["dscl", ".", "-create", f"/Users/{username}", "PrimaryGroupID", "20"],  # staff group
-            ["dscl", ".", "-create", f"/Users/{username}", "NFSHomeDirectory", str(home_dir or f"/Users/{username}")],
+            [
+                "dscl",
+                ".",
+                "-create",
+                f"/Users/{username}",
+                "PrimaryGroupID",
+                "20",
+            ],  # staff group
+            [
+                "dscl",
+                ".",
+                "-create",
+                f"/Users/{username}",
+                "NFSHomeDirectory",
+                str(home_dir or f"/Users/{username}"),
+            ],
             ["dscl", ".", "-passwd", f"/Users/{username}", "*"],  # No password
         ]
 
@@ -94,7 +123,9 @@ class OSUserAdapter:
 
         return True, f"User {username} created on macOS with UID {uid}"
 
-    def _create_windows_user(self, username: str, home_dir: Path | None) -> tuple[bool, str]:
+    def _create_windows_user(
+        self, username: str, home_dir: Path | None
+    ) -> tuple[bool, str]:
         """Create a local user on Windows using PowerShell."""
         # New-LocalUser -Name "username" -NoPassword
         ps_cmd = f'New-LocalUser -Name "{username}" -NoPassword'

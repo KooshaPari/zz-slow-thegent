@@ -6,10 +6,14 @@ import httpx
 import orjson as json
 
 
-async def _get_mcp_response(url: str, payload: dict, headers: dict, timeout: float = 15.0):
+async def _get_mcp_response(
+    url: str, payload: dict, headers: dict, timeout: float = 15.0
+):
     """Wait for final result message in SSE stream."""
     async with httpx.AsyncClient() as client:
-        async with client.stream("POST", url, json=payload, headers=headers, timeout=timeout) as response:
+        async with client.stream(
+            "POST", url, json=payload, headers=headers, timeout=timeout
+        ) as response:
             if response.status_code != 200:
                 try:
                     return await response.json()
@@ -50,7 +54,10 @@ async def test_mcp() -> None:
         "jsonrpc": "2.0",
         "id": 3,
         "method": "tools/call",
-        "params": {"name": "thegent_run", "arguments": {"agent": "gemini", "prompt": "echo Hello from FastMCP"}},
+        "params": {
+            "name": "thegent_run",
+            "arguments": {"agent": "gemini", "prompt": "echo Hello from FastMCP"},
+        },
     }
     await _get_mcp_response(url, payload, headers, timeout=30.0)
 

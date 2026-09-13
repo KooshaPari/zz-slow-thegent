@@ -35,19 +35,25 @@ class TestPluginLifecycleManagerInit:
 class TestRegisterPlugin:
     def test_register_returns_plugin_id(self):
         plm = PluginLifecycleManager()
-        result = plm.register_plugin("p1", {"name": "Test", "version": "1.0", "entry_point": "main"})
+        result = plm.register_plugin(
+            "p1", {"name": "Test", "version": "1.0", "entry_point": "main"}
+        )
         assert result == "p1"
 
     def test_registered_status(self):
         plm = PluginLifecycleManager()
-        plm.register_plugin("p1", {"name": "Test", "version": "1.0", "entry_point": "main"})
+        plm.register_plugin(
+            "p1", {"name": "Test", "version": "1.0", "entry_point": "main"}
+        )
         assert plm.get_plugin_status("p1") == PluginStatus.REGISTERED
 
 
 class TestRunConformance:
     def test_passing_conformance(self):
         plm = PluginLifecycleManager()
-        plm.register_plugin("p1", {"name": "Test", "version": "1.0", "entry_point": "main"})
+        plm.register_plugin(
+            "p1", {"name": "Test", "version": "1.0", "entry_point": "main"}
+        )
         result = plm.run_conformance("p1")
         assert result is True
 

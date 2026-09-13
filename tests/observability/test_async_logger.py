@@ -118,7 +118,9 @@ def test_async_logger_queue_full_drops_silently() -> None:
     logger._running = threading.Event()
     logger._running.set()
     # Do NOT start the worker thread so the queue stays full
-    logger._thread = threading.Thread(target=lambda: None, daemon=True, name="obs-logger-noop")
+    logger._thread = threading.Thread(
+        target=lambda: None, daemon=True, name="obs-logger-noop"
+    )
 
     event = _make_event()
     # Fill the queue

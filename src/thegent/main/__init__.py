@@ -17,6 +17,7 @@ try:
 except ImportError:
     # Fallback: create a minimal stub app
     from typer import Typer
+
     app: Any = Typer()
     app.__doc__ = "Thegent CLI (stub - actual implementation in phenotype-thegent-cli)"
 

@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 @dataclass(frozen=True)
 class CommandHash:
     """Immutable command hash for deduplication."""
+
     value: str
     algorithm: str = "sha256"
 
@@ -26,6 +27,7 @@ class CommandHash:
 @dataclass(frozen=True)
 class TaskMetadata:
     """Immutable task metadata."""
+
     command: str
     cwd: str
     env: tuple[tuple[str, str], ...]
@@ -44,6 +46,7 @@ class TaskMetadata:
 @dataclass(frozen=True)
 class MergeConflict:
     """Immutable merge conflict information."""
+
     file_path: str
     line_start: int
     line_end: int
@@ -58,6 +61,7 @@ class MergeConflict:
 @dataclass(frozen=True)
 class LockStatus:
     """Immutable lock status for command deduplication."""
+
     locked: bool
     pid: int | None = None
     acquired_at: datetime | None = None
@@ -93,6 +97,7 @@ class LockStatus:
 @dataclass(frozen=True)
 class QueuePriority:
     """Immutable queue priority levels."""
+
     HIGH = "high"
     NORMAL = "normal"
     LOW = "low"
@@ -118,6 +123,7 @@ class QueuePriority:
 @dataclass(frozen=True)
 class MergeStrategy:
     """Immutable merge strategy types."""
+
     AUTO = "auto"
     OURS = "ours"
     THEIRS = "theirs"
@@ -148,6 +154,7 @@ class MergeStrategy:
 @dataclass(frozen=True)
 class HealthScore:
     """Health score for system monitoring."""
+
     overall: float
     components: tuple[tuple[str, float], ...]
 

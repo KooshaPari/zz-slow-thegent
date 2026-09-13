@@ -62,7 +62,9 @@ class ValueLock:
         # Commitment hash ensures the original intent is preserved
         c_hash = hashlib.sha256(description.encode()).hexdigest()
 
-        lock = LockedPrinciple(principle_id=principle_id, description=description, commitment_hash=c_hash)
+        lock = LockedPrinciple(
+            principle_id=principle_id, description=description, commitment_hash=c_hash
+        )
 
         self.locked_principles[principle_id] = lock
         self._save_locks()
@@ -73,13 +75,18 @@ class ValueLock:
         if not lock:
             return True  # Not locked, allowed
 
-        _log.warning("Attempted modification of VALUE-LOCKED principle: %s", principle_id)
+        _log.warning(
+            "Attempted modification of VALUE-LOCKED principle: %s", principle_id
+        )
 
         # In a strict value-lock, no change is allowed regardless of content
         # unless it matches the original commitment hash.
         new_hash = hashlib.sha256(new_description.encode()).hexdigest()
         if new_hash != lock.commitment_hash:
-            _log.error("VALUE-LOCK VIOLATION: Proposal diverges from locked intent for %s", principle_id)
+            _log.error(
+                "VALUE-LOCK VIOLATION: Proposal diverges from locked intent for %s",
+                principle_id,
+            )
             return False
 
         return True

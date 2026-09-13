@@ -75,7 +75,10 @@ class TestBuildObserveTrendPayloadExists:
     def test_build_observe_trend_payload_re_exported_by_impl(self) -> None:
         """``impl._build_observe_trend_payload`` is the same function as
         ``observability_impl._build_observe_trend_payload``."""
-        assert impl._build_observe_trend_payload is observability_impl._build_observe_trend_payload
+        assert (
+            impl._build_observe_trend_payload
+            is observability_impl._build_observe_trend_payload
+        )
 
     # @trace FR-AUDIT-N+13-004
     def test_build_observe_trend_payload_in_impl_all(self) -> None:
@@ -169,7 +172,9 @@ class TestBuildObserveTrendPayloadDormantWire:
     surfaced through the outer envelope."""
 
     # @trace FR-AUDIT-N+13-010
-    def test_trend_callable_invoked_with_kwargs(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_trend_callable_invoked_with_kwargs(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """``build_observe_summary_trend`` is called with the kwargs
         forwarded through ``_build_observe_trend_payload``."""
         captured: dict[str, Any] = {}
@@ -187,8 +192,12 @@ class TestBuildObserveTrendPayloadDormantWire:
         def _fake_escalation(**kwargs: Any) -> dict[str, Any]:
             return {"escalation_rows": [], "top_rows": [], "past_sla_count": 0}
 
-        monkeypatch.setattr(services_observability, "build_observe_summary_trend", _fake_trend)
-        monkeypatch.setattr(services_observability, "build_observe_summary_escalation", _fake_escalation)
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_trend", _fake_trend
+        )
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_escalation", _fake_escalation
+        )
 
         from thegent.cli.commands.observability_impl import _build_observe_trend_payload
 
@@ -217,7 +226,11 @@ class TestBuildObserveTrendPayloadDormantWire:
         return value is surfaced under ``escalation_breakdown``."""
 
         def _fake_trend(**kwargs: Any) -> dict[str, Any]:
-            return {"trend_summary": {}, "trend_scope_signature": "sig", "trend_snapshot_ids": []}
+            return {
+                "trend_summary": {},
+                "trend_scope_signature": "sig",
+                "trend_snapshot_ids": [],
+            }
 
         def _fake_escalation(**kwargs: Any) -> dict[str, Any]:
             return {
@@ -226,32 +239,48 @@ class TestBuildObserveTrendPayloadDormantWire:
                 "past_sla_count": 1,
             }
 
-        monkeypatch.setattr(services_observability, "build_observe_summary_trend", _fake_trend)
-        monkeypatch.setattr(services_observability, "build_observe_summary_escalation", _fake_escalation)
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_trend", _fake_trend
+        )
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_escalation", _fake_escalation
+        )
 
         from thegent.cli.commands.observability_impl import _build_observe_trend_payload
 
-        result = _build_observe_trend_payload(5, pending=[{"a": 1}], past_sla=[{"b": 2}])
+        result = _build_observe_trend_payload(
+            5, pending=[{"a": 1}], past_sla=[{"b": 2}]
+        )
         assert result["escalation_breakdown"]["past_sla_count"] == 1
         assert result["escalation_breakdown"]["top_rows"] == [{"run_id": "r1"}]
         assert result["wl120_dormant_round_trip"] is True
 
     # @trace FR-AUDIT-N+13-012
-    def test_pending_and_past_sla_forwarded(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_pending_and_past_sla_forwarded(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Pending and past-SLA lists are forwarded to the dormant
         escalation builder."""
         captured: dict[str, Any] = {}
 
         def _fake_trend(**kwargs: Any) -> dict[str, Any]:
-            return {"trend_summary": {}, "trend_scope_signature": "s", "trend_snapshot_ids": []}
+            return {
+                "trend_summary": {},
+                "trend_scope_signature": "s",
+                "trend_snapshot_ids": [],
+            }
 
         def _fake_escalation(**kwargs: Any) -> dict[str, Any]:
             captured["pending"] = kwargs.get("pending")
             captured["past_sla"] = kwargs.get("past_sla")
             return {"escalation_rows": [], "top_rows": [], "past_sla_count": 0}
 
-        monkeypatch.setattr(services_observability, "build_observe_summary_trend", _fake_trend)
-        monkeypatch.setattr(services_observability, "build_observe_summary_escalation", _fake_escalation)
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_trend", _fake_trend
+        )
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_escalation", _fake_escalation
+        )
 
         from thegent.cli.commands.observability_impl import _build_observe_trend_payload
 
@@ -275,14 +304,18 @@ class TestBuildObserveTrendPayloadResilience:
     with ``wl120_dormant_round_trip=False`` and safe defaults."""
 
     # @trace FR-AUDIT-N+13-013
-    def test_trend_callable_raises_returns_safe_defaults(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_trend_callable_raises_returns_safe_defaults(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """If ``build_observe_summary_trend`` raises, the function
         returns safe defaults without propagating."""
 
         def _raise(**_kwargs: Any) -> dict[str, Any]:
             raise RuntimeError("dormant-core exploded")
 
-        monkeypatch.setattr(services_observability, "build_observe_summary_trend", _raise)
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_trend", _raise
+        )
 
         from thegent.cli.commands.observability_impl import _build_observe_trend_payload
 
@@ -293,18 +326,28 @@ class TestBuildObserveTrendPayloadResilience:
         assert result["trend_snapshot_ids"] == []
 
     # @trace FR-AUDIT-N+13-014
-    def test_escalation_callable_raises_returns_safe_defaults(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_escalation_callable_raises_returns_safe_defaults(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """If ``build_observe_summary_escalation`` raises, the
         function returns safe defaults without propagating."""
 
         def _fake_trend(**kwargs: Any) -> dict[str, Any]:
-            return {"trend_summary": {}, "trend_scope_signature": "sig", "trend_snapshot_ids": []}
+            return {
+                "trend_summary": {},
+                "trend_scope_signature": "sig",
+                "trend_snapshot_ids": [],
+            }
 
         def _raise(**_kwargs: Any) -> dict[str, Any]:
             raise RuntimeError("dormant-core exploded")
 
-        monkeypatch.setattr(services_observability, "build_observe_summary_trend", _fake_trend)
-        monkeypatch.setattr(services_observability, "build_observe_summary_escalation", _raise)
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_trend", _fake_trend
+        )
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_escalation", _raise
+        )
 
         from thegent.cli.commands.observability_impl import _build_observe_trend_payload
 
@@ -337,12 +380,21 @@ class TestObserveSummaryImplWL120DormantWire:
         monkeypatch.setattr(
             observability_impl,
             "_collect_observe_kpis",
-            lambda *_a, **_kw: {"total": 0, "fallback_rate": 0.0, "success_rate": 1.0, "avg_confidence": 1.0},
+            lambda *_a, **_kw: {
+                "total": 0,
+                "fallback_rate": 0.0,
+                "success_rate": 1.0,
+                "avg_confidence": 1.0,
+            },
         )
         monkeypatch.setattr(
             observability_impl,
             "_collect_observe_drift",
-            lambda *_a, **_kw: {"within_budget": True, "structural_rate_pct": 0.0, "semantic_rate_pct": 0.0},
+            lambda *_a, **_kw: {
+                "within_budget": True,
+                "structural_rate_pct": 0.0,
+                "semantic_rate_pct": 0.0,
+            },
         )
         monkeypatch.setattr(
             observability_impl,
@@ -351,7 +403,9 @@ class TestObserveSummaryImplWL120DormantWire:
         )
 
     # @trace FR-AUDIT-N+13-015
-    def test_outer_contract_has_trend_payload(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_outer_contract_has_trend_payload(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """``observe_summary_impl(trend_samples=N)`` returns a dict
         with ``trend_payload`` carrying the dormant envelope."""
 
@@ -367,8 +421,12 @@ class TestObserveSummaryImplWL120DormantWire:
         def _fake_escalation(**kwargs: Any) -> dict[str, Any]:
             return {"escalation_rows": [], "top_rows": [], "past_sla_count": 0}
 
-        monkeypatch.setattr(services_observability, "build_observe_summary_trend", _fake_trend)
-        monkeypatch.setattr(services_observability, "build_observe_summary_escalation", _fake_escalation)
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_trend", _fake_trend
+        )
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_escalation", _fake_escalation
+        )
         self._stub_inner_helpers(monkeypatch)
 
         from thegent.cli.commands.observability_impl import observe_summary_impl
@@ -379,25 +437,39 @@ class TestObserveSummaryImplWL120DormantWire:
         assert payload["trend_scope_signature"] == "outer-sig"
         assert payload["wl120_dormant_round_trip"] is True
         # Outer mirrored keys are present.
-        assert result["escalation_breakdown"] == {"escalation_rows": [], "top_rows": [], "past_sla_count": 0}
+        assert result["escalation_breakdown"] == {
+            "escalation_rows": [],
+            "top_rows": [],
+            "past_sla_count": 0,
+        }
         assert result["trend_scope_signature"] == "outer-sig"
         # Outer wl120_dormant_round_trip mirrors the dormant flag.
         assert result["wl120_dormant_round_trip"] is True
 
     # @trace FR-AUDIT-N+13-016
-    def test_legacy_trend_summary_block_preserved(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_legacy_trend_summary_block_preserved(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """The legacy AUDIT-N+9 5-key stub block lives under
         ``result["trend_summary"]`` (AUDIT-N+12 backward compat) so
         the existing parity suite stays green."""
 
         def _fake_trend(**kwargs: Any) -> dict[str, Any]:
-            return {"trend_summary": {}, "trend_scope_signature": "s", "trend_snapshot_ids": []}
+            return {
+                "trend_summary": {},
+                "trend_scope_signature": "s",
+                "trend_snapshot_ids": [],
+            }
 
         def _fake_escalation(**kwargs: Any) -> dict[str, Any]:
             return {"escalation_rows": [], "top_rows": [], "past_sla_count": 0}
 
-        monkeypatch.setattr(services_observability, "build_observe_summary_trend", _fake_trend)
-        monkeypatch.setattr(services_observability, "build_observe_summary_escalation", _fake_escalation)
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_trend", _fake_trend
+        )
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_escalation", _fake_escalation
+        )
         self._stub_inner_helpers(monkeypatch)
 
         from thegent.cli.commands.observability_impl import observe_summary_impl
@@ -414,7 +486,9 @@ class TestObserveSummaryImplWL120DormantWire:
         assert stub.get("wl120_dormant_round_trip") is True
 
     # @trace FR-AUDIT-N+13-017
-    def test_trend_samples_none_skips_dormant(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_trend_samples_none_skips_dormant(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """When ``trend_samples=None`` the dormant-core wire-up is
         skipped and the outer contract has none of the AUDIT-N+13
         keys (only the legacy keys)."""
@@ -431,18 +505,28 @@ class TestObserveSummaryImplWL120DormantWire:
         assert "wl120_dormant_round_trip" not in result
 
     # @trace FR-AUDIT-N+13-018
-    def test_outer_generated_query_pinned(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_outer_generated_query_pinned(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """``generated_query`` is pinned for traceability of the
         ``trend_samples`` arg under the AUDIT-N+13 wire-up."""
 
         def _fake_trend(**kwargs: Any) -> dict[str, Any]:
-            return {"trend_summary": {}, "trend_scope_signature": "s", "trend_snapshot_ids": []}
+            return {
+                "trend_summary": {},
+                "trend_scope_signature": "s",
+                "trend_snapshot_ids": [],
+            }
 
         def _fake_escalation(**kwargs: Any) -> dict[str, Any]:
             return {"escalation_rows": [], "top_rows": [], "past_sla_count": 0}
 
-        monkeypatch.setattr(services_observability, "build_observe_summary_trend", _fake_trend)
-        monkeypatch.setattr(services_observability, "build_observe_summary_escalation", _fake_escalation)
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_trend", _fake_trend
+        )
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_escalation", _fake_escalation
+        )
         self._stub_inner_helpers(monkeypatch)
 
         from thegent.cli.commands.observability_impl import observe_summary_impl
@@ -454,7 +538,9 @@ class TestObserveSummaryImplWL120DormantWire:
         assert "top_escalations" in result["generated_query"]
 
     # @trace FR-AUDIT-N+13-024
-    def test_dormant_failure_keeps_legacy_stub(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_dormant_failure_keeps_legacy_stub(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """If the dormant-core callables raise, ``observe_summary_impl``
         still returns the legacy stub block under ``trend_summary``
         with ``wl120_dormant_round_trip=False`` and a safe-default
@@ -466,8 +552,14 @@ class TestObserveSummaryImplWL120DormantWire:
         def _raise_escalation(**_kwargs: Any) -> dict[str, Any]:
             raise RuntimeError("dormant-core exploded")
 
-        monkeypatch.setattr(services_observability, "build_observe_summary_trend", _raise_trend)
-        monkeypatch.setattr(services_observability, "build_observe_summary_escalation", _raise_escalation)
+        monkeypatch.setattr(
+            services_observability, "build_observe_summary_trend", _raise_trend
+        )
+        monkeypatch.setattr(
+            services_observability,
+            "build_observe_summary_escalation",
+            _raise_escalation,
+        )
         self._stub_inner_helpers(monkeypatch)
 
         from thegent.cli.commands.observability_impl import observe_summary_impl
@@ -530,4 +622,7 @@ class TestAuditN13ModuleGraphLoadsClean:
         ``observability_impl`` (the canonical home), not ``impl``."""
         from thegent.cli.commands.observability_impl import _build_observe_trend_payload
 
-        assert _build_observe_trend_payload.__module__ == "thegent.cli.commands.observability_impl"
+        assert (
+            _build_observe_trend_payload.__module__
+            == "thegent.cli.commands.observability_impl"
+        )

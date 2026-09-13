@@ -13,6 +13,7 @@ LiteLLM Router: when configured, POST /v1/responses and the WebSocket variant
 are delegated to the LiteLLM Router handler instead of the legacy CLIProxy
 backend path.
 """
+
 from __future__ import annotations
 
 import logging
@@ -41,7 +42,10 @@ async def proxy_handler(request: Request) -> Response:
     bifrost = get_bifrost()
     if bifrost.is_enabled:
         try:
-            claims = {"api_key": request.headers.get("authorization", ""), "identifier": request.client.host}
+            claims = {
+                "api_key": request.headers.get("authorization", ""),
+                "identifier": request.client.host,
+            }
             bifrost.validate_claims(claims)
         except BifrostValidationError as e:
             return Response(
@@ -58,7 +62,9 @@ async def proxy_handler(request: Request) -> Response:
     use_litellm = settings.use_litellm_router
 
     if _log.isEnabledFor(logging.DEBUG) or __debug__:
-        _log.debug("adapter request: %s %s (litellm=%s)", request.method, path, use_litellm)
+        _log.debug(
+            "adapter request: %s %s (litellm=%s)", request.method, path, use_litellm
+        )
 
     if not path.startswith("/v1/"):
         return Response("Not Found", status_code=404)
@@ -82,7 +88,9 @@ async def proxy_handler(request: Request) -> Response:
         # Codex expects {"models": [...]}; CLIProxy returns {"data": [...], "object": "list"}
         if resp.status_code == 200 and resp.body:
             # OR-15: inject OpenRouter proxy models when the backend is OpenRouter
-            result = transform_models_response(resp.body, inject_openrouter=_is_openrouter_backend(backend))
+            result = transform_models_response(
+                resp.body, inject_openrouter=_is_openrouter_backend(backend)
+            )
             if result is not None:
                 transformed_body, etag = result
                 return Response(
@@ -104,12 +112,23 @@ async def proxy_handler(request: Request) -> Response:
 
         if path == "/v1/responses":
             # Backend often lacks /v1/responses; translate to /v1/chat/completions
-            req_model = data.get("model", "proxy") if isinstance(data, dict) else "proxy"
+            req_model = (
+                data.get("model", "proxy") if isinstance(data, dict) else "proxy"
+            )
             if data:
-                _log.debug("responses transform: model=%s stream=%s", req_model, data.get("stream"))
+                _log.debug(
+                    "responses transform: model=%s stream=%s",
+                    req_model,
+                    data.get("stream"),
+                )
             req_headers = sanitize_outbound_request_headers(dict(request.headers))
             return await _proxy_stream(
-                body, req_headers, backend, "/chat/completions", transform_responses=True, model=req_model
+                body,
+                req_headers,
+                backend,
+                "/chat/completions",
+                transform_responses=True,
+                model=req_model,
             )
 
         if stream_mode and path == "/v1/chat/completions":

@@ -135,11 +135,19 @@ def sweep_cmd(
     if result.get("audit") and result["audit"].get("status") not in ("passed", "empty"):
         parts.append(f"[red]Audit:[/red] {result['audit'].get('status', 'failed')}")
     if parts:
-        console.print(Panel("\n".join(parts), title="Policy Drift Sweep (WP-3005)", border_style="red"))
+        console.print(
+            Panel(
+                "\n".join(parts),
+                title="Policy Drift Sweep (WP-3005)",
+                border_style="red",
+            )
+        )
     raise typer.Exit(1)
 
 
-def escalate_resolve_cmd(run_id: str | None = None, resolution: str = "resolved") -> None:
+def escalate_resolve_cmd(
+    run_id: str | None = None, resolution: str = "resolved"
+) -> None:
     """Mark an escalation item as resolved (WP-3008)."""
     rid = _resolve_run_id(run_id)
     from thegent.cli.governance.governance_impl import escalate_resolve_impl
@@ -158,7 +166,9 @@ def escalate_approve_cmd(run_id: str | None = None) -> None:
 
     ok = escalate_approve_impl(run_id=rid)
     if ok:
-        console.print(f"[green]Escalation {rid} APPROVED. Policy override recorded for owner.[/green]")
+        console.print(
+            f"[green]Escalation {rid} APPROVED. Policy override recorded for owner.[/green]"
+        )
     else:
         console.print(f"[red]Escalation {rid} not found or already resolved.[/red]")
 
@@ -186,7 +196,8 @@ def govern_approve_cmd(run_id: str, reason: str | None = None) -> None:
         reason = typer.prompt("Approval reason", default="approved")
     result = govern_approve_impl(run_id=run_id, reason=reason)
     console.print(
-        f"[green]HITL run_id={result['run_id']} APPROVED[/green]" + (f" (reason: {reason})" if reason else "")
+        f"[green]HITL run_id={result['run_id']} APPROVED[/green]"
+        + (f" (reason: {reason})" if reason else "")
     )
 
 
@@ -200,7 +211,8 @@ def govern_reject_cmd(run_id: str, reason: str | None = None) -> None:
 
     result = govern_reject_impl(run_id=run_id, reason=reason)
     console.print(
-        f"[yellow]HITL run_id={result['run_id']} REJECTED[/yellow]" + (f" (reason: {reason})" if reason else "")
+        f"[yellow]HITL run_id={result['run_id']} REJECTED[/yellow]"
+        + (f" (reason: {reason})" if reason else "")
     )
 
 
@@ -230,7 +242,9 @@ def govern_list_pending_cmd(format: str | None = None) -> None:
         unified_diff = str(it.get("unified_diff") or "")
         diff_summary = "none"
         if unified_diff:
-            diff_summary = DiffRenderer.render_summary(DiffPayload(before="", after="", unified_diff=unified_diff))
+            diff_summary = DiffRenderer.render_summary(
+                DiffPayload(before="", after="", unified_diff=unified_diff)
+            )
         table.add_row(
             it.get("run_id", "?"),
             it.get("policy", "?"),

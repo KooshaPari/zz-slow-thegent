@@ -29,7 +29,11 @@ def filter_inbound_response_headers(headers: dict[str, str]) -> dict[str, str]:
     Returns:
         Filtered response headers.
     """
-    return {k: v for k, v in headers.items() if k.lower() not in ("transfer-encoding", "connection")}
+    return {
+        k: v
+        for k, v in headers.items()
+        if k.lower() not in ("transfer-encoding", "connection")
+    }
 
 
 def sanitize_outbound_request_headers(headers: dict[str, str]) -> dict[str, str]:
@@ -41,7 +45,11 @@ def sanitize_outbound_request_headers(headers: dict[str, str]) -> dict[str, str]
     Returns:
         Sanitized request headers.
     """
-    return {k: v for k, v in headers.items() if k.lower() not in ("x-forwarded-for", "x-real-ip")}
+    return {
+        k: v
+        for k, v in headers.items()
+        if k.lower() not in ("x-forwarded-for", "x-real-ip")
+    }
 
 
 __all__ = [

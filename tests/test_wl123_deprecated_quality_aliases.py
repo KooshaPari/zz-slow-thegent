@@ -6,7 +6,11 @@ import orjson as json
 
 from conftest import _load_script_module
 
-SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts" / "check_deprecated_quality_aliases.py"
+SCRIPT_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "scripts"
+    / "check_deprecated_quality_aliases.py"
+)
 MODULE = _load_script_module("check_deprecated_quality_aliases", SCRIPT_PATH)
 
 
@@ -41,7 +45,11 @@ def test_build_report_identifies_deprecated_and_missing_canonical() -> None:
 
     assert report["deprecated_present"] == ["quality-a"]
     assert report["replacement_suggestions"] == {"quality-a": "quality"}
-    assert report["canonical_missing"] == ["quality:dag:hard", "quality:dag:soft", "quality:fix:runner"]
+    assert report["canonical_missing"] == [
+        "quality:dag:hard",
+        "quality:dag:soft",
+        "quality:fix:runner",
+    ]
 
 
 def test_build_report_clean_state_has_no_findings() -> None:
@@ -86,7 +94,9 @@ tasks:
     assert exit_code == 1
 
 
-def test_main_migration_format_includes_replacement_suggestions(tmp_path: Path, capsys) -> None:
+def test_main_migration_format_includes_replacement_suggestions(
+    tmp_path: Path, capsys
+) -> None:
     taskfile = tmp_path / "Taskfile.yml"
     taskfile.write_text(
         """
@@ -146,7 +156,9 @@ tasks:
     assert "| Missing canonical commands |" in out
 
 
-def test_main_migration_json_format_emits_structured_payload(tmp_path: Path, capsys) -> None:
+def test_main_migration_json_format_emits_structured_payload(
+    tmp_path: Path, capsys
+) -> None:
     taskfile = tmp_path / "Taskfile.yml"
     taskfile.write_text(
         """
@@ -192,20 +204,33 @@ def test_build_migration_payload_returns_stable_keys() -> None:
 
 def test_build_migration_entries_returns_ordered_line_items() -> None:
     report = {
-        "replacement_suggestions": {"quality-a": "quality", "quality-b": "quality:runner"},
+        "replacement_suggestions": {
+            "quality-a": "quality",
+            "quality-b": "quality:runner",
+        },
         "canonical_missing": ["quality:dag"],
     }
 
     entries = MODULE.build_migration_entries(report)
 
     assert entries == [
-        {"kind": "replacement", "deprecated_alias": "quality-a", "canonical_command": "quality"},
-        {"kind": "replacement", "deprecated_alias": "quality-b", "canonical_command": "quality:runner"},
+        {
+            "kind": "replacement",
+            "deprecated_alias": "quality-a",
+            "canonical_command": "quality",
+        },
+        {
+            "kind": "replacement",
+            "deprecated_alias": "quality-b",
+            "canonical_command": "quality:runner",
+        },
         {"kind": "canonical_missing", "canonical_command": "quality:dag"},
     ]
 
 
-def test_main_migration_jsonl_format_emits_line_delimited_entries(tmp_path: Path, capsys) -> None:
+def test_main_migration_jsonl_format_emits_line_delimited_entries(
+    tmp_path: Path, capsys
+) -> None:
     taskfile = tmp_path / "Taskfile.yml"
     taskfile.write_text(
         """
@@ -227,11 +252,19 @@ tasks:
         encoding="utf-8",
     )
 
-    exit_code = MODULE.main(["--taskfile", str(taskfile), "--format", "migration-jsonl"])
+    exit_code = MODULE.main(
+        ["--taskfile", str(taskfile), "--format", "migration-jsonl"]
+    )
 
     assert exit_code == 0
     lines = [json.loads(line) for line in capsys.readouterr().out.strip().splitlines()]
-    assert lines == [{"canonical_command": "quality", "deprecated_alias": "quality-a", "kind": "replacement"}]
+    assert lines == [
+        {
+            "canonical_command": "quality",
+            "deprecated_alias": "quality-a",
+            "kind": "replacement",
+        }
+    ]
 
 
 def test_main_summary_json_format_emits_compact_counts(tmp_path: Path, capsys) -> None:
@@ -270,7 +303,9 @@ tasks:
     }
 
 
-def test_main_detects_canonical_commands_from_included_taskfiles(tmp_path: Path) -> None:
+def test_main_detects_canonical_commands_from_included_taskfiles(
+    tmp_path: Path,
+) -> None:
     include_dir = tmp_path / "templates" / "shared"
     include_dir.mkdir(parents=True)
     include_path = include_dir / "Taskfile.quality.yml"
@@ -317,7 +352,12 @@ def test_build_total_findings_count_sums_deprecated_and_missing_counts() -> None
 
 
 def test_build_replacement_count_counts_replacement_entries() -> None:
-    report = {"replacement_suggestions": {"quality-a": "quality", "quality-b": "quality:runner"}}
+    report = {
+        "replacement_suggestions": {
+            "quality-a": "quality",
+            "quality-b": "quality:runner",
+        }
+    }
 
     count = MODULE.build_replacement_count(report)
 
@@ -338,4 +378,8 @@ def test_build_unmapped_deprecated_count_detects_missing_suggestions() -> None:
 def test_mapping_file_contains_required_keys() -> None:
     mapping = _mapping()
 
-    assert sorted(mapping.keys()) == ["canonical_commands", "deprecated_aliases", "replacement_suggestions"]
+    assert sorted(mapping.keys()) == [
+        "canonical_commands",
+        "deprecated_aliases",
+        "replacement_suggestions",
+    ]

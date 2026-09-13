@@ -1,6 +1,5 @@
 """In-memory lock adapter for command deduplication."""
 
-
 from ..domain.entities import CommandLock, LockStatus
 from ..domain.value_objects import CommandHash
 

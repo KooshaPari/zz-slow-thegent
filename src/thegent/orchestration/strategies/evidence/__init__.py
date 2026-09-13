@@ -74,10 +74,14 @@ class PromotionGate:
         issues: list[str] = []
 
         if csm.confidence_level < policy.min_confidence_threshold:
-            issues.append(f"Confidence {csm.confidence_level} below threshold {policy.min_confidence_threshold}")
+            issues.append(
+                f"Confidence {csm.confidence_level} below threshold {policy.min_confidence_threshold}"
+            )
 
         if csm.blockers:
-            issues.append(f"Active blockers present: {', '.join(str(b) for b in csm.blockers)}")
+            issues.append(
+                f"Active blockers present: {', '.join(str(b) for b in csm.blockers)}"
+            )
 
         return issues
 

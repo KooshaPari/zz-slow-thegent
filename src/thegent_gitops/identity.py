@@ -118,7 +118,9 @@ def _parse_profile_map(raw: str | None) -> dict[str, tuple[str, str]]:
     try:
         payload = json.loads(raw)
     except json.JSONDecodeError as exc:
-        raise RuntimeError(f"Invalid THGENT_GIT_IDENTITY_MAP JSON payload: {exc}") from exc
+        raise RuntimeError(
+            f"Invalid THGENT_GIT_IDENTITY_MAP JSON payload: {exc}"
+        ) from exc
 
     if not isinstance(payload, dict):
         raise RuntimeError("THGENT_GIT_IDENTITY_MAP must be a JSON object")
@@ -134,7 +136,9 @@ def _parse_profile_map(raw: str | None) -> dict[str, tuple[str, str]]:
             continue
 
         if not isinstance(value, dict):
-            raise RuntimeError(f"Invalid profile payload for {profile}: expected string or object")
+            raise RuntimeError(
+                f"Invalid profile payload for {profile}: expected string or object"
+            )
 
         name = str(value.get("name", "")).strip()
         email = str(value.get("email", "")).strip()
@@ -153,7 +157,9 @@ def resolve_author_env(
     Profiles are read from `THGENT_GIT_IDENTITY_MAP`, then local git config.
     """
     profiles = _parse_profile_map(os.getenv("THGENT_GIT_IDENTITY_MAP"))
-    selected_profile = normalize_actor_profile(actor_profile) or infer_actor_profile(agent_id)
+    selected_profile = normalize_actor_profile(actor_profile) or infer_actor_profile(
+        agent_id
+    )
 
     if not selected_profile:
         selected_profile = "human"
@@ -162,7 +168,11 @@ def resolve_author_env(
     config_email = _git_config_get(project_root, "user.email")
 
     base_name = config_name or os.getenv("GIT_AUTHOR_NAME", "").strip() or "thegent"
-    base_email = config_email or os.getenv("GIT_AUTHOR_EMAIL", "").strip() or "noreply@thegent.dev"
+    base_email = (
+        config_email
+        or os.getenv("GIT_AUTHOR_EMAIL", "").strip()
+        or "noreply@thegent.dev"
+    )
 
     selected_name = ""
     selected_email = ""
@@ -183,11 +193,17 @@ def resolve_author_env(
     # Explicit overrides for all modes can still be injected through env.
     selected_name = os.getenv("THGENT_GIT_AUTHOR_NAME", selected_name).strip()
     selected_email = os.getenv("THGENT_GIT_AUTHOR_EMAIL", selected_email).strip()
-    selected_committer_name = os.getenv("THGENT_GIT_COMMITTER_NAME", selected_name).strip()
-    selected_committer_email = os.getenv("THGENT_GIT_COMMITTER_EMAIL", selected_email).strip()
+    selected_committer_name = os.getenv(
+        "THGENT_GIT_COMMITTER_NAME", selected_name
+    ).strip()
+    selected_committer_email = os.getenv(
+        "THGENT_GIT_COMMITTER_EMAIL", selected_email
+    ).strip()
 
     if not selected_email:
-        raise RuntimeError(f"Unable to resolve committer email for profile '{selected_profile}'.")
+        raise RuntimeError(
+            f"Unable to resolve committer email for profile '{selected_profile}'."
+        )
 
     return {
         "GIT_AUTHOR_NAME": selected_name,

@@ -26,7 +26,9 @@ class TestQuickStartStep:
 
     def test_quick_start_step_completed(self) -> None:
         """QuickStartStep can be marked as completed."""
-        step = QuickStartStep(step_id="s1", description="Install dependencies", completed=True)
+        step = QuickStartStep(
+            step_id="s1", description="Install dependencies", completed=True
+        )
         assert step.completed is True
 
 

@@ -27,7 +27,9 @@ class TestLinearSyncTestResult:
     @pytest.mark.requirement("WL-179")
     def test_linear_sync_test_result_with_details(self) -> None:
         """Test creating a LinearSyncTestResult with details."""
-        result = LinearSyncTestResult(test_name="test_cycle", passed=False, details="GraphQL query failed")
+        result = LinearSyncTestResult(
+            test_name="test_cycle", passed=False, details="GraphQL query failed"
+        )
         assert result.test_name == "test_cycle"
         assert result.passed is False
         assert result.details == "GraphQL query failed"

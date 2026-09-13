@@ -46,7 +46,9 @@ class DigitalTwinManager:
         _log.info("Captured digital twin snapshot for %s: %s", identity_id, snapshot_id)
         return snapshot_id
 
-    def reconcile_twin(self, twin_a_id: str, twin_b_id: str) -> dict[str, float | list[str]]:
+    def reconcile_twin(
+        self, twin_a_id: str, twin_b_id: str
+    ) -> dict[str, float | list[str]]:
         """Merge traits from two snapshots (e.g. from different project instances)."""
         _log.info("Reconciling digital twins: %s and %s", twin_a_id, twin_b_id)
         # In a real system, this would use semantic merging of value vectors.

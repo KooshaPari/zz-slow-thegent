@@ -23,13 +23,17 @@ def test_domain_map_help_exits_zero() -> None:
 
 @pytest.mark.e2e
 def test_enterprise_compliance_evidence_list_help_exits_zero() -> None:
-    result = runner.invoke(app, ["enterprise", "compliance", "evidence", "list", "--help"])
+    result = runner.invoke(
+        app, ["enterprise", "compliance", "evidence", "list", "--help"]
+    )
     assert result.exit_code == 0
 
 
 @pytest.mark.e2e
 def test_enterprise_compliance_evidence_purge_help_exits_zero() -> None:
-    result = runner.invoke(app, ["enterprise", "compliance", "evidence", "purge", "--help"])
+    result = runner.invoke(
+        app, ["enterprise", "compliance", "evidence", "purge", "--help"]
+    )
     assert result.exit_code == 0
 
 

@@ -75,7 +75,10 @@ def test_mask_multiple_entities_numbered():
 def test_mask_messages_list():
     messages = [
         {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "My email is user@example.com and my SSN is 111-22-3333."},
+        {
+            "role": "user",
+            "content": "My email is user@example.com and my SSN is 111-22-3333.",
+        },
     ]
     masked_msgs, token_map = mask_messages(messages)
     user_content = masked_msgs[1]["content"]

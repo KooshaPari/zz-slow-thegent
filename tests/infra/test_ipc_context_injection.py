@@ -11,7 +11,9 @@ from thegent.context.context_injection import ContextInjector
 from thegent.infra.ipc import IPCMesh
 
 
-def test_tgnt_p11_1_ipc_mesh_creates_tmpfs_like_dirs_with_sticky_bit(tmp_path: Path) -> None:
+def test_tgnt_p11_1_ipc_mesh_creates_tmpfs_like_dirs_with_sticky_bit(
+    tmp_path: Path,
+) -> None:
     mesh_root = tmp_path / "agent-mesh"
     IPCMesh(mesh_root=mesh_root)
 
@@ -24,11 +26,18 @@ def test_tgnt_p11_1_ipc_mesh_creates_tmpfs_like_dirs_with_sticky_bit(tmp_path: P
     assert locks_mode == 0o1777
 
 
-def test_tgnt_p14_1_render_agent_template_includes_expected_sections(tmp_path: Path) -> None:
+def test_tgnt_p14_1_render_agent_template_includes_expected_sections(
+    tmp_path: Path,
+) -> None:
     injector = ContextInjector(project_root=tmp_path)
     rendered = injector.render_agent_md(
         {"id": "agent-1", "type": "codex"},
-        {"status": "healthy", "agents": ["a", "b"], "resources": ["queue", "cache"], "port_range": "4500-4600"},
+        {
+            "status": "healthy",
+            "agents": ["a", "b"],
+            "resources": ["queue", "cache"],
+            "port_range": "4500-4600",
+        },
     )
 
     assert "# AGENT IDENTITY" in rendered
@@ -40,7 +49,9 @@ def test_tgnt_p14_1_render_agent_template_includes_expected_sections(tmp_path: P
     assert "Use shared port range: 4500-4600" in rendered
 
 
-def test_tgnt_p14_1_setup_tool_context_replaces_stale_target_with_symlink(tmp_path: Path) -> None:
+def test_tgnt_p14_1_setup_tool_context_replaces_stale_target_with_symlink(
+    tmp_path: Path,
+) -> None:
     injector = ContextInjector(project_root=tmp_path)
     agent_dir = tmp_path / "agent"
     agent_dir.mkdir()

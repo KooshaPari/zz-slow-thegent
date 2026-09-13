@@ -61,7 +61,9 @@ class PipelinePercentileTracker:
             timestamp=datetime.now(UTC),
         )
         self._records.append(record)
-        logger.debug(f"Recorded stage {stage} with duration {duration_ms}ms for cycle {cycle_id}")
+        logger.debug(
+            f"Recorded stage {stage} with duration {duration_ms}ms for cycle {cycle_id}"
+        )
 
     def percentile(self, stage: str, p: float) -> float | None:
         """Get the p-th percentile of durations for a stage.

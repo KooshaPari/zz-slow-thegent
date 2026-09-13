@@ -19,7 +19,14 @@ def _function_source(module_text: str, function_name: str) -> str:
 
 
 def test_main_app_defines_agent_server_command_passthrough() -> None:
-    main_path = Path(__file__).resolve().parents[1] / "src" / "thegent" / "cli" / "apps" / "main.py"
+    main_path = (
+        Path(__file__).resolve().parents[1]
+        / "src"
+        / "thegent"
+        / "cli"
+        / "apps"
+        / "main.py"
+    )
     text = main_path.read_text(encoding="utf-8")
     fn_src = _function_source(text, "agent_server_cmd")
 

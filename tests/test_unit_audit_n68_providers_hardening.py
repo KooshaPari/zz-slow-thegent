@@ -301,8 +301,12 @@ class TestFRGOVPR017:
 class TestFRGOVPR018:
     def test_all_builtin_providers_have_fallback_chains(self):
         for cfg in _BUILTIN_PROVIDERS:
-            assert isinstance(cfg.fallback_order, list), f"{cfg.provider_id} fallback_order is not a list"
-            assert len(cfg.fallback_order) > 0, f"{cfg.provider_id} has empty fallback_order"
+            assert isinstance(cfg.fallback_order, list), (
+                f"{cfg.provider_id} fallback_order is not a list"
+            )
+            assert len(cfg.fallback_order) > 0, (
+                f"{cfg.provider_id} has empty fallback_order"
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -326,7 +330,9 @@ class TestFRGOVPR019:
 class TestFRGOVPR020:
     def test_cost_per_1m_tokens_is_float(self):
         for cfg in _BUILTIN_PROVIDERS:
-            assert isinstance(cfg.cost_per_1m_tokens, float), f"{cfg.provider_id} cost_per_1m_tokens is not float"
+            assert isinstance(cfg.cost_per_1m_tokens, float), (
+                f"{cfg.provider_id} cost_per_1m_tokens is not float"
+            )
 
 
 # ---------------------------------------------------------------------------

@@ -10,7 +10,9 @@ SCRIPT_PATH = ROOT / "scripts" / "check_rust_pyo3_version_drift.py"
 
 
 def _load_module():
-    spec = importlib.util.spec_from_file_location("check_rust_pyo3_version_drift", SCRIPT_PATH)
+    spec = importlib.util.spec_from_file_location(
+        "check_rust_pyo3_version_drift", SCRIPT_PATH
+    )
     assert spec is not None
     assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
@@ -37,7 +39,9 @@ def _init_workspace(tmp_path: Path, *, workspace_pyo3: str | None = None) -> Non
     )
 
 
-def test_build_report_passes_with_uniform_version_including_optional_and_target_tables(tmp_path: Path) -> None:
+def test_build_report_passes_with_uniform_version_including_optional_and_target_tables(
+    tmp_path: Path,
+) -> None:
     mod = _load_module()
     _init_workspace(tmp_path)
     _write_manifest(
@@ -113,7 +117,9 @@ def test_build_report_fails_when_versions_drift(tmp_path: Path) -> None:
     assert report["versions"] == ["0.23.4", "0.24.0"]
 
 
-def test_build_report_resolves_workspace_version_and_package_alias(tmp_path: Path) -> None:
+def test_build_report_resolves_workspace_version_and_package_alias(
+    tmp_path: Path,
+) -> None:
     mod = _load_module()
     _init_workspace(tmp_path, workspace_pyo3="0.23.4")
     _write_manifest(
@@ -134,7 +140,9 @@ def test_build_report_resolves_workspace_version_and_package_alias(tmp_path: Pat
     assert any(ref["dependency"] == "py" for ref in report["references"])
 
 
-def test_build_report_fails_for_workspace_true_without_workspace_version(tmp_path: Path) -> None:
+def test_build_report_fails_for_workspace_true_without_workspace_version(
+    tmp_path: Path,
+) -> None:
     mod = _load_module()
     _init_workspace(tmp_path, workspace_pyo3=None)
     _write_manifest(
@@ -152,13 +160,18 @@ def test_build_report_fails_for_workspace_true_without_workspace_version(tmp_pat
     report = mod.build_report(tmp_path)
     assert report["ok"] is False
     assert report["errors"]
-    assert "workspace=true but workspace.dependencies.pyo3 has no version" in report["errors"][0]
+    assert (
+        "workspace=true but workspace.dependencies.pyo3 has no version"
+        in report["errors"][0]
+    )
 
 
 def test_taskfile_wires_pyo3_drift_check_before_runtime_contracts() -> None:
     taskfile = yaml.safe_load((ROOT / "Taskfile.yml").read_text(encoding="utf-8"))
     pyo3_task = taskfile["tasks"]["quality:rust:pyo3-drift"]
-    assert pyo3_task["cmds"] == ["uv run python scripts/check_rust_pyo3_version_drift.py"]
+    assert pyo3_task["cmds"] == [
+        "uv run python scripts/check_rust_pyo3_version_drift.py"
+    ]
 
     quality_cmds = taskfile["tasks"]["quality"]["cmds"]
     assert {"task": "quality:rust:pyo3-drift"} in quality_cmds

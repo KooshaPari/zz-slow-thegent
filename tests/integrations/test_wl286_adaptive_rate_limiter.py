@@ -138,7 +138,9 @@ class TestAdaptiveRateLimiterRecordThrottle:
         return AdaptiveRateLimiter(default_rpm=100.0)
 
     @pytest.mark.requirement("WL-286")
-    def test_record_throttle_reduces_by_twenty_percent(self, limiter: AdaptiveRateLimiter) -> None:
+    def test_record_throttle_reduces_by_twenty_percent(
+        self, limiter: AdaptiveRateLimiter
+    ) -> None:
         """record_throttle reduces limit by 20%."""
         limiter.set_limit("github", 100.0)
         limiter.record_throttle("github")
@@ -156,7 +158,9 @@ class TestAdaptiveRateLimiterRecordThrottle:
         assert abs(limiter.get_limit("github") - 64.0) < 0.01
 
     @pytest.mark.requirement("WL-286")
-    def test_record_throttle_respects_minimum(self, limiter: AdaptiveRateLimiter) -> None:
+    def test_record_throttle_respects_minimum(
+        self, limiter: AdaptiveRateLimiter
+    ) -> None:
         """record_throttle never goes below 1.0."""
         limiter.set_limit("github", 1.5)
         limiter.record_throttle("github")
@@ -165,7 +169,9 @@ class TestAdaptiveRateLimiterRecordThrottle:
         assert abs(limiter.get_limit("github") - 1.2) < 0.01
 
     @pytest.mark.requirement("WL-286")
-    def test_record_throttle_at_minimum_stays_at_minimum(self, limiter: AdaptiveRateLimiter) -> None:
+    def test_record_throttle_at_minimum_stays_at_minimum(
+        self, limiter: AdaptiveRateLimiter
+    ) -> None:
         """record_throttle on minimum stays at 1.0."""
         limiter.set_limit("github", 1.0)
         limiter.record_throttle("github")
@@ -173,7 +179,9 @@ class TestAdaptiveRateLimiterRecordThrottle:
         assert limiter.get_limit("github") == 1.0
 
     @pytest.mark.requirement("WL-286")
-    def test_record_throttle_uses_default_if_unset(self, limiter: AdaptiveRateLimiter) -> None:
+    def test_record_throttle_uses_default_if_unset(
+        self, limiter: AdaptiveRateLimiter
+    ) -> None:
         """record_throttle uses default limit if connector not set."""
         limiter.record_throttle("unknown")
 
@@ -181,7 +189,9 @@ class TestAdaptiveRateLimiterRecordThrottle:
         assert limiter.get_limit("unknown") == 80.0
 
     @pytest.mark.requirement("WL-286")
-    def test_record_throttle_updates_timestamp(self, limiter: AdaptiveRateLimiter) -> None:
+    def test_record_throttle_updates_timestamp(
+        self, limiter: AdaptiveRateLimiter
+    ) -> None:
         """record_throttle updates last_updated timestamp."""
         limiter.set_limit("github", 100.0)
         limiter.record_throttle("github")
@@ -199,7 +209,9 @@ class TestAdaptiveRateLimiterRecordSuccess:
         return AdaptiveRateLimiter(default_rpm=100.0)
 
     @pytest.mark.requirement("WL-286")
-    def test_record_success_increases_by_five_percent(self, limiter: AdaptiveRateLimiter) -> None:
+    def test_record_success_increases_by_five_percent(
+        self, limiter: AdaptiveRateLimiter
+    ) -> None:
         """record_success increases limit by 5%."""
         limiter.set_limit("github", 100.0)
         limiter.record_success("github")
@@ -217,7 +229,9 @@ class TestAdaptiveRateLimiterRecordSuccess:
         assert abs(limiter.get_limit("github") - 110.25) < 0.01
 
     @pytest.mark.requirement("WL-286")
-    def test_record_success_respects_maximum(self, limiter: AdaptiveRateLimiter) -> None:
+    def test_record_success_respects_maximum(
+        self, limiter: AdaptiveRateLimiter
+    ) -> None:
         """record_success never exceeds 10x default."""
         limiter.set_limit("github", 950.0)
         limiter.record_success("github")
@@ -226,7 +240,9 @@ class TestAdaptiveRateLimiterRecordSuccess:
         assert abs(limiter.get_limit("github") - 997.5) < 0.01
 
     @pytest.mark.requirement("WL-286")
-    def test_record_success_at_maximum_stays_at_maximum(self, limiter: AdaptiveRateLimiter) -> None:
+    def test_record_success_at_maximum_stays_at_maximum(
+        self, limiter: AdaptiveRateLimiter
+    ) -> None:
         """record_success at max stays at max."""
         limiter.set_limit("github", 1000.0)
         limiter.record_success("github")
@@ -234,7 +250,9 @@ class TestAdaptiveRateLimiterRecordSuccess:
         assert limiter.get_limit("github") == 1000.0
 
     @pytest.mark.requirement("WL-286")
-    def test_record_success_uses_default_if_unset(self, limiter: AdaptiveRateLimiter) -> None:
+    def test_record_success_uses_default_if_unset(
+        self, limiter: AdaptiveRateLimiter
+    ) -> None:
         """record_success uses default if connector not set."""
         limiter.record_success("unknown")
 
@@ -242,7 +260,9 @@ class TestAdaptiveRateLimiterRecordSuccess:
         assert limiter.get_limit("unknown") == 105.0
 
     @pytest.mark.requirement("WL-286")
-    def test_record_success_updates_timestamp(self, limiter: AdaptiveRateLimiter) -> None:
+    def test_record_success_updates_timestamp(
+        self, limiter: AdaptiveRateLimiter
+    ) -> None:
         """record_success updates last_updated timestamp."""
         limiter.set_limit("github", 100.0)
         limiter.record_success("github")

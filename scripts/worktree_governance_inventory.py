@@ -12,6 +12,7 @@ from typing import Any
 
 _DEFAULT_PRIMARY_MARKER = ".thegent-primary-main"
 
+
 @dataclass(frozen=True)
 class WorktreeInventoryEntry:
     path: str
@@ -30,7 +31,9 @@ class WorktreeInventoryEntry:
 
 def _parse_git_worktree(path: Path) -> list[tuple[str, str, bool]]:
     try:
-        text = subprocess.check_output(["git", "worktree", "list", "--porcelain"], cwd=path, text=True).splitlines()
+        text = subprocess.check_output(
+            ["git", "worktree", "list", "--porcelain"], cwd=path, text=True
+        ).splitlines()
     except Exception as exc:
         raise RuntimeError(f"git worktree list failed for {path}: {exc}") from exc
 
@@ -64,7 +67,9 @@ def _parse_git_worktree(path: Path) -> list[tuple[str, str, bool]]:
     return entries
 
 
-def _conform(path: str, branch: str, root: Path, marker_path: Path) -> tuple[bool, list[str]]:
+def _conform(
+    path: str, branch: str, root: Path, marker_path: Path
+) -> tuple[bool, list[str]]:
     resolved_path = Path(path).resolve()
     is_primary = resolved_path == root.resolve()
     issues: list[str] = []
@@ -80,7 +85,9 @@ def _conform(path: str, branch: str, root: Path, marker_path: Path) -> tuple[boo
     return not issues, issues
 
 
-def _structured_lane_components(path: str, root: Path) -> tuple[str | None, str | None, str | None, str | None]:
+def _structured_lane_components(
+    path: str, root: Path
+) -> tuple[str | None, str | None, str | None, str | None]:
     resolved_path = Path(path).resolve()
     try:
         relative = resolved_path.relative_to(root.resolve())
@@ -97,7 +104,9 @@ def _structured_lane_components(path: str, root: Path) -> tuple[str | None, str 
     return parts[1], parts[2], parts[3], parts[4]
 
 
-def generate_inventory(*, repo_root: Path | None = None, marker: str = _DEFAULT_PRIMARY_MARKER) -> dict[str, Any]:
+def generate_inventory(
+    *, repo_root: Path | None = None, marker: str = _DEFAULT_PRIMARY_MARKER
+) -> dict[str, Any]:
     repo_root = repo_root or Path.cwd()
     root = repo_root.resolve()
     required_root = (root / ".worktrees").resolve()
@@ -140,7 +149,8 @@ def generate_inventory(*, repo_root: Path | None = None, marker: str = _DEFAULT_
         "total": len(entries),
         "conformant": sum(1 for item in entries if item.is_conformant),
         "warn": sum(1 for item in entries if not item.is_conformant),
-        "nonconformant": len(entries) - sum(1 for item in entries if item.is_conformant),
+        "nonconformant": len(entries)
+        - sum(1 for item in entries if item.is_conformant),
         "entries": [asdict(e) for e in entries],
     }
     return payload
@@ -171,13 +181,17 @@ def _write(payload: dict[str, Any], out_dir: Path) -> tuple[Path, Path]:
 def main() -> int:
     import argparse
 
-    parser = argparse.ArgumentParser(description="Emit worktree governance inventory artifact")
+    parser = argparse.ArgumentParser(
+        description="Emit worktree governance inventory artifact"
+    )
     parser.add_argument("--output-dir", default="docs/governance")
     parser.add_argument("--repo-root", default=".")
     parser.add_argument("--schema", default="governance.worktree.inventory.v1")
     args = parser.parse_args()
 
-    payload = generate_inventory(repo_root=Path(args.repo_root), marker=_DEFAULT_PRIMARY_MARKER)
+    payload = generate_inventory(
+        repo_root=Path(args.repo_root), marker=_DEFAULT_PRIMARY_MARKER
+    )
     payload["schema_version"] = args.schema
     json_out, md_out = _write(payload, Path(args.output_dir))
     print(f"Wrote {json_out}")

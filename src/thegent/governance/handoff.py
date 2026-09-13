@@ -25,7 +25,9 @@ class HandoffIntegrity:
         workspace_root = Path(workspace_root)
         # FR-GOV-HO-002 — absolute path required.
         if not workspace_root.is_absolute():
-            raise ValueError(f"workspace_root must be an absolute path (got {workspace_root!s})")
+            raise ValueError(
+                f"workspace_root must be an absolute path (got {workspace_root!s})"
+            )
         self.workspace_root = workspace_root
 
     def analyze_prompt(self, prompt: str) -> dict[str, Any]:
@@ -39,7 +41,9 @@ class HandoffIntegrity:
             raise ValueError("prompt must not be empty or whitespace-only")
         # FR-GOV-HO-010 — enforce max length.
         if len(prompt) > _MAX_PROMPT_LEN:
-            raise ValueError(f"prompt exceeds max length {_MAX_PROMPT_LEN} (got {len(prompt)})")
+            raise ValueError(
+                f"prompt exceeds max length {_MAX_PROMPT_LEN} (got {len(prompt)})"
+            )
         findings = []
         warnings = []
 
@@ -60,21 +64,40 @@ class HandoffIntegrity:
                 missing_files.append(p)
 
         if missing_files:
-            warnings.append(f"Referenced files not found: {', '.join(missing_files[:3])}")
+            warnings.append(
+                f"Referenced files not found: {', '.join(missing_files[:3])}"
+            )
 
         # 3. Look for keywords that suggest missing context
-        vague_keywords = ["implement this", "fix the bug", "as discussed", "you know what", "do it"]
+        vague_keywords = [
+            "implement this",
+            "fix the bug",
+            "as discussed",
+            "you know what",
+            "do it",
+        ]
         for kw in vague_keywords:
             if kw in prompt.lower():
                 findings.append(f"Potential vague instruction: '{kw}'")
 
         # 4. Check for specific action verbs (good sign)
-        action_verbs = ["create", "implement", "refactor", "update", "add", "remove", "fix", "test"]
+        action_verbs = [
+            "create",
+            "implement",
+            "refactor",
+            "update",
+            "add",
+            "remove",
+            "fix",
+            "test",
+        ]
         has_action = any(verb in prompt.lower() for verb in action_verbs)
 
         # 5. Check for context indicators (good sign)
         context_indicators = ["because", "since", "to", "for", "when", "if"]
-        has_context = any(indicator in prompt.lower() for indicator in context_indicators)
+        has_context = any(
+            indicator in prompt.lower() for indicator in context_indicators
+        )
 
         # 6. Check for code blocks or examples (good sign)
         has_code = "```" in prompt or "`" in prompt
@@ -103,7 +126,9 @@ class HandoffIntegrity:
             "has_code": has_code,
         }
 
-    def suggest_improvements(self, prompt: str, analysis: dict[str, Any] | None = None) -> str:
+    def suggest_improvements(
+        self, prompt: str, analysis: dict[str, Any] | None = None
+    ) -> str:
         """
         Suggest ways to improve the handoff prompt.
 
@@ -132,7 +157,9 @@ class HandoffIntegrity:
 
         # Suggest improvements based on missing elements
         if not analysis["has_action"]:
-            suggestions.append("💡 Add specific action verbs (create, implement, refactor, etc.)")
+            suggestions.append(
+                "💡 Add specific action verbs (create, implement, refactor, etc.)"
+            )
 
         if not analysis["has_context"]:
             suggestions.append("💡 Add context explaining why this task is needed")
@@ -149,7 +176,9 @@ class HandoffIntegrity:
 
         return prompt
 
-    def validate_handoff(self, prompt: str, min_completeness_score: int = 2) -> tuple[bool, str]:
+    def validate_handoff(
+        self, prompt: str, min_completeness_score: int = 2
+    ) -> tuple[bool, str]:
         """
         Validate that a handoff prompt meets minimum quality requirements.
 
@@ -166,7 +195,10 @@ class HandoffIntegrity:
         analysis = self.analyze_prompt(prompt)
 
         if analysis["completeness_score"] < min_completeness_score:
-            return False, f"Completeness score {analysis['completeness_score']} below minimum {min_completeness_score}"
+            return (
+                False,
+                f"Completeness score {analysis['completeness_score']} below minimum {min_completeness_score}",
+            )
 
         if analysis["findings"]:
             return False, f"Found issues: {', '.join(analysis['findings'][:2])}"

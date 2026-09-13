@@ -58,7 +58,9 @@ class BudgetRecord:
         When budget_usd is 0 there is no limit so this always returns False.
         """
         return (
-            self.budget_usd > 0 and self.spent_usd >= self.alert_threshold * self.budget_usd and not self.is_exhausted
+            self.budget_usd > 0
+            and self.spent_usd >= self.alert_threshold * self.budget_usd
+            and not self.is_exhausted
         )
 
     @property

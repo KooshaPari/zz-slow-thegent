@@ -40,7 +40,9 @@ def _write_snapshot(
     return path
 
 
-def test_snapshot_daily_index_payload_includes_summary_and_days_list_shape(tmp_path: Path) -> None:
+def test_snapshot_daily_index_payload_includes_summary_and_days_list_shape(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     _write_snapshot(
         scraper,
@@ -77,7 +79,9 @@ def test_snapshot_daily_index_day_items_include_required_keys(tmp_path: Path) ->
     assert required.issubset(set(day_item.keys()))
 
 
-def test_snapshot_daily_export_payload_returns_source_json_and_source_md(tmp_path: Path) -> None:
+def test_snapshot_daily_export_payload_returns_source_json_and_source_md(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     _write_snapshot(
         scraper,
@@ -88,13 +92,17 @@ def test_snapshot_daily_export_payload_returns_source_json_and_source_md(tmp_pat
         captured_at="2026-02-22T00:02:00+00:00",
     )
 
-    payload = snapshot_daily_export_payload(scraper, out_path=str(tmp_path / "daily-export"), limit=1000)
+    payload = snapshot_daily_export_payload(
+        scraper, out_path=str(tmp_path / "daily-export"), limit=1000
+    )
 
     assert "source_json" in payload
     assert "source_md" in payload
 
 
-def test_snapshot_daily_export_payload_returns_alias_paths_matching_source_keys(tmp_path: Path) -> None:
+def test_snapshot_daily_export_payload_returns_alias_paths_matching_source_keys(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     _write_snapshot(
         scraper,
@@ -105,13 +113,17 @@ def test_snapshot_daily_export_payload_returns_alias_paths_matching_source_keys(
         captured_at="2026-02-22T00:03:00+00:00",
     )
 
-    payload = snapshot_daily_export_payload(scraper, out_path=str(tmp_path / "daily-export-aliases"), limit=1000)
+    payload = snapshot_daily_export_payload(
+        scraper, out_path=str(tmp_path / "daily-export-aliases"), limit=1000
+    )
 
     assert payload["json_path"] == payload["source_json"]
     assert payload["markdown_path"] == payload["source_md"]
 
 
-def test_snapshot_daily_export_json_contains_generated_at_in_summary(tmp_path: Path) -> None:
+def test_snapshot_daily_export_json_contains_generated_at_in_summary(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     _write_snapshot(
         scraper,
@@ -122,7 +134,9 @@ def test_snapshot_daily_export_json_contains_generated_at_in_summary(tmp_path: P
         captured_at="2026-02-22T00:04:00+00:00",
     )
 
-    payload = snapshot_daily_export_payload(scraper, out_path=str(tmp_path / "daily-export-json"), limit=1000)
+    payload = snapshot_daily_export_payload(
+        scraper, out_path=str(tmp_path / "daily-export-json"), limit=1000
+    )
     exported = json.loads(Path(payload["source_json"]).read_text(encoding="utf-8"))
 
     assert "summary" in exported

@@ -40,7 +40,11 @@ class CogneeClient:
 
     def _load_config(self) -> CogneeConfig:
         config = cast("CogneeConfig", CogneeConfig.from_env("COGNEE_"))
-        config.enabled = os.environ.get("THEGENT_ENABLE_COGNEE", "").lower() in ("1", "true", "yes")
+        config.enabled = os.environ.get("THEGENT_ENABLE_COGNEE", "").lower() in (
+            "1",
+            "true",
+            "yes",
+        )
         return config
 
     @property

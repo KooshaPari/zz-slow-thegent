@@ -338,14 +338,20 @@ def cockpit_render(
         "--overrides",
         help="JSON file with [{rule_id, by, reason, expires_in_s}]",
     ),
-    progress_done: int = typer.Option(0, "--progress-done", help="Done count for header bar"),
-    progress_total: int = typer.Option(100, "--progress-total", help="Total count for header bar"),
+    progress_done: int = typer.Option(
+        0, "--progress-done", help="Done count for header bar"
+    ),
+    progress_total: int = typer.Option(
+        100, "--progress-total", help="Total count for header bar"
+    ),
     clock: float | None = typer.Option(
         None,
         "--clock",
         help="Pin wall clock (epoch seconds) for deterministic replay",
     ),
-    json_output: bool = typer.Option(False, "--json", help="Emit snapshot JSON instead of text"),
+    json_output: bool = typer.Option(
+        False, "--json", help="Emit snapshot JSON instead of text"
+    ),
     # AUDIT-N+25 (SOTA audit pass 11): the audit-trail toggle. Default
     # on so the AUDIT-N+22 contract (Pass 8) is honoured by the render
     # envelope — without an explicit attach, ``mcp_audit_stats`` is
@@ -394,7 +400,9 @@ def cockpit_render(
             # shape intact (the key stays ``null`` instead of crashing).
             if include_mcp_audit:
                 _attach_mcp_audit_stats(live)
-            live.tick(runs=runs, overrides=overrides, progress=(progress_done, progress_total))
+            live.tick(
+                runs=runs, overrides=overrides, progress=(progress_done, progress_total)
+            )
             typer.echo(json.dumps(live.snapshot(), indent=2, sort_keys=True))
             return
         typer.echo(
@@ -570,7 +578,9 @@ def cockpit_traffic_summary(
         "--clock",
         help="Pin wall clock (epoch seconds) for deterministic replay",
     ),
-    json_output: bool = typer.Option(False, "--json", help="Emit summary JSON instead of text"),
+    json_output: bool = typer.Option(
+        False, "--json", help="Emit summary JSON instead of text"
+    ),
     # AUDIT-N+24 (SOTA audit pass 9): the audit-trail toggle. Default
     # off so the historical ``cockpit traffic summary`` contract is
     # preserved; opt in with ``--include-mcp-audit`` to append the
@@ -656,7 +666,9 @@ def cockpit_traffic_summary(
             payload: dict[str, Any] = dict(dashboard.summary())
             if include_mcp_audit:
                 payload["mcp_audit_stats"] = stats
-                payload["mcp_audit_recent"] = [e.to_dict() if hasattr(e, "to_dict") else e for e in entries]
+                payload["mcp_audit_recent"] = [
+                    e.to_dict() if hasattr(e, "to_dict") else e for e in entries
+                ]
                 payload["mcp_audit_filters"] = {
                     "kind": mcp_kind,
                     "agent": mcp_agent,
@@ -706,14 +718,24 @@ app.add_typer(traffic_app, name="traffic")
 # ---------------------------------------------------------------------------
 
 
-@app.command("pre-check", help="Evaluate a PolicyContext against the governance PolicyEngine.")
+@app.command(
+    "pre-check", help="Evaluate a PolicyContext against the governance PolicyEngine."
+)
 def cockpit_pre_check(
     agent: str = typer.Option("", "--agent", help="Agent name (e.g. 'cursor')"),
     model: str = typer.Option("", "--model", help="Model name (e.g. 'gpt-4o')"),
-    lane: str = typer.Option("standard", "--lane", help="Lane: standard|critical|recovery|deferral"),
-    environment: str = typer.Option("development", "--env", help="Environment: development|staging|production"),
-    confidence: float | None = typer.Option(None, "--confidence", help="Confidence 0..1"),
-    prompt: str = typer.Option("", "--prompt", help="Prompt (hashed into the cache key)"),
+    lane: str = typer.Option(
+        "standard", "--lane", help="Lane: standard|critical|recovery|deferral"
+    ),
+    environment: str = typer.Option(
+        "development", "--env", help="Environment: development|staging|production"
+    ),
+    confidence: float | None = typer.Option(
+        None, "--confidence", help="Confidence 0..1"
+    ),
+    prompt: str = typer.Option(
+        "", "--prompt", help="Prompt (hashed into the cache key)"
+    ),
     namespace: str = typer.Option(
         "global",
         "--namespace",
@@ -736,7 +758,9 @@ def cockpit_pre_check(
         ),
     ),
     json_output: bool = typer.Option(False, "--json", help="Emit JSON decision"),
-    dry_run: bool = typer.Option(True, "--dry-run/--commit", help="Default dry-run; pass --commit to cache"),
+    dry_run: bool = typer.Option(
+        True, "--dry-run/--commit", help="Default dry-run; pass --commit to cache"
+    ),
     batch: Path | None = typer.Option(
         None,
         "--batch",
@@ -958,7 +982,9 @@ def _run_pre_check_batch(
         namespace_override=namespace_override,
     )
     if not contexts:
-        err_console.print(f"[yellow]pre-check batch is empty:[/yellow] {_exc_text(batch)}")
+        err_console.print(
+            f"[yellow]pre-check batch is empty:[/yellow] {_exc_text(batch)}"
+        )
         return 0
 
     appender = appender_factory() if persist_audit else None
@@ -992,9 +1018,7 @@ def _run_pre_check_batch(
     if appender is not None and notices:
         appender.record_many(notices)
 
-    summary = (
-        f"pre-check batch: items={len(notices)} deny={any_deny} audit={appender.audit_path_str() if appender else '-'}"
-    )
+    summary = f"pre-check batch: items={len(notices)} deny={any_deny} audit={appender.audit_path_str() if appender else '-'}"
     typer.echo(summary)
     return 3 if any_deny else 0
 
@@ -1048,7 +1072,9 @@ def _build_batch_decision_log(
             rule_id=decision.rule_id or "",
             agent=ctx.agent,
             lane=ctx.lane,
-            evaluated_at=decision.evaluated_at if hasattr(decision, "evaluated_at") else 0.0,
+            evaluated_at=decision.evaluated_at
+            if hasattr(decision, "evaluated_at")
+            else 0.0,
             reason=decision.reason,
         )
         notices.append(notice)
@@ -1083,7 +1109,9 @@ def _load_pre_check_corpus(
 
     def _coerce(entry: Any, src: Path) -> PolicyContext:
         if not isinstance(entry, dict):
-            raise ValueError(f"batch {src} entries must be objects, got {type(entry).__name__}: {entry!r}")
+            raise ValueError(
+                f"batch {src} entries must be objects, got {type(entry).__name__}: {entry!r}"
+            )
         ns = str(entry.get("namespace", ""))
         if namespace_override is not None and (not ns or ns == "global"):
             ns = namespace_override
@@ -1318,7 +1346,8 @@ def _load_replay_snapshot(path: Path) -> list[dict[str, Any]]:
     else:
         raise ValueError(
             "compare snapshot must be a list or an object with a 'decisions' key, "
-            f"got {type(raw).__name__}" + (f" with keys {list(raw.keys())}" if isinstance(raw, dict) else "")
+            f"got {type(raw).__name__}"
+            + (f" with keys {list(raw.keys())}" if isinstance(raw, dict) else "")
         )
     return snapshot
 
@@ -1339,7 +1368,9 @@ def _compare_decision(
         act_val = actual.get(field)
         if field == "rule_id":
             # ``None`` and ``null`` (JSON's missing) are equivalent here.
-            if (exp_val is None or exp_val == "") and (act_val is None or act_val == ""):
+            if (exp_val is None or exp_val == "") and (
+                act_val is None or act_val == ""
+            ):
                 continue
         if exp_val != act_val:
             diffs.append(field)
@@ -1575,10 +1606,14 @@ def cockpit_replay(
 
     try:
         if not batch.exists():
-            err_console.print(f"[red]replay failed:[/red] batch path not found: {_exc_text(batch)}")
+            err_console.print(
+                f"[red]replay failed:[/red] batch path not found: {_exc_text(batch)}"
+            )
             raise typer.Exit(1)
         if not compare.exists():
-            err_console.print(f"[red]replay failed:[/red] compare path not found: {_exc_text(compare)}")
+            err_console.print(
+                f"[red]replay failed:[/red] compare path not found: {_exc_text(compare)}"
+            )
             raise typer.Exit(1)
         try:
             expected_snapshot = _load_replay_snapshot(compare)
@@ -1586,7 +1621,9 @@ def cockpit_replay(
             err_console.print(f"[red]replay failed:[/red] {_exc_text(exc)}")
             raise typer.Exit(1) from exc
         except json.JSONDecodeError as exc:
-            err_console.print(f"[red]replay failed:[/red] compare file is not valid JSON: {_exc_text(exc)}")
+            err_console.print(
+                f"[red]replay failed:[/red] compare file is not valid JSON: {_exc_text(exc)}"
+            )
             raise typer.Exit(1) from exc
 
         # SOTA canary workflow: when the operator passes
@@ -1611,7 +1648,9 @@ def cockpit_replay(
             namespace_override=namespace,
         )
         if not contexts:
-            err_console.print(f"[yellow]replay batch is empty:[/yellow] {_exc_text(batch)}")
+            err_console.print(
+                f"[yellow]replay batch is empty:[/yellow] {_exc_text(batch)}"
+            )
             # An empty corpus against a non-empty snapshot is a mismatch;
             # against an empty snapshot it is a match. Either way, exit 0
             # since there is no decision to validate.
@@ -1641,7 +1680,9 @@ def cockpit_replay(
                         "fields": ["length"],
                         "expected": exp,
                         "actual": act,
-                        "text": (f"mismatch[{idx}]: length expected={len(expected_snapshot)} actual={len(produced)}"),
+                        "text": (
+                            f"mismatch[{idx}]: length expected={len(expected_snapshot)} actual={len(produced)}"
+                        ),
                     }
                 )
                 continue
@@ -1887,7 +1928,9 @@ def cockpit_audit_decision_tail(
     # typo doesn't accidentally return a noisy traceback.
     exit_code = int(exit_code_on_cap) if exit_code_on_cap else 0
     if exit_code < 0 or exit_code > 255:
-        raise typer.BadParameter(f"--exit-code-on-cap must be in [0, 255], got {exit_code_on_cap!r}")
+        raise typer.BadParameter(
+            f"--exit-code-on-cap must be in [0, 255], got {exit_code_on_cap!r}"
+        )
 
     try:
         appender = DecisionAuditAppender(audit_path=audit_path)
@@ -1904,7 +1947,9 @@ def cockpit_audit_decision_tail(
             for ev in events:
                 typer.echo(json.dumps(ev, sort_keys=True))
         except Exception as exc:
-            err_console.print(f"[red]audit decision-tail failed:[/red] {_exc_text(exc)}")
+            err_console.print(
+                f"[red]audit decision-tail failed:[/red] {_exc_text(exc)}"
+            )
             raise typer.Exit(1) from exc
         return
 
@@ -2038,7 +2083,9 @@ def _follow_audit_log(
     ),
 )
 def cockpit_audit_mcp_tail(
-    n: int = typer.Option(20, "--lines", "-n", help="Number of entries to print (most recent first)"),
+    n: int = typer.Option(
+        20, "--lines", "-n", help="Number of entries to print (most recent first)"
+    ),
     kind: str | None = typer.Option(
         None,
         "--kind",
@@ -2179,10 +2226,13 @@ def cockpit_audit_mcp_tail(
                     envelope_dict["stats"] = mcp_audit_stats()
                 else:
                     envelope_dict["entries"] = [
-                        entry.to_dict() if hasattr(entry, "to_dict") else entry for entry in entries
+                        entry.to_dict() if hasattr(entry, "to_dict") else entry
+                        for entry in entries
                     ]
                     envelope_dict["count"] = len(envelope_dict["entries"])
-                typer.echo(json.dumps(envelope_dict, indent=2, sort_keys=True, default=str))
+                typer.echo(
+                    json.dumps(envelope_dict, indent=2, sort_keys=True, default=str)
+                )
                 return
             # Default ``--json`` path: line-delimited entries (one
             # ``AuditEntry.to_dict()`` per line) so jq-style pipelines
@@ -2192,7 +2242,9 @@ def cockpit_audit_mcp_tail(
             # crashes on enum types in ``kind``.
             for entry in entries:
                 payload = entry.to_dict() if hasattr(entry, "to_dict") else entry
-                typer.echo(json.dumps(payload, indent=None, sort_keys=True, default=str))
+                typer.echo(
+                    json.dumps(payload, indent=None, sort_keys=True, default=str)
+                )
             return
 
         # Text mode: aligned columns so operators can ``less`` the output.

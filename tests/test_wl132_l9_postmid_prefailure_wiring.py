@@ -60,7 +60,9 @@ def helpers_module():
 
 
 @pytest.mark.parametrize("phase_name", list(_POST_MID_AND_PRE_FAILURE_HELPERS))
-def test_run_impl_core_delegates_to_phase_helpers(phase_name: str, run_impl_core_source: str, helpers_module) -> None:
+def test_run_impl_core_delegates_to_phase_helpers(
+    phase_name: str, run_impl_core_source: str, helpers_module
+) -> None:
     """``run_impl_core`` must call each post-mid / pre-failure helper, not inline the body.
 
     WL137 indirection: ``_phase_release_resource_leases`` is invoked from
@@ -106,7 +108,9 @@ def test_run_impl_core_has_no_inline_l3_memory_block(run_impl_core_source: str) 
         )
 
 
-def test_run_impl_core_has_no_inline_shadow_setup_block(run_impl_core_source: str) -> None:
+def test_run_impl_core_has_no_inline_shadow_setup_block(
+    run_impl_core_source: str,
+) -> None:
     """Shadow workspace inline body must be gone from the orchestrator."""
     forbidden = [
         "shadow_ws = ShadowWorkspace(original_cwd, run_meta.run_id)\n            if shadow_ws.create():\n                agent_cwd = shadow_ws.shadow_root\n                shadow_env = shadow_ws.get_env()",
@@ -118,7 +122,9 @@ def test_run_impl_core_has_no_inline_shadow_setup_block(run_impl_core_source: st
         )
 
 
-def test_run_impl_core_has_no_inline_lease_acquire_block(run_impl_core_source: str) -> None:
+def test_run_impl_core_has_no_inline_lease_acquire_block(
+    run_impl_core_source: str,
+) -> None:
     """Resource lease acquire inline body must be gone from the orchestrator."""
     forbidden = [
         'lease_registry = FileLeaseRegistry(settings.session_dir / "leases")\n        for resource in lock:\n            path = Path(resource)',
@@ -131,7 +137,9 @@ def test_run_impl_core_has_no_inline_lease_acquire_block(run_impl_core_source: s
         )
 
 
-def test_run_impl_core_has_no_inline_lease_release_block(run_impl_core_source: str) -> None:
+def test_run_impl_core_has_no_inline_lease_release_block(
+    run_impl_core_source: str,
+) -> None:
     """Resource lease release inline body must be gone from the orchestrator."""
     forbidden = [
         'lease_registry = FileLeaseRegistry(settings.session_dir / "leases")\n            for path, token in locked_tokens:\n                lease_registry.release_lease(path, run_meta.run_id, token)\n                _log.info("Released lease for %s", path)',
@@ -142,7 +150,9 @@ def test_run_impl_core_has_no_inline_lease_release_block(run_impl_core_source: s
         )
 
 
-def test_run_impl_core_has_no_inline_shadow_finalize_block(run_impl_core_source: str) -> None:
+def test_run_impl_core_has_no_inline_shadow_finalize_block(
+    run_impl_core_source: str,
+) -> None:
     """Shadow finalize inline body (auto-merge + destroy on success and failure) must be gone."""
     forbidden = [
         'if shadow_ws and bool(getattr(settings, "shadow_workspaces_auto_merge", False)):\n            if shadow_ws.merge_back():',
@@ -154,7 +164,9 @@ def test_run_impl_core_has_no_inline_shadow_finalize_block(run_impl_core_source:
         )
 
 
-def test_run_impl_core_has_no_inline_estimate_run_cost_block(run_impl_core_source: str) -> None:
+def test_run_impl_core_has_no_inline_estimate_run_cost_block(
+    run_impl_core_source: str,
+) -> None:
     """Cost estimate inline body must be gone from the orchestrator."""
     forbidden = [
         "if settings.cost_tracking or settings.cost_tracking_enabled:\n        try:\n            from thegent.cost.aggregator import CostEstimator\n\n            est = CostEstimator()",
@@ -167,7 +179,9 @@ def test_run_impl_core_has_no_inline_estimate_run_cost_block(run_impl_core_sourc
         )
 
 
-def test_run_impl_core_has_no_inline_register_run_end_block(run_impl_core_source: str) -> None:
+def test_run_impl_core_has_no_inline_register_run_end_block(
+    run_impl_core_source: str,
+) -> None:
     """Register-end inline body must be gone from the orchestrator."""
     forbidden = [
         "registry.register_end(\n        run_id=run_meta.run_id,\n        exit_code=exit_code,\n        status=status,\n        ended_at_utc=datetime.now(UTC).isoformat(),\n        duration_s=duration,\n        error_class=error_class,\n        cost_usd=cost_usd,\n    )",
@@ -178,7 +192,9 @@ def test_run_impl_core_has_no_inline_register_run_end_block(run_impl_core_source
         )
 
 
-def test_run_impl_core_has_no_inline_success_postlude_block(run_impl_core_source: str) -> None:
+def test_run_impl_core_has_no_inline_success_postlude_block(
+    run_impl_core_source: str,
+) -> None:
     """Success postlude inline body must be gone from the orchestrator.
 
     The pre-extraction body did trust_boundary.record_environment + evidence
@@ -205,7 +221,9 @@ def test_run_impl_core_line_count_drops_after_wl132_wireup() -> None:
     """
     helpers = importlib.import_module("thegent.cli.services.run_execution_core_helpers")
     src_lines = inspect.getsource(helpers.run_impl_core).splitlines()
-    assert len(src_lines) <= 670, f"run_impl_core grew to {len(src_lines)} lines; expected ≤ 670 after WL-132 wire-ups."
+    assert len(src_lines) <= 670, (
+        f"run_impl_core grew to {len(src_lines)} lines; expected ≤ 670 after WL-132 wire-ups."
+    )
 
 
 def test_post_mid_and_pre_failure_helpers_exist_with_expected_signatures() -> None:

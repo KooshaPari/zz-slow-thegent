@@ -31,7 +31,9 @@ class CostPredictor:
             "estimated_time": 1.0,
         }
 
-    def predict_cost(self, model: dict[str, Any] | str, tokens_estimate: int, action_type: str) -> float:
+    def predict_cost(
+        self, model: dict[str, Any] | str, tokens_estimate: int, action_type: str
+    ) -> float:
         """Predict cost for a specific model and token estimate.
 
         Args:

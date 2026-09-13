@@ -113,7 +113,9 @@ class _MonotonicClock:
         return now
 
 
-def _decision_to_record(notice: DecisionNotice, *, clock: Callable[[], float]) -> dict[str, object]:
+def _decision_to_record(
+    notice: DecisionNotice, *, clock: Callable[[], float]
+) -> dict[str, object]:
     """Serialize a :class:`DecisionNotice` for JSONL persistence.
 
     The shape mirrors ``PolicyDecision.to_dict()`` plus the cockpit-only
@@ -336,7 +338,9 @@ class DecisionAuditAppender:
             TypeError: ``notice`` is not a :class:`DecisionNotice`.
         """
         if not isinstance(notice, DecisionNotice):
-            raise TypeError(f"DecisionAuditAppender.record expects DecisionNotice, got {type(notice).__name__}")
+            raise TypeError(
+                f"DecisionAuditAppender.record expects DecisionNotice, got {type(notice).__name__}"
+            )
         record = _decision_to_record(notice, clock=self._clock)
         self._append(record)
 
@@ -477,7 +481,9 @@ class DecisionAuditAppender:
                 try:
                     out.append(json.loads(line))
                 except json.JSONDecodeError:
-                    _LOGGER.warning("skipping malformed decision audit line: %.80s", line)
+                    _LOGGER.warning(
+                        "skipping malformed decision audit line: %.80s", line
+                    )
         return out
 
     def flush(self) -> bool:
@@ -605,7 +611,9 @@ class DecisionAuditAppender:
         # ``_bytes_written`` counter is now only an audit-stats
         # surface, not the rotation trigger).
         size_now = self._path.stat().st_size
-        over_bytes = self._max_bytes > 0 and size_now + pre_encoded_len > self._max_bytes
+        over_bytes = (
+            self._max_bytes > 0 and size_now + pre_encoded_len > self._max_bytes
+        )
         if not (over_lines or over_bytes):
             return
         self._rotate_locked()
@@ -879,7 +887,9 @@ class DecisionAuditTailer:
             self.last_error_at = now
             self.dlq.append((now, repr_exc))
             # Exponential back-off: 1s, 2s, 4s, ... capped.
-            backoff = min(2 ** max(0, self._consecutive_failures - 1), self.max_backoff_s)
+            backoff = min(
+                2 ** max(0, self._consecutive_failures - 1), self.max_backoff_s
+            )
             self._current_backoff_s = float(backoff)
         return float(backoff)
 

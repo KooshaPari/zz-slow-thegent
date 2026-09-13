@@ -1,4 +1,3 @@
-
 import orjson as json
 import pytest
 
@@ -32,7 +31,11 @@ def test_ec001_siem_egress_mock():
     egress = SIEMEgress(endpoint_url=None)
 
     event = EgressEvent(
-        id="evt-123", severity="high", event_type="access_denied", source="test", payload={"reason": "policy_violation"}
+        id="evt-123",
+        severity="high",
+        event_type="access_denied",
+        source="test",
+        payload={"reason": "policy_violation"},
     )
 
     # Implementation returns False if no endpoint

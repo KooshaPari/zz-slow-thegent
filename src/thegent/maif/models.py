@@ -13,6 +13,7 @@ from enum import Enum
 
 class ActionType(Enum):
     """Action type enumeration."""
+
     CREATE = "create"
     UPDATE = "update"
     DELETE = "delete"
@@ -22,6 +23,7 @@ class ActionType(Enum):
 @dataclass
 class MAIFArtifact:
     """Artifact in the MAIF system."""
+
     id: str
     name: str
     artifact_type: str = "generic"

@@ -32,9 +32,13 @@ def test_policy_resolution_hierarchy(manager, tmp_path):
     (tmp_path / "org1" / "default" / "default").mkdir(parents=True)
 
     # 1. Root default
-    (tmp_path / "org1" / "default" / "default" / "p1.json").write_text('{"level": "root"}')
+    (tmp_path / "org1" / "default" / "default" / "p1.json").write_text(
+        '{"level": "root"}'
+    )
     # 2. Org project default
-    (tmp_path / "org1" / "proj1" / "default" / "p1.json").write_text('{"level": "project"}')
+    (tmp_path / "org1" / "proj1" / "default" / "p1.json").write_text(
+        '{"level": "project"}'
+    )
     # 3. Specific env
     (tmp_path / "org1" / "proj1" / "prod" / "p1.json").write_text('{"level": "env"}')
 

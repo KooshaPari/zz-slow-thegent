@@ -64,7 +64,9 @@ def test_build_observe_summary_trend_builds_summary_and_deltas() -> None:
         assert scope["payload_type"] == "observe_summary"
         return "sig-123"
 
-    def load_snapshots_fn(signature: str, key_json: str, limit: int) -> list[dict[str, Any]]:
+    def load_snapshots_fn(
+        signature: str, key_json: str, limit: int
+    ) -> list[dict[str, Any]]:
         assert signature == "sig-123"
         assert '"payload_type":"observe_summary"' in key_json
         assert limit == 2
@@ -101,7 +103,11 @@ def test_build_observe_summary_trend_builds_summary_and_deltas() -> None:
         return datetime.fromisoformat(value) if value else None
 
     def freshness_bucket_fn(
-        freshness_seconds: int | None, *, fresh_seconds: int, warm_seconds: int, stale_seconds: int
+        freshness_seconds: int | None,
+        *,
+        fresh_seconds: int,
+        warm_seconds: int,
+        stale_seconds: int,
     ) -> str:
         assert fresh_seconds == 3600
         assert warm_seconds == 21600

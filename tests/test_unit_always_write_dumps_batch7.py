@@ -8,7 +8,10 @@ from thegent.research.always_write_dumps import ConversationDumper
 
 
 def _payload_shape(payload: dict) -> dict[str, object]:
-    return {key: sorted(value.keys()) if isinstance(value, dict) else type(value) for key, value in payload.items()}
+    return {
+        key: sorted(value.keys()) if isinstance(value, dict) else type(value)
+        for key, value in payload.items()
+    }
 
 
 def test_list_dump_categories_returns_sorted_categories(tmp_path: Path) -> None:

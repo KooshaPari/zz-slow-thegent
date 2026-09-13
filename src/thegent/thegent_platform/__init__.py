@@ -13,6 +13,7 @@ from typing import Any
 
 class PlatformEnum(Enum):
     """Platform enumeration."""
+
     MACOS = "macos"
     LINUX = "linux"
     WINDOWS = "windows"

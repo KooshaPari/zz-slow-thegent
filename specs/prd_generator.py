@@ -100,9 +100,12 @@ class PRD:
 
         md += "\n## 8. Features\n\n"
         for feature in self.features:
-            priority_badge = {"critical": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}.get(
-                feature.get("priority", "medium"), "🟡"
-            )
+            priority_badge = {
+                "critical": "🔴",
+                "high": "🟠",
+                "medium": "🟡",
+                "low": "🟢",
+            }.get(feature.get("priority", "medium"), "🟡")
 
             md += f"### {priority_badge} {feature.get('title', 'Feature')}\n\n"
             md += f"{feature.get('description', '')}\n\n"
@@ -185,7 +188,11 @@ class PRD:
 class PRDGenerator:
     """Generates PRDs from project specs."""
 
-    def __init__(self, project_specs: ProjectSpecs, cross_analyzer: CrossProjectAnalyzer | None = None) -> None:
+    def __init__(
+        self,
+        project_specs: ProjectSpecs,
+        cross_analyzer: CrossProjectAnalyzer | None = None,
+    ) -> None:
         self.project_specs = project_specs
         self.cross_analyzer = cross_analyzer
 
@@ -256,7 +263,11 @@ class PRDGenerator:
             if readme_path.exists():
                 content = readme_path.read_text()
                 # Extract first paragraph or overview section
-                overview_match = re.search(r"##\s+Overview[:\-]?\s*(.+?)(?=##|$)", content, re.DOTALL | re.IGNORECASE)
+                overview_match = re.search(
+                    r"##\s+Overview[:\-]?\s*(.+?)(?=##|$)",
+                    content,
+                    re.DOTALL | re.IGNORECASE,
+                )
                 if overview_match:
                     return overview_match.group(1).strip()[:500]
                 # Or first paragraph
@@ -274,12 +285,17 @@ class PRDGenerator:
         for section in self.project_specs.prd_sections:
             if "objective" in section.title.lower():
                 # Extract list items
-                items = re.findall(r"[-*]\s*(.+?)(?=^[-*]|$)", section.content, re.MULTILINE)
+                items = re.findall(
+                    r"[-*]\s*(.+?)(?=^[-*]|$)", section.content, re.MULTILINE
+                )
                 objectives.extend(items[:10])
 
         # Look in features for goals
         for feature in self.project_specs.features.values():
-            if "goal" in feature.description.lower() or "objective" in feature.description.lower():
+            if (
+                "goal" in feature.description.lower()
+                or "objective" in feature.description.lower()
+            ):
                 objectives.append(feature.title)
 
         return objectives[:10]
@@ -290,7 +306,9 @@ class PRDGenerator:
 
         for section in self.project_specs.prd_sections:
             if "metric" in section.title.lower() or "success" in section.title.lower():
-                items = re.findall(r"[-*]\s*(.+?)(?=^[-*]|$)", section.content, re.MULTILINE)
+                items = re.findall(
+                    r"[-*]\s*(.+?)(?=^[-*]|$)", section.content, re.MULTILINE
+                )
                 metrics.extend(items[:10])
 
         return metrics[:10]
@@ -306,7 +324,9 @@ class PRDGenerator:
         for feature in self.project_specs.features.values():
             # Look for user mentions
             user_matches = re.findall(
-                r"\b(user|developer|admin|operator|end.?user)\b", feature.description, re.IGNORECASE
+                r"\b(user|developer|admin|operator|end.?user)\b",
+                feature.description,
+                re.IGNORECASE,
             )
             users.update(user_matches)
 
@@ -335,7 +355,10 @@ class PRDGenerator:
 
         # Look for NFR sections
         for section in self.project_specs.prd_sections:
-            if any(term in section.title.lower() for term in ["performance", "security", "scalability", "reliability"]):
+            if any(
+                term in section.title.lower()
+                for term in ["performance", "security", "scalability", "reliability"]
+            ):
                 nfrs.append(
                     {
                         "title": section.title,
@@ -376,7 +399,9 @@ class PRDGenerator:
         tech_reqs = []
 
         # Extract from technologies
-        tech_reqs.extend([f"Use {tech}" for tech in list(self.project_specs.technologies)[:10]])
+        tech_reqs.extend(
+            [f"Use {tech}" for tech in list(self.project_specs.technologies)[:10]]
+        )
 
         return tech_reqs
 
@@ -401,7 +426,9 @@ class PRDGenerator:
         phases = []
 
         # Get level 1 WBS elements as phases
-        level1_elements = [w for w in self.project_specs.wbs_elements.values() if w.level == 1]
+        level1_elements = [
+            w for w in self.project_specs.wbs_elements.values() if w.level == 1
+        ]
 
         for i, element in enumerate(level1_elements, 1):
             phase = {
@@ -423,7 +450,9 @@ class PRDGenerator:
         # Look for milestone patterns
         for section in self.project_specs.prd_sections:
             if "milestone" in section.title.lower():
-                items = re.findall(r"[-*]\s*(.+?)(?=^[-*]|$)", section.content, re.MULTILINE)
+                items = re.findall(
+                    r"[-*]\s*(.+?)(?=^[-*]|$)", section.content, re.MULTILINE
+                )
                 for item in items[:10]:
                     milestones.append(
                         {

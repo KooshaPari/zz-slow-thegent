@@ -240,7 +240,8 @@ class CachePreWarmer:
                 "strategies": len(self._states),
                 "warm_count": self._warm_count,
                 "last_run": self._last_run,
-                "background_running": self._bg_thread is not None and self._bg_thread.is_alive(),
+                "background_running": self._bg_thread is not None
+                and self._bg_thread.is_alive(),
                 "strategy_stats": strategy_stats,
             }
 

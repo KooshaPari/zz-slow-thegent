@@ -49,7 +49,9 @@ class TestRunCmdImpl:
     @patch("thegent.cli.console")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
     @patch("thegent.cli.resolve_agent", return_value="claude")
-    def test_model_first_with_provider(self, mock_resolve_agent, mock_settings_cls, mock_console) -> None:
+    def test_model_first_with_provider(
+        self, mock_resolve_agent, mock_settings_cls, mock_console
+    ) -> None:
         # @trace FR-CLI-200
         """Model-first with provider hint resolves agent and calls run_impl."""
         from thegent.cli import run_cmd
@@ -57,7 +59,10 @@ class TestRunCmdImpl:
         mock_route = MagicMock()
         mock_route.provider = "claude"
         with (
-            patch("thegent.cli.commands.impl.run_impl", return_value={"exit_code": 0, "stdout": "ok"}) as mock_impl,
+            patch(
+                "thegent.cli.commands.impl.run_impl",
+                return_value={"exit_code": 0, "stdout": "ok"},
+            ) as mock_impl,
             patch("thegent.models.resolve_route", return_value=mock_route),
         ):
             run_cmd(
@@ -97,7 +102,10 @@ class TestRunCmdImpl:
         mock_route = MagicMock()
         mock_route.provider = "gemini"
         with (
-            patch("thegent.cli.commands.impl.run_impl", return_value={"exit_code": 0, "stdout": "done"}) as mock_impl,
+            patch(
+                "thegent.cli.commands.impl.run_impl",
+                return_value={"exit_code": 0, "stdout": "done"},
+            ) as mock_impl,
             patch("thegent.models.ModelCatalog") as mock_catalog,
         ):
             mock_catalog.routes_for.return_value = [mock_route]
@@ -114,7 +122,10 @@ class TestRunCmdImpl:
             mock_catalog.routes_for.return_value = []
             with pytest.raises(typer.Exit):
                 run_cmd(agent=None, prompt="test", model="nonexistent-model")
-        assert any("no available providers" in str(c).lower() for c in mock_console.print.call_args_list)
+        assert any(
+            "no available providers" in str(c).lower()
+            for c in mock_console.print.call_args_list
+        )
 
     @patch("thegent.cli.console")
     def test_run_impl_error(self, mock_console) -> None:
@@ -133,7 +144,9 @@ class TestRunCmdImpl:
             with pytest.raises(typer.Exit) as exc_info:
                 run_cmd(agent="claude", prompt="hello")
             assert exc_info.value.exit_code == 2
-        assert any("Agent not found" in str(c) for c in mock_console.print.call_args_list)
+        assert any(
+            "Agent not found" in str(c) for c in mock_console.print.call_args_list
+        )
 
     @patch("thegent.cli.console")
     def test_run_full_output(self, mock_console) -> None:
@@ -517,7 +530,10 @@ class TestDataProtectionCmdImpl:
             "retention_policy_days": 30,
         }
         with (
-            patch("thegent.cli.commands.impl.get_data_protection_status_impl", return_value=status),
+            patch(
+                "thegent.cli.commands.impl.get_data_protection_status_impl",
+                return_value=status,
+            ),
             patch("thegent.cli._normalize_output_format", return_value="rich"),
         ):
             data_protection_cmd()
@@ -535,7 +551,10 @@ class TestDataProtectionCmdImpl:
             "masking_enabled": False,
             "retention_policy_days": 90,
         }
-        with patch("thegent.cli.commands.impl.get_data_protection_status_impl", return_value=status):
+        with patch(
+            "thegent.cli.commands.impl.get_data_protection_status_impl",
+            return_value=status,
+        ):
             data_protection_cmd(format="json")
         # console.print is called with orjson bytes output
         mock_console.print.assert_called_once()
@@ -543,7 +562,10 @@ class TestDataProtectionCmdImpl:
         assert "retention_policy_days" in call_args
         assert "90" in call_args
         with (
-            patch("thegent.cli.commands.impl.get_data_protection_status_impl", return_value=status),
+            patch(
+                "thegent.cli.commands.impl.get_data_protection_status_impl",
+                return_value=status,
+            ),
         ):
             # Just verify it runs without error
             data_protection_cmd(format="json")
@@ -574,7 +596,10 @@ class TestAuditVerifyCmdImpl:
             "valid_count": 10,
             "corrupt_count": 0,
         }
-        with patch("thegent.execution.RunRegistry"), patch("thegent.execution.Auditor", return_value=mock_auditor):
+        with (
+            patch("thegent.execution.RunRegistry"),
+            patch("thegent.execution.Auditor", return_value=mock_auditor),
+        ):
             audit_verify_cmd()
         printed = [str(c) for c in mock_console.print.call_args_list]
         assert any("passed" in p.lower() for p in printed)
@@ -595,7 +620,10 @@ class TestAuditVerifyCmdImpl:
             "valid_count": 0,
             "corrupt_count": 0,
         }
-        with patch("thegent.execution.RunRegistry"), patch("thegent.execution.Auditor", return_value=mock_auditor):
+        with (
+            patch("thegent.execution.RunRegistry"),
+            patch("thegent.execution.Auditor", return_value=mock_auditor),
+        ):
             audit_verify_cmd()
         printed = [str(c) for c in mock_console.print.call_args_list]
         assert any("empty" in p.lower() for p in printed)
@@ -616,7 +644,10 @@ class TestAuditVerifyCmdImpl:
             "corrupt_count": 2,
             "issues": ["corrupt record 1", "corrupt record 2"],
         }
-        with patch("thegent.execution.RunRegistry"), patch("thegent.execution.Auditor", return_value=mock_auditor):
+        with (
+            patch("thegent.execution.RunRegistry"),
+            patch("thegent.execution.Auditor", return_value=mock_auditor),
+        ):
             audit_verify_cmd()
         printed = [str(c) for c in mock_console.print.call_args_list]
         assert any("failed" in p.lower() for p in printed)
@@ -667,7 +698,9 @@ class TestEscalateCmdImpl:
         # `thegent.cli.commands.impl.escalate_add_impl` was a re-export
         # alias and is shadowed by the canonical wrapper's local binding
         # — patch the canonical source location).
-        with patch("thegent.cli.governance.governance_impl.escalate_add_impl") as mock_impl:
+        with patch(
+            "thegent.cli.governance.governance_impl.escalate_add_impl"
+        ) as mock_impl:
             escalate_add_cmd(run_id="r1", reason="blocked", sla_minutes=15)
         mock_impl.assert_called_once_with(
             run_id="r1",
@@ -812,7 +845,11 @@ class TestPurgeCmdImpl:
         """purge_cmd in dry-run mode prints would-be purge count."""
         from thegent.cli import purge_cmd
 
-        with patch("thegent.cli.commands.impl.purge_impl", return_value={"purged": 5, "kept": 10}, create=True):
+        with patch(
+            "thegent.cli.commands.impl.purge_impl",
+            return_value={"purged": 5, "kept": 10},
+            create=True,
+        ):
             purge_cmd(dry_run=True)
         printed = [str(c) for c in mock_console.print.call_args_list]
         assert any("dry-run" in p.lower() for p in printed)
@@ -824,7 +861,11 @@ class TestPurgeCmdImpl:
         """purge_cmd without dry-run purges records."""
         from thegent.cli import purge_cmd
 
-        with patch("thegent.cli.commands.impl.purge_impl", return_value={"purged": 3, "kept": 7}, create=True):
+        with patch(
+            "thegent.cli.commands.impl.purge_impl",
+            return_value={"purged": 3, "kept": 7},
+            create=True,
+        ):
             purge_cmd(dry_run=False)
         printed = [str(c) for c in mock_console.print.call_args_list]
         assert any("purged" in p.lower() for p in printed)
@@ -841,7 +882,10 @@ class TestPolicyShowCmdImpl:
     """Tests for the policy_show_cmd function body."""
 
     @patch("thegent.cli.governance.governance_policy_contracts_cmds.console")
-    @patch("thegent.cli.commands._cli_shared.ThegentSettings", return_value=_mock_settings())
+    @patch(
+        "thegent.cli.commands._cli_shared.ThegentSettings",
+        return_value=_mock_settings(),
+    )
     def test_policy_show_dev(self, mock_settings_cls, mock_console) -> None:
         # @trace FR-CLI-237
         """policy_show_cmd prints policies in dev environment."""
@@ -1015,13 +1059,22 @@ class TestPsCmdImpl:
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
     @patch("thegent.cli._default_owner_tag", return_value="user:proj")
     @patch("thegent.cli._normalize_output_format", return_value="json")
-    def test_ps_json(self, mock_fmt, mock_owner, mock_settings_cls, mock_console) -> None:
+    def test_ps_json(
+        self, mock_fmt, mock_owner, mock_settings_cls, mock_console
+    ) -> None:
         # @trace FR-CLI-245
         """ps_cmd outputs JSON."""
         from thegent.cli import ps_cmd
 
         rows = [
-            {"id": "s1", "agent": "claude", "owner": "user", "pid": 123, "status": "running", "prompt_preview": "hi"}
+            {
+                "id": "s1",
+                "agent": "claude",
+                "owner": "user",
+                "pid": 123,
+                "status": "running",
+                "prompt_preview": "hi",
+            }
         ]
         with patch("thegent.cli.commands.impl.ps_impl", return_value=rows):
             ps_cmd(format="json")
@@ -1038,7 +1091,14 @@ class TestPsCmdImpl:
         from thegent.cli import ps_cmd
 
         rows = [
-            {"id": "s1", "agent": "claude", "owner": "user", "pid": 123, "status": "running", "prompt_preview": "hi"}
+            {
+                "id": "s1",
+                "agent": "claude",
+                "owner": "user",
+                "pid": 123,
+                "status": "running",
+                "prompt_preview": "hi",
+            }
         ]
         with patch("thegent.cli.commands.impl.ps_impl", return_value=rows):
             ps_cmd(format="md")
@@ -1049,7 +1109,9 @@ class TestPsCmdImpl:
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
     @patch("thegent.cli._default_owner_tag", return_value="user:proj")
     @patch("thegent.cli._normalize_output_format", return_value="rich")
-    def test_ps_rich_table(self, mock_fmt, mock_owner, mock_settings_cls, mock_console) -> None:
+    def test_ps_rich_table(
+        self, mock_fmt, mock_owner, mock_settings_cls, mock_console
+    ) -> None:
         # @trace FR-CLI-247
         """ps_cmd renders rich table."""
         from thegent.cli import ps_cmd
@@ -1073,7 +1135,9 @@ class TestPsCmdImpl:
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
     @patch("thegent.cli._default_owner_tag", return_value="user:proj")
     @patch("thegent.cli._normalize_output_format", return_value="rich")
-    def test_ps_with_contract(self, mock_fmt, mock_owner, mock_settings_cls, mock_console) -> None:
+    def test_ps_with_contract(
+        self, mock_fmt, mock_owner, mock_settings_cls, mock_console
+    ) -> None:
         # @trace FR-CLI-248
         """ps_cmd with include_contract adds contract columns."""
         from thegent.cli import ps_cmd
@@ -1112,7 +1176,9 @@ class TestSessionContractsCmdImpl:
     @patch("thegent.cli.console")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
     @patch("thegent.cli._default_owner_tag", return_value="user:proj")
-    def test_session_contracts_empty(self, mock_owner, mock_settings_cls, mock_console) -> None:
+    def test_session_contracts_empty(
+        self, mock_owner, mock_settings_cls, mock_console
+    ) -> None:
         # @trace FR-CLI-249
         """session_contracts_cmd prints dim message when no rows."""
         from thegent.cli import session_contracts_cmd
@@ -1132,14 +1198,22 @@ class TestSessionContractsCmdImpl:
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
     @patch("thegent.cli._default_owner_tag", return_value="user:proj")
     @patch("thegent.cli._normalize_output_format", return_value="json")
-    def test_session_contracts_json(self, mock_fmt, mock_owner, mock_settings_cls, mock_console) -> None:
+    def test_session_contracts_json(
+        self, mock_fmt, mock_owner, mock_settings_cls, mock_console
+    ) -> None:
         # @trace FR-CLI-250
         """session_contracts_cmd outputs JSON."""
         from thegent.cli import session_contracts_cmd
 
         audit = {
             "rows": [
-                {"session_id": "s1", "agent": "claude", "owner": "u", "status": "ok", "contract_state": "complete"}
+                {
+                    "session_id": "s1",
+                    "agent": "claude",
+                    "owner": "u",
+                    "status": "ok",
+                    "contract_state": "complete",
+                }
             ],
             "summary": {
                 "complete": 1,
@@ -1152,7 +1226,9 @@ class TestSessionContractsCmdImpl:
                 "strict_checks_enabled": False,
             },
         }
-        with patch("thegent.cli.commands.impl.session_contract_audit_impl", return_value=audit):
+        with patch(
+            "thegent.cli.commands.impl.session_contract_audit_impl", return_value=audit
+        ):
             session_contracts_cmd(format="json")
         # Source returns without printing for JSON format
         mock_console.print.assert_not_called()
@@ -1161,14 +1237,22 @@ class TestSessionContractsCmdImpl:
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
     @patch("thegent.cli._default_owner_tag", return_value="user:proj")
     @patch("thegent.cli._normalize_output_format", return_value="rich")
-    def test_session_contracts_rich_summary_only(self, mock_fmt, mock_owner, mock_settings_cls, mock_console) -> None:
+    def test_session_contracts_rich_summary_only(
+        self, mock_fmt, mock_owner, mock_settings_cls, mock_console
+    ) -> None:
         # @trace FR-CLI-251
         """session_contracts_cmd summary_only renders summary line."""
         from thegent.cli import session_contracts_cmd
 
         audit = {
             "rows": [
-                {"session_id": "s1", "agent": "claude", "owner": "u", "status": "ok", "contract_state": "complete"}
+                {
+                    "session_id": "s1",
+                    "agent": "claude",
+                    "owner": "u",
+                    "status": "ok",
+                    "contract_state": "complete",
+                }
             ],
             "summary": {
                 "complete": 1,
@@ -1181,7 +1265,9 @@ class TestSessionContractsCmdImpl:
                 "strict_checks_enabled": False,
             },
         }
-        with patch("thegent.cli.commands.impl.session_contract_audit_impl", return_value=audit):
+        with patch(
+            "thegent.cli.commands.impl.session_contract_audit_impl", return_value=audit
+        ):
             session_contracts_cmd(summary_only=True)
         printed = [str(c) for c in mock_console.print.call_args_list]
         assert any("summary" in p.lower() for p in printed)
@@ -1221,7 +1307,10 @@ class TestStatusCmdImpl:
         buf = io.StringIO()
         with (
             patch("thegent.cli._find_session_meta", return_value=mock_meta_path),
-            patch("thegent.cli._session_paths", return_value={"rc": MagicMock(exists=lambda: False)}),
+            patch(
+                "thegent.cli._session_paths",
+                return_value={"rc": MagicMock(exists=lambda: False)},
+            ),
             patch("thegent.cli._read_session_meta", return_value=meta),
             patch("thegent.cli._is_pid_running", return_value=True),
             patch("thegent.cli._resolve_session_status", return_value="running"),
@@ -1257,7 +1346,10 @@ class TestStatusCmdImpl:
         mock_meta_path.parent = Path("/tmp/sessions/s2")
         with (
             patch("thegent.cli._find_session_meta", return_value=mock_meta_path),
-            patch("thegent.cli._session_paths", return_value={"rc": MagicMock(exists=lambda: False)}),
+            patch(
+                "thegent.cli._session_paths",
+                return_value={"rc": MagicMock(exists=lambda: False)},
+            ),
             patch("thegent.cli._read_session_meta", return_value=meta),
             patch("thegent.cli._is_pid_running", return_value=False),
             patch("thegent.cli._resolve_session_status", return_value="exited:0"),
@@ -1296,7 +1388,10 @@ class TestStatusCmdImpl:
         buf = io.StringIO()
         with (
             patch("thegent.cli._find_session_meta", return_value=mock_meta_path),
-            patch("thegent.cli._session_paths", return_value={"rc": MagicMock(exists=lambda: False)}),
+            patch(
+                "thegent.cli._session_paths",
+                return_value={"rc": MagicMock(exists=lambda: False)},
+            ),
             patch("thegent.cli._read_session_meta", return_value=meta),
             patch("thegent.cli._is_pid_running", return_value=True),
             patch("thegent.cli._resolve_session_status", return_value="running"),
@@ -1344,8 +1439,13 @@ class TestInspectCmdImpl:
         from thegent.cli import inspect_cmd
 
         with (
-            patch("thegent.cli.commands.impl.status_impl", return_value={"status": "running"}) as mock_st,
-            patch("thegent.cli.commands.impl.logs_impl", return_value="log line 1") as mock_lg,
+            patch(
+                "thegent.cli.commands.impl.status_impl",
+                return_value={"status": "running"},
+            ) as mock_st,
+            patch(
+                "thegent.cli.commands.impl.logs_impl", return_value="log line 1"
+            ) as mock_lg,
             patch("thegent.cli._normalize_output_format", return_value="json"),
             patch("builtins.print"),
         ):
@@ -1360,7 +1460,9 @@ class TestInspectCmdImpl:
         from thegent.cli import inspect_cmd
 
         with (
-            patch("thegent.cli.commands.impl.status_impl", side_effect=RuntimeError("bad")),
+            patch(
+                "thegent.cli.commands.impl.status_impl", side_effect=RuntimeError("bad")
+            ),
             patch("thegent.cli._normalize_output_format", return_value="json"),
         ):
             inspect_cmd(session_ids=["s1"])
@@ -1473,7 +1575,9 @@ class TestWaitCmdImpl:
 
     @patch("thegent.cli.console")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_wait_immediate_exit(self, mock_settings_cls, mock_console, tmp_path) -> None:
+    def test_wait_immediate_exit(
+        self, mock_settings_cls, mock_console, tmp_path
+    ) -> None:
         # @trace FR-CLI-262
         """wait_cmd exits immediately when process is not running."""
         from thegent.cli import wait_cmd
@@ -1527,7 +1631,10 @@ class TestWaitCmdImpl:
         mock_meta_path.parent = Path("/tmp")
         with (
             patch("thegent.cli._find_session_meta", return_value=mock_meta_path),
-            patch("thegent.cli._session_paths", return_value={"rc": MagicMock(exists=lambda: False)}),
+            patch(
+                "thegent.cli._session_paths",
+                return_value={"rc": MagicMock(exists=lambda: False)},
+            ),
             patch("thegent.cli._read_session_meta", return_value={"pid": "1234"}),
             patch("thegent.cli._is_pid_running", return_value=True),
             patch("thegent.cli.get_exit_message", return_value=None),
@@ -1604,7 +1711,9 @@ class TestStopCmdImpl:
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
     @patch("thegent.cli.os.killpg")
     @patch("thegent.cli.time")
-    def test_stop_wind_down_completes(self, mock_time, mock_killpg, mock_settings_cls, mock_console) -> None:
+    def test_stop_wind_down_completes(
+        self, mock_time, mock_killpg, mock_settings_cls, mock_console
+    ) -> None:
         # @trace FR-CLI-268
         """stop_cmd wind-down waits and reports stopped."""
         from thegent.cli import stop_cmd
@@ -1630,7 +1739,9 @@ class TestStopCmdImpl:
 
     @patch("thegent.cli.console")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_stop_wind_down_negative_grace(self, mock_settings_cls, mock_console) -> None:
+    def test_stop_wind_down_negative_grace(
+        self, mock_settings_cls, mock_console
+    ) -> None:
         # @trace FR-CLI-269
         """stop_cmd wind-down with negative grace raises BadParameter."""
         from thegent.cli import stop_cmd
@@ -1669,7 +1780,9 @@ class TestPauseResumeCmdImpl:
             patch("thegent.cli.RunRegistry", return_value=mock_registry),
         ):
             pause_cmd(session_id="s1")
-        mock_registry.register_pause.assert_called_once_with("run-abc", reason="Manual pause")
+        mock_registry.register_pause.assert_called_once_with(
+            "run-abc", reason="Manual pause"
+        )
 
     @patch("thegent.cli.console")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
@@ -1690,7 +1803,9 @@ class TestPauseResumeCmdImpl:
             patch("thegent.cli.RunRegistry", return_value=mock_registry),
         ):
             pause_cmd(session_id="s1")
-        mock_registry.register_pause.assert_called_once_with("run-xyz", reason="Manual pause")
+        mock_registry.register_pause.assert_called_once_with(
+            "run-xyz", reason="Manual pause"
+        )
 
     @patch("thegent.cli.console")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
@@ -1759,7 +1874,10 @@ class TestListAgentsCmdImpl:
 
     @patch("thegent.cli.console")
     @patch("thegent.cli.list_agent_names", return_value=["claude", "gemini", "codex"])
-    @patch("thegent.cli.AGENT_LABELS", {"claude": "Claude", "gemini": "Gemini", "codex": "Codex"})
+    @patch(
+        "thegent.cli.AGENT_LABELS",
+        {"claude": "Claude", "gemini": "Gemini", "codex": "Codex"},
+    )
     def test_list_agents(self, mock_list, mock_console) -> None:
         # @trace FR-CLI-275
         """list_agents_cmd renders table of agents."""
@@ -1811,7 +1929,9 @@ class TestListDroidsCmdImpl:
 
     @patch("thegent.cli.console")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_list_droids_resolves_cwd_for_precedence(self, mock_settings_cls, mock_console) -> None:
+    def test_list_droids_resolves_cwd_for_precedence(
+        self, mock_settings_cls, mock_console
+    ) -> None:
         # @trace FR-CLI-281
         """list_droids_cmd resolves cwd before resolving the droid directory."""
         from thegent.cli import list_droids_cmd
@@ -1819,24 +1939,32 @@ class TestListDroidsCmdImpl:
         with (
             patch("thegent.cli._resolve_cwd", return_value=Path("/tmp/project")),
             patch(
-                "thegent.cli._resolve_droids_dir", return_value=Path("/tmp/project/.factory/droids")
+                "thegent.cli._resolve_droids_dir",
+                return_value=Path("/tmp/project/.factory/droids"),
             ) as mock_droids_dir,
             patch("thegent.cli.list_droid_names", return_value=["alpha"]),
         ):
             list_droids_cmd(cd=None)
 
-        mock_droids_dir.assert_called_once_with(Path("/tmp/project"), mock_settings_cls.return_value)
+        mock_droids_dir.assert_called_once_with(
+            Path("/tmp/project"), mock_settings_cls.return_value
+        )
 
     @patch("thegent.cli.console")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_list_droids_none_cwd_falls_back_to_settings(self, mock_settings_cls, mock_console) -> None:
+    def test_list_droids_none_cwd_falls_back_to_settings(
+        self, mock_settings_cls, mock_console
+    ) -> None:
         # @trace FR-CLI-282
         """list_droids_cmd passes None cwd through when unresolved and uses config path."""
         from thegent.cli import list_droids_cmd
 
         with (
             patch("thegent.cli._resolve_cwd", return_value=None),
-            patch("thegent.cli._resolve_droids_dir", return_value=Path("/tmp/fallback/droids")) as mock_droids_dir,
+            patch(
+                "thegent.cli._resolve_droids_dir",
+                return_value=Path("/tmp/fallback/droids"),
+            ) as mock_droids_dir,
             patch("thegent.cli.list_droid_names", return_value=[]),
         ):
             list_droids_cmd(cd=None)
@@ -1890,7 +2018,9 @@ class TestHelperFunctions:
         """_compose_owner_tag includes scope when provided."""
         from thegent.cli import _compose_owner_tag
 
-        result = _compose_owner_tag("alice", Path("/home/alice/myproject"), scope="custom")
+        result = _compose_owner_tag(
+            "alice", Path("/home/alice/myproject"), scope="custom"
+        )
         assert result == "alice:myproject:custom"
 
 
@@ -2098,7 +2228,9 @@ class TestWriteExportHelpers:
             "blocked_ratio": 0.0,
             "top_blocked_count": 0,
             "blocked_sessions_cap": 25,
-            "summary": {"health": {"healthy": 0, "warning": 0, "error": 0, "missing": 0}},
+            "summary": {
+                "health": {"healthy": 0, "warning": 0, "error": 0, "missing": 0}
+            },
             "strict_checks_enabled": False,
             "generated_at_utc": "2025-01-01",
             "generated_query": {},
@@ -2131,7 +2263,10 @@ class TestListModelsCmdImpl:
         """list_models_cmd with include_contract calls ModelCatalog.to_contract_view."""
         from thegent.cli import list_models_cmd
 
-        with patch("thegent.models.ModelCatalog") as mock_catalog, patch("thegent.models.scrapers.get_scraped_catalog"):
+        with (
+            patch("thegent.models.ModelCatalog") as mock_catalog,
+            patch("thegent.models.scrapers.get_scraped_catalog"),
+        ):
             mock_catalog.to_contract_view.return_value = {"routes": []}
             list_models_cmd(include_contract=True)
         mock_console.print_json.assert_called_once()
@@ -2144,7 +2279,10 @@ class TestListModelsCmdImpl:
 
         mock_view = MagicMock()
         mock_view.by_model = {"gpt-4": ["openai"], "claude-3": ["claude"]}
-        with patch("thegent.models.ModelCatalog") as mock_catalog, patch("thegent.models.scrapers.get_scraped_catalog"):
+        with (
+            patch("thegent.models.ModelCatalog") as mock_catalog,
+            patch("thegent.models.scrapers.get_scraped_catalog"),
+        ):
             mock_catalog.to_catalog_view.return_value = mock_view
             list_models_cmd(by_model=True)
         printed = [str(c) for c in mock_console.print.call_args_list]

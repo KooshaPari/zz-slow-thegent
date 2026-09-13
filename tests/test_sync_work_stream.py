@@ -182,7 +182,9 @@ class TestSyncResearch:
         ws = _make_work_stream(tmp_path)
         original = ws.read_text(encoding="utf-8")
         cmd = _make_cmd(tmp_path, work_stream_path=ws)
-        with patch.dict(sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}):
+        with patch.dict(
+            sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}
+        ):
             op = cmd.sync_research(dry_run=True)
         assert op.status == SyncOperationStatus.DRY_RUN
         assert ws.read_text(encoding="utf-8") == original
@@ -193,7 +195,9 @@ class TestSyncResearch:
         _make_research_dir(tmp_path, ["- [ ] new research item"])
         ws = _make_work_stream(tmp_path)
         cmd = _make_cmd(tmp_path, work_stream_path=ws)
-        with patch.dict(sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}):
+        with patch.dict(
+            sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}
+        ):
             op = cmd.sync_research()
         assert op.ok
         content = ws.read_text(encoding="utf-8")
@@ -205,7 +209,9 @@ class TestSyncResearch:
         _make_research_dir(tmp_path, ["- [ ] existing item"])
         ws = _make_work_stream(tmp_path, "# WS\n- [ ] existing item\n")
         cmd = _make_cmd(tmp_path, work_stream_path=ws)
-        with patch.dict(sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}):
+        with patch.dict(
+            sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}
+        ):
             op = cmd.sync_research()
         assert op.ok
         assert op.details.get("research_incorporated", 0) == 0
@@ -216,7 +222,9 @@ class TestSyncResearch:
         _make_research_dir(tmp_path, ["- [ ] WL-159 follow-up from research"])
         ws = _make_work_stream(tmp_path, "# WS\n- [ ] WL-159 existing backlog entry\n")
         cmd = _make_cmd(tmp_path, work_stream_path=ws)
-        with patch.dict(sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}):
+        with patch.dict(
+            sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}
+        ):
             op = cmd.sync_research()
         assert op.ok
         assert op.details.get("research_incorporated", 0) == 0
@@ -228,7 +236,9 @@ class TestSyncResearch:
         _make_plans_dir(tmp_path, ["- [ ] from-plans"])
         ws = _make_work_stream(tmp_path)
         cmd = _make_cmd(tmp_path, work_stream_path=ws)
-        with patch.dict(sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}):
+        with patch.dict(
+            sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}
+        ):
             op = cmd.sync_research()
         assert op.ok
         content = ws.read_text(encoding="utf-8")
@@ -241,7 +251,9 @@ class TestSyncResearch:
         _make_research_dir(tmp_path, ["- [ ] item A", "- [ ] item B"])
         ws = _make_work_stream(tmp_path)
         cmd = _make_cmd(tmp_path, work_stream_path=ws)
-        with patch.dict(sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=2)}):
+        with patch.dict(
+            sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=2)}
+        ):
             op = cmd.sync_research()
         assert op.ok
         total = op.details.get("total_incorporated", 0)
@@ -251,8 +263,12 @@ class TestSyncResearch:
         """sync_research wraps unexpected errors into FAILED OperationResult."""
         # @trace WL-037
         cmd = _make_cmd(tmp_path)
-        with patch.dict(sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}):
-            with patch.object(cmd, "_discover_research_fragments", side_effect=OSError("disk full")):
+        with patch.dict(
+            sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}
+        ):
+            with patch.object(
+                cmd, "_discover_research_fragments", side_effect=OSError("disk full")
+            ):
                 op = cmd.sync_research()
         assert op.status == SyncOperationStatus.FAILED
         assert "disk full" in op.errors[0]
@@ -262,12 +278,16 @@ class TestSyncResearch:
         # @trace WL-037
         ws = _make_work_stream(tmp_path)
         cmd = _make_cmd(tmp_path, work_stream_path=ws)
-        with patch.dict(sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}):
+        with patch.dict(
+            sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}
+        ):
             op = cmd.sync_research()
         assert op.ok
         assert op.details.get("research_fragments_found", 0) == 0
 
-    def test_incorporate_into_work_stream_returns_zero_when_contended(self, tmp_path: Path) -> None:
+    def test_incorporate_into_work_stream_returns_zero_when_contended(
+        self, tmp_path: Path
+    ) -> None:
         """Concurrent lock contention skips sync writes and leaves source unchanged."""
         # @trace WL-037
         _make_research_dir(tmp_path, ["- [ ] item A"])
@@ -276,9 +296,12 @@ class TestSyncResearch:
         cmd = _make_cmd(tmp_path, work_stream_path=ws)
 
         with patch(
-            "thegent.commands.sync._locked_file_access", side_effect=BlockingIOError(11, "resource unavailable")
+            "thegent.commands.sync._locked_file_access",
+            side_effect=BlockingIOError(11, "resource unavailable"),
         ):
-            with patch.dict(sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}):
+            with patch.dict(
+                sys.modules, {"thegent.cli.commands.impl": _stub_impl(merged=0)}
+            ):
                 op = cmd.sync_research()
 
         assert op.ok
@@ -324,7 +347,9 @@ class TestDiscoverResearchFragments:
         # @trace WL-037
         d = tmp_path / "docs" / "research"
         d.mkdir(parents=True, exist_ok=True)
-        (d / "r.md").write_text("# Header\nsome prose\n- [ ] a task\n", encoding="utf-8")
+        (d / "r.md").write_text(
+            "# Header\nsome prose\n- [ ] a task\n", encoding="utf-8"
+        )
         cmd = _make_cmd(tmp_path)
         frags = cmd._discover_research_fragments()
         assert "- [ ] a task" in frags
@@ -336,7 +361,9 @@ class TestDiscoverResearchFragments:
         # @trace WL-037
         d = tmp_path / "docs" / "research"
         d.mkdir(parents=True, exist_ok=True)
-        (d / "table.md").write_text("| WL-099 | Some task | docs/ | P1 | - |\n", encoding="utf-8")
+        (d / "table.md").write_text(
+            "| WL-099 | Some task | docs/ | P1 | - |\n", encoding="utf-8"
+        )
         cmd = _make_cmd(tmp_path)
         frags = cmd._discover_research_fragments()
         assert any("WL-099" in f for f in frags)
@@ -371,4 +398,9 @@ class TestSyncAllWithNewOps:
         result = cmd.sync_all()
         assert isinstance(result, SyncResult)
         assert len(result.operations) == 4
-        assert set(ops_called) == {"sync_work_stream", "sync_config", "sync_agents", "sync_hooks"}
+        assert set(ops_called) == {
+            "sync_work_stream",
+            "sync_config",
+            "sync_agents",
+            "sync_hooks",
+        }

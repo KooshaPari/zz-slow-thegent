@@ -128,7 +128,9 @@ def init_callback(  # noqa: PLR0913 — Typer parses ~7 options; each one is a s
 # ---------------------------------------------------------------------------
 
 
-@init_app.command("check", help="Dry-run: preflight + probe + contract only; never writes.")
+@init_app.command(
+    "check", help="Dry-run: preflight + probe + contract only; never writes."
+)
 def init_check(
     target: Path | None = typer.Option(
         None,
@@ -142,7 +144,9 @@ def init_check(
         "-p",
         help="Init profile: minimal | dev | ci.",
     ),
-    json_output: bool = typer.Option(False, "--json", help="Emit a single JSON payload."),
+    json_output: bool = typer.Option(
+        False, "--json", help="Emit a single JSON payload."
+    ),
 ) -> None:
     """Run the wizard in dry-run mode."""
     payload = init_impl(
@@ -160,7 +164,9 @@ def init_check(
 # ---------------------------------------------------------------------------
 
 
-@init_app.command("verify", help="Verify a workspace is still thegent-shaped (no writes).")
+@init_app.command(
+    "verify", help="Verify a workspace is still thegent-shaped (no writes)."
+)
 def init_verify(
     target: Path | None = typer.Option(
         None,
@@ -168,7 +174,9 @@ def init_verify(
         "-t",
         help="Target workspace (defaults to current working directory).",
     ),
-    json_output: bool = typer.Option(False, "--json", help="Emit a single JSON payload."),
+    json_output: bool = typer.Option(
+        False, "--json", help="Emit a single JSON payload."
+    ),
 ) -> None:
     """Re-run the wizard in check mode and report the diff vs the live workspace."""
     payload = init_impl(

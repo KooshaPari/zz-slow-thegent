@@ -78,8 +78,12 @@ class TestSpawnWithEagainRetry:
 
     def test_succeeds_on_first_attempt(self) -> None:
         mock_proc = MagicMock(spec=subprocess.Popen)
-        with patch("thegent.cli.commands.impl.subprocess.Popen", return_value=mock_proc) as mock_popen:
-            result = _spawn_with_eagain_retry(["echo", "hello"], **self._make_popen_args())
+        with patch(
+            "thegent.cli.commands.impl.subprocess.Popen", return_value=mock_proc
+        ) as mock_popen:
+            result = _spawn_with_eagain_retry(
+                ["echo", "hello"], **self._make_popen_args()
+            )
 
         assert result is mock_proc
         assert mock_popen.call_count == 1
@@ -98,7 +102,9 @@ class TestSpawnWithEagainRetry:
                 raise eagain_exc
             return mock_proc
 
-        with patch("thegent.cli.commands.impl.subprocess.Popen", side_effect=side_effect):
+        with patch(
+            "thegent.cli.commands.impl.subprocess.Popen", side_effect=side_effect
+        ):
             result = _spawn_with_eagain_retry(["echo"], **self._make_popen_args())
 
         assert result is mock_proc
@@ -108,7 +114,9 @@ class TestSpawnWithEagainRetry:
         """After 5 EAGAIN failures tenacity should re-raise the OSError."""
         eagain_exc = OSError(errno.EAGAIN, "always busy")
 
-        with patch("thegent.cli.commands.impl.subprocess.Popen", side_effect=eagain_exc):
+        with patch(
+            "thegent.cli.commands.impl.subprocess.Popen", side_effect=eagain_exc
+        ):
             with pytest.raises(OSError) as exc_info:
                 _spawn_with_eagain_retry(["echo"], **self._make_popen_args())
 
@@ -118,7 +126,9 @@ class TestSpawnWithEagainRetry:
         """Non-EAGAIN OSError must propagate immediately (no retry)."""
         enoent_exc = OSError(errno.ENOENT, "no such file")
 
-        with patch("thegent.cli.commands.impl.subprocess.Popen", side_effect=enoent_exc) as mock_popen:
+        with patch(
+            "thegent.cli.commands.impl.subprocess.Popen", side_effect=enoent_exc
+        ) as mock_popen:
             with pytest.raises(OSError) as exc_info:
                 _spawn_with_eagain_retry(["bad-cmd"], **self._make_popen_args())
 
@@ -128,7 +138,10 @@ class TestSpawnWithEagainRetry:
 
     def test_does_not_retry_on_value_error(self) -> None:
         """Non-OSError exceptions must propagate immediately."""
-        with patch("thegent.cli.commands.impl.subprocess.Popen", side_effect=ValueError("bad args")) as mock_popen:
+        with patch(
+            "thegent.cli.commands.impl.subprocess.Popen",
+            side_effect=ValueError("bad args"),
+        ) as mock_popen:
             with pytest.raises(ValueError):
                 _spawn_with_eagain_retry(["echo"], **self._make_popen_args())
 
@@ -137,7 +150,9 @@ class TestSpawnWithEagainRetry:
     def test_call_uses_start_new_session(self) -> None:
         """Verify start_new_session=True is always passed to Popen."""
         mock_proc = MagicMock(spec=subprocess.Popen)
-        with patch("thegent.cli.commands.impl.subprocess.Popen", return_value=mock_proc) as mock_popen:
+        with patch(
+            "thegent.cli.commands.impl.subprocess.Popen", return_value=mock_proc
+        ) as mock_popen:
             _spawn_with_eagain_retry(["echo"], **self._make_popen_args())
 
         _, kwargs = mock_popen.call_args

@@ -26,7 +26,10 @@ def test_disabled_fails():
 
 def test_health_check_failure():
     """Test health check failure handling."""
-    with patch.dict(os.environ, {"THEGENT_POCKETBASE_ENABLED": "1", "POCKETBASE_HTTP_ADDR": "127.0.0.1:8090"}):
+    with patch.dict(
+        os.environ,
+        {"THEGENT_POCKETBASE_ENABLED": "1", "POCKETBASE_HTTP_ADDR": "127.0.0.1:8090"},
+    ):
         with patch("urllib.request.urlopen") as mock_urlopen:
             mock_response = MagicMock()
             mock_response.getcode.return_value = 500
@@ -40,7 +43,10 @@ def test_health_check_failure():
 
 def test_health_check_success():
     """Test successful health check."""
-    with patch.dict(os.environ, {"THEGENT_POCKETBASE_ENABLED": "1", "POCKETBASE_HTTP_ADDR": "127.0.0.1:8090"}):
+    with patch.dict(
+        os.environ,
+        {"THEGENT_POCKETBASE_ENABLED": "1", "POCKETBASE_HTTP_ADDR": "127.0.0.1:8090"},
+    ):
         with patch("urllib.request.urlopen") as mock_urlopen:
             mock_response = MagicMock()
             mock_response.getcode.return_value = 200

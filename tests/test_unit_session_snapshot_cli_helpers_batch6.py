@@ -66,7 +66,11 @@ def test_daily_index_payload_contains_days_sorted_desc(tmp_path: Path) -> None:
 
     payload = helpers.snapshot_daily_index_payload(scraper, limit=1000)
 
-    assert [item["day"] for item in payload["days"]] == ["2026-02-22", "2026-02-21", "2026-02-20"]
+    assert [item["day"] for item in payload["days"]] == [
+        "2026-02-22",
+        "2026-02-21",
+        "2026-02-20",
+    ]
 
 
 def test_daily_export_payload_returns_json_and_markdown_paths(tmp_path: Path) -> None:
@@ -82,7 +86,9 @@ def test_daily_export_payload_returns_json_and_markdown_paths(tmp_path: Path) ->
     out_dir = tmp_path / "daily-exports"
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    payload = helpers.snapshot_daily_export_payload(scraper, out_path=str(out_dir), limit=1000)
+    payload = helpers.snapshot_daily_export_payload(
+        scraper, out_path=str(out_dir), limit=1000
+    )
 
     assert payload["source_json"]
     assert payload["source_md"]
@@ -109,7 +115,9 @@ def test_list_payload_since_integration_with_real_snapshots(tmp_path: Path) -> N
         captured_at="2026-02-22T01:00:00+00:00",
     )
 
-    payload = helpers.snapshot_list_payload(scraper, since="2026-02-22T00:30:00Z", limit=50)
+    payload = helpers.snapshot_list_payload(
+        scraper, since="2026-02-22T00:30:00Z", limit=50
+    )
 
     assert payload["count"] == 1
     assert payload["items"][0]["path"] == str(newer)
@@ -126,7 +134,9 @@ def test_prune_payload_delegates_to_scraper_prune_snapshots() -> None:
             return 7
 
         def list_snapshots(self, limit: int = 50) -> list[Path]:
-            raise AssertionError("snapshot_prune_payload should delegate to prune_snapshots")
+            raise AssertionError(
+                "snapshot_prune_payload should delegate to prune_snapshots"
+            )
 
     scraper = _DelegatingScraper()
     payload = helpers.snapshot_prune_payload(scraper, max_keep=3)
@@ -143,24 +153,32 @@ def test_helpers_handle_missing_optional_methods_gracefully(tmp_path: Path) -> N
         def summarize_snapshots(self, limit: int = 200) -> dict[str, object]:
             return {"tag_counts": {}}
 
-        def list_snapshots(self, limit: int = 50, trigger: str | None = None, tag: str | None = None) -> list[Path]:
+        def list_snapshots(
+            self, limit: int = 50, trigger: str | None = None, tag: str | None = None
+        ) -> list[Path]:
             return []
 
         def load_snapshot(self, path: Path) -> None:
             return None
 
-        def export_snapshot_markdown(self, snapshot_path: Path, out_path: Path | None = None) -> Path:
+        def export_snapshot_markdown(
+            self, snapshot_path: Path, out_path: Path | None = None
+        ) -> Path:
             raise FileNotFoundError(str(snapshot_path))
 
     scraper = _MinimalScraper(default_snapshot_dir=tmp_path)
 
     list_payload = helpers.snapshot_list_payload(scraper, limit=5)
     index_payload = helpers.snapshot_index_payload(scraper, limit=5)
-    export_payload = helpers.snapshot_export_payload(scraper, snapshot_path="missing.json")
+    export_payload = helpers.snapshot_export_payload(
+        scraper, snapshot_path="missing.json"
+    )
     prune_payload = helpers.snapshot_prune_payload(scraper, max_keep=5)
     tags_payload = helpers.snapshot_triggers_tags_payload(scraper, limit=5)
     daily_index_payload = helpers.snapshot_daily_index_payload(scraper, limit=5)
-    daily_export_payload = helpers.snapshot_daily_export_payload(scraper, out_path=None, limit=5)
+    daily_export_payload = helpers.snapshot_daily_export_payload(
+        scraper, out_path=None, limit=5
+    )
 
     assert list_payload == {"count": 0, "items": []}
     assert index_payload.get("top_tags") == []

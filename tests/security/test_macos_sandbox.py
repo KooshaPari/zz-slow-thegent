@@ -32,7 +32,11 @@ def sandbox() -> MacOSSandbox:
 @pytest.fixture
 def sandbox_with_custom_profiles(tmp_path: Path) -> MacOSSandbox:
     """Return a MacOSSandbox backed by minimal stub profiles in tmp_path."""
-    for level in (SandboxLevel.READONLY, SandboxLevel.RESTRICTED, SandboxLevel.NETWORKED):
+    for level in (
+        SandboxLevel.READONLY,
+        SandboxLevel.RESTRICTED,
+        SandboxLevel.NETWORKED,
+    ):
         stub = tmp_path / f"{level.value}.sb"
         stub.write_text(
             f"(version 1)\n(deny default)\n; {level.value} stub\n"
@@ -86,7 +90,9 @@ def test_is_sandbox_available_false_on_linux(sandbox: MacOSSandbox) -> None:
 
 def test_is_sandbox_available_false_on_windows(sandbox: MacOSSandbox) -> None:
     """@trace FR-SEC-001  is_sandbox_available returns False on Windows."""
-    with patch("thegent.security.macos_sandbox.platform.system", return_value="Windows"):
+    with patch(
+        "thegent.security.macos_sandbox.platform.system", return_value="Windows"
+    ):
         assert sandbox.is_sandbox_available() is False
 
 
@@ -95,7 +101,10 @@ def test_is_sandbox_available_true_when_exec_present(sandbox: MacOSSandbox) -> N
     sandbox._sandbox_exec = None
     with (
         patch("thegent.security.macos_sandbox.platform.system", return_value="Darwin"),
-        patch("thegent.security.macos_sandbox.shutil.which", return_value="/usr/bin/sandbox-exec"),
+        patch(
+            "thegent.security.macos_sandbox.shutil.which",
+            return_value="/usr/bin/sandbox-exec",
+        ),
     ):
         assert sandbox.is_sandbox_available() is True
 
@@ -171,31 +180,41 @@ def test_get_profile_path_returns_none_for_missing_file(tmp_path: Path) -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_generate_profile_raises_for_none(sandbox: MacOSSandbox, project_root: Path) -> None:
+def test_generate_profile_raises_for_none(
+    sandbox: MacOSSandbox, project_root: Path
+) -> None:
     """@trace FR-SEC-001  generate_profile raises ValueError for NONE."""
     with pytest.raises(ValueError, match="none"):
         sandbox.generate_profile(SandboxLevel.NONE, project_root)
 
 
-def test_generate_profile_raises_for_full(sandbox: MacOSSandbox, project_root: Path) -> None:
+def test_generate_profile_raises_for_full(
+    sandbox: MacOSSandbox, project_root: Path
+) -> None:
     """@trace FR-SEC-001  generate_profile raises ValueError for FULL."""
     with pytest.raises(ValueError, match="full"):
         sandbox.generate_profile(SandboxLevel.FULL, project_root)
 
 
-def test_generate_profile_readonly_contains_deny_default(sandbox: MacOSSandbox, project_root: Path) -> None:
+def test_generate_profile_readonly_contains_deny_default(
+    sandbox: MacOSSandbox, project_root: Path
+) -> None:
     """@trace FR-SEC-001  READONLY profile contains (deny default)."""
     profile = sandbox.generate_profile(SandboxLevel.READONLY, project_root)
     assert "(deny default)" in profile
 
 
-def test_generate_profile_readonly_contains_file_read_allow(sandbox: MacOSSandbox, project_root: Path) -> None:
+def test_generate_profile_readonly_contains_file_read_allow(
+    sandbox: MacOSSandbox, project_root: Path
+) -> None:
     """@trace FR-SEC-001  READONLY profile allows file-read*."""
     profile = sandbox.generate_profile(SandboxLevel.READONLY, project_root)
     assert "(allow file-read*)" in profile
 
 
-def test_generate_profile_readonly_denies_network(sandbox: MacOSSandbox, project_root: Path) -> None:
+def test_generate_profile_readonly_denies_network(
+    sandbox: MacOSSandbox, project_root: Path
+) -> None:
     """@trace FR-SEC-001  READONLY profile denies network."""
     profile = sandbox.generate_profile(SandboxLevel.READONLY, project_root)
     assert "(deny network*)" in profile
@@ -206,7 +225,9 @@ def test_generate_profile_restricted_substitutes_project_root(
 ) -> None:
     """@trace FR-SEC-001  RESTRICTED profile replaces PROJECT_ROOT_PLACEHOLDER."""
     root = tmp_path / "agent_work"
-    profile = sandbox_with_custom_profiles.generate_profile(SandboxLevel.RESTRICTED, root)
+    profile = sandbox_with_custom_profiles.generate_profile(
+        SandboxLevel.RESTRICTED, root
+    )
     assert "PROJECT_ROOT_PLACEHOLDER" not in profile
     assert str(root.resolve()) in profile
 
@@ -216,19 +237,25 @@ def test_generate_profile_networked_substitutes_project_root(
 ) -> None:
     """@trace FR-SEC-001  NETWORKED profile replaces PROJECT_ROOT_PLACEHOLDER."""
     root = tmp_path / "agent_net_work"
-    profile = sandbox_with_custom_profiles.generate_profile(SandboxLevel.NETWORKED, root)
+    profile = sandbox_with_custom_profiles.generate_profile(
+        SandboxLevel.NETWORKED, root
+    )
     assert "PROJECT_ROOT_PLACEHOLDER" not in profile
     assert str(root.resolve()) in profile
 
 
-def test_generate_profile_raises_when_template_missing(tmp_path: Path, project_root: Path) -> None:
+def test_generate_profile_raises_when_template_missing(
+    tmp_path: Path, project_root: Path
+) -> None:
     """@trace FR-SEC-001  generate_profile raises FileNotFoundError for missing template."""
     s = MacOSSandbox(profile_dir=tmp_path)
     with pytest.raises(FileNotFoundError):
         s.generate_profile(SandboxLevel.READONLY, project_root)
 
 
-def test_generate_profile_networked_contains_port_443(sandbox: MacOSSandbox, project_root: Path) -> None:
+def test_generate_profile_networked_contains_port_443(
+    sandbox: MacOSSandbox, project_root: Path
+) -> None:
     """@trace FR-SEC-001  NETWORKED profile allows outbound TCP 443."""
     profile = sandbox.generate_profile(SandboxLevel.NETWORKED, project_root)
     assert "443" in profile
@@ -253,16 +280,22 @@ def test_apply_to_command_full_returns_original(sandbox: MacOSSandbox) -> None:
     assert result == cmd
 
 
-def test_apply_to_command_returns_original_when_exec_unavailable(sandbox: MacOSSandbox, tmp_path: Path) -> None:
+def test_apply_to_command_returns_original_when_exec_unavailable(
+    sandbox: MacOSSandbox, tmp_path: Path
+) -> None:
     """@trace FR-SEC-001  Falls back to original command when sandbox-exec absent."""
     sandbox._sandbox_exec = None
     with patch("thegent.security.macos_sandbox.platform.system", return_value="Linux"):
         cmd = ["agent", "run"]
-        result = sandbox.apply_to_command(cmd, SandboxLevel.READONLY, project_root=tmp_path)
+        result = sandbox.apply_to_command(
+            cmd, SandboxLevel.READONLY, project_root=tmp_path
+        )
     assert result == cmd
 
 
-def test_apply_to_command_wraps_with_sandbox_exec(sandbox_with_custom_profiles: MacOSSandbox, tmp_path: Path) -> None:
+def test_apply_to_command_wraps_with_sandbox_exec(
+    sandbox_with_custom_profiles: MacOSSandbox, tmp_path: Path
+) -> None:
     """@trace FR-SEC-001  apply_to_command prepends sandbox-exec -f <profile>."""
     with (
         patch("thegent.security.macos_sandbox.platform.system", return_value="Darwin"),
@@ -272,7 +305,9 @@ def test_apply_to_command_wraps_with_sandbox_exec(sandbox_with_custom_profiles: 
         ),
     ):
         cmd = ["my-tool", "--flag"]
-        result = sandbox_with_custom_profiles.apply_to_command(cmd, SandboxLevel.READONLY, project_root=tmp_path)
+        result = sandbox_with_custom_profiles.apply_to_command(
+            cmd, SandboxLevel.READONLY, project_root=tmp_path
+        )
     assert result[0] == "sandbox-exec"
     assert result[1] == "-f"
     profile_path = Path(result[2])
@@ -292,7 +327,9 @@ def test_apply_to_command_profile_file_contains_profile_text(
             return_value="/usr/bin/sandbox-exec",
         ),
     ):
-        result = sandbox_with_custom_profiles.apply_to_command(["agent"], SandboxLevel.READONLY, project_root=tmp_path)
+        result = sandbox_with_custom_profiles.apply_to_command(
+            ["agent"], SandboxLevel.READONLY, project_root=tmp_path
+        )
     profile_content = Path(result[2]).read_text()
     assert "(deny default)" in profile_content
 
@@ -309,7 +346,9 @@ def test_apply_to_command_restricted_uses_cwd_as_default_root(
         ),
         patch("thegent.security.macos_sandbox.Path.cwd", return_value=tmp_path),
     ):
-        result = sandbox_with_custom_profiles.apply_to_command(["agent"], SandboxLevel.RESTRICTED)
+        result = sandbox_with_custom_profiles.apply_to_command(
+            ["agent"], SandboxLevel.RESTRICTED
+        )
     assert result[0] == "sandbox-exec"
 
 
@@ -318,7 +357,9 @@ def test_apply_to_command_restricted_uses_cwd_as_default_root(
 # ---------------------------------------------------------------------------
 
 
-def test_level_from_env_returns_none_when_unset(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_level_from_env_returns_none_when_unset(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """@trace FR-SEC-001  level_from_env returns NONE when env var absent."""
     monkeypatch.delenv(SANDBOX_LEVEL_ENV_VAR, raising=False)
     assert MacOSSandbox.level_from_env() is SandboxLevel.NONE
@@ -347,7 +388,9 @@ def test_level_from_env_invalid_defaults_to_none(
     assert "superstrict" in caplog.text
 
 
-def test_level_from_env_empty_string_returns_none(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_level_from_env_empty_string_returns_none(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """@trace FR-SEC-001  Empty string env var returns NONE."""
     monkeypatch.setenv(SANDBOX_LEVEL_ENV_VAR, "")
     assert MacOSSandbox.level_from_env() is SandboxLevel.NONE
@@ -392,7 +435,9 @@ def test_from_env_uses_default_profile_dir() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_apply_to_command_does_not_mutate_original(sandbox_with_custom_profiles: MacOSSandbox, tmp_path: Path) -> None:
+def test_apply_to_command_does_not_mutate_original(
+    sandbox_with_custom_profiles: MacOSSandbox, tmp_path: Path
+) -> None:
     """@trace FR-SEC-001  apply_to_command does not mutate the caller's cmd list."""
     original = ["agent", "--verbose"]
     copy_before = list(original)
@@ -403,5 +448,7 @@ def test_apply_to_command_does_not_mutate_original(sandbox_with_custom_profiles:
             return_value="/usr/bin/sandbox-exec",
         ),
     ):
-        sandbox_with_custom_profiles.apply_to_command(original, SandboxLevel.READONLY, project_root=tmp_path)
+        sandbox_with_custom_profiles.apply_to_command(
+            original, SandboxLevel.READONLY, project_root=tmp_path
+        )
     assert original == copy_before

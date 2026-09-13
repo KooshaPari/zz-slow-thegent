@@ -294,7 +294,9 @@ class TestVersionedMappingRegistryResolve:
         registry = VersionedMappingRegistry()
         registry.register({"connector1": "github"})
         registry.register({"connector1": "github", "connector2": "linear"})
-        registry.register({"connector1": "github", "connector2": "linear", "connector3": "jira"})
+        registry.register(
+            {"connector1": "github", "connector2": "linear", "connector3": "jira"}
+        )
 
         assert registry.resolve("connector1", version=1) == "github"
         assert registry.resolve("connector2", version=2) == "linear"

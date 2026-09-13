@@ -127,7 +127,9 @@ class ProjectSpecs:
 
     # Cross-references
     related_projects: set[str] = field(default_factory=set)
-    shared_features: dict[str, list[str]] = field(default_factory=dict)  # feature_id -> [project_names]
+    shared_features: dict[str, list[str]] = field(
+        default_factory=dict
+    )  # feature_id -> [project_names]
 
     def to_dict(self) -> dict:
         """Convert to dictionary."""
@@ -177,7 +179,9 @@ class ProjectSpecs:
                 }
                 for wid, w in self.wbs_elements.items()
             },
-            "content_types": {ct.value: count for ct, count in self.content_types.items()},
+            "content_types": {
+                ct.value: count for ct, count in self.content_types.items()
+            },
             "keywords": list(self.keywords),
             "technologies": list(self.technologies),
             "related_projects": list(self.related_projects),
@@ -252,7 +256,9 @@ class MarkdownAnalyzer:
 
         # Detect content type
         content_type = self._detect_content_type(file_path, content)
-        self.specs.content_types[content_type] = self.specs.content_types.get(content_type, 0) + 1
+        self.specs.content_types[content_type] = (
+            self.specs.content_types.get(content_type, 0) + 1
+        )
 
         # Extract based on content type
         if content_type == ContentType.SPECIFICATION:
@@ -301,9 +307,15 @@ class MarkdownAnalyzer:
             return ContentType.RESEARCH
 
         # Check content patterns
-        if re.search(r"##\s*(?:Work\s+)?Breakdown\s+Structure|##\s*WBS", content, re.IGNORECASE):
+        if re.search(
+            r"##\s*(?:Work\s+)?Breakdown\s+Structure|##\s*WBS", content, re.IGNORECASE
+        ):
             return ContentType.WBS
-        if re.search(r"##\s*Product\s+Requirements|##\s*PRD|##\s*Requirements", content, re.IGNORECASE):
+        if re.search(
+            r"##\s*Product\s+Requirements|##\s*PRD|##\s*Requirements",
+            content,
+            re.IGNORECASE,
+        ):
             return ContentType.PRD
         if re.search(r"##\s*Features?|##\s*Feature\s+List", content, re.IGNORECASE):
             return ContentType.FEATURE
@@ -323,7 +335,9 @@ class MarkdownAnalyzer:
             title = lines[0].strip()
 
             # Extract features from spec
-            if any(term in title.lower() for term in ["feature", "requirement", "spec"]):
+            if any(
+                term in title.lower() for term in ["feature", "requirement", "spec"]
+            ):
                 self._extract_features_from_section(section, file_path)
 
     def _extract_wbs(self, content: str, file_path: Path):
@@ -348,7 +362,9 @@ class MarkdownAnalyzer:
                 start_pos = match.end()
                 next_match = re.search(pattern, content[start_pos:], re.MULTILINE)
                 if next_match:
-                    description = content[start_pos : start_pos + next_match.start()].strip()
+                    description = content[
+                        start_pos : start_pos + next_match.start()
+                    ].strip()
                 else:
                     description = content[start_pos : start_pos + 500].strip()
 
@@ -409,19 +425,31 @@ class MarkdownAnalyzer:
 
                 # Extract priority
                 priority = Priority.MEDIUM
-                if re.search(r"\b(critical|high|important|priority)\b", title + description, re.IGNORECASE):
+                if re.search(
+                    r"\b(critical|high|important|priority)\b",
+                    title + description,
+                    re.IGNORECASE,
+                ):
                     priority = Priority.HIGH
-                if re.search(r"\b(critical|urgent|blocking)\b", title + description, re.IGNORECASE):
+                if re.search(
+                    r"\b(critical|urgent|blocking)\b",
+                    title + description,
+                    re.IGNORECASE,
+                ):
                     priority = Priority.CRITICAL
 
                 # Extract acceptance criteria
                 acceptance_criteria = []
                 criteria_match = re.search(
-                    r"Acceptance\s+Criteria[:\-]?\s*(.+?)(?=^##|$)", section, re.IGNORECASE | re.DOTALL
+                    r"Acceptance\s+Criteria[:\-]?\s*(.+?)(?=^##|$)",
+                    section,
+                    re.IGNORECASE | re.DOTALL,
                 )
                 if criteria_match:
                     criteria_text = criteria_match.group(1)
-                    criteria_items = re.findall(r"[-*]\s*(.+?)(?=^[-*]|$)", criteria_text, re.MULTILINE)
+                    criteria_items = re.findall(
+                        r"[-*]\s*(.+?)(?=^[-*]|$)", criteria_text, re.MULTILINE
+                    )
                     acceptance_criteria = [item.strip() for item in criteria_items]
 
                 feature = ExtractedFeature(
@@ -463,7 +491,9 @@ class MarkdownAnalyzer:
                     priority = Priority.HIGH
 
                 # Extract estimated hours
-                hours_match = re.search(r"(\d+(?:\.\d+)?)\s*h(?:ours?)?", title, re.IGNORECASE)
+                hours_match = re.search(
+                    r"(\d+(?:\.\d+)?)\s*h(?:ours?)?", title, re.IGNORECASE
+                )
                 estimated_hours = float(hours_match.group(1)) if hours_match else None
 
                 task = ExtractedTask(
@@ -518,7 +548,9 @@ class MarkdownAnalyzer:
     def _extract_project_references(self, content: str):
         """Extract references to other projects."""
         # Look for project names in paths or mentions
-        project_refs = re.findall(r"(?:temp-PRODVERCEL|projects?)[/\s]+([\w-]+)", content, re.IGNORECASE)
+        project_refs = re.findall(
+            r"(?:temp-PRODVERCEL|projects?)[/\s]+([\w-]+)", content, re.IGNORECASE
+        )
         self.specs.related_projects.update(project_refs)
 
     def _extract_tags(self, text: str) -> set[str]:

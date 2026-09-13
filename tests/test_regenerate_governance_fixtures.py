@@ -34,7 +34,9 @@ def test_regenerate_governance_fixtures_check_passes_on_canonical_tree() -> None
 
 
 @pytest.mark.unit
-def test_regenerate_governance_fixtures_requires_bump_when_manifest_drifted(tmp_path: Path) -> None:
+def test_regenerate_governance_fixtures_requires_bump_when_manifest_drifted(
+    tmp_path: Path,
+) -> None:
     src = _fixture_root()
     dst = tmp_path / "governance"
     shutil.copytree(src, dst)
@@ -42,7 +44,9 @@ def test_regenerate_governance_fixtures_requires_bump_when_manifest_drifted(tmp_
     manifest_path = dst / "spiral_trend_replay_manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     manifest["cases"] = list(reversed(manifest["cases"]))
-    manifest_path.write_text(json.dumps(manifest, indent=2).decode() + "\n", encoding="utf-8")
+    manifest_path.write_text(
+        json.dumps(manifest, indent=2).decode() + "\n", encoding="utf-8"
+    )
 
     script = _repo_root() / "scripts" / "regenerate_governance_fixtures.py"
     proc = subprocess.run(

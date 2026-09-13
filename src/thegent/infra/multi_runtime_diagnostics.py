@@ -47,7 +47,9 @@ def check_pypy() -> RuntimeStatus:
         )
         if result.returncode == 0 and result.stdout:
             stdout_text = (
-                result.stdout if isinstance(result.stdout, str) else result.stdout.decode("utf-8", errors="replace")
+                result.stdout
+                if isinstance(result.stdout, str)
+                else result.stdout.decode("utf-8", errors="replace")
             )
             status.available = True
             status.version = stdout_text.strip()
@@ -60,7 +62,17 @@ def check_pypy() -> RuntimeStatus:
     if status.available:
         try:
             result = run_subprocess_optimized(
-                ["uv", "run", "--python", "pypy-3.11", "--with", "ujson", "python", "-c", "import ujson; print('ok')"],
+                [
+                    "uv",
+                    "run",
+                    "--python",
+                    "pypy-3.11",
+                    "--with",
+                    "ujson",
+                    "python",
+                    "-c",
+                    "import ujson; print('ok')",
+                ],
                 capture_output=True,
                 timeout=10,
             )
@@ -89,7 +101,9 @@ def check_cpython_313() -> RuntimeStatus:
         )
         if result.returncode == 0 and result.stdout:
             stdout_text = (
-                result.stdout if isinstance(result.stdout, str) else result.stdout.decode("utf-8", errors="replace")
+                result.stdout
+                if isinstance(result.stdout, str)
+                else result.stdout.decode("utf-8", errors="replace")
             )
             status.available = True
             status.version = stdout_text.strip()
@@ -102,7 +116,17 @@ def check_cpython_313() -> RuntimeStatus:
     if status.available:
         try:
             result = run_subprocess_optimized(
-                ["uv", "run", "--python", "3.13", "--with", "orjson", "python", "-c", "import orjson; print('ok')"],
+                [
+                    "uv",
+                    "run",
+                    "--python",
+                    "3.13",
+                    "--with",
+                    "orjson",
+                    "python",
+                    "-c",
+                    "import orjson; print('ok')",
+                ],
                 capture_output=True,
                 timeout=10,
             )
@@ -131,7 +155,9 @@ def check_cpython_314() -> RuntimeStatus:
         )
         if result.returncode == 0 and result.stdout:
             stdout_text = (
-                result.stdout if isinstance(result.stdout, str) else result.stdout.decode("utf-8", errors="replace")
+                result.stdout
+                if isinstance(result.stdout, str)
+                else result.stdout.decode("utf-8", errors="replace")
             )
             status.available = True
             status.version = stdout_text.strip()
@@ -144,7 +170,17 @@ def check_cpython_314() -> RuntimeStatus:
     if status.available:
         try:
             result = run_subprocess_optimized(
-                ["uv", "run", "--python", "3.14", "--with", "orjson", "python", "-c", "import orjson; print('ok')"],
+                [
+                    "uv",
+                    "run",
+                    "--python",
+                    "3.14",
+                    "--with",
+                    "orjson",
+                    "python",
+                    "-c",
+                    "import orjson; print('ok')",
+                ],
                 capture_output=True,
                 timeout=10,
             )
@@ -167,10 +203,14 @@ def check_rust() -> RuntimeStatus:
 
     # Check for cargo
     try:
-        result = run_subprocess_optimized(["cargo", "--version"], capture_output=True, timeout=5)
+        result = run_subprocess_optimized(
+            ["cargo", "--version"], capture_output=True, timeout=5
+        )
         if result.returncode == 0 and result.stdout:
             stdout_text = (
-                result.stdout if isinstance(result.stdout, str) else result.stdout.decode("utf-8", errors="replace")
+                result.stdout
+                if isinstance(result.stdout, str)
+                else result.stdout.decode("utf-8", errors="replace")
             )
             status.available = True
             status.version = stdout_text.strip()
@@ -193,7 +233,9 @@ def check_rust() -> RuntimeStatus:
 
     if not status.available:
         status.performance_tier = "unavailable"
-        status.recommendations.append("Install Rust: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh")
+        status.recommendations.append(
+            "Install Rust: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+        )
 
     return status
 
@@ -203,10 +245,14 @@ def check_go() -> RuntimeStatus:
     status = RuntimeStatus(name="Go", available=False)
 
     try:
-        result = run_subprocess_optimized(["go", "version"], capture_output=True, timeout=5)
+        result = run_subprocess_optimized(
+            ["go", "version"], capture_output=True, timeout=5
+        )
         if result.returncode == 0 and result.stdout:
             stdout_text = (
-                result.stdout if isinstance(result.stdout, str) else result.stdout.decode("utf-8", errors="replace")
+                result.stdout
+                if isinstance(result.stdout, str)
+                else result.stdout.decode("utf-8", errors="replace")
             )
             status.available = True
             status.version = stdout_text.strip()
@@ -239,10 +285,14 @@ def check_mojo() -> RuntimeStatus:
     status = RuntimeStatus(name="Mojo", available=False)
 
     try:
-        result = run_subprocess_optimized(["mojo", "--version"], capture_output=True, timeout=5)
+        result = run_subprocess_optimized(
+            ["mojo", "--version"], capture_output=True, timeout=5
+        )
         if result.returncode == 0 and result.stdout:
             stdout_text = (
-                result.stdout if isinstance(result.stdout, str) else result.stdout.decode("utf-8", errors="replace")
+                result.stdout
+                if isinstance(result.stdout, str)
+                else result.stdout.decode("utf-8", errors="replace")
             )
             status.available = True
             status.version = stdout_text.strip()
@@ -253,7 +303,9 @@ def check_mojo() -> RuntimeStatus:
 
     if not status.available:
         status.performance_tier = "unavailable"
-        status.recommendations.append("Install Mojo: https://docs.modular.com/mojo/manual/get-started/")
+        status.recommendations.append(
+            "Install Mojo: https://docs.modular.com/mojo/manual/get-started/"
+        )
 
     return status
 
@@ -263,10 +315,14 @@ def check_zig() -> RuntimeStatus:
     status = RuntimeStatus(name="Zig", available=False)
 
     try:
-        result = run_subprocess_optimized(["zig", "version"], capture_output=True, timeout=5)
+        result = run_subprocess_optimized(
+            ["zig", "version"], capture_output=True, timeout=5
+        )
         if result.returncode == 0 and result.stdout:
             stdout_text = (
-                result.stdout if isinstance(result.stdout, str) else result.stdout.decode("utf-8", errors="replace")
+                result.stdout
+                if isinstance(result.stdout, str)
+                else result.stdout.decode("utf-8", errors="replace")
             )
             status.available = True
             status.version = stdout_text.strip()
@@ -315,7 +371,9 @@ def check_hardware() -> dict[str, Any]:
     return hw_info
 
 
-def check_network_latency(target_host: str = "127.0.0.1") -> dict[str, float | list[str]]:
+def check_network_latency(
+    target_host: str = "127.0.0.1",
+) -> dict[str, float | list[str]]:
     """Check network latency to a target host."""
     import time
 
@@ -326,9 +384,13 @@ def check_network_latency(target_host: str = "127.0.0.1") -> dict[str, float | l
         try:
             # Simple ping-like check using subprocess
             if sys.platform == "win32":
-                run_subprocess_optimized(["ping", "-n", "1", target_host], capture_output=True, timeout=2)
+                run_subprocess_optimized(
+                    ["ping", "-n", "1", target_host], capture_output=True, timeout=2
+                )
             else:
-                run_subprocess_optimized(["ping", "-c", "1", target_host], capture_output=True, timeout=2)
+                run_subprocess_optimized(
+                    ["ping", "-c", "1", target_host], capture_output=True, timeout=2
+                )
             latencies.append((time.perf_counter() - start) * 1000)
         except Exception as exc:
             errors.append(str(exc))
@@ -403,7 +465,9 @@ def display_runtime_status(data: dict[str, Any]) -> None:
     ipc = data.get("ipc", {})
 
     # Hardware Summary
-    console.print(f"\n[bold blue]Hardware Context:[/bold blue] {hw['platform']} ({hw['arch']})")
+    console.print(
+        f"\n[bold blue]Hardware Context:[/bold blue] {hw['platform']} ({hw['arch']})"
+    )
     feature_flags = []
     if hw.get("amx_available"):
         feature_flags.append("[green]AMX[/green]")
@@ -417,11 +481,19 @@ def display_runtime_status(data: dict[str, Any]) -> None:
     # IPC Mesh Status
     if ipc:
         console.print("\n[bold blue]IPC Mesh Status:[/bold blue]")
-        lock_status = "[green]OK[/green]" if ipc.get("atomic_lock_works") else "[red]FAIL[/red]"
+        lock_status = (
+            "[green]OK[/green]" if ipc.get("atomic_lock_works") else "[red]FAIL[/red]"
+        )
         console.print(f"  Atomic Locks: {lock_status}")
-        console.print(f"  Write Latency: [yellow]{ipc.get('write_latency_ms', -1):.2f}ms[/yellow]")
-        console.print(f"  Read Latency:  [yellow]{ipc.get('read_latency_ms', -1):.2f}ms[/yellow]")
-    table = Table(title="Multi-Runtime Status", show_header=True, header_style="bold cyan")
+        console.print(
+            f"  Write Latency: [yellow]{ipc.get('write_latency_ms', -1):.2f}ms[/yellow]"
+        )
+        console.print(
+            f"  Read Latency:  [yellow]{ipc.get('read_latency_ms', -1):.2f}ms[/yellow]"
+        )
+    table = Table(
+        title="Multi-Runtime Status", show_header=True, header_style="bold cyan"
+    )
     table.add_column("Runtime", style="cyan")
     table.add_column("Status", style="green")
     table.add_column("Version", style="yellow")

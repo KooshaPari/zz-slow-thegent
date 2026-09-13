@@ -168,7 +168,9 @@ class TestThegentRunModelFirst:
     @pytest.mark.asyncio
     @patch("thegent.mcp.server._resolve_cwd", return_value=Path("/tmp/test"))
     @patch("thegent.mcp.server.run_impl")
-    async def test_model_only_resolves_route(self, mock_run_impl: MagicMock, mock_cwd: MagicMock) -> None:
+    async def test_model_only_resolves_route(
+        self, mock_run_impl: MagicMock, mock_cwd: MagicMock
+    ) -> None:
         """When model is given without agent, resolve_route picks agent."""
         mock_run_impl.return_value = {
             "exit_code": 0,
@@ -179,7 +181,10 @@ class TestThegentRunModelFirst:
         ctx = _make_ctx()
         with (
             patch("thegent.config.ThegentSettings") as mock_settings_cls,
-            patch("thegent.models.resolve_route", return_value=("gemini", "gemini-3-flash")),
+            patch(
+                "thegent.models.resolve_route",
+                return_value=("gemini", "gemini-3-flash"),
+            ),
         ):
             mock_settings_cls.return_value.default_routing = "prefer_direct"
             result = await _mcp_mod.thegent_run(
@@ -224,7 +229,9 @@ class TestThegentRunModelFirst:
     @pytest.mark.asyncio
     @patch("thegent.mcp.server._resolve_cwd", return_value=Path("/tmp/test"))
     @patch("thegent.mcp.server.run_impl")
-    async def test_model_only_with_include_contract(self, mock_run_impl: MagicMock, mock_cwd: MagicMock) -> None:
+    async def test_model_only_with_include_contract(
+        self, mock_run_impl: MagicMock, mock_cwd: MagicMock
+    ) -> None:
         """Model-first with include_contract resolves route contract."""
         mock_run_impl.return_value = {
             "exit_code": 0,
@@ -236,7 +243,10 @@ class TestThegentRunModelFirst:
         ctx = _make_ctx()
         with (
             patch("thegent.config.ThegentSettings") as mock_settings_cls,
-            patch("thegent.models.resolve_route", return_value=("claude", "claude-sonnet-4")),
+            patch(
+                "thegent.models.resolve_route",
+                return_value=("claude", "claude-sonnet-4"),
+            ),
             patch("thegent.models.resolve_route_contract", return_value=rr),
         ):
             mock_settings_cls.return_value.default_routing = "prefer_direct"
@@ -272,7 +282,10 @@ class TestThegentRunModelFirst:
         ctx = _make_ctx()
         with (
             patch("thegent.config.ThegentSettings") as mock_settings_cls,
-            patch("thegent.models.resolve_route", return_value=("claude", "claude-sonnet-4")),
+            patch(
+                "thegent.models.resolve_route",
+                return_value=("claude", "claude-sonnet-4"),
+            ),
             patch("thegent.models.resolve_route_contract", return_value=None),
         ):
             mock_settings_cls.return_value.default_routing = "prefer_direct"
@@ -397,7 +410,9 @@ class TestThegentRunModelAndAgent:
     @pytest.mark.asyncio
     @patch("thegent.mcp.server._resolve_cwd", return_value=Path("/tmp/test"))
     @patch("thegent.mcp.server.run_impl")
-    async def test_model_and_agent_with_include_contract(self, mock_run_impl: MagicMock, mock_cwd: MagicMock) -> None:
+    async def test_model_and_agent_with_include_contract(
+        self, mock_run_impl: MagicMock, mock_cwd: MagicMock
+    ) -> None:
         """Model+agent with include_contract resolves route contract."""
         mock_run_impl.return_value = {
             "exit_code": 0,
@@ -409,7 +424,10 @@ class TestThegentRunModelAndAgent:
         ctx = _make_ctx()
         with (
             patch("thegent.config.ThegentSettings") as mock_settings_cls,
-            patch("thegent.models.resolve_route", return_value=("claude", "claude-sonnet-4")),
+            patch(
+                "thegent.models.resolve_route",
+                return_value=("claude", "claude-sonnet-4"),
+            ),
             patch("thegent.models.resolve_route_contract", return_value=rr),
         ):
             mock_settings_cls.return_value.default_routing = "prefer_direct"
@@ -440,7 +458,9 @@ class TestThegentRunCwdElicitation:
     @pytest.mark.asyncio
     @patch("thegent.mcp.server._resolve_cwd", return_value=None)
     @patch("thegent.mcp.server.run_impl")
-    async def test_accepted_elicitation_continues(self, mock_run_impl: MagicMock, mock_cwd: MagicMock) -> None:
+    async def test_accepted_elicitation_continues(
+        self, mock_run_impl: MagicMock, mock_cwd: MagicMock
+    ) -> None:
         """Accepted CWD elicitation proceeds with the run."""
         mock_run_impl.return_value = {
             "exit_code": 0,
@@ -464,7 +484,9 @@ class TestThegentRunCwdElicitation:
     # @trace FR-MCP-210
     @pytest.mark.asyncio
     @patch("thegent.mcp.server._resolve_cwd", return_value=None)
-    async def test_declined_elicitation_returns_error(self, mock_cwd: MagicMock) -> None:
+    async def test_declined_elicitation_returns_error(
+        self, mock_cwd: MagicMock
+    ) -> None:
         """Declined CWD elicitation returns error."""
         declined = _make_elicitation("declined")
         ctx = _make_ctx()
@@ -483,7 +505,9 @@ class TestThegentRunCwdElicitation:
     # @trace FR-MCP-211
     @pytest.mark.asyncio
     @patch("thegent.mcp.server._resolve_cwd", return_value=None)
-    async def test_cancelled_elicitation_returns_error(self, mock_cwd: MagicMock) -> None:
+    async def test_cancelled_elicitation_returns_error(
+        self, mock_cwd: MagicMock
+    ) -> None:
         """Cancelled CWD elicitation returns error."""
         cancelled = _make_elicitation("cancelled")
         ctx = _make_ctx()
@@ -502,7 +526,9 @@ class TestThegentRunCwdElicitation:
     # @trace FR-MCP-212
     @pytest.mark.asyncio
     @patch("thegent.mcp.server._resolve_cwd", return_value=None)
-    async def test_ambiguous_elicitation_returns_error(self, mock_cwd: MagicMock) -> None:
+    async def test_ambiguous_elicitation_returns_error(
+        self, mock_cwd: MagicMock
+    ) -> None:
         """Ambiguous/unknown elicitation type returns error."""
         ambiguous = _make_elicitation("ambiguous")
         ctx = _make_ctx()
@@ -532,7 +558,9 @@ class TestThegentRunIncludeContract:
     @pytest.mark.asyncio
     @patch("thegent.mcp.server._resolve_cwd", return_value=Path("/tmp/test"))
     @patch("thegent.mcp.server.run_impl")
-    async def test_include_contract_builds_payload(self, mock_run_impl: MagicMock, mock_cwd: MagicMock) -> None:
+    async def test_include_contract_builds_payload(
+        self, mock_run_impl: MagicMock, mock_cwd: MagicMock
+    ) -> None:
         """include_contract=True without model still builds routing in payload."""
         mock_run_impl.return_value = {
             "exit_code": 0,
@@ -558,7 +586,9 @@ class TestThegentRunIncludeContract:
     @pytest.mark.asyncio
     @patch("thegent.mcp.server._resolve_cwd", return_value=Path("/tmp/test"))
     @patch("thegent.mcp.server.run_impl")
-    async def test_include_contract_full_mode_no_schema(self, mock_run_impl: MagicMock, mock_cwd: MagicMock) -> None:
+    async def test_include_contract_full_mode_no_schema(
+        self, mock_run_impl: MagicMock, mock_cwd: MagicMock
+    ) -> None:
         """include_contract with full=True omits extraction_schema_version."""
         mock_run_impl.return_value = {
             "exit_code": 0,
@@ -599,7 +629,11 @@ class TestThegentBgCwdElicitation:
         self, mock_bg_impl: MagicMock, mock_owner: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """Accepted CWD elicitation in bg, then owner elicitation triggers."""
-        mock_bg_impl.return_value = {"session_id": "s1", "log_path": "/tmp/log", "owner": "auto-owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s1",
+            "log_path": "/tmp/log",
+            "owner": "auto-owner",
+        }
         accepted_cwd = _make_elicitation("accepted", data="/tmp/elicited")
         accepted_owner = _make_elicitation("accepted", data="my-owner")
         ctx = _make_ctx()
@@ -694,9 +728,15 @@ class TestThegentBgRoutePolicy:
         self, mock_bg_impl: MagicMock, mock_owner: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """Invalid normalize_route_policy falls back to prefer_direct."""
-        mock_bg_impl.return_value = {"session_id": "s1", "log_path": "/tmp", "owner": "owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s1",
+            "log_path": "/tmp",
+            "owner": "owner",
+        }
         ctx = _make_ctx()
-        with patch("thegent.models.normalize_route_policy", side_effect=ValueError("bad")):
+        with patch(
+            "thegent.models.normalize_route_policy", side_effect=ValueError("bad")
+        ):
             result = await _mcp_mod.thegent_bg(
                 agent="claude",
                 prompt="bad routing",
@@ -718,9 +758,15 @@ class TestThegentBgRoutePolicy:
         self, mock_bg_impl: MagicMock, mock_owner: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """When routing param is set, it propagates to routing_for_child."""
-        mock_bg_impl.return_value = {"session_id": "s2", "log_path": "/tmp", "owner": "owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s2",
+            "log_path": "/tmp",
+            "owner": "owner",
+        }
         ctx = _make_ctx()
-        with patch("thegent.models.normalize_route_policy", return_value="prefer_proxy"):
+        with patch(
+            "thegent.models.normalize_route_policy", return_value="prefer_proxy"
+        ):
             result = await _mcp_mod.thegent_bg(
                 agent="claude",
                 prompt="proxy routing",
@@ -742,7 +788,11 @@ class TestThegentBgRoutePolicy:
         self, mock_bg_impl: MagicMock, mock_owner: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """Failover policy sets failover=True and falls back to prefer_direct."""
-        mock_bg_impl.return_value = {"session_id": "s3", "log_path": "/tmp", "owner": "owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s3",
+            "log_path": "/tmp",
+            "owner": "owner",
+        }
         ctx = _make_ctx()
         with patch("thegent.models.normalize_route_policy", return_value="failover"):
             result = await _mcp_mod.thegent_bg(
@@ -780,7 +830,11 @@ class TestThegentBgOwnerElicitation:
         self, mock_bg_impl: MagicMock, mock_owner_tag: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """Declined owner elicitation uses _default_owner_tag."""
-        mock_bg_impl.return_value = {"session_id": "s1", "log_path": "/tmp", "owner": "fallback-owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s1",
+            "log_path": "/tmp",
+            "owner": "fallback-owner",
+        }
         accepted_cwd = _make_elicitation("accepted", data="/tmp/elicited")
         declined_owner = _make_elicitation("declined")
         ctx = _make_ctx()
@@ -826,7 +880,11 @@ class TestThegentBgOwnerElicitation:
         self, mock_bg_impl: MagicMock, mock_owner_tag: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """Ambiguous owner elicitation falls back to _default_owner_tag."""
-        mock_bg_impl.return_value = {"session_id": "s1", "log_path": "/tmp", "owner": "default-owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s1",
+            "log_path": "/tmp",
+            "owner": "default-owner",
+        }
         accepted_cwd = _make_elicitation("accepted", data="/tmp/elicited")
         ambiguous_owner = _make_elicitation("ambiguous")
         ctx = _make_ctx()
@@ -861,7 +919,11 @@ class TestThegentBgIncludeContract:
         self, mock_bg_impl: MagicMock, mock_owner: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """include_contract with model resolves contract successfully."""
-        mock_bg_impl.return_value = {"session_id": "s1", "log_path": "/tmp", "owner": "owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s1",
+            "log_path": "/tmp",
+            "owner": "owner",
+        }
         rr = _make_resolved_route()
         ctx = _make_ctx()
         with (
@@ -890,9 +952,15 @@ class TestThegentBgIncludeContract:
         self, mock_bg_impl: MagicMock, mock_owner: MagicMock, mock_cwd: MagicMock
     ) -> None:
         """include_contract with model: exception in lookup still proceeds."""
-        mock_bg_impl.return_value = {"session_id": "s1", "log_path": "/tmp", "owner": "owner"}
+        mock_bg_impl.return_value = {
+            "session_id": "s1",
+            "log_path": "/tmp",
+            "owner": "owner",
+        }
         ctx = _make_ctx()
-        with patch("thegent.models.resolve_route_contract", side_effect=RuntimeError("boom")):
+        with patch(
+            "thegent.models.resolve_route_contract", side_effect=RuntimeError("boom")
+        ):
             result = await _mcp_mod.thegent_bg(
                 agent="claude",
                 prompt="contract exception",
@@ -924,7 +992,9 @@ class TestThegentListOperationsValidFilter:
         mock_entry.command = "run"
         mock_entry.description = "Run foreground agent"
         mock_entry.mcp_tool = "thegent_run"
-        with patch("thegent.operations.get_operations_by_type", return_value=[mock_entry]) as mock_get:
+        with patch(
+            "thegent.operations.get_operations_by_type", return_value=[mock_entry]
+        ) as mock_get:
             result = _mcp_mod.thegent_list_operations(operation="orchestrate")
             data = _json_content(result)
             assert "orchestrate" in data
@@ -974,7 +1044,9 @@ class TestThegentResolveModelRoute:
     # @trace FR-MCP-229
     def test_resolve_model_route_invalid_policy(self) -> None:
         """Invalid policy returns error with valid_policies list."""
-        with patch("thegent.models.normalize_route_policy", side_effect=ValueError("bad")):
+        with patch(
+            "thegent.models.normalize_route_policy", side_effect=ValueError("bad")
+        ):
             result = _mcp_mod.thegent_resolve_model_route(
                 model="claude-sonnet-4",
                 policy="garbage_policy",
@@ -1001,7 +1073,9 @@ class TestThegentResolveModelRoute:
             priority=0,
         )
         with (
-            patch("thegent.models.normalize_route_policy", return_value="prefer_direct"),
+            patch(
+                "thegent.models.normalize_route_policy", return_value="prefer_direct"
+            ),
             patch("thegent.models.normalize_model_id", return_value="claude-sonnet-4"),
             patch("thegent.models.resolve_route_contract", return_value=rr),
             patch("thegent.models.ModelCatalog") as mock_catalog,
@@ -1024,7 +1098,9 @@ class TestThegentResolveModelRoute:
     def test_resolve_model_route_no_route(self) -> None:
         """No route found returns route_found=False."""
         with (
-            patch("thegent.models.normalize_route_policy", return_value="prefer_direct"),
+            patch(
+                "thegent.models.normalize_route_policy", return_value="prefer_direct"
+            ),
             patch("thegent.models.normalize_model_id", return_value="unknown-model"),
             patch("thegent.models.resolve_route_contract", return_value=None),
             patch("thegent.models.ModelCatalog") as mock_catalog,
@@ -1047,7 +1123,9 @@ class TestThegentResolveModelRoute:
             _make_route(provider="copilot", model_alias="claude-sonnet-4", priority=5),
         ]
         with (
-            patch("thegent.models.normalize_route_policy", return_value="prefer_direct"),
+            patch(
+                "thegent.models.normalize_route_policy", return_value="prefer_direct"
+            ),
             patch("thegent.models.normalize_model_id", return_value="claude-sonnet-4"),
             patch("thegent.models.resolve_route_contract", return_value=rr),
             patch("thegent.models.ModelCatalog") as mock_catalog,
@@ -1064,7 +1142,9 @@ class TestThegentResolveModelRoute:
     def test_resolve_model_route_has_execution_time(self) -> None:
         """Result meta includes execution_time_ms."""
         with (
-            patch("thegent.models.normalize_route_policy", return_value="prefer_direct"),
+            patch(
+                "thegent.models.normalize_route_policy", return_value="prefer_direct"
+            ),
             patch("thegent.models.normalize_model_id", return_value="m"),
             patch("thegent.models.resolve_route_contract", return_value=None),
             patch("thegent.models.ModelCatalog") as mock_catalog,
@@ -1088,9 +1168,14 @@ class TestThegentDagListAcceptedElicitation:
     @pytest.mark.asyncio
     @patch("thegent.mcp.server._resolve_cwd", return_value=None)
     @patch("thegent.mcp.server.dag_list_impl")
-    async def test_dag_list_accepted_elicitation(self, mock_dag: MagicMock, mock_cwd: MagicMock) -> None:
+    async def test_dag_list_accepted_elicitation(
+        self, mock_dag: MagicMock, mock_cwd: MagicMock
+    ) -> None:
         """Accepted CWD elicitation proceeds with DAG list."""
-        mock_dag.return_value = {"frontmatter": {"project": "test"}, "tasks": [{"id": "T1"}]}
+        mock_dag.return_value = {
+            "frontmatter": {"project": "test"},
+            "tasks": [{"id": "T1"}],
+        }
         accepted = _make_elicitation("accepted", data="/tmp/project")
         ctx = _make_ctx()
         ctx.elicit = AsyncMock(return_value=accepted)
@@ -1117,7 +1202,9 @@ class TestThegentRunProgressReporting:
     # @trace FR-MCP-235
     @pytest.mark.asyncio
     @patch("thegent.mcp.server._resolve_cwd", return_value=Path("/tmp/test"))
-    async def test_run_reports_progress_and_closes_sse(self, mock_cwd: MagicMock) -> None:
+    async def test_run_reports_progress_and_closes_sse(
+        self, mock_cwd: MagicMock
+    ) -> None:
         """When run takes long enough, report_progress and close_sse_stream are called."""
         import time as time_mod
 
@@ -1153,7 +1240,9 @@ class TestThegentRunProgressReporting:
 
         with (
             patch("thegent.mcp.server.run_impl", side_effect=sync_run_impl),
-            patch("thegent.mcp.server.time.perf_counter", side_effect=fake_perf_counter),
+            patch(
+                "thegent.mcp.server.time.perf_counter", side_effect=fake_perf_counter
+            ),
             patch("thegent.mcp.server.asyncio.sleep", side_effect=fast_sleep),
         ):
             result = await _mcp_mod.thegent_run(

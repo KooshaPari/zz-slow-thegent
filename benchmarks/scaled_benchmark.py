@@ -62,7 +62,9 @@ class BenchmarkSuite:
 
     def add(self, name: str, value: float, unit: str, **tags: str) -> None:
         """Add a result."""
-        self.results.append(BenchmarkResult(name=name, value=value, unit=unit, tags=tags))
+        self.results.append(
+            BenchmarkResult(name=name, value=value, unit=unit, tags=tags)
+        )
 
     def to_json(self) -> dict[str, Any]:
         """Export to JSON."""

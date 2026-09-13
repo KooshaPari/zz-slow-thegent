@@ -23,7 +23,12 @@ def get_processes() -> list[dict[str, Any]]:
             pid = int(pid_str)
             try:
                 with open(f"/proc/{pid}/cmdline", "rb") as f:
-                    cmdline = f.read().replace(b"\x00", b" ").decode("utf-8", errors="ignore").strip()
+                    cmdline = (
+                        f.read()
+                        .replace(b"\x00", b" ")
+                        .decode("utf-8", errors="ignore")
+                        .strip()
+                    )
                 if cmdline:
                     processes.append({"pid": pid, "cmd": cmdline})
             except OSError:
@@ -31,9 +36,9 @@ def get_processes() -> list[dict[str, Any]]:
     elif system == "darwin":
         # macOS ps scan
         try:
-            output = subprocess.check_output(["ps", "-ax", "-o", "pid,command"], stderr=subprocess.STDOUT).decode(
-                "utf-8"
-            )
+            output = subprocess.check_output(
+                ["ps", "-ax", "-o", "pid,command"], stderr=subprocess.STDOUT
+            ).decode("utf-8")
             lines = output.splitlines()[1:]  # skip header
             for line in lines:
                 line = line.strip()
@@ -41,7 +46,9 @@ def get_processes() -> list[dict[str, Any]]:
                     continue
                 match = re.match(r"^(\d+)\s+(.+)$", line)
                 if match:
-                    processes.append({"pid": int(match.group(1)), "cmd": match.group(2)})
+                    processes.append(
+                        {"pid": int(match.group(1)), "cmd": match.group(2)}
+                    )
         except subprocess.CalledProcessError:
             pass
 
@@ -59,7 +66,9 @@ def detect_agents(patterns: dict[str, str]) -> list[dict[str, Any]]:
         try:
             compiled_patterns.append((name, re.compile(raw_pattern, re.IGNORECASE)))
         except re.error as exc:
-            raise ValueError(f"Invalid regex for agent pattern '{name}': {raw_pattern}") from exc
+            raise ValueError(
+                f"Invalid regex for agent pattern '{name}': {raw_pattern}"
+            ) from exc
 
     processes = get_processes()
     detected: list[dict[str, Any]] = []

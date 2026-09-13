@@ -79,7 +79,11 @@ class _StubDispatcher:
 
     async def dispatch_plan(self, plan: Plan) -> dict[str, DispatchResult]:
         """Return the canned results filtered to the plan's node IDs."""
-        return {node.id: self._results[node.id] for node in plan.nodes if node.id in self._results}
+        return {
+            node.id: self._results[node.id]
+            for node in plan.nodes
+            if node.id in self._results
+        }
 
 
 # ---------------------------------------------------------------------------
@@ -166,7 +170,9 @@ class TestPlainPlanPath:
         node = PlanNode(task="t")
         plan.nodes.append(node)
 
-        stub = _StubDispatcher({node.id: _dispatch_result_success(node.id, "stub-output")})
+        stub = _StubDispatcher(
+            {node.id: _dispatch_result_success(node.id, "stub-output")}
+        )
 
         # Even though a dispatcher is provided, the plain Plan path uses runner.
         async def runner(n: PlanNode) -> str:
@@ -228,7 +234,9 @@ class TestOrchestrationPlanPath:
         plan = _make_orchestration_plan()
         node = plan.add_task("task-b")
 
-        stub = _StubDispatcher({node.id: _dispatch_result_success(node.id, "specific-output")})
+        stub = _StubDispatcher(
+            {node.id: _dispatch_result_success(node.id, "specific-output")}
+        )
         await executor.execute_async(plan, lambda n: "x", dispatcher=stub)  # type: ignore[arg-type]
 
         assert node.result == "specific-output"
@@ -240,7 +248,9 @@ class TestOrchestrationPlanPath:
         plan = _make_orchestration_plan()
         node = plan.add_task("bad-task")
 
-        stub = _StubDispatcher({node.id: _dispatch_result_failure(node.id, "dispatch-error")})
+        stub = _StubDispatcher(
+            {node.id: _dispatch_result_failure(node.id, "dispatch-error")}
+        )
         await executor.execute_async(plan, lambda n: "x", dispatcher=stub)  # type: ignore[arg-type]
 
         assert node.status == "failed"
@@ -253,7 +263,9 @@ class TestOrchestrationPlanPath:
         plan = _make_orchestration_plan()
         node = plan.add_task("err-task")
 
-        stub = _StubDispatcher({node.id: _dispatch_result_failure(node.id, "specific-error")})
+        stub = _StubDispatcher(
+            {node.id: _dispatch_result_failure(node.id, "specific-error")}
+        )
         await executor.execute_async(plan, lambda n: "x", dispatcher=stub)  # type: ignore[arg-type]
 
         assert node.error == "specific-error"
@@ -473,7 +485,9 @@ class TestOrchestrationFailFast:
         plan = _make_orchestration_plan()
         n_fail = plan.add_task("fail-partial")
 
-        stub = _StubDispatcher({n_fail.id: _dispatch_result_failure(n_fail.id, "partial")})
+        stub = _StubDispatcher(
+            {n_fail.id: _dispatch_result_failure(n_fail.id, "partial")}
+        )
         result_plan = await executor.execute_async(plan, lambda n: "x", dispatcher=stub)  # type: ignore[arg-type]
 
         assert "aggregation" in result_plan.metadata
@@ -593,7 +607,9 @@ class TestDispatchPathSelection:
         node = plan.add_task("subclass-task")
 
         stub = _StubDispatcher({node.id: _dispatch_result_success(node.id)})
-        result_plan = await executor.execute_async(plan, lambda n: "runner", dispatcher=stub)  # type: ignore[arg-type]
+        result_plan = await executor.execute_async(
+            plan, lambda n: "runner", dispatcher=stub
+        )  # type: ignore[arg-type]
 
         # If path correctly detected, aggregation is stored (orchestration path)
         assert "aggregation" in result_plan.metadata

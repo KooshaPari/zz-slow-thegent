@@ -6,7 +6,9 @@ from thegent.metrics.collector import MetricsCollector
 
 
 def test_emit_slo_stub_pass_status() -> None:
-    payload = MetricsCollector().emit_slo_stub("cli_help_p95_ms", 200.0, threshold=250.0)
+    payload = MetricsCollector().emit_slo_stub(
+        "cli_help_p95_ms", 200.0, threshold=250.0
+    )
 
     assert payload["emitter"] == "wl135-slo-stub"
     assert payload["metric_name"] == "cli_help_p95_ms"
@@ -18,8 +20,12 @@ def test_emit_slo_stub_pass_status() -> None:
 def test_emit_slo_stub_fail_and_unknown_statuses() -> None:
     collector = MetricsCollector()
 
-    fail_payload = collector.emit_slo_stub("run_command_p95_ms", 900.0, threshold=800.0, lane="nightly-lane")
-    unknown_payload = collector.emit_slo_stub("run_command_p95_ms", 900.0, threshold=None)
+    fail_payload = collector.emit_slo_stub(
+        "run_command_p95_ms", 900.0, threshold=800.0, lane="nightly-lane"
+    )
+    unknown_payload = collector.emit_slo_stub(
+        "run_command_p95_ms", 900.0, threshold=None
+    )
 
     assert fail_payload["status"] == "fail"
     assert fail_payload["lane"] == "nightly-lane"

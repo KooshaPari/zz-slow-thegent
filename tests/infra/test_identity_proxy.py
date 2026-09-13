@@ -63,17 +63,23 @@ def proxy_with_env(
 class TestSSHIdentityProxyInit:
     """Tests for SSHIdentityProxy initialization."""
 
-    def test_init_sets_socket_path(self, proxy: SSHIdentityProxy, proxy_socket_path: Path) -> None:
+    def test_init_sets_socket_path(
+        self, proxy: SSHIdentityProxy, proxy_socket_path: Path
+    ) -> None:
         """Verify socket path is set correctly."""
         assert proxy.proxy_socket_path == proxy_socket_path
 
-    def test_init_reads_ssh_auth_sock(self, proxy: SSHIdentityProxy, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_init_reads_ssh_auth_sock(
+        self, proxy: SSHIdentityProxy, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Verify SSH_AUTH_SOCK is read from environment."""
         monkeypatch.setenv("SSH_AUTH_SOCK", "/tmp/test.sock")
         proxy_with_env = SSHIdentityProxy(proxy.proxy_socket_path)
         assert proxy_with_env.host_ssh_auth_sock == "/tmp/test.sock"
 
-    def test_init_handles_missing_ssh_auth_sock(self, proxy: SSHIdentityProxy, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_init_handles_missing_ssh_auth_sock(
+        self, proxy: SSHIdentityProxy, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Verify missing SSH_AUTH_SOCK is handled gracefully."""
         monkeypatch.delenv("SSH_AUTH_SOCK", raising=False)
         proxy_no_env = SSHIdentityProxy(proxy.proxy_socket_path)
@@ -91,7 +97,9 @@ class TestSSHIdentityProxyInit:
 class TestSSHIdentityProxyLifecycle:
     """Tests for start/stop lifecycle."""
 
-    def test_start_creates_socket_directory(self, mock_host_socket: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_start_creates_socket_directory(
+        self, mock_host_socket: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Verify start creates parent directories for socket."""
         # Use a nested path that doesn't exist yet (but keep it short for AF_UNIX limit)
         socket_path = Path(f"/tmp/ssh-test-{os.getpid()}-nested/proxy.sock")
@@ -115,7 +123,9 @@ class TestSSHIdentityProxyLifecycle:
         proxy_with_env.stop()
         assert proxy_with_env._running is False
 
-    def test_stop_removes_socket_file(self, proxy_with_env: SSHIdentityProxy, proxy_socket_path: Path) -> None:
+    def test_stop_removes_socket_file(
+        self, proxy_with_env: SSHIdentityProxy, proxy_socket_path: Path
+    ) -> None:
         """Verify stop removes the socket file."""
         proxy_with_env.start()
         proxy_with_env.stop()
@@ -141,7 +151,9 @@ class TestSSHIdentityProxyLifecycle:
         assert "SSH_AUTH_SOCK not set" in caplog.text
         assert proxy_no_env._running is False
 
-    def test_start_removes_existing_socket(self, proxy_with_env: SSHIdentityProxy, proxy_socket_path: Path) -> None:
+    def test_start_removes_existing_socket(
+        self, proxy_with_env: SSHIdentityProxy, proxy_socket_path: Path
+    ) -> None:
         """Verify existing socket file is removed on start."""
         proxy_socket_path.parent.mkdir(parents=True, exist_ok=True)
         proxy_socket_path.touch()
@@ -155,13 +167,17 @@ class TestSSHIdentityProxyLifecycle:
 class TestSSHIdentityProxyEnvironment:
     """Tests for environment variable generation."""
 
-    def test_get_env_returns_ssh_auth_sock(self, proxy: SSHIdentityProxy, proxy_socket_path: Path) -> None:
+    def test_get_env_returns_ssh_auth_sock(
+        self, proxy: SSHIdentityProxy, proxy_socket_path: Path
+    ) -> None:
         """Verify get_env returns SSH_AUTH_SOCK with proxy path."""
         env = proxy.get_env()
         assert "SSH_AUTH_SOCK" in env
         assert env["SSH_AUTH_SOCK"] == str(proxy_socket_path)
 
-    def test_get_env_returns_thegent_identity_proxy(self, proxy: SSHIdentityProxy) -> None:
+    def test_get_env_returns_thegent_identity_proxy(
+        self, proxy: SSHIdentityProxy
+    ) -> None:
         """Verify get_env returns THEGENT_IDENTITY_PROXY flag."""
         env = proxy.get_env()
         assert "THEGENT_IDENTITY_PROXY" in env
@@ -178,7 +194,9 @@ class TestSSHIdentityProxyEnvironment:
 class TestSSHIdentityProxyServerLoop:
     """Tests for server loop functionality."""
 
-    def test_server_loop_handles_timeout(self, proxy_with_env: SSHIdentityProxy) -> None:
+    def test_server_loop_handles_timeout(
+        self, proxy_with_env: SSHIdentityProxy
+    ) -> None:
         """Verify server loop handles socket timeout gracefully."""
         proxy_with_env.start()
         # Let it run briefly
@@ -188,7 +206,9 @@ class TestSSHIdentityProxyServerLoop:
         proxy_with_env.stop()
         # Should not have raised any exceptions
 
-    def test_server_loop_stops_on_running_false(self, proxy_with_env: SSHIdentityProxy) -> None:
+    def test_server_loop_stops_on_running_false(
+        self, proxy_with_env: SSHIdentityProxy
+    ) -> None:
         """Verify server loop terminates when running is False."""
         proxy_with_env.start()
         assert proxy_with_env._thread is not None
@@ -203,7 +223,10 @@ class TestSSHIdentityProxyMockedSocket:
 
     @patch("thegent.infra.identity_proxy.socket.socket")
     def test_start_creates_unix_socket(
-        self, mock_socket_class: MagicMock, proxy_with_env: SSHIdentityProxy, proxy_socket_path: Path
+        self,
+        mock_socket_class: MagicMock,
+        proxy_with_env: SSHIdentityProxy,
+        proxy_socket_path: Path,
     ) -> None:
         """Verify start creates a Unix domain socket."""
         mock_socket = MagicMock()
@@ -225,7 +248,10 @@ class TestSSHIdentityProxyMockedSocket:
 
     @patch("thegent.infra.identity_proxy.socket.socket")
     def test_socket_operations_sequence(
-        self, mock_socket_class: MagicMock, proxy_with_env: SSHIdentityProxy, proxy_socket_path: Path
+        self,
+        mock_socket_class: MagicMock,
+        proxy_with_env: SSHIdentityProxy,
+        proxy_socket_path: Path,
     ) -> None:
         """Verify socket bind, listen, settimeout are called in sequence."""
         mock_socket = MagicMock()
@@ -254,7 +280,9 @@ class TestSSHIdentityProxyMockedSocket:
 class TestSSHIdentityProxyClientHandling:
     """Tests for client connection handling."""
 
-    def test_handle_client_closes_connection(self, proxy_with_env: SSHIdentityProxy) -> None:
+    def test_handle_client_closes_connection(
+        self, proxy_with_env: SSHIdentityProxy
+    ) -> None:
         """Verify client connections are properly closed."""
         proxy_with_env.start()
 
@@ -264,7 +292,10 @@ class TestSSHIdentityProxyClientHandling:
 
     @patch("socket.socket")
     def test_handle_client_creates_host_connection(
-        self, mock_socket_class: MagicMock, proxy_with_env: SSHIdentityProxy, mock_host_socket: Path
+        self,
+        mock_socket_class: MagicMock,
+        proxy_with_env: SSHIdentityProxy,
+        mock_host_socket: Path,
     ) -> None:
         """Verify handler connects to host SSH agent."""
         mock_client = MagicMock()
@@ -346,7 +377,9 @@ class TestSSHIdentityProxyEdgeCases:
         proxy_with_env.stop()
         assert proxy_with_env._running is False
 
-    def test_socket_path_with_spaces(self, mock_host_socket: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_socket_path_with_spaces(
+        self, mock_host_socket: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Verify socket path with spaces works."""
         # Use a short path with spaces (in /tmp to stay under AF_UNIX path limit)
         socket_path = Path(f"/tmp/ssh-test-{os.getpid()}-with spaces/proxy.sock")
@@ -356,7 +389,9 @@ class TestSSHIdentityProxyEdgeCases:
         assert socket_path.parent.exists()
         proxy.stop()
 
-    def test_socket_path_deep_hierarchy(self, mock_host_socket: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_socket_path_deep_hierarchy(
+        self, mock_host_socket: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Verify deep directory hierarchy is created."""
         # Use a deep but short path (in /tmp to stay under AF_UNIX path limit)
         socket_path = Path(f"/tmp/ssh-{os.getpid()}/a/b/proxy.sock")
@@ -371,7 +406,10 @@ class TestSSHIdentityProxyIntegration:
     """Integration-style tests with real socket operations."""
 
     def test_full_lifecycle_with_real_sockets(
-        self, proxy_socket_path: Path, mock_host_socket: Path, monkeypatch: pytest.MonkeyPatch
+        self,
+        proxy_socket_path: Path,
+        mock_host_socket: Path,
+        monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         """Verify full start/stop lifecycle with real sockets."""
         # Create a mock SSH agent server
@@ -422,7 +460,9 @@ class TestSSHIdentityProxyIntegration:
 class TestSSHIdentityProxyHandleClient:
     """Tests for _handle_client method."""
 
-    def test_handle_client_closes_on_exception(self, proxy_with_env: SSHIdentityProxy) -> None:
+    def test_handle_client_closes_on_exception(
+        self, proxy_with_env: SSHIdentityProxy
+    ) -> None:
         """Verify _handle_client handles exceptions gracefully."""
         proxy_with_env.start()
 
@@ -475,7 +515,9 @@ class TestSSHIdentityProxyHandleClient:
         time.sleep(0.1)
         proxy_with_env.stop()
 
-    def test_handle_client_non_blocking_setup(self, proxy_with_env: SSHIdentityProxy) -> None:
+    def test_handle_client_non_blocking_setup(
+        self, proxy_with_env: SSHIdentityProxy
+    ) -> None:
         """Test _handle_client sets up non-blocking sockets."""
         proxy_with_env.start()
 
@@ -496,7 +538,9 @@ class TestSSHIdentityProxyHandleClient:
 class TestSSHIdentityProxyForwardRecv:
     """Tests for _forward_recv helper in _handle_client."""
 
-    def test_forward_recv_handles_blocking_io(self, proxy_with_env: SSHIdentityProxy) -> None:
+    def test_forward_recv_handles_blocking_io(
+        self, proxy_with_env: SSHIdentityProxy
+    ) -> None:
         """Test _forward_recv handles BlockingIOError gracefully."""
         proxy_with_env.start()
 
@@ -509,7 +553,9 @@ class TestSSHIdentityProxyForwardRecv:
 
         proxy_with_env.stop()
 
-    def test_forward_recv_returns_false_on_empty_data(self, proxy_with_env: SSHIdentityProxy) -> None:
+    def test_forward_recv_returns_false_on_empty_data(
+        self, proxy_with_env: SSHIdentityProxy
+    ) -> None:
         """Test _forward_recv returns False when connection closed."""
         proxy_with_env.start()
 
@@ -527,7 +573,10 @@ class TestSSHIdentityProxyHandleClientIntegration:
     """Integration tests for _handle_client with real socket operations."""
 
     def test_handle_client_forwards_data_to_host(
-        self, proxy_socket_path: Path, mock_host_socket: Path, monkeypatch: pytest.MonkeyPatch
+        self,
+        proxy_socket_path: Path,
+        mock_host_socket: Path,
+        monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         """Test _handle_client forwards data between client and host."""
         import time
@@ -606,7 +655,10 @@ class TestSSHIdentityProxyHandleClientIntegration:
             proxy.stop()
 
     def test_handle_client_handles_connection_close(
-        self, proxy_socket_path: Path, mock_host_socket: Path, monkeypatch: pytest.MonkeyPatch
+        self,
+        proxy_socket_path: Path,
+        mock_host_socket: Path,
+        monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         """Test _handle_client handles client connection close."""
         import time
@@ -720,7 +772,9 @@ class TestSSHIdentityProxyRequireActorIdentity:
             )
 
     @patch("thegent.infra.identity_proxy.verify_actor_signature")
-    def test_require_actor_identity_verifies_signature(self, mock_verify: MagicMock) -> None:
+    def test_require_actor_identity_verifies_signature(
+        self, mock_verify: MagicMock
+    ) -> None:
         """Test require_actor_identity calls verify_actor_signature."""
         mock_verify.return_value = True
 
@@ -739,7 +793,9 @@ class TestSSHIdentityProxyRequireActorIdentity:
         )
 
     @patch("thegent.infra.identity_proxy.verify_actor_signature")
-    def test_require_actor_identity_rejects_invalid_signature(self, mock_verify: MagicMock) -> None:
+    def test_require_actor_identity_rejects_invalid_signature(
+        self, mock_verify: MagicMock
+    ) -> None:
         """Test require_actor_identity rejects invalid signature."""
         mock_verify.return_value = False
 

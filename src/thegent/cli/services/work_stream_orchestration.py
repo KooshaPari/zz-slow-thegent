@@ -62,11 +62,16 @@ def do_next_impl(cd: Path | None = None, limit: int = 5) -> dict[str, Any]:
     queued, q_sources = run_workstream_helpers.collect_queued_items(settings, limit)
     aggregated_items.extend(queued)
     sources_checked.extend(q_sources)
-    ws_items, ws_sources = run_workstream_helpers.collect_work_stream_items(work_stream_path, limit)
+    ws_items, ws_sources = run_workstream_helpers.collect_work_stream_items(
+        work_stream_path, limit
+    )
     aggregated_items.extend(ws_items)
     sources_checked.extend(ws_sources)
     aggregated_items.sort(
-        key=lambda x: (x.pop("_sort_order", 5), run_workstream_helpers.priority_sort_key(x.get("priority", "P2")))
+        key=lambda x: (
+            x.pop("_sort_order", 5),
+            run_workstream_helpers.priority_sort_key(x.get("priority", "P2")),
+        )
     )
     next_items = aggregated_items[:limit]
 
@@ -224,7 +229,10 @@ def spawn_next_impl(
             try:
                 claim_result = work_stream_claim_impl(item_id, agent_id, cd=cd)
                 if not claim_result.get("success", False):
-                    err: dict[str, Any] = {"item_id": item_id, "error": claim_result.get("error", "Claim failed")}
+                    err: dict[str, Any] = {
+                        "item_id": item_id,
+                        "error": claim_result.get("error", "Claim failed"),
+                    }
                     if claim_result.get("governance_blocked"):
                         err["governance_blocked"] = True
                         err["remediation"] = claim_result.get("remediation")
@@ -263,7 +271,9 @@ def spawn_next_impl(
     return {"spawned": spawned, "errors": errors, "count": len(spawned)}
 
 
-def work_stream_claim_impl(item_id: str, agent_id: str, cd: Path | None = None) -> dict[str, Any]:
+def work_stream_claim_impl(
+    item_id: str, agent_id: str, cd: Path | None = None
+) -> dict[str, Any]:
     """Claim a work item (move from BACKLOG to CLAIMED in WORK_STREAM.md)."""
     from thegent.cli.commands.impl import _resolve_cwd
     from thegent.planning.work_stream import WorkStreamManager
@@ -283,7 +293,9 @@ def work_stream_claim_impl(item_id: str, agent_id: str, cd: Path | None = None) 
     return manager.claim(item_id, agent_id)
 
 
-def work_stream_complete_impl(item_id: str, agent_id: str, cd: Path | None = None) -> dict[str, Any]:
+def work_stream_complete_impl(
+    item_id: str, agent_id: str, cd: Path | None = None
+) -> dict[str, Any]:
     """Complete a work item (move from CLAIMED to COMPLETED in WORK_STREAM.md)."""
     from thegent.cli.commands.impl import _resolve_cwd
     from thegent.planning.work_stream import WorkStreamManager
@@ -346,7 +358,9 @@ def incorporate_impl(cd: Path | None = None, dry_run: bool = False) -> dict[str,
     }
 
 
-def _validate_task_and_record_errors(tf: Path, validation_errors: list[dict[str, Any]]) -> None:
+def _validate_task_and_record_errors(
+    tf: Path, validation_errors: list[dict[str, Any]]
+) -> None:
     """Validate a single task file and append validation errors."""
     from thegent.task.validator import validate_task_file
 

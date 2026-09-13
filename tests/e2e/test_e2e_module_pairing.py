@@ -39,8 +39,12 @@ def test_each_e2e_utility_module_has_at_least_one_importing_test() -> None:
     assert TEST_FILES, f"no e2e test files found under {E2E_DIR}"
 
     for module_name in UTILITY_MODULES:
-        importing_tests = [path for path in TEST_FILES if _imports_module(path, module_name)]
-        assert importing_tests, f"No tests import {module_name}; add at least one test_*.py that imports it."
+        importing_tests = [
+            path for path in TEST_FILES if _imports_module(path, module_name)
+        ]
+        assert importing_tests, (
+            f"No tests import {module_name}; add at least one test_*.py that imports it."
+        )
 
 
 def test_each_utility_module_has_a_dedicated_test_file() -> None:
@@ -50,5 +54,9 @@ def test_each_utility_module_has_a_dedicated_test_file() -> None:
         "tests.e2e.command_surface": E2E_DIR / "test_command_surface.py",
     }
     for module_name, expected_test_path in expected_test_files.items():
-        assert expected_test_path.exists(), f"Missing dedicated test file for {module_name}: {expected_test_path}"
-        assert _imports_module(expected_test_path, module_name), f"{expected_test_path} must import {module_name}"
+        assert expected_test_path.exists(), (
+            f"Missing dedicated test file for {module_name}: {expected_test_path}"
+        )
+        assert _imports_module(expected_test_path, module_name), (
+            f"{expected_test_path} must import {module_name}"
+        )

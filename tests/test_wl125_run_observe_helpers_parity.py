@@ -12,7 +12,10 @@ def test_wl125_hash_observe_summary_payload_wrapper_delegates(monkeypatch) -> No
         captured["payload"] = payload
         return {"algorithm": "sha256", "value": "wrapped"}
 
-    monkeypatch.setattr("thegent.cli.commands.impl.run_observe_helpers.hash_observe_summary_payload", _fake)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_observe_helpers.hash_observe_summary_payload",
+        _fake,
+    )
 
     payload = {"payload_type": "observe_summary"}
     result = impl._hash_observe_summary_payload(payload)
@@ -21,14 +24,19 @@ def test_wl125_hash_observe_summary_payload_wrapper_delegates(monkeypatch) -> No
     assert captured["payload"] == payload
 
 
-def test_wl125_classify_observe_summary_trend_health_wrapper_delegates(monkeypatch) -> None:
+def test_wl125_classify_observe_summary_trend_health_wrapper_delegates(
+    monkeypatch,
+) -> None:
     captured: dict[str, Any] = {}
 
     def _fake(**kwargs: Any) -> dict[str, Any]:
         captured.update(kwargs)
         return {"trend_snapshot_health": "warning", "trend_snapshot_health_score": 81}
 
-    monkeypatch.setattr("thegent.cli.commands.impl.run_observe_helpers.classify_observe_summary_trend_health", _fake)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_observe_helpers.classify_observe_summary_trend_health",
+        _fake,
+    )
 
     result = impl._classify_observe_summary_trend_health(
         enabled=True,
@@ -52,13 +60,18 @@ def test_wl125_classify_observe_summary_trend_health_wrapper_delegates(monkeypat
 def test_wl125_load_observe_summary_snapshots_wrapper_delegates(monkeypatch) -> None:
     captured: dict[str, Any] = {}
 
-    def _fake(scope_signature: str, scope_key_json: str, limit: int) -> list[dict[str, Any]]:
+    def _fake(
+        scope_signature: str, scope_key_json: str, limit: int
+    ) -> list[dict[str, Any]]:
         captured["scope_signature"] = scope_signature
         captured["scope_key_json"] = scope_key_json
         captured["limit"] = limit
         return [{"record_type": "observe_summary_snapshot"}]
 
-    monkeypatch.setattr("thegent.cli.commands.impl.run_observe_helpers.load_observe_summary_snapshots", _fake)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_observe_helpers.load_observe_summary_snapshots",
+        _fake,
+    )
 
     result = impl._load_observe_summary_snapshots("sig", "{}", 5)
 
@@ -84,7 +97,10 @@ def test_wl125_append_observe_summary_snapshot_wrapper_delegates(monkeypatch) ->
         captured["trend_snapshot_ids"] = trend_snapshot_ids
         captured["trend_summary"] = trend_summary
 
-    monkeypatch.setattr("thegent.cli.commands.impl.run_observe_helpers.append_observe_summary_snapshot", _fake)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_observe_helpers.append_observe_summary_snapshot",
+        _fake,
+    )
 
     payload = {"payload_type": "observe_summary"}
     trend_scope_key = {"payload_type": "observe_summary", "limit": 100}
@@ -104,7 +120,9 @@ def test_wl125_append_observe_summary_snapshot_wrapper_delegates(monkeypatch) ->
     assert captured["trend_summary"] == trend_summary
 
 
-def test_wl125_classify_observe_summary_trend_health_functional_good_case(monkeypatch) -> None:
+def test_wl125_classify_observe_summary_trend_health_functional_good_case(
+    monkeypatch,
+) -> None:
     policy_vars = (
         "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_GOOD_THRESHOLD",
         "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_WARNING_THRESHOLD",

@@ -151,7 +151,9 @@ class TestSubAgentDispatcherConcurrent:
 
 @pytest.mark.requirement("FR-ORC-082")
 class TestSubAgentDispatcherEvents:
-    def test_sub_agent_dispatcher_emits_started_event(self, caplog: pytest.LogCaptureFixture) -> None:
+    def test_sub_agent_dispatcher_emits_started_event(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
         """dispatch() logs a STARTED event at INFO level."""
         index = CapabilityIndex()
         dispatcher = SubAgentDispatcher(capability_index=index)
@@ -162,7 +164,9 @@ class TestSubAgentDispatcherEvents:
         log_text = " ".join(caplog.messages)
         assert "req-start" in log_text or "started" in log_text.lower()
 
-    def test_sub_agent_dispatcher_emits_completed_event(self, caplog: pytest.LogCaptureFixture) -> None:
+    def test_sub_agent_dispatcher_emits_completed_event(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
         """dispatch() logs a COMPLETED event at INFO level on success."""
         index = CapabilityIndex()
         dispatcher = SubAgentDispatcher(capability_index=index)

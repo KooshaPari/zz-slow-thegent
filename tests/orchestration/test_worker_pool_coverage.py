@@ -139,14 +139,20 @@ class TestTaskWorkerPoolInit:
 
     def test_default_max_workers(self, mock_settings: MagicMock) -> None:
         """Verify default max_workers is 4."""
-        with patch("thegent.orchestration.worker_pool.ThegentSettings", return_value=mock_settings):
+        with patch(
+            "thegent.orchestration.worker_pool.ThegentSettings",
+            return_value=mock_settings,
+        ):
             pool = TaskWorkerPool()
 
             assert pool.max_workers == 4
 
     def test_custom_max_workers(self, mock_settings: MagicMock) -> None:
         """Verify custom max_workers can be set."""
-        with patch("thegent.orchestration.worker_pool.ThegentSettings", return_value=mock_settings):
+        with patch(
+            "thegent.orchestration.worker_pool.ThegentSettings",
+            return_value=mock_settings,
+        ):
             pool = TaskWorkerPool(max_workers=8)
 
             assert pool.max_workers == 8
@@ -166,7 +172,10 @@ class TestTaskWorkerPoolInit:
 
     def test_not_running_initially(self, mock_settings: MagicMock) -> None:
         """Verify pool is not running initially."""
-        with patch("thegent.orchestration.worker_pool.ThegentSettings", return_value=mock_settings):
+        with patch(
+            "thegent.orchestration.worker_pool.ThegentSettings",
+            return_value=mock_settings,
+        ):
             pool = TaskWorkerPool()
 
             assert pool._running is False

@@ -56,7 +56,9 @@ def test_gate_exits_0_when_file_empty(tmp_path: Path) -> None:
         capture_output=True,
         text=True,
     )
-    assert result.returncode == 0, f"Expected exit 0 with empty JSONL, got {result.returncode}. stderr: {result.stderr}"
+    assert result.returncode == 0, (
+        f"Expected exit 0 with empty JSONL, got {result.returncode}. stderr: {result.stderr}"
+    )
 
 
 def _all_green_record() -> dict:
@@ -94,7 +96,9 @@ def test_gate_exits_0_when_all_green(tmp_path: Path) -> None:
     quality_dir = tmp_path / ".quality"
     quality_dir.mkdir()
     jsonl_path = quality_dir / "slo-metrics.jsonl"
-    jsonl_path.write_text(json.dumps(_all_green_record().decode()) + "\n", encoding="utf-8")
+    jsonl_path.write_text(
+        json.dumps(_all_green_record().decode()) + "\n", encoding="utf-8"
+    )
 
     result = subprocess.run(
         [sys.executable, str(GATE_SCRIPT)],
@@ -112,7 +116,9 @@ def test_gate_exits_1_when_all_red(tmp_path: Path) -> None:
     quality_dir = tmp_path / ".quality"
     quality_dir.mkdir()
     jsonl_path = quality_dir / "slo-metrics.jsonl"
-    jsonl_path.write_text(json.dumps(_all_red_record().decode()) + "\n", encoding="utf-8")
+    jsonl_path.write_text(
+        json.dumps(_all_red_record().decode()) + "\n", encoding="utf-8"
+    )
 
     result = subprocess.run(
         [sys.executable, str(GATE_SCRIPT)],
@@ -135,7 +141,12 @@ def test_gate_uses_last_record_only(tmp_path: Path) -> None:
     quality_dir.mkdir()
     jsonl_path = quality_dir / "slo-metrics.jsonl"
     # First record is all-red, last record is all-green
-    content = json.dumps(_all_red_record().decode()) + "\n" + json.dumps(_all_green_record().decode()) + "\n"
+    content = (
+        json.dumps(_all_red_record().decode())
+        + "\n"
+        + json.dumps(_all_green_record().decode())
+        + "\n"
+    )
     jsonl_path.write_text(content, encoding="utf-8")
 
     result = subprocess.run(

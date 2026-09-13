@@ -305,9 +305,12 @@ class TestAuditContext:
         assert entry.extra["verdict"] == "allow"
 
     def test_error_path_records_and_reraises(self) -> None:
-        with pytest.raises(RuntimeError, match="boom"), audit_context(
-            kind="tool_invocation",
-            operation="fail",
+        with (
+            pytest.raises(RuntimeError, match="boom"),
+            audit_context(
+                kind="tool_invocation",
+                operation="fail",
+            ),
         ):
             raise RuntimeError("boom")
 
@@ -798,10 +801,13 @@ class TestAuditedBudgetHelper:
         assert "tool_invoke_ms" in MCP_PERF_BUDGETS
 
     def test_exception_path_records_error_outcome_and_reraises(self) -> None:
-        with pytest.raises(ValueError), audited_budget(
-            kind="tool_invocation",
-            operation="tool_invoke_ms",
-            budget_ms=10_000.0,
+        with (
+            pytest.raises(ValueError),
+            audited_budget(
+                kind="tool_invocation",
+                operation="tool_invoke_ms",
+                budget_ms=10_000.0,
+            ),
         ):
             raise ValueError("simulated")
 
@@ -828,10 +834,13 @@ class TestAuditedBudgetHelper:
         """
         from thegent.mcp.server.mcp_perf_gates import MCPBudgetExceeded
 
-        with pytest.raises(MCPBudgetExceeded), audited_budget(
-            kind="tool_invocation",
-            operation="tool_invoke_ms",
-            budget_ms=0.001,  # 1 microsecond — impossible to satisfy
+        with (
+            pytest.raises(MCPBudgetExceeded),
+            audited_budget(
+                kind="tool_invocation",
+                operation="tool_invoke_ms",
+                budget_ms=0.001,  # 1 microsecond — impossible to satisfy
+            ),
         ):
             # Yield to the scheduler so the context sees at least
             # a few microseconds of elapsed time.
@@ -848,10 +857,13 @@ class TestAuditedBudgetHelper:
         contract from ``audit_context``: unknown strings coerce to
         ``TOOL_INVOCATION`` with a ``UserWarning``.
         """
-        with pytest.warns(UserWarning, match="unknown kind"), audited_budget(
-            kind="totally_bogus_kind",
-            operation="tool_invoke_ms",
-            budget_ms=10_000.0,
+        with (
+            pytest.warns(UserWarning, match="unknown kind"),
+            audited_budget(
+                kind="totally_bogus_kind",
+                operation="tool_invoke_ms",
+                budget_ms=10_000.0,
+            ),
         ):
             pass
         recent = mcp_audit_recent(n=1)

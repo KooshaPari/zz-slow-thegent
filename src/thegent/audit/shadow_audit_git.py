@@ -146,7 +146,13 @@ GitJournal = ShadowAuditGit
 GitJournalAsync = ShadowAuditGit
 
 
-__all__ = ["AuditEntry", "ShadowAuditGit", "GitJournal", "GitJournalAsync", "GitJournalEnhanced"]
+__all__ = [
+    "AuditEntry",
+    "ShadowAuditGit",
+    "GitJournal",
+    "GitJournalAsync",
+    "GitJournalEnhanced",
+]
 
 
 class GitJournalEnhanced(ShadowAuditGit):

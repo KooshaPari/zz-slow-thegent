@@ -21,11 +21,15 @@ class ResourceCache:
     - ETag: Change detection for cache invalidation
     """
 
-    def __init__(self, cache_dir: Path, ttl_seconds: int = 60, max_memory_items: int = 50) -> None:
+    def __init__(
+        self, cache_dir: Path, ttl_seconds: int = 60, max_memory_items: int = 50
+    ) -> None:
         self.cache_dir = cache_dir
         self.ttl_seconds = ttl_seconds
         # Library-first (LIBRARY_FIRST_POLICY.md): In-memory TTL cache for frequently accessed items
-        self.memory_cache: TTLCache[str, Any] = TTLCache(maxsize=max_memory_items, ttl=ttl_seconds)
+        self.memory_cache: TTLCache[str, Any] = TTLCache(
+            maxsize=max_memory_items, ttl=ttl_seconds
+        )
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
     def _get_path(self, key: str) -> Path:
@@ -59,7 +63,9 @@ class ResourceCache:
         data = {
             "timestamp": time.time(),
             "payload": payload,
-            "etag": hashlib.sha256(json.dumps(payload, sort_keys=True).encode("utf-8")).hexdigest(),
+            "etag": hashlib.sha256(
+                json.dumps(payload, sort_keys=True).encode("utf-8")
+            ).hexdigest(),
         }
         # Write to file (persistent storage)
         path = self._get_path(key)

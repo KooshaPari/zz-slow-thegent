@@ -25,7 +25,9 @@ class BudgetConfig:
 class BudgetAlertSystem:
     """Check budgets and emit alerts."""
 
-    def __init__(self, cost_dir: Path | None = None, config: BudgetConfig | None = None) -> None:
+    def __init__(
+        self, cost_dir: Path | None = None, config: BudgetConfig | None = None
+    ) -> None:
         """Initialize budget alert system.
 
         Args:
@@ -58,7 +60,9 @@ class BudgetAlertSystem:
 
         return cls(config=config)
 
-    def check_budget(self, current_cost: float, context: str = "run") -> tuple[str, bool]:
+    def check_budget(
+        self, current_cost: float, context: str = "run"
+    ) -> tuple[str, bool]:
         """Check if cost exceeds budget.
 
         Args:
@@ -134,7 +138,9 @@ class BudgetAlertSystem:
 
         from datetime import UTC, datetime
 
-        today_start = datetime.now(UTC).replace(hour=0, minute=0, second=0, microsecond=0)
+        today_start = datetime.now(UTC).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
         total = 0.0
 
         import json

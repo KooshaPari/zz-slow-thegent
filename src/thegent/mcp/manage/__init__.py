@@ -1,4 +1,5 @@
 """Stub module."""
+
 from typing import Any
 
 DEFAULT_MCP_URL = "http://localhost:8080"
@@ -24,6 +25,7 @@ def _get_mcp_url(server_name: str) -> str:
         URL string for the server.
     """
     import os
+
     env_var = f"MCP_URL_{server_name.upper().replace('-', '_')}"
     return os.environ.get(env_var, DEFAULT_MCP_URL)
 

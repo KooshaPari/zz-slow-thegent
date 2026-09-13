@@ -115,7 +115,9 @@ class TestRegisterEndStatusMachine:
         # path — but the validation layer is part of the public API
         # so the test just confirms the validation surface works.
         with pytest.raises(ValueError, match="status must be one of"):
-            RunRegistry(tmp_path).register_end("u1", 1, "bogus", "2026-07-22T00:00:00Z", 1.0)
+            RunRegistry(tmp_path).register_end(
+                "u1", 1, "bogus", "2026-07-22T00:00:00Z", 1.0
+            )
 
     def test_status_persists_canonical_in_jsonl(self, tmp_path: Path) -> None:
         """The JSONL entry persists ``status`` verbatim so the audit
@@ -126,7 +128,9 @@ class TestRegisterEndStatusMachine:
         reg.register_start(_make_meta("p1"))
         reg.register_end("p1", 130, "cancelled", "2026-07-22T00:00:00Z", 1.0)
         finish_lines = [
-            l for l in reg.registry_path.read_text(encoding="utf-8").strip().splitlines() if '"finish"' in l
+            l
+            for l in reg.registry_path.read_text(encoding="utf-8").strip().splitlines()
+            if '"finish"' in l
         ]
         assert len(finish_lines) == 1
         data = json.loads(finish_lines[0])
@@ -157,7 +161,9 @@ class TestListRunsPredicateNarrowing:
         # canonical surface would emit it through a different path,
         # but the list_runs contract must be agnostic to where the
         # line came from.
-        feedback_line = json.dumps({"run_id": "f10", "event": "feedback", "status": "kept", "score": 0.9})
+        feedback_line = json.dumps(
+            {"run_id": "f10", "event": "feedback", "status": "kept", "score": 0.9}
+        )
         with open(reg.registry_path, "a", encoding="utf-8") as f:
             f.write(feedback_line + "\n")
 
@@ -170,7 +176,9 @@ class TestListRunsPredicateNarrowing:
     def test_list_runs_ignores_override_event_status(self, tmp_path: Path) -> None:
         reg = RunRegistry(tmp_path)
         reg.register_start(_make_meta("f11"))
-        override_line = json.dumps({"run_id": "f11", "event": "override_applied", "status": "resolved"})
+        override_line = json.dumps(
+            {"run_id": "f11", "event": "override_applied", "status": "resolved"}
+        )
         with open(reg.registry_path, "a", encoding="utf-8") as f:
             f.write(override_line + "\n")
 
@@ -178,7 +186,9 @@ class TestListRunsPredicateNarrowing:
         assert len(runs) == 1
         assert runs[0]["status"] == "pending"
 
-    def test_list_runs_finish_event_still_overrides_status(self, tmp_path: Path) -> None:
+    def test_list_runs_finish_event_still_overrides_status(
+        self, tmp_path: Path
+    ) -> None:
         """The narrowed predicate MUST still accept legitimate finish
         events. The pre-AUDIT-N+29 narrow path covered the start
         entries correctly; this test pins that the finish-event path
@@ -239,7 +249,9 @@ class TestListRunsCanonicalWins:
     line, the canonical key wins.
     """
 
-    def test_finish_entry_with_both_legacy_and_canonical_duration(self, tmp_path: Path) -> None:
+    def test_finish_entry_with_both_legacy_and_canonical_duration(
+        self, tmp_path: Path
+    ) -> None:
         """Handwrite a finish line carrying both ``duration`` and
         ``duration_s``; the canonical ``duration_s`` wins.
         """
@@ -265,7 +277,9 @@ class TestListRunsCanonicalWins:
         assert runs[0]["duration_s"] == 2.0  # canonical wins
         assert runs[0]["ended_at_utc"] == "2026-07-22T00:00:01Z"
 
-    def test_finish_entry_with_only_legacy_duration_surfaces_under_canonical_key(self, tmp_path: Path) -> None:
+    def test_finish_entry_with_only_legacy_duration_surfaces_under_canonical_key(
+        self, tmp_path: Path
+    ) -> None:
         reg = RunRegistry(tmp_path)
         reg.register_start(_make_meta("cw2"))
         line = json.dumps(
@@ -286,7 +300,9 @@ class TestListRunsCanonicalWins:
         assert runs[0]["duration_s"] == 5.0  # legacy promoted
         assert runs[0]["ended_at_utc"] == "2026-07-22T00:00:00Z"
 
-    def test_finish_entry_surfaces_error_class_and_cost_usd(self, tmp_path: Path) -> None:
+    def test_finish_entry_surfaces_error_class_and_cost_usd(
+        self, tmp_path: Path
+    ) -> None:
         """Pre-AUDIT-N+29 list_runs only surfaced ``status`` /
         ``ended_at_utc`` / ``duration_s`` / ``exit_code`` from finish
         events. NEW-10 extends the merge to also surface
@@ -366,7 +382,9 @@ class TestConcurrencyLock:
         for line in reg.registry_path.read_text(encoding="utf-8").splitlines():
             json.loads(line)  # raises on interleaved / corrupt lines
 
-    def test_concurrent_register_start_preserves_header_genesis(self, tmp_path: Path) -> None:
+    def test_concurrent_register_start_preserves_header_genesis(
+        self, tmp_path: Path
+    ) -> None:
         """Two threads calling ``register_start`` concurrently must
         still produce a well-formed ``__header__`` line at offset 0.
         """
@@ -424,7 +442,9 @@ class TestWriteIOErrorHandling:
     surface the exception to the caller without partial-write corruption.
     """
 
-    def test_register_end_io_error_rolls_back_state(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_register_end_io_error_rolls_back_state(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         reg = RunRegistry(tmp_path)
         reg.register_start(_make_meta("io1"))
         assert reg.get_run_state("io1") is RunState.RUNNING
@@ -453,12 +473,16 @@ class TestWriteIOErrorHandling:
         # (the JSONL has no finish entry).
         assert reg.get_run_state("io1") is RunState.RUNNING
 
-    def test_register_start_io_error_rolls_back_state(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_register_start_io_error_rolls_back_state(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         reg = RunRegistry(tmp_path)
         original_open = open
 
         def failing_open(path: Any, mode: str = "r", *args: Any, **kwargs: Any) -> Any:
-            if str(path).endswith("run_registry.jsonl") and ("a" in mode or "w" in mode):
+            if str(path).endswith("run_registry.jsonl") and (
+                "a" in mode or "w" in mode
+            ):
                 raise OSError("read-only filesystem (simulated)")
             return original_open(path, mode, *args, **kwargs)
 
@@ -490,7 +514,9 @@ class TestRegisterEndDefensiveValidation:
         [None, "", 12345, 1.5, b"r1", ["r1"], {"r1": True}],
         ids=["none", "empty", "int", "float", "bytes", "list", "dict"],
     )
-    def test_register_end_rejects_non_string_or_empty_run_id(self, tmp_path: Path, bad_run_id: object) -> None:
+    def test_register_end_rejects_non_string_or_empty_run_id(
+        self, tmp_path: Path, bad_run_id: object
+    ) -> None:
         reg = RunRegistry(tmp_path)
         with pytest.raises(ValueError, match="run_id"):
             reg.register_end(bad_run_id, 0, "completed", "2026-07-22T00:00:00Z", 1.0)
@@ -502,7 +528,9 @@ class TestRegisterEndDefensiveValidation:
         ["zero", 1.5, None, b"0", [0], {"code": 0}],
         ids=["str", "float", "none", "bytes", "list", "dict"],
     )
-    def test_register_end_rejects_non_int_exit_code(self, tmp_path: Path, bad_exit_code: object) -> None:
+    def test_register_end_rejects_non_int_exit_code(
+        self, tmp_path: Path, bad_exit_code: object
+    ) -> None:
         reg = RunRegistry(tmp_path)
         with pytest.raises(ValueError, match="exit_code"):
             reg.register_end(
@@ -533,7 +561,9 @@ class TestRegisterEndDefensiveValidation:
         ["bogus", "PENDING", "Completed", "", 12345, None],
         ids=["bogus", "uppercase", "titlecase", "empty", "int", "none"],
     )
-    def test_register_end_rejects_invalid_status(self, tmp_path: Path, bad_status: object) -> None:
+    def test_register_end_rejects_invalid_status(
+        self, tmp_path: Path, bad_status: object
+    ) -> None:
         reg = RunRegistry(tmp_path)
         with pytest.raises(ValueError, match="status"):
             reg.register_end(
@@ -556,12 +586,16 @@ class TestRegisterEndDurationGuards:
     """
 
     @pytest.mark.parametrize("bad_value", [math.nan, math.inf, -math.inf])
-    def test_register_end_rejects_non_finite_duration(self, tmp_path: Path, bad_value: float) -> None:
+    def test_register_end_rejects_non_finite_duration(
+        self, tmp_path: Path, bad_value: float
+    ) -> None:
         reg = RunRegistry(tmp_path)
         with pytest.raises(ValueError, match="duration"):
             reg.register_end("r1", 0, "completed", "2026-07-22T00:00:00Z", bad_value)
 
-    def test_register_end_legacy_form_rejects_non_finite_duration(self, tmp_path: Path) -> None:
+    def test_register_end_legacy_form_rejects_non_finite_duration(
+        self, tmp_path: Path
+    ) -> None:
         """The legacy 5-positional form must also reject non-finite
         durations — the validation layer is shared.
         """
@@ -569,7 +603,9 @@ class TestRegisterEndDurationGuards:
         with pytest.raises(ValueError, match="duration"):
             reg.register_end("r1", 0, "completed", "2026-07-22T00:00:00Z", math.nan)
 
-    def test_register_end_negative_duration_clamped_to_zero(self, tmp_path: Path) -> None:
+    def test_register_end_negative_duration_clamped_to_zero(
+        self, tmp_path: Path
+    ) -> None:
         """A negative duration (clock-skew underflow) is clamped to
         ``0.0`` rather than rejected — the orchestrator contract
         allows the run to complete and the audit-trail entry stays

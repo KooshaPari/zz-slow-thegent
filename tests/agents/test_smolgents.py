@@ -31,7 +31,9 @@ def make_echo_tool() -> Tool:
 
 def make_upper_tool() -> Tool:
     """Tool that upper-cases the task string."""
-    return Tool(name="upper", description="Upper-case the input", func=lambda task: task.upper())
+    return Tool(
+        name="upper", description="Upper-case the input", func=lambda task: task.upper()
+    )
 
 
 def make_add_tool() -> Tool:
@@ -138,7 +140,9 @@ class TestSmolAgentToolCalling:
         def numeric_func(_task: str) -> int:
             return 42
 
-        agent = SmolAgent(name="a", tools=[Tool(name="num", description="d", func=numeric_func)])
+        agent = SmolAgent(
+            name="a", tools=[Tool(name="num", description="d", func=numeric_func)]
+        )
         result = agent.run("num: return something")
         assert isinstance(result, str)
         assert result == "42"

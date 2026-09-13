@@ -99,7 +99,9 @@ class TestWorker:
             "duration_ms": 42.0,
             "worker_pid": 12345,
         }
-        proc.stdout.readline = AsyncMock(return_value=(json.dumps(expected_result).decode() + "\n").encode())
+        proc.stdout.readline = AsyncMock(
+            return_value=(json.dumps(expected_result).decode() + "\n").encode()
+        )
 
         w = Worker(pid=12345, proc=proc)
         result = await w.execute(task)
@@ -114,7 +116,9 @@ class TestWorker:
         import json
 
         proc = _make_fake_proc(returncode=None)
-        proc.stdout.readline = AsyncMock(return_value=(json.dumps({"error": "bad json"}).decode() + "\n").encode())
+        proc.stdout.readline = AsyncMock(
+            return_value=(json.dumps({"error": "bad json"}).decode() + "\n").encode()
+        )
         w = Worker(pid=12345, proc=proc)
         with pytest.raises(RuntimeError, match="task error"):
             await w.execute(_make_task())
@@ -150,7 +154,9 @@ class TestWorker:
 # --------------------------------------------------------------------------- #
 
 
-def _make_pool_with_mock_workers(n: int = 2) -> tuple[PersistentWorkerPool, list[Worker]]:
+def _make_pool_with_mock_workers(
+    n: int = 2,
+) -> tuple[PersistentWorkerPool, list[Worker]]:
     """Build a pool bypassing actual subprocess creation."""
     pool = PersistentWorkerPool(pool_size=n, idle_timeout=300)
     pool._started = True
@@ -209,7 +215,9 @@ class TestPersistentWorkerPool:
             "duration_ms": 10.0,
             "worker_pid": workers[0].pid,
         }
-        workers[0]._proc.stdout.readline = AsyncMock(return_value=(json.dumps(payload).decode() + "\n").encode())
+        workers[0]._proc.stdout.readline = AsyncMock(
+            return_value=(json.dumps(payload).decode() + "\n").encode()
+        )
         result = await pool.submit(task)
         assert result.exit_code == 0
         assert result.stdout == "ok"
@@ -256,7 +264,9 @@ class TestPersistentWorkerPool:
         overflow_proc.stdout.readline = AsyncMock(return_value=b"READY\n")
         overflow_worker = Worker(pid=overflow_proc.pid, proc=overflow_proc)
 
-        with patch.object(pool, "_spawn_worker", new=AsyncMock(return_value=overflow_worker)):
+        with patch.object(
+            pool, "_spawn_worker", new=AsyncMock(return_value=overflow_worker)
+        ):
             acquired = await pool.acquire()
 
         assert acquired is overflow_worker
@@ -270,13 +280,19 @@ class TestPersistentWorkerPool:
         # Force last_used_at to past
         workers[1]._last_used_at = time.monotonic() - 1000
 
-        await pool._idle_reaper.__wrapped__(pool) if hasattr(pool._idle_reaper, "__wrapped__") else None  # type: ignore[attr-defined]
+        await pool._idle_reaper.__wrapped__(pool) if hasattr(
+            pool._idle_reaper, "__wrapped__"
+        ) else None  # type: ignore[attr-defined]
         # Run one reaper cycle manually
         lock = pool._get_lock()
         async with lock:
             alive: list[Worker] = []
             for w in pool._workers:
-                if not w.in_use and w.idle_seconds > pool._idle_timeout and len(alive) >= pool._pool_size:
+                if (
+                    not w.in_use
+                    and w.idle_seconds > pool._idle_timeout
+                    and len(alive) >= pool._pool_size
+                ):
                     await w.terminate()
                 else:
                     alive.append(w)

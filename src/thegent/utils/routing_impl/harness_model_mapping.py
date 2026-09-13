@@ -95,7 +95,9 @@ OLLAMA_MODEL_ALIASES: dict[str, str] = {
 }
 
 # Case-insensitive alias normalization. Keys must be lowercase.
-_LOWERCASE_BACKEND_MODEL_ALIASES: dict[str, str] = {key.lower(): value for key, value in CODEX_TO_BACKEND_MODEL.items()}
+_LOWERCASE_BACKEND_MODEL_ALIASES: dict[str, str] = {
+    key.lower(): value for key, value in CODEX_TO_BACKEND_MODEL.items()
+}
 _LOWERCASE_BACKEND_MODEL_ALIASES.update(
     {
         "minimax-m2.5": "minimax-m2.5",

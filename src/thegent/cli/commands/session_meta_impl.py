@@ -118,6 +118,10 @@ def _save_session_meta(meta_path: Path | str, meta: dict[str, Any]) -> None:
     try:
         path = Path(meta_path)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(meta, sort_keys=True, separators=(",", ":")), encoding="utf-8")
+        path.write_text(
+            json.dumps(meta, sort_keys=True, separators=(",", ":")), encoding="utf-8"
+        )
     except OSError as exc:
-        _log.debug("session_meta_impl: failed to persist meta to %s: %s", meta_path, exc)
+        _log.debug(
+            "session_meta_impl: failed to persist meta to %s: %s", meta_path, exc
+        )

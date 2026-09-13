@@ -53,7 +53,9 @@ def thegent_activate_skill_impl(
 ) -> Any:
     """Implementation for thegent_activate_skill tool."""
     if error_result_impl is not None and (not skill_name or not skill_name.strip()):
-        return error_result_impl("skill_name must be non-empty", "Provide a valid skill name")
+        return error_result_impl(
+            "skill_name must be non-empty", "Provide a valid skill name"
+        )
 
     if backend is not None and hasattr(backend, "activate_skill"):
         result = backend.activate_skill(skill_name)
@@ -65,8 +67,16 @@ def thegent_activate_skill_impl(
                     extra={"skill_name": skill_name},
                 )
             return _ToolResult(
-                content=_json.dumps({"error": f"Skill '{skill_name}' not found", "skill_name": skill_name}),
-                structured_content={"error": f"Skill '{skill_name}' not found", "skill_name": skill_name},
+                content=_json.dumps(
+                    {
+                        "error": f"Skill '{skill_name}' not found",
+                        "skill_name": skill_name,
+                    }
+                ),
+                structured_content={
+                    "error": f"Skill '{skill_name}' not found",
+                    "skill_name": skill_name,
+                },
             )
         return _ToolResult(
             content=_json.dumps({"skill": result}),
@@ -74,8 +84,20 @@ def thegent_activate_skill_impl(
         )
 
     return _ToolResult(
-        content=_json.dumps({"skill": {"name": skill_name, "content": f"# {skill_name}\nInstructions for {skill_name}"}}),
-        structured_content={"skill": {"name": skill_name, "content": f"# {skill_name}\nInstructions for {skill_name}"}},
+        content=_json.dumps(
+            {
+                "skill": {
+                    "name": skill_name,
+                    "content": f"# {skill_name}\nInstructions for {skill_name}",
+                }
+            }
+        ),
+        structured_content={
+            "skill": {
+                "name": skill_name,
+                "content": f"# {skill_name}\nInstructions for {skill_name}",
+            }
+        },
     )
 
 
@@ -84,13 +106,18 @@ def thegent_list_skills_impl(backend: Any | None = None) -> Any:
     if backend is not None and hasattr(backend, "list_skills"):
         skills = backend.list_skills()
         return _ToolResult(
-            content=_json.dumps({"skills": sorted(skills, key=lambda s: s.get("name", ""))}),
-            structured_content={"skills": sorted(skills, key=lambda s: s.get("name", ""))},
+            content=_json.dumps(
+                {"skills": sorted(skills, key=lambda s: s.get("name", ""))}
+            ),
+            structured_content={
+                "skills": sorted(skills, key=lambda s: s.get("name", ""))
+            },
         )
     return _ToolResult(
         content=_json.dumps({"skills": []}),
         structured_content={"skills": []},
     )
+
 
 class MCPSkillRegistry:
     """Registry for MCP server skills."""

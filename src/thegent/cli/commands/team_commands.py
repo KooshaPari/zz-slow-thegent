@@ -28,6 +28,7 @@ def team_create_cmd(
     """
     if console is None:
         from rich.console import Console
+
         console = Console()
 
     console.print(f"[bold]Creating team:[/bold] {name}")
@@ -54,6 +55,7 @@ def team_task_add_cmd(
     """
     if console is None:
         from rich.console import Console
+
         console = Console()
 
     console.print(f"[bold]Adding task to team {team_id}:[/bold] {title}")
@@ -72,6 +74,7 @@ def team_task_list_cmd(
     """
     if console is None:
         from rich.console import Console
+
         console = Console()
 
     console.print(f"[bold]Tasks for team {team_id}:[/bold]")

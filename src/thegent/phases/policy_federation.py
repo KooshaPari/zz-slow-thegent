@@ -77,7 +77,9 @@ class FederatedPolicyEngine:
 class PolicyConflictResolver:
     """Resolves conflicts between multiple applicable policies."""
 
-    def resolve(self, policies: list[dict[str, Any]], target_namespace: str) -> dict[str, Any]:
+    def resolve(
+        self, policies: list[dict[str, Any]], target_namespace: str
+    ) -> dict[str, Any]:
         """Resolve conflicting policies via precedence (most specific wins)."""
 
         # Sort policies by namespace specificity (number of dots)

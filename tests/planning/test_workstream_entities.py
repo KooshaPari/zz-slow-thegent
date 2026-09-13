@@ -36,7 +36,9 @@ def test_entity_operation_roundtrip_with_metadata(tmp_path: Path) -> None:
     assert listed["count"] == 1
     assert listed["items"][0]["title"] == "Past task"
 
-    searched = entity_operation("search", "workstream_items", query="Past", limit=10, db_path=db_path)
+    searched = entity_operation(
+        "search", "workstream_items", query="Past", limit=10, db_path=db_path
+    )
     assert searched["count"] == 1
     assert searched["items"][0]["item_id"] == "WL-100"
 
@@ -57,7 +59,9 @@ def test_entity_operation_roundtrip_with_metadata(tmp_path: Path) -> None:
     assert imported["count"] == 1
     assert imported["items"][0]["item_id"] == "WL-101"
 
-    deleted = entity_operation("delete", "workstream_items", entity_id="WL-100", db_path=db_path)
+    deleted = entity_operation(
+        "delete", "workstream_items", entity_id="WL-100", db_path=db_path
+    )
     assert deleted["deleted"] is True
 
     remaining = entity_operation("list", "workstream_items", limit=10, db_path=db_path)
@@ -66,7 +70,9 @@ def test_entity_operation_roundtrip_with_metadata(tmp_path: Path) -> None:
 
 
 @pytest.mark.requirement("FR-ENT-002")
-def test_entity_operation_sync_dispatches_source_batches(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_entity_operation_sync_dispatches_source_batches(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """Traces to: FR-ENT-002."""
     db_path = tmp_path / "workstream.db"
     work_stream_path = tmp_path / "docs" / "reference" / "WORK_STREAM.md"
@@ -94,13 +100,17 @@ def test_entity_operation_sync_dispatches_source_batches(tmp_path: Path, monkeyp
 
     monkeypatch.setattr("thegent.planning.workstream_entities.WorkstreamDB", _FakeDB)
     monkeypatch.setattr(
-        "thegent.planning.workstream_entities.ThegentSettings", lambda: type("S", (), {"session_dir": tmp_path})()
+        "thegent.planning.workstream_entities.ThegentSettings",
+        lambda: type("S", (), {"session_dir": tmp_path})(),
     )
     monkeypatch.setattr(
-        "thegent.cli.services.run_workstream_helpers.parse_work_stream_md", lambda path: {"backlog": []}
+        "thegent.cli.services.run_workstream_helpers.parse_work_stream_md",
+        lambda path: {"backlog": []},
     )
 
-    result = entity_operation("sync", "sessions", source="all", cd=tmp_path, db_path=db_path)
+    result = entity_operation(
+        "sync", "sessions", source="all", cd=tmp_path, db_path=db_path
+    )
 
     assert result["total"] == 5
     assert calls == ["markdown", "agileplus", "queues"]

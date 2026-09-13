@@ -12,7 +12,9 @@ from thegent.sync.validation import validate_required_fields
 
 @pytest.mark.requirement("WL-211")
 def test_validate_required_fields_passes_when_all_present():
-    validate_required_fields(required_fields={"f1", "f2"}, available_fields={"f1", "f2", "f3"})
+    validate_required_fields(
+        required_fields={"f1", "f2"}, available_fields={"f1", "f2", "f3"}
+    )
 
 
 @pytest.mark.requirement("WL-211")

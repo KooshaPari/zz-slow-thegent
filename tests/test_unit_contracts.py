@@ -97,7 +97,9 @@ class TestSemanticValidation:
     def test_valid_completed_passes(self) -> None:
         # @trace FR-CTR-001
         """Valid COMPLETED CSM has no issues."""
-        csm = CanonicalStructuredMessage(summary="Done", status=CSMStatus.COMPLETED, progress=1.0)
+        csm = CanonicalStructuredMessage(
+            summary="Done", status=CSMStatus.COMPLETED, progress=1.0
+        )
         assert validate_csm(csm) == []
 
     def test_completed_without_summary_fails(self) -> None:
@@ -123,14 +125,18 @@ class TestSemanticValidation:
     def test_reviewer_without_decision_reason_fails(self) -> None:
         # @trace FR-CTR-001
         """REVIEWER phase without decision_reason_code fails."""
-        csm = CanonicalStructuredMessage(phase=CSMPhase.REVIEWER, status=CSMStatus.COMPLETED, summary="OK")
+        csm = CanonicalStructuredMessage(
+            phase=CSMPhase.REVIEWER, status=CSMStatus.COMPLETED, summary="OK"
+        )
         issues = validate_csm(csm)
         assert any("REVIEWER" in i for i in issues)
 
     def test_planner_completed_without_objective_fails(self) -> None:
         # @trace FR-CTR-001
         """PLANNER COMPLETED without objective fails."""
-        csm = CanonicalStructuredMessage(phase=CSMPhase.PLANNER, status=CSMStatus.COMPLETED, summary="OK")
+        csm = CanonicalStructuredMessage(
+            phase=CSMPhase.PLANNER, status=CSMStatus.COMPLETED, summary="OK"
+        )
         issues = validate_csm(csm)
         assert any("PLANNER" in i for i in issues)
 
@@ -142,12 +148,16 @@ class TestIncrementalXMLParser:
     def test_parse_balanced_tags_and_filters_allowed_tags(self) -> None:
         # @trace FR-CTR-001
         parser = IncrementalXMLParser(allowed_tags=["summary", "status"])
-        parsed = parser.parse("<STATUS>in_progress</STATUS><SUMMARY>work in flight</SUMMARY><NOISE>skip</NOISE>")
+        parsed = parser.parse(
+            "<STATUS>in_progress</STATUS><SUMMARY>work in flight</SUMMARY><NOISE>skip</NOISE>"
+        )
         assert parsed == {"STATUS": "in_progress", "SUMMARY": "work in flight"}
 
     def test_extract_tags_helper_is_case_insensitive(self) -> None:
         # @trace FR-CTR-001
-        parsed = extract_tags("<summary>done</summary><Task_Id>t-1</Task_Id>", tags=["summary"])
+        parsed = extract_tags(
+            "<summary>done</summary><Task_Id>t-1</Task_Id>", tags=["summary"]
+        )
         assert parsed == {"SUMMARY": "done"}
 
     def test_get_partial_state_reports_open_tag_and_partial_content(self) -> None:
@@ -189,7 +199,9 @@ class TestXMLOutputAdapter:
 
     def test_xml_adapter_parses_complete_payload(self) -> None:
         # @trace FR-CTR-001
-        result = normalize_output("gemini", "<STATUS>completed</STATUS><SUMMARY>done</SUMMARY>")
+        result = normalize_output(
+            "gemini", "<STATUS>completed</STATUS><SUMMARY>done</SUMMARY>"
+        )
         assert result.parse_errors == []
         assert result.csm.status == CSMStatus.COMPLETED
         assert result.csm.summary == "done"

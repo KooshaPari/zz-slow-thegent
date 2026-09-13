@@ -58,7 +58,12 @@ class TestMCPPerfGatesExports:
 
     @pytest.mark.parametrize(
         "symbol_name",
-        ["MCP_PERF_BUDGETS", "MCPBudgetExceeded", "check_mcp_budget", "mcp_budget_context"],
+        [
+            "MCP_PERF_BUDGETS",
+            "MCPBudgetExceeded",
+            "check_mcp_budget",
+            "mcp_budget_context",
+        ],
         ids=["budgets_dict", "exception", "check_fn", "context_mgr"],
     )
     def test_symbol_importable(self, symbol_name: str) -> None:
@@ -186,7 +191,9 @@ class TestGovernanceThreadSafety:
         mod = importlib.import_module(module_path)
         cls = getattr(mod, class_name)
         obj = cls()
-        assert isinstance(obj._lock, type(threading.RLock())), f"{class_name}._lock is not an RLock instance"
+        assert isinstance(obj._lock, type(threading.RLock())), (
+            f"{class_name}._lock is not an RLock instance"
+        )
 
 
 # =====================================================================
@@ -352,7 +359,9 @@ class TestUXExplanations:
             "key_error",
         ],
     )
-    def test_explain_exception_known_types(self, exc: Exception, expected_substring: str) -> None:
+    def test_explain_exception_known_types(
+        self, exc: Exception, expected_substring: str
+    ) -> None:
         result = explain_exception(exc)
         assert isinstance(result, str)
         assert expected_substring in result.lower()

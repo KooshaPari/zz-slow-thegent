@@ -45,7 +45,9 @@ class TestOwnerStats:
         assert stats.avg_elapsed_ms == pytest.approx(50.0)
 
     def test_to_dict_keys(self) -> None:  # @trace FR-ORC-001
-        stats = OwnerStats(owner="dave", active_count=2, total_runs=5, total_elapsed_ms=500.0)
+        stats = OwnerStats(
+            owner="dave", active_count=2, total_runs=5, total_elapsed_ms=500.0
+        )
         d = stats.to_dict()
         assert d["owner"] == "dave"
         assert d["active_count"] == 2
@@ -68,16 +70,22 @@ def tracker() -> UsageTracker:
 class TestUsageTrackerRecordStart:
     """Tests for UsageTracker.record_start."""
 
-    def test_increments_active_count(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_increments_active_count(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         tracker.record_start("agent-a", "run-1")
         assert tracker.get_stats("agent-a").active_count == 1
 
-    def test_multiple_starts_same_owner(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_multiple_starts_same_owner(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         tracker.record_start("agent-a", "run-1")
         tracker.record_start("agent-a", "run-2")
         assert tracker.get_stats("agent-a").active_count == 2
 
-    def test_does_not_affect_total_runs(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_does_not_affect_total_runs(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         tracker.record_start("agent-a", "run-1")
         assert tracker.get_stats("agent-a").total_runs == 0
 
@@ -91,22 +99,30 @@ class TestUsageTrackerRecordStart:
 class TestUsageTrackerRecordEnd:
     """Tests for UsageTracker.record_end."""
 
-    def test_decrements_active_count(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_decrements_active_count(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         tracker.record_start("agent-a", "run-1")
         tracker.record_end("agent-a", "run-1", 100.0)
         assert tracker.get_stats("agent-a").active_count == 0
 
-    def test_clamps_active_count_at_zero(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_clamps_active_count_at_zero(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         # record_end without a prior record_start must not go negative.
         tracker.record_end("agent-a", "run-1", 100.0)
         assert tracker.get_stats("agent-a").active_count == 0
 
-    def test_increments_total_runs(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_increments_total_runs(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         tracker.record_start("agent-a", "run-1")
         tracker.record_end("agent-a", "run-1", 100.0)
         assert tracker.get_stats("agent-a").total_runs == 1
 
-    def test_accumulates_elapsed_ms(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_accumulates_elapsed_ms(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         tracker.record_start("agent-a", "run-1")
         tracker.record_end("agent-a", "run-1", 150.0)
         tracker.record_start("agent-a", "run-2")
@@ -116,7 +132,9 @@ class TestUsageTrackerRecordEnd:
         assert stats.total_elapsed_ms == pytest.approx(400.0)
         assert stats.avg_elapsed_ms == pytest.approx(200.0)
 
-    def test_partial_decrement(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_partial_decrement(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         tracker.record_start("agent-a", "run-1")
         tracker.record_start("agent-a", "run-2")
         tracker.record_end("agent-a", "run-1", 50.0)
@@ -126,13 +144,17 @@ class TestUsageTrackerRecordEnd:
 class TestUsageTrackerGetStats:
     """Tests for UsageTracker.get_stats."""
 
-    def test_unknown_owner_returns_zero_stats(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_unknown_owner_returns_zero_stats(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         stats = tracker.get_stats("nobody")
         assert stats.owner == "nobody"
         assert stats.active_count == 0
         assert stats.total_runs == 0
 
-    def test_returns_snapshot_not_reference(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_returns_snapshot_not_reference(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         tracker.record_start("agent-a", "run-1")
         snap1 = tracker.get_stats("agent-a")
         tracker.record_start("agent-a", "run-2")
@@ -143,17 +165,23 @@ class TestUsageTrackerGetStats:
 class TestUsageTrackerGetAllStats:
     """Tests for UsageTracker.get_all_stats."""
 
-    def test_empty_when_no_records(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_empty_when_no_records(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         assert tracker.get_all_stats() == {}
 
-    def test_returns_all_owners(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_returns_all_owners(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         tracker.record_start("owner-a", "run-1")
         tracker.record_start("owner-b", "run-2")
         all_stats = tracker.get_all_stats()
         assert "owner-a" in all_stats
         assert "owner-b" in all_stats
 
-    def test_returns_snapshots(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_returns_snapshots(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         tracker.record_start("owner-a", "run-1")
         snap = tracker.get_all_stats()["owner-a"]
         tracker.record_start("owner-a", "run-2")
@@ -163,7 +191,9 @@ class TestUsageTrackerGetAllStats:
 class TestUsageTrackerReset:
     """Tests for UsageTracker.reset."""
 
-    def test_reset_specific_owner(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_reset_specific_owner(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         tracker.record_start("owner-a", "run-1")
         tracker.record_start("owner-b", "run-2")
         tracker.reset("owner-a")
@@ -176,14 +206,18 @@ class TestUsageTrackerReset:
         tracker.reset()
         assert tracker.get_all_stats() == {}
 
-    def test_reset_unknown_owner_is_safe(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_reset_unknown_owner_is_safe(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         tracker.reset("nobody")  # Must not raise
 
 
 class TestUsageTrackerThreadSafety:
     """Concurrent stress tests to verify threading.Lock correctness."""
 
-    def test_concurrent_starts_and_ends(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_concurrent_starts_and_ends(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         n_threads = 20
         runs_per_thread = 50
         errors: list[Exception] = []
@@ -208,7 +242,9 @@ class TestUsageTrackerThreadSafety:
         assert stats.active_count == 0
         assert stats.total_runs == n_threads * runs_per_thread
 
-    def test_concurrent_different_owners(self, tracker: UsageTracker) -> None:  # @trace FR-ORC-001
+    def test_concurrent_different_owners(
+        self, tracker: UsageTracker
+    ) -> None:  # @trace FR-ORC-001
         n_owners = 10
         errors: list[Exception] = []
 
@@ -276,7 +312,9 @@ def _patch_sessions(running: int):
 class TestConcurrencyControllerUsageIntegration:
     """Integration tests: ConcurrencyController calls UsageTracker correctly."""
 
-    def test_acquire_calls_record_start_when_admitted(self, cc: ConcurrencyController) -> None:  # @trace FR-ORC-001
+    def test_acquire_calls_record_start_when_admitted(
+        self, cc: ConcurrencyController
+    ) -> None:  # @trace FR-ORC-001
         with _patch_sessions(0):
             admitted = cc.acquire(owner="agent-x", run_id="run-001")
         assert admitted is True
@@ -291,7 +329,9 @@ class TestConcurrencyControllerUsageIntegration:
         assert admitted is False
         assert cc._usage_tracker.get_stats("agent-y").active_count == 0
 
-    def test_release_calls_record_end(self, cc: ConcurrencyController) -> None:  # @trace FR-ORC-001
+    def test_release_calls_record_end(
+        self, cc: ConcurrencyController
+    ) -> None:  # @trace FR-ORC-001
         with _patch_sessions(0):
             cc.acquire(owner="agent-z", run_id="run-003")
         cc.release(owner="agent-z", run_id="run-003", elapsed_ms=250.0)
@@ -300,7 +340,9 @@ class TestConcurrencyControllerUsageIntegration:
         assert stats.total_runs == 1
         assert stats.total_elapsed_ms == pytest.approx(250.0)
 
-    def test_get_usage_stats_returns_serializable_dict(self, cc: ConcurrencyController) -> None:  # @trace FR-ORC-001
+    def test_get_usage_stats_returns_serializable_dict(
+        self, cc: ConcurrencyController
+    ) -> None:  # @trace FR-ORC-001
         with _patch_sessions(0):
             cc.acquire(owner="agent-w", run_id="run-004")
         cc.release(owner="agent-w", run_id="run-004", elapsed_ms=100.0)
@@ -309,11 +351,15 @@ class TestConcurrencyControllerUsageIntegration:
         assert result["agent-w"]["total_runs"] == 1
         assert result["agent-w"]["avg_elapsed_ms"] == pytest.approx(100.0)
 
-    def test_get_usage_stats_empty_when_no_activity(self, cc: ConcurrencyController) -> None:  # @trace FR-ORC-001
+    def test_get_usage_stats_empty_when_no_activity(
+        self, cc: ConcurrencyController
+    ) -> None:  # @trace FR-ORC-001
         result = cc.get_usage_stats()
         assert result == {}
 
-    def test_multiple_owners_tracked_independently(self, cc: ConcurrencyController) -> None:  # @trace FR-ORC-001
+    def test_multiple_owners_tracked_independently(
+        self, cc: ConcurrencyController
+    ) -> None:  # @trace FR-ORC-001
         with _patch_sessions(0):
             cc.acquire(owner="owner-1", run_id="r1")
         with _patch_sessions(1):

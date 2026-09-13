@@ -52,7 +52,10 @@ def test_anthropic_messages_to_chat_completions_with_system() -> None:
     }
     result = anthropic_messages_to_chat_completions(body)
 
-    assert result["messages"][0] == {"role": "system", "content": "You are a helpful assistant."}
+    assert result["messages"][0] == {
+        "role": "system",
+        "content": "You are a helpful assistant.",
+    }
     assert result["messages"][1] == {"role": "user", "content": "What is 2+2?"}
     assert len(result["messages"]) == 2
 

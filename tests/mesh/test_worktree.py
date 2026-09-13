@@ -87,7 +87,9 @@ class TestWorktreeCreation:
     def test_create_returns_path_on_git_failure(self, tmp_path: Path) -> None:
         """# @trace TGNT-P15.1 — path returned even when git subprocess fails."""
         mgr = _make_manager(tmp_path)
-        with mock.patch("subprocess.run", side_effect=subprocess.CalledProcessError(1, "git")):
+        with mock.patch(
+            "subprocess.run", side_effect=subprocess.CalledProcessError(1, "git")
+        ):
             path = mgr.create_worktree("fail-1", "main")
         assert path == mgr.worktree_base / "agent-fail-1"
 

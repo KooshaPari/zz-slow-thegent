@@ -28,6 +28,7 @@ class CompositorProfiler:
 @dataclass
 class RenderProfile:
     """Profile data for a render operation."""
+
     duration_ms: float = 0.0
     components_rendered: int = 0
     cache_hits: int = 0

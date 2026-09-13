@@ -22,7 +22,9 @@ import pytest
 if TYPE_CHECKING:
     from pathlib import Path
 
-fastmcp = pytest.importorskip("fastmcp", reason="fastmcp required for MCP Context API tests")
+fastmcp = pytest.importorskip(
+    "fastmcp", reason="fastmcp required for MCP Context API tests"
+)
 
 
 # ---------------------------------------------------------------------------
@@ -81,7 +83,9 @@ class TestSeedDetectContextApi:
         mcp = FastMCP("test")
         with (
             patch("thegent.mcp.tools.seeds.SeedDetector") as mock_detector_cls,
-            patch("thegent.mcp.tools.seeds.SeedDetector.extract_flags", return_value=[]),
+            patch(
+                "thegent.mcp.tools.seeds.SeedDetector.extract_flags", return_value=[]
+            ),
         ):
             mock_detector = MagicMock()
             mock_detector.detect_seeds.return_value = []
@@ -91,11 +95,15 @@ class TestSeedDetectContextApi:
             tool_fn = await _get_tool_fn(mcp, "thegent_seed_detect")
 
             ctx = _make_ctx()
-            result = await tool_fn(text="What if we refactor this?", source="user_prompt", ctx=ctx)
+            result = await tool_fn(
+                text="What if we refactor this?", source="user_prompt", ctx=ctx
+            )
             data = _json_content(result)
 
             assert data["count"] == 0
-            assert ctx.info.call_count >= 2, "ctx.info() must be called at start and on result"
+            assert ctx.info.call_count >= 2, (
+                "ctx.info() must be called at start and on result"
+            )
 
     @pytest.mark.asyncio
     async def test_ctx_info_not_called_on_empty_input(self) -> None:
@@ -144,7 +152,9 @@ class TestSeedDetectContextApi:
         mcp = FastMCP("test")
         with (
             patch("thegent.mcp.tools.seeds.SeedDetector") as mock_detector_cls,
-            patch("thegent.mcp.tools.seeds.SeedDetector.extract_flags", return_value=[]),
+            patch(
+                "thegent.mcp.tools.seeds.SeedDetector.extract_flags", return_value=[]
+            ),
         ):
             mock_detector = MagicMock()
             mock_detector.detect_seeds.return_value = []
@@ -154,7 +164,9 @@ class TestSeedDetectContextApi:
             tool_fn = await _get_tool_fn(mcp, "thegent_seed_detect")
 
             # No exception when ctx=None
-            result = await tool_fn(text="Consider a new approach", source="manual", ctx=None)
+            result = await tool_fn(
+                text="Consider a new approach", source="manual", ctx=None
+            )
             data = _json_content(result)
             assert "count" in data
 
@@ -193,7 +205,9 @@ class TestSeedStoreContextApi:
             tool_fn = await _get_tool_fn(mcp, "thegent_seed_store")
 
             ctx = _make_ctx()
-            result = await tool_fn(text="We should add caching here", cd=str(tmp_path), ctx=ctx)
+            result = await tool_fn(
+                text="We should add caching here", cd=str(tmp_path), ctx=ctx
+            )
             data = _json_content(result)
             assert data.get("stored") is True
             assert ctx.info.call_count >= 2
@@ -206,7 +220,10 @@ class TestSeedStoreContextApi:
         from thegent.mcp_tools_seeds import register_seed_tools
 
         mcp = FastMCP("test")
-        with patch("thegent.mcp.tools.seeds._resolve_cwd", side_effect=RuntimeError("storage failed")):
+        with patch(
+            "thegent.mcp.tools.seeds._resolve_cwd",
+            side_effect=RuntimeError("storage failed"),
+        ):
             register_seed_tools(mcp)
             tool_fn = await _get_tool_fn(mcp, "thegent_seed_store")
 
@@ -260,7 +277,9 @@ class TestSeedListContextApi:
         from thegent.mcp_tools_seeds import register_seed_tools
 
         mcp = FastMCP("test")
-        with patch("thegent.mcp.tools.seeds._resolve_cwd", side_effect=OSError("disk error")):
+        with patch(
+            "thegent.mcp.tools.seeds._resolve_cwd", side_effect=OSError("disk error")
+        ):
             register_seed_tools(mcp)
             tool_fn = await _get_tool_fn(mcp, "thegent_seed_list")
 
@@ -287,7 +306,9 @@ class TestDdgSearchContextApi:
         import thegent.mcp_server as _mcp_mod
 
         ctx = _make_ctx()
-        mock_results = [{"title": "Test", "url": "http://example.com", "snippet": "test"}]
+        mock_results = [
+            {"title": "Test", "url": "http://example.com", "snippet": "test"}
+        ]
 
         with patch("thegent.skills.research.ddg_search", return_value=mock_results):
             result = await _mcp_mod.thegent_ddg_search(
@@ -313,7 +334,9 @@ class TestDdgSearchContextApi:
 
         ctx = _make_ctx()
         with patch("thegent.skills.research.ddg_search", return_value=[]):
-            result = await _mcp_mod.thegent_ddg_search(query="test", num_results=1, ctx=ctx)
+            result = await _mcp_mod.thegent_ddg_search(
+                query="test", num_results=1, ctx=ctx
+            )
         data = _json_content(result)
         # content is JSON list (may be empty)
         assert isinstance(data, list)
@@ -332,7 +355,11 @@ class TestScrapeUrlContextApi:
         ctx = _make_ctx()
         mock_result = {"content": "scraped content", "status": 200}
 
-        with patch("thegent.skills.research.scrape_url", new_callable=AsyncMock, return_value=mock_result):
+        with patch(
+            "thegent.skills.research.scrape_url",
+            new_callable=AsyncMock,
+            return_value=mock_result,
+        ):
             result = await _mcp_mod.thegent_scrape_url(
                 url="https://example.com",
                 use_playwright=False,
@@ -352,7 +379,11 @@ class TestScrapeUrlContextApi:
         ctx = _make_ctx()
         mock_result = {"content": "x" * 500, "status": 200}
 
-        with patch("thegent.skills.research.scrape_url", new_callable=AsyncMock, return_value=mock_result):
+        with patch(
+            "thegent.skills.research.scrape_url",
+            new_callable=AsyncMock,
+            return_value=mock_result,
+        ):
             await _mcp_mod.thegent_scrape_url(
                 url="https://example.com",
                 use_playwright=True,
@@ -378,7 +409,11 @@ class TestScrapeUrlContextApi:
         ctx.report_progress = AsyncMock(side_effect=capture_progress)
         mock_result = {"content": "data"}
 
-        with patch("thegent.skills.research.scrape_url", new_callable=AsyncMock, return_value=mock_result):
+        with patch(
+            "thegent.skills.research.scrape_url",
+            new_callable=AsyncMock,
+            return_value=mock_result,
+        ):
             await _mcp_mod.thegent_scrape_url(url="http://x.com", ctx=ctx)
 
         assert len(progress_calls) >= 3
@@ -386,7 +421,9 @@ class TestScrapeUrlContextApi:
         assert all(t == 3 for _, t in progress_calls)
         # Progress values should be non-decreasing
         progresses = [p for p, _ in progress_calls]
-        assert progresses == sorted(progresses), "Progress values must be non-decreasing"
+        assert progresses == sorted(progresses), (
+            "Progress values must be non-decreasing"
+        )
         assert progresses[-1] == 3, "Final progress must be 3/3"
 
 
@@ -402,7 +439,10 @@ class TestDagRunContextApi:
         from thegent.mcp_tools_modes import register_modes
 
         mcp = FastMCP("test")
-        with patch("thegent.cli.commands.impl.dag_run_impl", return_value={"spawned": ["t1", "t2"], "skipped": []}):
+        with patch(
+            "thegent.cli.commands.impl.dag_run_impl",
+            return_value={"spawned": ["t1", "t2"], "skipped": []},
+        ):
             register_modes(mcp)
             tool_fn = await _get_tool_fn(mcp, "thegent_dag_run")
 
@@ -423,7 +463,10 @@ class TestDagRunContextApi:
         from thegent.mcp_tools_modes import register_modes
 
         mcp = FastMCP("test")
-        with patch("thegent.cli.commands.impl.dag_run_impl", return_value={"spawned": [], "skipped": []}):
+        with patch(
+            "thegent.cli.commands.impl.dag_run_impl",
+            return_value={"spawned": [], "skipped": []},
+        ):
             register_modes(mcp)
             tool_fn = await _get_tool_fn(mcp, "thegent_dag_run")
 

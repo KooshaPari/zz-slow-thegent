@@ -12,7 +12,13 @@ from typing import Any
 OPERATION_MAP: dict[str, Any] = {}
 
 
-__all__ = ["OPERATION_MAP", "Operation", "OperationEntry", "get_operations_by_type", "list_operations"]
+__all__ = [
+    "OPERATION_MAP",
+    "Operation",
+    "OperationEntry",
+    "get_operations_by_type",
+    "list_operations",
+]
 
 
 def list_operations() -> list[str]:

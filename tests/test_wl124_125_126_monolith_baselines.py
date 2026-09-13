@@ -6,7 +6,9 @@ from pathlib import Path
 
 from conftest import _load_script_module
 
-SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts" / "collect_wl_monolith_baselines.py"
+SCRIPT_PATH = (
+    Path(__file__).resolve().parents[1] / "scripts" / "collect_wl_monolith_baselines.py"
+)
 MODULE = _load_script_module("collect_wl_monolith_baselines", SCRIPT_PATH)
 
 

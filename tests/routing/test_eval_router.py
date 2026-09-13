@@ -155,7 +155,9 @@ def test_thread_safety():
         except Exception as exc:
             errors.append(exc)
 
-    threads = [threading.Thread(target=worker, args=(f"model-{i}",)) for i in range(n_threads)]
+    threads = [
+        threading.Thread(target=worker, args=(f"model-{i}",)) for i in range(n_threads)
+    ]
     for t in threads:
         t.start()
     for t in threads:

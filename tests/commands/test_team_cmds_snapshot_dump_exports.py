@@ -32,7 +32,9 @@ def test_team_cmds_all_contains_snapshot_daily_and_dump_commands() -> None:
     assert expected.issubset(exported)
 
 
-def test_snapshot_daily_export_cmd_json_writes_payload(monkeypatch, capsys, tmp_path: Path) -> None:
+def test_snapshot_daily_export_cmd_json_writes_payload(
+    monkeypatch, capsys, tmp_path: Path
+) -> None:
     payload = {
         "source_json": str(tmp_path / "snapshot_daily_index.json"),
         "source_md": str(tmp_path / "snapshot_daily_index.md"),
@@ -49,19 +51,25 @@ def test_snapshot_daily_export_cmd_json_writes_payload(monkeypatch, capsys, tmp_
         assert limit == 123
         return payload
 
-    monkeypatch.setattr("thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper)
+    monkeypatch.setattr(
+        "thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper
+    )
     monkeypatch.setattr(
         "thegent.orchestration.state.session_snapshot_cli_helpers.snapshot_daily_export_payload",
         fake_snapshot_daily_export_payload,
     )
 
-    team_cmds.snapshot_daily_export_cmd(project=tmp_path, out_dir=tmp_path, limit=123, format="json")
+    team_cmds.snapshot_daily_export_cmd(
+        project=tmp_path, out_dir=tmp_path, limit=123, format="json"
+    )
 
     out = capsys.readouterr().out.strip()
     assert json.loads(out) == payload
 
 
-def test_dump_latest_cmd_blank_category_treated_as_none(monkeypatch, capsys, tmp_path: Path) -> None:
+def test_dump_latest_cmd_blank_category_treated_as_none(
+    monkeypatch, capsys, tmp_path: Path
+) -> None:
     captured: dict[str, object] = {}
 
     class FakeConversationDumper:
@@ -77,7 +85,9 @@ def test_dump_latest_cmd_blank_category_treated_as_none(monkeypatch, capsys, tmp
         FakeConversationDumper,
     )
 
-    team_cmds.dump_latest_cmd(project=tmp_path, category="   ", json_only=True, format="json")
+    team_cmds.dump_latest_cmd(
+        project=tmp_path, category="   ", json_only=True, format="json"
+    )
 
     assert captured["docs_dir"] == tmp_path / "docs" / "dumps"
     assert captured["category"] is None
@@ -86,7 +96,9 @@ def test_dump_latest_cmd_blank_category_treated_as_none(monkeypatch, capsys, tmp
     assert json.loads(out) == {"latest": None}
 
 
-def test_dump_index_cmd_json_writes_index_and_markdown_paths(monkeypatch, capsys, tmp_path: Path) -> None:
+def test_dump_index_cmd_json_writes_index_and_markdown_paths(
+    monkeypatch, capsys, tmp_path: Path
+) -> None:
     index_path = tmp_path / "docs" / "dumps" / "dump_index.json"
     markdown_path = tmp_path / "docs" / "dumps" / "dump_index.md"
 

@@ -92,7 +92,10 @@ class TestDecisionJournal:
     @pytest.mark.requirement("WL-203")
     def test_append_multiple(self, journal: DecisionJournal) -> None:
         """Can append multiple entries in sequence."""
-        entries_to_add = [JournalEntry.create_entry("c1", f"WL-{i}", "decision", "reason", {}, {}) for i in range(3)]
+        entries_to_add = [
+            JournalEntry.create_entry("c1", f"WL-{i}", "decision", "reason", {}, {})
+            for i in range(3)
+        ]
 
         for entry in entries_to_add:
             journal.append(entry)
@@ -109,7 +112,9 @@ class TestDecisionJournal:
     @pytest.mark.requirement("WL-203")
     def test_read_replayable(self, journal: DecisionJournal) -> None:
         """read_replayable returns only entries with replayable=True."""
-        entry_replayable = JournalEntry.create_entry("c1", "WL-1", "change", "reason", {}, {}, replayable=True)
+        entry_replayable = JournalEntry.create_entry(
+            "c1", "WL-1", "change", "reason", {}, {}, replayable=True
+        )
         entry_not_replayable = JournalEntry.create_entry(
             "c1", "WL-2", "manual", "manual edit", {}, {}, replayable=False
         )

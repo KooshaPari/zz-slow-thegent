@@ -16,7 +16,9 @@ class WorkStreamAutomation:
         Args:
             work_stream_path: Path to WORK_STREAM.md
         """
-        self.work_stream_path = work_stream_path or Path("docs/reference/WORK_STREAM.md")
+        self.work_stream_path = work_stream_path or Path(
+            "docs/reference/WORK_STREAM.md"
+        )
 
     def read_backlog(self) -> list[dict[str, Any]]:
         """Read backlog items from work stream.

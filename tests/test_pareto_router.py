@@ -12,8 +12,12 @@ from thegent.utils.routing_impl import ParetoRouter, RouteCandidate
 # ---------------------------------------------------------------------------
 
 
-def _candidate(model: str, cost: float, quality: float, provider: str = "test") -> RouteCandidate:
-    return RouteCandidate(model=model, provider=provider, cost_per_1k=cost, quality_score=quality)
+def _candidate(
+    model: str, cost: float, quality: float, provider: str = "test"
+) -> RouteCandidate:
+    return RouteCandidate(
+        model=model, provider=provider, cost_per_1k=cost, quality_score=quality
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -455,9 +459,15 @@ class TestParetoCatalogFunctions:
     def test_pareto_frontier_of_offers(self) -> None:
         from thegent.utils.routing_impl.pareto_router import Offer, _pareto_frontier
 
-        a = Offer(provider="p", model_alias="a", cost_weight=0.1, quality=0.9, speed_score=1.0)
-        b = Offer(provider="p", model_alias="b", cost_weight=0.5, quality=0.7, speed_score=1.0)
-        c = Offer(provider="p", model_alias="c", cost_weight=0.3, quality=0.8, speed_score=1.0)
+        a = Offer(
+            provider="p", model_alias="a", cost_weight=0.1, quality=0.9, speed_score=1.0
+        )
+        b = Offer(
+            provider="p", model_alias="b", cost_weight=0.5, quality=0.7, speed_score=1.0
+        )
+        c = Offer(
+            provider="p", model_alias="c", cost_weight=0.3, quality=0.8, speed_score=1.0
+        )
 
         frontier = _pareto_frontier([a, b, c])
         aliases = {o.model_alias for o in frontier}
@@ -484,8 +494,12 @@ class TestLexicographicSelect:
             _lexicographic_select,
         )
 
-        a = Offer(provider="p", model_alias="a", cost_weight=0.1, quality=0.9, speed_score=1.0)
-        b = Offer(provider="p", model_alias="b", cost_weight=0.2, quality=0.8, speed_score=1.0)
+        a = Offer(
+            provider="p", model_alias="a", cost_weight=0.1, quality=0.9, speed_score=1.0
+        )
+        b = Offer(
+            provider="p", model_alias="b", cost_weight=0.2, quality=0.8, speed_score=1.0
+        )
         result = _lexicographic_select([a, b], order=("quality", "cost", "speed"))
         assert result is a
 
@@ -500,7 +514,11 @@ class TestLexicographicSelect:
             _lexicographic_select,
         )
 
-        a = Offer(provider="p", model_alias="a", cost_weight=0.5, quality=0.9, speed_score=1.0)
-        b = Offer(provider="p", model_alias="b", cost_weight=0.1, quality=0.8, speed_score=1.0)
+        a = Offer(
+            provider="p", model_alias="a", cost_weight=0.5, quality=0.9, speed_score=1.0
+        )
+        b = Offer(
+            provider="p", model_alias="b", cost_weight=0.1, quality=0.8, speed_score=1.0
+        )
         result = _lexicographic_select([a, b], order=("cost", "quality", "speed"))
         assert result is b

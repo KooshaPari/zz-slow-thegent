@@ -48,10 +48,16 @@ class TestCursorApiRunnerInit:
 
 @pytest.mark.unit
 class TestCommandBuilding:
-    @patch("thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True)
-    @patch("thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex")
+    @patch(
+        "thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True
+    )
+    @patch(
+        "thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex"
+    )
     @patch("thegent.agents.cursor_api_runner._run_with_retry")
-    def test_basic_command_includes_required_flags(self, mock_retry, mock_resolve, mock_reachable) -> None:
+    def test_basic_command_includes_required_flags(
+        self, mock_retry, mock_resolve, mock_reachable
+    ) -> None:
         # @trace FR-AGT-005
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
 
@@ -66,10 +72,16 @@ class TestCommandBuilding:
         assert "--json" in cmd
         assert "--model" in cmd
 
-    @patch("thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True)
-    @patch("thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex")
+    @patch(
+        "thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True
+    )
+    @patch(
+        "thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex"
+    )
     @patch("thegent.agents.cursor_api_runner._run_with_retry")
-    def test_write_mode_adds_sandbox(self, mock_retry, mock_resolve, mock_reachable) -> None:
+    def test_write_mode_adds_sandbox(
+        self, mock_retry, mock_resolve, mock_reachable
+    ) -> None:
         # @trace FR-AGT-005
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
 
@@ -80,10 +92,16 @@ class TestCommandBuilding:
         assert "--sandbox" in cmd
         assert "workspace-write" in cmd
 
-    @patch("thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True)
-    @patch("thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex")
+    @patch(
+        "thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True
+    )
+    @patch(
+        "thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex"
+    )
     @patch("thegent.agents.cursor_api_runner._run_with_retry")
-    def test_full_mode_adds_full_auto(self, mock_retry, mock_resolve, mock_reachable) -> None:
+    def test_full_mode_adds_full_auto(
+        self, mock_retry, mock_resolve, mock_reachable
+    ) -> None:
         # @trace FR-AGT-005
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
 
@@ -101,10 +119,16 @@ class TestCommandBuilding:
 
 @pytest.mark.unit
 class TestEnvSetup:
-    @patch("thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True)
-    @patch("thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex")
+    @patch(
+        "thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True
+    )
+    @patch(
+        "thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex"
+    )
     @patch("thegent.agents.cursor_api_runner._run_with_retry")
-    def test_env_uses_cursor_api_url(self, mock_retry, mock_resolve, mock_reachable) -> None:
+    def test_env_uses_cursor_api_url(
+        self, mock_retry, mock_resolve, mock_reachable
+    ) -> None:
         # @trace FR-AGT-005
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
 
@@ -123,7 +147,9 @@ class TestEnvSetup:
 
 @pytest.mark.unit
 class TestErrorHandling:
-    @patch("thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=False)
+    @patch(
+        "thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=False
+    )
     def test_unreachable_api_returns_error(self, mock_reachable) -> None:
         # @trace FR-AGT-005
         runner = CursorApiRunner()
@@ -133,10 +159,16 @@ class TestErrorHandling:
         assert "cursor-api not reachable" in result.stderr
         assert not result.timed_out
 
-    @patch("thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True)
-    @patch("thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex")
+    @patch(
+        "thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True
+    )
+    @patch(
+        "thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex"
+    )
     @patch("thegent.agents.cursor_api_runner._run_with_retry")
-    def test_timeout_expired_returns_timed_out(self, mock_retry, mock_resolve, mock_reachable) -> None:
+    def test_timeout_expired_returns_timed_out(
+        self, mock_retry, mock_resolve, mock_reachable
+    ) -> None:
         # @trace FR-AGT-005
         import subprocess
 
@@ -149,10 +181,16 @@ class TestErrorHandling:
         assert result.timed_out is True
         assert "timed out" in result.stderr
 
-    @patch("thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True)
-    @patch("thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex")
+    @patch(
+        "thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True
+    )
+    @patch(
+        "thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex"
+    )
     @patch("thegent.agents.cursor_api_runner._run_with_retry")
-    def test_codex_not_found_returns_install_message(self, mock_retry, mock_resolve, mock_reachable) -> None:
+    def test_codex_not_found_returns_install_message(
+        self, mock_retry, mock_resolve, mock_reachable
+    ) -> None:
         # @trace FR-AGT-005
         mock_retry.side_effect = FileNotFoundError("codex")
 
@@ -162,10 +200,16 @@ class TestErrorHandling:
         assert result.exit_code == 1
         assert "codex CLI not found" in result.stderr
 
-    @patch("thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True)
-    @patch("thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex")
+    @patch(
+        "thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True
+    )
+    @patch(
+        "thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex"
+    )
     @patch("thegent.agents.cursor_api_runner._run_with_retry")
-    def test_transient_error_returns_result(self, mock_retry, mock_resolve, mock_reachable) -> None:
+    def test_transient_error_returns_result(
+        self, mock_retry, mock_resolve, mock_reachable
+    ) -> None:
         # @trace FR-AGT-005
         from thegent.agents.resilience import TransientAgentError
 
@@ -209,7 +253,10 @@ class TestCursorApiRunnerInitEdgeCases:
 
 @pytest.mark.unit
 class TestResolveCodex:
-    @patch("thegent.agents.cursor_api_runner.shutil.which", return_value="/usr/local/bin/codex")
+    @patch(
+        "thegent.agents.cursor_api_runner.shutil.which",
+        return_value="/usr/local/bin/codex",
+    )
     def test_finds_codex_on_path(self, mock_which) -> None:
         # @trace FR-AGT-005
         """Returns path from shutil.which when codex is on PATH."""
@@ -265,7 +312,10 @@ class TestStripAnsiCursorApi:
 
 @pytest.mark.unit
 class TestIsCursorApiReachable:
-    @patch("thegent.agents.cursor_api_runner._check_cursor_api_reachable", return_value=(True, False, 200))
+    @patch(
+        "thegent.agents.cursor_api_runner._check_cursor_api_reachable",
+        return_value=(True, False, 200),
+    )
     def test_reachable_returns_true(self, mock_check) -> None:
         # @trace FR-AGT-005
         """Returns True when reachability check succeeds."""
@@ -273,7 +323,10 @@ class TestIsCursorApiReachable:
 
         assert _is_cursor_api_reachable("http://127.0.0.1:3000", "token") is True
 
-    @patch("thegent.agents.cursor_api_runner._check_cursor_api_reachable", return_value=(False, False, 500))
+    @patch(
+        "thegent.agents.cursor_api_runner._check_cursor_api_reachable",
+        return_value=(False, False, 500),
+    )
     def test_unreachable_returns_false(self, mock_check) -> None:
         # @trace FR-AGT-005
         """Returns False when HTTP check is unsuccessful."""
@@ -281,7 +334,10 @@ class TestIsCursorApiReachable:
 
         assert _is_cursor_api_reachable("http://127.0.0.1:3000", "token") is False
 
-    @patch("thegent.agents.cursor_api_runner._check_cursor_api_reachable", return_value=(False, True, None))
+    @patch(
+        "thegent.agents.cursor_api_runner._check_cursor_api_reachable",
+        return_value=(False, True, None),
+    )
     def test_empty_token_still_sends_request(self, mock_check) -> None:
         # @trace FR-AGT-005
         """Empty token still attempts the request without auth header."""
@@ -298,10 +354,16 @@ class TestIsCursorApiReachable:
 
 @pytest.mark.unit
 class TestCommandBuildingExtended:
-    @patch("thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True)
-    @patch("thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex")
+    @patch(
+        "thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True
+    )
+    @patch(
+        "thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex"
+    )
     @patch("thegent.agents.cursor_api_runner._run_with_retry")
-    def test_cwd_adds_cd_flag(self, mock_retry, mock_resolve, mock_reachable, tmp_path) -> None:
+    def test_cwd_adds_cd_flag(
+        self, mock_retry, mock_resolve, mock_reachable, tmp_path
+    ) -> None:
         # @trace FR-AGT-005
         """Passing cwd adds --cd flag."""
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
@@ -313,39 +375,65 @@ class TestCommandBuildingExtended:
         assert "--cd" in cmd
         assert str(tmp_path) in cmd
 
-    @patch("thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True)
-    @patch("thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex")
+    @patch(
+        "thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True
+    )
+    @patch(
+        "thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex"
+    )
     @patch("thegent.agents.cursor_api_runner._run_with_retry")
-    def test_agent_model_override(self, mock_retry, mock_resolve, mock_reachable) -> None:
+    def test_agent_model_override(
+        self, mock_retry, mock_resolve, mock_reachable
+    ) -> None:
         # @trace FR-AGT-005
         """agent_model parameter overrides default model."""
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
 
         runner = CursorApiRunner(model="default-model")
-        runner.run(prompt="test", cwd=None, mode="read-only", timeout=60, agent_model="override-model")
+        runner.run(
+            prompt="test",
+            cwd=None,
+            mode="read-only",
+            timeout=60,
+            agent_model="override-model",
+        )
 
         cmd = mock_retry.call_args.args[0]
         idx = cmd.index("--model")
         assert cmd[idx + 1] == "override-model"
 
-    @patch("thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True)
-    @patch("thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex")
+    @patch(
+        "thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True
+    )
+    @patch(
+        "thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex"
+    )
     @patch("thegent.agents.cursor_api_runner._run_with_retry")
-    def test_no_stream_omits_json_flag(self, mock_retry, mock_resolve, mock_reachable) -> None:
+    def test_no_stream_omits_json_flag(
+        self, mock_retry, mock_resolve, mock_reachable
+    ) -> None:
         # @trace FR-AGT-005
         """use_stream=False omits --json flag."""
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
 
         runner = CursorApiRunner()
-        runner.run(prompt="test", cwd=None, mode="read-only", timeout=60, use_stream=False)
+        runner.run(
+            prompt="test", cwd=None, mode="read-only", timeout=60, use_stream=False
+        )
 
         cmd = mock_retry.call_args.args[0]
         assert "--json" not in cmd
 
-    @patch("thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True)
-    @patch("thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex")
+    @patch(
+        "thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True
+    )
+    @patch(
+        "thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex"
+    )
     @patch("thegent.agents.cursor_api_runner._run_with_retry")
-    def test_token_from_env_when_settings_empty(self, mock_retry, mock_resolve, mock_reachable) -> None:
+    def test_token_from_env_when_settings_empty(
+        self, mock_retry, mock_resolve, mock_reachable
+    ) -> None:
         # @trace FR-AGT-005
         """Falls back to THGENT_CURSOR_API_TOKEN env var when settings token is empty."""
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
@@ -361,10 +449,16 @@ class TestCommandBuildingExtended:
         env = mock_retry.call_args.args[4]
         assert env["OPENAI_API_KEY"] == "env-token-123"
 
-    @patch("thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True)
-    @patch("thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex")
+    @patch(
+        "thegent.agents.cursor_api_runner._is_cursor_api_reachable", return_value=True
+    )
+    @patch(
+        "thegent.agents.cursor_api_runner._resolve_codex", return_value="/usr/bin/codex"
+    )
     @patch("thegent.agents.cursor_api_runner._run_with_retry")
-    def test_no_token_uses_sk_dummy(self, mock_retry, mock_resolve, mock_reachable) -> None:
+    def test_no_token_uses_sk_dummy(
+        self, mock_retry, mock_resolve, mock_reachable
+    ) -> None:
         # @trace FR-AGT-005
         """When no token is available, uses sk-dummy as API key."""
         mock_retry.return_value = make_run_result(exit_code=0, stdout="ok")
@@ -460,6 +554,11 @@ class TestRunWithRetryCursorApi:
             stdout="ok",
             stderr="",
         )
-        _run_with_retry.__wrapped__(["codex", "exec"], "prompt", Path("/workspace"), 60, {})
+        _run_with_retry.__wrapped__(
+            ["codex", "exec"], "prompt", Path("/workspace"), 60, {}
+        )
         call_kwargs = mock_run.call_args
-        assert call_kwargs.kwargs.get("cwd") == "/workspace" or call_kwargs[1].get("cwd") == "/workspace"
+        assert (
+            call_kwargs.kwargs.get("cwd") == "/workspace"
+            or call_kwargs[1].get("cwd") == "/workspace"
+        )

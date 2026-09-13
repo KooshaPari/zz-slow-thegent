@@ -77,11 +77,7 @@ class UnifiedCache:
         return None
 
     def set(
-        self,
-        key: str,
-        value: Any,
-        tier: str = "ttl",
-        expire: int | None = None
+        self, key: str, value: Any, tier: str = "ttl", expire: int | None = None
     ) -> None:
         """Set value in cache.
 
@@ -151,7 +147,7 @@ def cached(
     cache: UnifiedCache | None = None,
     key_func: Any = None,
     tier: str = "ttl",
-    expire: int = 300
+    expire: int = 300,
 ):
     """Decorator to cache function results.
 
@@ -182,7 +178,9 @@ def cached(
             result = func(*args, **kwargs)
             _cache.set(key, result, tier=tier, expire=expire)
             return result
+
         return wrapper
+
     return decorator
 
 
@@ -191,8 +189,7 @@ _default_cache: UnifiedCache | None = None
 
 
 def get_cache(
-    disk_path: Path | str = ".cache/thegent",
-    lru_size: int = 1000
+    disk_path: Path | str = ".cache/thegent", lru_size: int = 1000
 ) -> UnifiedCache:
     """Get or create the default cache instance."""
     global _default_cache
@@ -207,7 +204,9 @@ def cache_get(key: str) -> Any | None:
     return get_cache().get(key)
 
 
-def cache_set(key: str, value: Any, tier: str = "ttl", expire: int | None = None) -> None:
+def cache_set(
+    key: str, value: Any, tier: str = "ttl", expire: int | None = None
+) -> None:
     """Set value in global cache."""
     get_cache().set(key, value, tier=tier, expire=expire)
 

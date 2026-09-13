@@ -19,7 +19,9 @@ class TestConnectorCapability:
     @pytest.mark.requirement("WL-228")
     def test_create_capability(self) -> None:
         """Can create a ConnectorCapability with all fields."""
-        cap = ConnectorCapability(connector_id="github", capabilities=["oauth2", "webhook", "streaming"])
+        cap = ConnectorCapability(
+            connector_id="github", capabilities=["oauth2", "webhook", "streaming"]
+        )
 
         assert cap.connector_id == "github"
         assert cap.capabilities == ["oauth2", "webhook", "streaming"]
@@ -50,7 +52,9 @@ class TestConnectorCapabilityRegistry:
         assert result.capabilities == ["oauth2", "webhook"]
 
     @pytest.mark.requirement("WL-228")
-    def test_register_duplicate_raises(self, registry: ConnectorCapabilityRegistry) -> None:
+    def test_register_duplicate_raises(
+        self, registry: ConnectorCapabilityRegistry
+    ) -> None:
         """Registering the same connector twice raises ValueError."""
         registry.register("github", ["oauth2"])
 
@@ -74,7 +78,9 @@ class TestConnectorCapabilityRegistry:
         assert registry.has_capability("unknown", "oauth2") is False
 
     @pytest.mark.requirement("WL-228")
-    def test_connectors_with_capability(self, registry: ConnectorCapabilityRegistry) -> None:
+    def test_connectors_with_capability(
+        self, registry: ConnectorCapabilityRegistry
+    ) -> None:
         """connectors_with returns all connectors with a capability."""
         registry.register("github", ["oauth2", "webhook"])
         registry.register("linear", ["oauth2", "rest"])
@@ -90,7 +96,9 @@ class TestConnectorCapabilityRegistry:
         assert basic_connectors == ["jira"]
 
     @pytest.mark.requirement("WL-228")
-    def test_connectors_with_missing_capability(self, registry: ConnectorCapabilityRegistry) -> None:
+    def test_connectors_with_missing_capability(
+        self, registry: ConnectorCapabilityRegistry
+    ) -> None:
         """connectors_with returns empty list for missing capability."""
         registry.register("github", ["oauth2"])
 
@@ -107,7 +115,9 @@ class TestConnectorCapabilityRegistry:
         assert result.capabilities == ["oauth2", "webhook"]
 
     @pytest.mark.requirement("WL-228")
-    def test_get_unregistered_raises(self, registry: ConnectorCapabilityRegistry) -> None:
+    def test_get_unregistered_raises(
+        self, registry: ConnectorCapabilityRegistry
+    ) -> None:
         """get raises KeyError for unregistered connector."""
         with pytest.raises(KeyError, match="not found"):
             registry.get("unknown")
@@ -125,7 +135,9 @@ class TestConnectorCapabilityRegistry:
         assert not registry.has_capability("jira", "oauth2")
 
     @pytest.mark.requirement("WL-228")
-    def test_empty_registry_connectors_with(self, registry: ConnectorCapabilityRegistry) -> None:
+    def test_empty_registry_connectors_with(
+        self, registry: ConnectorCapabilityRegistry
+    ) -> None:
         """connectors_with on empty registry returns empty list."""
         result = registry.connectors_with("oauth2")
         assert result == []

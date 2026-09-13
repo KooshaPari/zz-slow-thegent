@@ -266,7 +266,9 @@ class TestAdapterRegistry:
         try:
             AdapterRegistry.register("wl154-classmethod", sentinel)
             assert "wl154-classmethod" in ports_module._runtime_registry.drivers
-            assert ports_module._runtime_registry.drivers["wl154-classmethod"] is sentinel
+            assert (
+                ports_module._runtime_registry.drivers["wl154-classmethod"] is sentinel
+            )
         finally:
             ports_module._runtime_registry.drivers.pop(
                 "wl154-classmethod",

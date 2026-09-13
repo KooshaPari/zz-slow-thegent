@@ -40,7 +40,9 @@ def helpers_module():
 
 
 @pytest.mark.parametrize("phase_name", list(_WIRE_DONE))
-def test_run_impl_core_delegates_postsuccess_to_helper(phase_name: str, run_impl_core_source: str) -> None:
+def test_run_impl_core_delegates_postsuccess_to_helper(
+    phase_name: str, run_impl_core_source: str
+) -> None:
     """``run_impl_core`` must call the post-success helper, not inline the body."""
     assert f"{phase_name}(" in run_impl_core_source, (
         f"Expected run_impl_core to delegate to {phase_name} helper for "
@@ -121,7 +123,9 @@ def test_phase_update_teammate_status_failed_uses_stderr(helpers_module) -> None
         assert kwargs["summary"].startswith("e")
 
 
-def test_phase_update_teammate_status_failed_no_stderr_uses_fallback(helpers_module) -> None:
+def test_phase_update_teammate_status_failed_no_stderr_uses_fallback(
+    helpers_module,
+) -> None:
     """status='failed' with empty stderr → summary is 'Failed without stderr'."""
     settings = MagicMock()
     settings.cache_dir = MagicMock()

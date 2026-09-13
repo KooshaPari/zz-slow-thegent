@@ -134,7 +134,9 @@ class RouteTarget:
     cache: CacheConfig | None = None
     retry: RetryConfig | None = None
     circuit_breaker: CircuitBreakerConfig | None = None
-    on_status_codes: list[int] = field(default_factory=lambda: [429, 500, 502, 503, 529])
+    on_status_codes: list[int] = field(
+        default_factory=lambda: [429, 500, 502, 503, 529]
+    )
 
     @property
     def is_leaf(self) -> bool:
@@ -292,7 +294,11 @@ def _deserialize_route_target(data: dict[str, Any]) -> RouteTarget:
     """Recursively deserialize a ``RouteTarget`` from a plain dict."""
     cache = _deserialize_cache_config(data["cache"]) if "cache" in data else None
     retry = _deserialize_retry_config(data["retry"]) if "retry" in data else None
-    cb = _deserialize_circuit_breaker_config(data["circuit_breaker"]) if "circuit_breaker" in data else None
+    cb = (
+        _deserialize_circuit_breaker_config(data["circuit_breaker"])
+        if "circuit_breaker" in data
+        else None
+    )
     nested_targets = [_deserialize_route_target(t) for t in data.get("targets", [])]
     return RouteTarget(
         provider=data.get("provider"),
@@ -312,8 +318,12 @@ def _deserialize_route_config(data: dict[str, Any]) -> RouteConfig:
     targets = [_deserialize_route_target(t) for t in data.get("targets", [])]
     models: list[str] = [str(m) for m in data.get("models", [])]
 
-    cache = _deserialize_cache_config(data["cache"]) if "cache" in data else CacheConfig()
-    retry = _deserialize_retry_config(data["retry"]) if "retry" in data else RetryConfig()
+    cache = (
+        _deserialize_cache_config(data["cache"]) if "cache" in data else CacheConfig()
+    )
+    retry = (
+        _deserialize_retry_config(data["retry"]) if "retry" in data else RetryConfig()
+    )
     cb = (
         _deserialize_circuit_breaker_config(data["circuit_breaker"])
         if "circuit_breaker" in data

@@ -23,7 +23,14 @@ from dataclasses import dataclass, field
 
 _log = logging.getLogger(__name__)
 
-TASK_TYPES: tuple[str, ...] = ("coding", "reasoning", "summarization", "creative", "retrieval", "general")
+TASK_TYPES: tuple[str, ...] = (
+    "coding",
+    "reasoning",
+    "summarization",
+    "creative",
+    "retrieval",
+    "general",
+)
 
 # Keyword patterns compiled with IGNORECASE for each task type.
 _PATTERNS: dict[str, re.Pattern[str]] = {
@@ -56,7 +63,9 @@ class TaskClassification:
 
     task_type: str  # one of TASK_TYPES
     confidence: float  # 0.0-1.0
-    signals: list[str] = field(default_factory=list)  # keywords or features that triggered classification
+    signals: list[str] = field(
+        default_factory=list
+    )  # keywords or features that triggered classification
 
 
 @dataclass
@@ -70,7 +79,9 @@ class ModelPreference:
 
 
 DEFAULT_MODEL_PREFERENCES: list[ModelPreference] = [
-    ModelPreference("claude-opus-4-6", "anthropic", 1, ["coding", "reasoning", "creative"]),
+    ModelPreference(
+        "claude-opus-4-6", "anthropic", 1, ["coding", "reasoning", "creative"]
+    ),
     ModelPreference("gpt-4o", "openai", 2, ["coding", "general", "creative"]),
     ModelPreference("claude-sonnet-4-6", "anthropic", 3, ["general", "summarization"]),
     ModelPreference("claude-haiku-4-5", "anthropic", 4, ["summarization", "retrieval"]),
@@ -87,7 +98,9 @@ def classify_task(prompt: str) -> TaskClassification:
         matches = pattern.findall(prompt)
         if matches:
             hit_counts[task_type] = len(matches)
-            matched_signals[task_type] = [m if isinstance(m, str) else m[0] for m in matches]
+            matched_signals[task_type] = [
+                m if isinstance(m, str) else m[0] for m in matches
+            ]
 
     total_hits = sum(hit_counts.values())
 
@@ -109,7 +122,9 @@ def classify_task(prompt: str) -> TaskClassification:
         hit_counts,
     )
 
-    return TaskClassification(task_type=best_type, confidence=confidence, signals=signals)
+    return TaskClassification(
+        task_type=best_type, confidence=confidence, signals=signals
+    )
 
 
 def select_model(
@@ -127,7 +142,8 @@ def select_model(
     candidates = [
         p
         for p in prefs
-        if classification.task_type in p.task_types and (available_models is None or p.model in available_models)
+        if classification.task_type in p.task_types
+        and (available_models is None or p.model in available_models)
     ]
 
     if not candidates:
@@ -136,7 +152,11 @@ def select_model(
     # Sort by priority ascending (lower = higher priority)
     candidates.sort(key=lambda p: p.priority)
     chosen = candidates[0]
-    _log.debug("select_model: chose %r for task_type=%r", chosen.model, classification.task_type)
+    _log.debug(
+        "select_model: chose %r for task_type=%r",
+        chosen.model,
+        classification.task_type,
+    )
     return chosen
 
 
@@ -147,4 +167,6 @@ def ml_route(
 ) -> ModelPreference | None:
     """Convenience: classify + select in one call."""
     classification = classify_task(prompt)
-    return select_model(classification, preferences=preferences, available_models=available_models)
+    return select_model(
+        classification, preferences=preferences, available_models=available_models
+    )

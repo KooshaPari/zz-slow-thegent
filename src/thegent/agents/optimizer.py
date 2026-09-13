@@ -51,9 +51,13 @@ class PromptOptimizer:
         v.success_rate = ((v.success_rate * (v.runs - 1)) + success) / v.runs
         v.avg_tokens = int(((v.avg_tokens * (v.runs - 1)) + tokens) / v.runs)
         v.avg_cost = ((v.avg_cost * (v.runs - 1)) + cost) / v.runs
-        _log.info("Prompt version %s updated: Success rate: %.2f", version_id, v.success_rate)
+        _log.info(
+            "Prompt version %s updated: Success rate: %.2f", version_id, v.success_rate
+        )
 
-    def optimize(self, current_prompt: str, feedback: str | None = None) -> tuple[str, str]:
+    def optimize(
+        self, current_prompt: str, feedback: str | None = None
+    ) -> tuple[str, str]:
         """WP-20003: Optimize the current prompt based on feedback or performance history."""
         _log.info("Optimizing prompt for agent: %s", self.agent_id)
 

@@ -45,6 +45,8 @@ def test_sys_setup_project_init_help_exits_zero() -> None:
 
 @pytest.mark.e2e
 def test_sys_setup_project_scaffold_profiles_help_exits_zero() -> None:
-    result = runner.invoke(app, ["sys", "setup", "project", "scaffold-profiles", "--help"])
+    result = runner.invoke(
+        app, ["sys", "setup", "project", "scaffold-profiles", "--help"]
+    )
     assert result.exit_code == 0
     assert "scaffold-profiles" in result.stdout

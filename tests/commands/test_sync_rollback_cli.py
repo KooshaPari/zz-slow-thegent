@@ -17,7 +17,17 @@ def test_sync_rollback_create_snapshot() -> None:
         ws_path.parent.mkdir(parents=True, exist_ok=True)
         ws_path.write_text("# Work Stream\n\nbody", encoding="utf-8")
 
-        result = runner.invoke(app, ["rollback", "--create", "--cycle-id", "cycle-a", "--work-stream", str(ws_path)])
+        result = runner.invoke(
+            app,
+            [
+                "rollback",
+                "--create",
+                "--cycle-id",
+                "cycle-a",
+                "--work-stream",
+                str(ws_path),
+            ],
+        )
 
         assert result.exit_code == 0
         assert "Created snapshot" in result.stdout
@@ -40,7 +50,9 @@ def test_sync_rollback_latest_restores_newest_snapshot() -> None:
         manager.take_snapshot(ws_path, cycle_id="c2")
         ws_path.write_text("broken", encoding="utf-8")
 
-        result = runner.invoke(app, ["rollback", "--latest", "--work-stream", str(ws_path)])
+        result = runner.invoke(
+            app, ["rollback", "--latest", "--work-stream", str(ws_path)]
+        )
 
         assert result.exit_code == 0
         assert "Restored snapshot" in result.stdout
@@ -55,7 +67,9 @@ def test_sync_rollback_latest_without_snapshots_fails() -> None:
         ws_path.parent.mkdir(parents=True, exist_ok=True)
         ws_path.write_text("# empty", encoding="utf-8")
 
-        result = runner.invoke(app, ["rollback", "--latest", "--work-stream", str(ws_path)])
+        result = runner.invoke(
+            app, ["rollback", "--latest", "--work-stream", str(ws_path)]
+        )
 
         assert result.exit_code == 1
         assert "No snapshots available to restore" in result.stdout

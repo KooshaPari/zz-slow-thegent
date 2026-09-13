@@ -38,7 +38,9 @@ runner = CliRunner()
         ("fanta", _FANTA_MODEL_ALIAS),
     ],
 )
-def test_codex_tier_aliases_are_consistent_across_harnesses(harness: str, model_alias_map: dict[str, str]) -> None:
+def test_codex_tier_aliases_are_consistent_across_harnesses(
+    harness: str, model_alias_map: dict[str, str]
+) -> None:
     assert model_alias_map["dex"] == "gpt-5.3-codex", harness
     assert model_alias_map["high"] == "gpt-5.3-codex-high", harness
     assert model_alias_map["xhigh"] == "gpt-5.3-codex-xhigh", harness
@@ -53,7 +55,10 @@ def test_default_clode_callback_uses_flash_path() -> None:
 
 def test_default_dex_callback_uses_flash_path() -> None:
     ctx = type("Ctx", (), {"invoked_subcommand": None})()
-    with patch("sys.argv", ["dex"]), patch("thegent.dex_main._run_codex_interactive") as run_interactive:
+    with (
+        patch("sys.argv", ["dex"]),
+        patch("thegent.dex_main._run_codex_interactive") as run_interactive,
+    ):
         default_dex(ctx, force=False, native=False)  # type: ignore[arg-type]
     run_interactive.assert_called_once_with("flash")
 

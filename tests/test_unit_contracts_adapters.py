@@ -349,7 +349,9 @@ class TestGenericOutputAdapter:
     def test_normalize_with_context_run_id(self) -> None:
         # @trace FR-CTR-003
         adapter = GenericOutputAdapter("plain")
-        result = adapter.normalize("output", context={"run_id": "r-42", "chunk_id": "c-7"})
+        result = adapter.normalize(
+            "output", context={"run_id": "r-42", "chunk_id": "c-7"}
+        )
         assert result.csm.run_id == "r-42"
         assert result.csm.chunk_id == "c-7"
 
@@ -373,7 +375,9 @@ class TestNormalizeOutputAdapterException:
         broken_adapter.normalize.side_effect = RuntimeError("adapter crashed")
         broken_adapter.provider = "copilot"
 
-        with patch("thegent.contracts.adapters.get_adapter", return_value=broken_adapter):
+        with patch(
+            "thegent.contracts.adapters.get_adapter", return_value=broken_adapter
+        ):
             result = normalize_output("copilot", "some raw output", allow_fallback=True)
         assert result.csm.source_contract == "fallback-plain"
 
@@ -385,7 +389,9 @@ class TestNormalizeOutputAdapterException:
         broken_adapter.normalize.side_effect = RuntimeError("adapter crashed")
         broken_adapter.provider = "copilot"
 
-        with patch("thegent.contracts.adapters.get_adapter", return_value=broken_adapter):
+        with patch(
+            "thegent.contracts.adapters.get_adapter", return_value=broken_adapter
+        ):
             with pytest.raises(SemanticValidationError):
                 normalize_output("copilot", "raw", allow_fallback=False)
 

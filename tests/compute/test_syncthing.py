@@ -52,7 +52,9 @@ def _make_response(
     return resp
 
 
-def _make_manager(api_key: str = "test-key", base_url: str = "http://localhost:8384") -> SyncthingManager:
+def _make_manager(
+    api_key: str = "test-key", base_url: str = "http://localhost:8384"
+) -> SyncthingManager:
     cfg = SyncthingConfig(
         THGENT_SYNCTHING_API_KEY=api_key,
         THGENT_SYNCTHING_URL=base_url,
@@ -99,7 +101,9 @@ class TestSyncthingDevice:
     """Tests for SyncthingDevice dataclass."""
 
     def test_fields(self) -> None:
-        dev = SyncthingDevice(device_id="AAAAAA-BBBBBB", name="my-mac", is_connected=True)
+        dev = SyncthingDevice(
+            device_id="AAAAAA-BBBBBB", name="my-mac", is_connected=True
+        )
         assert dev.device_id == "AAAAAA-BBBBBB"
         assert dev.name == "my-mac"
         assert dev.is_connected is True

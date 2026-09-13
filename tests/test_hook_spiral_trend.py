@@ -109,7 +109,12 @@ def test_spiral_trend_command_handles_missing_file(tmp_path: Path) -> None:
     assert dispatcher.exists(), f"Missing dispatcher binary: {dispatcher}"
 
     proc = subprocess.run(
-        [str(dispatcher), "governance", "spiral-trend", str(tmp_path / "missing.jsonl")],
+        [
+            str(dispatcher),
+            "governance",
+            "spiral-trend",
+            str(tmp_path / "missing.jsonl"),
+        ],
         capture_output=True,
         text=True,
         check=True,

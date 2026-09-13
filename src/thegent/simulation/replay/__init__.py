@@ -1,4 +1,5 @@
 """Stub module."""
+
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -6,6 +7,7 @@ from typing import Any
 @dataclass
 class ReplayEvent:
     """Event for replay simulation."""
+
     timestamp: float
     event_type: str
     data: dict[str, Any]
@@ -14,6 +16,7 @@ class ReplayEvent:
 @dataclass
 class ReplaySession:
     """Session for replay."""
+
     session_id: str
     events: list[ReplayEvent] = field(default_factory=list)
 
@@ -62,6 +65,7 @@ def _try_parse_json(content: str) -> dict[str, Any] | None:
         Parsed dictionary or None if parsing fails.
     """
     import json
+
     try:
         return json.loads(content)
     except json.JSONDecodeError:
@@ -93,6 +97,7 @@ def _parse_iso_to_float(iso_string: str) -> float:
         Unix timestamp as float.
     """
     from datetime import datetime
+
     try:
         dt = datetime.fromisoformat(iso_string.replace("Z", "+00:00"))
         return dt.timestamp()

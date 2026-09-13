@@ -119,7 +119,9 @@ class TestConnectorSLATracker:
         assert tracker.is_breached("github") is True
 
     @pytest.mark.requirement("WL-233")
-    def test_is_breached_unregistered_raises(self, tracker: ConnectorSLATracker) -> None:
+    def test_is_breached_unregistered_raises(
+        self, tracker: ConnectorSLATracker
+    ) -> None:
         """is_breached raises KeyError for unregistered connector."""
         with pytest.raises(KeyError, match="not found"):
             tracker.is_breached("unknown")
@@ -177,7 +179,9 @@ class TestConnectorSLATracker:
         assert len(records) == 3
 
     @pytest.mark.requirement("WL-233")
-    def test_all_records_includes_recorded_and_unrecorded(self, tracker: ConnectorSLATracker) -> None:
+    def test_all_records_includes_recorded_and_unrecorded(
+        self, tracker: ConnectorSLATracker
+    ) -> None:
         """all_records includes both recorded and unrecorded actuals."""
         tracker.set_target("github", 1000.0)
         tracker.record_actual("github", 950.0)

@@ -89,7 +89,15 @@ class TestWriteReceiptDataclass:
         )
 
         data = receipt.to_dict()
-        required_keys = {"wl_id", "connector", "operation", "remote_id", "success", "timestamp", "cycle_id"}
+        required_keys = {
+            "wl_id",
+            "connector",
+            "operation",
+            "remote_id",
+            "success",
+            "timestamp",
+            "cycle_id",
+        }
         assert required_keys.issubset(data.keys())
 
 
@@ -337,7 +345,9 @@ class TestWriteReceiptLogReadByCycle:
         ts = datetime.now(UTC)
 
         for i in range(3):
-            r = WriteReceipt(f"WL-{i:03d}", "github", "create", f"gh-{i}", True, ts, "cycle-1")
+            r = WriteReceipt(
+                f"WL-{i:03d}", "github", "create", f"gh-{i}", True, ts, "cycle-1"
+            )
             log.append(r)
 
         receipts = log.read_by_cycle("cycle-1")
@@ -380,7 +390,9 @@ class TestWriteReceiptLogReadByCycle:
 
         for cycle in ["c1", "c2", "c3"]:
             for i in range(2):
-                r = WriteReceipt(f"WL-{cycle}-{i}", "github", "create", None, True, ts, cycle)
+                r = WriteReceipt(
+                    f"WL-{cycle}-{i}", "github", "create", None, True, ts, cycle
+                )
                 log.append(r)
 
         c2_receipts = log.read_by_cycle("c2")
@@ -397,7 +409,9 @@ class TestWriteReceiptLogReadFailures:
         ts = datetime.now(UTC)
 
         for i in range(3):
-            r = WriteReceipt(f"WL-{i:03d}", "github", "create", f"gh-{i}", True, ts, "cycle-1")
+            r = WriteReceipt(
+                f"WL-{i:03d}", "github", "create", f"gh-{i}", True, ts, "cycle-1"
+            )
             log.append(r)
 
         failures = log.read_failures()
@@ -409,7 +423,9 @@ class TestWriteReceiptLogReadFailures:
         ts = datetime.now(UTC)
 
         for i in range(3):
-            r = WriteReceipt(f"WL-{i:03d}", "github", "create", None, False, ts, "cycle-1")
+            r = WriteReceipt(
+                f"WL-{i:03d}", "github", "create", None, False, ts, "cycle-1"
+            )
             log.append(r)
 
         failures = log.read_failures()
@@ -421,7 +437,9 @@ class TestWriteReceiptLogReadFailures:
         log = WriteReceiptLog(tmp_path / "receipts.jsonl")
         ts = datetime.now(UTC)
 
-        success = WriteReceipt("WL-001", "github", "create", "gh-1", True, ts, "cycle-1")
+        success = WriteReceipt(
+            "WL-001", "github", "create", "gh-1", True, ts, "cycle-1"
+        )
         failure = WriteReceipt("WL-002", "github", "create", None, False, ts, "cycle-1")
 
         log.append(success)
@@ -444,9 +462,15 @@ class TestWriteReceiptLogReadFailures:
         ts = datetime.now(UTC)
 
         # Add mixed receipts
-        log.append(WriteReceipt("WL-001", "github", "create", "gh-1", True, ts, "cycle-1"))
-        log.append(WriteReceipt("WL-002", "linear", "update", None, False, ts, "cycle-1"))
-        log.append(WriteReceipt("WL-003", "github", "delete", "gh-3", True, ts, "cycle-1"))
+        log.append(
+            WriteReceipt("WL-001", "github", "create", "gh-1", True, ts, "cycle-1")
+        )
+        log.append(
+            WriteReceipt("WL-002", "linear", "update", None, False, ts, "cycle-1")
+        )
+        log.append(
+            WriteReceipt("WL-003", "github", "delete", "gh-3", True, ts, "cycle-1")
+        )
         log.append(WriteReceipt("WL-004", "jira", "create", None, False, ts, "cycle-1"))
 
         failures = log.read_failures()
@@ -465,11 +489,15 @@ class TestWriteReceiptLogIntegration:
 
         # Append some receipts
         for i in range(2):
-            r = WriteReceipt(f"WL-c1-{i}", "github", "create", f"gh-{i}", True, ts, "cycle-1")
+            r = WriteReceipt(
+                f"WL-c1-{i}", "github", "create", f"gh-{i}", True, ts, "cycle-1"
+            )
             log.append(r)
 
         for i in range(2):
-            r = WriteReceipt(f"WL-c2-{i}", "github", "create", None, False, ts, "cycle-2")
+            r = WriteReceipt(
+                f"WL-c2-{i}", "github", "create", None, False, ts, "cycle-2"
+            )
             log.append(r)
 
         # Read all

@@ -31,7 +31,9 @@ class CostQualityOptimizer:
             "cost_per_token": cost_per_token,
             "quality_score": quality_score,
         }
-        logger.info(f"Registered model: {model_id} (cost: ${cost_per_token:.6f}, quality: {quality_score:.2f})")
+        logger.info(
+            f"Registered model: {model_id} (cost: ${cost_per_token:.6f}, quality: {quality_score:.2f})"
+        )
 
     def route_request(
         self,
@@ -50,7 +52,11 @@ class CostQualityOptimizer:
             Selected model ID
         """
         # Filter models by quality threshold
-        candidates = {mid: model for mid, model in self.models.items() if model["quality_score"] >= quality_threshold}
+        candidates = {
+            mid: model
+            for mid, model in self.models.items()
+            if model["quality_score"] >= quality_threshold
+        }
 
         if not candidates:
             # Fall back to highest quality

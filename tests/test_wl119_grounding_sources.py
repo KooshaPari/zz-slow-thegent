@@ -19,12 +19,18 @@ from thegent.utils.routing_impl.grounding import (
 
 def test_extract_grounding_sources_dedupes_and_preserves_order() -> None:
     text = "See https://a.example/x and https://b.example/y then https://a.example/x"
-    assert extract_grounding_sources(text) == ["https://a.example/x", "https://b.example/y"]
+    assert extract_grounding_sources(text) == [
+        "https://a.example/x",
+        "https://b.example/y",
+    ]
 
 
 def test_extract_grounding_sources_normalizes_and_dedupes_urls() -> None:
     text = "Refs: HTTPS://A.EXAMPLE/x, https://a.example/x. https://b.example/y?"
-    assert extract_grounding_sources(text) == ["https://a.example/x", "https://b.example/y"]
+    assert extract_grounding_sources(text) == [
+        "https://a.example/x",
+        "https://b.example/y",
+    ]
 
 
 def test_extract_grounding_sources_empty() -> None:
@@ -32,25 +38,51 @@ def test_extract_grounding_sources_empty() -> None:
 
 
 def test_normalize_grounding_source_url_trims_and_lowercases_host() -> None:
-    normalized = normalize_grounding_source_url("  HTTPS://Docs.Example.com/Ref?id=1.  ")
+    normalized = normalize_grounding_source_url(
+        "  HTTPS://Docs.Example.com/Ref?id=1.  "
+    )
     assert normalized == "https://docs.example.com/Ref?id=1"
 
 
 def test_normalize_grounding_source_url_removes_default_ports() -> None:
-    assert normalize_grounding_source_url("https://docs.example.com:443/ref") == "https://docs.example.com/ref"
-    assert normalize_grounding_source_url("http://docs.example.com:80/ref") == "http://docs.example.com/ref"
+    assert (
+        normalize_grounding_source_url("https://docs.example.com:443/ref")
+        == "https://docs.example.com/ref"
+    )
+    assert (
+        normalize_grounding_source_url("http://docs.example.com:80/ref")
+        == "http://docs.example.com/ref"
+    )
 
 
 def test_normalize_grounding_source_url_removes_default_root_trailing_slash() -> None:
-    assert normalize_grounding_source_url("https://docs.example.com/") == "https://docs.example.com"
-    assert normalize_grounding_source_url("http://docs.example.com/") == "http://docs.example.com"
-    assert normalize_grounding_source_url("https://docs.example.com/path/") == "https://docs.example.com/path/"
+    assert (
+        normalize_grounding_source_url("https://docs.example.com/")
+        == "https://docs.example.com"
+    )
+    assert (
+        normalize_grounding_source_url("http://docs.example.com/")
+        == "http://docs.example.com"
+    )
+    assert (
+        normalize_grounding_source_url("https://docs.example.com/path/")
+        == "https://docs.example.com/path/"
+    )
 
 
 def test_normalize_grounding_source_url_unwraps_wrapped_literals() -> None:
-    assert normalize_grounding_source_url("<https://docs.example.com/ref>") == "https://docs.example.com/ref"
-    assert normalize_grounding_source_url("(https://docs.example.com/ref)") == "https://docs.example.com/ref"
-    assert normalize_grounding_source_url("[https://docs.example.com/ref]") == "https://docs.example.com/ref"
+    assert (
+        normalize_grounding_source_url("<https://docs.example.com/ref>")
+        == "https://docs.example.com/ref"
+    )
+    assert (
+        normalize_grounding_source_url("(https://docs.example.com/ref)")
+        == "https://docs.example.com/ref"
+    )
+    assert (
+        normalize_grounding_source_url("[https://docs.example.com/ref]")
+        == "https://docs.example.com/ref"
+    )
 
 
 def test_extract_grounding_sources_from_payload_grounding_metadata() -> None:
@@ -88,12 +120,18 @@ def test_extract_grounding_sources_from_payload_supports_source_url_keys() -> No
 def test_resolve_grounding_sources_prefers_structured_result_list() -> None:
     resolved = _resolve_grounding_sources_for_output(
         stdout="plain text without urls",
-        result_grounding_sources=["https://a.example/x", "https://a.example/x", "https://b.example/y"],
+        result_grounding_sources=[
+            "https://a.example/x",
+            "https://a.example/x",
+            "https://b.example/y",
+        ],
     )
     assert resolved == ["https://a.example/x", "https://b.example/y"]
 
 
-def test_run_registry_finish_event_can_persist_grounding_sources(tmp_path: Path) -> None:
+def test_run_registry_finish_event_can_persist_grounding_sources(
+    tmp_path: Path,
+) -> None:
     registry = RunRegistry(tmp_path)
     event_details = _build_run_event_details(
         grounding_sources=["https://a.example/1", "https://b.example/2"],
@@ -116,5 +154,8 @@ def test_run_registry_finish_event_can_persist_grounding_sources(tmp_path: Path)
 
     rows = registry.registry_path.read_text(encoding="utf-8").splitlines()
     assert rows
-    assert '"grounding_sources": ["https://a.example/1", "https://b.example/2"]' in rows[-1]
+    assert (
+        '"grounding_sources": ["https://a.example/1", "https://b.example/2"]'
+        in rows[-1]
+    )
     assert '"context_usage_ratio": 0.55' in rows[-1]

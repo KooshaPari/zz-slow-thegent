@@ -47,7 +47,9 @@ class ConfigWizard:
             True if configuration was successful, False otherwise
         """
         console.print(
-            Panel("[bold cyan]thegent Configuration Wizard[/bold cyan]\n[dim]Let's set up your environment[/dim]")
+            Panel(
+                "[bold cyan]thegent Configuration Wizard[/bold cyan]\n[dim]Let's set up your environment[/dim]"
+            )
         )
 
         try:
@@ -67,7 +69,9 @@ class ConfigWizard:
             self._step_budget()
 
             # Step 6: Advanced settings
-            if Confirm.ask("\n[bold]Configure advanced settings?[/bold]", default=False):
+            if Confirm.ask(
+                "\n[bold]Configure advanced settings?[/bold]", default=False
+            ):
                 self._step_advanced()
 
             # Step 7: Review and save
@@ -108,17 +112,23 @@ class ConfigWizard:
                 raise ValueError("Port must be between 1 and 65535")
             self.config["THGENT_MCP_PORT"] = port
         except ValueError as _e:
-            console.print(f"[yellow]Invalid port, using default: {default_port}[/yellow]")
+            console.print(
+                f"[yellow]Invalid port, using default: {default_port}[/yellow]"
+            )
             self.config["THGENT_MCP_PORT"] = default_port
 
         # Session directory
         default_session_dir = str(self.settings.session_dir.expanduser())
-        session_dir = Prompt.ask("[bold]Session Directory[/bold]", default=default_session_dir)
+        session_dir = Prompt.ask(
+            "[bold]Session Directory[/bold]", default=default_session_dir
+        )
         self.config["THGENT_SESSION_DIR"] = session_dir
 
         # Cache directory
         default_cache_dir = str(self.settings.cache_dir.expanduser())
-        cache_dir = Prompt.ask("[bold]Cache Directory[/bold]", default=default_cache_dir)
+        cache_dir = Prompt.ask(
+            "[bold]Cache Directory[/bold]", default=default_cache_dir
+        )
         self.config["THGENT_CACHE_DIR"] = cache_dir
 
         print_status("Basic configuration complete", "success")
@@ -129,10 +139,22 @@ class ConfigWizard:
         print_section("Default Models")
 
         models = {
-            "Cursor": ("THGENT_DEFAULT_CURSOR_MODEL", self.settings.default_cursor_model),
-            "Gemini": ("THGENT_DEFAULT_GEMINI_MODEL", self.settings.default_gemini_model),
-            "Copilot": ("THGENT_DEFAULT_COPILOT_MODEL", self.settings.default_copilot_model),
-            "Claude": ("THGENT_DEFAULT_CLAUDE_MODEL", self.settings.default_claude_model),
+            "Cursor": (
+                "THGENT_DEFAULT_CURSOR_MODEL",
+                self.settings.default_cursor_model,
+            ),
+            "Gemini": (
+                "THGENT_DEFAULT_GEMINI_MODEL",
+                self.settings.default_gemini_model,
+            ),
+            "Copilot": (
+                "THGENT_DEFAULT_COPILOT_MODEL",
+                self.settings.default_copilot_model,
+            ),
+            "Claude": (
+                "THGENT_DEFAULT_CLAUDE_MODEL",
+                self.settings.default_claude_model,
+            ),
             "Codex": ("THGENT_DEFAULT_CODEX_MODEL", self.settings.default_codex_model),
         }
 
@@ -151,14 +173,18 @@ class ConfigWizard:
 
         # Default timeout
         default_timeout = str(self.settings.default_timeout)
-        timeout = Prompt.ask("[bold]Default Agent Timeout (seconds)[/bold]", default=default_timeout)
+        timeout = Prompt.ask(
+            "[bold]Default Agent Timeout (seconds)[/bold]", default=default_timeout
+        )
         try:
             timeout_int = int(timeout)
             if not (10 <= timeout_int <= 3600):
                 raise ValueError("Timeout must be between 10 and 3600 seconds")
             self.config["THGENT_DEFAULT_TIMEOUT"] = timeout
         except ValueError:
-            console.print(f"[yellow]Invalid timeout, using default: {default_timeout}[/yellow]")
+            console.print(
+                f"[yellow]Invalid timeout, using default: {default_timeout}[/yellow]"
+            )
             self.config["THGENT_DEFAULT_TIMEOUT"] = default_timeout
 
         # Max idle seconds
@@ -170,7 +196,9 @@ class ConfigWizard:
                 raise ValueError("Idle must be between 60 and 600 seconds")
             self.config["THGENT_MAX_IDLE_SECONDS"] = idle
         except ValueError:
-            console.print(f"[yellow]Invalid idle, using default: {default_idle}[/yellow]")
+            console.print(
+                f"[yellow]Invalid idle, using default: {default_idle}[/yellow]"
+            )
             self.config["THGENT_MAX_IDLE_SECONDS"] = default_idle
 
         # Default routing
@@ -195,38 +223,50 @@ class ConfigWizard:
 
         # Hourly limit
         default_hourly = str(self.settings.budget_hourly_limit)
-        hourly = Prompt.ask("[bold]Hourly Budget Limit (USD)[/bold]", default=default_hourly)
+        hourly = Prompt.ask(
+            "[bold]Hourly Budget Limit (USD)[/bold]", default=default_hourly
+        )
         try:
             hourly_float = float(hourly)
             if hourly_float < 0:
                 raise ValueError("Budget must be non-negative")
             self.config["THGENT_BUDGET_HOURLY_LIMIT"] = hourly
         except ValueError:
-            console.print(f"[yellow]Invalid budget, using default: {default_hourly}[/yellow]")
+            console.print(
+                f"[yellow]Invalid budget, using default: {default_hourly}[/yellow]"
+            )
             self.config["THGENT_BUDGET_HOURLY_LIMIT"] = default_hourly
 
         # Daily limit
         default_daily = str(self.settings.budget_daily_limit)
-        daily = Prompt.ask("[bold]Daily Budget Limit (USD)[/bold]", default=default_daily)
+        daily = Prompt.ask(
+            "[bold]Daily Budget Limit (USD)[/bold]", default=default_daily
+        )
         try:
             daily_float = float(daily)
             if daily_float < 0:
                 raise ValueError("Budget must be non-negative")
             self.config["THGENT_BUDGET_DAILY_LIMIT"] = daily
         except ValueError:
-            console.print(f"[yellow]Invalid budget, using default: {default_daily}[/yellow]")
+            console.print(
+                f"[yellow]Invalid budget, using default: {default_daily}[/yellow]"
+            )
             self.config["THGENT_BUDGET_DAILY_LIMIT"] = default_daily
 
         # Per-run limit
         default_run = str(self.settings.budget_run_limit)
-        run_limit = Prompt.ask("[bold]Per-Run Budget Limit (USD)[/bold]", default=default_run)
+        run_limit = Prompt.ask(
+            "[bold]Per-Run Budget Limit (USD)[/bold]", default=default_run
+        )
         try:
             run_float = float(run_limit)
             if run_float < 0:
                 raise ValueError("Budget must be non-negative")
             self.config["THGENT_BUDGET_RUN_LIMIT"] = run_limit
         except ValueError:
-            console.print(f"[yellow]Invalid budget, using default: {default_run}[/yellow]")
+            console.print(
+                f"[yellow]Invalid budget, using default: {default_run}[/yellow]"
+            )
             self.config["THGENT_BUDGET_RUN_LIMIT"] = default_run
 
         print_status("Budget settings configured", "success")
@@ -248,14 +288,18 @@ class ConfigWizard:
 
         # Retention days
         default_retention = str(self.settings.retention_days_sessions)
-        retention = Prompt.ask("[bold]Session Retention (days)[/bold]", default=default_retention)
+        retention = Prompt.ask(
+            "[bold]Session Retention (days)[/bold]", default=default_retention
+        )
         try:
             retention_int = int(retention)
             if not (7 <= retention_int <= 365):
                 raise ValueError("Retention must be between 7 and 365 days")
             self.config["THGENT_RETENTION_DAYS_SESSIONS"] = retention
         except ValueError:
-            console.print(f"[yellow]Invalid retention, using default: {default_retention}[/yellow]")
+            console.print(
+                f"[yellow]Invalid retention, using default: {default_retention}[/yellow]"
+            )
             self.config["THGENT_RETENTION_DAYS_SESSIONS"] = default_retention
 
         print_status("Advanced settings configured", "success")
@@ -266,7 +310,9 @@ class ConfigWizard:
         print_section("Configuration Review")
 
         # Display configuration summary
-        table = Table(title="Configuration Summary", show_header=True, header_style="bold cyan")
+        table = Table(
+            title="Configuration Summary", show_header=True, header_style="bold cyan"
+        )
         table.add_column("Setting", style="cyan")
         table.add_column("Value", style="green")
 

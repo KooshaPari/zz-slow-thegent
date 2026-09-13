@@ -13,7 +13,12 @@ CI_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "ci.yml"
 
 def test_taskfile_defines_explicit_coverage_lifecycle_tasks() -> None:
     text = TASKFILE.read_text(encoding="utf-8")
-    for task_name in ("coverage:clean:", "coverage:run:", "coverage:report:", "coverage:ci:"):
+    for task_name in (
+        "coverage:clean:",
+        "coverage:run:",
+        "coverage:report:",
+        "coverage:ci:",
+    ):
         assert task_name in text, f"Taskfile.yml must define `{task_name[:-1]}`"
 
 
@@ -22,7 +27,9 @@ def test_coverage_run_enforces_clean_before_pytest() -> None:
     pattern = re.compile(
         r"(?ms)^  coverage:run:\n.*?^\s+cmds:\n(?:^\s+.*\n)*?^\s+- task: coverage:clean\n(?:^\s+.*\n)*?^\s+- uv run pytest -q --cov=src --cov-context=test --cov-report= -p no:tach\n"
     )
-    assert pattern.search(text), "coverage:run must invoke coverage:clean before pytest --cov"
+    assert pattern.search(text), (
+        "coverage:run must invoke coverage:clean before pytest --cov"
+    )
 
 
 def test_coverage_report_and_ci_keep_fail_fast_contract() -> None:
@@ -33,14 +40,22 @@ def test_coverage_report_and_ci_keep_fail_fast_contract() -> None:
     ci_pattern = re.compile(
         r"(?ms)^  coverage:ci:\n.*?^\s+cmds:\n(?:^\s+.*\n)*?^\s+- task: coverage:run\n(?:^\s+.*\n)*?^\s+- task: coverage:report\n"
     )
-    assert report_pattern.search(text), "coverage:report must run coverage report and coverage xml"
-    assert ci_pattern.search(text), "coverage:ci must chain coverage:run then coverage:report"
+    assert report_pattern.search(text), (
+        "coverage:report must run coverage report and coverage xml"
+    )
+    assert ci_pattern.search(text), (
+        "coverage:ci must chain coverage:run then coverage:report"
+    )
 
 
 def test_pyproject_coverage_config_handles_stale_paths_without_error_masking() -> None:
     text = PYPROJECT.read_text(encoding="utf-8")
-    assert "relative_files = true" in text, "coverage.run must set relative_files = true"
-    assert "ignore_errors = false" in text, "coverage.report must keep ignore_errors = false"
+    assert "relative_files = true" in text, (
+        "coverage.run must set relative_files = true"
+    )
+    assert "ignore_errors = false" in text, (
+        "coverage.report must keep ignore_errors = false"
+    )
     assert "fail_under = 100" in text, "coverage.report must keep fail_under = 100"
 
 

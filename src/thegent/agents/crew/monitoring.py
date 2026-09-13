@@ -93,7 +93,9 @@ class MonitoringEngine:
         self.health_statuses[crew.id] = status
         return status
 
-    def track_performance(self, crew_id: str, results: dict[str, ExecutionResult]) -> PerformanceMetrics:
+    def track_performance(
+        self, crew_id: str, results: dict[str, ExecutionResult]
+    ) -> PerformanceMetrics:
         """
         Track performance metrics for crew execution.
 
@@ -120,12 +122,16 @@ class MonitoringEngine:
 
             # Calculate throughput
             if metrics.total_duration_seconds > 0:
-                metrics.throughput_tasks_per_minute = (len(completed) / metrics.total_duration_seconds) * 60
+                metrics.throughput_tasks_per_minute = (
+                    len(completed) / metrics.total_duration_seconds
+                ) * 60
 
         self.performance_metrics[crew_id] = metrics
         return metrics
 
-    def track_costs(self, crew_id: str, results: dict[str, ExecutionResult]) -> CostMetrics:
+    def track_costs(
+        self, crew_id: str, results: dict[str, ExecutionResult]
+    ) -> CostMetrics:
         """
         Track cost metrics for crew execution.
 

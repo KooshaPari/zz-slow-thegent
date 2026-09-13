@@ -70,7 +70,9 @@ class TestStrictMappingValidator:
     def test_validate_remote_state_known_state_passes(self):
         """# @trace WL-190 — known state passes validation."""
         validator = StrictMappingValidator()
-        is_valid, error = validator.validate_remote_state("active", ["active", "inactive"])
+        is_valid, error = validator.validate_remote_state(
+            "active", ["active", "inactive"]
+        )
         assert is_valid is True
         assert error is None
 
@@ -86,7 +88,9 @@ class TestStrictMappingValidator:
         """# @trace WL-190 — unknown state returns (False, error_msg) when action='warn'."""
         config = StrictMappingConfig(unknown_state_action="warn")
         validator = StrictMappingValidator(config)
-        is_valid, error = validator.validate_remote_state("unknown", ["active", "inactive"])
+        is_valid, error = validator.validate_remote_state(
+            "unknown", ["active", "inactive"]
+        )
         assert is_valid is False
         assert error is not None
         assert "Unknown state" in error
@@ -96,7 +100,9 @@ class TestStrictMappingValidator:
         """# @trace WL-190 — unknown state returns (False, None) when action='skip'."""
         config = StrictMappingConfig(unknown_state_action="skip")
         validator = StrictMappingValidator(config)
-        is_valid, error = validator.validate_remote_state("unknown", ["active", "inactive"])
+        is_valid, error = validator.validate_remote_state(
+            "unknown", ["active", "inactive"]
+        )
         assert is_valid is False
         assert error is None
 
@@ -105,7 +111,9 @@ class TestStrictMappingValidator:
         """# @trace WL-190 — disabled strict mapping accepts unknown states."""
         config = StrictMappingConfig(enabled=False)
         validator = StrictMappingValidator(config)
-        is_valid, error = validator.validate_remote_state("unknown", ["active", "inactive"])
+        is_valid, error = validator.validate_remote_state(
+            "unknown", ["active", "inactive"]
+        )
         assert is_valid is True
         assert error is None
 
@@ -113,7 +121,9 @@ class TestStrictMappingValidator:
     def test_validate_field_value_allowed_passes(self):
         """# @trace WL-190 — allowed field value passes validation."""
         validator = StrictMappingValidator()
-        is_valid, error = validator.validate_field_value("status", "pending", ["pending", "done"])
+        is_valid, error = validator.validate_field_value(
+            "status", "pending", ["pending", "done"]
+        )
         assert is_valid is True
         assert error is None
 
@@ -129,7 +139,9 @@ class TestStrictMappingValidator:
         """# @trace WL-190 — disallowed field value returns (False, error_msg) when action='warn'."""
         config = StrictMappingConfig(unknown_state_action="warn")
         validator = StrictMappingValidator(config)
-        is_valid, error = validator.validate_field_value("status", "invalid", ["pending", "done"])
+        is_valid, error = validator.validate_field_value(
+            "status", "invalid", ["pending", "done"]
+        )
         assert is_valid is False
         assert error is not None
         assert "invalid value" in error
@@ -139,7 +151,9 @@ class TestStrictMappingValidator:
         """# @trace WL-190 — disallowed field value returns (False, None) when action='skip'."""
         config = StrictMappingConfig(unknown_state_action="skip")
         validator = StrictMappingValidator(config)
-        is_valid, error = validator.validate_field_value("status", "invalid", ["pending", "done"])
+        is_valid, error = validator.validate_field_value(
+            "status", "invalid", ["pending", "done"]
+        )
         assert is_valid is False
         assert error is None
 
@@ -148,6 +162,8 @@ class TestStrictMappingValidator:
         """# @trace WL-190 — disabled strict mapping accepts disallowed field values."""
         config = StrictMappingConfig(enabled=False)
         validator = StrictMappingValidator(config)
-        is_valid, error = validator.validate_field_value("status", "invalid", ["pending", "done"])
+        is_valid, error = validator.validate_field_value(
+            "status", "invalid", ["pending", "done"]
+        )
         assert is_valid is True
         assert error is None

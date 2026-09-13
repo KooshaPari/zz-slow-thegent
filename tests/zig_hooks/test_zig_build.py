@@ -20,7 +20,9 @@ ZIG_DIR = Path(__file__).resolve().parents[2] / "hooks" / "zig"
 def _has_zig() -> bool:
     """Check if zig is available."""
     try:
-        result = subprocess.run(["zig", "version"], capture_output=True, text=True, timeout=10)
+        result = subprocess.run(
+            ["zig", "version"], capture_output=True, text=True, timeout=10
+        )
         return result.returncode == 0
     except (FileNotFoundError, subprocess.TimeoutExpired):
         return False
@@ -136,7 +138,9 @@ class TestZigDeterminism:
         binary = ZIG_DIR / "zig-out" / "bin" / "hook-dispatcher-zig"
         if not binary.exists():
             # Build first
-            subprocess.run(["zig", "build"], cwd=ZIG_DIR, capture_output=True, timeout=120)
+            subprocess.run(
+                ["zig", "build"], cwd=ZIG_DIR, capture_output=True, timeout=120
+            )
         if not binary.exists():
             pytest.skip("Binary not built")
 
@@ -154,4 +158,6 @@ class TestZigDeterminism:
             outputs.append(result.stdout)
 
         # All outputs must be identical
-        assert all(o == outputs[0] for o in outputs), "Non-deterministic output detected"
+        assert all(o == outputs[0] for o in outputs), (
+            "Non-deterministic output detected"
+        )

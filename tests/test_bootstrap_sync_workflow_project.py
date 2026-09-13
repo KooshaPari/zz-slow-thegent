@@ -12,12 +12,16 @@ from pathlib import Path
 
 import pytest
 
-SCRIPT_PATH = Path(__file__).parent.parent / "scripts" / "bootstrap_sync_workflow_project.py"
+SCRIPT_PATH = (
+    Path(__file__).parent.parent / "scripts" / "bootstrap_sync_workflow_project.py"
+)
 
 
 @pytest.fixture
 def module() -> object:
-    spec = importlib.util.spec_from_file_location("bootstrap_sync_workflow_project", SCRIPT_PATH)
+    spec = importlib.util.spec_from_file_location(
+        "bootstrap_sync_workflow_project", SCRIPT_PATH
+    )
     assert spec is not None
     assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
@@ -49,7 +53,10 @@ def test_bootstrap_main_idempotent_skips_existing_resources(module: object) -> N
         if cmd[:3] == ["gh", "project", "list"]:
             return [{"title": "thegent Sync System Deep Integration", "number": 5}]
         if cmd[:3] == ["gh", "issue", "list"]:
-            return [{"title": spec.title, "url": issue_urls[idx]} for idx, spec in enumerate(issue_specs)]
+            return [
+                {"title": spec.title, "url": issue_urls[idx]}
+                for idx, spec in enumerate(issue_specs)
+            ]
         if cmd[:3] == ["gh", "project", "item-list"]:
             return [{"content": {"url": url}} for url in issue_urls]
         return []
@@ -92,7 +99,8 @@ def test_bootstrap_main_dry_run_executes_printing_commands(module: object) -> No
     calls: list[list[str]] = []
     titles = [spec.title for spec in module.ISSUES]  # type: ignore[attr-defined]
     dry_run_issue_rows = [
-        {"title": title, "url": f"https://github.com/example/repo/issues/{idx + 1}"} for idx, title in enumerate(titles)
+        {"title": title, "url": f"https://github.com/example/repo/issues/{idx + 1}"}
+        for idx, title in enumerate(titles)
     ]
 
     def fake_run_json(cmd: list[str], dry_run: bool) -> list[dict[str, object]]:

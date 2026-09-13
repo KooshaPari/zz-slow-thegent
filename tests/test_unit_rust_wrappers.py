@@ -100,7 +100,9 @@ def test_droid_wrapper_execs_shim(monkeypatch: pytest.MonkeyPatch) -> None:
     called: dict[str, object] = {}
 
     monkeypatch.setattr(rust_wrappers.shutil, "which", lambda _: "/tmp/thegent-shims")
-    monkeypatch.setattr(rust_wrappers.sys, "argv", ["droid", "--native", "exec", "status"])
+    monkeypatch.setattr(
+        rust_wrappers.sys, "argv", ["droid", "--native", "exec", "status"]
+    )
 
     def _fake_execv(path: str, argv: list[str]) -> None:
         called["path"] = path

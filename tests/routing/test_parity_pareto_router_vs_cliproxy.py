@@ -122,7 +122,12 @@ class TestParetoParitySingleCandidate:
     def test_single_candidate_both_select(self) -> None:
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="claude-sonnet-4.6", provider="claude", cost_per_1k=0.015, quality_score=0.88)
+            RouteCandidate(
+                model="claude-sonnet-4.6",
+                provider="claude",
+                cost_per_1k=0.015,
+                quality_score=0.88,
+            )
         ]
 
         py_result = py_router.select(candidates)
@@ -131,9 +136,13 @@ class TestParetoParitySingleCandidate:
 
         # Try CLIProxy if available
         client = CLIProxyClient()
-        cliproxy_result = client.select_model([_candidate_to_cliproxy_format(c) for c in candidates])
+        cliproxy_result = client.select_model(
+            [_candidate_to_cliproxy_format(c) for c in candidates]
+        )
         if cliproxy_result:
-            assert _models_compatible(py_result.model, cliproxy_result.get("modelID", ""))
+            assert _models_compatible(
+                py_result.model, cliproxy_result.get("modelID", "")
+            )
 
 
 class TestParetoParityDominance:
@@ -144,8 +153,15 @@ class TestParetoParityDominance:
         """cheap-good (cost=0.01, quality=0.9) dominates expensive-bad (cost=1.0, quality=0.6)."""
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="expensive-bad", provider="test", cost_per_1k=1.0, quality_score=0.6),
-            RouteCandidate(model="cheap-good", provider="test", cost_per_1k=0.01, quality_score=0.9),
+            RouteCandidate(
+                model="expensive-bad",
+                provider="test",
+                cost_per_1k=1.0,
+                quality_score=0.6,
+            ),
+            RouteCandidate(
+                model="cheap-good", provider="test", cost_per_1k=0.01, quality_score=0.9
+            ),
         ]
 
         py_result = py_router.select(candidates)
@@ -154,9 +170,13 @@ class TestParetoParityDominance:
 
         # Try CLIProxy
         client = CLIProxyClient()
-        cliproxy_result = client.select_model([_candidate_to_cliproxy_format(c) for c in candidates])
+        cliproxy_result = client.select_model(
+            [_candidate_to_cliproxy_format(c) for c in candidates]
+        )
         if cliproxy_result:
-            assert _models_compatible(py_result.model, cliproxy_result.get("modelID", ""))
+            assert _models_compatible(
+                py_result.model, cliproxy_result.get("modelID", "")
+            )
 
 
 class TestParetoParityTieCost:
@@ -167,8 +187,15 @@ class TestParetoParityTieCost:
         """Both cost 0.5, but one has quality 0.9 vs 0.6."""
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="low-quality", provider="test", cost_per_1k=0.5, quality_score=0.6),
-            RouteCandidate(model="high-quality", provider="test", cost_per_1k=0.5, quality_score=0.9),
+            RouteCandidate(
+                model="low-quality", provider="test", cost_per_1k=0.5, quality_score=0.6
+            ),
+            RouteCandidate(
+                model="high-quality",
+                provider="test",
+                cost_per_1k=0.5,
+                quality_score=0.9,
+            ),
         ]
 
         py_result = py_router.select(candidates)
@@ -177,9 +204,13 @@ class TestParetoParityTieCost:
 
         # Try CLIProxy
         client = CLIProxyClient()
-        cliproxy_result = client.select_model([_candidate_to_cliproxy_format(c) for c in candidates])
+        cliproxy_result = client.select_model(
+            [_candidate_to_cliproxy_format(c) for c in candidates]
+        )
         if cliproxy_result:
-            assert _models_compatible(py_result.model, cliproxy_result.get("modelID", ""))
+            assert _models_compatible(
+                py_result.model, cliproxy_result.get("modelID", "")
+            )
 
 
 class TestParetoParityTieQuality:
@@ -190,8 +221,12 @@ class TestParetoParityTieQuality:
         """Both quality 0.8, but one costs 0.1 vs 0.5."""
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="expensive", provider="test", cost_per_1k=0.5, quality_score=0.8),
-            RouteCandidate(model="cheap", provider="test", cost_per_1k=0.1, quality_score=0.8),
+            RouteCandidate(
+                model="expensive", provider="test", cost_per_1k=0.5, quality_score=0.8
+            ),
+            RouteCandidate(
+                model="cheap", provider="test", cost_per_1k=0.1, quality_score=0.8
+            ),
         ]
 
         py_result = py_router.select(candidates)
@@ -200,9 +235,13 @@ class TestParetoParityTieQuality:
 
         # Try CLIProxy
         client = CLIProxyClient()
-        cliproxy_result = client.select_model([_candidate_to_cliproxy_format(c) for c in candidates])
+        cliproxy_result = client.select_model(
+            [_candidate_to_cliproxy_format(c) for c in candidates]
+        )
         if cliproxy_result:
-            assert _models_compatible(py_result.model, cliproxy_result.get("modelID", ""))
+            assert _models_compatible(
+                py_result.model, cliproxy_result.get("modelID", "")
+            )
 
 
 class TestParetoParityMultiFrontier:
@@ -218,9 +257,15 @@ class TestParetoParityMultiFrontier:
         """
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="cheap", provider="test", cost_per_1k=0.1, quality_score=0.6),
-            RouteCandidate(model="mid", provider="test", cost_per_1k=0.5, quality_score=0.8),
-            RouteCandidate(model="premium", provider="test", cost_per_1k=2.0, quality_score=0.95),
+            RouteCandidate(
+                model="cheap", provider="test", cost_per_1k=0.1, quality_score=0.6
+            ),
+            RouteCandidate(
+                model="mid", provider="test", cost_per_1k=0.5, quality_score=0.8
+            ),
+            RouteCandidate(
+                model="premium", provider="test", cost_per_1k=2.0, quality_score=0.95
+            ),
         ]
 
         py_result = py_router.select(candidates)
@@ -237,9 +282,13 @@ class TestParetoParityMultiFrontier:
 
         # Try CLIProxy
         client = CLIProxyClient()
-        cliproxy_result = client.select_model([_candidate_to_cliproxy_format(c) for c in candidates])
+        cliproxy_result = client.select_model(
+            [_candidate_to_cliproxy_format(c) for c in candidates]
+        )
         if cliproxy_result:
-            assert _models_compatible(py_result.model, cliproxy_result.get("modelID", ""))
+            assert _models_compatible(
+                py_result.model, cliproxy_result.get("modelID", "")
+            )
 
 
 class TestParetoParityZeroCostFallback:
@@ -250,9 +299,21 @@ class TestParetoParityZeroCostFallback:
         """Free model (cost=0) with quality 0.6 beats paid models with higher quality."""
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="free-tier", provider="gemini", cost_per_1k=0.0, quality_score=0.6),
-            RouteCandidate(model="paid-good", provider="claude", cost_per_1k=0.01, quality_score=0.9),
-            RouteCandidate(model="paid-premium", provider="openai", cost_per_1k=0.1, quality_score=0.95),
+            RouteCandidate(
+                model="free-tier", provider="gemini", cost_per_1k=0.0, quality_score=0.6
+            ),
+            RouteCandidate(
+                model="paid-good",
+                provider="claude",
+                cost_per_1k=0.01,
+                quality_score=0.9,
+            ),
+            RouteCandidate(
+                model="paid-premium",
+                provider="openai",
+                cost_per_1k=0.1,
+                quality_score=0.95,
+            ),
         ]
 
         py_result = py_router.select(candidates)
@@ -261,9 +322,13 @@ class TestParetoParityZeroCostFallback:
 
         # Try CLIProxy
         client = CLIProxyClient()
-        cliproxy_result = client.select_model([_candidate_to_cliproxy_format(c) for c in candidates])
+        cliproxy_result = client.select_model(
+            [_candidate_to_cliproxy_format(c) for c in candidates]
+        )
         if cliproxy_result:
-            assert _models_compatible(py_result.model, cliproxy_result.get("modelID", ""))
+            assert _models_compatible(
+                py_result.model, cliproxy_result.get("modelID", "")
+            )
 
 
 class TestParetoParityRealisticCatalog:
@@ -274,11 +339,36 @@ class TestParetoParityRealisticCatalog:
         """Real-world candidates from multiple providers."""
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="gpt-5.3-codex", provider="openai", cost_per_1k=0.30, quality_score=0.82),
-            RouteCandidate(model="claude-haiku-4.5", provider="claude", cost_per_1k=0.025, quality_score=0.75),
-            RouteCandidate(model="claude-sonnet-4.6", provider="claude", cost_per_1k=0.30, quality_score=0.88),
-            RouteCandidate(model="gemini-3-flash", provider="gemini", cost_per_1k=0.0, quality_score=0.78),
-            RouteCandidate(model="claude-opus-4.6", provider="claude", cost_per_1k=2.50, quality_score=0.95),
+            RouteCandidate(
+                model="gpt-5.3-codex",
+                provider="openai",
+                cost_per_1k=0.30,
+                quality_score=0.82,
+            ),
+            RouteCandidate(
+                model="claude-haiku-4.5",
+                provider="claude",
+                cost_per_1k=0.025,
+                quality_score=0.75,
+            ),
+            RouteCandidate(
+                model="claude-sonnet-4.6",
+                provider="claude",
+                cost_per_1k=0.30,
+                quality_score=0.88,
+            ),
+            RouteCandidate(
+                model="gemini-3-flash",
+                provider="gemini",
+                cost_per_1k=0.0,
+                quality_score=0.78,
+            ),
+            RouteCandidate(
+                model="claude-opus-4.6",
+                provider="claude",
+                cost_per_1k=2.50,
+                quality_score=0.95,
+            ),
         ]
 
         py_result = py_router.select(candidates)
@@ -288,9 +378,13 @@ class TestParetoParityRealisticCatalog:
 
         # Try CLIProxy
         client = CLIProxyClient()
-        cliproxy_result = client.select_model([_candidate_to_cliproxy_format(c) for c in candidates])
+        cliproxy_result = client.select_model(
+            [_candidate_to_cliproxy_format(c) for c in candidates]
+        )
         if cliproxy_result:
-            assert _models_compatible(py_result.model, cliproxy_result.get("modelID", ""))
+            assert _models_compatible(
+                py_result.model, cliproxy_result.get("modelID", "")
+            )
 
 
 class TestParetoParityRatioCalculation:
@@ -306,8 +400,12 @@ class TestParetoParityRatioCalculation:
         """
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="a", provider="test", cost_per_1k=2.0, quality_score=0.9),
-            RouteCandidate(model="b", provider="test", cost_per_1k=0.5, quality_score=0.6),
+            RouteCandidate(
+                model="a", provider="test", cost_per_1k=2.0, quality_score=0.9
+            ),
+            RouteCandidate(
+                model="b", provider="test", cost_per_1k=0.5, quality_score=0.6
+            ),
         ]
 
         py_result = py_router.select(candidates)
@@ -320,9 +418,13 @@ class TestParetoParityRatioCalculation:
 
         # Try CLIProxy
         client = CLIProxyClient()
-        cliproxy_result = client.select_model([_candidate_to_cliproxy_format(c) for c in candidates])
+        cliproxy_result = client.select_model(
+            [_candidate_to_cliproxy_format(c) for c in candidates]
+        )
         if cliproxy_result:
-            assert _models_compatible(py_result.model, cliproxy_result.get("modelID", ""))
+            assert _models_compatible(
+                py_result.model, cliproxy_result.get("modelID", "")
+            )
 
 
 class TestParetoParityFrontierExtraction:
@@ -339,10 +441,18 @@ class TestParetoParityFrontierExtraction:
         """
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="dominated1", provider="test", cost_per_1k=1.0, quality_score=0.5),
-            RouteCandidate(model="frontier1", provider="test", cost_per_1k=0.1, quality_score=0.9),
-            RouteCandidate(model="dominated2", provider="test", cost_per_1k=0.5, quality_score=0.8),
-            RouteCandidate(model="frontier2", provider="test", cost_per_1k=2.0, quality_score=0.95),
+            RouteCandidate(
+                model="dominated1", provider="test", cost_per_1k=1.0, quality_score=0.5
+            ),
+            RouteCandidate(
+                model="frontier1", provider="test", cost_per_1k=0.1, quality_score=0.9
+            ),
+            RouteCandidate(
+                model="dominated2", provider="test", cost_per_1k=0.5, quality_score=0.8
+            ),
+            RouteCandidate(
+                model="frontier2", provider="test", cost_per_1k=2.0, quality_score=0.95
+            ),
         ]
 
         frontier = py_router.get_optimal_providers(candidates)
@@ -367,8 +477,14 @@ class TestParetoPurityCheckSkipOnUnavailable:
             pytest.skip("CLIProxy not running on localhost:8317")
 
         # If we reach here, CLIProxy is available; proceed with test
-        candidates = [RouteCandidate(model="test", provider="test", cost_per_1k=0.1, quality_score=0.8)]
-        cliproxy_result = client.select_model([_candidate_to_cliproxy_format(c) for c in candidates])
+        candidates = [
+            RouteCandidate(
+                model="test", provider="test", cost_per_1k=0.1, quality_score=0.8
+            )
+        ]
+        cliproxy_result = client.select_model(
+            [_candidate_to_cliproxy_format(c) for c in candidates]
+        )
         assert cliproxy_result is not None
 
 
@@ -385,7 +501,9 @@ class TestParetoPurityAllScenariosCovered:
             "TestParetoParityMultiFrontier",  # 5. Multi-frontier
         ]
         # This test itself documents coverage; pytest collects all above classes
-        assert len(scenarios) >= 5, f"At least 5 scenarios required, got {len(scenarios)}"
+        assert len(scenarios) >= 5, (
+            f"At least 5 scenarios required, got {len(scenarios)}"
+        )
 
 
 class TestParityEdgeCases:
@@ -396,9 +514,15 @@ class TestParityEdgeCases:
         """When all candidates have cost=0, select highest quality."""
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="free-low", provider="test", cost_per_1k=0.0, quality_score=0.5),
-            RouteCandidate(model="free-mid", provider="test", cost_per_1k=0.0, quality_score=0.7),
-            RouteCandidate(model="free-high", provider="test", cost_per_1k=0.0, quality_score=0.9),
+            RouteCandidate(
+                model="free-low", provider="test", cost_per_1k=0.0, quality_score=0.5
+            ),
+            RouteCandidate(
+                model="free-mid", provider="test", cost_per_1k=0.0, quality_score=0.7
+            ),
+            RouteCandidate(
+                model="free-high", provider="test", cost_per_1k=0.0, quality_score=0.9
+            ),
         ]
 
         py_result = py_router.select(candidates)
@@ -410,8 +534,12 @@ class TestParityEdgeCases:
         """Cost differences < 0.1% should not affect selection."""
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="a", provider="test", cost_per_1k=0.0100, quality_score=0.8),
-            RouteCandidate(model="b", provider="test", cost_per_1k=0.0100001, quality_score=0.8),
+            RouteCandidate(
+                model="a", provider="test", cost_per_1k=0.0100, quality_score=0.8
+            ),
+            RouteCandidate(
+                model="b", provider="test", cost_per_1k=0.0100001, quality_score=0.8
+            ),
         ]
 
         py_result = py_router.select(candidates)
@@ -424,8 +552,12 @@ class TestParityEdgeCases:
         """Quality range 0.0-1.0 is handled correctly at extremes."""
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="worst", provider="test", cost_per_1k=0.01, quality_score=0.01),
-            RouteCandidate(model="best", provider="test", cost_per_1k=0.01, quality_score=0.99),
+            RouteCandidate(
+                model="worst", provider="test", cost_per_1k=0.01, quality_score=0.01
+            ),
+            RouteCandidate(
+                model="best", provider="test", cost_per_1k=0.01, quality_score=0.99
+            ),
         ]
 
         py_result = py_router.select(candidates)
@@ -436,7 +568,9 @@ class TestParityEdgeCases:
 class TestParityWithCLIProxyMock:
     """Tests using a minimal mock of CLIProxy response format."""
 
-    def _mock_cliproxy_response(self, winner_model: str, frontier_models: list[str]) -> dict[str, Any]:
+    def _mock_cliproxy_response(
+        self, winner_model: str, frontier_models: list[str]
+    ) -> dict[str, Any]:
         """Generate a mock CLIProxy response."""
         return {
             "modelID": winner_model,
@@ -449,16 +583,24 @@ class TestParityWithCLIProxyMock:
         """Verify parity checking logic against mocked response."""
         py_router = ParetoRouter()
         candidates = [
-            RouteCandidate(model="cheap", provider="test", cost_per_1k=0.1, quality_score=0.6),
-            RouteCandidate(model="mid", provider="test", cost_per_1k=0.5, quality_score=0.8),
-            RouteCandidate(model="premium", provider="test", cost_per_1k=2.0, quality_score=0.95),
+            RouteCandidate(
+                model="cheap", provider="test", cost_per_1k=0.1, quality_score=0.6
+            ),
+            RouteCandidate(
+                model="mid", provider="test", cost_per_1k=0.5, quality_score=0.8
+            ),
+            RouteCandidate(
+                model="premium", provider="test", cost_per_1k=2.0, quality_score=0.95
+            ),
         ]
 
         py_result = py_router.select(candidates)
         assert py_result is not None
 
         # Simulate CLIProxy response
-        mock_response = self._mock_cliproxy_response("cheap", ["cheap", "mid", "premium"])
+        mock_response = self._mock_cliproxy_response(
+            "cheap", ["cheap", "mid", "premium"]
+        )
 
         # Verify parity: Python selected from same frontier
         assert _models_compatible(py_result.model, mock_response["modelID"])
@@ -473,7 +615,9 @@ class TestCLIProxyClientMockHelpers:
 
     def test_candidate_conversion_preserves_fields(self) -> None:
         """Verify RouteCandidate -> CLIProxy format conversion."""
-        c = RouteCandidate(model="test-model", provider="test", cost_per_1k=0.05, quality_score=0.85)
+        c = RouteCandidate(
+            model="test-model", provider="test", cost_per_1k=0.05, quality_score=0.85
+        )
         converted = _candidate_to_cliproxy_format(c)
 
         assert converted["modelID"] == "test-model"

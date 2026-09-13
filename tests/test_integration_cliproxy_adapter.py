@@ -30,7 +30,11 @@ class TestAdapterResponsesBridge:
         body = {
             "model": "glm-5",
             "input": [
-                {"type": "message", "role": "user", "content": [{"type": "text", "text": "Hello"}]},
+                {
+                    "type": "message",
+                    "role": "user",
+                    "content": [{"type": "text", "text": "Hello"}],
+                },
             ],
             "stream": True,
         }
@@ -106,7 +110,13 @@ class TestAdapterResponsesBridge:
         body = json.dumps(
             {
                 "model": "gemini-3",
-                "input": [{"type": "message", "role": "user", "content": [{"type": "text", "text": "hi"}]}],
+                "input": [
+                    {
+                        "type": "message",
+                        "role": "user",
+                        "content": [{"type": "text", "text": "hi"}],
+                    }
+                ],
                 "stream": True,
             }
         ).encode()

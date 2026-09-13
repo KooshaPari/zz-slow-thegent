@@ -32,7 +32,9 @@ def _start_session() -> str:
 
 def test_wl10970_resolve_turn_submit_parse_error_strips_non_dict_error() -> None:
     # @trace WL-10970
-    assert server._resolve_turn_submit_parse_error({"parse_error": {"error": "oops"}}) == {"error": "oops"}
+    assert server._resolve_turn_submit_parse_error(
+        {"parse_error": {"error": "oops"}}
+    ) == {"error": "oops"}
     assert server._resolve_turn_submit_parse_error({"parse_error": "bad"}) is None
 
 
@@ -63,7 +65,9 @@ def test_wl10972_resolve_turn_submit_commit_target_returns_tuple_fields() -> Non
 def test_wl10973_resolve_turn_submit_commit_target_rejects_invalid_shape() -> None:
     # @trace WL-10973
     with pytest.raises(ValueError, match="Turn submit commit target unresolved"):
-        server._resolve_turn_submit_commit_target({"turn_id": 1, "turn": "bad", "session": {"id": "session-1"}})
+        server._resolve_turn_submit_commit_target(
+            {"turn_id": 1, "turn": "bad", "session": {"id": "session-1"}}
+        )
 
 
 def test_wl10974_commit_turn_submit_plan_mutates_session_and_turns() -> None:
@@ -87,7 +91,13 @@ def test_wl10974_commit_turn_submit_plan_mutates_session_and_turns() -> None:
 
 def test_wl10975_handle_turn_submit_parse_failure_bubbles_error_payload() -> None:
     # @trace WL-10975
-    parse_error = {"error": {"code": -32602, "message": "Invalid params", "data": {"reason": "input_must_be_string"}}}
+    parse_error = {
+        "error": {
+            "code": -32602,
+            "message": "Invalid params",
+            "data": {"reason": "input_must_be_string"},
+        }
+    }
     response = server._handle_turn_submit_parse_failure(parse_error)
     assert response == parse_error
 
@@ -119,14 +129,22 @@ def test_wl10977_resolve_turn_submit_approval_fields_extracts_tuple() -> None:
     assert fields == ("approval-1", "requested", "---")
 
 
-def test_wl10978_resolve_turn_submit_response_approval_fields_allows_missing_diff() -> None:
+def test_wl10978_resolve_turn_submit_response_approval_fields_allows_missing_diff() -> (
+    None
+):
     # @trace WL-10978
-    fields = server._resolve_turn_submit_response_approval_fields({"id": "approval-2", "status": "requested"})
+    fields = server._resolve_turn_submit_response_approval_fields(
+        {"id": "approval-2", "status": "requested"}
+    )
     assert fields == ("approval-2", "requested", None)
 
 
-def test_wl10979_build_turn_submit_side_effects_resolution_phase_preserves_inputs() -> None:
+def test_wl10979_build_turn_submit_side_effects_resolution_phase_preserves_inputs() -> (
+    None
+):
     # @trace WL-10979
-    phase = server._build_turn_submit_side_effects_phase("session-1", "turn-1", {"id": "turn-1"}, "x", True, "--- diff")
+    phase = server._build_turn_submit_side_effects_phase(
+        "session-1", "turn-1", {"id": "turn-1"}, "x", True, "--- diff"
+    )
     resolved = server._build_turn_submit_side_effects_resolution_phase(phase)
     assert resolved == ("session-1", "turn-1", {"id": "turn-1"}, "x", True, "--- diff")

@@ -32,7 +32,10 @@ def _start_session() -> str:
 
 def test_wl10940_extract_turn_submit_response_request_has_id_accepts_bool() -> None:
     # @trace WL-10940
-    assert server._extract_turn_submit_response_request_has_id({"request_has_id": True}) is True
+    assert (
+        server._extract_turn_submit_response_request_has_id({"request_has_id": True})
+        is True
+    )
 
 
 def test_wl10941_extract_turn_submit_response_request_has_id_rejects_non_bool() -> None:
@@ -55,13 +58,22 @@ def test_wl10943_extract_turn_submit_response_turn_rejects_non_dict() -> None:
 
 def test_wl10944_extract_turn_submit_response_approval_payload_accepts_none() -> None:
     # @trace WL-10944
-    assert server._extract_turn_submit_response_approval_payload({"approval_payload": None}) is None
+    assert (
+        server._extract_turn_submit_response_approval_payload(
+            {"approval_payload": None}
+        )
+        is None
+    )
 
 
-def test_wl10945_extract_turn_submit_response_approval_payload_rejects_non_dict() -> None:
+def test_wl10945_extract_turn_submit_response_approval_payload_rejects_non_dict() -> (
+    None
+):
     # @trace WL-10945
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
-        server._extract_turn_submit_response_approval_payload({"approval_payload": "bad"})
+        server._extract_turn_submit_response_approval_payload(
+            {"approval_payload": "bad"}
+        )
 
 
 def test_wl10946_extract_turn_submit_approval_payload_id_rejects_missing() -> None:
@@ -79,10 +91,14 @@ def test_wl10947_extract_turn_submit_approval_payload_status_rejects_missing() -
 def test_wl10948_extract_turn_submit_approval_payload_diff_rejects_non_string() -> None:
     # @trace WL-10948
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
-        server._extract_turn_submit_approval_payload_diff({"id": "approval-1", "status": "requested", "diff": 12})
+        server._extract_turn_submit_approval_payload_diff(
+            {"id": "approval-1", "status": "requested", "diff": 12}
+        )
 
 
-def test_wl10949_turn_submit_notification_requires_approval_emits_side_effects_without_response() -> None:
+def test_wl10949_turn_submit_notification_requires_approval_emits_side_effects_without_response() -> (
+    None
+):
     # @trace WL-10949
     _reset_state()
     session_id = _start_session()

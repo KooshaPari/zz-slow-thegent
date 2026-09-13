@@ -87,7 +87,12 @@ def async_retry(
                     if attempt < max_attempts - 1:
                         wait = delay * (backoff**attempt)
                         logger.warning(
-                            "Retry %d/%d for %s after %.1fs: %s", attempt + 1, max_attempts, func.__name__, wait, e
+                            "Retry %d/%d for %s after %.1fs: %s",
+                            attempt + 1,
+                            max_attempts,
+                            func.__name__,
+                            wait,
+                            e,
                         )
                         await asyncio.sleep(wait)
             raise last_error  # type: ignore

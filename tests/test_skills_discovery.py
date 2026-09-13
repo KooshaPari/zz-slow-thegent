@@ -32,8 +32,17 @@ from thegent.skills.discovery import (
 
 # tools_skills lives in a sibling directory named "server/" which has the same
 # name as the module file "server.py", so we load it directly via importlib.
-_TOOLS_SKILLS_PATH = Path(__file__).resolve().parents[1] / "src" / "thegent" / "mcp" / "server" / "tools_skills.py"
-_spec = importlib.util.spec_from_file_location("_tools_skills_wl101", _TOOLS_SKILLS_PATH)
+_TOOLS_SKILLS_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "src"
+    / "thegent"
+    / "mcp"
+    / "server"
+    / "tools_skills.py"
+)
+_spec = importlib.util.spec_from_file_location(
+    "_tools_skills_wl101", _TOOLS_SKILLS_PATH
+)
 assert _spec is not None and _spec.loader is not None
 _tools_skills_mod = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_tools_skills_mod)
@@ -81,7 +90,11 @@ def _error_result(
     }
     if extra:
         payload.update(extra)
-    return ToolResult(content=json.dumps(payload).decode(), structured_content=payload, meta={"execution_time_ms": 0})
+    return ToolResult(
+        content=json.dumps(payload).decode(),
+        structured_content=payload,
+        meta={"execution_time_ms": 0},
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -216,7 +229,9 @@ class TestSkillDiscoverySkillJson:
         assert results[0].instructions == "Full instructions"
         assert results[0].tags == ["x", "y"]
 
-    def test_discover_skill_json_missing_optional_fields_use_defaults(self, tmp_path: Path) -> None:
+    def test_discover_skill_json_missing_optional_fields_use_defaults(
+        self, tmp_path: Path
+    ) -> None:
         _write_skill_json(tmp_path, {"name": "minimal-json"})
         sd = SkillDiscovery(search_dirs=[tmp_path])
         results = sd.discover()
@@ -235,7 +250,9 @@ class TestSkillDiscoverySkillYaml:
     """# @trace WL-101"""
 
     def test_discover_skill_yaml_parses_name(self, tmp_path: Path) -> None:
-        _write_skill_yaml(tmp_path, "name: yaml-skill\ninstructions: YAML instructions\n")
+        _write_skill_yaml(
+            tmp_path, "name: yaml-skill\ninstructions: YAML instructions\n"
+        )
         sd = SkillDiscovery(search_dirs=[tmp_path])
         results = sd.discover()
         assert results[0].name == "yaml-skill"
@@ -323,7 +340,9 @@ class TestSkillActivator:
         result = activator.activate("X", original)
         assert result.startswith(original)
 
-    def test_activate_empty_instructions_returns_prompt_unchanged(self, tmp_path: Path) -> None:
+    def test_activate_empty_instructions_returns_prompt_unchanged(
+        self, tmp_path: Path
+    ) -> None:
         _write_skill_json(tmp_path, {"name": "empty-instr", "instructions": ""})
         sd = SkillDiscovery(search_dirs=[tmp_path])
         activator = SkillActivator(discovery=sd)
@@ -347,7 +366,9 @@ class TestSkillActivator:
         assert "Instructions B." in result
         assert "base" in result
 
-    def test_activate_many_empty_list_returns_prompt_unchanged(self, tmp_path: Path) -> None:
+    def test_activate_many_empty_list_returns_prompt_unchanged(
+        self, tmp_path: Path
+    ) -> None:
         sd = SkillDiscovery(search_dirs=[tmp_path])
         activator = SkillActivator(discovery=sd)
         original = "stay the same"
@@ -375,7 +396,9 @@ class TestAgentRunnerActivateSkill:
     def test_activate_skill_raises_key_error_for_missing(self, tmp_path: Path) -> None:
         runner = AgentRunner()
         with patch.object(
-            __import__("thegent.skills.discovery", fromlist=["SkillDiscovery"]).SkillDiscovery,
+            __import__(
+                "thegent.skills.discovery", fromlist=["SkillDiscovery"]
+            ).SkillDiscovery,
             "find",
             side_effect=KeyError("no-skill"),
         ):
@@ -391,11 +414,15 @@ class TestAgentRunnerActivateSkill:
         ):
             runner.run("do work", cwd=None, mode="read", timeout=10)
 
-    def test_activate_skill_stores_content_in_activated_skills(self, tmp_path: Path) -> None:
+    def test_activate_skill_stores_content_in_activated_skills(
+        self, tmp_path: Path
+    ) -> None:
         runner = AgentRunner()
         manifest = SkillManifest(name="MySkill", instructions="Do the thing.")
 
-        with patch("thegent.skills.discovery.SkillDiscovery.find", return_value=manifest):
+        with patch(
+            "thegent.skills.discovery.SkillDiscovery.find", return_value=manifest
+        ):
             content = runner.activate_skill("MySkill")
 
         assert content == "Do the thing."
@@ -405,7 +432,9 @@ class TestAgentRunnerActivateSkill:
         runner = AgentRunner()
         manifest = SkillManifest(name="ReturnCheck", instructions="Return this.")
 
-        with patch("thegent.skills.discovery.SkillDiscovery.find", return_value=manifest):
+        with patch(
+            "thegent.skills.discovery.SkillDiscovery.find", return_value=manifest
+        ):
             result = runner.activate_skill("ReturnCheck")
 
         assert result == "Return this."
@@ -438,8 +467,20 @@ class TestAgentRunnerActivateSkill:
 class _FakeBackend:
     def list_skills(self) -> list[dict[str, Any]]:
         return [
-            {"name": "alpha", "description": "a", "version": "1.0.0", "entrypoint": "thegent", "path": "/tmp/a"},
-            {"name": "beta", "description": "b", "version": "1.0.0", "entrypoint": "thegent", "path": "/tmp/b"},
+            {
+                "name": "alpha",
+                "description": "a",
+                "version": "1.0.0",
+                "entrypoint": "thegent",
+                "path": "/tmp/a",
+            },
+            {
+                "name": "beta",
+                "description": "b",
+                "version": "1.0.0",
+                "entrypoint": "thegent",
+                "path": "/tmp/b",
+            },
         ]
 
     def activate_skill(self, skill_name: str) -> dict[str, Any] | None:
@@ -497,7 +538,9 @@ class TestMcpSkillTools:
         skills = backend.list_skills()
         assert isinstance(skills, list)
 
-    def test_discovery_skill_backend_activate_skill_returns_none_for_missing(self) -> None:
+    def test_discovery_skill_backend_activate_skill_returns_none_for_missing(
+        self,
+    ) -> None:
         """DiscoverySkillBackend.activate_skill returns None for unknown skill."""
         backend = DiscoverySkillBackend()
         result = backend.activate_skill("__no_such_skill_wl101__")

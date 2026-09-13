@@ -93,7 +93,9 @@ class OrchestrationPlan(Plan):
         if nodes is not None and not isinstance(nodes, list):
             raise TypeError(f"nodes must be a list or None, got {type(nodes).__name__}")
         if metadata is not None and not isinstance(metadata, dict):
-            raise TypeError(f"metadata must be a dict or None, got {type(metadata).__name__}")
+            raise TypeError(
+                f"metadata must be a dict or None, got {type(metadata).__name__}"
+            )
         # Note: Plan dataclass declares `goal: str = ""`. The override is
         # safe because Plan's __init__ assigns every field directly.
         super().__init__(goal=goal.strip())
@@ -171,13 +173,19 @@ class OrchestrationPlan(Plan):
             node_metadata[MODEL_HINT] = model_hint
         if budget_tokens is not None:
             if not isinstance(budget_tokens, int) or isinstance(budget_tokens, bool):
-                raise TypeError(f"budget_tokens must be int, got {type(budget_tokens).__name__}")
+                raise TypeError(
+                    f"budget_tokens must be int, got {type(budget_tokens).__name__}"
+                )
             if budget_tokens < 0:
                 raise ValueError("budget_tokens must be non-negative")
             node_metadata[BUDGET_TOKENS] = budget_tokens
         if budget_time_s is not None:
-            if not isinstance(budget_time_s, (int, float)) or isinstance(budget_time_s, bool):
-                raise TypeError(f"budget_time_s must be a number, got {type(budget_time_s).__name__}")
+            if not isinstance(budget_time_s, (int, float)) or isinstance(
+                budget_time_s, bool
+            ):
+                raise TypeError(
+                    f"budget_time_s must be a number, got {type(budget_time_s).__name__}"
+                )
             node_metadata[BUDGET_TIME_S] = float(budget_time_s)
         if sandbox is not None:
             node_metadata[SANDBOX] = bool(sandbox)
@@ -185,7 +193,9 @@ class OrchestrationPlan(Plan):
             node_metadata[REQUIRE_HITL] = bool(require_hitl)
         if output_schema is not None:
             if not isinstance(output_schema, dict):
-                raise TypeError(f"output_schema must be a dict, got {type(output_schema).__name__}")
+                raise TypeError(
+                    f"output_schema must be a dict, got {type(output_schema).__name__}"
+                )
             node_metadata[OUTPUT_SCHEMA] = dict(output_schema)
         if parent_run_id is not None:
             node_metadata[PARENT_RUN_ID] = parent_run_id

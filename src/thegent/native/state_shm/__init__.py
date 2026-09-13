@@ -1,4 +1,5 @@
 """Stub module."""
+
 from typing import Any
 
 
@@ -66,6 +67,7 @@ def _category_int(category: str) -> int:
         Integer index for the category.
     """
     import hashlib
+
     return int(hashlib.md5(category.encode()).hexdigest()[:8], 16) % (2**31)
 
 
@@ -94,6 +96,7 @@ def open_shm(name: str, size: int = 4096) -> bytes:
         Shared memory buffer.
     """
     import os
+
     return os.urandom(min(size, 1024))
 
 

@@ -69,7 +69,9 @@ def test_candidates_for_replay_are_deterministic(tmp_path) -> None:
         ],
     )
 
-    candidates = queue.candidates_for_replay(now=now + timedelta(minutes=2), source="github", board_id="123")
+    candidates = queue.candidates_for_replay(
+        now=now + timedelta(minutes=2), source="github", board_id="123"
+    )
     assert [entry.entry_id for entry in candidates] == ["first", "second"]
 
 
@@ -102,7 +104,9 @@ def test_legacy_records_load_with_default_retry_metadata(tmp_path) -> None:
 
 def test_mark_failed_advances_state_with_backoff_metadata(tmp_path) -> None:
     """mark_failed increments attempts and computes next_attempt_at."""
-    queue = RemoteWriteDeadLetterQueue(tmp_path / "dlq-fail.jsonl", max_attempts=2, retry_interval_seconds=10.0)
+    queue = RemoteWriteDeadLetterQueue(
+        tmp_path / "dlq-fail.jsonl", max_attempts=2, retry_interval_seconds=10.0
+    )
     record = queue.enqueue(
         source="github",
         board_id="123",

@@ -129,7 +129,9 @@ class TestFRGOOVG005:
 class TestFRGOOVG006:
     def test_regression_when_regressions_exist(self):
         gate = VerificationGate(MagicMock(), MagicMock())
-        verdict = gate._determine_verdict(pre_score=0.5, post_score=0.9, regressions=["security"])
+        verdict = gate._determine_verdict(
+            pre_score=0.5, post_score=0.9, regressions=["security"]
+        )
         assert verdict == VerificationVerdict.REGRESSION
 
 
@@ -241,4 +243,6 @@ class TestFRGOOVG015:
         import thegent.governance.verification_gate as mod
 
         for name in mod.__all__:
-            assert hasattr(mod, name), f"{name} listed in __all__ but not found in module"
+            assert hasattr(mod, name), (
+                f"{name} listed in __all__ but not found in module"
+            )

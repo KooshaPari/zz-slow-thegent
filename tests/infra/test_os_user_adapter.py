@@ -41,7 +41,9 @@ def test_windows_home_dir_config_included_in_power_shell_command():
     adapter.system = "Windows"
 
     with patch("thegent.infra.os_user_adapter.subprocess.run") as run_mock:
-        run_mock.return_value = subprocess.CompletedProcess(args=(), returncode=0, stdout="created")
+        run_mock.return_value = subprocess.CompletedProcess(
+            args=(), returncode=0, stdout="created"
+        )
 
         ok, message = adapter._create_windows_user("agent", Path("C:/agent/home"))
 

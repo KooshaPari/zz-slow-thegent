@@ -248,7 +248,9 @@ class TestRolloutScorecardSummary:
         assert auth_check["passed"] is True
 
         # Other checks should be failed (not added)
-        startup_check = next(c for c in summary["checks"] if c["name"] == "startup_validation")
+        startup_check = next(
+            c for c in summary["checks"] if c["name"] == "startup_validation"
+        )
         assert startup_check["passed"] is False
 
     @pytest.mark.requirement("WL-320")
@@ -275,7 +277,9 @@ class TestRolloutScorecardSummary:
         auth_check = next(c for c in summary["checks"] if c["name"] == "auth_scopes")
         assert auth_check["details"] == "All OAuth scopes granted"
 
-        startup_check = next(c for c in summary["checks"] if c["name"] == "startup_validation")
+        startup_check = next(
+            c for c in summary["checks"] if c["name"] == "startup_validation"
+        )
         assert startup_check["details"] == "Timeout after 30s"
 
     @pytest.mark.requirement("WL-320")

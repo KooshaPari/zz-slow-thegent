@@ -41,7 +41,10 @@ def test_harness_writes_report_summary_and_manifest(tmp_path: Path) -> None:
     )
 
     _write_exec(fake_bin / "thegent-tool-detect", "#!/usr/bin/env bash\necho '{}'\n")
-    _write_exec(fake_bin / "thegent-path-resolve", "#!/usr/bin/env bash\necho '/usr/bin/codex'\n")
+    _write_exec(
+        fake_bin / "thegent-path-resolve",
+        "#!/usr/bin/env bash\necho '/usr/bin/codex'\n",
+    )
 
     result_root = tmp_path / "results"
     env = os.environ.copy()
@@ -49,7 +52,9 @@ def test_harness_writes_report_summary_and_manifest(tmp_path: Path) -> None:
     env["THEGENT_BENCH_RESULTS_DIR"] = str(result_root)
     env["BENCH_RUN_ID"] = "test-run"
 
-    subprocess.run([str(HARNESS_PATH)], check=True, env=env, capture_output=True, text=True)
+    subprocess.run(
+        [str(HARNESS_PATH)], check=True, env=env, capture_output=True, text=True
+    )
 
     run_dir = result_root / "test-run"
     assert (run_dir / "manifest.json").exists()

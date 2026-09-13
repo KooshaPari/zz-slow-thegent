@@ -93,7 +93,9 @@ class TestAppenderRejectsBadInput:
 class TestAppenderPersistsShape:
     def test_record_persists_canonical_shape(self, tmp_path: Path) -> None:
         clock = _FrozenClock(start=10_000.0)
-        appender = DecisionAuditAppender(audit_path=tmp_path / "decisions.jsonl", clock=clock)
+        appender = DecisionAuditAppender(
+            audit_path=tmp_path / "decisions.jsonl", clock=clock
+        )
         notice = _make_notice(evaluated_at=9_990.0)
         appender.record(notice)
         lines = (tmp_path / "decisions.jsonl").read_text(encoding="utf-8").splitlines()
@@ -150,7 +152,10 @@ class TestAppenderTail:
 
     def test_tail_skips_malformed_lines(self, tmp_path: Path) -> None:
         log = tmp_path / "d.jsonl"
-        log.write_text('{"event_type":"cockpit.decision.recorded","verdict":"allow"}\nNOT_JSON\n', encoding="utf-8")
+        log.write_text(
+            '{"event_type":"cockpit.decision.recorded","verdict":"allow"}\nNOT_JSON\n',
+            encoding="utf-8",
+        )
         appender = DecisionAuditAppender(audit_path=log)
         events = appender.tail_events(n=10)
         assert len(events) == 1
@@ -170,7 +175,9 @@ class TestAppenderSetClock:
         appender = DecisionAuditAppender(audit_path=tmp_path / "d.jsonl")
         appender.set_clock(lambda: 999.0)
         appender.record(_make_notice())
-        rec = json.loads((tmp_path / "d.jsonl").read_text(encoding="utf-8").splitlines()[0])
+        rec = json.loads(
+            (tmp_path / "d.jsonl").read_text(encoding="utf-8").splitlines()[0]
+        )
         assert rec["emitted_at"] == 999.0
 
     def test_audit_path_returns_expanded_path(self, tmp_path: Path) -> None:
@@ -201,7 +208,9 @@ class TestTailerDrainsCockpit:
         # second call is a no-op (no new decisions)
         assert tailer.drain_once() == 0
 
-    def test_drain_once_first_call_persists_existing_buffer(self, tmp_path: Path) -> None:
+    def test_drain_once_first_call_persists_existing_buffer(
+        self, tmp_path: Path
+    ) -> None:
         clock = _FrozenClock(start=5.0)
         cockpit = OperatorCockpit(clock=clock)
         appender = DecisionAuditAppender(audit_path=tmp_path / "d.jsonl", clock=clock)

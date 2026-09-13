@@ -1,4 +1,5 @@
 """Stub module."""
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -6,6 +7,7 @@ from typing import Any
 @dataclass
 class CompositorSlot:
     """A slot in the compositor layout."""
+
     name: str
     position: tuple[int, int] = (0, 0)
     size: tuple[int, int] = (80, 24)
@@ -14,6 +16,7 @@ class CompositorSlot:
 @dataclass
 class Layout:
     """Layout for the compositor."""
+
     name: str = "default"
     slots: list[CompositorSlot] | None = None
 

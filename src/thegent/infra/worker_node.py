@@ -62,7 +62,9 @@ async def worker_loop(mesh_root: Path, runtime_name: str):
 
                 try:
                     proc = psutil.Process()
-                    record_resource_usage(os.getpid(), proc.cpu_percent(), proc.memory_info().rss)
+                    record_resource_usage(
+                        os.getpid(), proc.cpu_percent(), proc.memory_info().rss
+                    )
                 except Exception:
                     pass
 
@@ -106,7 +108,13 @@ async def worker_loop(mesh_root: Path, runtime_name: str):
                 except Exception as e:
                     result_path = mesh_root / "results" / f"{task_id}.json"
                     result_path.write_text(
-                        json.dumps({"status": "error", "error": str(e), "runtime": runtime_name}),
+                        json.dumps(
+                            {
+                                "status": "error",
+                                "error": str(e),
+                                "runtime": runtime_name,
+                            }
+                        ),
                         encoding="utf-8",
                     )
 

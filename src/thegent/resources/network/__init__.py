@@ -1,4 +1,5 @@
 """Stub module."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -27,6 +28,7 @@ __all__ = ["NetworkMonitor", "BandwidthSample", "NetworkStats"]
 @dataclass
 class BandwidthSample:
     """A bandwidth measurement sample."""
+
     timestamp: str
     download_bps: float = 0.0
     upload_bps: float = 0.0
@@ -40,6 +42,7 @@ class BandwidthSample:
 @dataclass
 class NetworkStats:
     """Network statistics."""
+
     bytes_sent: int = 0
     bytes_received: int = 0
     packets_sent: int = 0

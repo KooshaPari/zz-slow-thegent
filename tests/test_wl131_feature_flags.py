@@ -50,21 +50,27 @@ def test_each_flag_has_required_fields() -> None:
     data = json.loads(FLAGS_PATH.read_text())
     for flag in data["flags"]:
         missing = REQUIRED_FLAG_FIELDS - flag.keys()
-        assert not missing, f"Flag '{flag.get('name', '?')}' is missing required fields: {missing}"
+        assert not missing, (
+            f"Flag '{flag.get('name', '?')}' is missing required fields: {missing}"
+        )
 
 
 def test_zmx_abi_contract_version_flag_present() -> None:
     """zmx_abi_contract_version flag must be present."""
     data = json.loads(FLAGS_PATH.read_text())
     names = {f["name"] for f in data["flags"]}
-    assert "zmx_abi_contract_version" in names, "zmx_abi_contract_version flag must be present in feature flags"
+    assert "zmx_abi_contract_version" in names, (
+        "zmx_abi_contract_version flag must be present in feature flags"
+    )
 
 
 def test_parse_model_suffixes_flag_present() -> None:
     """parse_model_suffixes_enabled flag must be present."""
     data = json.loads(FLAGS_PATH.read_text())
     names = {f["name"] for f in data["flags"]}
-    assert "parse_model_suffixes_enabled" in names, "parse_model_suffixes_enabled flag must be present in feature flags"
+    assert "parse_model_suffixes_enabled" in names, (
+        "parse_model_suffixes_enabled flag must be present in feature flags"
+    )
 
 
 def test_each_flag_crate_is_non_empty_string() -> None:

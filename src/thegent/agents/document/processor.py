@@ -46,7 +46,9 @@ class ProcessingPipeline:
     def __init__(self) -> None:
         self.stages: list[Callable[[Path], dict[str, Any]]] = []
 
-    def add_stage(self, stage: Callable[[Path], dict[str, Any]]) -> "ProcessingPipeline":
+    def add_stage(
+        self, stage: Callable[[Path], dict[str, Any]]
+    ) -> "ProcessingPipeline":
         """Add a processing stage to the pipeline."""
         self.stages.append(stage)
         return self
@@ -90,7 +92,11 @@ class DocumentProcessor:
         """Process a single file."""
         path = Path(filepath)
         if not path.exists():
-            return ProcessingResult(filepath=filepath, status=ProcessingStatus.FAILED, error="File not found")
+            return ProcessingResult(
+                filepath=filepath,
+                status=ProcessingStatus.FAILED,
+                error="File not found",
+            )
 
         result = self.pipeline.process(path)
         self.results.append(result)
@@ -108,14 +114,26 @@ class DocumentProcessor:
         """Get processing statistics."""
         total = len(self.results)
         if total == 0:
-            return {"total": 0, "completed": 0, "failed": 0, "skipped": 0, "avg_processing_time": 0.0}
+            return {
+                "total": 0,
+                "completed": 0,
+                "failed": 0,
+                "skipped": 0,
+                "avg_processing_time": 0.0,
+            }
 
-        completed = sum(1 for r in self.results if r.status == ProcessingStatus.COMPLETED)
+        completed = sum(
+            1 for r in self.results if r.status == ProcessingStatus.COMPLETED
+        )
         failed = sum(1 for r in self.results if r.status == ProcessingStatus.FAILED)
         skipped = sum(1 for r in self.results if r.status == ProcessingStatus.SKIPPED)
 
-        processing_times = [r.processing_time for r in self.results if r.processing_time is not None]
-        avg_time = sum(processing_times) / len(processing_times) if processing_times else 0.0
+        processing_times = [
+            r.processing_time for r in self.results if r.processing_time is not None
+        ]
+        avg_time = (
+            sum(processing_times) / len(processing_times) if processing_times else 0.0
+        )
 
         return {
             "total": total,
@@ -184,7 +202,11 @@ def extract_frontmatter(filepath: Path) -> dict[str, Any]:
 
         return {"frontmatter": frontmatter} if frontmatter else {}
     except OSError as exc:
-        logger.warning("Failed to read markdown for frontmatter extraction: %s", filepath, exc_info=exc)
+        logger.warning(
+            "Failed to read markdown for frontmatter extraction: %s",
+            filepath,
+            exc_info=exc,
+        )
     except Exception as exc:
         logger.debug("Frontmatter extraction failed for %s: %s", filepath, exc)
     return {}
@@ -253,7 +275,9 @@ def calculate_readability(filepath: Path) -> dict[str, Any]:
         paragraphs = [p.strip() for p in content.split("\n\n") if p.strip()]
 
         avg_words_per_sentence = len(words) / len(sentences) if sentences else 0
-        avg_sentences_per_paragraph = len(sentences) / len(paragraphs) if paragraphs else 0
+        avg_sentences_per_paragraph = (
+            len(sentences) / len(paragraphs) if paragraphs else 0
+        )
 
         return {
             "word_count": len(words),

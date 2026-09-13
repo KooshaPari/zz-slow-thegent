@@ -43,7 +43,9 @@ def test_resource_allocation_no_race() -> None:
     for t in threads:
         t.join()
 
-    assert len(successes) == 1, f"Expected exactly 1 successful allocation, got {len(successes)}"
+    assert len(successes) == 1, (
+        f"Expected exactly 1 successful allocation, got {len(successes)}"
+    )
     assert len(errors) == 49, f"Expected 49 failures, got {len(errors)}"
 
 

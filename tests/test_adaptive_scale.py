@@ -46,7 +46,9 @@ def _make_node(node_id: str = "node-1", latency: float = 0.0) -> ComputeNode:
     )
 
 
-def _make_tailscale_node(hostname: str = "remote-host", ip: str = "100.64.0.2", online: bool = True) -> TailscaleNode:
+def _make_tailscale_node(
+    hostname: str = "remote-host", ip: str = "100.64.0.2", online: bool = True
+) -> TailscaleNode:
     return TailscaleNode(hostname=hostname, ip=ip, os="linux", is_online=online)
 
 
@@ -226,7 +228,9 @@ class TestRemoteNodeClient:
         assert node.ema_latency_ms > 0.0
 
     @pytest.mark.asyncio
-    async def test_execute_sets_auth_header(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    async def test_execute_sets_auth_header(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Shared secret is passed as X-Compute-Token header."""
         monkeypatch.setenv("THGENT_COMPUTE_SHARED_SECRET", "super-secret")
         node = _make_node()
@@ -305,7 +309,9 @@ class TestTailscaleComputePool:
         nodes = pool.refresh()
         assert nodes == []
 
-    def test_refresh_raises_when_tailscale_required_but_absent(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_refresh_raises_when_tailscale_required_but_absent(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """refresh() raises TailscaleError when THGENT_TAILSCALE_ENABLED=1 and binary absent."""
         monkeypatch.setenv("THGENT_TAILSCALE_ENABLED", "1")
         ts_mgr = MagicMock()
@@ -351,7 +357,9 @@ class TestComputePoolManagerExpand:
             "node-c": _make_node("node-c"),
         }
 
-        with patch.object(ts_pool, "refresh", return_value=list(ts_pool._nodes.values())):
+        with patch.object(
+            ts_pool, "refresh", return_value=list(ts_pool._nodes.values())
+        ):
             mgr = ComputePoolManager(compute_pool=ts_pool)
             added = mgr.expand(2)
 
@@ -367,7 +375,9 @@ class TestComputePoolManagerExpand:
         # Pre-populate with node-a
         mgr._load_balancer.add_node(node_a)
 
-        with patch.object(ts_pool, "refresh", return_value=list(ts_pool._nodes.values())):
+        with patch.object(
+            ts_pool, "refresh", return_value=list(ts_pool._nodes.values())
+        ):
             added = mgr.expand(2)
 
         added_ids = {n.node_id for n in added}
@@ -389,7 +399,9 @@ class TestComputePoolManagerExpand:
         ts_pool = TailscaleComputePool(tailscale_manager=MagicMock())
         ts_pool._nodes = {f"node-{i}": _make_node(f"node-{i}") for i in range(5)}
 
-        with patch.object(ts_pool, "refresh", return_value=list(ts_pool._nodes.values())):
+        with patch.object(
+            ts_pool, "refresh", return_value=list(ts_pool._nodes.values())
+        ):
             mgr = ComputePoolManager(compute_pool=ts_pool)
             added = mgr.expand(1)
 
@@ -488,7 +500,11 @@ class TestSyncthingWorkspaceSync:
 
         syncthing_mgr = AsyncMock()
         syncthing_mgr.get_folders.return_value = [
-            SyncthingFolder(folder_id="thegent-ws-myproject", path="/workspace/myproject", label="ws")
+            SyncthingFolder(
+                folder_id="thegent-ws-myproject",
+                path="/workspace/myproject",
+                label="ws",
+            )
         ]
 
         sync = SyncthingWorkspaceSync(manager=syncthing_mgr)
@@ -673,7 +689,9 @@ class TestWatcherDaemonScaleDown:
         pool_mgr.shrink.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_scale_down_does_not_fire_when_nodes_not_idle_long_enough(self) -> None:
+    async def test_scale_down_does_not_fire_when_nodes_not_idle_long_enough(
+        self,
+    ) -> None:
         """_check_scale_down defers when remote nodes haven't been idle 5 minutes."""
         pool_mgr = MagicMock()
         # idle for only 60 seconds

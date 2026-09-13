@@ -14,12 +14,18 @@ def parse_retention_by_domain(value: object) -> dict[str, int]:
         try:
             parsed = json.loads(value)
             if isinstance(parsed, dict):
-                return {str(k): int(val) if isinstance(val, (int | float | str)) else 0 for k, val in parsed.items()}
+                return {
+                    str(k): int(val) if isinstance(val, (int | float | str)) else 0
+                    for k, val in parsed.items()
+                }
             return {}
         except (json.JSONDecodeError, ValueError, TypeError):
             return {}
     if isinstance(value, dict):
-        return {str(k): int(val) if isinstance(val, (int | float | str)) else 0 for k, val in value.items()}
+        return {
+            str(k): int(val) if isinstance(val, (int | float | str)) else 0
+            for k, val in value.items()
+        }
     return {}
 
 

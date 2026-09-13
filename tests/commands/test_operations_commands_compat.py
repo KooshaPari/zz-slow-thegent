@@ -11,7 +11,9 @@ def test_infra_operations_wrapper_delegates_to_extracted_module(monkeypatch) -> 
         captured["operation"] = operation
         captured["console"] = console
 
-    monkeypatch.setattr("thegent.cli.commands.operations_commands.operations_cmd", _fake)
+    monkeypatch.setattr(
+        "thegent.cli.commands.operations_commands.operations_cmd", _fake
+    )
 
     infra_cmds.operations_cmd(format="json", operation="recover")
 

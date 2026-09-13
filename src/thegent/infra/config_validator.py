@@ -41,7 +41,9 @@ class ConfigValidator:
         # Check if config file exists
         if not self.config_path.exists():
             self.warnings.append(f"Configuration file not found: {self.config_path}")
-            self.warnings.append("Using default settings. Run 'thegent setup --wizard' to configure.")
+            self.warnings.append(
+                "Using default settings. Run 'thegent setup --wizard' to configure."
+            )
             return True  # Not an error, just using defaults
 
         # Try to load settings
@@ -71,19 +73,25 @@ class ConfigValidator:
 
         # MCP Port
         if not (1 <= self.settings.mcp_port <= 65535):
-            self.errors.append(f"MCP_PORT must be between 1 and 65535 (got {self.settings.mcp_port})")
+            self.errors.append(
+                f"MCP_PORT must be between 1 and 65535 (got {self.settings.mcp_port})"
+            )
 
         # Session directory
         if self.settings.session_dir:
             session_path = self.settings.session_dir.expanduser()
             if not session_path.parent.exists():
-                self.warnings.append(f"Session directory parent does not exist: {session_path.parent}")
+                self.warnings.append(
+                    f"Session directory parent does not exist: {session_path.parent}"
+                )
 
         # Cache directory
         if self.settings.cache_dir:
             cache_path = self.settings.cache_dir.expanduser()
             if not cache_path.parent.exists():
-                self.warnings.append(f"Cache directory parent does not exist: {cache_path.parent}")
+                self.warnings.append(
+                    f"Cache directory parent does not exist: {cache_path.parent}"
+                )
 
     def _validate_model_settings(self) -> None:
         """Validate model settings."""
@@ -123,7 +131,9 @@ class ConfigValidator:
         # Default routing
         valid_routing = ["prefer_direct", "prefer_proxy", "failover"]
         if self.settings.default_routing not in valid_routing:
-            self.errors.append(f"default_routing must be one of {valid_routing} (got {self.settings.default_routing})")
+            self.errors.append(
+                f"default_routing must be one of {valid_routing} (got {self.settings.default_routing})"
+            )
 
     def _validate_budget_settings(self) -> None:
         """Validate budget settings."""
@@ -132,13 +142,19 @@ class ConfigValidator:
 
         # Budget limits must be non-negative
         if self.settings.budget_hourly_limit < 0:
-            self.errors.append(f"budget_hourly_limit must be non-negative (got {self.settings.budget_hourly_limit})")
+            self.errors.append(
+                f"budget_hourly_limit must be non-negative (got {self.settings.budget_hourly_limit})"
+            )
 
         if self.settings.budget_daily_limit < 0:
-            self.errors.append(f"budget_daily_limit must be non-negative (got {self.settings.budget_daily_limit})")
+            self.errors.append(
+                f"budget_daily_limit must be non-negative (got {self.settings.budget_daily_limit})"
+            )
 
         if self.settings.budget_run_limit < 0:
-            self.errors.append(f"budget_run_limit must be non-negative (got {self.settings.budget_run_limit})")
+            self.errors.append(
+                f"budget_run_limit must be non-negative (got {self.settings.budget_run_limit})"
+            )
 
         # Warning threshold
         if not (0.0 <= self.settings.budget_warning_threshold <= 1.0):
@@ -154,7 +170,9 @@ class ConfigValidator:
         # Session backend
         valid_backends = ["auto", "zmx", "tmux", "none"]
         if self.settings.session_backend not in valid_backends:
-            self.errors.append(f"session_backend must be one of {valid_backends} (got {self.settings.session_backend})")
+            self.errors.append(
+                f"session_backend must be one of {valid_backends} (got {self.settings.session_backend})"
+            )
 
         # Retention days
         if not (7 <= self.settings.retention_days_sessions <= 365):
@@ -170,7 +188,9 @@ class ConfigValidator:
 
         # Display errors
         if self.errors:
-            error_table = Table(title="Errors", show_header=True, header_style="bold red")
+            error_table = Table(
+                title="Errors", show_header=True, header_style="bold red"
+            )
             error_table.add_column("Error", style="red")
 
             for error in self.errors:
@@ -180,7 +200,9 @@ class ConfigValidator:
 
         # Display warnings
         if self.warnings:
-            warning_table = Table(title="Warnings", show_header=True, header_style="bold yellow")
+            warning_table = Table(
+                title="Warnings", show_header=True, header_style="bold yellow"
+            )
             warning_table.add_column("Warning", style="yellow")
 
             for warning in self.warnings:

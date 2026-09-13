@@ -5,6 +5,7 @@ Extracted from cliproxy_adapter.py as part of L1 architecture hardening
 
 GW-38: Time-to-First-Token measurement for streaming responses.
 """
+
 from __future__ import annotations
 
 import time

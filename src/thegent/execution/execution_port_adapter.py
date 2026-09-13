@@ -26,6 +26,7 @@ class ExecutionPortAdapter:
             try:
                 # Import only when needed to avoid circular imports during module load
                 from thegent.cli.commands.impl import run_impl as _run_impl_func
+
                 self._run_impl = _run_impl_func
             except ImportError as e:
                 _logger.error("Failed to load run_impl from CLI: %s", e)
@@ -42,6 +43,7 @@ class ExecutionPortAdapter:
                 from thegent.cli.commands.impl import (
                     dag_status_impl as _dag_status_func,
                 )
+
                 self._dag_status_impl = _dag_status_func
             except ImportError as e:
                 _logger.error("Failed to load dag_status_impl from CLI: %s", e)

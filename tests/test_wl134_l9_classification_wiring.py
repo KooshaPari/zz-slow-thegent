@@ -65,7 +65,9 @@ def run_impl_core_source() -> str:
 
 
 @pytest.mark.parametrize("phase_name", list(_WIRE_DONE))
-def test_run_impl_core_delegates_classification_to_helper(phase_name: str, run_impl_core_source: str) -> None:
+def test_run_impl_core_delegates_classification_to_helper(
+    phase_name: str, run_impl_core_source: str
+) -> None:
     """``run_impl_core`` must call the post-classification helper, not inline the body."""
     assert f"{phase_name}(" in run_impl_core_source, (
         f"Expected run_impl_core to delegate to {phase_name} helper. "
@@ -180,18 +182,20 @@ def test_phase_classify_run_result_maps_timeout_to_error_class(helpers_module) -
     run_meta = SimpleNamespace(run_id="run-x", owner="alice")
 
     with patch.object(helpers_module, "_log") as mock_log:
-        _exit_code, status, error_class, output_summary = helpers_module._phase_classify_run_result(  # noqa: RUF059
-            result=result,
-            pol_res="allow",
-            pol_reason="",
-            norm_res=norm_res,
-            lane="standard",
-            settings=settings,
-            run_meta=run_meta,
-            fsm_status="timed_out",
-            start_time=0.0,
-            registry=MagicMock(),
-            maif_runner=MagicMock(),
+        _exit_code, status, error_class, output_summary = (
+            helpers_module._phase_classify_run_result(  # noqa: RUF059
+                result=result,
+                pol_res="allow",
+                pol_reason="",
+                norm_res=norm_res,
+                lane="standard",
+                settings=settings,
+                run_meta=run_meta,
+                fsm_status="timed_out",
+                start_time=0.0,
+                registry=MagicMock(),
+                maif_runner=MagicMock(),
+            )
         )
 
     assert error_class == "timeout"
@@ -200,7 +204,9 @@ def test_phase_classify_run_result_maps_timeout_to_error_class(helpers_module) -
     mock_log.info.assert_not_called()  # DLQ only enqueues for critical lane
 
 
-def test_phase_classify_run_result_enqueues_dlq_for_critical_lane(helpers_module) -> None:
+def test_phase_classify_run_result_enqueues_dlq_for_critical_lane(
+    helpers_module,
+) -> None:
     """Critical-lane failures must hit the DLQ (WP-2008)."""
     result = SimpleNamespace(exit_code=1, timed_out=False, stdout="", stderr="boom")
     norm_res = SimpleNamespace(csm=SimpleNamespace(source_contract="csm-v1"))
@@ -227,7 +233,9 @@ def test_phase_classify_run_result_enqueues_dlq_for_critical_lane(helpers_module
     mock_dlq_cls.return_value.enqueue.assert_called_once()
 
 
-def test_phase_classify_run_result_reclassifies_unknown_contract(helpers_module) -> None:
+def test_phase_classify_run_result_reclassifies_unknown_contract(
+    helpers_module,
+) -> None:
     """Critical + unknown source_contract → status=failed, error_class=unknown_contract (G-CA-03 C3)."""
     result = SimpleNamespace(exit_code=0, timed_out=False, stdout="ok", stderr="")
     norm_res = SimpleNamespace(csm=SimpleNamespace(source_contract="mystery-fmt"))

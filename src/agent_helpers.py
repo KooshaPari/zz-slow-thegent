@@ -22,7 +22,9 @@ __all__ = [
 
 
 # Default path for friction log
-DEFAULT_FRICTION_LOG = Path(__file__).parent.parent / "docs" / "research" / "FRICTION_LOG.md"
+DEFAULT_FRICTION_LOG = (
+    Path(__file__).parent.parent / "docs" / "research" / "FRICTION_LOG.md"
+)
 
 
 def log_friction(
@@ -100,7 +102,11 @@ def log_friction(
                 pattern = rf"(### {re.escape(task_id)}.*?)(?=\n### |\n## |\Z)"
                 match = re.search(pattern, existing_content, re.DOTALL)
                 if match:
-                    existing_content = existing_content[: match.start()] + entry_content + existing_content[match.end():]
+                    existing_content = (
+                        existing_content[: match.start()]
+                        + entry_content
+                        + existing_content[match.end() :]
+                    )
                 else:
                     existing_content += "\n" + entry_content
             else:

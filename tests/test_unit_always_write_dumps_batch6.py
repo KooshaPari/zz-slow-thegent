@@ -15,7 +15,9 @@ def test_latest_dump_returns_newest_markdown_for_category_and_global(
 
     old_exec = dumper.dump_conversation("run-old-exec", "old", category="execution")
     new_exec = dumper.dump_conversation("run-new-exec", "new", category="execution")
-    newest_research = dumper.dump_conversation("run-newest-research", "newest", category="research")
+    newest_research = dumper.dump_conversation(
+        "run-newest-research", "newest", category="research"
+    )
 
     old_mtime = 1_700_000_001
     new_exec_mtime = 1_700_000_002
@@ -96,7 +98,13 @@ def test_persist_dump_index_and_export_markdown_create_expected_artifacts(
     assert md_index_path.exists()
 
     payload = json.loads(json_index_path.read_text(encoding="utf-8"))
-    assert {"generated_at", "docs_dir", "categories", "latest_dump", "latest_json_dump"} <= set(payload)
+    assert {
+        "generated_at",
+        "docs_dir",
+        "categories",
+        "latest_dump",
+        "latest_json_dump",
+    } <= set(payload)
     assert payload["categories"] == {"execution": 1, "research": 1}
     assert payload["latest_dump"]
     assert payload["latest_json_dump"]

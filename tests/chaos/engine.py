@@ -9,7 +9,9 @@ from typing import Any
 class ChaosEngine:
     """Injects faults into the system for resilience testing."""
 
-    def __init__(self, failure_rate: float = 0.0, latency_range: tuple[float, float] = (0.0, 0.0)) -> None:
+    def __init__(
+        self, failure_rate: float = 0.0, latency_range: tuple[float, float] = (0.0, 0.0)
+    ) -> None:
         self.failure_rate = failure_rate
         self.latency_range = latency_range
         self.active = True
@@ -31,7 +33,9 @@ class ChaosEngine:
         return func(*args, **kwargs)
 
 
-def chaos_wrap_agent(agent_func: Callable[..., Any], engine: ChaosEngine) -> Callable[..., Any]:
+def chaos_wrap_agent(
+    agent_func: Callable[..., Any], engine: ChaosEngine
+) -> Callable[..., Any]:
     """Decorator to inject chaos into an agent runner."""
 
     def wrapper(*args: Any, **kwargs: Any) -> Any:

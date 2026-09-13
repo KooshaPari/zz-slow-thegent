@@ -13,11 +13,22 @@ def test_compositor_top_level_routes_to_handler() -> None:
     # @trace FR-MAIN-101
     with patch("thegent.main.run_compositor_tui") as mock_cmd:
         result = runner.invoke(
-            app, ["compositor", "--layout", "stacked", "--include-non-claude", "--once", "--refresh", "0.5"]
+            app,
+            [
+                "compositor",
+                "--layout",
+                "stacked",
+                "--include-non-claude",
+                "--once",
+                "--refresh",
+                "0.5",
+            ],
         )
 
     assert result.exit_code == 0
-    mock_cmd.assert_called_once_with(layout_name="stacked", include_non_claude=True, once=True, refresh_interval=0.5)
+    mock_cmd.assert_called_once_with(
+        layout_name="stacked", include_non_claude=True, once=True, refresh_interval=0.5
+    )
 
 
 @pytest.mark.unit

@@ -8,6 +8,7 @@ from ..domain.entities import MergeStrategy, QueuePriority
 @dataclass
 class AcquireLockCommand:
     """Command to acquire a lock on a command."""
+
     cmd_hash: str
     pid: int
     output_path: str | None = None
@@ -17,6 +18,7 @@ class AcquireLockCommand:
 @dataclass
 class ReleaseLockCommand:
     """Command to release a lock."""
+
     cmd_hash: str
     pid: int
 
@@ -24,6 +26,7 @@ class ReleaseLockCommand:
 @dataclass
 class EnqueueTaskCommand:
     """Command to enqueue a task."""
+
     command: str
     priority: QueuePriority = QueuePriority.NORMAL
     cwd: str | None = None
@@ -34,6 +37,7 @@ class EnqueueTaskCommand:
 @dataclass
 class MergeCommand:
     """Command to perform a merge operation."""
+
     base_commit: str
     theirs_commit: str
     ours_commit: str

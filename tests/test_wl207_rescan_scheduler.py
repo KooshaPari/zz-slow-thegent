@@ -24,7 +24,9 @@ class TestRescanConfig:
     @pytest.mark.requirement("WL-207")
     def test_custom_config(self):
         """# @trace WL-207 — RescanConfig accepts custom values."""
-        config = RescanConfig(full_rescan_every_n_cycles=5, incremental_by_default=False)
+        config = RescanConfig(
+            full_rescan_every_n_cycles=5, incremental_by_default=False
+        )
 
         assert config.full_rescan_every_n_cycles == 5
         assert config.incremental_by_default is False

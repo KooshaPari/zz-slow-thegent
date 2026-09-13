@@ -19,7 +19,9 @@ from thegent.cli.commands.impl import (
 runner = CliRunner()
 
 
-def test_write_session_state_persists_contract(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_write_session_state_persists_contract(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     settings = MagicMock()
     settings.session_dir = tmp_path
 
@@ -38,17 +40,23 @@ def test_write_session_state_persists_contract(tmp_path: Path, monkeypatch: pyte
     assert payload["status"] == "running"
 
 
-def test_resume_impl_requires_existing_state_contract(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resume_impl_requires_existing_state_contract(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     mock_settings = MagicMock()
     mock_settings.session_dir = tmp_path
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings
+    )
 
     result = resume_impl(session_id="missing")
     assert result["exit_code"] == 1
     assert "State contract not found" in result["error"]
 
 
-def test_resume_impl_rejects_non_json_state_contract(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resume_impl_rejects_non_json_state_contract(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     session_id = "sess-bad-json"
     state_dir = tmp_path / session_id
     state_dir.mkdir(parents=True, exist_ok=True)
@@ -56,14 +64,18 @@ def test_resume_impl_rejects_non_json_state_contract(tmp_path: Path, monkeypatch
 
     mock_settings = MagicMock()
     mock_settings.session_dir = tmp_path
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings
+    )
 
     result = resume_impl(session_id=session_id)
     assert result["exit_code"] == 1
     assert "not valid JSON" in result["error"]
 
 
-def test_resume_impl_rejects_session_id_mismatch_in_state(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resume_impl_rejects_session_id_mismatch_in_state(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     session_id = "sess-mismatch"
     state_dir = tmp_path / session_id
     state_dir.mkdir(parents=True, exist_ok=True)
@@ -81,7 +93,9 @@ def test_resume_impl_rejects_session_id_mismatch_in_state(tmp_path: Path, monkey
 
     mock_settings = MagicMock()
     mock_settings.session_dir = tmp_path
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings
+    )
 
     result = resume_impl(session_id=session_id)
     assert result["exit_code"] == 1
@@ -93,7 +107,9 @@ def test_resume_impl_reports_actionable_message_when_no_sessions_exist(
 ) -> None:
     mock_settings = MagicMock()
     mock_settings.session_dir = tmp_path
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings
+    )
 
     result = resume_impl()
 
@@ -102,7 +118,9 @@ def test_resume_impl_reports_actionable_message_when_no_sessions_exist(
     assert "thegent run agent --bg" in result["error"]
 
 
-def test_resume_impl_registers_resume_and_sends_prompt(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resume_impl_registers_resume_and_sends_prompt(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     session_id = "sess-2"
     state_dir = tmp_path / session_id
     state_dir.mkdir(parents=True, exist_ok=True)
@@ -124,11 +142,18 @@ def test_resume_impl_registers_resume_and_sends_prompt(tmp_path: Path, monkeypat
 
     mock_settings = MagicMock()
     mock_settings.session_dir = tmp_path
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings
+    )
 
     mock_registry = MagicMock()
-    monkeypatch.setattr("thegent.cli.commands.impl.RunRegistry", lambda *_args, **_kwargs: mock_registry)
-    monkeypatch.setattr("thegent.cli.commands.impl.session_send_impl", lambda *_args, **_kwargs: (True, "queued"))
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.RunRegistry", lambda *_args, **_kwargs: mock_registry
+    )
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.session_send_impl",
+        lambda *_args, **_kwargs: (True, "queued"),
+    )
 
     result = resume_impl(session_id=session_id, prompt="continue")
 
@@ -138,7 +163,9 @@ def test_resume_impl_registers_resume_and_sends_prompt(tmp_path: Path, monkeypat
     mock_registry.register_resume.assert_called_once_with("run-2")
 
 
-def test_resume_impl_rejects_whitespace_prompt(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resume_impl_rejects_whitespace_prompt(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     session_id = "sess-space"
     state_dir = tmp_path / session_id
     state_dir.mkdir(parents=True, exist_ok=True)
@@ -156,9 +183,13 @@ def test_resume_impl_rejects_whitespace_prompt(tmp_path: Path, monkeypatch: pyte
 
     mock_settings = MagicMock()
     mock_settings.session_dir = tmp_path
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings
+    )
     mock_registry = MagicMock()
-    monkeypatch.setattr("thegent.cli.commands.impl.RunRegistry", lambda *_args, **_kwargs: mock_registry)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.RunRegistry", lambda *_args, **_kwargs: mock_registry
+    )
 
     result = resume_impl(session_id=session_id, prompt="   ")
 
@@ -187,9 +218,13 @@ def test_resume_impl_does_not_register_when_prompt_delivery_fails(
 
     mock_settings = MagicMock()
     mock_settings.session_dir = tmp_path
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings
+    )
     mock_registry = MagicMock()
-    monkeypatch.setattr("thegent.cli.commands.impl.RunRegistry", lambda *_args, **_kwargs: mock_registry)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.RunRegistry", lambda *_args, **_kwargs: mock_registry
+    )
     monkeypatch.setattr(
         "thegent.cli.commands.impl.session_send_impl",
         lambda *_args, **_kwargs: (False, "failed to queue prompt"),
@@ -202,7 +237,9 @@ def test_resume_impl_does_not_register_when_prompt_delivery_fails(
     mock_registry.register_resume.assert_not_called()
 
 
-def test_resume_impl_without_session_id_uses_most_recent_state(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resume_impl_without_session_id_uses_most_recent_state(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     older_dir = tmp_path / "sess-older"
     older_dir.mkdir(parents=True, exist_ok=True)
     (older_dir / "state.json").write_text(
@@ -233,10 +270,14 @@ def test_resume_impl_without_session_id_uses_most_recent_state(tmp_path: Path, m
 
     mock_settings = MagicMock()
     mock_settings.session_dir = tmp_path
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings
+    )
 
     mock_registry = MagicMock()
-    monkeypatch.setattr("thegent.cli.commands.impl.RunRegistry", lambda *_args, **_kwargs: mock_registry)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.RunRegistry", lambda *_args, **_kwargs: mock_registry
+    )
 
     result = resume_impl()
 
@@ -278,9 +319,13 @@ def test_resume_impl_without_session_id_skips_latest_invalid_contract(
 
     mock_settings = MagicMock()
     mock_settings.session_dir = tmp_path
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings
+    )
     mock_registry = MagicMock()
-    monkeypatch.setattr("thegent.cli.commands.impl.RunRegistry", lambda *_args, **_kwargs: mock_registry)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.RunRegistry", lambda *_args, **_kwargs: mock_registry
+    )
 
     result = resume_impl()
 
@@ -322,9 +367,13 @@ def test_resume_impl_without_session_id_handles_mixed_timezone_timestamps(
 
     mock_settings = MagicMock()
     mock_settings.session_dir = tmp_path
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings
+    )
     mock_registry = MagicMock()
-    monkeypatch.setattr("thegent.cli.commands.impl.RunRegistry", lambda *_args, **_kwargs: mock_registry)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.RunRegistry", lambda *_args, **_kwargs: mock_registry
+    )
 
     result = resume_impl()
 
@@ -352,9 +401,13 @@ def test_resume_impl_without_session_id_normalizes_whitespace_contract_strings(
 
     mock_settings = MagicMock()
     mock_settings.session_dir = tmp_path
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: mock_settings
+    )
     mock_registry = MagicMock()
-    monkeypatch.setattr("thegent.cli.commands.impl.RunRegistry", lambda *_args, **_kwargs: mock_registry)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.RunRegistry", lambda *_args, **_kwargs: mock_registry
+    )
 
     result = resume_impl()
 
@@ -366,7 +419,9 @@ def test_resume_impl_without_session_id_normalizes_whitespace_contract_strings(
 def test_top_level_resume_passthrough(monkeypatch: pytest.MonkeyPatch) -> None:
     captured: dict[str, str | None] = {}
 
-    def _fake_resume_cmd(*, session_id: str | None = None, prompt: str | None = None) -> None:
+    def _fake_resume_cmd(
+        *, session_id: str | None = None, prompt: str | None = None
+    ) -> None:
         captured["session_id"] = session_id
         captured["prompt"] = prompt
 
@@ -379,7 +434,9 @@ def test_top_level_resume_passthrough(monkeypatch: pytest.MonkeyPatch) -> None:
     assert captured["prompt"] == "continue"
 
 
-def test_session_list_impl_normalizes_contract_strings(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_session_list_impl_normalizes_contract_strings(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     session_dir = tmp_path / "sess-contract"
     session_dir.mkdir(parents=True, exist_ok=True)
     (session_dir / "state.json").write_text(
@@ -396,7 +453,9 @@ def test_session_list_impl_normalizes_contract_strings(tmp_path: Path, monkeypat
 
     mock_settings = MagicMock()
     mock_settings.session_dir = tmp_path
-    monkeypatch.setattr("thegent.cli.commands.session_ops_impl.ThegentSettings", lambda: mock_settings)
+    monkeypatch.setattr(
+        "thegent.cli.commands.session_ops_impl.ThegentSettings", lambda: mock_settings
+    )
     monkeypatch.setattr(
         "thegent.cli.commands.session_ops_impl.RunRegistry",
         lambda *_args, **_kwargs: MagicMock(list_runs=lambda **_kw: []),
@@ -423,7 +482,9 @@ def test_run_resume_prompt_passthrough(monkeypatch: pytest.MonkeyPatch) -> None:
 
     monkeypatch.setattr("thegent.cli.commands.cli.resume_cmd", _fake_resume_cmd)
 
-    result = runner.invoke(app, ["run", "resume", "sess-run", "--prompt", "continue from this state"])
+    result = runner.invoke(
+        app, ["run", "resume", "sess-run", "--prompt", "continue from this state"]
+    )
 
     assert result.exit_code == 0
     assert captured["session_id"] == "sess-run"

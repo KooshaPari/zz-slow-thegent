@@ -29,13 +29,22 @@ def _thegent_git_has(name: str) -> bool:
 class GitParallelismManager:
     """Manages parallel git operations using per-agent index files and plumbing (SCLI-P4.1–P4.2)."""
 
-    def __init__(self, project_root: Path, agent_id: str, mesh_root: Path = Path("/tmp/agent-mesh")) -> None:  # noqa: S108 -- intentional platform temp dir for agent mesh IPC
+    def __init__(
+        self,
+        project_root: Path,
+        agent_id: str,
+        mesh_root: Path = Path("/tmp/agent-mesh"),
+    ) -> None:  # noqa: S108 -- intentional platform temp dir for agent mesh IPC
         self.project_root = project_root
         self.agent_id = agent_id
         self.git_dir = project_root / ".git"
         self.mesh_root = mesh_root
-        self.project_tag = hashlib.sha256(str(project_root.resolve()).encode("utf-8")).hexdigest()[:12]
-        self.agent_index = mesh_root / "indices" / self.project_tag / f"index-{agent_id}"
+        self.project_tag = hashlib.sha256(
+            str(project_root.resolve()).encode("utf-8")
+        ).hexdigest()[:12]
+        self.agent_index = (
+            mesh_root / "indices" / self.project_tag / f"index-{agent_id}"
+        )
         self.staging_map = mesh_root / "scoped-staging" / f"{self.project_tag}.json"
         self.agent_index.parent.mkdir(parents=True, exist_ok=True, mode=0o1777)
         self.staging_map.parent.mkdir(parents=True, exist_ok=True, mode=0o1777)
@@ -184,13 +193,19 @@ class GitParallelismManager:
         lock_path = self._index_lock_path()
         deadline = time.time() + timeout_s
         while lock_path.exists():
-            if allow_stale_cleanup and stale_after_s >= 0 and self._is_stale_lock(lock_path, stale_after_s):
+            if (
+                allow_stale_cleanup
+                and stale_after_s >= 0
+                and self._is_stale_lock(lock_path, stale_after_s)
+            ):
                 try:
                     lock_path.unlink()
                     logger.info("Removed stale git index lock at %s", lock_path)
                     return True
                 except OSError:
-                    logger.warning("Failed to remove stale git index lock at %s", lock_path)
+                    logger.warning(
+                        "Failed to remove stale git index lock at %s", lock_path
+                    )
                     break
             if time.time() >= deadline:
                 return False
@@ -201,7 +216,8 @@ class GitParallelismManager:
         """Create or refresh the per-agent index file."""
         system_index = self.git_dir / "index"
         if not self.agent_index.exists() or (
-            system_index.exists() and system_index.stat().st_mtime > self.agent_index.stat().st_mtime
+            system_index.exists()
+            and system_index.stat().st_mtime > self.agent_index.stat().st_mtime
         ):
             if system_index.exists():
                 shutil.copy2(system_index, self.agent_index)
@@ -221,7 +237,9 @@ class GitParallelismManager:
             return False
 
         mapping = self._load_staging_map()
-        mapping[self.agent_id] = sorted(set(mapping.get(self.agent_id, [])).union(staged_files))
+        mapping[self.agent_id] = sorted(
+            set(mapping.get(self.agent_id, [])).union(staged_files)
+        )
         self._save_staging_map(mapping)
         return True
 
@@ -234,7 +252,9 @@ class GitParallelismManager:
     ) -> str | None:
         """Build commit from private index with plumbing commands."""
         self.ensure_index()
-        parent_resolve = self._run_git(["rev-parse", parent_ref], use_index=False, check=False)
+        parent_resolve = self._run_git(
+            ["rev-parse", parent_ref], use_index=False, check=False
+        )
         if parent_resolve.returncode != 0:
             return None
         parent_hash = parent_resolve.stdout.strip()
@@ -295,14 +315,20 @@ class GitParallelismManager:
         diff_proc = self._run_git(["diff", "--cached", "--name-only"])
         if diff_proc.returncode != 0:
             return []
-        return sorted({line.strip() for line in diff_proc.stdout.splitlines() if line.strip()})
+        return sorted(
+            {line.strip() for line in diff_proc.stdout.splitlines() if line.strip()}
+        )
 
     def changed_files_between(self, older: str, newer: str) -> list[str]:
         """Return files changed between two refs/hashes."""
-        diff_proc = self._run_git(["diff", "--name-only", f"{older}..{newer}"], use_index=False)
+        diff_proc = self._run_git(
+            ["diff", "--name-only", f"{older}..{newer}"], use_index=False
+        )
         if diff_proc.returncode != 0:
             return []
-        return sorted({line.strip() for line in diff_proc.stdout.splitlines() if line.strip()})
+        return sorted(
+            {line.strip() for line in diff_proc.stdout.splitlines() if line.strip()}
+        )
 
     def related_overlap(self, ours: list[str], theirs: list[str]) -> list[str]:
         """Return sorted overlap between two file lists."""
@@ -346,18 +372,29 @@ class GitParallelismManager:
     ) -> str | None:
         """Attempt to create a synthetic 3-way merge commit."""
         if (
-            not (_thegent_git_has("merge_base") and _thegent_git_has("create_commit") and _thegent_git_has("diff_stat"))
+            not (
+                _thegent_git_has("merge_base")
+                and _thegent_git_has("create_commit")
+                and _thegent_git_has("diff_stat")
+            )
             or author_env
         ):
-            probe = self._run_git(["merge-tree", ours_commit, theirs_commit], use_index=False)
+            probe = self._run_git(
+                ["merge-tree", ours_commit, theirs_commit], use_index=False
+            )
             if probe.returncode != 0 or "CONFLICT" in probe.stdout:
                 return None
 
-            tree_proc = self._run_git(["merge-tree", "--write-tree", ours_commit, theirs_commit], use_index=False)
+            tree_proc = self._run_git(
+                ["merge-tree", "--write-tree", ours_commit, theirs_commit],
+                use_index=False,
+            )
             if tree_proc.returncode != 0:
                 return None
 
-            tree_sha = tree_proc.stdout.splitlines()[0].strip() if tree_proc.stdout else ""
+            tree_sha = (
+                tree_proc.stdout.splitlines()[0].strip() if tree_proc.stdout else ""
+            )
             if not tree_sha:
                 return None
 
@@ -376,15 +413,21 @@ class GitParallelismManager:
                 env=author_env,
             )
             if commit.returncode != 0:
-                logger.debug("merge-tree fallback commit-tree failed: %s", commit.stderr)
+                logger.debug(
+                    "merge-tree fallback commit-tree failed: %s", commit.stderr
+                )
                 return None
             return commit.stdout.strip()
 
-        base = thegent_git.merge_base(str(self.project_root), ours_commit, theirs_commit)
+        base = thegent_git.merge_base(
+            str(self.project_root), ours_commit, theirs_commit
+        )
         if not base:
             return None
 
-        diff = thegent_git.diff_stat(str(self.project_root), f"{ours_commit}..{theirs_commit}")
+        diff = thegent_git.diff_stat(
+            str(self.project_root), f"{ours_commit}..{theirs_commit}"
+        )
         if not diff:
             return None
 
@@ -401,9 +444,13 @@ class GitParallelismManager:
         staged = self.staged_files()
         if not staged:
             return ""
-        branch_proc = self._run_git(["rev-parse", "--abbrev-ref", "HEAD"], use_index=False)
+        branch_proc = self._run_git(
+            ["rev-parse", "--abbrev-ref", "HEAD"], use_index=False
+        )
         sha_proc = self._run_git(["rev-parse", "--short=7", "HEAD"], use_index=False)
-        branch = branch_proc.stdout.strip() if branch_proc.returncode == 0 else "unknown"
+        branch = (
+            branch_proc.stdout.strip() if branch_proc.returncode == 0 else "unknown"
+        )
         sha = sha_proc.stdout.strip() if sha_proc.returncode == 0 else "unknown"
         lines = [f"[{self.agent_id}] {branch} ({sha})"]
         lines.extend(staged)

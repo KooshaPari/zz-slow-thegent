@@ -18,7 +18,9 @@ def _normalized_output(output: str) -> str:
 def test_fanta_help_mentions_fanta_harness() -> None:
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
-    assert "Antigma-backed interactive harness (fanta)." in _normalized_output(result.output)
+    assert "Antigma-backed interactive harness (fanta)." in _normalized_output(
+        result.output
+    )
 
 
 def test_fanta_install_links_writes_symlinks(tmp_path: Path) -> None:
@@ -63,7 +65,9 @@ def test_fanta_alias_parity_table(model_alias: str, canonical_model: str) -> Non
 
 @patch("thegent.fanta_main._resolve_anen_cmd", return_value="anen")
 @patch("thegent.fanta_main.subprocess.run")
-def test_fanta_default_routes_to_flash(mock_run: MagicMock, _mock_resolve: MagicMock) -> None:
+def test_fanta_default_routes_to_flash(
+    mock_run: MagicMock, _mock_resolve: MagicMock
+) -> None:
     mock_run.return_value = _mock_completed(0)
 
     result = runner.invoke(app, [])
@@ -79,12 +83,21 @@ def test_fanta_default_routes_to_flash(mock_run: MagicMock, _mock_resolve: Magic
     [
         (["high"], ["anen", "--model", "gpt-5.3-codex-high"]),
         (["xhigh"], ["anen", "--model", "gpt-5.3-codex-xhigh"]),
-        (["exec", "-m", "high", "hello world"], ["anen", "exec", "-m", "gpt-5.3-codex-high", "hello world"]),
-        (["exec", "-m", "xhigh", "hello world"], ["anen", "exec", "-m", "gpt-5.3-codex-xhigh", "hello world"]),
+        (
+            ["exec", "-m", "high", "hello world"],
+            ["anen", "exec", "-m", "gpt-5.3-codex-high", "hello world"],
+        ),
+        (
+            ["exec", "-m", "xhigh", "hello world"],
+            ["anen", "exec", "-m", "gpt-5.3-codex-xhigh", "hello world"],
+        ),
     ],
 )
 def test_fanta_high_xhigh_use_expected_canonical_models(
-    mock_run: MagicMock, _mock_resolve: MagicMock, runner_args: list[str], expected_cmd: list[str]
+    mock_run: MagicMock,
+    _mock_resolve: MagicMock,
+    runner_args: list[str],
+    expected_cmd: list[str],
 ) -> None:
     mock_run.return_value = _mock_completed(0)
 
@@ -124,7 +137,9 @@ def test_fanta_unknown_model_policy_passthrough_exec(
 
     assert result.exit_code == 0
     assert "Unknown model" not in _normalized_output(result.output)
-    mock_run.assert_called_once_with(["anen", "exec", "-m", unknown_model, "hello world"], check=False)
+    mock_run.assert_called_once_with(
+        ["anen", "exec", "-m", unknown_model, "hello world"], check=False
+    )
     called_cmd = mock_run.call_args.args[0]
     assert called_cmd[3] == unknown_model
 

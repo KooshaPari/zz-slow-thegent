@@ -105,4 +105,6 @@ class ConstitutionManager:
         critique_data = f"{action_id}|{aligned}|{','.join(verified)}"
         c_hash = hashlib.sha256(critique_data.encode()).hexdigest()
 
-        return ProofOfAlignment(verified_principles=verified, critique_hash=c_hash, aligned=aligned)
+        return ProofOfAlignment(
+            verified_principles=verified, critique_hash=c_hash, aligned=aligned
+        )

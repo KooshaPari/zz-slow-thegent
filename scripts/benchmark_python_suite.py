@@ -48,27 +48,33 @@ def run_suite(iterations: int, *, mode: str = "warm") -> dict[str, Any]:
         except TypeError:
             return None
 
-    rows.append(_try_bench(
-        "coerce_issue_types_list",
-        lambda: _coerce_issue_types([{"type": t} for t in ("a", "b", "c")]),
-        iterations=iterations,
-    ))
-    rows.append(_try_bench(
-        "cache_elicitation_key",
-        lambda: _cache_elicitation_key("Working directory?"),
-        iterations=iterations,
-    ))
-    rows.append(_try_bench(
-        "get_server_meta_impl",
-        lambda: get_server_meta_impl(
-            health_payload_schema_version="health-schema-v1",
-            health_payload_types=("session_contract_health_gate",),
-            observe_summary_payload_schema_version="observe-summary-schema-v1",
-            observe_summary_payload_types=("observe_summary",),
-            health_policy_profiles=["strict_ci", "warn_only"],
-        ),
-        iterations=max(1_000, iterations // 10),
-    ))
+    rows.append(
+        _try_bench(
+            "coerce_issue_types_list",
+            lambda: _coerce_issue_types([{"type": t} for t in ("a", "b", "c")]),
+            iterations=iterations,
+        )
+    )
+    rows.append(
+        _try_bench(
+            "cache_elicitation_key",
+            lambda: _cache_elicitation_key("Working directory?"),
+            iterations=iterations,
+        )
+    )
+    rows.append(
+        _try_bench(
+            "get_server_meta_impl",
+            lambda: get_server_meta_impl(
+                health_payload_schema_version="health-schema-v1",
+                health_payload_types=("session_contract_health_gate",),
+                observe_summary_payload_schema_version="observe-summary-schema-v1",
+                observe_summary_payload_types=("observe_summary",),
+                health_policy_profiles=["strict_ci", "warn_only"],
+            ),
+            iterations=max(1_000, iterations // 10),
+        )
+    )
     rows = [r for r in rows if r is not None]
     return {"suite": "python-benchmark-suite-v1", "mode": mode, "benchmarks": rows}
 
@@ -77,7 +83,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Run WL-078 Python benchmark suite.")
     parser.add_argument("--iterations", type=int, default=100_000)
     parser.add_argument("--mode", choices=("cold", "warm"), default="warm")
-    parser.add_argument("--output", type=Path, default=Path("benchmarks/results/python/latest.json"))
+    parser.add_argument(
+        "--output", type=Path, default=Path("benchmarks/results/python/latest.json")
+    )
     parser.add_argument(
         "--overwrite",
         action="store_true",
@@ -90,7 +98,9 @@ def main() -> int:
     payload = run_suite(iterations=max(1, int(args.iterations)), mode=args.mode)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     if args.output.exists() and not args.overwrite:
-        raise FileExistsError(f"Refusing to overwrite existing benchmark output: {args.output} (use --overwrite)")
+        raise FileExistsError(
+            f"Refusing to overwrite existing benchmark output: {args.output} (use --overwrite)"
+        )
     args.output.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     print(f"Wrote benchmark report: {args.output}")
     return 0

@@ -238,7 +238,9 @@ class SubAgentDispatcher:
         if task.require_approval:
             return DispatchMode.HITL
 
-        if capability is not None and _FLASH_TAG in [c.lower() for c in capability.capabilities]:
+        if capability is not None and _FLASH_TAG in [
+            c.lower() for c in capability.capabilities
+        ]:
             return DispatchMode.FLASH
 
         if self._compute_pool is not None and task.context.get(_COMPUTE_INTENSIVE_KEY):
@@ -271,7 +273,9 @@ class SubAgentDispatcher:
 
         agents = self._capability_index.agents_for_capability(task.agent_hint)
         if not agents:
-            raise CapabilityNotFoundError(f"No agent found for capability {task.agent_hint!r}")
+            raise CapabilityNotFoundError(
+                f"No agent found for capability {task.agent_hint!r}"
+            )
         return agents[0]
 
     async def _dispatch_hitl(
@@ -295,7 +299,9 @@ class SubAgentDispatcher:
         # @trace WL-080
         """
         if self._hitl_workflow is None:
-            raise DispatchError("HITL escalation required but no HITLApprovalWorkflow configured")
+            raise DispatchError(
+                "HITL escalation required but no HITLApprovalWorkflow configured"
+            )
 
         run_id = f"hitl_{uuid.uuid4().hex[:8]}"
         _log.info("HITL escalation: run_id=%s prompt=%.60s", run_id, task.prompt)
@@ -345,7 +351,10 @@ class SubAgentDispatcher:
             mode=DispatchMode.FLASH,
             success=flash_result.success,
             error=None if flash_result.success else "FlashAgent timed out or failed",
-            metadata={"elapsed_s": flash_result.elapsed_s, "agent_id": flash_result.agent_id},
+            metadata={
+                "elapsed_s": flash_result.elapsed_s,
+                "agent_id": flash_result.agent_id,
+            },
         )
 
     async def _dispatch_local(
@@ -397,7 +406,9 @@ class SubAgentDispatcher:
                         },
                     )
                 except Exception as exc:
-                    raise DispatchError(f"Local runner {runner_name!r} failed: {exc}") from exc
+                    raise DispatchError(
+                        f"Local runner {runner_name!r} failed: {exc}"
+                    ) from exc
 
         # No named runner wired: use FlashAgent as the local execution primitive
         config = FlashAgentConfig(
@@ -416,8 +427,13 @@ class SubAgentDispatcher:
             output=flash_result.output,
             mode=DispatchMode.LOCAL,
             success=flash_result.success,
-            error=None if flash_result.success else "Local FlashAgent timed out or failed",
-            metadata={"elapsed_s": flash_result.elapsed_s, "agent_id": flash_result.agent_id},
+            error=None
+            if flash_result.success
+            else "Local FlashAgent timed out or failed",
+            metadata={
+                "elapsed_s": flash_result.elapsed_s,
+                "agent_id": flash_result.agent_id,
+            },
         )
 
     async def _dispatch_remote(self, task: SubAgentTask) -> SubAgentResult:
@@ -436,7 +452,9 @@ class SubAgentDispatcher:
         # @trace WL-080
         """
         if self._compute_pool is None:
-            raise DispatchError("REMOTE dispatch requested but no ComputePoolManager configured")
+            raise DispatchError(
+                "REMOTE dispatch requested but no ComputePoolManager configured"
+            )
 
         from thegent.core.worker_pool import AgentTask
 
@@ -450,7 +468,9 @@ class SubAgentDispatcher:
         try:
             agent_result = await self._compute_pool.submit(agent_task)
         except Exception as exc:
-            raise DispatchError(f"Remote ComputePoolManager.submit failed: {exc}") from exc
+            raise DispatchError(
+                f"Remote ComputePoolManager.submit failed: {exc}"
+            ) from exc
 
         return SubAgentResult(
             task=task,

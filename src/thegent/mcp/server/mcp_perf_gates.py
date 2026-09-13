@@ -51,7 +51,9 @@ class MCPBudgetExceeded(Exception):
         self.operation = operation
         self.elapsed_ms = elapsed_ms
         self.budget_ms = budget_ms
-        super().__init__(f"MCP budget exceeded for {operation!r}: {elapsed_ms:.1f}ms > {budget_ms:.1f}ms")
+        super().__init__(
+            f"MCP budget exceeded for {operation!r}: {elapsed_ms:.1f}ms > {budget_ms:.1f}ms"
+        )
 
 
 # ------------------------------------------------------------------

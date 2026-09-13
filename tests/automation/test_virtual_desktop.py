@@ -232,7 +232,9 @@ class TestVirtualDesktopManager:
         assert session is None
 
     @pytest.mark.asyncio
-    async def test_manager_uses_unsupported_platform_fallback(self, monkeypatch: pytest.MonkeyPatch):
+    async def test_manager_uses_unsupported_platform_fallback(
+        self, monkeypatch: pytest.MonkeyPatch
+    ):
         """Unsupported platforms should use a concrete fallback provider."""
         monkeypatch.setattr(platform, "system", lambda: "Plan9")
         manager = VirtualDesktopManager()

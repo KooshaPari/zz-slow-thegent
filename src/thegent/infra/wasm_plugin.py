@@ -273,7 +273,11 @@ class ExtismPlugin(WasmPlugin):
 
                 self._plugin = extism.Plugin(manifest, wasi=self._allow_wasi)
                 self._status = PluginStatus.READY
-                _log.info("Loaded Wasm plugin: %s from %s", self.metadata.name, self.plugin_path)
+                _log.info(
+                    "Loaded Wasm plugin: %s from %s",
+                    self.metadata.name,
+                    self.plugin_path,
+                )
                 return True
 
             except FileNotFoundError:
@@ -302,7 +306,11 @@ class ExtismPlugin(WasmPlugin):
 
         try:
             # Convert input to bytes if needed
-            input_bytes = input_data.encode("utf-8") if isinstance(input_data, str) else input_data
+            input_bytes = (
+                input_data.encode("utf-8")
+                if isinstance(input_data, str)
+                else input_data
+            )
 
             # Execute the plugin
             output = self._plugin.call(self.metadata.entry_point, input_bytes)
@@ -429,7 +437,9 @@ class WasmPluginManager:
                 return False
             return plugin.load()
 
-    def execute_plugin(self, name: str, input_data: str | bytes) -> WasmExecutionResult | None:
+    def execute_plugin(
+        self, name: str, input_data: str | bytes
+    ) -> WasmExecutionResult | None:
         """Execute a registered plugin.
 
         Args:
@@ -520,7 +530,9 @@ def create_plugin_from_manifest(manifest_path: Path) -> ExtismPlugin | None:
 
         # Parse capabilities
         capabilities = manifest_data.get("capabilities", [])
-        metadata.capabilities = [WasmCapability(c) for c in capabilities if isinstance(c, str)]
+        metadata.capabilities = [
+            WasmCapability(c) for c in capabilities if isinstance(c, str)
+        ]
 
         # Get wasm path
         wasm_path = manifest_data.get("wasm")

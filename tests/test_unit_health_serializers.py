@@ -524,7 +524,9 @@ class TestHealthTrendSerializers:
         snapshot_ids_hash_idx = rows[0].index("snapshot_ids_hash")
         snapshot_window_seconds_idx = rows[0].index("snapshot_window_seconds")
         snapshot_window_hash_idx = rows[0].index("snapshot_window_hash")
-        snapshot_interval_seconds_avg_idx = rows[0].index("snapshot_interval_seconds_avg")
+        snapshot_interval_seconds_avg_idx = rows[0].index(
+            "snapshot_interval_seconds_avg"
+        )
         snapshot_interval_hash_idx = rows[0].index("snapshot_interval_hash")
         snapshot_density_per_hour_idx = rows[0].index("snapshot_density_per_hour")
         snapshot_density_hash_idx = rows[0].index("snapshot_density_hash")
@@ -533,7 +535,9 @@ class TestHealthTrendSerializers:
         snapshot_issue_churn_count_idx = rows[0].index("snapshot_issue_churn_count")
         snapshot_issue_churn_hash_idx = rows[0].index("snapshot_issue_churn_hash")
         snapshot_health_volatility_idx = rows[0].index("snapshot_health_volatility")
-        snapshot_health_volatility_hash_idx = rows[0].index("snapshot_health_volatility_hash")
+        snapshot_health_volatility_hash_idx = rows[0].index(
+            "snapshot_health_volatility_hash"
+        )
         ratio_idx = rows[0].index("blocked_ratio_delta")
         count_idx = rows[0].index("blocked_count_delta")
         scope_payload_type_idx = rows[0].index("scope_payload_type")
@@ -560,7 +564,10 @@ class TestHealthTrendSerializers:
         assert rows[1][snapshot_issue_churn_count_idx] == "2"
         assert rows[1][snapshot_issue_churn_hash_idx] == "churn-hash"
         assert rows[1][snapshot_health_volatility_idx] == "4.0"
-        assert rows[1][snapshot_health_volatility_hash_idx] == trend["snapshot_health_volatility_hash"]
+        assert (
+            rows[1][snapshot_health_volatility_hash_idx]
+            == trend["snapshot_health_volatility_hash"]
+        )
         assert rows[2][latest_status_idx] == "top-level-status"
         assert rows[2][latest_pass_idx] == "True"
         assert rows[2][latest_captured_at_idx] == "2026-02-14T12:11:00Z"
@@ -582,7 +589,10 @@ class TestHealthTrendSerializers:
         assert rows[2][snapshot_issue_churn_count_idx] == "2"
         assert rows[2][snapshot_issue_churn_hash_idx] == "churn-hash"
         assert rows[2][snapshot_health_volatility_idx] == "4.0"
-        assert rows[2][snapshot_health_volatility_hash_idx] == trend["snapshot_health_volatility_hash"]
+        assert (
+            rows[2][snapshot_health_volatility_hash_idx]
+            == trend["snapshot_health_volatility_hash"]
+        )
         assert rows[1][scope_payload_type_idx] == "top-level-payload-type"
         assert rows[2][scope_payload_type_idx] == "top-level-payload-type"
         assert rows[1][scope_key_json_idx] == "top-level-scope-key-json"
@@ -620,7 +630,9 @@ class TestHealthTrendSerializers:
         rows = list(csv.reader(io.StringIO(out)))
         assert rows[0][0] == "schema_version"
         snapshot_health_volatility_idx = rows[0].index("snapshot_health_volatility")
-        snapshot_health_volatility_hash_idx = rows[0].index("snapshot_health_volatility_hash")
+        snapshot_health_volatility_hash_idx = rows[0].index(
+            "snapshot_health_volatility_hash"
+        )
         assert rows[1][snapshot_health_volatility_idx] == "None"
         assert rows[1][snapshot_health_volatility_hash_idx] == expected_hash
         assert rows[2][snapshot_health_volatility_idx] == "None"
@@ -697,7 +709,10 @@ class TestHealthTrendSerializers:
         assert first["snapshot_issue_churn_count"] == 2
         assert first["snapshot_issue_churn_hash"] == "churn-hash"
         assert first["snapshot_health_volatility"] == 4.0
-        assert first["snapshot_health_volatility_hash"] == trend["snapshot_health_volatility_hash"]
+        assert (
+            first["snapshot_health_volatility_hash"]
+            == trend["snapshot_health_volatility_hash"]
+        )
         assert "compat" in first
         assert first["compat"]["mode"] == "compat"
         assert second["latest_captured_at_utc"] == "2026-02-14T12:11:00Z"
@@ -721,7 +736,10 @@ class TestHealthTrendSerializers:
         assert second["snapshot_issue_churn_count"] == 2
         assert second["snapshot_issue_churn_hash"] == "churn-hash"
         assert second["snapshot_health_volatility"] == 4.0
-        assert second["snapshot_health_volatility_hash"] == trend["snapshot_health_volatility_hash"]
+        assert (
+            second["snapshot_health_volatility_hash"]
+            == trend["snapshot_health_volatility_hash"]
+        )
         assert second["compat_mode"] == "compat"
         assert "compat_aliases" in second
         assert first["compat_aliases_count"] == 1

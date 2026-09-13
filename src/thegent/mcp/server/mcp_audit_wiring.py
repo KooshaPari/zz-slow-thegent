@@ -283,7 +283,9 @@ def audit_context(
     elif isinstance(kind, AuditEntryKind):
         kind_enum = kind
     else:
-        raise TypeError(f"audit_context: kind must be AuditEntryKind or str, got {type(kind).__name__}")
+        raise TypeError(
+            f"audit_context: kind must be AuditEntryKind or str, got {type(kind).__name__}"
+        )
     t0 = time.monotonic()
     error_message: str | None = None
     try:
@@ -371,14 +373,17 @@ def audited_budget(
     # would form an import cycle through ``mcp_audit_trail``).
     from thegent.mcp.server.mcp_perf_gates import mcp_budget_context
 
-    with audit_context(
-        kind=kind,
-        operation=operation,
-        agent=agent,
-        session_id=session_id,
-        payload=payload,
-        extra=extra,
-    ) as state, mcp_budget_context(operation, budget_ms=budget_ms):
+    with (
+        audit_context(
+            kind=kind,
+            operation=operation,
+            agent=agent,
+            session_id=session_id,
+            payload=payload,
+            extra=extra,
+        ) as state,
+        mcp_budget_context(operation, budget_ms=budget_ms),
+    ):
         yield state
 
 

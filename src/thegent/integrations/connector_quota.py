@@ -30,7 +30,9 @@ class ConnectorQuota:
     def _calculate_reset_time(self) -> datetime:
         """Calculate the next reset time (midnight UTC tomorrow)."""
         now = datetime.now(UTC)
-        next_midnight = now.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
+        next_midnight = now.replace(
+            hour=0, minute=0, second=0, microsecond=0
+        ) + timedelta(days=1)
         return next_midnight
 
     def remaining(self) -> int:
@@ -103,7 +105,9 @@ class QuotaBudgetManager:
         self._check_and_reset_if_needed(quota)
 
         if quota.remaining() < n:
-            raise QuotaExhaustedError(f"Insufficient quota for {connector!r}: need {n}, have {quota.remaining()}")
+            raise QuotaExhaustedError(
+                f"Insufficient quota for {connector!r}: need {n}, have {quota.remaining()}"
+            )
 
         quota.used_today += n
 

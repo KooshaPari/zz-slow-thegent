@@ -2,7 +2,6 @@
 @trace FR-SPECS-001
 """
 
-
 import pytest
 
 

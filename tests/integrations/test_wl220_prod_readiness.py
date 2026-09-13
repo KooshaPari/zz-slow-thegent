@@ -83,7 +83,9 @@ class TestProductionReadinessGate:
         assert gate.evaluate() is False
 
     @pytest.mark.requirement("WL-220")
-    def test_evaluate_false_with_missing_checks(self, gate: ProductionReadinessGate) -> None:
+    def test_evaluate_false_with_missing_checks(
+        self, gate: ProductionReadinessGate
+    ) -> None:
         """evaluate returns False when some required checks missing."""
         gate.add(ReadinessCheck("connector_auth", passed=True))
         gate.add(ReadinessCheck("mapping_config", passed=True))
@@ -91,7 +93,9 @@ class TestProductionReadinessGate:
         assert gate.evaluate() is False
 
     @pytest.mark.requirement("WL-220")
-    def test_evaluate_false_when_check_fails(self, gate: ProductionReadinessGate) -> None:
+    def test_evaluate_false_when_check_fails(
+        self, gate: ProductionReadinessGate
+    ) -> None:
         """evaluate returns False when any check failed."""
         # Add all required checks
         for check_name in ProductionReadinessGate.REQUIRED:
@@ -111,7 +115,9 @@ class TestProductionReadinessGate:
         assert gate.evaluate() is True
 
     @pytest.mark.requirement("WL-220")
-    def test_missing_checks_empty_when_all_added(self, gate: ProductionReadinessGate) -> None:
+    def test_missing_checks_empty_when_all_added(
+        self, gate: ProductionReadinessGate
+    ) -> None:
         """missing_checks returns empty list when all checks added."""
         for check_name in ProductionReadinessGate.REQUIRED:
             gate.add(ReadinessCheck(check_name, passed=True))
@@ -119,7 +125,9 @@ class TestProductionReadinessGate:
         assert gate.missing_checks() == []
 
     @pytest.mark.requirement("WL-220")
-    def test_missing_checks_returns_unaddedonly(self, gate: ProductionReadinessGate) -> None:
+    def test_missing_checks_returns_unaddedonly(
+        self, gate: ProductionReadinessGate
+    ) -> None:
         """missing_checks returns only checks not yet added."""
         gate.add(ReadinessCheck("connector_auth", passed=True))
         gate.add(ReadinessCheck("monitoring_active", passed=True))
@@ -130,7 +138,9 @@ class TestProductionReadinessGate:
         assert "monitoring_active" not in missing
 
     @pytest.mark.requirement("WL-220")
-    def test_failed_checks_empty_when_all_pass(self, gate: ProductionReadinessGate) -> None:
+    def test_failed_checks_empty_when_all_pass(
+        self, gate: ProductionReadinessGate
+    ) -> None:
         """failed_checks returns empty list when all pass."""
         for check_name in ProductionReadinessGate.REQUIRED:
             gate.add(ReadinessCheck(check_name, passed=True))
@@ -138,7 +148,9 @@ class TestProductionReadinessGate:
         assert gate.failed_checks() == []
 
     @pytest.mark.requirement("WL-220")
-    def test_failed_checks_returns_failures_only(self, gate: ProductionReadinessGate) -> None:
+    def test_failed_checks_returns_failures_only(
+        self, gate: ProductionReadinessGate
+    ) -> None:
         """failed_checks returns only checks that failed."""
         gate.add(ReadinessCheck("connector_auth", passed=False))
         gate.add(ReadinessCheck("mapping_config", passed=True))

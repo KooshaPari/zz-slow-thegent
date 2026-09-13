@@ -34,7 +34,10 @@ def test_provider_budget_blocks_over_limit() -> None:
 
     model_list = [
         {"model_name": "gpt-4o", "litellm_params": {"model": "openai/gpt-4o"}},
-        {"model_name": "claude-opus-4.6", "litellm_params": {"model": "anthropic/claude-opus-4.6"}},
+        {
+            "model_name": "claude-opus-4.6",
+            "litellm_params": {"model": "anthropic/claude-opus-4.6"},
+        },
     ]
 
     # Before any spend: both providers available
@@ -62,7 +65,10 @@ def test_provider_budget_falls_back_when_all_over() -> None:
 
     model_list = [
         {"model_name": "gpt-4o", "litellm_params": {"model": "openai/gpt-4o"}},
-        {"model_name": "claude-opus-4.6", "litellm_params": {"model": "anthropic/claude-opus-4.6"}},
+        {
+            "model_name": "claude-opus-4.6",
+            "litellm_params": {"model": "anthropic/claude-opus-4.6"},
+        },
     ]
 
     router.record_spend("openai", 2.0)
@@ -121,8 +127,18 @@ def test_deployment_pool_to_litellm_format() -> None:
     pool = DeploymentPool(
         name="gpt-4o",
         deployments=[
-            DeploymentConfig(provider="openai", model="gpt-4o", weight=1.0, api_base="https://api.openai.com/v1"),
-            DeploymentConfig(provider="openai", model="gpt-4o", weight=2.0, api_base="https://api2.openai.com/v1"),
+            DeploymentConfig(
+                provider="openai",
+                model="gpt-4o",
+                weight=1.0,
+                api_base="https://api.openai.com/v1",
+            ),
+            DeploymentConfig(
+                provider="openai",
+                model="gpt-4o",
+                weight=2.0,
+                api_base="https://api2.openai.com/v1",
+            ),
         ],
     )
     manager = DeploymentPoolManager([pool])
@@ -191,9 +207,15 @@ def test_session_sticky_consistent() -> None:
     pool = DeploymentPool(
         name="gpt-4o",
         deployments=[
-            DeploymentConfig(provider="openai", model="gpt-4o", api_base="https://ep1.openai.com/v1"),
-            DeploymentConfig(provider="openai", model="gpt-4o", api_base="https://ep2.openai.com/v1"),
-            DeploymentConfig(provider="openai", model="gpt-4o", api_base="https://ep3.openai.com/v1"),
+            DeploymentConfig(
+                provider="openai", model="gpt-4o", api_base="https://ep1.openai.com/v1"
+            ),
+            DeploymentConfig(
+                provider="openai", model="gpt-4o", api_base="https://ep2.openai.com/v1"
+            ),
+            DeploymentConfig(
+                provider="openai", model="gpt-4o", api_base="https://ep3.openai.com/v1"
+            ),
         ],
     )
     manager = DeploymentPoolManager([pool])
@@ -213,14 +235,19 @@ def test_session_sticky_consistent() -> None:
 def test_session_sticky_different_sessions() -> None:
     """Different session_ids can map to different deployments."""
     deployments = [
-        DeploymentConfig(provider="openai", model="gpt-4o", api_base=f"https://ep{i}.openai.com/v1") for i in range(5)
+        DeploymentConfig(
+            provider="openai", model="gpt-4o", api_base=f"https://ep{i}.openai.com/v1"
+        )
+        for i in range(5)
     ]
     pool = DeploymentPool(name="gpt-4o", deployments=deployments)
     manager = DeploymentPoolManager([pool])
     sticky = SessionStickyRouter(manager)
 
     session_ids = [f"session-{i}" for i in range(20)]
-    endpoints = {sticky.get_deployment_for_session("gpt-4o", sid).api_base for sid in session_ids}  # type: ignore[union-attr]
+    endpoints = {
+        sticky.get_deployment_for_session("gpt-4o", sid).api_base for sid in session_ids
+    }  # type: ignore[union-attr]
 
     # With 20 sessions and 5 endpoints, at least 2 distinct endpoints should be chosen
     assert len(endpoints) >= 2
@@ -237,7 +264,9 @@ def test_session_sticky_returns_none_for_unknown_model() -> None:
 
 
 @pytest.mark.requirement("FR-ROUTE-021")
-def test_get_session_sticky_extra_returns_params(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_get_session_sticky_extra_returns_params(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """get_session_sticky_extra returns dict with api_base and api_key when available."""
     monkeypatch.setenv("MY_OPENAI_KEY", "sk-test-123")
 
@@ -284,5 +313,7 @@ def test_get_session_sticky_extra_no_pool_manager() -> None:
 def test_get_session_sticky_extra_unknown_model() -> None:
     """get_session_sticky_extra returns empty dict when model has no pool."""
     manager = DeploymentPoolManager([])
-    extra = get_session_sticky_extra("no-such-model", "session-xyz", pool_manager=manager)
+    extra = get_session_sticky_extra(
+        "no-such-model", "session-xyz", pool_manager=manager
+    )
     assert extra == {}

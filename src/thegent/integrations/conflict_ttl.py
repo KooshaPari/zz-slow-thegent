@@ -81,7 +81,11 @@ class ConflictTTLManager:
         """
         record = self._conflicts[conflict_id]
         age_seconds = (datetime.now(UTC) - record.created_at).total_seconds()
-        return age_seconds > self.escalation_seconds and age_seconds <= self.ttl_seconds and not record.escalated
+        return (
+            age_seconds > self.escalation_seconds
+            and age_seconds <= self.ttl_seconds
+            and not record.escalated
+        )
 
     def escalate(self, conflict_id: str) -> None:
         """Mark a conflict as escalated.

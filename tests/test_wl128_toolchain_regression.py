@@ -41,13 +41,17 @@ class TestPyprojectTomlValidity:
         """pyproject.toml must contain exactly one [tool.pytest.ini_options] section."""
         text = PYPROJECT.read_text(encoding="utf-8")
         count = text.count("[tool.pytest.ini_options]")
-        assert count == 1, f"Duplicate [tool.pytest.ini_options] sections: found {count}, expected 1"
+        assert count == 1, (
+            f"Duplicate [tool.pytest.ini_options] sections: found {count}, expected 1"
+        )
 
     def test_no_duplicate_tool_coverage_run_section(self) -> None:
         """pyproject.toml must contain exactly one [tool.coverage.run] section."""
         text = PYPROJECT.read_text(encoding="utf-8")
         count = text.count("[tool.coverage.run]")
-        assert count == 1, f"Duplicate [tool.coverage.run] sections: found {count}, expected 1"
+        assert count == 1, (
+            f"Duplicate [tool.coverage.run] sections: found {count}, expected 1"
+        )
 
     def test_no_duplicate_tool_mypy_section(self) -> None:
         """pyproject.toml must contain exactly one [tool.mypy] section."""
@@ -92,9 +96,13 @@ class TestTaskfileYamlValidity:
     def test_lint_task_exists(self) -> None:
         """Taskfile must still have a canonical 'lint:' task after dedup."""
         text = TASKFILE.read_text(encoding="utf-8")
-        assert "\n  lint:\n" in text, "Taskfile.yml must have a 'lint:' canonical task — dedup must not have removed it"
+        assert "\n  lint:\n" in text, (
+            "Taskfile.yml must have a 'lint:' canonical task — dedup must not have removed it"
+        )
 
     def test_test_task_exists(self) -> None:
         """Taskfile must still have a canonical 'test:' task after dedup."""
         text = TASKFILE.read_text(encoding="utf-8")
-        assert "\n  test:\n" in text, "Taskfile.yml must have a 'test:' canonical task — dedup must not have removed it"
+        assert "\n  test:\n" in text, (
+            "Taskfile.yml must have a 'test:' canonical task — dedup must not have removed it"
+        )

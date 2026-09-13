@@ -39,7 +39,8 @@ class PurePythonRouter:
             metrics = self.agent_metrics.get(agent.id, RouteMetrics())
             # Simplified but fast math
             score = (metrics.success_rate * metrics.availability) / (
-                max(metrics.cost_per_token, 0.001) + max(metrics.latency_ms / 1000, 0.001)
+                max(metrics.cost_per_token, 0.001)
+                + max(metrics.latency_ms / 1000, 0.001)
             )
             if score > best_score:
                 best_score = score

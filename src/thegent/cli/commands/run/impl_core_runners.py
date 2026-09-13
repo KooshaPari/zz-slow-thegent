@@ -60,7 +60,9 @@ def _apply_pareto_routing(
     route_contract: dict[str, Any] | None,
     route_request: dict[str, Any] | None,
 ) -> tuple[str | None, str | None, dict[str, Any] | None, dict[str, Any] | None]:
-    return _impl_apply(agent, model, routing, include_contract, route_contract, route_request)
+    return _impl_apply(
+        agent, model, routing, include_contract, route_contract, route_request
+    )
 
 
 def _resolve_impl_namespace() -> Any:
@@ -94,7 +96,9 @@ def run_impl_core(prompt: str, **kwargs: Any) -> dict[str, Any]:
     from thegent.cli.services import run_execution_core_helpers
 
     impl_ns = _resolve_impl_namespace()
-    return run_execution_core_helpers.run_impl_core(prompt=prompt, impl_ns=impl_ns, **kwargs)
+    return run_execution_core_helpers.run_impl_core(
+        prompt=prompt, impl_ns=impl_ns, **kwargs
+    )
 
 
 def bg_impl_core(prompt: str, **kwargs: Any) -> dict[str, Any]:
@@ -107,7 +111,9 @@ def bg_impl_core(prompt: str, **kwargs: Any) -> dict[str, Any]:
     from thegent.cli.services import run_execution_core_helpers
 
     impl_ns = _resolve_impl_namespace()
-    return run_execution_core_helpers.bg_impl_core(prompt=prompt, impl_ns=impl_ns, **kwargs)
+    return run_execution_core_helpers.bg_impl_core(
+        prompt=prompt, impl_ns=impl_ns, **kwargs
+    )
 
 
 __all__ = ["_apply_pareto_routing", "run_impl_core", "bg_impl_core"]

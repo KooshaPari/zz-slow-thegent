@@ -26,7 +26,9 @@ def _init_project(tmp_path: Path) -> dict[str, Path]:
     (home_dir / ".claude").mkdir(parents=True, exist_ok=True)
 
     source_cfg = _repo_root() / "hooks" / "hook-config.yaml"
-    (hooks_dir / "hook-config.yaml").write_text(source_cfg.read_text(encoding="utf-8"), encoding="utf-8")
+    (hooks_dir / "hook-config.yaml").write_text(
+        source_cfg.read_text(encoding="utf-8"), encoding="utf-8"
+    )
     (project / ".claude" / "quality.json").write_text("{}", encoding="utf-8")
     (verify_dir / "regression-spiral-state.json").write_text(
         json.dumps(
@@ -52,7 +54,9 @@ def _init_project(tmp_path: Path) -> dict[str, Path]:
     subprocess.run(["git", "config", "user.name", "t"], cwd=project, check=True)
     (project / "README").write_text("x\n", encoding="utf-8")
     subprocess.run(["git", "add", "README"], cwd=project, check=True)
-    subprocess.run(["git", "commit", "-q", "--allow-empty", "-m", "init"], cwd=project, check=True)
+    subprocess.run(
+        ["git", "commit", "-q", "--allow-empty", "-m", "init"], cwd=project, check=True
+    )
 
     return {
         "project": project,
@@ -70,7 +74,10 @@ def _write_attestation(path: Path) -> None:
             "missing_required_test_types": [],
             "detected_test_types": {},
         },
-        "security": {"signed_attestation_present": True, "slsa_provenance_present": True},
+        "security": {
+            "signed_attestation_present": True,
+            "slsa_provenance_present": True,
+        },
     }
     path.write_text(json.dumps(attestation).decode() + "\n", encoding="utf-8")
 
@@ -100,7 +107,9 @@ def _run_once(
     if async_results_payload is None:
         async_path.unlink(missing_ok=True)
     else:
-        async_path.write_text(json.dumps(async_results_payload).decode() + "\n", encoding="utf-8")
+        async_path.write_text(
+            json.dumps(async_results_payload).decode() + "\n", encoding="utf-8"
+        )
 
     if qa_state_present:
         qa_state_path.write_text("{}", encoding="utf-8")
@@ -149,22 +158,36 @@ def _run_once(
     )
 
 
-def _load_artifacts(verify_dir: Path) -> tuple[dict, dict, dict, dict | None, list[dict]]:
-    report = json.loads((verify_dir / "regression-spiral-guard.json").read_text(encoding="utf-8"))
+def _load_artifacts(
+    verify_dir: Path,
+) -> tuple[dict, dict, dict, dict | None, list[dict]]:
+    report = json.loads(
+        (verify_dir / "regression-spiral-guard.json").read_text(encoding="utf-8")
+    )
     metric_lines = [
         line
-        for line in (verify_dir / "regression-spiral-metrics.jsonl").read_text(encoding="utf-8").splitlines()
+        for line in (verify_dir / "regression-spiral-metrics.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
         if line.strip()
     ]
     metric = json.loads(metric_lines[-1])
     all_metrics = [json.loads(line) for line in metric_lines]
-    state = json.loads((verify_dir / "regression-spiral-state.json").read_text(encoding="utf-8"))
+    state = json.loads(
+        (verify_dir / "regression-spiral-state.json").read_text(encoding="utf-8")
+    )
     alert_path = verify_dir / "regression-spiral-alert.json"
-    alert = json.loads(alert_path.read_text(encoding="utf-8")) if alert_path.exists() else None
+    alert = (
+        json.loads(alert_path.read_text(encoding="utf-8"))
+        if alert_path.exists()
+        else None
+    )
     return report, metric, state, alert, all_metrics
 
 
-def _assert_contract_versions(report: dict, metric: dict, state: dict, alert: dict | None) -> None:
+def _assert_contract_versions(
+    report: dict, metric: dict, state: dict, alert: dict | None
+) -> None:
     assert report["contract_version"] == "v1"
     assert metric["contract_version"] == "v1"
     assert state["contract_version"] == "v1"
@@ -173,7 +196,9 @@ def _assert_contract_versions(report: dict, metric: dict, state: dict, alert: di
 
 
 @pytest.mark.unit
-def test_spiral_lifecycle_green_yellow_red_then_cooldown_recovery(tmp_path: Path) -> None:
+def test_spiral_lifecycle_green_yellow_red_then_cooldown_recovery(
+    tmp_path: Path,
+) -> None:
     paths = _init_project(tmp_path)
     verify_dir = paths["verify_dir"]
 
@@ -236,7 +261,9 @@ def test_spiral_lifecycle_green_yellow_red_then_cooldown_recovery(tmp_path: Path
     state3["cooldown_until"] = int(time.time()) - 1
     state3["band_retry_counts"]["yellow"] = 5
     state3["band_retry_counts"]["red"] = 4
-    (verify_dir / "regression-spiral-state.json").write_text(json.dumps(state3).decode() + "\n", encoding="utf-8")
+    (verify_dir / "regression-spiral-state.json").write_text(
+        json.dumps(state3).decode() + "\n", encoding="utf-8"
+    )
 
     run4 = _run_once(
         paths,
@@ -260,5 +287,10 @@ def test_spiral_lifecycle_green_yellow_red_then_cooldown_recovery(tmp_path: Path
     assert alert4 is None
 
     assert len(all_metrics) == 4
-    assert [item["policy_band"] for item in all_metrics] == ["green", "yellow", "red", "green"]
+    assert [item["policy_band"] for item in all_metrics] == [
+        "green",
+        "yellow",
+        "red",
+        "green",
+    ]
     assert all(item["contract_version"] == "v1" for item in all_metrics)

@@ -76,7 +76,12 @@ def _health_gate_result(**overrides) -> dict[str, Any]:
         "blocked_sessions_cap": 25,
         "strict_checks_enabled": False,
         "generated_at_utc": "2025-01-01T00:00:00Z",
-        "generated_query": {"owner": "ci", "all": False, "strict": False, "min_healthy_ratio": 1.0},
+        "generated_query": {
+            "owner": "ci",
+            "all": False,
+            "strict": False,
+            "min_healthy_ratio": 1.0,
+        },
         "summary": {"health": {"healthy": 5, "warning": 0, "error": 0, "missing": 0}},
         "decision_reasons": [],
     }
@@ -162,7 +167,9 @@ class TestSweepCmdBranches:
     @patch("thegent.cli.console")
     @patch("thegent.cli._normalize_output_format", return_value="rich")
     @patch("thegent.cli.commands.impl.sweep_impl")
-    def test_sweep_rich_audit_failed_status(self, mock_impl, mock_fmt, mock_console) -> None:
+    def test_sweep_rich_audit_failed_status(
+        self, mock_impl, mock_fmt, mock_console
+    ) -> None:
         # @trace FR-GOV-002
         mock_impl.return_value = {
             "pass": False,
@@ -199,7 +206,9 @@ class TestContractsRegistryCmdRich:
         mock_registry.list_versions.return_value = [mock_version]
         mock_local_console = MagicMock()
         with (
-            patch("thegent.contracts.registry.get_registry", return_value=mock_registry),
+            patch(
+                "thegent.contracts.registry.get_registry", return_value=mock_registry
+            ),
             patch("rich.console.Console", return_value=mock_local_console),
         ):
             from thegent.cli import contracts_registry_cmd
@@ -219,7 +228,9 @@ class TestContractsRegistryCmdRich:
         mock_registry.list_versions.return_value = [mock_version]
         mock_local_console = MagicMock()
         with (
-            patch("thegent.contracts.registry.get_registry", return_value=mock_registry),
+            patch(
+                "thegent.contracts.registry.get_registry", return_value=mock_registry
+            ),
             patch("rich.console.Console", return_value=mock_local_console),
         ):
             from thegent.cli import contracts_registry_cmd
@@ -301,12 +312,17 @@ class TestDriftCmdBranches:
             }
             with (
                 patch("thegent.cli.ThegentSettings", return_value=_mock_settings()),
-                patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+                patch(
+                    "thegent.contracts.telemetry.ContractTelemetry",
+                    return_value=mock_ct,
+                ),
                 patch("rich.console.Console", return_value=mock_local_console),
             ):
                 from thegent.cli import drift_cmd
 
-                drift_cmd(window=50, format=None, structural_budget=5.0, semantic_budget=5.0)
+                drift_cmd(
+                    window=50, format=None, structural_budget=5.0, semantic_budget=5.0
+                )
             mock_local_console.print.assert_called()
         finally:
             sys.modules.pop("rich.list", None)
@@ -325,10 +341,17 @@ class TestObserveSummaryCmdRich:
     @patch("thegent.cli._normalize_output_format", return_value="rich")
     @patch("thegent.cli._default_owner_tag", return_value="ci:proj")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_observe_summary_rich_full(self, mock_settings, mock_owner, mock_fmt, mock_console) -> None:
+    def test_observe_summary_rich_full(
+        self, mock_settings, mock_owner, mock_fmt, mock_console
+    ) -> None:
         # @trace FR-CLI-404
         result = {
-            "kpis": {"total_events": 100, "fallback_rate": 0.05, "success_rate": 0.95, "avg_confidence": 0.9},
+            "kpis": {
+                "total_events": 100,
+                "fallback_rate": 0.05,
+                "success_rate": 0.95,
+                "avg_confidence": 0.9,
+            },
             "drift": {
                 "structural_rate_pct": 2.0,
                 "structural_budget_pct": 5.0,
@@ -383,7 +406,10 @@ class TestObserveSummaryCmdRich:
             },
             "generated_query": {"owner": "ci"},
         }
-        with patch("thegent.cli.commands.observability_impl.observe_summary_impl", return_value=result):
+        with patch(
+            "thegent.cli.commands.observability_impl.observe_summary_impl",
+            return_value=result,
+        ):
             from thegent.cli import observe_summary_cmd
 
             observe_summary_cmd(limit=100, drift_window=50, format=None, provider=None)
@@ -406,22 +432,39 @@ class TestContractsConformanceCmdRich:
             "failed": 1,
             "total": 4,
             "results": [
-                {"name": "test1", "provider": "claude", "success": True, "confidence": 0.95, "issues": []},
-                {"name": "test2", "provider": "gemini", "success": False, "confidence": 0.5, "issues": ["timeout"]},
+                {
+                    "name": "test1",
+                    "provider": "claude",
+                    "success": True,
+                    "confidence": 0.95,
+                    "issues": [],
+                },
+                {
+                    "name": "test2",
+                    "provider": "gemini",
+                    "success": False,
+                    "confidence": 0.5,
+                    "issues": ["timeout"],
+                },
             ],
             "drift_checked": True,
             "drift_issues": ["structural drift detected"],
         }
         mock_local_console = MagicMock()
         with (
-            patch("thegent.contracts.conformance.run_conformance_suite", return_value=report),
+            patch(
+                "thegent.contracts.conformance.run_conformance_suite",
+                return_value=report,
+            ),
             patch("thegent.cli.ThegentSettings", return_value=_mock_settings()),
             patch("rich.console.Console", return_value=mock_local_console),
         ):
             from thegent.cli import contracts_conformance_cmd
 
             with pytest.raises(_EXIT):
-                contracts_conformance_cmd(format=None, check_drift=True, drift_window=50)
+                contracts_conformance_cmd(
+                    format=None, check_drift=True, drift_window=50
+                )
 
     def test_conformance_json_with_failures(self) -> None:
         # @trace FR-CLI-406
@@ -434,14 +477,19 @@ class TestContractsConformanceCmdRich:
         }
         mock_local_console = MagicMock()
         with (
-            patch("thegent.contracts.conformance.run_conformance_suite", return_value=report),
+            patch(
+                "thegent.contracts.conformance.run_conformance_suite",
+                return_value=report,
+            ),
             patch("thegent.cli.ThegentSettings", return_value=_mock_settings()),
             patch("rich.console.Console", return_value=mock_local_console),
         ):
             from thegent.cli import contracts_conformance_cmd
 
             with pytest.raises(_EXIT):
-                contracts_conformance_cmd(format="json", check_drift=False, drift_window=50)
+                contracts_conformance_cmd(
+                    format="json", check_drift=False, drift_window=50
+                )
 
 
 # ============================================================================
@@ -457,7 +505,9 @@ class TestCockpitCmdBranches:
     @patch("thegent.cli.Columns")
     @patch("thegent.cli.Panel")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_cockpit_with_recent_errors(self, mock_settings, mock_panel, mock_cols, mock_console) -> None:
+    def test_cockpit_with_recent_errors(
+        self, mock_settings, mock_panel, mock_cols, mock_console
+    ) -> None:
         # @trace FR-CLI-407
         mock_registry = MagicMock()
         mock_registry.list_runs.return_value = [
@@ -494,7 +544,9 @@ class TestPsCmdBranches:
     @patch("thegent.cli._normalize_output_format", return_value="md")
     @patch("thegent.cli._default_owner_tag", return_value="ci:proj")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_ps_md_with_contract(self, mock_settings, mock_owner, mock_fmt, mock_console) -> None:
+    def test_ps_md_with_contract(
+        self, mock_settings, mock_owner, mock_fmt, mock_console
+    ) -> None:
         # @trace FR-CLI-408
         rows = [
             {
@@ -545,9 +597,14 @@ class TestSessionContractAuditCmdBranches:
     @patch("thegent.cli._normalize_output_format", return_value="rich")
     @patch("thegent.cli._default_owner_tag", return_value="ci:proj")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_audit_no_rows_missing_only(self, mock_settings, mock_owner, mock_fmt, mock_console) -> None:
+    def test_audit_no_rows_missing_only(
+        self, mock_settings, mock_owner, mock_fmt, mock_console
+    ) -> None:
         # @trace FR-GOV-004
-        with patch("thegent.cli.commands.impl.session_contract_audit_impl", return_value=self._audit_result()):
+        with patch(
+            "thegent.cli.commands.impl.session_contract_audit_impl",
+            return_value=self._audit_result(),
+        ):
             from thegent.cli import session_contracts_cmd
 
             session_contracts_cmd(
@@ -565,9 +622,14 @@ class TestSessionContractAuditCmdBranches:
     @patch("thegent.cli._normalize_output_format", return_value="md")
     @patch("thegent.cli._default_owner_tag", return_value="ci:proj")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_audit_md_summary_only(self, mock_settings, mock_owner, mock_fmt, mock_console) -> None:
+    def test_audit_md_summary_only(
+        self, mock_settings, mock_owner, mock_fmt, mock_console
+    ) -> None:
         # @trace FR-GOV-005
-        with patch("thegent.cli.commands.impl.session_contract_audit_impl", return_value=self._audit_result()):
+        with patch(
+            "thegent.cli.commands.impl.session_contract_audit_impl",
+            return_value=self._audit_result(),
+        ):
             from thegent.cli import session_contracts_cmd
 
             session_contracts_cmd(
@@ -585,7 +647,9 @@ class TestSessionContractAuditCmdBranches:
     @patch("thegent.cli._normalize_output_format", return_value="md")
     @patch("thegent.cli._default_owner_tag", return_value="ci:proj")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_audit_md_with_rows(self, mock_settings, mock_owner, mock_fmt, mock_console) -> None:
+    def test_audit_md_with_rows(
+        self, mock_settings, mock_owner, mock_fmt, mock_console
+    ) -> None:
         # @trace FR-GOV-006
         rows = [
             {
@@ -602,7 +666,10 @@ class TestSessionContractAuditCmdBranches:
                 "contract_issues": [],
             },
         ]
-        with patch("thegent.cli.commands.impl.session_contract_audit_impl", return_value=self._audit_result(rows=rows)):
+        with patch(
+            "thegent.cli.commands.impl.session_contract_audit_impl",
+            return_value=self._audit_result(rows=rows),
+        ):
             from thegent.cli import session_contracts_cmd
 
             session_contracts_cmd(
@@ -618,7 +685,9 @@ class TestSessionContractAuditCmdBranches:
     @patch("thegent.cli._normalize_output_format", return_value="rich")
     @patch("thegent.cli._default_owner_tag", return_value="ci:proj")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_audit_rich_table_with_rows(self, mock_settings, mock_owner, mock_fmt, mock_console) -> None:
+    def test_audit_rich_table_with_rows(
+        self, mock_settings, mock_owner, mock_fmt, mock_console
+    ) -> None:
         # @trace FR-GOV-007
         rows = [
             {
@@ -635,7 +704,10 @@ class TestSessionContractAuditCmdBranches:
                 "contract_issues": ["stale_contract"],
             },
         ]
-        with patch("thegent.cli.commands.impl.session_contract_audit_impl", return_value=self._audit_result(rows=rows)):
+        with patch(
+            "thegent.cli.commands.impl.session_contract_audit_impl",
+            return_value=self._audit_result(rows=rows),
+        ):
             from thegent.cli import session_contracts_cmd
 
             session_contracts_cmd(
@@ -661,10 +733,15 @@ class TestHealthGateCmdBranches:
     @patch("thegent.cli._normalize_output_format", return_value="md")
     @patch("thegent.cli._default_owner_tag", return_value="ci:proj")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_gate_md_format(self, mock_settings, mock_owner, mock_fmt, mock_console) -> None:
+    def test_gate_md_format(
+        self, mock_settings, mock_owner, mock_fmt, mock_console
+    ) -> None:
         # @trace FR-GOV-008
         result = _health_gate_result()
-        with patch("thegent.cli.commands.impl.session_contract_health_gate_impl", return_value=result):
+        with patch(
+            "thegent.cli.commands.impl.session_contract_health_gate_impl",
+            return_value=result,
+        ):
             from thegent.cli import session_contract_health_gate_cmd
 
             session_contract_health_gate_cmd(
@@ -683,7 +760,9 @@ class TestHealthGateCmdBranches:
     @patch("thegent.cli._normalize_output_format", return_value="rich")
     @patch("thegent.cli._default_owner_tag", return_value="ci:proj")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_gate_rich_with_signature_and_trend(self, mock_settings, mock_owner, mock_fmt, mock_console) -> None:
+    def test_gate_rich_with_signature_and_trend(
+        self, mock_settings, mock_owner, mock_fmt, mock_console
+    ) -> None:
         # @trace FR-GOV-009
         result = _health_gate_result(
             payload_signature={"algorithm": "sha256", "value": "abc123"},
@@ -694,7 +773,10 @@ class TestHealthGateCmdBranches:
                 "blocked_count_delta": -2,
             },
         )
-        with patch("thegent.cli.commands.impl.session_contract_health_gate_impl", return_value=result):
+        with patch(
+            "thegent.cli.commands.impl.session_contract_health_gate_impl",
+            return_value=result,
+        ):
             from thegent.cli import session_contract_health_gate_cmd
 
             session_contract_health_gate_cmd(
@@ -716,13 +798,20 @@ class TestHealthGateCmdBranches:
     @patch("thegent.cli._normalize_output_format", return_value="rich")
     @patch("thegent.cli._default_owner_tag", return_value="ci:proj")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_gate_with_export(self, mock_settings, mock_owner, mock_fmt, mock_console, tmp_path) -> None:
+    def test_gate_with_export(
+        self, mock_settings, mock_owner, mock_fmt, mock_console, tmp_path
+    ) -> None:
         # @trace FR-GOV-010
         result = _health_gate_result()
         out_file = tmp_path / "gate.json"
         with (
-            patch("thegent.cli.commands.impl.session_contract_health_gate_impl", return_value=result),
-            patch("thegent.cli._write_health_gate_export", return_value="json") as mock_export,
+            patch(
+                "thegent.cli.commands.impl.session_contract_health_gate_impl",
+                return_value=result,
+            ),
+            patch(
+                "thegent.cli._write_health_gate_export", return_value="json"
+            ) as mock_export,
         ):
             from thegent.cli import session_contract_health_gate_cmd
 
@@ -923,10 +1012,15 @@ class TestHealthReportCmdBranches:
     @patch("thegent.cli._normalize_output_format", return_value="md")
     @patch("thegent.cli._default_owner_tag", return_value="ci:proj")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_report_md_format(self, mock_settings, mock_owner, mock_fmt, mock_console) -> None:
+    def test_report_md_format(
+        self, mock_settings, mock_owner, mock_fmt, mock_console
+    ) -> None:
         # @trace FR-GOV-011
         result = _health_report_result()
-        with patch("thegent.cli.commands.impl.session_contract_health_report_impl", return_value=result):
+        with patch(
+            "thegent.cli.commands.impl.session_contract_health_report_impl",
+            return_value=result,
+        ):
             from thegent.cli import session_contract_health_report_cmd
 
             session_contract_health_report_cmd(
@@ -947,7 +1041,9 @@ class TestHealthReportCmdBranches:
     @patch("thegent.cli._normalize_output_format", return_value="rich")
     @patch("thegent.cli._default_owner_tag", return_value="ci:proj")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_report_rich_with_signature_trend_blocked(self, mock_settings, mock_owner, mock_fmt, mock_console) -> None:
+    def test_report_rich_with_signature_trend_blocked(
+        self, mock_settings, mock_owner, mock_fmt, mock_console
+    ) -> None:
         # @trace FR-GOV-012
         result = _health_report_result(
             payload_signature={"algorithm": "sha256", "value": "abc"},
@@ -969,7 +1065,10 @@ class TestHealthReportCmdBranches:
                 },
             ],
         )
-        with patch("thegent.cli.commands.impl.session_contract_health_report_impl", return_value=result):
+        with patch(
+            "thegent.cli.commands.impl.session_contract_health_report_impl",
+            return_value=result,
+        ):
             from thegent.cli import session_contract_health_report_cmd
 
             session_contract_health_report_cmd(
@@ -1000,7 +1099,10 @@ class TestHealthReportCmdBranches:
         result = _health_report_result()
         out_file = tmp_path / "report.xyz"
         with (
-            patch("thegent.cli.commands.impl.session_contract_health_report_impl", return_value=result),
+            patch(
+                "thegent.cli.commands.impl.session_contract_health_report_impl",
+                return_value=result,
+            ),
             patch("thegent.cli._write_report_export", return_value="json"),
         ):
             from thegent.cli import session_contract_health_report_cmd
@@ -1035,10 +1137,15 @@ class TestHealthTrendCmdBranches:
     @patch("thegent.cli._normalize_output_format", return_value="md")
     @patch("thegent.cli._default_owner_tag", return_value="ci:proj")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_trend_md_format(self, mock_settings, mock_owner, mock_fmt, mock_console) -> None:
+    def test_trend_md_format(
+        self, mock_settings, mock_owner, mock_fmt, mock_console
+    ) -> None:
         # @trace FR-GOV-014
         result = _health_trend_result()
-        with patch("thegent.cli.commands.impl.session_contract_health_trend_impl", return_value=result):
+        with patch(
+            "thegent.cli.commands.impl.session_contract_health_trend_impl",
+            return_value=result,
+        ):
             from thegent.cli import session_contract_health_trend_cmd
 
             session_contract_health_trend_cmd(
@@ -1067,7 +1174,10 @@ class TestHealthTrendCmdBranches:
         result = _health_trend_result()
         out_file = tmp_path / "trend.xyz"
         with (
-            patch("thegent.cli.commands.impl.session_contract_health_trend_impl", return_value=result),
+            patch(
+                "thegent.cli.commands.impl.session_contract_health_trend_impl",
+                return_value=result,
+            ),
             patch("thegent.cli._write_health_trend_export", return_value="json"),
         ):
             from thegent.cli import session_contract_health_trend_cmd
@@ -1118,7 +1228,9 @@ class TestDagValidateFreshness:
         mock_ckpt_registry.list_checkpoints.return_value = [
             {"checkpoint_id": "ckpt-1", "created_at_utc": "2020-01-01T00:00:00+00:00"},
         ]
-        with patch("thegent.execution.CheckpointRegistry", return_value=mock_ckpt_registry):
+        with patch(
+            "thegent.execution.CheckpointRegistry", return_value=mock_ckpt_registry
+        ):
             from thegent.cli import dag_validate_cmd
 
             dag_validate_cmd(cd=None)
@@ -1139,14 +1251,22 @@ class TestDagListCmdRichTable:
     @patch("thegent.cli._parse_dag_session")
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
-    def test_dag_list_rich_table(self, mock_console, mock_cwd, mock_parse, mock_settings, tmp_path) -> None:
+    def test_dag_list_rich_table(
+        self, mock_console, mock_cwd, mock_parse, mock_settings, tmp_path
+    ) -> None:
         # @trace FR-CLI-423
         dag_file = tmp_path / ".factory" / "dag-session.md"
         dag_file.parent.mkdir(parents=True)
         dag_file.touch()
         mock_cwd.return_value = tmp_path
         tasks = [
-            {"id": "T1", "agent": "claude", "prompt": "hello", "depends_on": "-", "status": "pending"},
+            {
+                "id": "T1",
+                "agent": "claude",
+                "prompt": "hello",
+                "depends_on": "-",
+                "status": "pending",
+            },
         ]
         mock_parse.return_value = ({}, tasks)
         mock_settings.return_value.output_format = "rich"
@@ -1160,13 +1280,23 @@ class TestDagListCmdRichTable:
     @patch("thegent.cli._parse_dag_session")
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
-    def test_dag_list_json_with_tasks(self, mock_console, mock_cwd, mock_parse, mock_settings, tmp_path) -> None:
+    def test_dag_list_json_with_tasks(
+        self, mock_console, mock_cwd, mock_parse, mock_settings, tmp_path
+    ) -> None:
         # @trace FR-CLI-424
         dag_file = tmp_path / ".factory" / "dag-session.md"
         dag_file.parent.mkdir(parents=True)
         dag_file.touch()
         mock_cwd.return_value = tmp_path
-        tasks = [{"id": "T1", "agent": "claude", "prompt": "hello", "depends_on": "-", "status": "done"}]
+        tasks = [
+            {
+                "id": "T1",
+                "agent": "claude",
+                "prompt": "hello",
+                "depends_on": "-",
+                "status": "done",
+            }
+        ]
         mock_parse.return_value = ({}, tasks)
         mock_settings.return_value.output_format = "json"
 
@@ -1189,7 +1319,9 @@ class TestDagAddCmdDepsBranch:
     @patch("thegent.cli._validate_task_id", return_value=None)
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
-    def test_depends_on_not_found(self, mock_console, mock_cwd, mock_vtid, mock_vagent, mock_ensure, tmp_path) -> None:
+    def test_depends_on_not_found(
+        self, mock_console, mock_cwd, mock_vtid, mock_vagent, mock_ensure, tmp_path
+    ) -> None:
         # @trace FR-CLI-425
         dag_dir = tmp_path / ".factory"
         dag_dir.mkdir(parents=True)
@@ -1199,7 +1331,9 @@ class TestDagAddCmdDepsBranch:
         from thegent.cli import dag_add_cmd
 
         with pytest.raises(_EXIT):
-            dag_add_cmd(task_id="T1", agent="claude", prompt="test", depends_on="NONEXIST")
+            dag_add_cmd(
+                task_id="T1", agent="claude", prompt="test", depends_on="NONEXIST"
+            )
 
     @patch("thegent.cli._atomic_write")
     @patch("thegent.cli._serialize_dag", return_value="ser")
@@ -1210,7 +1344,16 @@ class TestDagAddCmdDepsBranch:
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
     def test_cycle_detected(
-        self, mock_console, mock_cwd, mock_vtid, mock_vagent, mock_ensure, mock_cycles, mock_ser, mock_write, tmp_path
+        self,
+        mock_console,
+        mock_cwd,
+        mock_vtid,
+        mock_vagent,
+        mock_ensure,
+        mock_cycles,
+        mock_ser,
+        mock_write,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-426
         dag_dir = tmp_path / ".factory"
@@ -1301,7 +1444,9 @@ class TestDagStatusCmdBranches:
     @patch("thegent.cli._parse_dag_session")
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
-    def test_md_format(self, mock_console, mock_cwd, mock_parse, mock_status, mock_settings, tmp_path) -> None:
+    def test_md_format(
+        self, mock_console, mock_cwd, mock_parse, mock_status, mock_settings, tmp_path
+    ) -> None:
         # @trace FR-CLI-430
         dag_file = tmp_path / ".factory" / "dag-session.md"
         dag_file.parent.mkdir(parents=True)
@@ -1322,7 +1467,9 @@ class TestDagStatusCmdBranches:
     @patch("thegent.cli._parse_dag_session")
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
-    def test_rich_table(self, mock_console, mock_cwd, mock_parse, mock_status, mock_settings, tmp_path) -> None:
+    def test_rich_table(
+        self, mock_console, mock_cwd, mock_parse, mock_status, mock_settings, tmp_path
+    ) -> None:
         # @trace FR-CLI-431
         dag_file = tmp_path / ".factory" / "dag-session.md"
         dag_file.parent.mkdir(parents=True)
@@ -1356,7 +1503,15 @@ class TestDagUpdateCmdBranches:
         dag_file.touch()
         mock_cwd.return_value = tmp_path
         mock_parse.return_value = _make_dag_doc(
-            tasks=[{"id": "T1", "agent": "claude", "prompt": "x", "depends_on": "-", "status": "pending"}],
+            tasks=[
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "x",
+                    "depends_on": "-",
+                    "status": "pending",
+                }
+            ],
         )
         with patch("thegent.cli._validate_agent", return_value="invalid agent chars"):
             from thegent.cli import dag_update_cmd
@@ -1367,14 +1522,24 @@ class TestDagUpdateCmdBranches:
     @patch("thegent.cli._parse_dag_full")
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
-    def test_depends_on_not_found(self, mock_console, mock_cwd, mock_parse, tmp_path) -> None:
+    def test_depends_on_not_found(
+        self, mock_console, mock_cwd, mock_parse, tmp_path
+    ) -> None:
         # @trace FR-CLI-433
         dag_file = tmp_path / ".factory" / "dag-session.md"
         dag_file.parent.mkdir(parents=True)
         dag_file.touch()
         mock_cwd.return_value = tmp_path
         mock_parse.return_value = _make_dag_doc(
-            tasks=[{"id": "T1", "agent": "claude", "prompt": "x", "depends_on": "-", "status": "pending"}],
+            tasks=[
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "x",
+                    "depends_on": "-",
+                    "status": "pending",
+                }
+            ],
         )
         from thegent.cli import dag_update_cmd
 
@@ -1389,7 +1554,15 @@ class TestDagUpdateCmdBranches:
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
     def test_cycle_detected_on_update(
-        self, mock_console, mock_cwd, mock_parse, mock_upd, mock_cycles, mock_ser, mock_write, tmp_path
+        self,
+        mock_console,
+        mock_cwd,
+        mock_parse,
+        mock_upd,
+        mock_cycles,
+        mock_ser,
+        mock_write,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-434
         dag_file = tmp_path / ".factory" / "dag-session.md"
@@ -1397,7 +1570,15 @@ class TestDagUpdateCmdBranches:
         dag_file.touch()
         mock_cwd.return_value = tmp_path
         mock_parse.return_value = _make_dag_doc(
-            tasks=[{"id": "T1", "agent": "claude", "prompt": "x", "depends_on": "-", "status": "pending"}],
+            tasks=[
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "x",
+                    "depends_on": "-",
+                    "status": "pending",
+                }
+            ],
         )
         from thegent.cli import dag_update_cmd
 
@@ -1408,14 +1589,24 @@ class TestDagUpdateCmdBranches:
     @patch("thegent.cli._parse_dag_full")
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
-    def test_update_task_returns_false(self, mock_console, mock_cwd, mock_parse, mock_upd, tmp_path) -> None:
+    def test_update_task_returns_false(
+        self, mock_console, mock_cwd, mock_parse, mock_upd, tmp_path
+    ) -> None:
         # @trace FR-CLI-435
         dag_file = tmp_path / ".factory" / "dag-session.md"
         dag_file.parent.mkdir(parents=True)
         dag_file.touch()
         mock_cwd.return_value = tmp_path
         mock_parse.return_value = _make_dag_doc(
-            tasks=[{"id": "T1", "agent": "claude", "prompt": "x", "depends_on": "-", "status": "pending"}],
+            tasks=[
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "x",
+                    "depends_on": "-",
+                    "status": "pending",
+                }
+            ],
         )
         from thegent.cli import dag_update_cmd
 
@@ -1479,13 +1670,21 @@ class TestDagReadyCmdBranches:
     @patch("thegent.cli._parse_dag_session")
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
-    def test_md_format(self, mock_console, mock_cwd, mock_parse, mock_ready, mock_settings, tmp_path) -> None:
+    def test_md_format(
+        self, mock_console, mock_cwd, mock_parse, mock_ready, mock_settings, tmp_path
+    ) -> None:
         # @trace FR-CLI-440
         dag_file = tmp_path / ".factory" / "dag-session.md"
         dag_file.parent.mkdir(parents=True)
         dag_file.touch()
         mock_cwd.return_value = tmp_path
-        tasks = [{"id": "T1", "agent": "claude", "prompt": "hello world this is a long prompt"}]
+        tasks = [
+            {
+                "id": "T1",
+                "agent": "claude",
+                "prompt": "hello world this is a long prompt",
+            }
+        ]
         mock_parse.return_value = ({}, tasks)
         mock_settings.return_value.output_format = "rich"
 
@@ -1500,7 +1699,9 @@ class TestDagReadyCmdBranches:
     @patch("thegent.cli._parse_dag_session")
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
-    def test_rich_table(self, mock_console, mock_cwd, mock_parse, mock_ready, mock_settings, tmp_path) -> None:
+    def test_rich_table(
+        self, mock_console, mock_cwd, mock_parse, mock_ready, mock_settings, tmp_path
+    ) -> None:
         # @trace FR-CLI-441
         dag_file = tmp_path / ".factory" / "dag-session.md"
         dag_file.parent.mkdir(parents=True)
@@ -1542,7 +1743,15 @@ class TestDagReconcileCmdBranches:
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
     def test_exception_in_session_status(
-        self, mock_console, mock_cwd, mock_settings, mock_parse, mock_status, mock_ser, mock_write, tmp_path
+        self,
+        mock_console,
+        mock_cwd,
+        mock_settings,
+        mock_parse,
+        mock_status,
+        mock_ser,
+        mock_write,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-443
         dag_file = tmp_path / ".factory" / "dag-session.md"
@@ -1581,7 +1790,9 @@ class TestPlanAnalyzeCmdBranches:
     @patch("thegent.cli._parse_dag_full")
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
-    def test_rich_pert_and_continuity(self, mock_console, mock_cwd, mock_parse, mock_settings, tmp_path) -> None:
+    def test_rich_pert_and_continuity(
+        self, mock_console, mock_cwd, mock_parse, mock_settings, tmp_path
+    ) -> None:
         # @trace FR-CLI-445
         dag_file = tmp_path / ".factory" / "dag-session.md"
         dag_file.parent.mkdir(parents=True)
@@ -1604,13 +1815,21 @@ class TestPlanAnalyzeCmdBranches:
         mock_continuity.recommendations = ["rec1"]
         mock_continuity.high_risk_tasks = []
         with (
-            patch("thegent.planning.simulation.pert_forward_pass", return_value={"T1": mock_pert_result}),
+            patch(
+                "thegent.planning.simulation.pert_forward_pass",
+                return_value={"T1": mock_pert_result},
+            ),
             patch("thegent.planning.simulation.simulate_resource_contention"),
-            patch("thegent.planning.simulation.score_continuity_risk", return_value=mock_continuity),
+            patch(
+                "thegent.planning.simulation.score_continuity_risk",
+                return_value=mock_continuity,
+            ),
         ):
             from thegent.cli import plan_analyze_cmd
 
-            plan_analyze_cmd(cd=None, pert=True, resources=False, continuity=True, format=None)
+            plan_analyze_cmd(
+                cd=None, pert=True, resources=False, continuity=True, format=None
+            )
 
 
 # ============================================================================
@@ -1648,7 +1867,9 @@ class TestArchiveCmdBranches:
 
     @patch("thegent.cli.console")
     @patch("thegent.cli.ThegentSettings")
-    def test_hot_tier_with_domain_filter(self, mock_settings, mock_console, tmp_path) -> None:
+    def test_hot_tier_with_domain_filter(
+        self, mock_settings, mock_console, tmp_path
+    ) -> None:
         # @trace FR-CLI-447
         session_dir = tmp_path / "sessions"
         session_dir.mkdir()
@@ -1694,7 +1915,11 @@ class TestOperationsCmdBranches:
         mock_entry.mcp_tool = "run"
         with patch(
             "thegent.operations.list_operations",
-            return_value={"orchestrate": [{"command": "thegent run", "description": "Run", "mcp_tool": "run"}]},
+            return_value={
+                "orchestrate": [
+                    {"command": "thegent run", "description": "Run", "mcp_tool": "run"}
+                ]
+            },
         ):
             from thegent.cli import operations_cmd
 
@@ -1766,8 +1991,12 @@ class TestBenchmarkCmdBranches:
         }
         with (
             patch("thegent.cli.RunRegistry", return_value=mock_registry),
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_tel),
-            patch("thegent.contracts.telemetry.detect_drift", return_value=["drift issue"]),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_tel
+            ),
+            patch(
+                "thegent.contracts.telemetry.detect_drift", return_value=["drift issue"]
+            ),
         ):
             from thegent.cli import benchmark_cmd
 
@@ -1808,7 +2037,9 @@ class TestDagRunCmdBranches:
     @patch("thegent.cli.dag_reconcile_cmd")
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
-    def test_dag_not_found(self, mock_console, mock_cwd, mock_reconcile, tmp_path) -> None:
+    def test_dag_not_found(
+        self, mock_console, mock_cwd, mock_reconcile, tmp_path
+    ) -> None:
         # @trace FR-CLI-454
         mock_cwd.return_value = tmp_path
         from thegent.cli import dag_run_cmd
@@ -1821,14 +2052,24 @@ class TestDagRunCmdBranches:
     @patch("thegent.cli.dag_reconcile_cmd")
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
-    def test_task_not_ready(self, mock_console, mock_cwd, mock_reconcile, mock_parse, mock_ready, tmp_path) -> None:
+    def test_task_not_ready(
+        self, mock_console, mock_cwd, mock_reconcile, mock_parse, mock_ready, tmp_path
+    ) -> None:
         # @trace FR-CLI-455
         dag_file = tmp_path / ".factory" / "dag-session.md"
         dag_file.parent.mkdir(parents=True)
         dag_file.touch()
         mock_cwd.return_value = tmp_path
         mock_parse.return_value = _make_dag_doc(
-            tasks=[{"id": "T1", "agent": "claude", "prompt": "x", "depends_on": "-", "status": "running"}],
+            tasks=[
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "x",
+                    "depends_on": "-",
+                    "status": "running",
+                }
+            ],
         )
         from thegent.cli import dag_run_cmd
 
@@ -1850,9 +2091,27 @@ class TestDagRunCmdBranches:
         mock_cwd.return_value = tmp_path
         mock_parse.return_value = _make_dag_doc(
             tasks=[
-                {"id": "T0", "agent": "claude", "prompt": "x", "depends_on": "-", "status": "running"},
-                {"id": "T1", "agent": "claude", "prompt": "y", "depends_on": "-", "status": "pending"},
-                {"id": "T2", "agent": "claude", "prompt": "z", "depends_on": "-", "status": "pending"},
+                {
+                    "id": "T0",
+                    "agent": "claude",
+                    "prompt": "x",
+                    "depends_on": "-",
+                    "status": "running",
+                },
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "y",
+                    "depends_on": "-",
+                    "status": "pending",
+                },
+                {
+                    "id": "T2",
+                    "agent": "claude",
+                    "prompt": "z",
+                    "depends_on": "-",
+                    "status": "pending",
+                },
             ],
         )
         from thegent.cli import dag_run_cmd
@@ -1896,16 +2155,28 @@ class TestDagRecoverCmdBranches:
     @patch("thegent.cli._parse_dag_full")
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
-    def test_fallback_action(self, mock_console, mock_cwd, mock_parse, mock_ser, mock_write, tmp_path) -> None:
+    def test_fallback_action(
+        self, mock_console, mock_cwd, mock_parse, mock_ser, mock_write, tmp_path
+    ) -> None:
         # @trace FR-CLI-458
         dag_file = tmp_path / ".factory" / "dag-session.md"
         dag_file.parent.mkdir(parents=True)
         dag_file.touch()
         mock_cwd.return_value = tmp_path
         mock_parse.return_value = _make_dag_doc(
-            tasks=[{"id": "T1", "agent": "claude", "prompt": "x", "depends_on": "-", "status": "failed"}],
+            tasks=[
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "x",
+                    "depends_on": "-",
+                    "status": "failed",
+                }
+            ],
         )
-        with patch("thegent.agents.registry.get_fallback_agents", return_value=["gemini"]):
+        with patch(
+            "thegent.agents.registry.get_fallback_agents", return_value=["gemini"]
+        ):
             from thegent.cli import dag_recover_cmd
 
             dag_recover_cmd(cd=None, action="fallback")
@@ -1915,14 +2186,24 @@ class TestDagRecoverCmdBranches:
     @patch("thegent.cli._parse_dag_full")
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
-    def test_fallback_no_fallbacks(self, mock_console, mock_cwd, mock_parse, tmp_path) -> None:
+    def test_fallback_no_fallbacks(
+        self, mock_console, mock_cwd, mock_parse, tmp_path
+    ) -> None:
         # @trace FR-CLI-459
         dag_file = tmp_path / ".factory" / "dag-session.md"
         dag_file.parent.mkdir(parents=True)
         dag_file.touch()
         mock_cwd.return_value = tmp_path
         mock_parse.return_value = _make_dag_doc(
-            tasks=[{"id": "T1", "agent": "claude", "prompt": "x", "depends_on": "-", "status": "failed"}],
+            tasks=[
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "x",
+                    "depends_on": "-",
+                    "status": "failed",
+                }
+            ],
         )
         with patch("thegent.agents.registry.get_fallback_agents", return_value=[]):
             from thegent.cli import dag_recover_cmd
@@ -1944,7 +2225,9 @@ class TestDagProbeCmdBranches:
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
     @patch("thegent.cli._resolve_cwd")
     @patch("thegent.cli.console")
-    def test_baseline_not_found(self, mock_console, mock_cwd, mock_settings, tmp_path) -> None:
+    def test_baseline_not_found(
+        self, mock_console, mock_cwd, mock_settings, tmp_path
+    ) -> None:
         # @trace FR-CLI-460
         dag_file = tmp_path / ".factory" / "dag-session.md"
         dag_file.parent.mkdir(parents=True)
@@ -1978,11 +2261,24 @@ class TestStatusCmdBranches:
     @patch("thegent.cli._find_session_meta")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
     def test_rich_with_contract(
-        self, mock_settings, mock_find, mock_paths, mock_meta, mock_pid, mock_status, mock_fmt, mock_console, tmp_path
+        self,
+        mock_settings,
+        mock_find,
+        mock_paths,
+        mock_meta,
+        mock_pid,
+        mock_status,
+        mock_fmt,
+        mock_console,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-461
         mock_find.return_value = tmp_path / "meta.json"
-        mock_paths.return_value = {"rc": tmp_path / "rc", "stdout": tmp_path / "out", "stderr": tmp_path / "err"}
+        mock_paths.return_value = {
+            "rc": tmp_path / "rc",
+            "stdout": tmp_path / "out",
+            "stderr": tmp_path / "err",
+        }
         mock_meta.return_value = {
             "pid": 1234,
             "owner": "ci",
@@ -2019,13 +2315,25 @@ class TestInspectCmdBranches:
     def test_rich_status_and_logs_error(self, mock_fmt, mock_console) -> None:
         # @trace FR-CLI-462
         with (
-            patch("thegent.cli.commands.impl.status_impl", return_value={"status": "running"}),
-            patch("thegent.cli.commands.impl.logs_impl", side_effect=Exception("no log")),
+            patch(
+                "thegent.cli.commands.impl.status_impl",
+                return_value={"status": "running"},
+            ),
+            patch(
+                "thegent.cli.commands.impl.logs_impl", side_effect=Exception("no log")
+            ),
             patch("thegent.cli.commands.impl.ps_impl"),
         ):
             from thegent.cli import inspect_cmd
 
-            inspect_cmd(session_ids=["s1"], owner=None, tail=50, stderr=False, format="rich", include_contract=False)
+            inspect_cmd(
+                session_ids=["s1"],
+                owner=None,
+                tail=50,
+                stderr=False,
+                format="rich",
+                include_contract=False,
+            )
         printed = " ".join(str(c) for c in mock_console.print.call_args_list)
         assert "running" in printed
         assert "logs error" in printed
@@ -2047,13 +2355,24 @@ class TestLogsCmdBranches:
     @patch("thegent.cli._find_session_meta")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
     def test_follow_timeout_with_dead_process(
-        self, mock_settings, mock_find, mock_paths, mock_meta, mock_pid, mock_console, tmp_path
+        self,
+        mock_settings,
+        mock_find,
+        mock_paths,
+        mock_meta,
+        mock_pid,
+        mock_console,
+        tmp_path,
     ) -> None:
         # @trace FR-CLI-463
         log_file = tmp_path / "stdout.log"
         log_file.write_text("line1\nline2\n")
         mock_find.return_value = tmp_path / "meta.json"
-        mock_paths.return_value = {"rc": tmp_path / "rc", "stdout": log_file, "stderr": tmp_path / "err"}
+        mock_paths.return_value = {
+            "rc": tmp_path / "rc",
+            "stdout": log_file,
+            "stderr": tmp_path / "err",
+        }
 
         # end_time = time.time() + timeout => 0 + 1 = 1
         # In the while loop: time.time() >= end_time => 100 >= 1 => True
@@ -2065,7 +2384,9 @@ class TestLogsCmdBranches:
                 from thegent.cli import logs_cmd
 
                 with pytest.raises(_EXIT):
-                    logs_cmd(session_id="s1", follow=True, stderr=False, tail=200, timeout=1)
+                    logs_cmd(
+                        session_id="s1", follow=True, stderr=False, tail=200, timeout=1
+                    )
 
     @patch("thegent.cli.console")
     @patch("thegent.cli._read_session_meta", return_value={"pid": 1234})
@@ -2079,7 +2400,11 @@ class TestLogsCmdBranches:
         log_file = tmp_path / "stdout.log"
         log_file.write_text("line1\n")
         mock_find.return_value = tmp_path / "meta.json"
-        mock_paths.return_value = {"rc": tmp_path / "rc", "stdout": log_file, "stderr": tmp_path / "err"}
+        mock_paths.return_value = {
+            "rc": tmp_path / "rc",
+            "stdout": log_file,
+            "stderr": tmp_path / "err",
+        }
 
         call_count = [0]
 
@@ -2112,11 +2437,17 @@ class TestWaitCmdBranches:
     @patch("thegent.cli._session_paths")
     @patch("thegent.cli._find_session_meta")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_wait_timeout(self, mock_settings, mock_find, mock_paths, mock_meta, mock_console, tmp_path) -> None:
+    def test_wait_timeout(
+        self, mock_settings, mock_find, mock_paths, mock_meta, mock_console, tmp_path
+    ) -> None:
         # @trace FR-CLI-465
         mock_find.return_value = tmp_path / "meta.json"
         rc_file = tmp_path / "rc"
-        mock_paths.return_value = {"rc": rc_file, "stdout": tmp_path / "out", "stderr": tmp_path / "err"}
+        mock_paths.return_value = {
+            "rc": rc_file,
+            "stdout": tmp_path / "out",
+            "stderr": tmp_path / "err",
+        }
 
         import time as real_time
 
@@ -2153,7 +2484,9 @@ class TestResumeCmdBranches:
     @patch("thegent.cli._find_session_meta")
     @patch("thegent.cli._read_session_meta")
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
-    def test_run_id_from_correlation(self, mock_settings, mock_meta, mock_find, mock_console) -> None:
+    def test_run_id_from_correlation(
+        self, mock_settings, mock_meta, mock_find, mock_console
+    ) -> None:
         # @trace FR-GOV-017
         mock_find.return_value = Path("/tmp/meta.json")
         mock_meta.return_value = {"run_id": None}
@@ -2206,7 +2539,9 @@ class TestListModelsCmdBranches:
         ):
             from thegent.cli import list_models_cmd
 
-            list_models_cmd(provider=None, refresh=False, include_contract=False, by_model=False)
+            list_models_cmd(
+                provider=None, refresh=False, include_contract=False, by_model=False
+            )
         for m in [m1, m2, m3, m4, m5, m6, m7, m8, m9]:
             m.assert_called_once()
 
@@ -2220,7 +2555,9 @@ class TestListModelsCmdBranches:
             mock_catalog.to_contract_view.return_value = {"models": []}
             from thegent.cli import list_models_cmd
 
-            list_models_cmd(provider=None, refresh=True, include_contract=True, by_model=False)
+            list_models_cmd(
+                provider=None, refresh=True, include_contract=True, by_model=False
+            )
         mock_scrape.assert_called_once_with(refresh=True)
 
 
@@ -2243,15 +2580,21 @@ class TestResolveModelRouteCmdBranches:
         mock_route.priority = 1
         mock_route.schema_version = "3.0"
         with (
-            patch("thegent.models.normalize_route_policy", return_value="prefer_direct"),
-            patch("thegent.models.normalize_model_id", return_value="claude-sonnet-4-5"),
+            patch(
+                "thegent.models.normalize_route_policy", return_value="prefer_direct"
+            ),
+            patch(
+                "thegent.models.normalize_model_id", return_value="claude-sonnet-4-5"
+            ),
             patch("thegent.models.resolve_route_contract", return_value=mock_route),
             patch("thegent.models.ModelCatalog") as mock_catalog,
         ):
             mock_catalog.routes_for.return_value = [mock_route]
             from thegent.cli import resolve_model_route_cmd
 
-            resolve_model_route_cmd(model="claude-sonnet-4-5", provider="claude", policy="prefer_direct")
+            resolve_model_route_cmd(
+                model="claude-sonnet-4-5", provider="claude", policy="prefer_direct"
+            )
 
     @patch("thegent.cli.console")
     def test_no_route_with_available(self, mock_console) -> None:
@@ -2262,7 +2605,9 @@ class TestResolveModelRouteCmdBranches:
         mock_route.model_alias = "flash"
         mock_route.priority = 2
         with (
-            patch("thegent.models.normalize_route_policy", return_value="prefer_direct"),
+            patch(
+                "thegent.models.normalize_route_policy", return_value="prefer_direct"
+            ),
             patch("thegent.models.normalize_model_id", return_value="gemini-3-flash"),
             patch("thegent.models.resolve_route_contract", return_value=None),
             patch("thegent.models.ModelCatalog") as mock_catalog,
@@ -2271,16 +2616,22 @@ class TestResolveModelRouteCmdBranches:
             from thegent.cli import resolve_model_route_cmd
 
             with pytest.raises(_EXIT):
-                resolve_model_route_cmd(model="gemini-3-flash", provider="claude", policy="prefer_direct")
+                resolve_model_route_cmd(
+                    model="gemini-3-flash", provider="claude", policy="prefer_direct"
+                )
 
     @patch("thegent.cli.console")
     def test_invalid_policy(self, mock_console) -> None:
         # @trace FR-CLI-471
-        with patch("thegent.models.normalize_route_policy", side_effect=ValueError("bad")):
+        with patch(
+            "thegent.models.normalize_route_policy", side_effect=ValueError("bad")
+        ):
             from thegent.cli import resolve_model_route_cmd
 
             with pytest.raises(_EXIT):
-                resolve_model_route_cmd(model="test", provider=None, policy="bad_policy")
+                resolve_model_route_cmd(
+                    model="test", provider=None, policy="bad_policy"
+                )
 
 
 # ============================================================================
@@ -2338,7 +2689,10 @@ class TestListCursorApiModelsBranches:
     @patch("thegent.cli.ThegentSettings", return_value=_mock_settings())
     def test_models_found(self, mock_settings, mock_console) -> None:
         # @trace FR-CLI-474
-        with patch("thegent.models.scrapers.scrape_cursor_api", return_value=["model-a", "model-b"]):
+        with patch(
+            "thegent.models.scrapers.scrape_cursor_api",
+            return_value=["model-a", "model-b"],
+        ):
             from thegent.cli import _list_cursor_api_models
 
             _list_cursor_api_models()
@@ -2371,7 +2725,9 @@ class TestListCopilotModelsBranches:
         # @trace FR-CLI-476
         mock_proc = MagicMock()
         mock_proc.returncode = 0
-        mock_proc.stdout = '--model choices: "claude-haiku-4.5" "gpt-4" "gemini-3-flash"'
+        mock_proc.stdout = (
+            '--model choices: "claude-haiku-4.5" "gpt-4" "gemini-3-flash"'
+        )
         with patch("thegent.cli.subprocess.run", return_value=mock_proc):
             from thegent.cli import _list_copilot_models
 

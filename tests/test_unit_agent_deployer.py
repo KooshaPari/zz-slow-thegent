@@ -1,4 +1,3 @@
-
 """Unit tests for AgentDeployer with LifecycleController integration."""
 
 from unittest.mock import MagicMock, patch
@@ -113,7 +112,9 @@ def test_deployment_result_model():
 
 
 @patch("thegent.governance.agent_deployer.LifecycleController")
-def test_execute_task_uses_lifecycle_controller(mock_lifecycle_cls, mock_cost_controller):
+def test_execute_task_uses_lifecycle_controller(
+    mock_lifecycle_cls, mock_cost_controller
+):
     """Test that _execute_task uses LifecycleController."""
     # Setup mock
     mock_controller = MagicMock()

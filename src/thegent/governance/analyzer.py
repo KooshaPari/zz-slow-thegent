@@ -75,9 +75,13 @@ class HealthAnalyzer:
             with open(health_targets_path) as fh:
                 data = json.load(fh)
         except FileNotFoundError as exc:
-            raise FileNotFoundError(f"Health targets file not found: {health_targets_path}") from exc
+            raise FileNotFoundError(
+                f"Health targets file not found: {health_targets_path}"
+            ) from exc
         except json.JSONDecodeError as exc:
-            raise ValueError(f"Health targets file is not valid JSON: {health_targets_path}") from exc
+            raise ValueError(
+                f"Health targets file is not valid JSON: {health_targets_path}"
+            ) from exc
         self._targets: dict[str, dict] = data["dimensions"]
         _log.debug(
             "analyzer loaded %d dimension configs from %s",

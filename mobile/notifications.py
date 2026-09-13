@@ -13,13 +13,19 @@ class NotificationBridge:
     def __init__(self, fcm_api_key: str, project_id: str) -> None:
         self.fcm_api_key = fcm_api_key
         self.project_id = project_id
-        self.fcm_url = f"https://fcm.googleapis.com/v1/projects/{project_id}/messages:send"
+        self.fcm_url = (
+            f"https://fcm.googleapis.com/v1/projects/{project_id}/messages:send"
+        )
 
-    async def send_push(self, device_token: str, title: str, body: str, data: dict[str, str] | None = None) -> bool:
+    async def send_push(
+        self,
+        device_token: str,
+        title: str,
+        body: str,
+        data: dict[str, str] | None = None,
+    ) -> bool:
         """Send a push notification to a specific device."""
         _log.info("Sending push notification to device: %s", device_token[:10] + "...")
-
-
 
         try:
             # Simulated HTTP call
@@ -34,7 +40,9 @@ class NotificationBridge:
             _log.error("Failed to send push notification: %s", e)
             return False
 
-    async def alert_policy_violation(self, device_token: str, run_id: str, rule_id: str) -> bool:
+    async def alert_policy_violation(
+        self, device_token: str, run_id: str, rule_id: str
+    ) -> bool:
         """Specific alert for a policy violation."""
         title = "⚠️ Policy Violation Detected"
         body = f"Run {run_id} violated rule {rule_id}. Approval required."

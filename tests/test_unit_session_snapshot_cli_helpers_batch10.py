@@ -52,7 +52,9 @@ def test_daily_index_payload_exposes_applied_filters_alias(tmp_path: Path) -> No
         captured_at="2026-02-20T00:00:00+00:00",
     )
 
-    payload = snapshot_daily_index_payload(scraper, trigger="tool_use", tag="x", since="2026-02-20T00:00:00Z")
+    payload = snapshot_daily_index_payload(
+        scraper, trigger="tool_use", tag="x", since="2026-02-20T00:00:00Z"
+    )
 
     assert payload["applied_filters"] == payload["summary"]["filters"]
 
@@ -89,7 +91,9 @@ def test_daily_totals_payload_exposes_applied_filters_alias(tmp_path: Path) -> N
     assert totals["applied_filters"] == totals["filters"]
 
 
-def test_daily_export_payload_includes_applied_filters_when_filtered(tmp_path: Path) -> None:
+def test_daily_export_payload_includes_applied_filters_when_filtered(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     _write_snapshot(
         scraper,
@@ -100,12 +104,16 @@ def test_daily_export_payload_includes_applied_filters_when_filtered(tmp_path: P
         captured_at="2026-02-23T00:00:00+00:00",
     )
 
-    exported = snapshot_daily_export_payload(scraper, out_path=str(tmp_path / "daily"), trigger="tool_use")
+    exported = snapshot_daily_export_payload(
+        scraper, out_path=str(tmp_path / "daily"), trigger="tool_use"
+    )
 
     assert exported["applied_filters"]["trigger"] == "tool_use"
 
 
-def test_daily_export_payload_omits_applied_filters_without_filter_args(tmp_path: Path) -> None:
+def test_daily_export_payload_omits_applied_filters_without_filter_args(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     _write_snapshot(
         scraper,

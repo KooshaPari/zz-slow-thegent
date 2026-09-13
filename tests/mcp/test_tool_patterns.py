@@ -24,7 +24,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-fastmcp = pytest.importorskip("fastmcp", reason="fastmcp required for tool pattern tests")
+fastmcp = pytest.importorskip(
+    "fastmcp", reason="fastmcp required for tool pattern tests"
+)
 
 
 # ---------------------------------------------------------------------------
@@ -649,7 +651,9 @@ class TestRegisterToolPatternTools:
 
         ctx = _make_ctx()
 
-        result = await tool_fns["thegent_bulk_operation"](items=["a", "b", "c"], ctx=ctx)
+        result = await tool_fns["thegent_bulk_operation"](
+            items=["a", "b", "c"], ctx=ctx
+        )
         content = result.content if hasattr(result, "content") else str(result)
         if isinstance(content, list):
             text = content[0].text if hasattr(content[0], "text") else str(content[0])

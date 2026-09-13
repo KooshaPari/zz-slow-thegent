@@ -62,7 +62,9 @@ def check_semantic_guard(
         _log.debug("check_semantic_guard: no reference prompts — returning not blocked")
         return SemanticGuardResult(blocked=False, similarity=0.0, matched_reference="")
 
-    active_provider: EmbeddingProvider = provider if provider is not None else NumpyEmbeddingProvider()
+    active_provider: EmbeddingProvider = (
+        provider if provider is not None else NumpyEmbeddingProvider()
+    )
 
     text_embedding = active_provider.embed(text)
 

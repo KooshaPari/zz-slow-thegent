@@ -49,7 +49,9 @@ class TestGetPlaybookForFailure:
 
     def test_state_corruption_playbook(self) -> None:
         """Verify correct playbook for STATE_CORRUPTION."""
-        result = get_playbook_for_failure("State corruption detected: checksum mismatch")
+        result = get_playbook_for_failure(
+            "State corruption detected: checksum mismatch"
+        )
 
         assert result == ["rollback_checkpoint", "escalate"]
 

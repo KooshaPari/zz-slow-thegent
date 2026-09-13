@@ -1,4 +1,5 @@
 """Stub module."""
+
 from typing import Any
 
 
@@ -10,7 +11,12 @@ class InvalidTurnIndexError(Exception):
         self.index = index
 
 
-__all__ = ["InvalidTurnIndexError", "RollbackOutOfRangeError", "SessionAlreadyExistsError", "SessionManager"]
+__all__ = [
+    "InvalidTurnIndexError",
+    "RollbackOutOfRangeError",
+    "SessionAlreadyExistsError",
+    "SessionManager",
+]
 
 
 class SessionManager:

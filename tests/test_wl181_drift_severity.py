@@ -44,7 +44,9 @@ def test_classify_drift_low_age():
 @pytest.mark.requirement("WL-181")
 def test_classify_drift_medium_age():
     """Test that drift with medium age is classified as MEDIUM."""
-    thresholds = DriftEscalationThresholds(medium_age_hours=6, high_age_hours=24, critical_age_hours=72)
+    thresholds = DriftEscalationThresholds(
+        medium_age_hours=6, high_age_hours=24, critical_age_hours=72
+    )
     severity = classify_drift("open", "closed", age_hours=12, thresholds=thresholds)
     assert severity == DriftSeverity.MEDIUM
 
@@ -52,7 +54,9 @@ def test_classify_drift_medium_age():
 @pytest.mark.requirement("WL-181")
 def test_classify_drift_high_age():
     """Test that drift with high age is classified as HIGH."""
-    thresholds = DriftEscalationThresholds(medium_age_hours=6, high_age_hours=24, critical_age_hours=72)
+    thresholds = DriftEscalationThresholds(
+        medium_age_hours=6, high_age_hours=24, critical_age_hours=72
+    )
     severity = classify_drift("open", "closed", age_hours=48, thresholds=thresholds)
     assert severity == DriftSeverity.HIGH
 
@@ -60,7 +64,9 @@ def test_classify_drift_high_age():
 @pytest.mark.requirement("WL-181")
 def test_classify_drift_critical_age():
     """Test that drift with critical age is classified as CRITICAL."""
-    thresholds = DriftEscalationThresholds(medium_age_hours=6, high_age_hours=24, critical_age_hours=72)
+    thresholds = DriftEscalationThresholds(
+        medium_age_hours=6, high_age_hours=24, critical_age_hours=72
+    )
     severity = classify_drift("open", "closed", age_hours=100, thresholds=thresholds)
     assert severity == DriftSeverity.CRITICAL
 
@@ -86,11 +92,15 @@ def test_classify_drift_negative_age_raises_error():
 def test_drift_escalation_thresholds_validate():
     """Test threshold validation."""
     # Valid thresholds
-    thresholds = DriftEscalationThresholds(medium_age_hours=6, high_age_hours=24, critical_age_hours=72)
+    thresholds = DriftEscalationThresholds(
+        medium_age_hours=6, high_age_hours=24, critical_age_hours=72
+    )
     assert thresholds.validate() is True
 
     # Invalid: out of order
-    invalid = DriftEscalationThresholds(medium_age_hours=24, high_age_hours=6, critical_age_hours=72)
+    invalid = DriftEscalationThresholds(
+        medium_age_hours=24, high_age_hours=6, critical_age_hours=72
+    )
     with pytest.raises(ValueError, match="ascending order"):
         invalid.validate()
 
@@ -107,12 +117,32 @@ def test_get_default_thresholds():
 @pytest.mark.requirement("WL-181")
 def test_classify_drift_boundary_values():
     """Test classification at exact threshold boundaries."""
-    thresholds = DriftEscalationThresholds(medium_age_hours=6, high_age_hours=24, critical_age_hours=72)
+    thresholds = DriftEscalationThresholds(
+        medium_age_hours=6, high_age_hours=24, critical_age_hours=72
+    )
 
     # At boundary: age > threshold triggers next level
-    assert classify_drift("a", "b", age_hours=6, thresholds=thresholds) == DriftSeverity.LOW
-    assert classify_drift("a", "b", age_hours=6.01, thresholds=thresholds) == DriftSeverity.MEDIUM
-    assert classify_drift("a", "b", age_hours=24, thresholds=thresholds) == DriftSeverity.MEDIUM
-    assert classify_drift("a", "b", age_hours=24.01, thresholds=thresholds) == DriftSeverity.HIGH
-    assert classify_drift("a", "b", age_hours=72, thresholds=thresholds) == DriftSeverity.HIGH
-    assert classify_drift("a", "b", age_hours=72.01, thresholds=thresholds) == DriftSeverity.CRITICAL
+    assert (
+        classify_drift("a", "b", age_hours=6, thresholds=thresholds)
+        == DriftSeverity.LOW
+    )
+    assert (
+        classify_drift("a", "b", age_hours=6.01, thresholds=thresholds)
+        == DriftSeverity.MEDIUM
+    )
+    assert (
+        classify_drift("a", "b", age_hours=24, thresholds=thresholds)
+        == DriftSeverity.MEDIUM
+    )
+    assert (
+        classify_drift("a", "b", age_hours=24.01, thresholds=thresholds)
+        == DriftSeverity.HIGH
+    )
+    assert (
+        classify_drift("a", "b", age_hours=72, thresholds=thresholds)
+        == DriftSeverity.HIGH
+    )
+    assert (
+        classify_drift("a", "b", age_hours=72.01, thresholds=thresholds)
+        == DriftSeverity.CRITICAL
+    )

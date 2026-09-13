@@ -85,7 +85,9 @@ class KPIDashboard:
             "timestamp": now.isoformat(),
         }
 
-    def record_metric(self, name: str, value: float, timestamp: datetime | None = None) -> None:
+    def record_metric(
+        self, name: str, value: float, timestamp: datetime | None = None
+    ) -> None:
         """Record a metric value.
 
         Args:

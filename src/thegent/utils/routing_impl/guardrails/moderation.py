@@ -85,7 +85,9 @@ def _get_compiled_defaults() -> list[tuple[ModerationCategory, re.Pattern[str]]]
     """Return compiled (category, regex) pairs for DEFAULT_CATEGORIES (cached)."""
     global _compiled_defaults  # noqa: PLW0603
     if _compiled_defaults is None:
-        _compiled_defaults = [(cat, re.compile(cat.pattern, re.IGNORECASE)) for cat in DEFAULT_CATEGORIES]
+        _compiled_defaults = [
+            (cat, re.compile(cat.pattern, re.IGNORECASE)) for cat in DEFAULT_CATEGORIES
+        ]
     return _compiled_defaults
 
 
@@ -94,12 +96,16 @@ def _get_compiled_defaults() -> list[tuple[ModerationCategory, re.Pattern[str]]]
 # ---------------------------------------------------------------------------
 
 
-def check_moderation(text: str, config: ModerationConfig | None = None) -> ModerationResult:
+def check_moderation(
+    text: str, config: ModerationConfig | None = None
+) -> ModerationResult:
     """Check text against moderation rules. Uses DEFAULT_CATEGORIES if config is None."""
     cfg = config or ModerationConfig()
 
     if not cfg.enabled:
-        return ModerationResult(flagged=False, categories=[], severity="none", score=0.0)
+        return ModerationResult(
+            flagged=False, categories=[], severity="none", score=0.0
+        )
 
     # Determine which categories to use
     if cfg.categories is not None:
@@ -115,7 +121,9 @@ def check_moderation(text: str, config: ModerationConfig | None = None) -> Moder
     for cat, regex in compiled:
         if regex.search(text):
             matched_names.append(cat.name)
-            if _SEVERITY_RANK.get(cat.severity, 0) > _SEVERITY_RANK.get(highest_severity, 0):
+            if _SEVERITY_RANK.get(cat.severity, 0) > _SEVERITY_RANK.get(
+                highest_severity, 0
+            ):
                 highest_severity = cat.severity
 
     # Check custom blocklist — any match adds a "custom_blocklist" category at high severity
@@ -125,7 +133,9 @@ def check_moderation(text: str, config: ModerationConfig | None = None) -> Moder
             if re.search(escaped, text, re.IGNORECASE):
                 if "custom_blocklist" not in matched_names:
                     matched_names.append("custom_blocklist")
-                if _SEVERITY_RANK.get("high", 0) > _SEVERITY_RANK.get(highest_severity, 0):
+                if _SEVERITY_RANK.get("high", 0) > _SEVERITY_RANK.get(
+                    highest_severity, 0
+                ):
                     highest_severity = "high"
 
     total = len(compiled) + (len(cfg.custom_blocklist) if cfg.custom_blocklist else 0)
@@ -149,7 +159,9 @@ def check_moderation(text: str, config: ModerationConfig | None = None) -> Moder
     )
 
 
-def should_block(result: ModerationResult, config: ModerationConfig | None = None) -> bool:
+def should_block(
+    result: ModerationResult, config: ModerationConfig | None = None
+) -> bool:
     """Return True if the moderation result warrants blocking the request."""
     cfg = config or ModerationConfig()
     if not result.flagged:

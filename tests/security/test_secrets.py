@@ -125,7 +125,9 @@ AKIAIOSFODNN7EXAMPLE
         """Line numbers are correctly reported."""
         from thegent.security.secrets import scan_secrets
 
-        content = "line one\nline two\nline three with sk-key1234567890abcdefghijk\nline five"
+        content = (
+            "line one\nline two\nline three with sk-key1234567890abcdefghijk\nline five"
+        )
         result = scan_secrets(content)
         assert len(result) == 1
         assert result[0]["line"] == 3
@@ -134,7 +136,9 @@ AKIAIOSFODNN7EXAMPLE
         """Context around match is provided."""
         from thegent.security.secrets import scan_secrets
 
-        content = "some code\nAPI_KEY='sk-abcdefghij1234567890abcdefghijklmnop'\nmore code"
+        content = (
+            "some code\nAPI_KEY='sk-abcdefghij1234567890abcdefghijklmnop'\nmore code"
+        )
         result = scan_secrets(content)
         assert len(result) == 1
         assert "context" in result[0]

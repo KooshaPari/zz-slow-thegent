@@ -81,7 +81,13 @@ class TestInitImplContract:
         assert (tmp_path / "docs" / "thegent-onboarding.md").is_file()
 
         # Step labels match the canonical 5-step ladder.
-        assert payload["steps"] == ["preflight", "probe", "scaffold", "contract", "summary"]
+        assert payload["steps"] == [
+            "preflight",
+            "probe",
+            "scaffold",
+            "contract",
+            "summary",
+        ]
 
     def test_minimal_profile_skips_work_stream_and_doc(self, tmp_path: Path) -> None:
         payload = init_impl(target_dir=tmp_path, profile=InitProfile.MINIMAL)
@@ -110,7 +116,10 @@ class TestInitImplContract:
         # caller can diff against a real run.
         assert payload["check"] is True
         assert isinstance(payload["rewrote"], list)
-        assert any(str(tmp_path / ".thegent") in p or ".thegent" in p for p in payload["rewrote"])
+        assert any(
+            str(tmp_path / ".thegent") in p or ".thegent" in p
+            for p in payload["rewrote"]
+        )
 
     def test_force_overwrites_existing_thegent_tree(self, tmp_path: Path) -> None:
         # Pre-create a thegent-shaped marker so the default run would skip.
@@ -131,7 +140,9 @@ class TestInitImplContract:
         assert second["rewrote"] == []
         assert second["skipped"], "skipped list should contain prior writes"
         # Tree unchanged.
-        assert sorted(p for p in (tmp_path / ".thegent").iterdir()) == rewrote_after_first
+        assert (
+            sorted(p for p in (tmp_path / ".thegent").iterdir()) == rewrote_after_first
+        )
 
     def test_contract_version_default_is_pinned(self, tmp_path: Path) -> None:
         payload = init_impl(target_dir=tmp_path)
@@ -139,7 +150,9 @@ class TestInitImplContract:
         assert payload["contract_ok"] is True
         assert payload["contract_warning"] is None
 
-    def test_invalid_contract_version_emits_warning(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_invalid_contract_version_emits_warning(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.setenv("THGENT_CONTRACT_VERSION", "not-a-version")
         payload = init_impl(target_dir=tmp_path)
         assert payload["contract_ok"] is False
@@ -159,7 +172,9 @@ class TestInitImplContract:
         decoded = json.loads(payload["json"])
         # The dataclass fields must all show up in the JSON payload.
         for field_name in InitSummary.__dataclass_fields__:
-            assert field_name in decoded, f"InitSummary field {field_name} not in JSON payload"
+            assert field_name in decoded, (
+                f"InitSummary field {field_name} not in JSON payload"
+            )
         assert decoded["profile"] == payload["profile"]
         assert decoded["target_dir"] == payload["target_dir"]
         assert decoded["steps"] == payload["steps"]
@@ -280,7 +295,9 @@ class TestInitAppSurface:
         joined = (result.stdout or "") + (result.stderr or "")
         # Some installs may not expose __main__; fall back to importable check.
         if result.returncode == 0:
-            assert "init" in joined.lower(), f"`init` missing from launcher output:\n{joined}"
+            assert "init" in joined.lower(), (
+                f"`init` missing from launcher output:\n{joined}"
+            )
         else:
             # Fallback: the root CLI imports cleanly with init mounted.
             from thegent.cli.apps.main import (
@@ -299,7 +316,9 @@ class TestInitAppSurface:
                     "from thegent.cli.apps.init_app import init_app; "
                     "from typer.testing import CliRunner; "
                     "from pathlib import Path as _P; "
-                    "r = CliRunner().invoke(init_app, ['check', '--target', _P('" + str(tmp_path) + "'), '--json']); "
+                    "r = CliRunner().invoke(init_app, ['check', '--target', _P('"
+                    + str(tmp_path)
+                    + "'), '--json']); "
                     "print(r.output); "
                     "import sys; sys.exit(r.exit_code)"
                 ),
@@ -312,7 +331,9 @@ class TestInitAppSurface:
         )
         # Either the runner succeeded OR the env did not have typer.testing
         # — in either case the on-disk layout must be untouched.
-        assert not (tmp_path / ".thegent").exists(), f"check mode wrote files:\n{tmp_path}"
+        assert not (tmp_path / ".thegent").exists(), (
+            f"check mode wrote files:\n{tmp_path}"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -330,7 +351,9 @@ class TestBanner:
         assert "contract version" in banner
         assert "Next steps" in banner
 
-    def test_banner_for_minimal_profile_omits_optional_files(self, tmp_path: Path) -> None:
+    def test_banner_for_minimal_profile_omits_optional_files(
+        self, tmp_path: Path
+    ) -> None:
         payload = init_impl(target_dir=tmp_path, profile=InitProfile.MINIMAL)
         banner = payload["banner"]
         assert "WORK_STREAM.md" not in banner

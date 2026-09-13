@@ -38,7 +38,9 @@ INVARIANTS_SCRIPT = REPO_ROOT / "scripts" / "check_makefile_invariants.sh"
 
 def _phony_targets(makefile_text: str) -> list[str]:
     """Return the .PHONY target list, ignoring backslash continuations."""
-    m = re.search(r"^\.PHONY:\s*(.+?)(?=^\S|\Z)", makefile_text, re.DOTALL | re.MULTILINE)
+    m = re.search(
+        r"^\.PHONY:\s*(.+?)(?=^\S|\Z)", makefile_text, re.DOTALL | re.MULTILINE
+    )
     assert m is not None, ".PHONY declaration missing"
     clean = re.sub(r"\\\s*\n\s*", " ", m.group(1))
     return [t for t in clean.split() if re.match(r"^[A-Za-z0-9_-]+$", t)]
@@ -59,19 +61,28 @@ class TestMakefileStructure:
 
     def test_invariants_script_exists_and_executable(self) -> None:
         assert INVARIANTS_SCRIPT.is_file()
-        assert INVARIANTS_SCRIPT.stat().st_mode & 0o111, "invariants script not executable"
+        assert INVARIANTS_SCRIPT.stat().st_mode & 0o111, (
+            "invariants script not executable"
+        )
 
     def test_every_phony_target_has_body_rule(self) -> None:
         text = MAKEFILE.read_text(encoding="utf-8")
         targets = _phony_targets(text)
-        missing = [t for t in targets if not re.search(rf"^{re.escape(t)}:", text, re.MULTILINE)]
+        missing = [
+            t
+            for t in targets
+            if not re.search(rf"^{re.escape(t)}:", text, re.MULTILINE)
+        ]
         assert not missing, f"targets missing body rules: {missing}"
 
     def test_every_public_target_is_documented(self) -> None:
         text = MAKEFILE.read_text(encoding="utf-8")
         targets = _phony_targets(text)
         undocumented = [
-            t for t in targets if not t.startswith("_") and not re.search(rf"^{re.escape(t)}:.*##", text, re.MULTILINE)
+            t
+            for t in targets
+            if not t.startswith("_")
+            and not re.search(rf"^{re.escape(t)}:.*##", text, re.MULTILINE)
         ]
         assert not undocumented, f"undocumented targets: {undocumented}"
 
@@ -84,7 +95,9 @@ class TestMakefileStructure:
 class TestOnboardingSurface:
     def test_onboard_target_present(self) -> None:
         text = MAKEFILE.read_text(encoding="utf-8")
-        assert re.search(r"^onboard:.*##", text, re.MULTILINE), "onboard target missing or undocumented"
+        assert re.search(r"^onboard:.*##", text, re.MULTILINE), (
+            "onboard target missing or undocumented"
+        )
 
     def test_onboard_depends_on_install_doctor_version(self) -> None:
         """The aggregate onboarding target wires the canonical L30 surface."""
@@ -94,7 +107,9 @@ class TestOnboardingSurface:
         assert m is not None, "onboard target not found"
         deps = m.group(1).split()
         for required in ("install", "doctor", "version"):
-            assert required in deps, f"onboard missing required dep '{required}' (deps={deps})"
+            assert required in deps, (
+                f"onboard missing required dep '{required}' (deps={deps})"
+            )
 
     @pytest.mark.skipif(shutil.which("make") is None, reason="make not installed")
     def test_make_help_lists_onboard_target(self) -> None:
@@ -141,7 +156,9 @@ class TestInvariantsSelfTest:
             timeout=30,
             check=False,
         )
-        assert result.returncode == 0, f"invariants script failed:\nstdout={result.stdout}\nstderr={result.stderr}"
+        assert result.returncode == 0, (
+            f"invariants script failed:\nstdout={result.stdout}\nstderr={result.stderr}"
+        )
         assert "PASS" in result.stdout, f"unexpected script output:\n{result.stdout}"
 
     def test_invariants_script_flags_missing_docstring(self, tmp_path: Path) -> None:
@@ -168,7 +185,10 @@ class TestInvariantsSelfTest:
             check=False,
         )
         assert result.returncode != 0, "script accepted an undocumented target"
-        assert "undocumented" in result.stderr.lower() or "undocumented" in result.stdout.lower()
+        assert (
+            "undocumented" in result.stderr.lower()
+            or "undocumented" in result.stdout.lower()
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -194,4 +214,6 @@ class TestDevLoopTargets:
 
     def test_validate_makefile_target_present(self) -> None:
         text = MAKEFILE.read_text(encoding="utf-8")
-        assert re.search(r"^validate-makefile:.*##", text, re.MULTILINE), "validate-makefile target missing"
+        assert re.search(r"^validate-makefile:.*##", text, re.MULTILINE), (
+            "validate-makefile target missing"
+        )

@@ -87,9 +87,7 @@ _XML_PAYLOAD = (
     "</ACTIONS_COMPLETED>\n"
 )
 
-_XML_COMPLETED_PAYLOAD = (
-    "<STATUS>completed</STATUS>\n<TASK_ID>task-002</TASK_ID>\n<SUMMARY>Done</SUMMARY>\n<PROGRESS>100%</PROGRESS>\n"
-)
+_XML_COMPLETED_PAYLOAD = "<STATUS>completed</STATUS>\n<TASK_ID>task-002</TASK_ID>\n<SUMMARY>Done</SUMMARY>\n<PROGRESS>100%</PROGRESS>\n"
 
 _XML_FAILED_PAYLOAD = "<STATUS>failed</STATUS>\n<TASK_ID>task-003</TASK_ID>\n<SUMMARY>Tests failed</SUMMARY>\n"
 
@@ -223,7 +221,12 @@ def _evaluate(test: ConformanceTest) -> dict[str, Any]:
     from thegent.contracts.adapters import normalize_output
 
     raw = test.raw_output
-    if isinstance(raw, str) and raw.startswith("<") and "<STATUS>" not in raw and "<task_status>" not in raw:
+    if (
+        isinstance(raw, str)
+        and raw.startswith("<")
+        and "<STATUS>" not in raw
+        and "<task_status>" not in raw
+    ):
         sniff = extract_tags(raw)
         if not sniff:
             # Don't even invoke the adapter for the no-tag malformed
@@ -256,9 +259,13 @@ def _evaluate(test: ConformanceTest) -> dict[str, Any]:
     issues: list[str] = []
     actual_status = getattr(result.csm, "status", None)
     if actual_status != test.expected_status:
-        issues.append(f"Status mismatch: expected {test.expected_status}, got {actual_status}")
+        issues.append(
+            f"Status mismatch: expected {test.expected_status}, got {actual_status}"
+        )
     if float(result.confidence) < float(test.min_confidence):
-        issues.append(f"Confidence {result.confidence:.2f} below threshold {test.min_confidence:.2f}")
+        issues.append(
+            f"Confidence {result.confidence:.2f} below threshold {test.min_confidence:.2f}"
+        )
     if test.check_summary and not getattr(result.csm, "summary", ""):
         issues.append("Empty summary")
 
@@ -333,7 +340,9 @@ def run_conformance_suite(
                 f"Drift budget exceeded: structural {structural_rate:.1f}% > {structural_budget_pct:.1f}%"
             )
         if semantic_rate > float(semantic_budget_pct):
-            drift_issues.append(f"Drift budget exceeded: semantic {semantic_rate:.1f}% > {semantic_budget_pct:.1f}%")
+            drift_issues.append(
+                f"Drift budget exceeded: semantic {semantic_rate:.1f}% > {semantic_budget_pct:.1f}%"
+            )
 
     report["drift_checked"] = True
     report["drift_issues"] = drift_issues

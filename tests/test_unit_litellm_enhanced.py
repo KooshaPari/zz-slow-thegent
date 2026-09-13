@@ -70,8 +70,20 @@ class TestCostTracker:
 
         tracker = CostTracker(log_path=tmp_path / "costs.jsonl", daily_budget=1.0)
 
-        tracker.track("openai", "gpt-4o", {"prompt_tokens": 100, "completion_tokens": 50}, 0.005, 500.0)
-        tracker.track("anthropic", "claude-sonnet-4.5", {"prompt_tokens": 200, "completion_tokens": 100}, 0.010, 600.0)
+        tracker.track(
+            "openai",
+            "gpt-4o",
+            {"prompt_tokens": 100, "completion_tokens": 50},
+            0.005,
+            500.0,
+        )
+        tracker.track(
+            "anthropic",
+            "claude-sonnet-4.5",
+            {"prompt_tokens": 200, "completion_tokens": 100},
+            0.010,
+            600.0,
+        )
 
         stats = tracker.get_stats()
         assert stats.total_calls == 2
@@ -88,7 +100,13 @@ class TestCostTracker:
         log_path = tmp_path / "costs.jsonl"
         tracker = CostTracker(log_path=log_path)
 
-        tracker.track("openai", "gpt-4o", {"prompt_tokens": 100, "completion_tokens": 50}, 0.005, 500.0)
+        tracker.track(
+            "openai",
+            "gpt-4o",
+            {"prompt_tokens": 100, "completion_tokens": 50},
+            0.005,
+            500.0,
+        )
 
         assert log_path.exists()
         content = log_path.read_text()
@@ -147,7 +165,9 @@ class TestAlertManager:
         """Test that low severity alerts are filtered."""
         from thegent.utils.routing_impl.alerting import AlertManager
 
-        manager = AlertManager(webhook_url="http://example.com/webhook", min_severity="warning")
+        manager = AlertManager(
+            webhook_url="http://example.com/webhook", min_severity="warning"
+        )
 
         # Info alert should be filtered
         assert not manager._should_send("info")
@@ -467,7 +487,9 @@ class TestEnhancedRouterGlobals:
             }
         ]
 
-        with patch.object(litellm_router, "build_litellm_model_list", return_value=mock_model_list):
+        with patch.object(
+            litellm_router, "build_litellm_model_list", return_value=mock_model_list
+        ):
             litellm_router.reset_enhanced_router()
             router1 = litellm_router.get_enhanced_router()
             router2 = litellm_router.get_enhanced_router()

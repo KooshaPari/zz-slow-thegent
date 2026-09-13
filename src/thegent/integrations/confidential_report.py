@@ -31,7 +31,9 @@ class ConfidentialReportFilter:
         "credential",
     }
     REDACT_VALUE_PATTERNS: ClassVar[tuple[re.Pattern[str], ...]] = (
-        re.compile(r"(?i)\b(gh[pousr]_[a-z0-9]{8,}|sk-[a-z0-9]{8,}|xox[baprs]-[a-z0-9-]{8,})\b"),
+        re.compile(
+            r"(?i)\b(gh[pousr]_[a-z0-9]{8,}|sk-[a-z0-9]{8,}|xox[baprs]-[a-z0-9-]{8,})\b"
+        ),
         re.compile(r"(?i)\b(bearer\s+[a-z0-9._-]{8,})\b"),
     )
     REDACTION_POLICY: ClassVar[dict[str, str]] = {
@@ -41,7 +43,9 @@ class ConfidentialReportFilter:
     }
 
     @classmethod
-    def redact(cls, data: dict[str, Any], sensitivity: ReportSensitivity) -> dict[str, Any]:
+    def redact(
+        cls, data: dict[str, Any], sensitivity: ReportSensitivity
+    ) -> dict[str, Any]:
         """Redact sensitive fields from data if confidential.
 
         For CONFIDENTIAL reports, recursively replaces values for keys
@@ -102,10 +106,14 @@ class ConfidentialReportFilter:
     @classmethod
     def _is_redact_value(cls, value: str) -> bool:
         """Check if a string value matches sensitive token patterns."""
-        return any(pattern.search(value) is not None for pattern in cls.REDACT_VALUE_PATTERNS)
+        return any(
+            pattern.search(value) is not None for pattern in cls.REDACT_VALUE_PATTERNS
+        )
 
     @classmethod
-    def wrap_report(cls, report: dict[str, Any], sensitivity: ReportSensitivity, report_id: str) -> dict[str, Any]:
+    def wrap_report(
+        cls, report: dict[str, Any], sensitivity: ReportSensitivity, report_id: str
+    ) -> dict[str, Any]:
         """Wrap a report with metadata and redaction.
 
         Args:

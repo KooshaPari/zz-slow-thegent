@@ -60,7 +60,9 @@ _BINARY_SEARCH_PATHS: Final[tuple[str, ...]] = (
         / "release"
         / "hook-dispatcher"
     ),
-    str(Path(__file__).parent.parent.parent.parent / "hooks" / "bin" / "hook-dispatcher"),
+    str(
+        Path(__file__).parent.parent.parent.parent / "hooks" / "bin" / "hook-dispatcher"
+    ),
 )
 
 
@@ -86,14 +88,22 @@ _FALLBACK_PATTERNS: Final[list[tuple[str, re.Pattern[str]]]] = [
     ("private_key_block", re.compile(r"-----BEGIN [A-Z ]+ PRIVATE KEY-----")),
     ("square_access_token", re.compile(r"sq0atp-[0-9A-Za-z\-_]{22}")),
     ("aws_access_key_id", re.compile(r"AKIA[0-9A-Z]{16}")),
-    ("aws_secret_key_context", re.compile(r"(?i)(aws_secret_access_key|secret_access_key)\s*[=:]\s*\S{20,}")),
+    (
+        "aws_secret_key_context",
+        re.compile(r"(?i)(aws_secret_access_key|secret_access_key)\s*[=:]\s*\S{20,}"),
+    ),
     ("github_pat", re.compile(r"ghp_[a-zA-Z0-9]{36}")),
     ("github_oauth", re.compile(r"gho_[a-zA-Z0-9]{36}")),
     ("github_app_token", re.compile(r"ghs_[a-zA-Z0-9]{36}")),
-    ("generic_hex_secret", re.compile(r"(?i)(password|secret|token|api[_\-]?key)\s*[=:]\s*[0-9a-f]{20,}")),
+    (
+        "generic_hex_secret",
+        re.compile(r"(?i)(password|secret|token|api[_\-]?key)\s*[=:]\s*[0-9a-f]{20,}"),
+    ),
     (
         "generic_base64_secret",
-        re.compile(r"(?i)(password|secret|token|api[_\-]?key)\s*[=:]\s*[A-Za-z0-9+/]{32,}={0,2}"),
+        re.compile(
+            r"(?i)(password|secret|token|api[_\-]?key)\s*[=:]\s*[A-Za-z0-9+/]{32,}={0,2}"
+        ),
     ),
 ]
 
@@ -112,7 +122,9 @@ def _python_scan(content: str) -> list[SecretMatch]:
         for kind, pattern in _FALLBACK_PATTERNS:
             m = pattern.search(line)
             if m:
-                matches.append(SecretMatch(kind=kind, line=line_idx, masked=_mask(m.group(0))))
+                matches.append(
+                    SecretMatch(kind=kind, line=line_idx, masked=_mask(m.group(0)))
+                )
                 break  # one match per pattern set per line is sufficient
     return matches
 
@@ -141,7 +153,10 @@ def _run_binary(binary: str, content: str) -> list[SecretMatch]:
         check=False,
     )
     data = json.loads(proc.stdout)
-    return [SecretMatch(kind=m["kind"], line=m["line"], masked=m["masked"]) for m in data.get("matches", [])]
+    return [
+        SecretMatch(kind=m["kind"], line=m["line"], masked=m["masked"])
+        for m in data.get("matches", [])
+    ]
 
 
 # ---------------------------------------------------------------------------
@@ -170,13 +185,17 @@ def scan_secrets(content: str) -> list[SecretMatch]:
     """
     binary = _find_binary()
     if binary is None:
-        _log.debug("hook-dispatcher binary not found; using Python fallback for secret scan")
+        _log.debug(
+            "hook-dispatcher binary not found; using Python fallback for secret scan"
+        )
         return _python_scan(content)
 
     try:
         return _run_binary(binary, content)
     except (subprocess.TimeoutExpired, json.JSONDecodeError, KeyError, OSError) as exc:
-        _log.warning("hook-dispatcher scan-secrets failed (%s); using Python fallback", exc)
+        _log.warning(
+            "hook-dispatcher scan-secrets failed (%s); using Python fallback", exc
+        )
         return _python_scan(content)
 
 

@@ -118,7 +118,9 @@ class IncrementalXMLParser:
         allowed_tags: list[str] | None = None,
     ) -> None:
         self._case_sensitive = bool(case_sensitive)
-        self._allowed_tags: list[str] | None = list(allowed_tags) if allowed_tags is not None else None
+        self._allowed_tags: list[str] | None = (
+            list(allowed_tags) if allowed_tags is not None else None
+        )
 
     def parse(self, text: str) -> dict[str, str]:
         """Extract balanced XML tags from ``text``.

@@ -82,7 +82,11 @@ class TestTaskInput:
 
     def test_extra_fields_preserved(self) -> None:
         """Extra fields are preserved (extra='allow') for forward compat."""
-        data: dict[str, Any] = {"task": "t", "future_field": "value", "another_field": 42}
+        data: dict[str, Any] = {
+            "task": "t",
+            "future_field": "value",
+            "another_field": 42,
+        }
         ti = TaskInput.model_validate(data)
         assert ti.model_extra is not None
         assert ti.model_extra.get("future_field") == "value"
@@ -170,13 +174,17 @@ class TestTaskError:
 
     def test_retriable_error(self) -> None:
         """Transient API errors should be retriable."""
-        err = TaskError(error_type="api_error", message="503 Service Unavailable", retriable=True)
+        err = TaskError(
+            error_type="api_error", message="503 Service Unavailable", retriable=True
+        )
         assert err.retriable is True
         assert err.error_type == "api_error"
 
     def test_non_retriable_error(self) -> None:
         """Policy denials should not be retriable."""
-        err = TaskError(error_type="policy_deny", message="Denied by governance", retriable=False)
+        err = TaskError(
+            error_type="policy_deny", message="Denied by governance", retriable=False
+        )
         assert err.retriable is False
 
     def test_missing_retriable_raises(self) -> None:

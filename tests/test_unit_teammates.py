@@ -12,7 +12,9 @@ def test_teammate_persona_discovery(tmp_path):
     agents_dir = Path("agents")
     agents_dir.mkdir(exist_ok=True)
     mock_agent = agents_dir / "test-coder.md"
-    mock_agent.write_text("---\nname: test-coder\nrole: coder\ntools: [write, edit]\nmodel: haiku\n---\nPrompt content")
+    mock_agent.write_text(
+        "---\nname: test-coder\nrole: coder\ntools: [write, edit]\nmodel: haiku\n---\nPrompt content"
+    )
 
     mgr = TeammateManager(tmp_path / "teammates.json")
     personas = mgr.list_personas()

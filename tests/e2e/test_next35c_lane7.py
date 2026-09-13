@@ -8,7 +8,9 @@ from unittest.mock import MagicMock
 import pytest
 
 # Skip all tests in this file - CLI commands do not exist
-pytestmark = pytest.mark.skip(reason="CLI commands do not exist in current implementation")
+pytestmark = pytest.mark.skip(
+    reason="CLI commands do not exist in current implementation"
+)
 
 from tests.e2e.cli_runner_compat import CompatCliRunner
 

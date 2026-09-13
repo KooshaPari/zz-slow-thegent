@@ -52,8 +52,18 @@ _VEC_ORTH = _unit(0.0, 0.0, 1.0)  # orthogonal
 
 def _coding_capabilities() -> list[ModelCapability]:
     return [
-        ModelCapability(model="code-model", description="coding desc", provider="openai", tags=["coding"]),
-        ModelCapability(model="chat-model", description="chat desc", provider="anthropic", tags=["chat"]),
+        ModelCapability(
+            model="code-model",
+            description="coding desc",
+            provider="openai",
+            tags=["coding"],
+        ),
+        ModelCapability(
+            model="chat-model",
+            description="chat desc",
+            provider="anthropic",
+            tags=["chat"],
+        ),
     ]
 
 
@@ -106,7 +116,11 @@ def test_semantic_lb_empty_capabilities_returns_none() -> None:
 @pytest.mark.requirement("FR-AROUTE-061")
 def test_semantic_lb_single_capability() -> None:
     """Single capability is always selected."""
-    caps = [ModelCapability(model="only-model", description="coding desc", provider="openai")]
+    caps = [
+        ModelCapability(
+            model="only-model", description="coding desc", provider="openai"
+        )
+    ]
     lb = SemanticLoadBalancer(caps, provider=_coding_provider())
     result = lb.route("write a python function")
     assert result is not None
@@ -163,11 +177,17 @@ def test_add_capability() -> None:
         }
     )
     lb = SemanticLoadBalancer(
-        [ModelCapability(model="code-model", description="coding desc", provider="openai")],
+        [
+            ModelCapability(
+                model="code-model", description="coding desc", provider="openai"
+            )
+        ],
         provider=provider,
     )
 
-    new_cap = ModelCapability(model="reason-model", description="reasoning desc", provider="anthropic")
+    new_cap = ModelCapability(
+        model="reason-model", description="reasoning desc", provider="anthropic"
+    )
     lb.add_capability(new_cap)
 
     result = lb.route("do complex reasoning")

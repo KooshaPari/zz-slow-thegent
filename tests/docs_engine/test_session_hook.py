@@ -35,8 +35,12 @@ def test_dump_indexed_as_layer_zero(tmp_path):
 def test_dump_appends_to_existing_same_day_file(tmp_path):
     docs_root = tmp_path / "docs"
     db = tmp_path / "test.db"
-    write_conversation_dump(docs_root=docs_root, db_path=db, session_id="s1", content="First dump.")
-    write_conversation_dump(docs_root=docs_root, db_path=db, session_id="s2", content="Second dump.")
+    write_conversation_dump(
+        docs_root=docs_root, db_path=db, session_id="s1", content="First dump."
+    )
+    write_conversation_dump(
+        docs_root=docs_root, db_path=db, session_id="s2", content="Second dump."
+    )
     # Should have one file (same day), and it should contain both
     dumps = list((docs_root / "research").glob("CONVERSATION_DUMP_*.md"))
     assert len(dumps) == 1

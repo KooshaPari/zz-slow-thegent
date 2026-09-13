@@ -11,7 +11,9 @@ SCRIPT = ROOT / "scripts" / "check_instruction_architecture.py"
 
 
 def _load_architecture_module():
-    spec = importlib.util.spec_from_file_location("instruction_architecture_check", SCRIPT)
+    spec = importlib.util.spec_from_file_location(
+        "instruction_architecture_check", SCRIPT
+    )
     assert spec is not None
     assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
@@ -48,14 +50,26 @@ def test_wl125_impl_pre_work_gate_wrappers_delegate(monkeypatch) -> None:
         called["enforce_project_dir"] = project_dir
         return {"governance_blocked": True}
 
-    monkeypatch.setattr("thegent.cli.commands.impl.pre_work_gate_helpers.pre_work_gate_defaults", _fake_defaults)
-    monkeypatch.setattr("thegent.cli.commands.impl.pre_work_gate_helpers.pre_work_gate_thresholds", _fake_thresholds)
-    monkeypatch.setattr("thegent.cli.commands.impl.pre_work_gate_helpers.evidence_age_minutes", _fake_age)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.pre_work_gate_helpers.pre_work_gate_defaults",
+        _fake_defaults,
+    )
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.pre_work_gate_helpers.pre_work_gate_thresholds",
+        _fake_thresholds,
+    )
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.pre_work_gate_helpers.evidence_age_minutes",
+        _fake_age,
+    )
     monkeypatch.setattr(
         "thegent.cli.commands.impl.pre_work_gate_helpers.pre_work_governance_block_payload",
         _fake_payload,
     )
-    monkeypatch.setattr("thegent.cli.commands.impl.pre_work_gate_helpers.enforce_pre_work_hard_gate", _fake_enforce)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.pre_work_gate_helpers.enforce_pre_work_hard_gate",
+        _fake_enforce,
+    )
 
     assert impl._pre_work_gate_defaults() == {"require_e2e_first": True}
     assert impl._pre_work_gate_thresholds(Path("/tmp/project")) == (
@@ -69,7 +83,9 @@ def test_wl125_impl_pre_work_gate_wrappers_delegate(monkeypatch) -> None:
         violations=[{"evidence_type": "test"}],
         config_source="config.yaml",
     ) == {"governance_blocked": True}
-    assert impl._enforce_pre_work_hard_gate(Path("/tmp/project")) == {"governance_blocked": True}
+    assert impl._enforce_pre_work_hard_gate(Path("/tmp/project")) == {
+        "governance_blocked": True
+    }
 
     assert called["defaults"] is True
     assert called["thresholds_project_dir"] == Path("/tmp/project")

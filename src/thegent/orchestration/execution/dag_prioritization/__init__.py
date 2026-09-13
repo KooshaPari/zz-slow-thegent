@@ -86,7 +86,9 @@ class DagTask:
         duration: float | None = None,
     ) -> None:
         self.task_id = id if id is not None else task_id
-        self.estimated_duration_s = duration if duration is not None else estimated_duration_s
+        self.estimated_duration_s = (
+            duration if duration is not None else estimated_duration_s
+        )
         self.dependencies = list(dependencies) if dependencies is not None else []
         self.priority = priority
 
@@ -136,7 +138,12 @@ class DagPrioritizer:
 
     def _validate_dependencies(self) -> None:
         """Raise ValueError on unknown dependencies, DagCycleError on cycle."""
-        unknown = {dep for task in self._tasks.values() for dep in task.dependencies if dep not in self._tasks}
+        unknown = {
+            dep
+            for task in self._tasks.values()
+            for dep in task.dependencies
+            if dep not in self._tasks
+        }
         if unknown:
             sample = sorted(unknown)[0]
             raise ValueError(f"unknown task '{sample}'")
@@ -240,7 +247,9 @@ class DagPrioritizer:
                     preds,
                     key=lambda p: (earliest_finish[p], tuple(-ord(c) for c in p)),
                 )
-                earliest_finish[node] = earliest_finish[best_pred] + self._tasks[node].estimated_duration_s
+                earliest_finish[node] = (
+                    earliest_finish[best_pred] + self._tasks[node].estimated_duration_s
+                )
                 via[node] = best_pred
 
         # Project makespan = max earliest_finish.
@@ -279,7 +288,10 @@ class DagPrioritizer:
             if not preds:
                 earliest_finish[node] = self._tasks[node].estimated_duration_s
             else:
-                earliest_finish[node] = max(earliest_finish[p] for p in preds) + self._tasks[node].estimated_duration_s
+                earliest_finish[node] = (
+                    max(earliest_finish[p] for p in preds)
+                    + self._tasks[node].estimated_duration_s
+                )
         makespan = max(earliest_finish.values()) if earliest_finish else 0.0
         # Backward pass: latest finish per node.
         successors: dict[str, list[str]] = {tid: [] for tid in self._tasks}
@@ -292,7 +304,10 @@ class DagPrioritizer:
             if not succs:
                 latest_finish[node] = makespan
             else:
-                latest_finish[node] = min(latest_finish[s] - self._tasks[s].estimated_duration_s for s in succs)
+                latest_finish[node] = min(
+                    latest_finish[s] - self._tasks[s].estimated_duration_s
+                    for s in succs
+                )
         # total_float[node] = latest_finish[node] - earliest_finish[node]
         # priority_score = makespan - total_float
         total_float = latest_finish[task_id] - earliest_finish[task_id]

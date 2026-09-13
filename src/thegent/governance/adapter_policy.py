@@ -39,7 +39,9 @@ class AdapterAdmissionPolicy:
         """
         self.registry = registry
         # OPT-008: LRU cache for policy evaluation results (max 1000 entries, TTL-based)
-        self._cache: TTLCache[tuple[str, str], dict[str, Any]] = TTLCache(maxsize=1000, ttl=cache_ttl_sec)
+        self._cache: TTLCache[tuple[str, str], dict[str, Any]] = TTLCache(
+            maxsize=1000, ttl=cache_ttl_sec
+        )
 
     def evaluate_admission(self, adapter_id: str, lane: str) -> dict[str, Any]:
         """Evaluate if an adapter can be admitted to a specific lane.
@@ -63,7 +65,10 @@ class AdapterAdmissionPolicy:
         if not cap:
             result = {"allowed": False, "reason": "Adapter not registered."}
         elif lane == "critical" and cap.trust_level < 4:
-            result = {"allowed": False, "reason": f"Trust level {cap.trust_level} insufficient for critical lane."}
+            result = {
+                "allowed": False,
+                "reason": f"Trust level {cap.trust_level} insufficient for critical lane.",
+            }
         else:
             result = {"allowed": True, "trust_level": cap.trust_level}
 

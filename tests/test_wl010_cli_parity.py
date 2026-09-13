@@ -32,7 +32,9 @@ def _command_names(app: Typer) -> set[str]:
 
 
 @pytest.mark.requirement("WL-010")
-def test_brownfield_variants_present_across_setup_install_update_help(runner: CliRunner) -> None:
+def test_brownfield_variants_present_across_setup_install_update_help(
+    runner: CliRunner,
+) -> None:
     for surface_name, surface_app in PROJECT_SURFACES:
         result = runner.invoke(surface_app, ["--help"])
 
@@ -40,7 +42,9 @@ def test_brownfield_variants_present_across_setup_install_update_help(runner: Cl
 
         lowered = result.stdout.lower()
         for variant in BROWNFIELD_VARIANTS:
-            assert variant in lowered, f"{surface_name} missing '{variant}' in --help output"
+            assert variant in lowered, (
+                f"{surface_name} missing '{variant}' in --help output"
+            )
 
 
 @pytest.mark.requirement("WL-010")
@@ -62,5 +66,9 @@ def test_each_brownfield_variant_has_help_on_each_surface(
 ) -> None:
     result = runner.invoke(surface_app, [variant, "--help"])
 
-    assert result.exit_code == 0, f"{surface_name} {variant} --help failed: {result.stdout}"
-    assert variant in result.stdout.lower(), f"{surface_name} {variant} help omitted command name"
+    assert result.exit_code == 0, (
+        f"{surface_name} {variant} --help failed: {result.stdout}"
+    )
+    assert variant in result.stdout.lower(), (
+        f"{surface_name} {variant} help omitted command name"
+    )

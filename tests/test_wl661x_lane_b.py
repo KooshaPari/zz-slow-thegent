@@ -19,8 +19,12 @@ from thegent.infra.mojo_bridge import MojoTask, build_dispatch_script
 from thegent.sitback_plugins import _probe_harness_status
 from thegent.ux.kpis import KPIDashboard
 
-_CONFIG_MANAGER_PATH = Path(__file__).resolve().parents[1] / "src" / "thegent" / "config" / "manager.py"
-_config_manager_spec = importlib.util.spec_from_file_location("thegent_config_manager_module", _CONFIG_MANAGER_PATH)
+_CONFIG_MANAGER_PATH = (
+    Path(__file__).resolve().parents[1] / "src" / "thegent" / "config" / "manager.py"
+)
+_config_manager_spec = importlib.util.spec_from_file_location(
+    "thegent_config_manager_module", _CONFIG_MANAGER_PATH
+)
 assert _config_manager_spec is not None and _config_manager_spec.loader is not None
 _config_manager_module = importlib.util.module_from_spec(_config_manager_spec)
 _config_manager_spec.loader.exec_module(_config_manager_module)
@@ -33,7 +37,9 @@ class TestWL6610SynthesisProviderPipeline:
         calls: list[tuple[str, str | None]] = []
 
         class _Provider:
-            def generate_code(self, prompt: str, formal_spec: str | None = None) -> GenerationResponse:
+            def generate_code(
+                self, prompt: str, formal_spec: str | None = None
+            ) -> GenerationResponse:
                 calls.append((prompt, formal_spec))
                 return GenerationResponse(
                     source_code="def run_task():\n    return 'ok'\n",
@@ -58,11 +64,15 @@ class TestWL6610SynthesisProviderPipeline:
 
     def test_provider_failure_is_not_swallowed(self) -> None:
         class _BrokenProvider:
-            def generate_code(self, prompt: str, formal_spec: str | None = None) -> GenerationResponse:
+            def generate_code(
+                self, prompt: str, formal_spec: str | None = None
+            ) -> GenerationResponse:
                 raise RuntimeError("provider_down")
 
         with pytest.raises(RuntimeError, match="provider_down"):
-            ProgramSynthesizer(run_id="wl6610-broken", provider=_BrokenProvider()).synthesize("prompt")
+            ProgramSynthesizer(
+                run_id="wl6610-broken", provider=_BrokenProvider()
+            ).synthesize("prompt")
 
     def test_no_deterministic_fallback_provider_exists(self) -> None:
         with pytest.raises(RuntimeError, match="No synthesis provider configured"):
@@ -72,7 +82,9 @@ class TestWL6610SynthesisProviderPipeline:
 @pytest.mark.unit
 class TestWL6611ToolAdapterProtocols:
     @pytest.mark.asyncio
-    async def test_protocol_success_for_mcp_rest_python_and_cli(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    async def test_protocol_success_for_mcp_rest_python_and_cli(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         adapter = ToolAdapter(agent_id="wl6611")
         adapter.discovered_tools["mcp_tool"] = ToolDefinition(
             tool_id="mcp_tool",
@@ -103,7 +115,9 @@ class TestWL6611ToolAdapterProtocols:
             command="echo lane-b",
         )
 
-        async def _rest(_tool: ToolDefinition, kwargs: dict[str, object]) -> dict[str, object]:
+        async def _rest(
+            _tool: ToolDefinition, kwargs: dict[str, object]
+        ) -> dict[str, object]:
             return {"status": "success", "protocol": "rest", "data": kwargs}
 
         monkeypatch.setattr(ToolAdapter, "_execute_rest", staticmethod(_rest))
@@ -151,15 +165,24 @@ class TestWL6611ToolAdapterProtocols:
 
 @pytest.mark.unit
 class TestWL6612KpisFromTelemetry:
-    def test_throughput_changes_with_run_registry_telemetry(self, tmp_path: Path) -> None:
+    def test_throughput_changes_with_run_registry_telemetry(
+        self, tmp_path: Path
+    ) -> None:
         now = datetime.now(UTC)
         rows = [
             {"event": "start", "ts": now.isoformat(), "run_id": "r1"},
-            {"event": "end", "ts": now.isoformat(), "run_id": "r1", "status": "completed"},
+            {
+                "event": "end",
+                "ts": now.isoformat(),
+                "run_id": "r1",
+                "status": "completed",
+            },
             {"event": "start", "ts": now.isoformat(), "run_id": "r2"},
             {"event": "end", "ts": now.isoformat(), "run_id": "r2", "status": "failed"},
         ]
-        (tmp_path / "run_registry.jsonl").write_text("\n".join(json.dumps(r).decode() for r in rows), encoding="utf-8")
+        (tmp_path / "run_registry.jsonl").write_text(
+            "\n".join(json.dumps(r).decode() for r in rows), encoding="utf-8"
+        )
 
         settings = ThegentSettings(session_dir=tmp_path)
         metrics = KPIDashboard(settings).get_metrics()
@@ -178,22 +201,37 @@ class TestWL6612KpisFromTelemetry:
 
 @pytest.mark.unit
 class TestWL6613HarnessProbeStatus:
-    def test_probe_reports_disabled_by_config(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr("thegent.config.ThegentSettings", lambda: types.SimpleNamespace(sitback_harness=False))
+    def test_probe_reports_disabled_by_config(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setattr(
+            "thegent.config.ThegentSettings",
+            lambda: types.SimpleNamespace(sitback_harness=False),
+        )
         status = _probe_harness_status()
         assert status["status"] == "unavailable"
         assert status["reason"] == "disabled_by_config"
 
-    def test_probe_reports_missing_dependency(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr("thegent.config.ThegentSettings", lambda: types.SimpleNamespace(sitback_harness=True))
+    def test_probe_reports_missing_dependency(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setattr(
+            "thegent.config.ThegentSettings",
+            lambda: types.SimpleNamespace(sitback_harness=True),
+        )
         missing_attr_module = types.ModuleType("thegent.skills.terminal")
         monkeypatch.setitem(sys.modules, "thegent.skills.terminal", missing_attr_module)
         status = _probe_harness_status()
         assert status["status"] == "unavailable"
         assert status["reason"] == "dependency_missing"
 
-    def test_probe_reports_runtime_failure(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr("thegent.config.ThegentSettings", lambda: types.SimpleNamespace(sitback_harness=True))
+    def test_probe_reports_runtime_failure(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setattr(
+            "thegent.config.ThegentSettings",
+            lambda: types.SimpleNamespace(sitback_harness=True),
+        )
         fake_terminal = types.ModuleType("thegent.skills.terminal")
 
         def _raise() -> str:
@@ -210,7 +248,9 @@ class TestWL6613HarnessProbeStatus:
 class TestWL6614MojoDispatchScripts:
     def test_builds_module_function_targeted_dispatch_script(self) -> None:
         script = build_dispatch_script(
-            MojoTask(task_id="wl6614-ok", module="json", function="loads", args={"s": "{}"}),
+            MojoTask(
+                task_id="wl6614-ok", module="json", function="loads", args={"s": "{}"}
+            ),
         )
         assert "json" in script
         assert "loads" in script
@@ -218,27 +258,49 @@ class TestWL6614MojoDispatchScripts:
     def test_unknown_module_and_function_raise_actionable_errors(self) -> None:
         with pytest.raises(ValueError, match="Unknown module"):
             build_dispatch_script(
-                MojoTask(task_id="wl6614-missing-module", module="missing_mod_zzz", function="run", args={})
+                MojoTask(
+                    task_id="wl6614-missing-module",
+                    module="missing_mod_zzz",
+                    function="run",
+                    args={},
+                )
             )
         with pytest.raises(ValueError, match="Unknown function"):
-            build_dispatch_script(MojoTask(task_id="wl6614-missing-fn", module="json", function="missing_fn", args={}))
+            build_dispatch_script(
+                MojoTask(
+                    task_id="wl6614-missing-fn",
+                    module="json",
+                    function="missing_fn",
+                    args={},
+                )
+            )
 
     def test_malformed_args_payload_raises(self) -> None:
         with pytest.raises(ValueError, match="Malformed args payload"):
-            build_dispatch_script(MojoTask(task_id="wl6614-bad-args", module="json", function="loads", args=[]))  # type: ignore[arg-type]
+            build_dispatch_script(
+                MojoTask(
+                    task_id="wl6614-bad-args", module="json", function="loads", args=[]
+                )
+            )  # type: ignore[arg-type]
 
 
 @pytest.mark.unit
 class TestWL6615NativeParserDiagnostics:
-    def test_native_parse_failure_increments_diagnostics_and_falls_back(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_native_parse_failure_increments_diagnostics_and_falls_back(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         class _Native:
             @staticmethod
-            def parse_checkpoint_by_id(line: str, checkpoint_id: str) -> dict[str, object] | None:
+            def parse_checkpoint_by_id(
+                line: str, checkpoint_id: str
+            ) -> dict[str, object] | None:
                 raise RuntimeError("native exploded")
 
         jsonl_parsers.reset_native_parse_diagnostics()
         monkeypatch.setattr(jsonl_parsers, "_get_native_parser", lambda: _Native())
-        parsed = jsonl_parsers.parse_checkpoint_by_id('{"checkpoint_id":"cp","status":"ok"}', "cp")
+        parsed = jsonl_parsers.parse_checkpoint_by_id(
+            '{"checkpoint_id":"cp","status":"ok"}', "cp"
+        )
         diag = jsonl_parsers.get_native_parse_diagnostics()
 
         assert parsed == {"checkpoint_id": "cp", "status": "ok"}
@@ -289,14 +351,20 @@ class TestWL6617ShimDetectionDiagnostics:
     ) -> None:
         caplog.set_level("WARNING")
         monkeypatch.setattr(Path, "is_symlink", lambda self: True)
-        monkeypatch.setattr(Path, "readlink", lambda self: (_ for _ in ()).throw(PermissionError("denied")))
+        monkeypatch.setattr(
+            Path,
+            "readlink",
+            lambda self: (_ for _ in ()).throw(PermissionError("denied")),
+        )
         assert is_thegent_shim("/tmp/claude") is False
         assert any("shim_resolution_failed" in r.message for r in caplog.records)
 
 
 @pytest.mark.unit
 class TestWL6618BottleneckStatusPayload:
-    def test_returns_explicit_payload_when_detector_missing(self, tmp_path: Path) -> None:
+    def test_returns_explicit_payload_when_detector_missing(
+        self, tmp_path: Path
+    ) -> None:
         controller = ConcurrencyController(tmp_path)
         controller.bottleneck_detector = None
         payload = controller.get_bottlenecks()

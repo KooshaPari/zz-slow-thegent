@@ -16,7 +16,9 @@ def test_wrapper_parse_dag_full_delegates(tmp_path: Path) -> None:
         after_table="",
         table_headers=["id", "agent", "prompt", "depends_on", "status"],
     )
-    with patch("thegent.cli.services.run_dag_helpers.parse_dag_full", return_value=expected) as mock_fn:
+    with patch(
+        "thegent.cli.services.run_dag_helpers.parse_dag_full", return_value=expected
+    ) as mock_fn:
         result = impl._parse_dag_full(dag_path)
     mock_fn.assert_called_once_with(dag_path)
     assert result is expected
@@ -30,7 +32,9 @@ def test_wrapper_dag_update_task_delegates_kwargs() -> None:
         after_table="",
         table_headers=["id", "agent", "prompt", "depends_on", "status"],
     )
-    with patch("thegent.cli.services.run_dag_helpers.dag_update_task", return_value=True) as mock_fn:
+    with patch(
+        "thegent.cli.services.run_dag_helpers.dag_update_task", return_value=True
+    ) as mock_fn:
         result = impl._dag_update_task(
             doc,
             "T1",

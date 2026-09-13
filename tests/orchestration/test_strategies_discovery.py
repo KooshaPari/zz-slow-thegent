@@ -71,7 +71,9 @@ class TestDiscoverySystemInit:
 
         # Create a mock module that raises an exception when DiscoveryInterface is accessed
         mock_discovery_module = MagicMock()
-        mock_discovery_module.DiscoveryInterface.side_effect = RuntimeError("init failed")
+        mock_discovery_module.DiscoveryInterface.side_effect = RuntimeError(
+            "init failed"
+        )
 
         original = sys.modules.get("thegent_discovery")
         try:

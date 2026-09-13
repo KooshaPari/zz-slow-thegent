@@ -196,7 +196,11 @@ class TestHealthTrendPayloadType:
         monkeypatch.setenv("THGENT_HEALTH_SNAPSHOT_PATH", str(snapshot_path))
         result = runner.invoke(
             app,
-            ["session-contract-health-trend", "--payload-type", "session_contract_health_gate"],
+            [
+                "session-contract-health-trend",
+                "--payload-type",
+                "session_contract_health_gate",
+            ],
         )
         assert result.exit_code == 0
         assert "gate" in result.stdout.lower() or "trend" in result.stdout.lower()
@@ -216,7 +220,9 @@ class TestStatusFormat:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["status", "session_unknown_e2e_format", "--format", "json"])
+        result = runner.invoke(
+            app, ["status", "session_unknown_e2e_format", "--format", "json"]
+        )
         assert result.exit_code == 2
         assert "Session not found" in result.stderr
 
@@ -230,7 +236,9 @@ class TestStatusFormat:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["status", "session_unknown_e2e_inc", "--include-contract"])
+        result = runner.invoke(
+            app, ["status", "session_unknown_e2e_inc", "--include-contract"]
+        )
         assert result.exit_code == 2
         assert "Session not found" in result.stderr
 
@@ -255,7 +263,9 @@ class TestDagRunDryRunWithTask:
         )
         (factory / "dag-session.md").write_text(dag_content)
 
-        result = runner.invoke(app, ["dag", "run", "--dry-run", "--task", "T1", "--cd", str(project)])
+        result = runner.invoke(
+            app, ["dag", "run", "--dry-run", "--task", "T1", "--cd", str(project)]
+        )
         assert result.exit_code == 0
         assert "Would run" in result.stdout
         assert "T1" in result.stdout
@@ -277,7 +287,9 @@ class TestDagRunDryRunWithTask:
         )
         (factory / "dag-session.md").write_text(dag_content)
 
-        result = runner.invoke(app, ["dag", "run", "--dry-run", "--task", "T2", "--cd", str(project)])
+        result = runner.invoke(
+            app, ["dag", "run", "--dry-run", "--task", "T2", "--cd", str(project)]
+        )
         assert result.exit_code == 1
         assert "not ready" in result.stdout or "not ready" in result.stderr
 
@@ -363,7 +375,9 @@ class TestDagCheckpoint:
             "| T1 | gemini | hello | — | pending |\n"
         )
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["dag", "checkpoint", "--cd", str(project), "--reason", "E2E test"])
+        result = runner.invoke(
+            app, ["dag", "checkpoint", "--cd", str(project), "--reason", "E2E test"]
+        )
         assert result.exit_code == 0
 
     def test_dag_checkpoints_exits_zero(
@@ -393,7 +407,9 @@ class TestDagCheckpoint:
             "|----|-------|--------|------------|--------|\n"
             "| T1 | gemini | hello | — | pending |\n"
         )
-        result = runner.invoke(app, ["dag", "recover", "retry-failed", "--cd", str(project)])
+        result = runner.invoke(
+            app, ["dag", "recover", "retry-failed", "--cd", str(project)]
+        )
         assert result.exit_code == 0
 
     def test_dag_probe_exits_zero(self, tmp_path: Path) -> None:
@@ -411,7 +427,9 @@ class TestDagCheckpoint:
         )
         result = runner.invoke(app, ["dag", "probe", "--cd", str(project)])
         assert result.exit_code == 0
-        assert "baseline" in result.stdout.lower() or "regression" in result.stdout.lower()
+        assert (
+            "baseline" in result.stdout.lower() or "regression" in result.stdout.lower()
+        )
 
     def test_dag_rollback_unknown_checkpoint_exits_one(
         # @trace FR-CLI-001
@@ -433,9 +451,14 @@ class TestDagCheckpoint:
             "| T1 | gemini | hello | — | pending |\n"
         )
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["dag", "rollback", "ckpt_unknown_e2e", "--cd", str(project)])
+        result = runner.invoke(
+            app, ["dag", "rollback", "ckpt_unknown_e2e", "--cd", str(project)]
+        )
         assert result.exit_code == 1
-        assert "Checkpoint not found" in result.stdout or "Checkpoint not found" in result.stderr
+        assert (
+            "Checkpoint not found" in result.stdout
+            or "Checkpoint not found" in result.stderr
+        )
 
 
 @pytest.mark.e2e
@@ -487,14 +510,18 @@ class TestDagRecoverActions:
         # @trace FR-CLI-001
         """dag recover clear-stuck exits 0."""
         project = self._dag_project(tmp_path)
-        result = runner.invoke(app, ["dag", "recover", "clear-stuck", "--cd", str(project)])
+        result = runner.invoke(
+            app, ["dag", "recover", "clear-stuck", "--cd", str(project)]
+        )
         assert result.exit_code == 0
 
     def test_dag_recover_reset_retries_exits_zero(self, tmp_path: Path) -> None:
         # @trace FR-CLI-001
         """dag recover reset-retries exits 0."""
         project = self._dag_project(tmp_path)
-        result = runner.invoke(app, ["dag", "recover", "reset-retries", "--cd", str(project)])
+        result = runner.invoke(
+            app, ["dag", "recover", "reset-retries", "--cd", str(project)]
+        )
         assert result.exit_code == 0
 
 
@@ -515,7 +542,9 @@ class TestDagFormatOptions:
             "|----|-------|--------|------------|--------|\n"
             "| T1 | gemini | hello | — | pending |\n"
         )
-        result = runner.invoke(app, ["dag", "status", "--cd", str(project), "--format", "md"])
+        result = runner.invoke(
+            app, ["dag", "status", "--cd", str(project), "--format", "md"]
+        )
         assert result.exit_code == 0
 
     def test_dag_ready_format_md_exits_zero(self, tmp_path: Path) -> None:
@@ -531,7 +560,9 @@ class TestDagFormatOptions:
             "|----|-------|--------|------------|--------|\n"
             "| T1 | gemini | hello | — | pending |\n"
         )
-        result = runner.invoke(app, ["dag", "ready", "--cd", str(project), "--format", "md"])
+        result = runner.invoke(
+            app, ["dag", "ready", "--cd", str(project), "--format", "md"]
+        )
         assert result.exit_code == 0
 
 
@@ -561,7 +592,9 @@ class TestInspectFormat:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["inspect", "--owner", "e2e_inspect_format", "--format", "json"])
+        result = runner.invoke(
+            app, ["inspect", "--owner", "e2e_inspect_format", "--format", "json"]
+        )
         assert result.exit_code == 0
         assert "No sessions" in result.stdout or "[]" in result.stdout
 
@@ -609,9 +642,14 @@ class TestDagProbeBaselineId:
             "| T1 | gemini | hello | — | pending |\n"
         )
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["dag", "probe", "--baseline-id", "ckpt_unknown_e2e", "--cd", str(project)])
+        result = runner.invoke(
+            app,
+            ["dag", "probe", "--baseline-id", "ckpt_unknown_e2e", "--cd", str(project)],
+        )
         assert result.exit_code == 1
-        assert "not found" in result.stdout.lower() or "not found" in result.stderr.lower()
+        assert (
+            "not found" in result.stdout.lower() or "not found" in result.stderr.lower()
+        )
 
 
 @pytest.mark.e2e
@@ -671,7 +709,11 @@ class TestGateExportFormat:
         assert result.exit_code == 0
         assert out_path.exists()
         content = out_path.read_text()
-        assert "pass" in content.lower() or "blocked" in content.lower() or "status" in content.lower()
+        assert (
+            "pass" in content.lower()
+            or "blocked" in content.lower()
+            or "status" in content.lower()
+        )
 
 
 @pytest.mark.e2e
@@ -690,7 +732,11 @@ class TestHistoryVerify:
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
         result = runner.invoke(app, ["history", "verify"])
         assert result.exit_code == 0
-        assert "Audit" in result.stdout or "verified" in result.stdout.lower() or "empty" in result.stdout.lower()
+        assert (
+            "Audit" in result.stdout
+            or "verified" in result.stdout.lower()
+            or "empty" in result.stdout.lower()
+        )
 
     def test_history_verify_format_json_exits_zero(
         # @trace FR-CLI-001
@@ -785,7 +831,9 @@ class TestReportExportOptions:
         snapshot_path = tmp_path / "health-snapshots.jsonl"
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
         monkeypatch.setenv("THGENT_HEALTH_SNAPSHOT_PATH", str(snapshot_path))
-        result = runner.invoke(app, ["session-contract-health-trend", "--top-blocked", "10"])
+        result = runner.invoke(
+            app, ["session-contract-health-trend", "--top-blocked", "10"]
+        )
         assert result.exit_code == 0
 
 
@@ -853,7 +901,9 @@ class TestStopOptions:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["stop", "--force", "session_unknown_e2e_stop_force"])
+        result = runner.invoke(
+            app, ["stop", "--force", "session_unknown_e2e_stop_force"]
+        )
         assert result.exit_code == 2
         assert "Session not found" in result.stderr
 
@@ -867,7 +917,9 @@ class TestStopOptions:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["stop", "--wind-down", "session_unknown_e2e_wind_down"])
+        result = runner.invoke(
+            app, ["stop", "--wind-down", "session_unknown_e2e_wind_down"]
+        )
         assert result.exit_code == 2
         assert "Session not found" in result.stderr
 
@@ -898,9 +950,13 @@ class TestLogsWaitOptions:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["logs", "session_unknown_e2e_logs_tail", "--tail", "10"])
+        result = runner.invoke(
+            app, ["logs", "session_unknown_e2e_logs_tail", "--tail", "10"]
+        )
         assert result.exit_code == 2
-        assert "Session not found" in result.stderr or "Log file missing" in result.stderr
+        assert (
+            "Session not found" in result.stderr or "Log file missing" in result.stderr
+        )
 
     def test_wait_timeout_unknown_session_exits_two(
         # @trace FR-CLI-001
@@ -912,7 +968,9 @@ class TestLogsWaitOptions:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["wait", "session_unknown_e2e_wait_to", "--timeout", "5"])
+        result = runner.invoke(
+            app, ["wait", "session_unknown_e2e_wait_to", "--timeout", "5"]
+        )
         assert result.exit_code == 2
         assert "Session not found" in result.stderr
 
@@ -996,7 +1054,9 @@ class TestInspectTail:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["inspect", "--owner", "e2e_inspect_tail", "--tail", "20"])
+        result = runner.invoke(
+            app, ["inspect", "--owner", "e2e_inspect_tail", "--tail", "20"]
+        )
         assert result.exit_code == 0
         assert "No sessions" in result.stdout
 
@@ -1059,7 +1119,9 @@ class TestHistoryEventsRunId:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["history", "events", "--run-id", "run_e2e_xyz", "--limit", "5"])
+        result = runner.invoke(
+            app, ["history", "events", "--run-id", "run_e2e_xyz", "--limit", "5"]
+        )
         assert result.exit_code == 0
 
 
@@ -1079,7 +1141,9 @@ class TestHealthTrendFormat:
         snapshot_path = tmp_path / "health-snapshots.jsonl"
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
         monkeypatch.setenv("THGENT_HEALTH_SNAPSHOT_PATH", str(snapshot_path))
-        result = runner.invoke(app, ["session-contract-health-trend", "--format", "json"])
+        result = runner.invoke(
+            app, ["session-contract-health-trend", "--format", "json"]
+        )
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert "snapshots" in data or "trend_payload_type" in data
@@ -1142,7 +1206,9 @@ class TestFeedback:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["feedback", "run_e2e_feedback_xyz", "0.85", "--note", "E2E test"])
+        result = runner.invoke(
+            app, ["feedback", "run_e2e_feedback_xyz", "0.85", "--note", "E2E test"]
+        )
         assert result.exit_code == 0
         assert "Feedback recorded" in result.stdout
 
@@ -1180,7 +1246,9 @@ class TestInspectStderr:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["inspect", "--owner", "e2e_inspect_stderr", "--stderr"])
+        result = runner.invoke(
+            app, ["inspect", "--owner", "e2e_inspect_stderr", "--stderr"]
+        )
         assert result.exit_code == 0
         assert "No sessions" in result.stdout
 
@@ -1199,7 +1267,9 @@ class TestStopGrace:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["stop", "--grace", "10", "session_unknown_e2e_grace"])
+        result = runner.invoke(
+            app, ["stop", "--grace", "10", "session_unknown_e2e_grace"]
+        )
         assert result.exit_code == 2
         assert "Session not found" in result.stderr
 

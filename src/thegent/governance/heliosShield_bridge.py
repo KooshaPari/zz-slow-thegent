@@ -33,7 +33,9 @@ class heliosShieldBridge:
         """Check if mesh coordination layer is initialized."""
         return self.mesh_root.exists()
 
-    def create_shared_task(self, task_id: str, description: str, depends_on: list[str] | None = None) -> bool:
+    def create_shared_task(
+        self, task_id: str, description: str, depends_on: list[str] | None = None
+    ) -> bool:
         """WP-16003: Create a task in the mesh's global task list."""
         if not self.is_available():
             return False
@@ -122,7 +124,16 @@ class SmartMerge:
 
         if self.mergiraf_path:
             # Mergiraf: mergiraf merge --git %O %A %B -s %S -p %P
-            cmd = [self.mergiraf_path, "merge", "--git", str(base), str(ours), str(theirs), "-p", str(output)]
+            cmd = [
+                self.mergiraf_path,
+                "merge",
+                "--git",
+                str(base),
+                str(ours),
+                str(theirs),
+                "-p",
+                str(output),
+            ]
         else:
             # Fallback: git merge-file -p ours base theirs
             cmd = ["git", "merge-file", "-p", str(ours), str(base), str(theirs)]

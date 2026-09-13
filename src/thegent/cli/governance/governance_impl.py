@@ -83,7 +83,9 @@ def escalate_approve_impl(run_id: str) -> bool:
     return queue.resolve(run_id=run_id, resolution="approved")
 
 
-def escalate_list_impl(past_sla_only: bool = False, limit: int = 50) -> list[dict[str, Any]]:
+def escalate_list_impl(
+    past_sla_only: bool = False, limit: int = 50
+) -> list[dict[str, Any]]:
     """WP-3008: List escalation queue items (blocked runs with SLA)."""
     from thegent.execution import EscalationQueue
 
@@ -205,7 +207,9 @@ def get_data_protection_status_impl() -> dict[str, Any]:
     session_dir = Path(settings.session_dir).expanduser().resolve()
     session_dir_exists = session_dir.exists()
 
-    permissions_restricted = bool(session_dir_exists and (session_dir.stat().st_mode & 0o777) == 0o700)
+    permissions_restricted = bool(
+        session_dir_exists and (session_dir.stat().st_mode & 0o777) == 0o700
+    )
 
     # Default masking to True: PII redaction is the safer default.
     masking_enabled = bool(getattr(settings, "masking_enabled", True))
@@ -304,7 +308,11 @@ def sweep_impl(
         audit_result = auditor.verify_registry()
 
     has_issues = bool(drift_issues) or bool(past_sla_items)
-    if include_audit and audit_result and audit_result.get("status") not in ("passed", "empty"):
+    if (
+        include_audit
+        and audit_result
+        and audit_result.get("status") not in ("passed", "empty")
+    ):
         has_issues = True
 
     cal_results = update_calibration_fn()

@@ -1,10 +1,12 @@
 """Stub module."""
+
 from dataclasses import dataclass
 
 
 @dataclass
 class FileLeaseRegistry:
     """Registry for file leases."""
+
     lease_id: str
     file_path: str
     holder: str

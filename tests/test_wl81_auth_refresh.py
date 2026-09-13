@@ -32,7 +32,10 @@ class TestAuthStatePersistence:
     def test_auth_refresh_preserves_model_state(self) -> None:
         """Model states should be preserved across auth refresh."""
         # Model states that should persist
-        states = {"claude-opus": {"backoff_level": 0}, "claude-sonnet": {"backoff_level": 1}}
+        states = {
+            "claude-opus": {"backoff_level": 0},
+            "claude-sonnet": {"backoff_level": 1},
+        }
 
         # After refresh
         refreshed = states.copy()

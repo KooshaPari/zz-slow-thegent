@@ -59,7 +59,9 @@ class ConsensusProtocol:
         draft_dir = self.proposals_dir / f"{proposal_id}.drafts"
         draft_dir.mkdir(parents=True, exist_ok=True, mode=0o1777)
         with open(draft_dir / f"agent-{agent_id}.json", "w") as f:
-            json.dump({"agent_id": agent_id, "refinement": refinement, "ts": time.time()}, f)
+            json.dump(
+                {"agent_id": agent_id, "refinement": refinement, "ts": time.time()}, f
+            )
 
     def share(self, proposal_id: str) -> None:
         """Phase 3: SHARE (ADR-013). Finalize the proposal after drafting period."""
@@ -106,7 +108,9 @@ class ConsensusProtocol:
     ) -> None:
         """Phase 4: VOTE (ADR-013). Cast a weighted vote for the finalized proposal."""
         proposal = self._load_proposal(proposal_id) or {}
-        max_rounds = int(proposal.get("max_debate_rounds", self.DEFAULT_MAX_DEBATE_ROUNDS))
+        max_rounds = int(
+            proposal.get("max_debate_rounds", self.DEFAULT_MAX_DEBATE_ROUNDS)
+        )
         if vote_round < 1 or vote_round > max_rounds:
             return
 
@@ -130,7 +134,9 @@ class ConsensusProtocol:
             with open(self.proposals_dir / f"{proposal_id}.json", "w") as f:
                 json.dump(proposal, f)
 
-    def _load_round_votes(self, proposal_id: str, vote_round: int) -> list[dict[str, Any]]:
+    def _load_round_votes(
+        self, proposal_id: str, vote_round: int
+    ) -> list[dict[str, Any]]:
         votes = []
         legacy_dir = self.votes_dir / proposal_id
         if legacy_dir.exists() and not (legacy_dir / "round-1").exists():
@@ -159,7 +165,9 @@ class ConsensusProtocol:
             return 1
 
         current_round = int(proposal.get("round", 1))
-        max_rounds = int(proposal.get("max_debate_rounds", self.DEFAULT_MAX_DEBATE_ROUNDS))
+        max_rounds = int(
+            proposal.get("max_debate_rounds", self.DEFAULT_MAX_DEBATE_ROUNDS)
+        )
         next_round = min(current_round + 1, max_rounds)
         if next_round != current_round:
             proposal["round"] = next_round
@@ -170,7 +178,10 @@ class ConsensusProtocol:
         return next_round
 
     def get_consensus(
-        self, proposal_id: str, required_majority: float | None = None, vote_round: int | None = None
+        self,
+        proposal_id: str,
+        required_majority: float | None = None,
+        vote_round: int | None = None,
     ) -> tuple[ConsensusStatus, float]:
         """Phase 5 & 6: TALLY & DECIDE (ADR-013). Check if consensus is reached."""
         proposal = self._load_proposal(proposal_id)
@@ -178,7 +189,9 @@ class ConsensusProtocol:
             return ConsensusStatus.PENDING, 0.0
 
         decision_type = str(proposal.get("decision_type", "implementation"))
-        max_rounds = int(proposal.get("max_debate_rounds", self.DEFAULT_MAX_DEBATE_ROUNDS))
+        max_rounds = int(
+            proposal.get("max_debate_rounds", self.DEFAULT_MAX_DEBATE_ROUNDS)
+        )
         current_round = int(vote_round or proposal.get("round", 1))
         current_round = min(max(1, current_round), max_rounds)
         if required_majority is None:
@@ -192,7 +205,9 @@ class ConsensusProtocol:
         if total_weight <= 0:
             return ConsensusStatus.PENDING, 0.0
 
-        weighted_votes = sum(float(v.get("confidence", 0.0)) if v.get("vote") else 0.0 for v in votes)
+        weighted_votes = sum(
+            float(v.get("confidence", 0.0)) if v.get("vote") else 0.0 for v in votes
+        )
         ratio = weighted_votes / total_weight
 
         status = ConsensusStatus.PENDING
@@ -234,7 +249,9 @@ class CausalInfluenceTracker:
     def __init__(self, mesh_root: Path) -> None:
         self.influence_log = mesh_root / "influence.jsonl"
 
-    def record_influence(self, agent_id: str, action_id: str, contribution: float) -> None:
+    def record_influence(
+        self, agent_id: str, action_id: str, contribution: float
+    ) -> None:
         """Log contribution for later analysis."""
         entry = {
             "agent_id": agent_id,
@@ -259,7 +276,9 @@ class CausalInfluenceTracker:
                     continue
                 if entry.get("action_id") != action_id:
                     continue
-                totals[str(entry.get("agent_id", "unknown"))] += float(entry.get("contribution", 0.0))
+                totals[str(entry.get("agent_id", "unknown"))] += float(
+                    entry.get("contribution", 0.0)
+                )
 
         if not totals:
             return {}
@@ -310,7 +329,9 @@ class EscalationWorkflow:
         next_tier = self._next_tier(current_tier)
         if current_tier >= 5:
             # Enqueue for human intervention (SCLI-P3.4)
-            self._enqueue_human_escalation(proposal_id, reason=reason, metadata=metadata)
+            self._enqueue_human_escalation(
+                proposal_id, reason=reason, metadata=metadata
+            )
             return True
 
         escalation_data = {
@@ -354,7 +375,9 @@ class EscalationWorkflow:
         pending.sort(key=lambda item: float(item.get("timestamp", 0.0)))
         return pending
 
-    def resolve_human_escalation(self, proposal_id: str, status: str = "resolved") -> bool:
+    def resolve_human_escalation(
+        self, proposal_id: str, status: str = "resolved"
+    ) -> bool:
         """Resolve a queued human escalation item."""
         item_path = self.human_escalation / f"human-{proposal_id}.json"
         item = self._load_json(item_path)

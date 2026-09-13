@@ -105,7 +105,12 @@ class TestLogFriction:
 
     def test_custom_task_id_used(self, tmp_friction_log: Path) -> None:
         """Explicit task_id appears as section header."""
-        log_friction("ax", "AX issue", task_id="ax-custom-001", friction_log_path=tmp_friction_log)
+        log_friction(
+            "ax",
+            "AX issue",
+            task_id="ax-custom-001",
+            friction_log_path=tmp_friction_log,
+        )
         content = tmp_friction_log.read_text(encoding="utf-8")
         assert "### ax-custom-001" in content
 
@@ -117,7 +122,12 @@ class TestLogFriction:
 
     def test_solution_recorded(self, tmp_friction_log: Path) -> None:
         """Provided solution appears in entry."""
-        log_friction("dx", "Some dx issue", solution="Use library X", friction_log_path=tmp_friction_log)
+        log_friction(
+            "dx",
+            "Some dx issue",
+            solution="Use library X",
+            friction_log_path=tmp_friction_log,
+        )
         content = tmp_friction_log.read_text(encoding="utf-8")
         assert "Use library X" in content
 
@@ -129,7 +139,9 @@ class TestLogFriction:
 
     def test_priority_recorded(self, tmp_friction_log: Path) -> None:
         """Priority is included in entry."""
-        log_friction("dx", "Critical issue", priority="P1", friction_log_path=tmp_friction_log)
+        log_friction(
+            "dx", "Critical issue", priority="P1", friction_log_path=tmp_friction_log
+        )
         content = tmp_friction_log.read_text(encoding="utf-8")
         assert "**Priority**: P1" in content
 
@@ -177,7 +189,9 @@ class TestGetNextItems:
 
     def test_priority_filter(self, minimal_work_stream: Path) -> None:
         """Priority filter excludes non-matching items."""
-        items = get_next_items(limit=10, priority="P1", work_stream_path=minimal_work_stream)
+        items = get_next_items(
+            limit=10, priority="P1", work_stream_path=minimal_work_stream
+        )
         assert all(i["priority"] == "P1" for i in items)
 
     def test_excludes_claimed_items(self, tmp_path: Path) -> None:
@@ -327,7 +341,9 @@ class TestUpdateWorkStream:
 
     def test_returns_false_for_missing_file(self, tmp_path: Path) -> None:
         """Returns False when WORK_STREAM.md does not exist."""
-        result = update_work_stream("x", "claimed", work_stream_path=tmp_path / "missing.md")
+        result = update_work_stream(
+            "x", "claimed", work_stream_path=tmp_path / "missing.md"
+        )
         assert result is False
 
     def test_notes_appended_to_row(self, tmp_path: Path) -> None:

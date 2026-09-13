@@ -95,7 +95,10 @@ class LifecycleController:
         stdout = result.get("stdout", "")
         stderr = result.get("stderr", "")
         combined = f"{stdout}\n{stderr}"
-        retryable = any(kw in combined.lower() for kw in ["rate limit", "timeout", "502", "503", "504", "transient"])
+        retryable = any(
+            kw in combined.lower()
+            for kw in ["rate limit", "timeout", "502", "503", "504", "transient"]
+        )
         if retryable:
             rr = RunResult(
                 exit_code=result.get("exit_code", 1),
@@ -120,7 +123,11 @@ class LifecycleController:
         session_dir = self.settings.session_dir / self.state.session_id
         session_dir.mkdir(parents=True, exist_ok=True)
 
-        _log.info("Starting Lifecycle loop session=%s mode=%s", self.state.session_id, self.mode)
+        _log.info(
+            "Starting Lifecycle loop session=%s mode=%s",
+            self.state.session_id,
+            self.mode,
+        )
 
         with Progress(
             SpinnerColumn(),
@@ -147,7 +154,11 @@ class LifecycleController:
                 )
 
                 if on_progress:
-                    on_progress(self.state.iteration, self.max_iterations, f"Starting iteration {self.state.iteration}")
+                    on_progress(
+                        self.state.iteration,
+                        self.max_iterations,
+                        f"Starting iteration {self.state.iteration}",
+                    )
 
                 # 1. Takeover/Stop Check (Phase 4: Human Takeover)
                 # Check for external stop signal file
@@ -166,7 +177,9 @@ class LifecycleController:
                         _log.info("Human takeover detected. Injecting prompt.")
                         if on_progress:
                             on_progress(
-                                self.state.iteration, self.max_iterations, "Human takeover detected. Injecting prompt."
+                                self.state.iteration,
+                                self.max_iterations,
+                                "Human takeover detected. Injecting prompt.",
                             )
                         takeover_file.unlink()
                     except Exception as e:
@@ -193,12 +206,18 @@ class LifecycleController:
                         "warnings": [reason] if effect == "warn" else [],
                     }
                 except Exception as e:
-                    _log.error("Governance pre-check failed: %s. Using default allow.", e)
+                    _log.error(
+                        "Governance pre-check failed: %s. Using default allow.", e
+                    )
                     effect, reason = "allow", str(e)
                     gov_report = {"status": "ok", "denials": [], "warnings": []}
 
                 if on_progress:
-                    on_progress(self.state.iteration, self.max_iterations, f"Policy check: {effect}")
+                    on_progress(
+                        self.state.iteration,
+                        self.max_iterations,
+                        f"Policy check: {effect}",
+                    )
 
                 if effect == "deny":
                     self.state.stopped = True
@@ -206,26 +225,37 @@ class LifecycleController:
                     from thegent.governance.escalation import EscalationQueue
 
                     eq = EscalationQueue(self.settings)
-                    eq.add(run_id=self.state.session_id, reason=f"Policy denial: {reason}", priority=3)
+                    eq.add(
+                        run_id=self.state.session_id,
+                        reason=f"Policy denial: {reason}",
+                        priority=3,
+                    )
                     break
 
                 # 3. Run Worker Agent with Retry (WP-2002, tenacity)
                 try:
                     if on_progress:
                         on_progress(
-                            self.state.iteration, self.max_iterations, f"Running worker agent: {self.worker_agent_name}"
+                            self.state.iteration,
+                            self.max_iterations,
+                            f"Running worker agent: {self.worker_agent_name}",
                         )
                     result = self._run_worker_with_retry(current_prompt)
                     if result.get("exit_code") != 0:
                         self.state.stopped = True
-                        self.state.stop_reason = f"Worker failed (code {result.get('exit_code')})"
+                        self.state.stop_reason = (
+                            f"Worker failed (code {result.get('exit_code')})"
+                        )
                         break
                 except TransientAgentError as e:
                     _log.warning(
-                        "Worker failed after retries: %s", e.result.stderr[:200] if e.result.stderr else str(e)
+                        "Worker failed after retries: %s",
+                        e.result.stderr[:200] if e.result.stderr else str(e),
                     )
                     self.state.stopped = True
-                    self.state.stop_reason = f"Worker failed after retries (code {e.result.exit_code})"
+                    self.state.stop_reason = (
+                        f"Worker failed after retries (code {e.result.exit_code})"
+                    )
                     break
                 except Exception as e:
                     _log.error("Worker execution failed: %s", e)
@@ -258,7 +288,11 @@ class LifecycleController:
                     current_prompt = matched_preset.prompt
                     _log.info("Matched output to preset: %s", matched_preset.id)
                     if on_progress:
-                        on_progress(self.state.iteration, self.max_iterations, f"Matched preset: {matched_preset.id}")
+                        on_progress(
+                            self.state.iteration,
+                            self.max_iterations,
+                            f"Matched preset: {matched_preset.id}",
+                        )
                     continue
 
                 # 6. Invoke Checker Agent (WP-1201 Phase 2/3 - LLM Fallback)
@@ -283,20 +317,31 @@ class LifecycleController:
                     )
                 except Exception as e:
                     _log.error("Checker failed: %s. Using default CONTINUE.", e)
-                    decision_result = CheckerResult(decision=CheckerDecision.CONTINUE, reason=str(e))
+                    decision_result = CheckerResult(
+                        decision=CheckerDecision.CONTINUE, reason=str(e)
+                    )
 
-                _log.info("Checker decision: %s (reason: %s)", decision_result.decision, decision_result.reason)
+                _log.info(
+                    "Checker decision: %s (reason: %s)",
+                    decision_result.decision,
+                    decision_result.reason,
+                )
                 if on_progress:
                     on_progress(
-                        self.state.iteration, self.max_iterations, f"Checker decision: {decision_result.decision}"
+                        self.state.iteration,
+                        self.max_iterations,
+                        f"Checker decision: {decision_result.decision}",
                     )
 
                 if decision_result.decision == CheckerDecision.KILL:
                     self.state.stopped = True
-                    self.state.stop_reason = f"Checker terminated: {decision_result.reason}"
+                    self.state.stop_reason = (
+                        f"Checker terminated: {decision_result.reason}"
+                    )
 
                     if any(
-                        kw in (decision_result.reason or "").lower() for kw in ["security", "cost", "risk", "policy"]
+                        kw in (decision_result.reason or "").lower()
+                        for kw in ["security", "cost", "risk", "policy"]
                     ):
                         from thegent.governance.escalation import (
                             EscalationPriority,
@@ -320,7 +365,9 @@ class LifecycleController:
                     current_prompt = decision_result.prompt or "Please continue."
 
             # Update progress to completed
-            progress.update(task, status=f"done: {self.state.stop_reason or 'completed'}")
+            progress.update(
+                task, status=f"done: {self.state.stop_reason or 'completed'}"
+            )
 
         if self.state.iteration >= self.max_iterations and not self.state.stopped:
             self.state.stop_reason = "Max iterations reached"

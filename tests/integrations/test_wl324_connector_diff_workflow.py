@@ -14,7 +14,9 @@ from thegent.integrations.workstream_autosync import (
 
 @pytest.mark.asyncio
 @pytest.mark.requirement("WL-324")
-async def test_connector_diff_workflow_output_includes_dry_run_artifact_path(tmp_path) -> None:
+async def test_connector_diff_workflow_output_includes_dry_run_artifact_path(
+    tmp_path,
+) -> None:
     """Cycle/status outputs expose connector diff workflow schema with dry-run artifact path."""
     work_stream_path = tmp_path / "WORK_STREAM.md"
     work_stream_path.write_text(
@@ -47,7 +49,9 @@ async def test_connector_diff_workflow_output_includes_dry_run_artifact_path(tmp
         "dry_run_diff_artifact_path": "artifacts/workstream_autosync_dry_run_diff.txt"
     }
 
-    manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8").splitlines()[-1])
+    manifest_payload = json.loads(
+        manifest_path.read_text(encoding="utf-8").splitlines()[-1]
+    )
     assert manifest_payload["outputs"]["connector_diff_workflow"] == {
         "dry_run_diff_artifact_path": "artifacts/workstream_autosync_dry_run_diff.txt"
     }

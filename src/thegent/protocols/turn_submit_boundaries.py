@@ -231,7 +231,9 @@ def build_hook_registration_phase(hooks: list[dict[str, Any]]) -> dict[str, Any]
     return {"type": "hook_registration", "hooks": hooks}
 
 
-def build_hook_invocation_phase(hook_id: str, context: dict[str, Any]) -> dict[str, Any]:
+def build_hook_invocation_phase(
+    hook_id: str, context: dict[str, Any]
+) -> dict[str, Any]:
     """Build hook invocation phase payload."""
     return {"type": "hook_invocation", "hook_id": hook_id, "context": context}
 
@@ -241,9 +243,15 @@ def build_policy_match_phase(policy_id: str, context: dict[str, Any]) -> dict[st
     return {"type": "policy_match", "policy_id": policy_id, "context": context}
 
 
-def build_provider_selection_phase(provider_id: str, context: dict[str, Any]) -> dict[str, Any]:
+def build_provider_selection_phase(
+    provider_id: str, context: dict[str, Any]
+) -> dict[str, Any]:
     """Build provider selection phase payload."""
-    return {"type": "provider_selection", "provider_id": provider_id, "context": context}
+    return {
+        "type": "provider_selection",
+        "provider_id": provider_id,
+        "context": context,
+    }
 
 
 def build_provider_rule_evaluation_phase(

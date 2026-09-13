@@ -131,8 +131,12 @@ class RouterConfig:
 def _get_openrouter_attribution_headers() -> dict[str, str]:
     """Build OpenRouter attribution headers from environment or defaults."""
     return {
-        "HTTP-Referer": os.environ.get("OPENROUTER_HTTP_REFERER", _OPENROUTER_HTTP_REFERER_DEFAULT),
-        "X-Title": os.environ.get("OPENROUTER_SITE_NAME", _OPENROUTER_SITE_NAME_DEFAULT),
+        "HTTP-Referer": os.environ.get(
+            "OPENROUTER_HTTP_REFERER", _OPENROUTER_HTTP_REFERER_DEFAULT
+        ),
+        "X-Title": os.environ.get(
+            "OPENROUTER_SITE_NAME", _OPENROUTER_SITE_NAME_DEFAULT
+        ),
     }
 
 
@@ -151,7 +155,10 @@ def _route_to_litellm_config(route: Route) -> dict[str, Any]:
     # Map thegent provider to LiteLLM provider
     # For models going through CLIProxyAPIPlus, we use 'openai' provider
     # to ensure LiteLLM uses the OpenAI-compatible handler.
-    if get_execution_path(provider) == ExecutionPath.CLIPROXY_API or route.backend_type == "proxy":
+    if (
+        get_execution_path(provider) == ExecutionPath.CLIPROXY_API
+        or route.backend_type == "proxy"
+    ):
         litellm_provider = "openai"
     else:
         provider_mapping = {
@@ -183,13 +190,18 @@ def _route_to_litellm_config(route: Route) -> dict[str, Any]:
     # Route through CLIProxy for universal parity: Codex harness, LiteLLM, and direct
     # - CLIPROXY_API (login-auth): antigravity, cursor, gemini, copilot, kiro
     # - proxy backend (catalog): minimax, glm, kilo, roo — ensures Codex + LiteLLM use same path
-    if get_execution_path(provider) == ExecutionPath.CLIPROXY_API or route.backend_type == "proxy":
+    if (
+        get_execution_path(provider) == ExecutionPath.CLIPROXY_API
+        or route.backend_type == "proxy"
+    ):
         config["litellm_params"]["api_base"] = "http://localhost:8317/v1"
 
     # OpenRouter routes directly to its API endpoint with attribution headers
     if provider == "openrouter":
         config["litellm_params"]["api_base"] = "https://openrouter.ai/api/v1"
-        config["litellm_params"]["extra_headers"] = _get_openrouter_attribution_headers()
+        config["litellm_params"]["extra_headers"] = (
+            _get_openrouter_attribution_headers()
+        )
     elif provider == "ollama":
         config["litellm_params"]["api_base"] = "http://127.0.0.1:11434/v1"
 
@@ -225,7 +237,11 @@ def build_openrouter_model_entry(
     Returns:
         LiteLLM model_list entry dict for the OpenRouter model
     """
-    resolved_api_key = api_key if api_key is not None else os.environ.get("OPENROUTER_API_KEY", "dummy-key")
+    resolved_api_key = (
+        api_key
+        if api_key is not None
+        else os.environ.get("OPENROUTER_API_KEY", "dummy-key")
+    )
     attribution_headers = _get_openrouter_attribution_headers()
 
     return {
@@ -427,7 +443,9 @@ def _invalidate_router_cache_on_circuit_breaker_change() -> None:
             _router_cache.clear()
             _model_list_cache.clear()
             _previous_cb_states = current_states.copy()
-            logger.debug("Circuit breaker state changed, invalidated router and model list caches")
+            logger.debug(
+                "Circuit breaker state changed, invalidated router and model list caches"
+            )
     except Exception:
         # On any error, don't block - just skip invalidation
         pass
@@ -475,7 +493,9 @@ def _build_litellm_router(policy: str) -> Router:
     if config.fallback_enabled:
         chains = build_fallback_chains()
         # Convert to LiteLLM format: list of dicts
-        router_kwargs["fallbacks"] = [{model: fallbacks} for model, fallbacks in chains.items()]
+        router_kwargs["fallbacks"] = [
+            {model: fallbacks} for model, fallbacks in chains.items()
+        ]
 
     return Router(**router_kwargs)
 
@@ -502,7 +522,9 @@ def get_litellm_router(policy: str = "cost-based-routing") -> Router:
         return _router_cache[policy]
 
 
-def build_dynamic_fallback_router(models: list[str], base_policy: str = "cost-based-routing") -> Router:
+def build_dynamic_fallback_router(
+    models: list[str], base_policy: str = "cost-based-routing"
+) -> Router:
     """Build a LiteLLM Router with a dynamic model fallback chain.
 
     Results are cached for 5 minutes (same TTL as main router) to avoid
@@ -535,7 +557,9 @@ def build_dynamic_fallback_router(models: list[str], base_policy: str = "cost-ba
             full_model_list = build_litellm_model_list()
 
             # Build a set of known model names for fast lookup
-            known_model_names: set[str] = {entry["model_name"] for entry in full_model_list}
+            known_model_names: set[str] = {
+                entry["model_name"] for entry in full_model_list
+            }
 
             # Filter full model list to only the requested models, preserving order.
             # For any model not in the catalog, create a minimal passthrough config so
@@ -689,7 +713,9 @@ class EnhancedRouter:
         start_time = time.time()
         queue_metadata = kwargs.pop("queue_metadata", None)
         if model is None and isinstance(queue_metadata, dict):
-            preferred_model = queue_metadata.get("model") or queue_metadata.get("preferred_model")
+            preferred_model = queue_metadata.get("model") or queue_metadata.get(
+                "preferred_model"
+            )
             if isinstance(preferred_model, str) and preferred_model.strip():
                 selected_model = preferred_model.strip()
             else:
@@ -704,9 +730,14 @@ class EnhancedRouter:
             if "/" in selected_model:
                 provider_model = selected_model.split("/", 1)[1]
                 if not has_model_metadata(provider_model):
-                    logger.debug("Model metadata not found for %s (using fallback)", selected_model)
+                    logger.debug(
+                        "Model metadata not found for %s (using fallback)",
+                        selected_model,
+                    )
             else:
-                logger.debug("Model metadata not found for %s (using fallback)", selected_model)
+                logger.debug(
+                    "Model metadata not found for %s (using fallback)", selected_model
+                )
 
         # Check budget before routing
         if self._config.cost_budget and self.cost_tracker:
@@ -773,8 +804,14 @@ class EnhancedRouter:
                     provider=provider,
                     model=model_used,
                     usage={
-                        "prompt_tokens": getattr(response_usage, "prompt_tokens", 0) if response_usage else 0,
-                        "completion_tokens": getattr(response_usage, "completion_tokens", 0) if response_usage else 0,
+                        "prompt_tokens": getattr(response_usage, "prompt_tokens", 0)
+                        if response_usage
+                        else 0,
+                        "completion_tokens": getattr(
+                            response_usage, "completion_tokens", 0
+                        )
+                        if response_usage
+                        else 0,
                     },
                     cost=cost_usd,
                     latency_ms=latency_ms,
@@ -825,7 +862,9 @@ class EnhancedRouter:
                         logger.info("Trying fallback model: %s", fallback_model)
                         is_fallback = True
                         # Recurse with fallback model
-                        result = self.route(prompt, model=fallback_model, stream=stream, **kwargs)
+                        result = self.route(
+                            prompt, model=fallback_model, stream=stream, **kwargs
+                        )
                         result.is_fallback = True
                         return result
                     except Exception as fb_e:  # noqa: PERF203 - intentional per-item error handling
@@ -835,7 +874,9 @@ class EnhancedRouter:
             # Alert on error
             if self.alert_manager:
                 self.alert_manager.alert_provider_error(
-                    provider=self._extract_provider(selected_model) if selected_model else "unknown",
+                    provider=self._extract_provider(selected_model)
+                    if selected_model
+                    else "unknown",
                     error=error_str,
                     model=selected_model or "unknown",
                     is_rate_limit="rate" in error_str.lower(),
@@ -844,7 +885,9 @@ class EnhancedRouter:
             return RoutingResult(
                 success=False,
                 model=selected_model or "unknown",
-                provider=self._extract_provider(selected_model) if selected_model else "unknown",
+                provider=self._extract_provider(selected_model)
+                if selected_model
+                else "unknown",
                 error=error_str,
                 latency_ms=latency_ms,
                 is_fallback=is_fallback,
@@ -867,7 +910,11 @@ class EnhancedRouter:
             Stream chunks from the model
         """
         result = self.route(prompt, model=model, stream=True, **kwargs)
-        if result.success and result.response is not None and hasattr(result.response, "__iter__"):
+        if (
+            result.success
+            and result.response is not None
+            and hasattr(result.response, "__iter__")
+        ):
             yield from result.response
         else:
             raise RuntimeError(result.error or "Streaming failed")
@@ -965,13 +1012,21 @@ class EnhancedRouter:
                             found = False
                             for key in get_all_models_with_metadata():
                                 key_normalized = (
-                                    key.lower().replace("-", "").replace(".", "").replace("/", "").replace("_", "")
+                                    key.lower()
+                                    .replace("-", "")
+                                    .replace(".", "")
+                                    .replace("/", "")
+                                    .replace("_", "")
                                 )
                                 if key_normalized == normalized:
                                     found = True
                                     break
                             if not found:
-                                logger.debug("Model metadata not found for %s (alias: %s)", provider_model, model_name)
+                                logger.debug(
+                                    "Model metadata not found for %s (alias: %s)",
+                                    provider_model,
+                                    model_name,
+                                )
                     else:
                         logger.debug("Model metadata not found for %s", model_name)
         except Exception as e:

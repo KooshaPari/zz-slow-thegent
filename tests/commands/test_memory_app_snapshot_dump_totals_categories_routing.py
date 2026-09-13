@@ -11,10 +11,14 @@ from thegent.cli.apps.memory import app
 runner = CliRunner()
 
 
-def test_memory_snapshot_daily_totals_forwards_project_limit_and_format(monkeypatch, tmp_path: Path) -> None:
+def test_memory_snapshot_daily_totals_forwards_project_limit_and_format(
+    monkeypatch, tmp_path: Path
+) -> None:
     captured: dict[str, object] = {}
 
-    def fake_snapshot_daily_totals_cmd(*, project: Path | None, limit: int, format: str | None) -> None:
+    def fake_snapshot_daily_totals_cmd(
+        *, project: Path | None, limit: int, format: str | None
+    ) -> None:
         captured["project"] = project
         captured["limit"] = limit
         captured["format"] = format
@@ -48,7 +52,9 @@ def test_memory_snapshot_daily_totals_forwards_project_limit_and_format(monkeypa
     }
 
 
-def test_memory_dump_categories_forwards_project_and_format(monkeypatch, tmp_path: Path) -> None:
+def test_memory_dump_categories_forwards_project_and_format(
+    monkeypatch, tmp_path: Path
+) -> None:
     captured: dict[str, object] = {}
 
     def fake_dump_categories_cmd(*, project: Path | None, format: str | None) -> None:
@@ -91,7 +97,9 @@ def test_memory_dump_categories_help_exits_zero() -> None:
     assert result.exit_code == 0
 
 
-def test_memory_dump_categories_omitted_format_passes_none(monkeypatch, tmp_path: Path) -> None:
+def test_memory_dump_categories_omitted_format_passes_none(
+    monkeypatch, tmp_path: Path
+) -> None:
     captured: dict[str, object] = {}
 
     def fake_dump_categories_cmd(*, project: Path | None, format: str | None) -> None:

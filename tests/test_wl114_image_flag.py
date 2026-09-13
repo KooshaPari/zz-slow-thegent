@@ -237,12 +237,16 @@ def test_validate_image_capability_rejects_non_image_agent() -> None:
         _validate_image_capability("not-a-real-agent", "gpt-5-codex")
 
 
-def test_validate_image_capability_accepts_claude_agent(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_validate_image_capability_accepts_claude_agent(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """claude is now accepted by validate_image_capability.
 
     # @trace WL-114
     """
-    monkeypatch.setattr("thegent.cli.commands.impl._model_supports_vision", lambda _m: True)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl._model_supports_vision", lambda _m: True
+    )
     # Must not raise
     _validate_image_capability("claude", "claude-opus-4-6")
 

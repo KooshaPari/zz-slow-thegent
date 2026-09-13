@@ -45,8 +45,12 @@ INVALID_AGENT_ALLOWED_TOKENS = (
 
 def _assert_invalid_agent_tokens(stdout: str) -> None:
     assert "Invalid --agent" in stdout
-    missing_tokens = sorted(token for token in INVALID_AGENT_ALLOWED_TOKENS if token not in stdout)
-    assert not missing_tokens, f"Missing tokens in invalid-agent output: {missing_tokens}"
+    missing_tokens = sorted(
+        token for token in INVALID_AGENT_ALLOWED_TOKENS if token not in stdout
+    )
+    assert not missing_tokens, (
+        f"Missing tokens in invalid-agent output: {missing_tokens}"
+    )
 
 
 class _SitbackSettings:
@@ -60,7 +64,9 @@ class _HealthyResp:
 
 def _mock_sitback_health() -> tuple[Any, Any]:
     return (
-        patch.object(clode_main_module, "_get_settings", return_value=_SitbackSettings()),
+        patch.object(
+            clode_main_module, "_get_settings", return_value=_SitbackSettings()
+        ),
         patch("httpx.get", return_value=_HealthyResp()),
     )
 
@@ -146,7 +152,9 @@ def test_install_links_force_rewrites_existing(tmp_path: Path) -> None:
     target.chmod(0o644)
 
     with patch("thegent.clode_main.shutil.which", return_value=None):
-        result = runner.invoke(app, ["install-links", "--bin-dir", str(tmp_path), "--force"])
+        result = runner.invoke(
+            app, ["install-links", "--bin-dir", str(tmp_path), "--force"]
+        )
     assert result.exit_code == 0
     assert (tmp_path / "clode").is_symlink()
     assert (tmp_path / "clode").resolve() == shims_bin.resolve()
@@ -179,7 +187,10 @@ def test_clode_max_and_glm_aliases_forward_expected_token() -> None:
         )
         assert result.exit_code == 0
         assert run_interactive.call_args[0][0] == "openrouter"
-        assert run_interactive.call_args.kwargs["model_override"] == "anthropic/claude-sonnet-4-20250514"
+        assert (
+            run_interactive.call_args.kwargs["model_override"]
+            == "anthropic/claude-sonnet-4-20250514"
+        )
 
 
 def test_clode_max_accepts_force_aliases() -> None:
@@ -199,12 +210,23 @@ def test_clode_print_mode_uses_dangerous_skip_permissions_flag() -> None:
         patch("thegent.clode_main._ensure_provider_configured"),
         patch(
             "thegent.clode_main._get_claude_env",
-            return_value={"ANTHROPIC_BASE_URL": "http://127.0.0.1:8317", "CLAUDE_CONFIG_DIR": "/tmp/claude-config"},
+            return_value={
+                "ANTHROPIC_BASE_URL": "http://127.0.0.1:8317",
+                "CLAUDE_CONFIG_DIR": "/tmp/claude-config",
+            },
         ),
         patch("thegent.clode_main._ensure_claude_config_isolation"),
-        patch("thegent.clode_main.wrap_with_caffeinate", side_effect=lambda cmd, _: cmd),
-        patch("thegent.clode_main._ensure_claude_installed", return_value="/usr/bin/claude"),
-        patch("thegent.clode_main.subprocess.run", return_value=type("RunResult", (), {"returncode": 0})()) as run,
+        patch(
+            "thegent.clode_main.wrap_with_caffeinate", side_effect=lambda cmd, _: cmd
+        ),
+        patch(
+            "thegent.clode_main._ensure_claude_installed",
+            return_value="/usr/bin/claude",
+        ),
+        patch(
+            "thegent.clode_main.subprocess.run",
+            return_value=type("RunResult", (), {"returncode": 0})(),
+        ) as run,
     ):
         with pytest.raises(typer.Exit) as exit_info:
             _run_claude_print("minimax", "hi", model_override="MiniMax-M2.5")
@@ -215,7 +237,10 @@ def test_clode_print_mode_uses_dangerous_skip_permissions_flag() -> None:
 
 def test_clode_provider_default_to_interactive() -> None:
     with (
-        patch("thegent.clode_main._get_claude_env", return_value={"ANTHROPIC_MODEL": "glm-5"}),
+        patch(
+            "thegent.clode_main._get_claude_env",
+            return_value={"ANTHROPIC_MODEL": "glm-5"},
+        ),
         patch("thegent.clode_main._run_claude_interactive") as run_interactive,
     ):
         result = runner.invoke(app, ["nim"])
@@ -258,7 +283,10 @@ def test_clode_run_and_bg_delegate_to_claude_cmd() -> None:
     with (
         patch(
             "thegent.clode_main._get_claude_env",
-            return_value={"ANTHROPIC_MODEL": "glm-5", "CLAUDE_CONFIG_DIR": "/tmp/claude-config"},
+            return_value={
+                "ANTHROPIC_MODEL": "glm-5",
+                "CLAUDE_CONFIG_DIR": "/tmp/claude-config",
+            },
         ),
         patch("thegent.cli.run_cmd") as run_cmd,
     ):
@@ -274,7 +302,10 @@ def test_clode_run_and_bg_delegate_to_claude_cmd() -> None:
     with (
         patch(
             "thegent.clode_main._get_claude_env",
-            return_value={"ANTHROPIC_MODEL": "glm-5", "CLAUDE_CONFIG_DIR": "/tmp/claude-config"},
+            return_value={
+                "ANTHROPIC_MODEL": "glm-5",
+                "CLAUDE_CONFIG_DIR": "/tmp/claude-config",
+            },
         ),
         patch("thegent.cli.bg_cmd") as bg_cmd,
     ):
@@ -291,11 +322,16 @@ def test_clode_run_global_forwards_remote_to_run_cmd() -> None:
     with (
         patch(
             "thegent.clode_main._get_claude_env",
-            return_value={"ANTHROPIC_MODEL": "glm-5", "CLAUDE_CONFIG_DIR": "/tmp/claude-config"},
+            return_value={
+                "ANTHROPIC_MODEL": "glm-5",
+                "CLAUDE_CONFIG_DIR": "/tmp/claude-config",
+            },
         ),
         patch("thegent.clode_main.run_cmd") as run_cmd,
     ):
-        result = runner.invoke(app, ["run", "nim", "hello world", "--remote", "10.0.0.2"])
+        result = runner.invoke(
+            app, ["run", "nim", "hello world", "--remote", "10.0.0.2"]
+        )
     assert result.exit_code == 0
     _, kwargs = run_cmd.call_args
     assert kwargs["remote"] == "10.0.0.2"
@@ -306,11 +342,16 @@ def test_clode_bg_global_forwards_remote_to_bg_cmd() -> None:
     with (
         patch(
             "thegent.clode_main._get_claude_env",
-            return_value={"ANTHROPIC_MODEL": "glm-5", "CLAUDE_CONFIG_DIR": "/tmp/claude-config"},
+            return_value={
+                "ANTHROPIC_MODEL": "glm-5",
+                "CLAUDE_CONFIG_DIR": "/tmp/claude-config",
+            },
         ),
         patch("thegent.clode_main.bg_cmd") as bg_cmd,
     ):
-        result = runner.invoke(app, ["bg", "nim", "hello world", "--remote", "10.0.0.3", "--owner", "qa"])
+        result = runner.invoke(
+            app, ["bg", "nim", "hello world", "--remote", "10.0.0.3", "--owner", "qa"]
+        )
     assert result.exit_code == 0
     _, kwargs = bg_cmd.call_args
     assert kwargs["remote"] == "10.0.0.3"
@@ -353,7 +394,9 @@ def test_clode_run_bg_accept_codex_tiers() -> None:
 
 def test_clode_run_dex_uses_canonical_model_value() -> None:
     with (
-        patch("thegent.clode_main._resolve_provider_for_model", return_value="codex") as resolve_provider,
+        patch(
+            "thegent.clode_main._resolve_provider_for_model", return_value="codex"
+        ) as resolve_provider,
         patch(
             "thegent.clode_main._get_claude_env",
             return_value={
@@ -373,7 +416,9 @@ def test_clode_run_dex_uses_canonical_model_value() -> None:
 
 def test_clode_bg_dex_uses_canonical_model_value() -> None:
     with (
-        patch("thegent.clode_main._resolve_provider_for_model", return_value="codex") as resolve_provider,
+        patch(
+            "thegent.clode_main._resolve_provider_for_model", return_value="codex"
+        ) as resolve_provider,
         patch(
             "thegent.clode_main._get_claude_env",
             return_value={
@@ -452,14 +497,21 @@ def test_sitback_codex_defaults_to_dex_model_alias() -> None:
 
 def test_sitback_codex_includes_yolo_and_bypass_flags_when_not_agent() -> None:
     with (
-        patch("thegent.clode_main.wrap_with_caffeinate", side_effect=lambda cmd, _: cmd),
+        patch(
+            "thegent.clode_main.wrap_with_caffeinate", side_effect=lambda cmd, _: cmd
+        ),
         patch("thegent.clode_main.os.execvpe") as execvpe,
         patch("thegent.clode_main.shutil.which", return_value="/usr/bin/codex"),
         patch("thegent.clode_main._is_triggered_by_agent_process", return_value=False),
         patch("thegent.dex_main._resolve_provider_for_model", return_value="copilot"),
-        patch("thegent.dex_main._get_codex_env", return_value={"OPENAI_BASE_URL": "http://127.0.0.1:8317"}),
+        patch(
+            "thegent.dex_main._get_codex_env",
+            return_value={"OPENAI_BASE_URL": "http://127.0.0.1:8317"},
+        ),
     ):
-        _run_sitback_codex("max", {"OPENAI_BASE_URL": "http://127.0.0.1:8317"}, tmux=False)
+        _run_sitback_codex(
+            "max", {"OPENAI_BASE_URL": "http://127.0.0.1:8317"}, tmux=False
+        )
         command = execvpe.call_args.args[1]
         assert "--yolo" in command
         assert "--dangerously-bypass-approvals-and-sandbox" in command
@@ -467,11 +519,15 @@ def test_sitback_codex_includes_yolo_and_bypass_flags_when_not_agent() -> None:
 
 def test_sitback_droid_does_not_force_codex_or_droid_bypass_flags() -> None:
     with (
-        patch("thegent.clode_main.wrap_with_caffeinate", side_effect=lambda cmd, _: cmd),
+        patch(
+            "thegent.clode_main.wrap_with_caffeinate", side_effect=lambda cmd, _: cmd
+        ),
         patch("thegent.clode_main.os.execvpe") as execvpe,
         patch("thegent.clode_main.shutil.which", return_value="/usr/bin/droid"),
     ):
-        _run_sitback_droid("flash", {"OPENAI_BASE_URL": "http://127.0.0.1:8317"}, tmux=False)
+        _run_sitback_droid(
+            "flash", {"OPENAI_BASE_URL": "http://127.0.0.1:8317"}, tmux=False
+        )
         command = execvpe.call_args.args[1]
         assert "--dangerously-bypass-approvals-and-sandbox" not in command
         assert "--dangerously-skip-permissions" not in command
@@ -598,7 +654,9 @@ def test_sitback_top_level_cli_wiring_codex_high_alias_passthrough() -> None:
 
 
 def test_sitback_top_level_cli_invalid_agent_contract_text_and_exit() -> None:
-    result = runner.invoke(app, ["sitback", "--agent", "invalid-harness", "--no-dashboard"])
+    result = runner.invoke(
+        app, ["sitback", "--agent", "invalid-harness", "--no-dashboard"]
+    )
     assert result.exit_code == 1
     _assert_invalid_agent_tokens(result.stdout)
 
@@ -785,9 +843,14 @@ def test_run_claude_interactive_exec_path_and_env_handshake() -> None:
         patch("thegent.clode_main._ensure_provider_configured"),
         patch("thegent.clode_main._get_claude_env", return_value=fake_env),
         patch("thegent.clode_main._ensure_claude_config_isolation"),
-        patch("thegent.clode_main._ensure_claude_installed", return_value="/usr/bin/claude"),
+        patch(
+            "thegent.clode_main._ensure_claude_installed",
+            return_value="/usr/bin/claude",
+        ),
         patch("thegent.clode_main._is_triggered_by_agent_process", return_value=True),
-        patch("thegent.clode_main.wrap_with_caffeinate", side_effect=lambda cmd, _: cmd),
+        patch(
+            "thegent.clode_main.wrap_with_caffeinate", side_effect=lambda cmd, _: cmd
+        ),
         patch("thegent.clode_main.os.execvpe") as execvpe,
     ):
         _run_claude_interactive("openrouter")

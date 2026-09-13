@@ -10,13 +10,25 @@ def extract_links_from_md(file_path):
             # Find markdown links [title](url)
             matches = re.findall(r"\[([^\]]+)\]\((https?://[^\)]+)\)", content)
             for title, url in matches:
-                links.append({"title": title, "url": url, "source": f"MD: {Path(file_path).name}"})
+                links.append(
+                    {
+                        "title": title,
+                        "url": url,
+                        "source": f"MD: {Path(file_path).name}",
+                    }
+                )
 
             # Find bare URLs
             bare_urls = re.findall(r"(?<!\()https?://[a-zA-Z0-9./_-]+", content)
             for url in bare_urls:
                 if not any(l["url"] == url for l in links):
-                    links.append({"title": "Direct Link", "url": url, "source": f"MD: {Path(file_path).name}"})
+                    links.append(
+                        {
+                            "title": "Direct Link",
+                            "url": url,
+                            "source": f"MD: {Path(file_path).name}",
+                        }
+                    )
     except Exception:
         pass
     return links
@@ -48,7 +60,9 @@ for l in all_md_links:
 
 # Append to research queue
 with open("docs/research/to-research-queue.md", "a") as out:
-    out.write(f"\n\n## Agent Aggregation (Droid, Codex, Cursor, Claude - {len(unique_md_links)} links discovered)\n\n")
+    out.write(
+        f"\n\n## Agent Aggregation (Droid, Codex, Cursor, Claude - {len(unique_md_links)} links discovered)\n\n"
+    )
 
     # Categorize by source file
     sources = {}

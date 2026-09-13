@@ -19,4 +19,6 @@ def test_resolve_credential_source_with_env_only() -> None:
 @pytest.mark.requirement("WL-263")
 def test_resolve_credential_source_rejects_ambiguous_sources() -> None:
     with pytest.raises(ValueError, match="ambiguous"):
-        resolve_credential_source(CredentialSources(env_token="abc", config_token_path="/tmp/tok"))
+        resolve_credential_source(
+            CredentialSources(env_token="abc", config_token_path="/tmp/tok")
+        )

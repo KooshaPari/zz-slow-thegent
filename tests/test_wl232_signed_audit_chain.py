@@ -37,7 +37,9 @@ class TestAuditEntry:
     @pytest.mark.requirement("WL-232")
     def test_create_entry_default_prev_signature(self) -> None:
         """Can create an AuditEntry with default prev_signature."""
-        entry = AuditEntry(entry_id="entry_001", data={"action": "create"}, signature="abc123")
+        entry = AuditEntry(
+            entry_id="entry_001", data={"action": "create"}, signature="abc123"
+        )
 
         assert entry.entry_id == "entry_001"
         assert entry.prev_signature == ""
@@ -67,7 +69,9 @@ class TestSignedAuditArtifactChain:
         entry = chain.append("entry_001", {"action": "create"})
 
         # For first entry, prev_signature is empty
-        expected_input = f":{entry.entry_id}:{json.dumps(entry.data, sort_keys=True).decode()}"
+        expected_input = (
+            f":{entry.entry_id}:{json.dumps(entry.data, sort_keys=True).decode()}"
+        )
         expected_signature = hashlib.sha256(expected_input.encode()).hexdigest()
 
         assert entry.signature == expected_signature
@@ -94,7 +98,9 @@ class TestSignedAuditArtifactChain:
         assert chain.verify_chain() is True
 
     @pytest.mark.requirement("WL-232")
-    def test_verify_chain_multiple_entries(self, chain: SignedAuditArtifactChain) -> None:
+    def test_verify_chain_multiple_entries(
+        self, chain: SignedAuditArtifactChain
+    ) -> None:
         """verify_chain returns True for valid multi-entry chain."""
         chain.append("entry_001", {"action": "create"})
         chain.append("entry_002", {"action": "update"})
@@ -115,7 +121,9 @@ class TestSignedAuditArtifactChain:
         assert chain.verify_chain() is False
 
     @pytest.mark.requirement("WL-232")
-    def test_verify_chain_tampered_signature(self, chain: SignedAuditArtifactChain) -> None:
+    def test_verify_chain_tampered_signature(
+        self, chain: SignedAuditArtifactChain
+    ) -> None:
         """verify_chain detects tampered entry signature."""
         chain.append("entry_001", {"action": "create"})
 
@@ -154,7 +162,9 @@ class TestSignedAuditArtifactChain:
         assert len(chain.entries()) == 1
 
     @pytest.mark.requirement("WL-232")
-    def test_multiple_appends_preserve_order(self, chain: SignedAuditArtifactChain) -> None:
+    def test_multiple_appends_preserve_order(
+        self, chain: SignedAuditArtifactChain
+    ) -> None:
         """Multiple appends preserve entry order."""
         chain.append("entry_001", {"seq": 1})
         chain.append("entry_002", {"seq": 2})

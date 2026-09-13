@@ -30,6 +30,7 @@ def retry_if_eagain(func: Any) -> Any:
     Returns:
         Wrapped function with retry behavior.
     """
+
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         max_retries = 3
         for attempt in range(max_retries):
@@ -37,10 +38,11 @@ def retry_if_eagain(func: Any) -> Any:
                 return func(*args, **kwargs)
             except OSError as e:
                 if e.errno in _EAGAIN_ERRNOS and attempt < max_retries - 1:
-                    time.sleep(0.1 * (2 ** attempt))
+                    time.sleep(0.1 * (2**attempt))
                     continue
                 raise
         return None
+
     return wrapper
 
 
@@ -55,7 +57,7 @@ def backoff_delay(attempt: int, base: float = 1.0, max_delay: float = 60.0) -> f
     Returns:
         Calculated delay in seconds.
     """
-    return min(base * (2 ** attempt), max_delay)
+    return min(base * (2**attempt), max_delay)
 
 
 def atomic_write(path: Path | str, content: str) -> None:
@@ -70,17 +72,15 @@ def atomic_write(path: Path | str, content: str) -> None:
     """
     path_str = str(path)
     dir_path = str(Path(path_str).parent) or "."
-    with tempfile.NamedTemporaryFile(
-        mode="w",
-        delete=False,
-        dir=dir_path
-    ) as f:
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, dir=dir_path) as f:
         f.write(content)
         temp_path = f.name
     os.rename(temp_path, path_str)
 
 
-def spawn_with_eagain_retry(cmd: list[str], **kwargs: Any) -> subprocess.CompletedProcess:
+def spawn_with_eagain_retry(
+    cmd: list[str], **kwargs: Any
+) -> subprocess.CompletedProcess:
     """Spawn process with EAGAIN retry logic.
 
     Runs a subprocess with retry logic for EAGAIN errors,
@@ -102,7 +102,7 @@ def spawn_with_eagain_retry(cmd: list[str], **kwargs: Any) -> subprocess.Complet
             return subprocess.run(cmd, **kwargs)
         except OSError as e:
             if e.errno in _EAGAIN_ERRNOS and attempt < max_retries - 1:
-                time.sleep(0.1 * (2 ** attempt))
+                time.sleep(0.1 * (2**attempt))
                 continue
             raise
     return None

@@ -133,7 +133,11 @@ class TestRetentionByDomain:
     def test_retention_by_domain_from_json_string(self) -> None:
         # @trace FR-CFG-004
         """retention_by_domain parses JSON string from env."""
-        with patch.dict(os.environ, {"THGENT_RETENTION_BY_DOMAIN": '{"gdpr": 365, "soc2": 2555}'}, clear=False):
+        with patch.dict(
+            os.environ,
+            {"THGENT_RETENTION_BY_DOMAIN": '{"gdpr": 365, "soc2": 2555}'},
+            clear=False,
+        ):
             s = ThegentSettings()
             assert s.retention_by_domain == {"gdpr": 365, "soc2": 2555}
 
@@ -142,7 +146,9 @@ class TestRetentionByDomain:
         """Invalid JSON for retention_by_domain raises SettingsError or returns empty."""
         from pydantic_settings.exceptions import SettingsError
 
-        with patch.dict(os.environ, {"THGENT_RETENTION_BY_DOMAIN": "not-json"}, clear=False):
+        with patch.dict(
+            os.environ, {"THGENT_RETENTION_BY_DOMAIN": "not-json"}, clear=False
+        ):
             try:
                 s = ThegentSettings()
                 # If it doesn't raise, it should be empty
@@ -203,14 +209,18 @@ class TestRetentionByDomainValidator:
     def test_retention_by_domain_json_string_valid(self) -> None:
         # @trace FR-CFG-004
         """JSON string parses to dict (lines 112-114)."""
-        with patch.dict(os.environ, {"THGENT_RETENTION_BY_DOMAIN": '{"gdpr": 365}'}, clear=False):
+        with patch.dict(
+            os.environ, {"THGENT_RETENTION_BY_DOMAIN": '{"gdpr": 365}'}, clear=False
+        ):
             s = ThegentSettings()
             assert s.retention_by_domain == {"gdpr": 365}
 
     def test_retention_by_domain_invalid_json_returns_empty(self) -> None:
         # @trace FR-CFG-004
         """Invalid JSON returns empty dict (lines 115-116)."""
-        with patch.dict(os.environ, {"THGENT_RETENTION_BY_DOMAIN": "not-json"}, clear=False):
+        with patch.dict(
+            os.environ, {"THGENT_RETENTION_BY_DOMAIN": "not-json"}, clear=False
+        ):
             try:
                 s = ThegentSettings()
                 assert s.retention_by_domain == {}
@@ -220,7 +230,9 @@ class TestRetentionByDomainValidator:
     def test_retention_by_domain_non_dict_json_returns_empty(self) -> None:
         # @trace FR-CFG-004
         """Non-dict JSON returns empty dict (line 114 else branch)."""
-        with patch.dict(os.environ, {"THGENT_RETENTION_BY_DOMAIN": '"just a string"'}, clear=False):
+        with patch.dict(
+            os.environ, {"THGENT_RETENTION_BY_DOMAIN": '"just a string"'}, clear=False
+        ):
             try:
                 s = ThegentSettings()
                 assert s.retention_by_domain == {}
@@ -268,7 +280,11 @@ class TestSandboxEnvAllowlistValidator:
     def test_env_allowlist_from_json_array(self) -> None:
         # @trace FR-CFG-001
         """JSON array env var parses to list (line 283-284)."""
-        with patch.dict(os.environ, {"THGENT_SANDBOX_ENV_ALLOWLIST": '["PATH","HOME","CUSTOM"]'}, clear=False):
+        with patch.dict(
+            os.environ,
+            {"THGENT_SANDBOX_ENV_ALLOWLIST": '["PATH","HOME","CUSTOM"]'},
+            clear=False,
+        ):
             s = ThegentSettings()
             assert "PATH" in s.sandbox_env_allowlist
             assert "CUSTOM" in s.sandbox_env_allowlist

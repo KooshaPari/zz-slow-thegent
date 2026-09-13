@@ -24,7 +24,9 @@ def _candidate(
     quality: float,
     provider: str = "test",
 ) -> RouteCandidate:
-    return RouteCandidate(model=model, provider=provider, cost_per_1k=cost, quality_score=quality)
+    return RouteCandidate(
+        model=model, provider=provider, cost_per_1k=cost, quality_score=quality
+    )
 
 
 def _is_dominated_by(a: RouteCandidate, b: RouteCandidate) -> bool:
@@ -39,8 +41,12 @@ _candidate_st = st.builds(
     RouteCandidate,
     model=st.text(min_size=1, max_size=20),
     provider=st.sampled_from(["claude", "gemini", "codex", "openai", "test"]),
-    cost_per_1k=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
-    quality_score=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
+    cost_per_1k=st.floats(
+        min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False
+    ),
+    quality_score=st.floats(
+        min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False
+    ),
 )
 
 _nonempty_candidates_st = st.lists(_candidate_st, min_size=1, max_size=15)
@@ -70,7 +76,9 @@ def test_pareto_selected_is_from_input_list(candidates: list[RouteCandidate]) ->
     """Selected candidate must be an element of the input list by identity."""
     router = ParetoRouter()
     selected = router.select(candidates)
-    assert any(selected is c for c in candidates), f"Selected {selected} is not an object from the input list."
+    assert any(selected is c for c in candidates), (
+        f"Selected {selected} is not an object from the input list."
+    )
 
 
 @pytest.mark.requirement("FR-ROUTING-001")
@@ -84,7 +92,9 @@ def test_pareto_frontier_all_non_dominated(candidates: list[RouteCandidate]) -> 
         for other in candidates:
             if other is f:
                 continue
-            assert not _is_dominated_by(f, other), f"Frontier member {f} is dominated by {other}."
+            assert not _is_dominated_by(f, other), (
+                f"Frontier member {f} is dominated by {other}."
+            )
 
 
 @pytest.mark.requirement("FR-ROUTING-001")
@@ -106,7 +116,9 @@ def test_pareto_select_is_on_frontier(candidates: list[RouteCandidate]) -> None:
     selected = router.select(candidates)
     frontier = router.get_optimal_providers(candidates)
     frontier_ids = {id(c) for c in frontier}
-    assert id(selected) in frontier_ids, f"Selected {selected} is not on the Pareto frontier."
+    assert id(selected) in frontier_ids, (
+        f"Selected {selected} is not on the Pareto frontier."
+    )
 
 
 @pytest.mark.requirement("FR-ROUTING-001")
@@ -115,7 +127,9 @@ def test_pareto_select_is_on_frontier(candidates: list[RouteCandidate]) -> None:
     strategy=st.sampled_from(["cost", "quality", "balanced"]),
 )
 @settings(max_examples=300)
-def test_pareto_strategy_select_not_dominated(candidates: list[RouteCandidate], strategy: str) -> None:
+def test_pareto_strategy_select_not_dominated(
+    candidates: list[RouteCandidate], strategy: str
+) -> None:
     """select_by_strategy must also return a non-dominated candidate."""
     router = ParetoRouter()
     selected = router.select_by_strategy(strategy, candidates)

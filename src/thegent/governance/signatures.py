@@ -78,7 +78,9 @@ def sign_artifact(data: dict[str, Any], signing_key: str | None = None) -> str:
     ).hexdigest()
 
 
-def verify_signature(data: dict[str, Any], signature: str, signing_key: str | None = None) -> bool:
+def verify_signature(
+    data: dict[str, Any], signature: str, signing_key: str | None = None
+) -> bool:
     """Verify the provenance signature of an artifact."""
     key = _resolve_signing_key(signing_key)
     canonical = _canonical_json(data)
@@ -96,7 +98,9 @@ class ArtifactSigner:
         self.settings = settings or ThegentSettings()
         self.signing_key = _resolve_signing_key(None)
 
-    def create_signed_artifact(self, artifact_type: str, payload: dict[str, Any]) -> dict[str, Any]:
+    def create_signed_artifact(
+        self, artifact_type: str, payload: dict[str, Any]
+    ) -> dict[str, Any]:
         """Create a signed artifact with metadata."""
         envelope = {
             "type": artifact_type,

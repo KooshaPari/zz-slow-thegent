@@ -125,7 +125,10 @@ def test_list_versions_is_sorted_stably(registry_mod) -> None:
 def test_canonical_csm_entry_is_present(registry_mod) -> None:
     """``csm`` entry at ``CONTRACT_SCHEMA_VERSION`` is registered."""
     versions = registry_mod.CONTRACT_REGISTRY.list_versions()
-    assert any(v.contract_id == "csm" and v.version == registry_mod.CONTRACT_SCHEMA_VERSION for v in versions)
+    assert any(
+        v.contract_id == "csm" and v.version == registry_mod.CONTRACT_SCHEMA_VERSION
+        for v in versions
+    )
 
 
 def test_is_compatible_same_version_returns_true(registry_mod) -> None:
@@ -146,7 +149,9 @@ def test_is_compatible_same_version_returns_true(registry_mod) -> None:
 )
 def test_is_compatible_mismatch_returns_false(registry_mod, requested: str) -> None:
     """ROB-010 semantic: any non-current version is incompatible."""
-    assert not registry_mod.CONTRACT_REGISTRY.is_compatible(requested, registry_mod.CONTRACT_SCHEMA_VERSION)
+    assert not registry_mod.CONTRACT_REGISTRY.is_compatible(
+        requested, registry_mod.CONTRACT_SCHEMA_VERSION
+    )
 
 
 # ---------------------------------------------------------------------------

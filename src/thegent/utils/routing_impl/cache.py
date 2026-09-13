@@ -23,7 +23,9 @@ from typing import Any
 _log = logging.getLogger(__name__)
 
 # Keys from kwargs that affect the cache key
-_CACHE_KEY_KWARGS: frozenset[str] = frozenset({"temperature", "max_tokens", "tools", "response_format"})
+_CACHE_KEY_KWARGS: frozenset[str] = frozenset(
+    {"temperature", "max_tokens", "tools", "response_format"}
+)
 
 
 # ---------------------------------------------------------------------------
@@ -125,7 +127,9 @@ class InMemoryCache:
                 return None
             if entry.is_expired:
                 del self._store[full]
-                _log.debug("InMemoryCache: expired entry evicted key=%s ns=%s", key, namespace)
+                _log.debug(
+                    "InMemoryCache: expired entry evicted key=%s ns=%s", key, namespace
+                )
                 return None
             return entry
 
@@ -361,7 +365,9 @@ class DualCache:
             if entry is not None:
                 # Backfill L1
                 self._l1.set(key, entry.response, ttl=entry.ttl, namespace=namespace)
-                _log.debug("DualCache: L2 hit, backfilled L1 key=%s ns=%s", key, namespace)
+                _log.debug(
+                    "DualCache: L2 hit, backfilled L1 key=%s ns=%s", key, namespace
+                )
                 return entry
 
         return None
@@ -382,7 +388,9 @@ class DualCache:
     def delete(self, key: str, namespace: str = "default") -> bool:
         """Delete from both L1 and L2. Returns True if either had the entry."""
         deleted_l1 = self._l1.delete(key, namespace=namespace)
-        deleted_l2 = self._l2.delete(key, namespace=namespace) if self._l2 is not None else False
+        deleted_l2 = (
+            self._l2.delete(key, namespace=namespace) if self._l2 is not None else False
+        )
         return deleted_l1 or deleted_l2
 
     def clear(self, namespace: str | None = None) -> int:

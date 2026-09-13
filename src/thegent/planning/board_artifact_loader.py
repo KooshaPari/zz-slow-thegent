@@ -15,6 +15,7 @@ from typing import Any
 @dataclass
 class ExecutionSlice:
     """Represents an execution slice of board items."""
+
     slice_id: str
     name: str
     item_count: int = 0
@@ -26,6 +27,7 @@ class ExecutionSlice:
 @dataclass
 class BoardItem:
     """Represents a board item artifact."""
+
     board_id: str
     item_title: str
     status: str = "pending"
@@ -112,17 +114,21 @@ class BoardArtifactLoader:
                     self.metadata = data["board_metadata"]
                 if "execution_slices" in data:
                     for slice_data in data["execution_slices"]:
-                        self.slices.append(ExecutionSlice(
-                            slice_id=slice_data.get("slice_id", ""),
-                            name=slice_data.get("name", ""),
-                            item_count=slice_data.get("item_count", 0),
-                            completion_pct=slice_data.get("completion_pct", 0),
-                            lead_agent=slice_data.get("lead_agent", ""),
-                            mapped_wl_range=slice_data.get("mapped_wl_range", ""),
-                        ))
+                        self.slices.append(
+                            ExecutionSlice(
+                                slice_id=slice_data.get("slice_id", ""),
+                                name=slice_data.get("name", ""),
+                                item_count=slice_data.get("item_count", 0),
+                                completion_pct=slice_data.get("completion_pct", 0),
+                                lead_agent=slice_data.get("lead_agent", ""),
+                                mapped_wl_range=slice_data.get("mapped_wl_range", ""),
+                            )
+                        )
                 loaded.append(str(json_file))
             except Exception as e:
-                errors.append(f"JSON load error for {json_file}: {type(e).__name__}: {e}")
+                errors.append(
+                    f"JSON load error for {json_file}: {type(e).__name__}: {e}"
+                )
 
         # Load CSV artifacts
         for csv_file in self.board_dir.glob("*.csv"):
@@ -135,19 +141,23 @@ class BoardArtifactLoader:
                     try:
                         completion_pct = int(row.get("completion_pct", 0) or 0)
                     except (ValueError, TypeError):
-                        raise ValueError(f"Invalid completion_pct: {row.get('completion_pct')}")
+                        raise ValueError(
+                            f"Invalid completion_pct: {row.get('completion_pct')}"
+                        )
 
-                    csv_items.append(BoardItem(
-                        board_id=row.get("board_id", ""),
-                        item_title=row.get("item_title", ""),
-                        status=row.get("status", "pending"),
-                        priority=row.get("priority", ""),
-                        lead_agent=row.get("lead_agent", ""),
-                        mapped_wl=row.get("mapped_wl", ""),
-                        slice_id=row.get("slice", ""),
-                        effort_estimate=row.get("effort_estimate", ""),
-                        completion_pct=completion_pct,
-                    ))
+                    csv_items.append(
+                        BoardItem(
+                            board_id=row.get("board_id", ""),
+                            item_title=row.get("item_title", ""),
+                            status=row.get("status", "pending"),
+                            priority=row.get("priority", ""),
+                            lead_agent=row.get("lead_agent", ""),
+                            mapped_wl=row.get("mapped_wl", ""),
+                            slice_id=row.get("slice", ""),
+                            effort_estimate=row.get("effort_estimate", ""),
+                            completion_pct=completion_pct,
+                        )
+                    )
                 # Only add items if all rows are valid
                 self.items.extend(csv_items)
                 loaded.append(str(csv_file))
@@ -182,8 +192,12 @@ class BoardArtifactLoader:
                     "slice": {
                         "slice_id": item.slice_id,
                         "name": slice_obj.name if slice_obj else "",
-                        "mapped_wl_range": slice_obj.mapped_wl_range if slice_obj else "",
-                    } if item.slice_id else None,
+                        "mapped_wl_range": slice_obj.mapped_wl_range
+                        if slice_obj
+                        else "",
+                    }
+                    if item.slice_id
+                    else None,
                     "board_items": [],
                 }
 

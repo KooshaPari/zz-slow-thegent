@@ -282,7 +282,9 @@ class TestTTL:
 
         assert _get_ttl() == 1
 
-    def test_env_ttl_invalid_falls_back_to_default(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_env_ttl_invalid_falls_back_to_default(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.setenv("THGENT_FILE_INDEX_TTL", "not_a_number")
         from thegent.indexing.file_index import _get_ttl
 

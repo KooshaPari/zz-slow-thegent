@@ -71,12 +71,17 @@ class TestApplyParetoRouting:
             return_value=_FAKE_CANDIDATE,
         ) as mock_select:
             self._call()
-        assert mock_select.called, "ParetoRouter.select() was not called for routing='pareto'"
+        assert mock_select.called, (
+            "ParetoRouter.select() was not called for routing='pareto'"
+        )
 
     def test_selected_provider_and_model_returned(self):
         """The provider and model from ParetoRouter.select() are returned as agent and model."""
         # @trace FR-ROU-001
-        with patch("thegent.utils.routing_impl.pareto_router.ParetoRouter.select", return_value=_FAKE_CANDIDATE):
+        with patch(
+            "thegent.utils.routing_impl.pareto_router.ParetoRouter.select",
+            return_value=_FAKE_CANDIDATE,
+        ):
             agent, model, _, _ = self._call()
         assert agent == _FAKE_CANDIDATE.provider
         assert model == _FAKE_CANDIDATE.model
@@ -110,7 +115,8 @@ class TestApplyParetoRouting:
         """ParetoRouter.select() must NOT be called when agent is already specified."""
         # @trace FR-ROU-001
         with patch(
-            "thegent.utils.routing_impl.pareto_router.ParetoRouter.select", return_value=_FAKE_CANDIDATE
+            "thegent.utils.routing_impl.pareto_router.ParetoRouter.select",
+            return_value=_FAKE_CANDIDATE,
         ) as mock_select:
             agent, _model, _, _ = self._call(agent="existing-agent")
         assert not mock_select.called
@@ -122,7 +128,8 @@ class TestApplyParetoRouting:
         """ParetoRouter.select() must NOT be called when model is already specified."""
         # @trace FR-ROU-001
         with patch(
-            "thegent.utils.routing_impl.pareto_router.ParetoRouter.select", return_value=_FAKE_CANDIDATE
+            "thegent.utils.routing_impl.pareto_router.ParetoRouter.select",
+            return_value=_FAKE_CANDIDATE,
         ) as mock_select:
             _agent, model, _, _ = self._call(model="some-model")
         assert not mock_select.called
@@ -134,7 +141,8 @@ class TestApplyParetoRouting:
         """ParetoRouter.select() must NOT be called when routing != 'pareto'."""
         # @trace FR-ROU-001
         with patch(
-            "thegent.utils.routing_impl.pareto_router.ParetoRouter.select", return_value=_FAKE_CANDIDATE
+            "thegent.utils.routing_impl.pareto_router.ParetoRouter.select",
+            return_value=_FAKE_CANDIDATE,
         ) as mock_select:
             agent, model, _, _ = self._call(routing="prefer_direct")
         assert not mock_select.called
@@ -146,7 +154,10 @@ class TestApplyParetoRouting:
     def test_include_contract_populates_metadata(self):
         """When include_contract=True, route_contract and route_request are populated."""
         # @trace FR-ROU-001
-        with patch("thegent.utils.routing_impl.pareto_router.ParetoRouter.select", return_value=_FAKE_CANDIDATE):
+        with patch(
+            "thegent.utils.routing_impl.pareto_router.ParetoRouter.select",
+            return_value=_FAKE_CANDIDATE,
+        ):
             _, _, rc, rr = self._call(include_contract=True)
         assert rc is not None, "route_contract should be populated"
         assert rc.get("routing_policy") == "pareto"
@@ -161,7 +172,10 @@ class TestApplyParetoRouting:
         # @trace FR-ROU-001
         orig_rc = {"existing": "value"}
         orig_rr = {"existing": "value"}
-        with patch("thegent.utils.routing_impl.pareto_router.ParetoRouter.select", return_value=_FAKE_CANDIDATE):
+        with patch(
+            "thegent.utils.routing_impl.pareto_router.ParetoRouter.select",
+            return_value=_FAKE_CANDIDATE,
+        ):
             _, _, rc, rr = self._call(
                 include_contract=False,
                 route_contract=orig_rc,
@@ -175,7 +189,8 @@ class TestApplyParetoRouting:
         """routing=None leaves agent and model unchanged."""
         # @trace FR-ROU-001
         with patch(
-            "thegent.utils.routing_impl.pareto_router.ParetoRouter.select", return_value=_FAKE_CANDIDATE
+            "thegent.utils.routing_impl.pareto_router.ParetoRouter.select",
+            return_value=_FAKE_CANDIDATE,
         ) as mock_select:
             agent, model, _, _ = self._call(routing=None)
         assert not mock_select.called
@@ -281,9 +296,15 @@ class TestParetoRouterUnit:
         # m1 dominates m2 (lower cost, higher quality)
         # Frontier: m1 and m3.  m1 ratio=0.9, m3 ratio=0.7/0.5=1.4 → m3 wins
         candidates = [
-            RouteCandidate(model="m1", provider="p1", cost_per_1k=1.0, quality_score=0.9),
-            RouteCandidate(model="m2", provider="p2", cost_per_1k=2.0, quality_score=0.8),
-            RouteCandidate(model="m3", provider="p3", cost_per_1k=0.5, quality_score=0.7),
+            RouteCandidate(
+                model="m1", provider="p1", cost_per_1k=1.0, quality_score=0.9
+            ),
+            RouteCandidate(
+                model="m2", provider="p2", cost_per_1k=2.0, quality_score=0.8
+            ),
+            RouteCandidate(
+                model="m3", provider="p3", cost_per_1k=0.5, quality_score=0.7
+            ),
         ]
         result = ParetoRouter().select(candidates)
         assert result.model in ("m1", "m3"), f"Unexpected selection: {result.model}"
@@ -295,15 +316,21 @@ class TestParetoRouterUnit:
 
     def test_select_single_candidate_returns_it(self):
         """ParetoRouter.select() returns the only candidate when list has one element."""
-        candidate = RouteCandidate(model="solo", provider="x", cost_per_1k=1.0, quality_score=0.8)
+        candidate = RouteCandidate(
+            model="solo", provider="x", cost_per_1k=1.0, quality_score=0.8
+        )
         result = ParetoRouter().select([candidate])
         assert result is candidate
 
     def test_select_zero_cost_uses_quality_fallback(self):
         """ParetoRouter falls back to highest quality when all costs are zero."""
         candidates = [
-            RouteCandidate(model="m1", provider="p1", cost_per_1k=0.0, quality_score=0.9),
-            RouteCandidate(model="m2", provider="p2", cost_per_1k=0.0, quality_score=0.7),
+            RouteCandidate(
+                model="m1", provider="p1", cost_per_1k=0.0, quality_score=0.9
+            ),
+            RouteCandidate(
+                model="m2", provider="p2", cost_per_1k=0.0, quality_score=0.7
+            ),
         ]
         result = ParetoRouter().select(candidates)
         assert result.model == "m1"
@@ -336,7 +363,11 @@ class TestParetoRouterUnit:
 
     def test_dominated_candidates_excluded(self):
         """Dominated candidates (higher cost, lower quality) are excluded from selection."""
-        dominated = RouteCandidate(model="bad", provider="x", cost_per_1k=5.0, quality_score=0.1)
-        dominator = RouteCandidate(model="good", provider="y", cost_per_1k=1.0, quality_score=0.9)
+        dominated = RouteCandidate(
+            model="bad", provider="x", cost_per_1k=5.0, quality_score=0.1
+        )
+        dominator = RouteCandidate(
+            model="good", provider="y", cost_per_1k=1.0, quality_score=0.9
+        )
         result = ParetoRouter().select([dominated, dominator])
         assert result.model == "good", f"Expected 'good', got '{result.model}'"

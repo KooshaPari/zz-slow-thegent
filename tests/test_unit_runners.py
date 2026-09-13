@@ -14,7 +14,9 @@ class TestDirectAgentRunner:
     """Tests for DirectAgentRunner."""
 
     @patch("thegent.agents.direct_agents.subprocess.run")
-    def test_run_invokes_gemini_cli(self, mock_run: MagicMock, project_root: Path) -> None:
+    def test_run_invokes_gemini_cli(
+        self, mock_run: MagicMock, project_root: Path
+    ) -> None:
         # @trace FR-AGT-002
         """Run invokes gemini CLI with correct args."""
         mock_run.return_value = MagicMock(
@@ -40,7 +42,9 @@ class TestDirectAgentRunner:
         assert "--output-format" in cmd or "stream-json" in cmd
 
     @patch("thegent.agents.direct_agents.subprocess.run")
-    def test_run_invokes_cursor_with_workspace(self, mock_run: MagicMock, project_root: Path) -> None:
+    def test_run_invokes_cursor_with_workspace(
+        self, mock_run: MagicMock, project_root: Path
+    ) -> None:
         # @trace FR-AGT-002
         """Run invokes cursor with --workspace when cwd provided."""
         mock_run.return_value = MagicMock(returncode=0, stdout="ok", stderr="")

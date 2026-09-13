@@ -1,4 +1,5 @@
 """Watcher daemon module for file system watching."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -8,6 +9,7 @@ from typing import Any
 
 class WatchEvent(Enum):
     """Watch event types."""
+
     CREATED = "created"
     MODIFIED = "modified"
     DELETED = "deleted"
@@ -75,12 +77,21 @@ def get_watcher_daemon() -> WatcherDaemon:
     return WatcherDaemon()
 
 
-__all__ = ["WatcherDaemon", "WatchEvent", "WatchSpec", "_reset_singleton", "_SpecHandler", "_try_get_breaker", "get_watcher_daemon"]
+__all__ = [
+    "WatcherDaemon",
+    "WatchEvent",
+    "WatchSpec",
+    "_reset_singleton",
+    "_SpecHandler",
+    "_try_get_breaker",
+    "get_watcher_daemon",
+]
 
 
 @dataclass
 class WatchSpec:
     """Specification for a watch operation."""
+
     path: str
     recursive: bool = False
     patterns: list[str] = field(default_factory=list)

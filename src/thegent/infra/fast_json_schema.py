@@ -55,12 +55,16 @@ class FastJSONSchemaValidator:
         if FASTJSONSCHEMA_AVAILABLE:
             self._backend = "fastjsonschema"
             # Compile schema for fast validation
-            self._compiled_validator = cast("Callable[[Any], None]", fastjsonschema.compile(schema))
+            self._compiled_validator = cast(
+                "Callable[[Any], None]", fastjsonschema.compile(schema)
+            )
         elif JSONSCHEMA_AVAILABLE:
             self._backend = "jsonschema"
             self._validator = jsonschema.Draft202012Validator(schema)
         else:
-            raise ImportError("No JSON schema validator available. Install fastjsonschema or jsonschema")
+            raise ImportError(
+                "No JSON schema validator available. Install fastjsonschema or jsonschema"
+            )
 
     def validate(self, instance: Any) -> None:
         """Validate instance against schema.
@@ -111,7 +115,9 @@ class FastJSONSchemaValidator:
 _schema_cache: LRUCache[str, FastJSONSchemaValidator] = LRUCache(maxsize=50)
 
 
-def get_schema_validator(schema: dict[str, Any], cache_key: str | None = None) -> FastJSONSchemaValidator:
+def get_schema_validator(
+    schema: dict[str, Any], cache_key: str | None = None
+) -> FastJSONSchemaValidator:
     """Get or create a schema validator (with caching).
 
     Args:
@@ -136,7 +142,9 @@ def get_schema_validator(schema: dict[str, Any], cache_key: str | None = None) -
     return _schema_cache[cache_key]
 
 
-def validate_json_schema(instance: Any, schema: dict[str, Any], cache_key: str | None = None) -> None:
+def validate_json_schema(
+    instance: Any, schema: dict[str, Any], cache_key: str | None = None
+) -> None:
     """Validate instance against schema using fastest available backend.
 
     Args:
@@ -151,7 +159,9 @@ def validate_json_schema(instance: Any, schema: dict[str, Any], cache_key: str |
     validator.validate(instance)
 
 
-def is_valid_json_schema(instance: Any, schema: dict[str, Any], cache_key: str | None = None) -> bool:
+def is_valid_json_schema(
+    instance: Any, schema: dict[str, Any], cache_key: str | None = None
+) -> bool:
     """Check if instance is valid against schema.
 
     Args:

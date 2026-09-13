@@ -27,6 +27,7 @@ SCHEMA_VERSION = "2026.07-aud15"
 # Base gate contract
 # ------------------------------------------------------------------
 
+
 @dataclass(frozen=True, slots=True)
 class GateContract:
     """Minimal contract that every MCP gate response must satisfy."""

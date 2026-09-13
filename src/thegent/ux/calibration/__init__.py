@@ -50,7 +50,10 @@ class ConfidenceCalibrator:
             _log.warning("Failed to parse calibration JSON: %s", exc)
             return
         if not isinstance(payload, dict):
-            _log.warning("Invalid calibration schema: expected object, got %s", type(payload).__name__)
+            _log.warning(
+                "Invalid calibration schema: expected object, got %s",
+                type(payload).__name__,
+            )
             return
         # Silently drop non-numeric values (e.g. hand-typed booleans or
         # nested objects) — the rest of the map is still usable.

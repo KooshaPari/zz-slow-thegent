@@ -39,7 +39,9 @@ def get_next_month(queue_data: dict, last_processed: str | None = None) -> dict 
     return None
 
 
-def get_month_files(queue_data: dict, month: str, location: str | None = None) -> list[str]:
+def get_month_files(
+    queue_data: dict, month: str, location: str | None = None
+) -> list[str]:
     """Get all files for a specific month, optionally filtered by location."""
     for month_entry in queue_data["queue"]:
         if month_entry["month"] == month:
@@ -56,13 +58,20 @@ def list_months(queue_data: dict):
     for month_entry in queue_data["queue"]:
         month_entry["month"]
         month_entry["total_files"]
-        ", ".join([f"{loc['location']}({loc['file_count']})" for loc in month_entry["locations"]])
+        ", ".join(
+            [
+                f"{loc['location']}({loc['file_count']})"
+                for loc in month_entry["locations"]
+            ]
+        )
 
 
 def main():
     parser = argparse.ArgumentParser(description="Process markdown file queue")
     parser.add_argument("--month", help="Process specific month (YYYY-MM)")
-    parser.add_argument("--location", help="Filter by location (kush, kooshapari, temp-PRODVERCEL)")
+    parser.add_argument(
+        "--location", help="Filter by location (kush, kooshapari, temp-PRODVERCEL)"
+    )
     parser.add_argument("--next", action="store_true", help="Get next month to process")
     parser.add_argument("--list", action="store_true", help="List all months")
     parser.add_argument("--files", action="store_true", help="Output file list")

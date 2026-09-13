@@ -1,4 +1,5 @@
 """Schema base - STUB."""
+
 """Schema base - STUB."""
 from dataclasses import dataclass
 from enum import StrEnum
@@ -7,6 +8,7 @@ from typing import Any
 
 class DocType(StrEnum):
     """Document types."""
+
     MARKDOWN = "markdown"
     RST = "rst"
     HTML = "html"
@@ -15,6 +17,7 @@ class DocType(StrEnum):
 
 class DocStatus(StrEnum):
     """Document status values."""
+
     DRAFT = "draft"
     REVIEW = "review"
     PUBLISHED = "published"
@@ -23,6 +26,7 @@ class DocStatus(StrEnum):
 @dataclass
 class DocFrontmatter:
     """Frontmatter for documentation."""
+
     type: DocType = DocType.MARKDOWN
     status: str = ""
     date: str = ""

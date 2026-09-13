@@ -126,7 +126,9 @@ class WasmSandbox:
             Result dict with ``status``, ``result``/``error``, ``duration_ms``.
         """
         start_time = time.time()
-        _log.info("Executing Wasm binary %s in sandbox %s", wasm_binary_path, self.sandbox_id)
+        _log.info(
+            "Executing Wasm binary %s in sandbox %s", wasm_binary_path, self.sandbox_id
+        )
 
         self.status = SandboxStatus.RUNNING
         try:
@@ -139,7 +141,9 @@ class WasmSandbox:
 
             return {
                 "status": "success",
-                "result": output.decode("utf-8") if isinstance(output, bytes) else output,
+                "result": output.decode("utf-8")
+                if isinstance(output, bytes)
+                else output,
                 "duration_ms": duration_ms,
             }
         except Exception as exc:

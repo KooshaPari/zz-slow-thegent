@@ -213,7 +213,9 @@ class TestExtractTags:
         # @trace FR-CTR-002
         assert extract_tags("") == {}
 
-    def test_extract_tags_prefers_native_parser_when_available(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_extract_tags_prefers_native_parser_when_available(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         # @trace FR-CTR-002
         class _Native:
             @staticmethod

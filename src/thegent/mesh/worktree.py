@@ -105,7 +105,9 @@ class WorktreeManager:
         registry = self._load_registry()
         for other_id, entry in registry.items():
             if other_id != agent_id and entry.get("branch") == branch:
-                raise BranchCollisionError(f"Branch {branch!r} is already claimed by agent {other_id!r}")
+                raise BranchCollisionError(
+                    f"Branch {branch!r} is already claimed by agent {other_id!r}"
+                )
 
     def get_branch_status(self) -> dict[str, dict[str, str]]:
         """Return the full branch registry (TGNT-P15.2)."""
@@ -213,7 +215,11 @@ class WorktreeManager:
         registry = self._load_registry()
         worktree_dirs = []
         if self.worktree_base.exists():
-            worktree_dirs = [d.name for d in self.worktree_base.iterdir() if d.is_dir() and d.name.startswith("agent-")]
+            worktree_dirs = [
+                d.name
+                for d in self.worktree_base.iterdir()
+                if d.is_dir() and d.name.startswith("agent-")
+            ]
         orphans = [d for d in worktree_dirs if d[len("agent-") :] not in registry]
         return {
             "registered_agents": len(registry),

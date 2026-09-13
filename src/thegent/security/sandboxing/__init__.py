@@ -38,8 +38,12 @@ class SandboxProvider:
             # Tier 2: include worktree bind but no root bind
             return [
                 "bwrap",
-                "--bind", worktree, worktree,
-                "--bind", "/tmp", "/tmp",
+                "--bind",
+                worktree,
+                worktree,
+                "--bind",
+                "/tmp",
+                "/tmp",
             ] + cmd
         else:
             # Tier 1: standard sandboxing

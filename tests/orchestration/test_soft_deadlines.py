@@ -95,7 +95,9 @@ class TestDeadlineMonitorRegisterUnregister:
 
     def setup_method(self):
         """Create a fresh monitor for each test (not auto-started)."""
-        self.monitor = DeadlineMonitor(interval_s=999.0)  # long interval -- no auto-checks
+        self.monitor = DeadlineMonitor(
+            interval_s=999.0
+        )  # long interval -- no auto-checks
 
     def teardown_method(self):
         """Stop the monitor after each test."""
@@ -382,7 +384,9 @@ class TestConcurrencyControllerSoftDeadline:
         """When acquire() is blocked (slot limit hit), no deadline is registered."""
         # Return 100 running sessions so slot_limit is exceeded with max_concurrency=10
         running = [{"status": "running"}] * 100
-        monkeypatch.setattr("thegent.cli.commands.impl.ps_impl", lambda **kwargs: running)
+        monkeypatch.setattr(
+            "thegent.cli.commands.impl.ps_impl", lambda **kwargs: running
+        )
 
         ctrl = self._make_controller(tmp_path)
         run_id = "blocked-run"

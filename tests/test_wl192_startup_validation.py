@@ -117,7 +117,11 @@ class TestStartupValidator:
     def test_check_endpoint_reachability_handles_errors(self):
         """# @trace WL-192 — endpoint exceptions map to unreachable status."""
         validator = StartupValidator()
-        endpoints = ["https://api.github.com", "https://example.com", "https://error.test"]
+        endpoints = [
+            "https://api.github.com",
+            "https://example.com",
+            "https://error.test",
+        ]
         with patch(
             "thegent.integrations.startup_validation.httpx.get",
             side_effect=[

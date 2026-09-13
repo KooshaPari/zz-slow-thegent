@@ -133,7 +133,12 @@ class TestRegistryInit:
     def test_tables_created(self, db_path: Path) -> None:
         ProjectRegistry(db_path=db_path)
         conn = sqlite3.connect(str(db_path))
-        tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
+        tables = {
+            row[0]
+            for row in conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table'"
+            ).fetchall()
+        }
         conn.close()
         assert "projects" in tables
         assert "episodes" in tables
@@ -142,7 +147,9 @@ class TestRegistryInit:
     def test_schema_version_initialized(self, db_path: Path) -> None:
         ProjectRegistry(db_path=db_path)
         conn = sqlite3.connect(str(db_path))
-        version_row = conn.execute("SELECT version FROM schema_version ORDER BY id DESC LIMIT 1").fetchone()
+        version_row = conn.execute(
+            "SELECT version FROM schema_version ORDER BY id DESC LIMIT 1"
+        ).fetchone()
         conn.close()
         assert version_row is not None
         assert version_row[0] == 1
@@ -177,8 +184,15 @@ class TestRegistryInit:
         assert migrated.name == "legacy"
 
         conn = sqlite3.connect(str(db_path))
-        version_row = conn.execute("SELECT version FROM schema_version ORDER BY id DESC LIMIT 1").fetchone()
-        tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
+        version_row = conn.execute(
+            "SELECT version FROM schema_version ORDER BY id DESC LIMIT 1"
+        ).fetchone()
+        tables = {
+            row[0]
+            for row in conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table'"
+            ).fetchall()
+        }
         conn.close()
         assert version_row is not None
         assert version_row[0] == 1
@@ -234,7 +248,9 @@ class TestProjectCRUD:
         assert fetched.metadata["type"] == "milestone"
         assert fetched.metadata["label"] == "v1.0"
 
-    def test_register_project_preserves_created_at(self, registry: ProjectRegistry) -> None:
+    def test_register_project_preserves_created_at(
+        self, registry: ProjectRegistry
+    ) -> None:
         project = registry.register_project(name="ts-test", path="/ts")
         fetched = registry.get_project(project.id)
         assert fetched is not None
@@ -299,7 +315,9 @@ class TestEpisodeCRUD:
         episodes = registry.get_episodes_for_project(proj.id)
         assert episodes == []
 
-    def test_episode_ended_at_set_on_terminal_status(self, registry: ProjectRegistry) -> None:
+    def test_episode_ended_at_set_on_terminal_status(
+        self, registry: ProjectRegistry
+    ) -> None:
         proj = registry.register_project(name="end-test", path="/end")
         episode = registry.create_episode(project_id=proj.id, agent_id="agent-1")
         assert episode.ended_at is None

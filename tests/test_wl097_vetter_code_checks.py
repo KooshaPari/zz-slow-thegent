@@ -22,9 +22,7 @@ from thegent.govern.vetter.models import VetterCheck, VetterCheckResult
 # Helpers / constants
 # ---------------------------------------------------------------------------
 
-_DIFF_TWO_PY = (
-    "--- a/foo.py\n+++ b/foo.py\n@@ -1,3 +1,4 @@\n+x = 1\n--- a/bar.py\n+++ b/bar.py\n@@ -5,2 +5,3 @@\n+y = 2\n"
-)
+_DIFF_TWO_PY = "--- a/foo.py\n+++ b/foo.py\n@@ -1,3 +1,4 @@\n+x = 1\n--- a/bar.py\n+++ b/bar.py\n@@ -5,2 +5,3 @@\n+y = 2\n"
 
 _DIFF_NO_PY = "--- a/README.md\n+++ b/README.md\n@@ -1 +1,2 @@\n+## new section\n"
 
@@ -80,7 +78,9 @@ def test_test_pass_vetter_check_implements_protocol():
 
 def test_test_pass_vetter_check_custom_params():
     # @trace WL-097
-    check = TestPassVetterCheck(test_runner="python -m pytest", scope="all", timeout_seconds=60)
+    check = TestPassVetterCheck(
+        test_runner="python -m pytest", scope="all", timeout_seconds=60
+    )
     assert check.test_runner == "python -m pytest"
     assert check.scope == "all"
     assert check.timeout_seconds == 60
@@ -94,7 +94,10 @@ def test_test_pass_vetter_check_custom_params():
 def test_test_pass_vetter_check_passes_on_zero_exit():
     # @trace WL-097
     check = TestPassVetterCheck()
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0, b"1 passed")) as mock_run:
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run",
+        return_value=_mock_proc(0, b"1 passed"),
+    ) as mock_run:
         result = asyncio.run(check.check(RUN_ID, _DIFF_ONE_PY, CONTEXT))
 
     assert result.passed is True
@@ -106,7 +109,9 @@ def test_test_pass_vetter_check_passes_on_zero_exit():
 def test_test_pass_vetter_check_passes_includes_changed_files_in_cmd():
     # @trace WL-097
     check = TestPassVetterCheck()
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)) as mock_run:
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)
+    ) as mock_run:
         asyncio.run(check.check(RUN_ID, _DIFF_TWO_PY, CONTEXT))
 
     cmd = mock_run.call_args[0][0]
@@ -117,7 +122,9 @@ def test_test_pass_vetter_check_passes_includes_changed_files_in_cmd():
 def test_test_pass_vetter_check_passes_message_empty_on_success():
     # @trace WL-097
     check = TestPassVetterCheck()
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0, b"ok")):
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0, b"ok")
+    ):
         result = asyncio.run(check.check(RUN_ID, _DIFF_ONE_PY, CONTEXT))
 
     assert result.message == ""
@@ -126,7 +133,9 @@ def test_test_pass_vetter_check_passes_message_empty_on_success():
 def test_test_pass_vetter_check_passes_no_py_files_runs_full_suite():
     # @trace WL-097
     check = TestPassVetterCheck()
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)) as mock_run:
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)
+    ) as mock_run:
         result = asyncio.run(check.check(RUN_ID, _DIFF_NO_PY, CONTEXT))
 
     assert result.passed is True
@@ -139,7 +148,9 @@ def test_test_pass_vetter_check_passes_no_py_files_runs_full_suite():
 def test_test_pass_vetter_check_metadata_contains_returncode():
     # @trace WL-097
     check = TestPassVetterCheck()
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)):
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)
+    ):
         result = asyncio.run(check.check(RUN_ID, _DIFF_ONE_PY, CONTEXT))
 
     assert result.metadata["returncode"] == 0
@@ -318,7 +329,9 @@ def test_ruff_vetter_check_skip_message_mentions_ruff():
 def test_ruff_vetter_check_passes_on_zero_exit():
     # @trace WL-097
     check = RuffVetterCheck()
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)):
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)
+    ):
         result = asyncio.run(check.check(RUN_ID, _DIFF_ONE_PY, CONTEXT))
 
     assert result.passed is True
@@ -327,7 +340,9 @@ def test_ruff_vetter_check_passes_on_zero_exit():
 def test_ruff_vetter_check_passes_message_empty_on_success():
     # @trace WL-097
     check = RuffVetterCheck()
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)):
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)
+    ):
         result = asyncio.run(check.check(RUN_ID, _DIFF_ONE_PY, CONTEXT))
 
     assert result.message == ""
@@ -336,7 +351,9 @@ def test_ruff_vetter_check_passes_message_empty_on_success():
 def test_ruff_vetter_check_passes_cmd_includes_changed_files():
     # @trace WL-097
     check = RuffVetterCheck()
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)) as mock_run:
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)
+    ) as mock_run:
         asyncio.run(check.check(RUN_ID, _DIFF_TWO_PY, CONTEXT))
 
     cmd = mock_run.call_args[0][0]
@@ -347,7 +364,9 @@ def test_ruff_vetter_check_passes_cmd_includes_changed_files():
 def test_ruff_vetter_check_metadata_contains_files_checked():
     # @trace WL-097
     check = RuffVetterCheck()
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)):
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)
+    ):
         result = asyncio.run(check.check(RUN_ID, _DIFF_ONE_PY, CONTEXT))
 
     assert "module.py" in result.metadata["files_checked"]
@@ -356,7 +375,9 @@ def test_ruff_vetter_check_metadata_contains_files_checked():
 def test_ruff_vetter_check_select_rules_added_to_cmd():
     # @trace WL-097
     check = RuffVetterCheck(select_rules=["E501", "F401"])
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)) as mock_run:
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)
+    ) as mock_run:
         asyncio.run(check.check(RUN_ID, _DIFF_ONE_PY, CONTEXT))
 
     cmd = mock_run.call_args[0][0]
@@ -367,7 +388,9 @@ def test_ruff_vetter_check_select_rules_added_to_cmd():
 def test_ruff_vetter_check_fix_mode_adds_fix_flag():
     # @trace WL-097
     check = RuffVetterCheck(fix_mode=True)
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)) as mock_run:
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)
+    ) as mock_run:
         asyncio.run(check.check(RUN_ID, _DIFF_ONE_PY, CONTEXT))
 
     cmd = mock_run.call_args[0][0]
@@ -377,7 +400,9 @@ def test_ruff_vetter_check_fix_mode_adds_fix_flag():
 def test_ruff_vetter_check_no_fix_flag_when_fix_mode_false():
     # @trace WL-097
     check = RuffVetterCheck(fix_mode=False)
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)) as mock_run:
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)
+    ) as mock_run:
         asyncio.run(check.check(RUN_ID, _DIFF_ONE_PY, CONTEXT))
 
     cmd = mock_run.call_args[0][0]
@@ -440,7 +465,9 @@ def test_ruff_vetter_check_fail_stderr_included_in_message():
 def test_ruff_vetter_check_result_is_vetter_check_result():
     # @trace WL-097
     check = RuffVetterCheck()
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)):
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)
+    ):
         result = asyncio.run(check.check(RUN_ID, _DIFF_ONE_PY, CONTEXT))
 
     assert isinstance(result, VetterCheckResult)
@@ -454,7 +481,9 @@ def test_ruff_vetter_check_result_is_vetter_check_result():
 def test_test_pass_vetter_check_passes_cwd_from_context():
     # @trace WL-097
     check = TestPassVetterCheck()
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)) as mock_run:
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)
+    ) as mock_run:
         asyncio.run(check.check(RUN_ID, _DIFF_ONE_PY, {"cwd": "/tmp/project"}))
 
     kwargs = mock_run.call_args[1]
@@ -464,7 +493,9 @@ def test_test_pass_vetter_check_passes_cwd_from_context():
 def test_ruff_vetter_check_passes_cwd_from_context():
     # @trace WL-097
     check = RuffVetterCheck()
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)) as mock_run:
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)
+    ) as mock_run:
         asyncio.run(check.check(RUN_ID, _DIFF_ONE_PY, {"cwd": "/tmp/project"}))
 
     kwargs = mock_run.call_args[1]
@@ -474,7 +505,9 @@ def test_ruff_vetter_check_passes_cwd_from_context():
 def test_test_pass_vetter_check_instance_cwd_overrides_context():
     # @trace WL-097
     check = TestPassVetterCheck(cwd="/override")
-    with patch("thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)) as mock_run:
+    with patch(
+        "thegent.govern.vetter.checks.subprocess.run", return_value=_mock_proc(0)
+    ) as mock_run:
         asyncio.run(check.check(RUN_ID, _DIFF_ONE_PY, {"cwd": "/context-cwd"}))
 
     kwargs = mock_run.call_args[1]

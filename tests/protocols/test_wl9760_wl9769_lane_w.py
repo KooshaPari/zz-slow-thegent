@@ -36,7 +36,14 @@ def _submit_turn(session_id: str, *, requires_approval: bool = False) -> str:
         params["requires_approval"] = True
         params["unified_diff"] = "--- a/x\n+++ b/x\n@@\n-old\n+new\n"
     response, _notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "id": "submit", "method": "turn/submit", "params": params})
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": "submit",
+                "method": "turn/submit",
+                "params": params,
+            }
+        )
     )
     assert response is not None
     return response["result"]["turn"]["id"]
@@ -47,7 +54,9 @@ def test_wl9760_build_turn_cancel_phase_plan_collects_discovery_binding_parse() 
     _reset_state()
     session_id = _start_session()
     turn_id = _submit_turn(session_id, requires_approval=True)
-    plan = server._build_turn_cancel_phase_plan("turn/cancel", "req-9760", {"turn_id": turn_id})
+    plan = server._build_turn_cancel_phase_plan(
+        "turn/cancel", "req-9760", {"turn_id": turn_id}
+    )
     assert plan["route"] == "cancel"
     assert set(plan["binding"]) == {"parse", "execute", "project"}
     assert plan["parse_error"] is None
@@ -56,7 +65,9 @@ def test_wl9760_build_turn_cancel_phase_plan_collects_discovery_binding_parse() 
 def test_wl9761_build_turn_cancel_phase_plan_preserves_parse_error() -> None:
     # @trace WL-9761
     _reset_state()
-    plan = server._build_turn_cancel_phase_plan("turn/cancel", "req-9761", {"turn_id": "turn-missing"})
+    plan = server._build_turn_cancel_phase_plan(
+        "turn/cancel", "req-9761", {"turn_id": "turn-missing"}
+    )
     assert plan["turn_id"] is None
     assert plan["turn"] is None
     assert plan["parse_error"] is not None
@@ -74,7 +85,9 @@ def test_wl9763_resolve_turn_cancel_execution_target_returns_turn_binding() -> N
     _reset_state()
     session_id = _start_session()
     turn_id = _submit_turn(session_id, requires_approval=True)
-    plan = server._build_turn_cancel_phase_plan("turn/cancel", "req-9763", {"turn_id": turn_id})
+    plan = server._build_turn_cancel_phase_plan(
+        "turn/cancel", "req-9763", {"turn_id": turn_id}
+    )
     resolved_turn_id, turn, binding = server._resolve_turn_cancel_execution_target(plan)
     assert resolved_turn_id == turn_id
     assert turn["id"] == turn_id
@@ -86,7 +99,11 @@ def test_wl9764_resolve_turn_cancel_execution_target_rejects_unresolved_plan() -
     with pytest.raises(ValueError, match="execution target unresolved"):
         server._resolve_turn_cancel_execution_target(
             {
-                "binding": {"parse": object(), "execute": object(), "project": object()},
+                "binding": {
+                    "parse": object(),
+                    "execute": object(),
+                    "project": object(),
+                },
                 "turn_id": None,
                 "turn": None,
             }
@@ -112,13 +129,17 @@ def test_wl9766_build_turn_cancel_success_response_projects_turn_for_request() -
     turn = SERVER_STATE.turns[turn_id]
     binding = server._bind_turn_cancel_phases("cancel")
     server._apply_turn_cancel_execution(turn, binding)
-    response = server._build_turn_cancel_success_response(True, "req-9766", turn_id, turn, binding)
+    response = server._build_turn_cancel_success_response(
+        True, "req-9766", turn_id, turn, binding
+    )
     assert response is not None
     assert response["result"]["turn"]["id"] == turn_id
     assert response["result"]["turn"]["status"] == "cancelled"
 
 
-def test_wl9767_build_turn_cancel_success_response_suppresses_notification_payload() -> None:
+def test_wl9767_build_turn_cancel_success_response_suppresses_notification_payload() -> (
+    None
+):
     # @trace WL-9767
     _reset_state()
     session_id = _start_session()
@@ -126,7 +147,9 @@ def test_wl9767_build_turn_cancel_success_response_suppresses_notification_paylo
     turn = SERVER_STATE.turns[turn_id]
     binding = server._bind_turn_cancel_phases("cancel_suppress")
     server._apply_turn_cancel_execution(turn, binding)
-    response = server._build_turn_cancel_success_response(False, "req-9767", turn_id, turn, binding)
+    response = server._build_turn_cancel_success_response(
+        False, "req-9767", turn_id, turn, binding
+    )
     assert response is None
 
 
@@ -135,13 +158,19 @@ def test_wl9768_handle_turn_cancel_request_uses_phase_plan_for_happy_path() -> N
     _reset_state()
     session_id = _start_session()
     turn_id = _submit_turn(session_id, requires_approval=True)
-    response = server._handle_turn_cancel_request("turn/cancel", True, "req-9768", {"turn_id": turn_id})
+    response = server._handle_turn_cancel_request(
+        "turn/cancel", True, "req-9768", {"turn_id": turn_id}
+    )
     assert response is not None
     assert response["result"]["turn"]["status"] == "cancelled"
 
 
-def test_wl9769_build_turn_cancel_failure_response_preserves_terminal_notification_suppression() -> None:
+def test_wl9769_build_turn_cancel_failure_response_preserves_terminal_notification_suppression() -> (
+    None
+):
     # @trace WL-9769
-    parse_error = server._error_response("ignored", server.JsonRpcError(-32003, "Turn already terminal"))
+    parse_error = server._error_response(
+        "ignored", server.JsonRpcError(-32003, "Turn already terminal")
+    )
     response = server._build_turn_cancel_failure_response(False, parse_error)
     assert response is None

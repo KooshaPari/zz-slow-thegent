@@ -165,7 +165,14 @@ def _python_route_logic(task: str, agents: list) -> Any:
 
     # Keywords for different agent types
     code_keywords = ("implement", "code", "write", "refactor", "fix", "debug", "patch")
-    research_keywords = ("research", "search", "find", "explore", "analyze", "summarize")
+    research_keywords = (
+        "research",
+        "search",
+        "find",
+        "explore",
+        "analyze",
+        "summarize",
+    )
     plan_keywords = ("plan", "design", "architect", "spec", "document")
 
     # Score each agent based on task affinity

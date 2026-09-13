@@ -58,7 +58,10 @@ class TestInjectTimeConstraintSignatureRestored:
         sig = inspect.signature(cli_impl._inject_time_constraint)
         assert "seconds_per_tool_call" in sig.parameters
         assert sig.parameters["seconds_per_tool_call"].default == 2.3
-        assert sig.parameters["seconds_per_tool_call"].kind is inspect.Parameter.KEYWORD_ONLY
+        assert (
+            sig.parameters["seconds_per_tool_call"].kind
+            is inspect.Parameter.KEYWORD_ONLY
+        )
 
     def test_signature_prompt_and_timeout_remain_positional(self) -> None:
         # @trace AUDIT-N+11-003
@@ -70,7 +73,10 @@ class TestInjectTimeConstraintSignatureRestored:
     def test_impl_resolves_to_observability_impl_canonical(self) -> None:
         # @trace AUDIT-N+11-004
         # AUDIT-N+9 contract preserved: identity holds across impl.
-        assert cli_impl._inject_time_constraint is observability_impl._inject_time_constraint
+        assert (
+            cli_impl._inject_time_constraint
+            is observability_impl._inject_time_constraint
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -178,7 +184,9 @@ class TestBuildObserveSummaryTrendScopeMoved:
 
     def test_trend_scope_custom_limit(self) -> None:
         # @trace AUDIT-N+11-017
-        result = cli_impl._build_observe_summary_trend_scope(trend_samples=10, limit=100)
+        result = cli_impl._build_observe_summary_trend_scope(
+            trend_samples=10, limit=100
+        )
         assert result == {"trend_samples": 10, "limit": 100, "enabled": True}
 
 
@@ -219,9 +227,7 @@ class TestObservabilityImplSurfaceIntact:
         # @trace AUDIT-N+11-022 — AUDIT-N+10 governance surface preserved.
         assert hasattr(cli_impl, "escalate_add_impl")
         assert hasattr(cli_impl, "get_data_protection_status_impl")
-        assert (
-            cli_impl.escalate_add_impl is observability_impl.escalate_add_impl
-        )
+        assert cli_impl.escalate_add_impl is observability_impl.escalate_add_impl
 
 
 # ---------------------------------------------------------------------------
@@ -261,7 +267,10 @@ class TestAuditN11CarryForwardDocumented:
             ("_hash_observe_summary_payload", "hash_observe_summary_payload"),
             ("_hash_health_payload", "hash_health_payload"),
             ("_observe_summary_freshness_bucket", "observe_summary_freshness_bucket"),
-            ("_classify_observe_summary_trend_health", "classify_observe_summary_trend_health"),
+            (
+                "_classify_observe_summary_trend_health",
+                "classify_observe_summary_trend_health",
+            ),
             ("_load_observe_summary_snapshots", "load_observe_summary_snapshots"),
             ("_load_previous_health_snapshot", "load_previous_health_snapshot"),
             ("_append_health_snapshot", "append_health_snapshot"),

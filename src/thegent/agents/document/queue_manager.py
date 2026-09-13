@@ -185,7 +185,9 @@ class QueueManager:
         self.state.mark_failed(filepath)
         self._save_state()
 
-    def get_unprocessed_files(self, month: str | None = None, location: str | None = None) -> list[str]:
+    def get_unprocessed_files(
+        self, month: str | None = None, location: str | None = None
+    ) -> list[str]:
         """Get list of unprocessed files."""
         if month:
             all_files = self.get_month_files(month, location)
@@ -197,4 +199,8 @@ class QueueManager:
                     if location is None or loc_entry["location"] == location:
                         all_files.extend(loc_entry["files"])
 
-        return [f for f in all_files if f not in self.state.processed_files and f not in self.state.skipped_files]
+        return [
+            f
+            for f in all_files
+            if f not in self.state.processed_files and f not in self.state.skipped_files
+        ]

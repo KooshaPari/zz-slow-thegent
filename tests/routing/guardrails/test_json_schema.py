@@ -99,7 +99,9 @@ def test_extract_response_schema_missing_schema_key():
 
 
 def test_extract_llm_response_content():
-    response = {"choices": [{"message": {"role": "assistant", "content": '{"name": "Bob"}'}}]}
+    response = {
+        "choices": [{"message": {"role": "assistant", "content": '{"name": "Bob"}'}}]
+    }
     assert extract_llm_response_content(response) == '{"name": "Bob"}'
 
 

@@ -171,7 +171,9 @@ class TestRunLoginUnified:
     @patch("thegent.agents.cliproxy_manager.kill_proxy", return_value=False)
     @patch("thegent.agents.cliproxy_manager._inject_api_key_into_cliproxy")
     @patch("thegent.agents.cliproxy_manager._get_factory_api_key")
-    @patch("thegent.agents.cliproxy_manager._has_provider_credentials", return_value=False)
+    @patch(
+        "thegent.agents.cliproxy_manager._has_provider_credentials", return_value=False
+    )
     @patch("thegent.agents.cliproxy_manager._ensure_config")
     def test_run_login_unified_uses_factory_key_when_configured(
         self,
@@ -198,7 +200,9 @@ class TestRunLoginUnified:
     @patch("thegent.agents.cliproxy_manager.webbrowser.open", return_value=True)
     @patch("thegent.agents.cliproxy_manager._inject_api_key_into_cliproxy")
     @patch("thegent.agents.cliproxy_manager._get_factory_api_key")
-    @patch("thegent.agents.cliproxy_manager._has_provider_credentials", return_value=False)
+    @patch(
+        "thegent.agents.cliproxy_manager._has_provider_credentials", return_value=False
+    )
     @patch("thegent.agents.cliproxy_manager._ensure_config")
     def test_run_login_unified_returns_skip_when_no_key(
         self,
@@ -228,7 +232,9 @@ class TestEnsureProxyRunning:
     """Tests for ensure_proxy_running."""
 
     @patch("thegent.agents.cliproxy_manager._is_proxy_reachable")
-    def test_returns_base_url_when_already_reachable(self, mock_reachable: MagicMock) -> None:
+    def test_returns_base_url_when_already_reachable(
+        self, mock_reachable: MagicMock
+    ) -> None:
         # @trace FR-AGT-006
         """Skips start when proxy already running."""
         mock_reachable.return_value = True
@@ -273,7 +279,9 @@ class TestStartProxyManaged:
     """Tests for start_proxy_managed."""
 
     @patch("thegent.agents.cliproxy_manager._is_proxy_reachable")
-    def test_returns_none_proc_when_already_reachable(self, mock_reachable: MagicMock) -> None:
+    def test_returns_none_proc_when_already_reachable(
+        self, mock_reachable: MagicMock
+    ) -> None:
         # @trace FR-AGT-006
         """Returns (None, base_url) when proxy already running."""
         mock_reachable.return_value = True
@@ -337,7 +345,9 @@ class TestStartProxyAndWait:
         config_path = tmp_path / "config.yaml"
         binary = str(tmp_path / "bin")
 
-        proc = _start_proxy_and_wait(binary, config_path, "http://127.0.0.1:8317/v1", settings)
+        proc = _start_proxy_and_wait(
+            binary, config_path, "http://127.0.0.1:8317/v1", settings
+        )
         assert proc is mock_proc
 
     @patch("thegent.agents.cliproxy_manager._is_proxy_reachable")
@@ -363,7 +373,9 @@ class TestStartProxyAndWait:
         binary = str(tmp_path / "bin")
 
         with pytest.raises(RuntimeError, match="exited with code"):
-            _start_proxy_and_wait(binary, config_path, "http://127.0.0.1:8317/v1", settings)
+            _start_proxy_and_wait(
+                binary, config_path, "http://127.0.0.1:8317/v1", settings
+            )
 
     @patch("thegent.agents.cliproxy_manager._is_proxy_reachable")
     @patch("thegent.agents.cliproxy_manager.subprocess.Popen")
@@ -388,7 +400,9 @@ class TestStartProxyAndWait:
         binary = str(tmp_path / "bin")
 
         with pytest.raises(RuntimeError, match="did not become ready"):
-            _start_proxy_and_wait(binary, config_path, "http://127.0.0.1:8317/v1", settings)
+            _start_proxy_and_wait(
+                binary, config_path, "http://127.0.0.1:8317/v1", settings
+            )
         mock_proc.kill.assert_called_once()
 
 
@@ -756,7 +770,9 @@ class TestResolveBinary:
         assert result == str(local_bin)
 
     @patch("thegent.agents.cliproxy_manager.shutil.which", return_value=None)
-    def test_returns_cmd_name_when_nothing_found(self, mock_which: MagicMock, tmp_path: Path) -> None:
+    def test_returns_cmd_name_when_nothing_found(
+        self, mock_which: MagicMock, tmp_path: Path
+    ) -> None:
         # @trace FR-AGT-006
         """Returns bare command name when no resolution succeeds."""
         from thegent.agents.cliproxy_manager import _resolve_binary
@@ -821,7 +837,9 @@ class TestStartProxyAndWaitPortInUse:
         config_path = tmp_path / "config.yaml"
 
         with pytest.raises(RuntimeError, match="9876"):
-            _start_proxy_and_wait(str(tmp_path / "bin"), config_path, "http://127.0.0.1:9876/v1", settings)
+            _start_proxy_and_wait(
+                str(tmp_path / "bin"), config_path, "http://127.0.0.1:9876/v1", settings
+            )
 
 
 @pytest.mark.unit

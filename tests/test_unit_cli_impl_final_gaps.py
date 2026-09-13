@@ -65,7 +65,9 @@ class TestResolveCwdPyprojectIndicator:
 
         proj = tmp_path / "proj_pyproject"
         proj.mkdir()
-        (proj / "pyproject.toml").write_text("[project]\nname='test'\n", encoding="utf-8")
+        (proj / "pyproject.toml").write_text(
+            "[project]\nname='test'\n", encoding="utf-8"
+        )
         with patch("thegent.cli.commands.impl.Path.cwd", return_value=proj):
             _CWD_CACHE.clear()
             result = _resolve_cwd(None)
@@ -178,12 +180,16 @@ class TestLoadPreviousHealthSnapshotAllBranches:
             "",  # empty line -> continue (line 1252) [after match in file = before match in reversed]
             "   ",  # whitespace -> empty after strip -> continue
             "not-json",  # bad JSON -> continue (line 1255-1256)
-            json.dumps({"record_type": "other_type", "scope_key": scope}).decode(),  # wrong type (line 1258)
+            json.dumps(
+                {"record_type": "other_type", "scope_key": scope}
+            ).decode(),  # wrong type (line 1258)
         ]
         log_path = tmp_path / "health-snapshots.jsonl"
         log_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
+        with patch(
+            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
+        ):
             result = _load_previous_health_snapshot(scope)
 
         assert result is not None
@@ -199,7 +205,9 @@ class TestParseUtcZSuffixInvalid:
     @patch("thegent.cli.commands.impl._append_observe_summary_snapshot")
     @patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[])
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_z_suffix_invalid_returns_none(self, mock_settings_cls, mock_load, mock_append) -> None:
+    def test_z_suffix_invalid_returns_none(
+        self, mock_settings_cls, mock_load, mock_append
+    ) -> None:
         """When value ends with Z but body is invalid, _parse_utc returns None (lines 1419-1422)."""
         from thegent.cli.commands.impl import observe_summary_impl
 
@@ -229,7 +237,9 @@ class TestParseUtcZSuffixInvalid:
         ]
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
         ):
             result = observe_summary_impl(trend_samples=0)
@@ -247,7 +257,9 @@ class TestObserveSummaryDeltaTypeError:
     # @trace FR-EXEC-601
     @patch("thegent.cli.commands.impl._append_observe_summary_snapshot")
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_delta_with_non_numeric_baseline(self, mock_settings_cls, mock_append) -> None:
+    def test_delta_with_non_numeric_baseline(
+        self, mock_settings_cls, mock_append
+    ) -> None:
         """When baseline snapshot has non-numeric values, _delta returns None (lines 1576-1577)."""
         from thegent.cli.commands.impl import observe_summary_impl
 
@@ -291,9 +303,14 @@ class TestObserveSummaryDeltaTypeError:
         ]
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=trend_records),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=trend_records,
+            ),
         ):
             result = observe_summary_impl(trend_samples=5)
 
@@ -326,7 +343,9 @@ class TestRunImplModelFirstNoRoute:
             patch("thegent.models.catalog.ModelCatalog") as mock_catalog,
         ):
             mock_catalog.routes_for.return_value = [mock_route]
-            result = run_impl(agent=None, prompt="hello", model="gpt-4", provider="nonexistent")
+            result = run_impl(
+                agent=None, prompt="hello", model="gpt-4", provider="nonexistent"
+            )
 
         assert "error" in result
         assert "not available" in result["error"]
@@ -367,7 +386,9 @@ class TestRunImplModelFirstNoProviders:
 class TestRunImplDeprecatedContract:
     # @trace FR-EXEC-604
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_deprecated_contract_passes_through(self, mock_settings_cls, tmp_path) -> None:
+    def test_deprecated_contract_passes_through(
+        self, mock_settings_cls, tmp_path
+    ) -> None:
         """When migration status is 'deprecated', run continues (line 1839 = pass)."""
         from thegent.cli.commands.impl import run_impl
 
@@ -384,7 +405,11 @@ class TestRunImplDeprecatedContract:
         mock_settings_cls.return_value = mock_settings
 
         mock_migrator = MagicMock()
-        mock_migrator.evaluate_version.return_value = {"allowed": True, "status": "deprecated", "reason": "old version"}
+        mock_migrator.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "deprecated",
+            "reason": "old version",
+        }
 
         mock_result = MagicMock()
         mock_result.stdout = "output"
@@ -403,8 +428,14 @@ class TestRunImplDeprecatedContract:
 
         with (
             patch("thegent.cli.commands.impl.resolve_agent", return_value="claude"),
-            patch("thegent.contracts.migration.MigrationController", return_value=mock_migrator),
-            patch("thegent.cli.commands.impl._inject_time_constraint", return_value="hello"),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=mock_migrator,
+            ),
+            patch(
+                "thegent.cli.commands.impl._inject_time_constraint",
+                return_value="hello",
+            ),
             patch("thegent.cli.commands.impl._resolve_cwd", return_value=tmp_path),
             patch.dict(os.environ, {}, clear=False),
             patch("thegent.cli.commands.impl.RunRegistry"),
@@ -413,12 +444,20 @@ class TestRunImplDeprecatedContract:
             patch("thegent.execution.TrustBoundaryValidator"),
             patch("thegent.execution.OverrideRegistry"),
             patch("thegent.execution.PolicyEngine") as mock_pe_cls,
-            patch("thegent.cli.commands.impl._default_owner_tag", return_value="test_owner"),
+            patch(
+                "thegent.cli.commands.impl._default_owner_tag",
+                return_value="test_owner",
+            ),
             patch("thegent.cli.commands.impl.get_fallback_agents", return_value=[]),
             patch("thegent.cli.commands.impl.escalate_add_impl"),
-            patch("thegent.cli.commands.impl.extract_condensed", return_value="condensed"),
+            patch(
+                "thegent.cli.commands.impl.extract_condensed", return_value="condensed"
+            ),
             patch("thegent.cli.commands.impl.get_runner", return_value=MagicMock()),
-            patch("thegent.agents.state_machine.FallbackStateMachine", return_value=mock_fsm),
+            patch(
+                "thegent.agents.state_machine.FallbackStateMachine",
+                return_value=mock_fsm,
+            ),
             patch("thegent.contracts.telemetry.ContractTelemetry"),
             patch("thegent.contracts.policy.FallbackPolicy"),
         ):
@@ -451,7 +490,11 @@ class TestRunImplInputGuardrailFail:
         mock_settings_cls.return_value = mock_settings
 
         mock_migrator = MagicMock()
-        mock_migrator.evaluate_version.return_value = {"allowed": True, "status": "current", "reason": "ok"}
+        mock_migrator.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "current",
+            "reason": "ok",
+        }
 
         mock_gr_result = MagicMock()
         mock_gr_result.passed = False
@@ -466,11 +509,20 @@ class TestRunImplInputGuardrailFail:
 
         with (
             patch("thegent.cli.commands.impl.resolve_agent", return_value="claude"),
-            patch("thegent.contracts.migration.MigrationController", return_value=mock_migrator),
-            patch("thegent.cli.commands.impl._inject_time_constraint", return_value="hello"),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=mock_migrator,
+            ),
+            patch(
+                "thegent.cli.commands.impl._inject_time_constraint",
+                return_value="hello",
+            ),
             patch("thegent.cli.commands.impl._resolve_cwd", return_value=tmp_path),
             patch.dict(os.environ, env, clear=False),
-            patch("thegent.governance.input_guardrails._guardrails_from_env", return_value=mock_guardrails),
+            patch(
+                "thegent.governance.input_guardrails._guardrails_from_env",
+                return_value=mock_guardrails,
+            ),
         ):
             result = run_impl(agent="claude", prompt="secret data here")
 
@@ -487,7 +539,9 @@ class TestRunImplInputGuardrailFail:
 class TestRunImplInputGuardrailException:
     # @trace FR-EXEC-606
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_input_guardrail_exception_passes_through(self, mock_settings_cls, tmp_path) -> None:
+    def test_input_guardrail_exception_passes_through(
+        self, mock_settings_cls, tmp_path
+    ) -> None:
         """When guardrails raise an exception, line 1865 (pass) fires."""
         from thegent.cli.commands.impl import run_impl
 
@@ -504,7 +558,11 @@ class TestRunImplInputGuardrailException:
         mock_settings_cls.return_value = mock_settings
 
         mock_migrator = MagicMock()
-        mock_migrator.evaluate_version.return_value = {"allowed": True, "status": "current", "reason": "ok"}
+        mock_migrator.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "current",
+            "reason": "ok",
+        }
 
         mock_result = MagicMock()
         mock_result.stdout = "output"
@@ -525,23 +583,40 @@ class TestRunImplInputGuardrailException:
 
         with (
             patch("thegent.cli.commands.impl.resolve_agent", return_value="claude"),
-            patch("thegent.contracts.migration.MigrationController", return_value=mock_migrator),
-            patch("thegent.cli.commands.impl._inject_time_constraint", return_value="hello"),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=mock_migrator,
+            ),
+            patch(
+                "thegent.cli.commands.impl._inject_time_constraint",
+                return_value="hello",
+            ),
             patch("thegent.cli.commands.impl._resolve_cwd", return_value=tmp_path),
             patch.dict(os.environ, env, clear=False),
-            patch("thegent.governance.input_guardrails._guardrails_from_env", side_effect=RuntimeError("boom")),
+            patch(
+                "thegent.governance.input_guardrails._guardrails_from_env",
+                side_effect=RuntimeError("boom"),
+            ),
             patch("thegent.cli.commands.impl.RunRegistry"),
             patch("thegent.execution.Auditor") as mock_aud_cls,
             patch("thegent.execution.CircuitBreakerRegistry"),
             patch("thegent.execution.TrustBoundaryValidator"),
             patch("thegent.execution.OverrideRegistry"),
             patch("thegent.execution.PolicyEngine") as mock_pe_cls,
-            patch("thegent.cli.commands.impl._default_owner_tag", return_value="test_owner"),
+            patch(
+                "thegent.cli.commands.impl._default_owner_tag",
+                return_value="test_owner",
+            ),
             patch("thegent.cli.commands.impl.get_fallback_agents", return_value=[]),
             patch("thegent.cli.commands.impl.escalate_add_impl"),
-            patch("thegent.cli.commands.impl.extract_condensed", return_value="condensed"),
+            patch(
+                "thegent.cli.commands.impl.extract_condensed", return_value="condensed"
+            ),
             patch("thegent.cli.commands.impl.get_runner", return_value=MagicMock()),
-            patch("thegent.agents.state_machine.FallbackStateMachine", return_value=mock_fsm),
+            patch(
+                "thegent.agents.state_machine.FallbackStateMachine",
+                return_value=mock_fsm,
+            ),
             patch("thegent.contracts.telemetry.ContractTelemetry"),
             patch("thegent.contracts.policy.FallbackPolicy"),
         ):
@@ -585,7 +660,11 @@ def _run_impl_mocks(
     mock_settings.normalization_policy_strict_providers = ""
 
     mock_migrator = MagicMock()
-    mock_migrator.evaluate_version.return_value = {"allowed": True, "status": "current", "reason": "ok"}
+    mock_migrator.evaluate_version.return_value = {
+        "allowed": True,
+        "status": "current",
+        "reason": "ok",
+    }
 
     mock_result = MagicMock()
     mock_result.stdout = "output"
@@ -621,11 +700,26 @@ def _apply_run_impl_patches(mocks, tmp_path):
     import thegent.cli.commands.impl as _cli_mod
 
     stack = ExitStack()
-    stack.enter_context(patch("thegent.cli.commands.impl.ThegentSettings", return_value=mocks["settings"]))
-    stack.enter_context(patch("thegent.cli.commands.impl.resolve_agent", return_value="claude"))
-    stack.enter_context(patch("thegent.contracts.migration.MigrationController", return_value=mocks["migrator"]))
-    stack.enter_context(patch("thegent.cli.commands.impl._inject_time_constraint", return_value="hello"))
-    stack.enter_context(patch("thegent.cli.commands.impl._resolve_cwd", return_value=tmp_path))
+    stack.enter_context(
+        patch(
+            "thegent.cli.commands.impl.ThegentSettings", return_value=mocks["settings"]
+        )
+    )
+    stack.enter_context(
+        patch("thegent.cli.commands.impl.resolve_agent", return_value="claude")
+    )
+    stack.enter_context(
+        patch(
+            "thegent.contracts.migration.MigrationController",
+            return_value=mocks["migrator"],
+        )
+    )
+    stack.enter_context(
+        patch("thegent.cli.commands.impl._inject_time_constraint", return_value="hello")
+    )
+    stack.enter_context(
+        patch("thegent.cli.commands.impl._resolve_cwd", return_value=tmp_path)
+    )
     stack.enter_context(patch.dict(os.environ, mocks["env_extras"], clear=False))
     stack.enter_context(patch("thegent.cli.commands.impl.RunRegistry"))
     aud = stack.enter_context(patch("thegent.execution.Auditor"))
@@ -634,13 +728,29 @@ def _apply_run_impl_patches(mocks, tmp_path):
     stack.enter_context(patch("thegent.execution.TrustBoundaryValidator"))
     or_reg = stack.enter_context(patch("thegent.execution.OverrideRegistry"))
     pe = stack.enter_context(patch("thegent.execution.PolicyEngine"))
-    pe.return_value.evaluate.return_value = (mocks["policy_result"], mocks["policy_reason"])
-    stack.enter_context(patch("thegent.cli.commands.impl._default_owner_tag", return_value="test_owner"))
-    stack.enter_context(patch("thegent.cli.commands.impl.get_fallback_agents", return_value=[]))
+    pe.return_value.evaluate.return_value = (
+        mocks["policy_result"],
+        mocks["policy_reason"],
+    )
+    stack.enter_context(
+        patch("thegent.cli.commands.impl._default_owner_tag", return_value="test_owner")
+    )
+    stack.enter_context(
+        patch("thegent.cli.commands.impl.get_fallback_agents", return_value=[])
+    )
     stack.enter_context(patch("thegent.cli.commands.impl.escalate_add_impl"))
-    stack.enter_context(patch("thegent.cli.commands.impl.extract_condensed", return_value="condensed"))
-    stack.enter_context(patch("thegent.cli.commands.impl.get_runner", return_value=MagicMock()))
-    stack.enter_context(patch("thegent.agents.state_machine.FallbackStateMachine", return_value=mocks["fsm"]))
+    stack.enter_context(
+        patch("thegent.cli.commands.impl.extract_condensed", return_value="condensed")
+    )
+    stack.enter_context(
+        patch("thegent.cli.commands.impl.get_runner", return_value=MagicMock())
+    )
+    stack.enter_context(
+        patch(
+            "thegent.agents.state_machine.FallbackStateMachine",
+            return_value=mocks["fsm"],
+        )
+    )
     stack.enter_context(patch("thegent.contracts.telemetry.ContractTelemetry"))
     stack.enter_context(patch("thegent.contracts.policy.FallbackPolicy"))
     # Inject mock console into cli_impl module namespace (console is used but not imported)
@@ -668,7 +778,9 @@ class TestRunImplPolicyOverride:
         stack, _or_reg = _apply_run_impl_patches(mocks, tmp_path)
 
         with stack:
-            result = run_impl(agent="claude", prompt="hello", override_reason="emergency")
+            result = run_impl(
+                agent="claude", prompt="hello", override_reason="emergency"
+            )
 
         # Override should allow it to proceed
         assert result.get("exit_code", 0) == 0
@@ -726,7 +838,13 @@ class TestRunImplFallbackAppend:
         mocks = _run_impl_mocks(tmp_path)
         stack, _ = _apply_run_impl_patches(mocks, tmp_path)
 
-        with stack, patch("thegent.cli.commands.impl.get_fallback_agents", return_value=["gemini", "claude"]):
+        with (
+            stack,
+            patch(
+                "thegent.cli.commands.impl.get_fallback_agents",
+                return_value=["gemini", "claude"],
+            ),
+        ):
             result = run_impl(agent="claude", prompt="hello")
 
         assert result.get("exit_code", 0) == 0
@@ -803,7 +921,9 @@ class TestRunImplCircuitBreakerAndRunnerFactory:
         from thegent.agents.base import RunResult
         from thegent.cli.commands.impl import run_impl
 
-        fail_result = RunResult(stdout="out", stderr="err", exit_code=1, timed_out=False)
+        fail_result = RunResult(
+            stdout="out", stderr="err", exit_code=1, timed_out=False
+        )
         mock_runner = MagicMock()
         mock_runner.run.return_value = fail_result
 
@@ -869,7 +989,10 @@ class TestRunImplCircuitBreakerAndRunnerFactory:
             stack,
             patch("thegent.execution.CircuitBreakerRegistry") as mock_cb,
             patch("thegent.cli.commands.impl.get_runner", return_value=mock_runner),
-            patch("thegent.cli.commands.impl._resolve_agent_model", return_value="test-model"),
+            patch(
+                "thegent.cli.commands.impl._resolve_agent_model",
+                return_value="test-model",
+            ),
         ):
             mock_cb.return_value.is_open.return_value = False
             result = run_impl(agent="claude", prompt="hello")
@@ -921,7 +1044,10 @@ class TestRunImplUsageLimit:
         mocks = _run_impl_mocks(tmp_path, run_exit_code=1, fsm_status="failed")
         stack, _ = _apply_run_impl_patches(mocks, tmp_path)
 
-        with stack, patch("thegent.cli.commands.impl.is_usage_limit", return_value=True):
+        with (
+            stack,
+            patch("thegent.cli.commands.impl.is_usage_limit", return_value=True),
+        ):
             result = run_impl(agent="claude", prompt="hello")
 
         assert "exit_code" in result or "error" in result
@@ -941,7 +1067,10 @@ class TestRunImplApiError:
         mocks["result"].timed_out = False
         stack, _ = _apply_run_impl_patches(mocks, tmp_path)
 
-        with stack, patch("thegent.cli.commands.impl.is_usage_limit", return_value=False):
+        with (
+            stack,
+            patch("thegent.cli.commands.impl.is_usage_limit", return_value=False),
+        ):
             result = run_impl(agent="claude", prompt="hello")
 
         assert "exit_code" in result or "error" in result
@@ -963,7 +1092,10 @@ class TestRunImplCostTracking:
         mock_estimator = MagicMock()
         mock_estimator.estimate.return_value = 0.05
 
-        with stack, patch("thegent.cost.aggregator.CostEstimator", return_value=mock_estimator):
+        with (
+            stack,
+            patch("thegent.cost.aggregator.CostEstimator", return_value=mock_estimator),
+        ):
             result = run_impl(agent="claude", prompt="hello")
 
         assert result.get("exit_code", 0) == 0
@@ -976,7 +1108,13 @@ class TestRunImplCostTracking:
         mocks = _run_impl_mocks(tmp_path, env_extras={"THGENT_COST_TRACKING": "true"})
         stack, _ = _apply_run_impl_patches(mocks, tmp_path)
 
-        with stack, patch("thegent.cost.aggregator.CostEstimator", side_effect=RuntimeError("boom")):
+        with (
+            stack,
+            patch(
+                "thegent.cost.aggregator.CostEstimator",
+                side_effect=RuntimeError("boom"),
+            ),
+        ):
             result = run_impl(agent="claude", prompt="hello")
 
         assert result.get("exit_code", 0) == 0
@@ -1024,7 +1162,11 @@ class TestRunImplCsmAndContract:
 
         with stack:
             result = run_impl(
-                agent="claude", prompt="hello", include_contract=True, route_contract=rc, route_request=rr
+                agent="claude",
+                prompt="hello",
+                include_contract=True,
+                route_contract=rc,
+                route_request=rr,
             )
 
         assert result.get("route_contract") == rc
@@ -1050,7 +1192,11 @@ class TestBgImplDomainFlag:
         mock_settings_cls.return_value = mock_settings
 
         mock_migrator = MagicMock()
-        mock_migrator.evaluate_version.return_value = {"allowed": True, "status": "current", "reason": "ok"}
+        mock_migrator.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "current",
+            "reason": "ok",
+        }
 
         mock_proc = MagicMock()
         mock_proc.pid = 12345
@@ -1061,7 +1207,10 @@ class TestBgImplDomainFlag:
             patch("thegent.cli.commands.impl._default_owner_tag", return_value="me"),
             patch("thegent.cli.commands.impl._session_paths") as mock_sp,
             patch("thegent.cli.commands.impl.RunRegistry"),
-            patch("thegent.contracts.migration.MigrationController", return_value=mock_migrator),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=mock_migrator,
+            ),
             patch("subprocess.Popen", return_value=mock_proc) as mock_popen,
             patch("thegent.cli.commands.impl._run_background_session_observer"),
         ):
@@ -1103,9 +1252,13 @@ class TestBgImplDomainFlag:
 class TestRemediationLinesNoIssues:
     # @trace FR-CLI-608
     @patch("thegent.cli.commands.impl._append_health_snapshot")
-    @patch("thegent.cli.commands.impl._load_previous_health_snapshot", return_value=None)
+    @patch(
+        "thegent.cli.commands.impl._load_previous_health_snapshot", return_value=None
+    )
     @patch("thegent.cli.commands.impl.session_contract_audit_impl")
-    def test_no_issues_returns_no_blocked_message(self, mock_audit, mock_prev, mock_append) -> None:
+    def test_no_issues_returns_no_blocked_message(
+        self, mock_audit, mock_prev, mock_append
+    ) -> None:
         """When row has no issues, line 2729 adds 'No issues detected' message."""
         from thegent.cli.commands.impl import session_contract_health_report_impl
 
@@ -1136,9 +1289,13 @@ class TestRemediationLinesNoIssues:
 
     # @trace FR-CLI-609
     @patch("thegent.cli.commands.impl._append_health_snapshot")
-    @patch("thegent.cli.commands.impl._load_previous_health_snapshot", return_value=None)
+    @patch(
+        "thegent.cli.commands.impl._load_previous_health_snapshot", return_value=None
+    )
     @patch("thegent.cli.commands.impl.session_contract_audit_impl")
-    def test_unknown_issue_gets_generic_remediation(self, mock_audit, mock_prev, mock_append) -> None:
+    def test_unknown_issue_gets_generic_remediation(
+        self, mock_audit, mock_prev, mock_append
+    ) -> None:
         """When row has unknown issues not in remediation_map, line 2727 adds generic hint."""
         from thegent.cli.commands.impl import session_contract_health_report_impl
 
@@ -1183,7 +1340,9 @@ class TestHealthGateBaselineRegressionPaths:
     @patch("thegent.cli.commands.impl._append_health_snapshot")
     @patch("thegent.cli.commands.impl._load_previous_health_snapshot")
     @patch("thegent.cli.commands.impl.session_contract_audit_impl")
-    def test_baseline_pass_when_within_tolerance(self, mock_audit, mock_prev, mock_append) -> None:
+    def test_baseline_pass_when_within_tolerance(
+        self, mock_audit, mock_prev, mock_append
+    ) -> None:
         """When current ratio <= previous + tolerance, baseline_pass=True (line 2882)."""
         from thegent.cli.commands.impl import session_contract_health_gate_impl
 
@@ -1215,7 +1374,9 @@ class TestHealthGateBaselineRegressionPaths:
     @patch("thegent.cli.commands.impl._append_health_snapshot")
     @patch("thegent.cli.commands.impl._load_previous_health_snapshot")
     @patch("thegent.cli.commands.impl.session_contract_audit_impl")
-    def test_baseline_regression_appends_reason(self, mock_audit, mock_prev, mock_append) -> None:
+    def test_baseline_regression_appends_reason(
+        self, mock_audit, mock_prev, mock_append
+    ) -> None:
         """When current ratio > previous + tolerance, 'baseline_regression' is appended (line 2888)."""
         from thegent.cli.commands.impl import session_contract_health_gate_impl
 
@@ -1267,7 +1428,9 @@ class TestHealthTrendGateScope:
     # @trace FR-CLI-612
     @patch("thegent.cli.commands.impl._health_snapshot_max_lines", return_value=5000)
     @patch("thegent.cli.commands.impl._health_snapshot_log_path")
-    def test_gate_payload_type_adds_min_healthy(self, mock_path, mock_max, tmp_path) -> None:
+    def test_gate_payload_type_adds_min_healthy(
+        self, mock_path, mock_max, tmp_path
+    ) -> None:
         """When payload_type=session_contract_health_gate, line 2969 fires."""
         from thegent.cli.commands.impl import session_contract_health_trend_impl
 
@@ -1441,7 +1604,9 @@ class TestResolveExitCodeStringValueError:
     @patch("thegent.cli.commands.impl.ThegentSettings")
     @patch("thegent.cli.commands.impl._is_pid_running", return_value=False)
     @patch("thegent.cli.commands.impl._resolve_session_status", return_value="exited")
-    def test_non_numeric_string_exit_code(self, mock_status, mock_pid, mock_settings_cls, tmp_path) -> None:
+    def test_non_numeric_string_exit_code(
+        self, mock_status, mock_pid, mock_settings_cls, tmp_path
+    ) -> None:
         """When exit_code is a non-numeric string, ValueError is caught (lines 3164-3165)."""
         from thegent.cli.commands.impl import status_impl
 
@@ -1454,7 +1619,9 @@ class TestResolveExitCodeStringValueError:
         meta_path.write_text(json.dumps(meta).decode(), encoding="utf-8")
 
         with (
-            patch("thegent.cli.commands.impl._find_session_meta", return_value=meta_path),
+            patch(
+                "thegent.cli.commands.impl._find_session_meta", return_value=meta_path
+            ),
             patch(
                 "thegent.cli.commands.impl._session_paths",
                 return_value={
@@ -1504,7 +1671,10 @@ class TestEventsImplBadJsonContinue:
 @pytest.mark.unit
 class TestListAgentsImpl:
     # @trace FR-CLI-618
-    @patch("thegent.cli.commands.impl.list_agent_names", return_value=["claude", "gemini", "minimax", "cursor-agent"])
+    @patch(
+        "thegent.cli.commands.impl.list_agent_names",
+        return_value=["claude", "gemini", "minimax", "cursor-agent"],
+    )
     def test_returns_agents_with_backends(self, mock_names) -> None:
         """list_agents_impl returns agent dicts with names and backends (lines 3344-3358)."""
         from thegent.cli.commands.impl import list_agents_impl
@@ -1567,9 +1737,13 @@ class TestRunnerFactoryGetRunnerNone:
 class TestRemediationLinesEmptyIssues:
     # @trace FR-CLI-619
     @patch("thegent.cli.commands.impl._append_health_snapshot")
-    @patch("thegent.cli.commands.impl._load_previous_health_snapshot", return_value=None)
+    @patch(
+        "thegent.cli.commands.impl._load_previous_health_snapshot", return_value=None
+    )
     @patch("thegent.cli.commands.impl.session_contract_audit_impl")
-    def test_empty_issues_on_blocked_row(self, mock_audit, mock_prev, mock_append) -> None:
+    def test_empty_issues_on_blocked_row(
+        self, mock_audit, mock_prev, mock_append
+    ) -> None:
         """When a blocked row has empty issues list, line 2725 fires."""
         from thegent.cli.commands.impl import session_contract_health_report_impl
 
@@ -1616,7 +1790,9 @@ class TestHealthReportBaselineLines:
     @patch("thegent.cli.commands.impl._append_health_snapshot")
     @patch("thegent.cli.commands.impl._load_previous_health_snapshot")
     @patch("thegent.cli.commands.impl.session_contract_audit_impl")
-    def test_report_baseline_regression(self, mock_audit, mock_prev, mock_append) -> None:
+    def test_report_baseline_regression(
+        self, mock_audit, mock_prev, mock_append
+    ) -> None:
         """When blocked_ratio > previous + tolerance in the *report* function,
         baseline_pass=False and 'baseline_regression' is appended (lines 2852, 2858).
         """

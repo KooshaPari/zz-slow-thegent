@@ -10,7 +10,9 @@ SCRIPT = ROOT / "scripts" / "check_instruction_architecture.py"
 
 
 def _load_module():
-    spec = importlib.util.spec_from_file_location("instruction_architecture_check", SCRIPT)
+    spec = importlib.util.spec_from_file_location(
+        "instruction_architecture_check", SCRIPT
+    )
     assert spec is not None
     assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
@@ -26,7 +28,9 @@ def _top_level_function_defs(path: Path) -> set[str]:
 
 def test_instruction_doc_map_contains_links() -> None:
     mod = _load_module()
-    links = mod.extract_instruction_doc_map_links((ROOT / "CLAUDE.md").read_text(encoding="utf-8"))
+    links = mod.extract_instruction_doc_map_links(
+        (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
+    )
     assert links
 
 
@@ -102,7 +106,9 @@ def test_pre_work_gate_command_module_flags_wrapper_logic_leak(tmp_path: Path) -
     assert any(item.kind == "pre_work_gate_wrapper_logic_leak" for item in findings)
 
 
-def test_orchestration_wrapper_command_module_requires_direct_delegation(tmp_path: Path) -> None:
+def test_orchestration_wrapper_command_module_requires_direct_delegation(
+    tmp_path: Path,
+) -> None:
     mod = _load_module()
     module_path = tmp_path / "orchestration_wrappers.py"
     module_path.write_text(
@@ -167,11 +173,15 @@ def test_orchestration_wrapper_command_module_requires_direct_delegation(tmp_pat
         encoding="utf-8",
     )
 
-    findings = mod.validate_orchestration_wrapper_command_module(module_path=module_path)
+    findings = mod.validate_orchestration_wrapper_command_module(
+        module_path=module_path
+    )
     assert findings == []
 
 
-def test_orchestration_wrapper_command_module_flags_business_logic_leak(tmp_path: Path) -> None:
+def test_orchestration_wrapper_command_module_flags_business_logic_leak(
+    tmp_path: Path,
+) -> None:
     mod = _load_module()
     module_path = tmp_path / "bad_orchestration_wrappers.py"
     module_path.write_text(
@@ -229,7 +239,9 @@ def test_mcp_server_boundary_flags_line_ceiling(tmp_path: Path) -> None:
 def test_mcp_server_boundary_flags_missing_wiring(tmp_path: Path) -> None:
     mod = _load_module()
     server_path = tmp_path / "server.py"
-    server_path.write_text("from fastmcp import FastMCP\nmcp = FastMCP('x')\n", encoding="utf-8")
+    server_path.write_text(
+        "from fastmcp import FastMCP\nmcp = FastMCP('x')\n", encoding="utf-8"
+    )
 
     findings = mod.validate_mcp_server_boundary(
         server_path=server_path,
@@ -254,12 +266,16 @@ def test_wl125_impl_boundary_flags_line_ceiling(tmp_path: Path) -> None:
     assert any(item.kind == "wl125_impl_line_ceiling" for item in findings)
 
 
-def test_wl125_impl_boundary_flags_missing_trend_warning_metadata_key(tmp_path: Path) -> None:
+def test_wl125_impl_boundary_flags_missing_trend_warning_metadata_key(
+    tmp_path: Path,
+) -> None:
     mod = _load_module()
     impl_path = tmp_path / "impl.py"
     impl_path.write_text("def noop():\n    return 'ok'\n", encoding="utf-8")
     trend_metadata_source = tmp_path / "run_observe_helpers.py"
-    trend_metadata_source.write_text("def metadata():\n    return {'x': 1}\n", encoding="utf-8")
+    trend_metadata_source.write_text(
+        "def metadata():\n    return {'x': 1}\n", encoding="utf-8"
+    )
 
     findings = mod.validate_wl125_impl_boundary(
         impl_path=impl_path,
@@ -275,7 +291,9 @@ def test_wl125_impl_defines_required_governance_wrapper_function_defs() -> None:
     impl_path = ROOT / "src" / "thegent" / "cli" / "commands" / "impl.py"
 
     defined_functions = _top_level_function_defs(impl_path)
-    required_wrappers = set(mod.PRE_WORK_GATE_WRAPPER_CONTRACTS) | set(mod.ORCHESTRATION_WRAPPER_CONTRACTS)
+    required_wrappers = set(mod.PRE_WORK_GATE_WRAPPER_CONTRACTS) | set(
+        mod.ORCHESTRATION_WRAPPER_CONTRACTS
+    )
     missing = sorted(required_wrappers - defined_functions)
     assert missing == []
 

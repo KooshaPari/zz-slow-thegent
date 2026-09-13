@@ -27,7 +27,14 @@ def get_server_meta_impl(
     result: dict[str, Any] = {
         "server": "thegent",
         "version": "1.0",
-        "capabilities": ["tools", "resources", "prompts", "progress", "elicitation", "event_store"],
+        "capabilities": [
+            "tools",
+            "resources",
+            "prompts",
+            "progress",
+            "elicitation",
+            "event_store",
+        ],
         "health_payload_schema_version": health_payload_schema_version,
         "health_payload_types": list(health_payload_types),
         "observe_summary_payload_schema_version": observe_summary_payload_schema_version,
@@ -99,7 +106,11 @@ def sweep_impl(
         audit_result = auditor.verify_registry()
 
     has_issues = bool(drift_issues) or bool(past_sla_items)
-    if include_audit and audit_result and audit_result.get("status") not in ("passed", "empty"):
+    if (
+        include_audit
+        and audit_result
+        and audit_result.get("status") not in ("passed", "empty")
+    ):
         has_issues = True
 
     cal_results = update_calibration_fn()
@@ -174,9 +185,15 @@ def build_observe_summary_escalation(
             "sla_minutes": item.get("sla_minutes", 0),
             "blocked_at_utc": item.get("blocked_at_utc"),
             "escalate_by_utc": item.get("escalate_by_utc"),
-            "minutes_overdue": round(overdue_seconds / 60.0, 2) if overdue_seconds > 0 else 0.0,
-            "minutes_remaining": round(-overdue_seconds / 60.0, 2) if overdue_seconds <= 0 else 0.0,
-            "blocked_to_now_seconds": round(blocked_to_now.total_seconds(), 2) if blocked_to_now is not None else None,
+            "minutes_overdue": round(overdue_seconds / 60.0, 2)
+            if overdue_seconds > 0
+            else 0.0,
+            "minutes_remaining": round(-overdue_seconds / 60.0, 2)
+            if overdue_seconds <= 0
+            else 0.0,
+            "blocked_to_now_seconds": round(blocked_to_now.total_seconds(), 2)
+            if blocked_to_now is not None
+            else None,
         }
 
     escalation_rows = sorted(
@@ -222,7 +239,9 @@ def build_observe_summary_trend(
         trend_samples_requested = 0
     trend_samples_requested = max(trend_samples_requested, 0)
 
-    trend_effective_samples = trend_samples_requested if trend_samples_requested > 1 else 0
+    trend_effective_samples = (
+        trend_samples_requested if trend_samples_requested > 1 else 0
+    )
     trend_sampling_mode = "enabled" if trend_effective_samples > 0 else "disabled"
     trend_previous_samples_requested = max(0, trend_effective_samples - 1)
     trend_scope_key = build_scope_fn(
@@ -234,7 +253,9 @@ def build_observe_summary_trend(
         top_escalations=top_escalations,
     )
     trend_scope_signature = hash_scope_fn(trend_scope_key)
-    trend_scope_key_json = json.dumps(trend_scope_key, option=json.OPT_SORT_KEYS).decode()
+    trend_scope_key_json = json.dumps(
+        trend_scope_key, option=json.OPT_SORT_KEYS
+    ).decode()
     trend_records: list[dict[str, Any]] = []
     if trend_previous_samples_requested:
         trend_records = load_snapshots_fn(
@@ -249,11 +270,15 @@ def build_observe_summary_trend(
         if str((record or {}).get("captured_at_utc", ""))
     ]
     trend_snapshot_ids_csv = ", ".join(trend_snapshot_ids)
-    trend_snapshot_ids_hash = hashlib.sha256(trend_snapshot_ids_csv.encode("utf-8")).hexdigest()
+    trend_snapshot_ids_hash = hashlib.sha256(
+        trend_snapshot_ids_csv.encode("utf-8")
+    ).hexdigest()
 
     baseline_snapshot = trend_records[-1] if trend_records else None
     baseline_available = bool(trend_previous_samples_requested > 0 and trend_records)
-    baseline_captured_at_utc = baseline_snapshot.get("captured_at_utc") if baseline_snapshot else None
+    baseline_captured_at_utc = (
+        baseline_snapshot.get("captured_at_utc") if baseline_snapshot else None
+    )
     trend_snapshot_expected_count = trend_previous_samples_requested
     trend_snapshot_deficit = max(0, trend_snapshot_expected_count - len(trend_records))
     trend_snapshot_invalid_timestamps = 0
@@ -273,7 +298,9 @@ def build_observe_summary_trend(
     trend_snapshot_coverage_pct = None
 
     if trend_snapshot_expected_count > 0:
-        trend_snapshot_coverage_pct = round((len(trend_records) / trend_snapshot_expected_count) * 100.0, 6)
+        trend_snapshot_coverage_pct = round(
+            (len(trend_records) / trend_snapshot_expected_count) * 100.0, 6
+        )
 
     if len(parsed_snapshot_timestamps) >= 2:
         ordered = sorted(parsed_snapshot_timestamps)
@@ -285,7 +312,9 @@ def build_observe_summary_trend(
             trend_snapshot_interval_seconds_min = min(diffs)
             trend_snapshot_interval_seconds_max = max(diffs)
             trend_snapshot_gap_count = len(diffs)
-            trend_snapshot_window_seconds = int((ordered[-1] - ordered[0]).total_seconds())
+            trend_snapshot_window_seconds = int(
+                (ordered[-1] - ordered[0]).total_seconds()
+            )
 
     latest_snapshot = trend_records[0] if trend_records else None
     trend_snapshot_freshness_seconds = None
@@ -352,7 +381,9 @@ def build_observe_summary_trend(
     drift_structural_rate_pct = float(budget.get("structural_rate_pct", 0.0))
     drift_semantic_rate_pct = float(budget.get("semantic_rate_pct", 0.0))
 
-    trend_snapshot_recommendations = trend_health.get("trend_snapshot_recommendations", [])
+    trend_snapshot_recommendations = trend_health.get(
+        "trend_snapshot_recommendations", []
+    )
     trend_summary = {
         "enabled": trend_sampling_mode == "enabled",
         "trend_sampling_mode": trend_sampling_mode,
@@ -378,22 +409,38 @@ def build_observe_summary_trend(
         "baseline_captured_at_utc": baseline_captured_at_utc,
         "trend_snapshot_health": trend_health.get("trend_snapshot_health"),
         "trend_snapshot_health_score": trend_health.get("trend_snapshot_health_score"),
-        "trend_snapshot_health_breakdown": trend_health.get("trend_snapshot_health_breakdown", {}),
+        "trend_snapshot_health_breakdown": trend_health.get(
+            "trend_snapshot_health_breakdown", {}
+        ),
         "trend_snapshot_recommendations": trend_snapshot_recommendations,
         "trend_snapshot_recommendation_count": len(trend_snapshot_recommendations),
         "trend_snapshot_recommendations_csv": ", ".join(trend_snapshot_recommendations),
         "total_events_delta": _delta(total_events, baseline_kpis.get("total_events")),
-        "fallback_rate_delta": _delta(fallback_rate, baseline_kpis.get("fallback_rate")),
+        "fallback_rate_delta": _delta(
+            fallback_rate, baseline_kpis.get("fallback_rate")
+        ),
         "success_rate_delta": _delta(success_rate, baseline_kpis.get("success_rate")),
-        "avg_confidence_delta": _delta(avg_confidence, baseline_kpis.get("avg_confidence")),
-        "structural_drift_pct_delta": _delta(structural_drift_pct, baseline_kpis.get("structural_drift_pct")),
-        "semantic_drift_pct_delta": _delta(semantic_drift_pct, baseline_kpis.get("semantic_drift_pct")),
+        "avg_confidence_delta": _delta(
+            avg_confidence, baseline_kpis.get("avg_confidence")
+        ),
+        "structural_drift_pct_delta": _delta(
+            structural_drift_pct, baseline_kpis.get("structural_drift_pct")
+        ),
+        "semantic_drift_pct_delta": _delta(
+            semantic_drift_pct, baseline_kpis.get("semantic_drift_pct")
+        ),
         "drift_structural_rate_pct_delta": _delta(
             drift_structural_rate_pct, baseline_drifts.get("structural_rate_pct")
         ),
-        "drift_semantic_rate_pct_delta": _delta(drift_semantic_rate_pct, baseline_drifts.get("semantic_rate_pct")),
-        "backlog_count_delta": _delta(backlog_count, baseline_escalation.get("backlog_count")),
-        "past_sla_count_delta": _delta(past_sla_count, baseline_escalation.get("past_sla_count")),
+        "drift_semantic_rate_pct_delta": _delta(
+            drift_semantic_rate_pct, baseline_drifts.get("semantic_rate_pct")
+        ),
+        "backlog_count_delta": _delta(
+            backlog_count, baseline_escalation.get("backlog_count")
+        ),
+        "past_sla_count_delta": _delta(
+            past_sla_count, baseline_escalation.get("past_sla_count")
+        ),
         "scope_signature": trend_scope_signature,
         "scope_key_json": trend_scope_key_json,
     }

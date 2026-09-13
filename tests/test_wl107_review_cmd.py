@@ -65,9 +65,13 @@ _FAILED_RESPONSE = {
 # ---------------------------------------------------------------------------
 
 
-def test_review_impl_returns_sandbox_mode_read_only(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_review_impl_returns_sandbox_mode_read_only(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """review_impl must advertise sandbox_mode=read_only in result. # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE
+    )
 
     from thegent.cli.commands.impl import review_impl
 
@@ -77,7 +81,9 @@ def test_review_impl_returns_sandbox_mode_read_only(monkeypatch: pytest.MonkeyPa
 
 def test_review_impl_returns_allowed_tools(monkeypatch: pytest.MonkeyPatch) -> None:
     """review_impl must include allowed_tools list in result. # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE
+    )
 
     from thegent.cli.commands.impl import review_impl
 
@@ -90,7 +96,9 @@ def test_review_impl_returns_allowed_tools(monkeypatch: pytest.MonkeyPatch) -> N
 
 def test_review_impl_exit_code_zero_no_issues(monkeypatch: pytest.MonkeyPatch) -> None:
     """review_impl exit_code=0 when issues list is empty. # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE
+    )
 
     from thegent.cli.commands.impl import review_impl
 
@@ -101,7 +109,9 @@ def test_review_impl_exit_code_zero_no_issues(monkeypatch: pytest.MonkeyPatch) -
 
 def test_review_impl_exit_code_one_with_issues(monkeypatch: pytest.MonkeyPatch) -> None:
     """review_impl exit_code=1 when issues are found. # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _ISSUE_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _ISSUE_RESPONSE
+    )
 
     from thegent.cli.commands.impl import review_impl
 
@@ -112,7 +122,9 @@ def test_review_impl_exit_code_one_with_issues(monkeypatch: pytest.MonkeyPatch) 
 
 def test_review_impl_structured_issue_fields(monkeypatch: pytest.MonkeyPatch) -> None:
     """review_impl normalizes and returns all required issue fields. # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _ISSUE_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _ISSUE_RESPONSE
+    )
 
     from thegent.cli.commands.impl import review_impl
 
@@ -125,7 +137,9 @@ def test_review_impl_structured_issue_fields(monkeypatch: pytest.MonkeyPatch) ->
     assert issue["suggestion"] == "Guard before access."
 
 
-def test_review_impl_raises_on_invalid_json_stdout(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_review_impl_raises_on_invalid_json_stdout(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """review_impl raises ValueError when agent returns non-JSON. # @trace WL-107"""
     monkeypatch.setattr(
         "thegent.cli.commands.impl.run_impl",
@@ -138,7 +152,9 @@ def test_review_impl_raises_on_invalid_json_stdout(monkeypatch: pytest.MonkeyPat
         review_impl(prompt="check code")
 
 
-def test_review_impl_accepts_fenced_json_stdout(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_review_impl_accepts_fenced_json_stdout(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """review_impl accepts ```json fenced payloads from model output. # @trace WL-107"""
     fenced = """```json
 {"summary":"All good.","overall_rating":100,"issues":[]}
@@ -155,7 +171,9 @@ def test_review_impl_accepts_fenced_json_stdout(monkeypatch: pytest.MonkeyPatch)
     assert result["issues"] == []
 
 
-def test_review_impl_raises_when_stdout_is_not_string(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_review_impl_raises_when_stdout_is_not_string(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """review_impl raises ValueError when stdout is not a JSON string. # @trace WL-107"""
     monkeypatch.setattr(
         "thegent.cli.commands.impl.run_impl",
@@ -168,11 +186,16 @@ def test_review_impl_raises_when_stdout_is_not_string(monkeypatch: pytest.Monkey
         review_impl(prompt="check code")
 
 
-def test_review_impl_rejects_boolean_overall_rating(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_review_impl_rejects_boolean_overall_rating(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """review_impl rejects bool overall_rating to preserve integer contract. # @trace WL-107"""
     monkeypatch.setattr(
         "thegent.cli.commands.impl.run_impl",
-        lambda **_kw: {"exit_code": 0, "stdout": '{"summary":"ok","overall_rating":true,"issues":[]}'},
+        lambda **_kw: {
+            "exit_code": 0,
+            "stdout": '{"summary":"ok","overall_rating":true,"issues":[]}',
+        },
     )
 
     from thegent.cli.commands.impl import review_impl
@@ -181,9 +204,13 @@ def test_review_impl_rejects_boolean_overall_rating(monkeypatch: pytest.MonkeyPa
         review_impl(prompt="check code")
 
 
-def test_review_impl_returns_error_dict_on_run_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_review_impl_returns_error_dict_on_run_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """review_impl returns error dict when underlying run_impl fails. # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _FAILED_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _FAILED_RESPONSE
+    )
 
     from thegent.cli.commands.impl import review_impl
 
@@ -230,7 +257,13 @@ def test_review_impl_injects_schema_preamble(monkeypatch: pytest.MonkeyPatch) ->
 
 def test_review_impl_context_usage_passthrough(monkeypatch: pytest.MonkeyPatch) -> None:
     """review_impl passes context_usage from run_impl through to result. # @trace WL-107"""
-    ctx = {"used": 500, "max": 1000, "ratio": 0.5, "display": "500/1k", "level": "green"}
+    ctx = {
+        "used": 500,
+        "max": 1000,
+        "ratio": 0.5,
+        "display": "500/1k",
+        "level": "green",
+    }
     monkeypatch.setattr(
         "thegent.cli.commands.impl.run_impl",
         lambda **_kw: {**_CLEAN_RESPONSE, "context_usage": ctx},
@@ -249,7 +282,9 @@ def test_review_impl_context_usage_passthrough(monkeypatch: pytest.MonkeyPatch) 
 
 def test_cli_review_exit_code_zero_no_issues(monkeypatch: pytest.MonkeyPatch) -> None:
     """thegent review exits 0 when no issues found. # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE
+    )
 
     result = runner.invoke(app, ["review", "check this"])
 
@@ -258,16 +293,22 @@ def test_cli_review_exit_code_zero_no_issues(monkeypatch: pytest.MonkeyPatch) ->
 
 def test_cli_review_exit_code_one_with_issues(monkeypatch: pytest.MonkeyPatch) -> None:
     """thegent review exits 1 when issues found. # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _ISSUE_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _ISSUE_RESPONSE
+    )
 
     result = runner.invoke(app, ["review", "check this"])
 
     assert result.exit_code == 1
 
 
-def test_cli_review_exit_code_two_on_invalid_format(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_cli_review_exit_code_two_on_invalid_format(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """thegent review exits 2 on unsupported --format value. # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE
+    )
 
     result = runner.invoke(app, ["review", "check this", "--format", "xml"])
 
@@ -275,7 +316,9 @@ def test_cli_review_exit_code_two_on_invalid_format(monkeypatch: pytest.MonkeyPa
     assert "Unsupported --format" in result.stdout
 
 
-def test_cli_review_exit_code_two_on_schema_violation(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_cli_review_exit_code_two_on_schema_violation(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """thegent review exits 2 when agent returns invalid review JSON. # @trace WL-107"""
     monkeypatch.setattr(
         "thegent.cli.commands.impl.run_impl",
@@ -290,7 +333,9 @@ def test_cli_review_exit_code_two_on_schema_violation(monkeypatch: pytest.Monkey
 
 def test_cli_review_json_format_output(monkeypatch: pytest.MonkeyPatch) -> None:
     """thegent review --format json outputs valid JSON with correct keys. # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE
+    )
 
     result = runner.invoke(app, ["review", "check this", "--format", "json"])
 
@@ -301,9 +346,17 @@ def test_cli_review_json_format_output(monkeypatch: pytest.MonkeyPatch) -> None:
     assert payload["issues"] == []
 
 
-def test_cli_review_json_includes_context_usage(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_cli_review_json_includes_context_usage(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """thegent review --format json includes context_usage when present. # @trace WL-107"""
-    ctx = {"used": 700, "max": 1000, "ratio": 0.7, "display": "700/1k", "level": "yellow"}
+    ctx = {
+        "used": 700,
+        "max": 1000,
+        "ratio": 0.7,
+        "display": "700/1k",
+        "level": "yellow",
+    }
     monkeypatch.setattr(
         "thegent.cli.commands.impl.run_impl",
         lambda **_kw: {**_CLEAN_RESPONSE, "context_usage": ctx},
@@ -318,7 +371,9 @@ def test_cli_review_json_includes_context_usage(monkeypatch: pytest.MonkeyPatch)
 
 def test_cli_review_rich_output_no_issues(monkeypatch: pytest.MonkeyPatch) -> None:
     """thegent review rich mode prints 'No issues found' when clean. # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE
+    )
 
     result = runner.invoke(app, ["review", "check this"])
 
@@ -327,7 +382,9 @@ def test_cli_review_rich_output_no_issues(monkeypatch: pytest.MonkeyPatch) -> No
 
 def test_cli_review_rich_output_shows_issues(monkeypatch: pytest.MonkeyPatch) -> None:
     """thegent review rich mode lists issues with file/line/severity. # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _ISSUE_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _ISSUE_RESPONSE
+    )
 
     result = runner.invoke(app, ["review", "check this"])
 
@@ -370,7 +427,9 @@ def test_cli_review_propagates_model_option(monkeypatch: pytest.MonkeyPatch) -> 
 
 def test_cli_review_run_failure_nonzero_exit(monkeypatch: pytest.MonkeyPatch) -> None:
     """thegent review propagates non-zero exit when run_impl fails. # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _FAILED_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _FAILED_RESPONSE
+    )
 
     result = runner.invoke(app, ["review", "check this"])
 
@@ -383,9 +442,13 @@ def test_cli_review_run_failure_nonzero_exit(monkeypatch: pytest.MonkeyPatch) ->
 # ---------------------------------------------------------------------------
 
 
-def test_review_app_run_subcommand_exits_zero_no_issues(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_review_app_run_subcommand_exits_zero_no_issues(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """review app exits 0 when no issues (Typer collapses single-command group). # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE
+    )
 
     # Typer collapses a single-command Typer group so the prompt is passed directly.
     result = runner.invoke(review_app, ["check-code"])
@@ -393,9 +456,13 @@ def test_review_app_run_subcommand_exits_zero_no_issues(monkeypatch: pytest.Monk
     assert result.exit_code == 0
 
 
-def test_review_app_run_subcommand_exits_one_with_issues(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_review_app_run_subcommand_exits_one_with_issues(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """review app exits 1 when issues found. # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _ISSUE_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _ISSUE_RESPONSE
+    )
 
     result = runner.invoke(review_app, ["check-code"])
 
@@ -404,7 +471,9 @@ def test_review_app_run_subcommand_exits_one_with_issues(monkeypatch: pytest.Mon
 
 def test_review_app_run_json_output(monkeypatch: pytest.MonkeyPatch) -> None:
     """review app --format json outputs valid JSON. # @trace WL-107"""
-    monkeypatch.setattr("thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.run_impl", lambda **_kw: _CLEAN_RESPONSE
+    )
 
     result = runner.invoke(review_app, ["check-code", "--format", "json"])
 
@@ -431,5 +500,14 @@ def test_review_schema_preamble_constant() -> None:
     """_REVIEW_SCHEMA_PREAMBLE includes all required output keys. # @trace WL-107"""
     from thegent.cli.commands.impl import _REVIEW_SCHEMA_PREAMBLE
 
-    for key in ("summary", "overall_rating", "issues", "file", "line", "severity", "message", "suggestion"):
+    for key in (
+        "summary",
+        "overall_rating",
+        "issues",
+        "file",
+        "line",
+        "severity",
+        "message",
+        "suggestion",
+    ):
         assert key in _REVIEW_SCHEMA_PREAMBLE

@@ -112,7 +112,9 @@ class TestGetRunner:
         # @trace FR-AGT-007
         """Every list_agent_names entry has a runner."""
         proxy_agents = {"antigravity", "minimax", "glm", "cliproxy", "roo", "kilo"}
-        proxy_agents.update({"gemini", "codex", "copilot", "claude", "zen", "summarizer"})
+        proxy_agents.update(
+            {"gemini", "codex", "copilot", "claude", "zen", "summarizer"}
+        )
         cursor_api_agents = {"cursor-api"}
         for name in list_agent_names():
             runner = get_runner(name)
@@ -141,7 +143,9 @@ class TestGetRunner:
 
         import thegent.agents.teammate_runner as teammate_runner_module
 
-        monkeypatch.setattr(teammate_runner_module, "TeammateRunner", _CrashyTeammateRunner)
+        monkeypatch.setattr(
+            teammate_runner_module, "TeammateRunner", _CrashyTeammateRunner
+        )
         with pytest.raises(RuntimeError, match="Failed to create teammate runner"):
             get_runner("custom-teammate")
 

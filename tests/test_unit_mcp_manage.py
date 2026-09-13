@@ -219,7 +219,10 @@ class TestMigrateToUnimount:
     def test_preserves_other_servers(self, tmp_path: Path) -> None:
         """Migration updates only thegent aliases and preserves existing MCP entries."""
         existing = {
-            "mcpServers": {"other-server": {"url": "http://old"}, "legacy": {"url": "http://legacy"}},
+            "mcpServers": {
+                "other-server": {"url": "http://old"},
+                "legacy": {"url": "http://legacy"},
+            },
             "other_key": 7,
         }
         codex_dir = tmp_path / ".codex"
@@ -227,7 +230,9 @@ class TestMigrateToUnimount:
         (codex_dir / "mcp.json").write_text(json.dumps(existing).decode())
 
         with patch("thegent.mcp.manage.Path.home", return_value=tmp_path):
-            ok, msg = migrate_to_unimount(client="codex", mcp_url="http://127.0.0.1:3847/mcp")
+            ok, msg = migrate_to_unimount(
+                client="codex", mcp_url="http://127.0.0.1:3847/mcp"
+            )
 
         assert ok is True
         assert "migrated" in msg.lower()
@@ -281,7 +286,9 @@ class TestInstallToClient:
     def test_handles_install_exception(self, tmp_path: Path) -> None:
         # @trace FR-MCP-003
         """Returns failure tuple when installer raises."""
-        with patch("thegent.mcp.manage.install_to_codex", side_effect=PermissionError("denied")):
+        with patch(
+            "thegent.mcp.manage.install_to_codex", side_effect=PermissionError("denied")
+        ):
             ok, msg = install_to_client("codex", DEFAULT_MCP_URL)
         assert ok is False
         assert "denied" in msg
@@ -351,7 +358,9 @@ class TestServiceStartStop:
 
     @patch("thegent.mcp.manage.platform.system", return_value="Darwin")
     @patch("thegent.mcp.manage.subprocess.run")
-    def test_stop_with_plist(self, mock_run: MagicMock, mock_sys: MagicMock, tmp_path: Path) -> None:
+    def test_stop_with_plist(
+        self, mock_run: MagicMock, mock_sys: MagicMock, tmp_path: Path
+    ) -> None:
         # @trace FR-MCP-003
         """service_stop calls launchctl unload when plist exists."""
         plist = tmp_path / "com.thegent.mcp.plist"
@@ -376,7 +385,9 @@ class TestServiceUninstall:
 
     @patch("thegent.mcp.manage.platform.system", return_value="Darwin")
     @patch("thegent.mcp.manage.subprocess.run")
-    def test_removes_plist(self, mock_run: MagicMock, mock_sys: MagicMock, tmp_path: Path) -> None:
+    def test_removes_plist(
+        self, mock_run: MagicMock, mock_sys: MagicMock, tmp_path: Path
+    ) -> None:
         # @trace FR-MCP-003
         """Uninstall removes plist file."""
         plist = tmp_path / "com.thegent.mcp.plist"
@@ -442,7 +453,9 @@ class TestMcpUp:
 
     @patch("thegent.mcp.manage.shutil.which", return_value=None)
     @patch("thegent.mcp.manage._process_compose_path")
-    def test_no_process_compose_binary(self, mock_path: MagicMock, mock_which: MagicMock, tmp_path: Path) -> None:
+    def test_no_process_compose_binary(
+        self, mock_path: MagicMock, mock_which: MagicMock, tmp_path: Path
+    ) -> None:
         # @trace FR-MCP-003
         """Returns failure when process-compose binary not installed."""
         pc_file = tmp_path / "process-compose.yaml"
@@ -467,7 +480,9 @@ class TestMcpDown:
 
     @patch("thegent.mcp.manage.shutil.which", return_value=None)
     @patch("thegent.mcp.manage._process_compose_path")
-    def test_no_process_compose_binary(self, mock_path: MagicMock, mock_which: MagicMock, tmp_path: Path) -> None:
+    def test_no_process_compose_binary(
+        self, mock_path: MagicMock, mock_which: MagicMock, tmp_path: Path
+    ) -> None:
         # @trace FR-MCP-003
         """Returns failure when process-compose binary not installed."""
         pc_file = tmp_path / "process-compose.yaml"

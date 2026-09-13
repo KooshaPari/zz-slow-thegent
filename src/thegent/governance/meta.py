@@ -75,7 +75,11 @@ class MetaGovernance:
         else:
             # Default constitutional rules
             self.rules = [
-                Rule("G-META-01", ConstitutionalPrinciple.SAFETY, "Never delete core system configuration files."),
+                Rule(
+                    "G-META-01",
+                    ConstitutionalPrinciple.SAFETY,
+                    "Never delete core system configuration files.",
+                ),
                 Rule(
                     "G-META-02",
                     ConstitutionalPrinciple.PRIVACY,
@@ -110,9 +114,13 @@ class MetaGovernance:
             data.append(r_dict)
         self.path.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
-    def validate_action(self, action_description: str, tags: set[str]) -> tuple[bool, str | None]:
+    def validate_action(
+        self, action_description: str, tags: set[str]
+    ) -> tuple[bool, str | None]:
         """Validate an agent's intended action against the constitution."""
-        _log.info("Validating action against meta-governance: %s", action_description[:50])
+        _log.info(
+            "Validating action against meta-governance: %s", action_description[:50]
+        )
 
         # Simple keyword matching for validation
         for rule in self.rules:
@@ -120,12 +128,21 @@ class MetaGovernance:
                 continue
 
             if rule.principle == ConstitutionalPrinciple.SAFETY and (
-                "delete" in action_description.lower() or "config" in action_description.lower()
+                "delete" in action_description.lower()
+                or "config" in action_description.lower()
             ):
-                return False, f"Action violates {rule.rule_id} ({rule.principle.value}): {rule.description}"
+                return (
+                    False,
+                    f"Action violates {rule.rule_id} ({rule.principle.value}): {rule.description}",
+                )
 
-            if rule.principle == ConstitutionalPrinciple.PRIVACY and ("secret" in tags or "credential" in tags):
-                return False, f"Action violates {rule.rule_id} ({rule.principle.value}): {rule.description}"
+            if rule.principle == ConstitutionalPrinciple.PRIVACY and (
+                "secret" in tags or "credential" in tags
+            ):
+                return (
+                    False,
+                    f"Action violates {rule.rule_id} ({rule.principle.value}): {rule.description}",
+                )
 
         return True, None
 

@@ -1,4 +1,5 @@
 """Frecency cache module."""
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -9,6 +10,7 @@ from typing import Any
 @dataclass
 class FrecencyEntry:
     """A frecency cache entry."""
+
     key: str
     value: Any
     score: float = 0.0
@@ -38,8 +40,7 @@ class FrecencyCache:
 
 
 def FrecencyModelSelector(
-    candidates: list[Any],
-    context: dict[str, Any] | None = None
+    candidates: list[Any], context: dict[str, Any] | None = None
 ) -> Any:
     """Select model based on frecency."""
     return candidates[0] if candidates else None

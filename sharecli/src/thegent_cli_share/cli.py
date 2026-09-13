@@ -1,6 +1,5 @@
 """CLI interface for thegent-cli-share."""
 
-
 import typer
 from rich.console import Console
 from rich.table import Table
@@ -28,7 +27,9 @@ def lock_acquire(
     """Acquire a command lock."""
     try:
         lock = _lock_adapter.acquire(CommandHash(cmd_hash), pid, output_path)
-        console.print(f"[green]Lock acquired:[/green] {lock.cmd_hash} (PID: {lock.pid})")
+        console.print(
+            f"[green]Lock acquired:[/green] {lock.cmd_hash} (PID: {lock.pid})"
+        )
     except ValueError as e:
         console.print(f"[red]Error:[/red] {e}")
         raise typer.Exit(1)
@@ -70,10 +71,14 @@ def lock_list() -> None:
 @app.command()
 def queue_enqueue(
     command: str = typer.Argument(..., help="Command to enqueue"),
-    priority: str = typer.Option("normal", help="Priority: low, normal, high, critical"),
+    priority: str = typer.Option(
+        "normal", help="Priority: low, normal, high, critical"
+    ),
 ) -> None:
     """Enqueue a task."""
-    item = _queue_adapter.enqueue(TaskQueueItem(command=command, priority=QueuePriority(priority)))
+    item = _queue_adapter.enqueue(
+        TaskQueueItem(command=command, priority=QueuePriority(priority))
+    )
     console.print(f"[green]Task enqueued:[/green] {item.id} ({priority})")
 
 

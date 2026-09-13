@@ -29,7 +29,9 @@ def _get_wl104_status() -> str:
 def test_wl104_status_is_completed() -> None:
     """WL-104 (embedding protocol) must be COMPLETED before WL-117 can proceed."""
     status_line = _get_wl104_status()
-    assert "COMPLETED" in status_line, f"WL-104 must be COMPLETED to unblock WL-117, but got: {status_line}"
+    assert "COMPLETED" in status_line, (
+        f"WL-104 must be COMPLETED to unblock WL-117, but got: {status_line}"
+    )
 
 
 def test_vscode_extension_directory_exists() -> None:
@@ -51,7 +53,9 @@ def test_vscode_package_json_has_correct_name() -> None:
 
     pkg = VSCODE_EXT_DIR / "package.json"
     data = json.loads(pkg.read_text(encoding="utf-8"))
-    assert data.get("name") == "thegent-vscode", f"Extension name must be 'thegent-vscode', got: {data.get('name')}"
+    assert data.get("name") == "thegent-vscode", (
+        f"Extension name must be 'thegent-vscode', got: {data.get('name')}"
+    )
 
 
 def test_scaffold_plan_exists() -> None:
@@ -62,7 +66,9 @@ def test_scaffold_plan_exists() -> None:
 def test_scaffold_plan_references_wl104_unblock() -> None:
     """Scaffold plan must reference WL-104 as the unblock condition."""
     content = SCAFFOLD_PLAN.read_text(encoding="utf-8")
-    assert "WL-104" in content, "Scaffold plan must reference WL-104 as unblock condition"
+    assert "WL-104" in content, (
+        "Scaffold plan must reference WL-104 as unblock condition"
+    )
 
 
 # noqa: PT018

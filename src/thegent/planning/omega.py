@@ -14,6 +14,7 @@ from typing import Any
 @dataclass
 class OmegaExecutionResult:
     """Result of omega execution."""
+
     success: bool
     plan: dict[str, Any] | None = None
     errors: list[str] | None = None

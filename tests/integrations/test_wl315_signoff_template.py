@@ -83,7 +83,9 @@ class TestRenderTemplate:
     def test_render_date_substitution(self) -> None:
         """Test date is substituted in Summary."""
         date = "2026-02-22"
-        result = render_template(date=date, reviewer="reviewer", environment="staging", connectors=[])
+        result = render_template(
+            date=date, reviewer="reviewer", environment="staging", connectors=[]
+        )
         assert date in result
         # Check it appears in Summary section context
         assert "| Date | 2026-02-22 |" in result
@@ -92,14 +94,21 @@ class TestRenderTemplate:
     def test_render_reviewer_substitution(self) -> None:
         """Test reviewer is substituted in Summary."""
         reviewer = "human-bob"
-        result = render_template(date="2026-02-22", reviewer=reviewer, environment="staging", connectors=[])
+        result = render_template(
+            date="2026-02-22", reviewer=reviewer, environment="staging", connectors=[]
+        )
         assert reviewer in result
         assert f"| Reviewer | {reviewer} |" in result
 
     @pytest.mark.requirement("WL-315")
     def test_render_environment_substitution(self) -> None:
         """Test environment is substituted in Summary."""
-        result = render_template(date="2026-02-22", reviewer="reviewer", environment="production", connectors=[])
+        result = render_template(
+            date="2026-02-22",
+            reviewer="reviewer",
+            environment="production",
+            connectors=[],
+        )
         assert "| Environment | production |" in result
 
     @pytest.mark.requirement("WL-315")
@@ -138,15 +147,21 @@ class TestRenderTemplate:
     @pytest.mark.requirement("WL-315")
     def test_render_contains_checkboxes(self) -> None:
         """Test rendered template contains checklist checkboxes."""
-        result = render_template(date="2026-02-22", reviewer="reviewer", environment="staging", connectors=[])
+        result = render_template(
+            date="2026-02-22", reviewer="reviewer", environment="staging", connectors=[]
+        )
         # Count occurrences of checklist items
         checkbox_count = result.count("- [ ]")
-        assert checkbox_count >= 8, f"Expected at least 8 checkboxes, found {checkbox_count}"
+        assert checkbox_count >= 8, (
+            f"Expected at least 8 checkboxes, found {checkbox_count}"
+        )
 
     @pytest.mark.requirement("WL-315")
     def test_render_contains_validation_table(self) -> None:
         """Test rendered template contains validation evidence table."""
-        result = render_template(date="2026-02-22", reviewer="reviewer", environment="staging", connectors=[])
+        result = render_template(
+            date="2026-02-22", reviewer="reviewer", environment="staging", connectors=[]
+        )
         assert "Validation Evidence" in result
         assert "PASS/FAIL" in result
         assert "Auth scope verification" in result
@@ -154,7 +169,9 @@ class TestRenderTemplate:
     @pytest.mark.requirement("WL-315")
     def test_render_contains_rollback_section(self) -> None:
         """Test rendered template contains rollback plan."""
-        result = render_template(date="2026-02-22", reviewer="reviewer", environment="staging", connectors=[])
+        result = render_template(
+            date="2026-02-22", reviewer="reviewer", environment="staging", connectors=[]
+        )
         assert "Rollback Plan" in result
         assert "thegent autosync disable" in result
         assert "thegent autosync rollback" in result

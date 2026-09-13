@@ -68,11 +68,13 @@ class ModelPromoter:
         """
         if model_id not in self.promoted_models:
             self.promoted_models.append(model_id)
-            self.promotion_history.append({
-                "model_id": model_id,
-                "reason": reason,
-                "timestamp": datetime.now().isoformat(),
-            })
+            self.promotion_history.append(
+                {
+                    "model_id": model_id,
+                    "reason": reason,
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
         return True
 
     def is_promoted(self, model_id: str) -> bool:
@@ -116,7 +118,9 @@ class ModelPromoter:
             return
 
         session_dir = getattr(self._settings, "session_dir", Path("/tmp"))
-        custom_models_path = getattr(self._settings, "custom_models_path", session_dir / "custom_models.yaml")
+        custom_models_path = getattr(
+            self._settings, "custom_models_path", session_dir / "custom_models.yaml"
+        )
 
         # Ensure parent directory exists
         custom_models_path.parent.mkdir(parents=True, exist_ok=True)

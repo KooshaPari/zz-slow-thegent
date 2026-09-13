@@ -36,7 +36,10 @@ def test_adapter_normalize_plain_text(provider: str) -> None:
     assert not validate_csm(res.csm)
 
 
-@pytest.mark.parametrize("provider", ["copilot", "gemini", "claude", "codex", "cursor", "cursor-agent", "antigravity"])
+@pytest.mark.parametrize(
+    "provider",
+    ["copilot", "gemini", "claude", "codex", "cursor", "cursor-agent", "antigravity"],
+)
 def test_xml_adapter_valid_tags(provider: str) -> None:
     # @trace FR-CTR-012
     """XML adapters should extract standard tags correctly."""

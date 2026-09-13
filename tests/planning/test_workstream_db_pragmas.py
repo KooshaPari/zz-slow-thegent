@@ -154,9 +154,7 @@ def test_concurrent_writer_retries_within_busy_timeout(tmp_path: Path) -> None:
     assert "error" not in result, result
     assert result.get("elapsed", 0) >= 0.2, "second writer did not wait for the first"
 
-    final = entity_operation(
-        "list", "workstream_items", limit=10, db_path=db_path
-    )
+    final = entity_operation("list", "workstream_items", limit=10, db_path=db_path)
     titles = [item["title"] for item in final["items"]]
     assert "second-wins" in titles, titles
 

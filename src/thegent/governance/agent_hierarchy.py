@@ -209,7 +209,10 @@ class AgentHierarchyManager:
         if agents_file.exists():
             try:
                 data = json.loads(agents_file.read_text())
-                self._agents = {run_id: AgentNode.from_dict(node_data) for run_id, node_data in data.items()}
+                self._agents = {
+                    run_id: AgentNode.from_dict(node_data)
+                    for run_id, node_data in data.items()
+                }
             except (json.JSONDecodeError, KeyError, ValueError):
                 self._agents = {}
 
@@ -219,7 +222,8 @@ class AgentHierarchyManager:
             try:
                 data = json.loads(relationships_file.read_text())
                 self._relationships = {
-                    rel_id: AgentRelationship.from_dict(rel_data) for rel_id, rel_data in data.items()
+                    rel_id: AgentRelationship.from_dict(rel_data)
+                    for rel_id, rel_data in data.items()
                 }
             except (json.JSONDecodeError, KeyError, ValueError):
                 self._relationships = {}
@@ -229,7 +233,10 @@ class AgentHierarchyManager:
         if teams_file.exists():
             try:
                 data = json.loads(teams_file.read_text())
-                self._teams = {team_id: AgentTeam.from_dict(team_data) for team_id, team_data in data.items()}
+                self._teams = {
+                    team_id: AgentTeam.from_dict(team_data)
+                    for team_id, team_data in data.items()
+                }
             except (json.JSONDecodeError, KeyError, ValueError):
                 self._teams = {}
 
@@ -242,7 +249,9 @@ class AgentHierarchyManager:
 
         # Save relationships
         relationships_file = self.storage_path / "relationships.json"
-        relationships_data = {rel_id: rel.to_dict() for rel_id, rel in self._relationships.items()}
+        relationships_data = {
+            rel_id: rel.to_dict() for rel_id, rel in self._relationships.items()
+        }
         relationships_file.write_text(json.dumps(relationships_data, indent=2))
 
         # Save teams
@@ -277,7 +286,9 @@ class AgentHierarchyManager:
             ValueError: If validation fails
         """
         if validate:
-            is_valid, error = self.validate_before_register(agent_id, run_id, parent_id, team_id)
+            is_valid, error = self.validate_before_register(
+                agent_id, run_id, parent_id, team_id
+            )
             if not is_valid:
                 raise ValueError(f"Validation failed: {error}")
 
@@ -683,9 +694,13 @@ class AgentHierarchyManager:
             if agent.parent_id:
                 parent = self._agents.get(agent.parent_id)
                 if not parent:
-                    orphaned.append((run_id, f"Parent '{agent.parent_id}' does not exist"))
+                    orphaned.append(
+                        (run_id, f"Parent '{agent.parent_id}' does not exist")
+                    )
                 elif parent.status != "active":
-                    orphaned.append((run_id, f"Parent '{agent.parent_id}' is not active"))
+                    orphaned.append(
+                        (run_id, f"Parent '{agent.parent_id}' is not active")
+                    )
 
             # Check team membership
             if agent.team_id:
@@ -693,7 +708,9 @@ class AgentHierarchyManager:
                 if not team:
                     orphaned.append((run_id, f"Team '{agent.team_id}' does not exist"))
                 elif run_id not in team.members and team.lead_id != run_id:
-                    orphaned.append((run_id, f"Agent not in team '{agent.team_id}' members list"))
+                    orphaned.append(
+                        (run_id, f"Agent not in team '{agent.team_id}' members list")
+                    )
 
         return orphaned
 
@@ -711,31 +728,52 @@ class AgentHierarchyManager:
             if team.lead_id:
                 lead = self._agents.get(team.lead_id)
                 if not lead:
-                    inconsistencies.append((team_id, f"Team lead '{team.lead_id}' does not exist"))
+                    inconsistencies.append(
+                        (team_id, f"Team lead '{team.lead_id}' does not exist")
+                    )
                 elif lead.status != "active":
-                    inconsistencies.append((team_id, f"Team lead '{team.lead_id}' is not active"))
+                    inconsistencies.append(
+                        (team_id, f"Team lead '{team.lead_id}' is not active")
+                    )
                 elif lead.team_id != team_id:
-                    inconsistencies.append((team_id, f"Team lead '{team.lead_id}' not assigned to this team"))
+                    inconsistencies.append(
+                        (
+                            team_id,
+                            f"Team lead '{team.lead_id}' not assigned to this team",
+                        )
+                    )
 
             # Check all members exist and are active
             for member_id in team.members:
                 member = self._agents.get(member_id)
                 if not member:
-                    inconsistencies.append((team_id, f"Member '{member_id}' does not exist"))
+                    inconsistencies.append(
+                        (team_id, f"Member '{member_id}' does not exist")
+                    )
                 elif member.status != "active":
-                    inconsistencies.append((team_id, f"Member '{member_id}' is not active"))
+                    inconsistencies.append(
+                        (team_id, f"Member '{member_id}' is not active")
+                    )
                 elif member.team_id != team_id:
-                    inconsistencies.append((team_id, f"Member '{member_id}' not assigned to this team"))
+                    inconsistencies.append(
+                        (team_id, f"Member '{member_id}' not assigned to this team")
+                    )
 
             # Check for duplicate members
             if len(team.members) != len(set(team.members)):
                 duplicates = [m for m in team.members if team.members.count(m) > 1]
-                inconsistencies.append((team_id, f"Duplicate members found: {set(duplicates)}"))
+                inconsistencies.append(
+                    (team_id, f"Duplicate members found: {set(duplicates)}")
+                )
 
         return inconsistencies
 
     def validate_before_register(
-        self, agent_id: str, run_id: str, parent_id: str | None = None, team_id: str | None = None
+        self,
+        agent_id: str,
+        run_id: str,
+        parent_id: str | None = None,
+        team_id: str | None = None,
     ) -> tuple[bool, str | None]:
         """
         Validate before registering a new agent.
@@ -762,7 +800,10 @@ class AgentHierarchyManager:
             # Check for circular relationship
             cycle = self.detect_circular_relationships(parent_id)
             if cycle and run_id in cycle:
-                return False, f"Would create circular relationship: {' -> '.join(cycle)}"
+                return (
+                    False,
+                    f"Would create circular relationship: {' -> '.join(cycle)}",
+                )
 
         # Validate team if provided
         if team_id:

@@ -214,7 +214,10 @@ class TestSessionImplHelperBehavior:
 
     def test_resolve_agent_model_explicit_wins(self) -> None:
         settings = MagicMock()
-        assert impl._resolve_agent_model("gemini", "explicit-model", "write", settings) == "explicit-model"
+        assert (
+            impl._resolve_agent_model("gemini", "explicit-model", "write", settings)
+            == "explicit-model"
+        )
 
     # @trace FR-AUDIT-N+12-014
     def test_resolve_agent_model_antigravity(self) -> None:
@@ -224,13 +227,18 @@ class TestSessionImplHelperBehavior:
         settings.default_antigravity_model = "gemini-3-flash"
         # default_cursor_model must NOT leak in for antigravity.
         settings.default_cursor_model = "cursor-1"
-        assert impl._resolve_agent_model("antigravity", None, "write", settings) == "gemini-3-flash"
+        assert (
+            impl._resolve_agent_model("antigravity", None, "write", settings)
+            == "gemini-3-flash"
+        )
 
     # @trace FR-AUDIT-N+12-015
     def test_resolve_agent_model_cursor(self) -> None:
         settings = MagicMock()
         settings.default_cursor_model = "cursor-1"
-        assert impl._resolve_agent_model("cursor", None, "write", settings) == "cursor-1"
+        assert (
+            impl._resolve_agent_model("cursor", None, "write", settings) == "cursor-1"
+        )
 
     # @trace FR-AUDIT-N+12-016
     def test_continuation_tail_chars_is_8000(self) -> None:
@@ -261,7 +269,9 @@ class TestWL125DispatchBridges:
         assert len(result) == 16
 
     # @trace FR-AUDIT-N+12-019
-    def test_hash_observe_summary_payload_wl125_monkeypatch(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_hash_observe_summary_payload_wl125_monkeypatch(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """WL-125 contract: when ``run_observe_helpers.hash_observe_summary_payload``
         is monkeypatched, the wrapper honours whatever the test returns."""
         captured: dict[str, Any] = {}
@@ -286,13 +296,18 @@ class TestWL125DispatchBridges:
         assert result == "healthy"
 
     # @trace FR-AUDIT-N+12-021
-    def test_classify_observe_summary_trend_health_wl125_kwargs(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_classify_observe_summary_trend_health_wl125_kwargs(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """WL-125 contract: kwargs forward to ``run_observe_helpers``."""
         captured: dict[str, Any] = {}
 
         def _fake(**kwargs: Any) -> dict[str, Any]:
             captured.update(kwargs)
-            return {"trend_snapshot_health": "warning", "trend_snapshot_health_score": 81}
+            return {
+                "trend_snapshot_health": "warning",
+                "trend_snapshot_health_score": 81,
+            }
 
         monkeypatch.setattr(
             "thegent.cli.commands.impl.run_observe_helpers.classify_observe_summary_trend_health",
@@ -318,7 +333,9 @@ class TestWL125DispatchBridges:
         assert snaps == [{"k": "v"}]
 
     # @trace FR-AUDIT-N+12-023
-    def test_append_observe_summary_snapshot_wl125_monkeypatch(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_append_observe_summary_snapshot_wl125_monkeypatch(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """WL-125 contract: 6 positional args forwarded to
         ``run_observe_helpers.append_observe_summary_snapshot``."""
         captured: dict[str, Any] = {}
@@ -350,12 +367,16 @@ class TestWL125DispatchBridges:
         assert captured["trend_scope_signature"] == "sig-123"
 
     # @trace FR-AUDIT-N+12-024
-    def test_load_observe_summary_snapshots_wl125_monkeypatch(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_load_observe_summary_snapshots_wl125_monkeypatch(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """WL-125 contract: 3 positional args forwarded to
         ``run_observe_helpers.load_observe_summary_snapshots``."""
         captured: dict[str, Any] = {}
 
-        def _fake(scope_signature: str, scope_key_json: str, limit: int) -> list[dict[str, Any]]:
+        def _fake(
+            scope_signature: str, scope_key_json: str, limit: int
+        ) -> list[dict[str, Any]]:
             captured["scope_signature"] = scope_signature
             captured["scope_key_json"] = scope_key_json
             captured["limit"] = limit
@@ -367,7 +388,11 @@ class TestWL125DispatchBridges:
         )
         result = impl._load_observe_summary_snapshots("sig", "{}", 5)
         assert result == [{"record_type": "observe_summary_snapshot"}]
-        assert captured == {"scope_signature": "sig", "scope_key_json": "{}", "limit": 5}
+        assert captured == {
+            "scope_signature": "sig",
+            "scope_key_json": "{}",
+            "limit": 5,
+        }
 
     # @trace FR-AUDIT-N+12-025
     def test_load_observe_summary_snapshots_legacy(self, tmp_path: Path) -> None:
@@ -469,7 +494,12 @@ class TestImplAllCleanedUp:
     def test_impl_all_excludes_undefined_dag_entries(self) -> None:
         """Stale dag entries (``_coerce_issue_types``, ``_check_dag_cycles``,
         ``dag_list_impl``, ``dag_raw_impl``) removed from ``__all__``."""
-        for name in ("_coerce_issue_types", "_check_dag_cycles", "dag_list_impl", "dag_raw_impl"):
+        for name in (
+            "_coerce_issue_types",
+            "_check_dag_cycles",
+            "dag_list_impl",
+            "dag_raw_impl",
+        ):
             assert name not in impl.__all__, f"stale entry {name} in impl.__all__"
 
     # @trace FR-AUDIT-N+12-032
@@ -485,7 +515,9 @@ class TestImplAllCleanedUp:
             "_resolve_agent_model",
             "_load_prior_session_output",
         ):
-            assert name in impl.__all__, f"session helper {name} missing from impl.__all__"
+            assert name in impl.__all__, (
+                f"session helper {name} missing from impl.__all__"
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -550,7 +582,9 @@ class TestModuleGraphLoadsClean:
         # Already imported at module load time. Just check the canonical
         # home is the session_impl module.
         assert impl._is_pid_running.__module__ == "thegent.cli.commands.session_impl"
-        assert impl._resolve_agent_model.__module__ == "thegent.cli.commands.session_impl"
+        assert (
+            impl._resolve_agent_model.__module__ == "thegent.cli.commands.session_impl"
+        )
 
     # @trace FR-AUDIT-N+12-040
     def test_observability_impl_dual_mode_bridges_present(self) -> None:

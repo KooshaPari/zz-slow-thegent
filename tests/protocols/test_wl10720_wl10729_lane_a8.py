@@ -30,13 +30,21 @@ from thegent.protocols.turn_submit_boundaries import (
 
 def test_wl10720_provider_selection_separates_fallback_and_normal_paths() -> None:
     # @trace WL-10720
-    phase = build_provider_selection_phase(["fallback", "primary"], "primary", "weighted")
-    assert resolve_workflow_guard_target(phase) == (["fallback", "primary"], "primary", "weighted")
+    phase = build_provider_selection_phase(
+        ["fallback", "primary"], "primary", "weighted"
+    )
+    assert resolve_workflow_guard_target(phase) == (
+        ["fallback", "primary"],
+        "primary",
+        "weighted",
+    )
 
 
 def test_wl10721_policy_enforcement_separates_rule_discovery_and_action() -> None:
     # @trace WL-10721
-    phase = build_policy_match_phase("policy-10721", ["allow:team", "deny:none"], "allow")
+    phase = build_policy_match_phase(
+        "policy-10721", ["allow:team", "deny:none"], "allow"
+    )
     assert resolve_policy_enforcement_plan_target(phase) == (
         "policy-10721",
         ["allow:team", "deny:none"],
@@ -58,7 +66,9 @@ def test_wl10722_sync_reliability_separates_scan_and_apply() -> None:
     )
 
 
-def test_wl10723_runtime_error_behavior_preserves_recoverable_and_terminal_branches() -> None:
+def test_wl10723_runtime_error_behavior_preserves_recoverable_and_terminal_branches() -> (
+    None
+):
     # @trace WL-10723
     phase = build_retry_loop_phase(2, 3, "retry")
     assert resolve_terminal_outcome_target(phase) == (2, 3, "retry")
@@ -107,20 +117,30 @@ def test_wl10726_cli_dispatch_separates_parse_and_handler_execution() -> None:
 def test_wl10727_orchestration_plan_and_execution_boundaries_remain_distinct() -> None:
     # @trace WL-10727
     phase = build_queue_priority_phase("high", ["turn-10727-a", "turn-10727-b"], 7)
-    assert resolve_queue_execution_target(phase) == ("high", ["turn-10727-a", "turn-10727-b"], 7)
+    assert resolve_queue_execution_target(phase) == (
+        "high",
+        ["turn-10727-a", "turn-10727-b"],
+        7,
+    )
 
 
 def test_wl10728_queue_throughput_separates_intake_and_worker_fanout() -> None:
     # @trace WL-10728
     phase = build_queue_scheduling_phase(["turn-10728-a", "turn-10728-b"], 41, 4)
-    assert resolve_session_persistence_target(phase) == (["turn-10728-a", "turn-10728-b"], 41, 4)
+    assert resolve_session_persistence_target(phase) == (
+        ["turn-10728-a", "turn-10728-b"],
+        41,
+        4,
+    )
     with pytest.raises(ValueError, match="invalid prioritized_turn_ids"):
         resolve_session_persistence_target(build_queue_scheduling_phase([], 41, 4))
 
 
 def test_wl10729_telemetry_separates_metric_collection_and_emitter_lifecycle() -> None:
     # @trace WL-10729
-    phase = build_observability_event_phase("telemetry-10729", {"metric": "queue.depth", "value": 9}, "json")
+    phase = build_observability_event_phase(
+        "telemetry-10729", {"metric": "queue.depth", "value": 9}, "json"
+    )
     assert resolve_observability_serialization_target(phase) == (
         "telemetry-10729",
         {"metric": "queue.depth", "value": 9},
@@ -128,5 +148,7 @@ def test_wl10729_telemetry_separates_metric_collection_and_emitter_lifecycle() -
     )
     with pytest.raises(ValueError, match="invalid serialization_format"):
         resolve_observability_serialization_target(
-            build_observability_event_phase("telemetry-10729", {"metric": "queue.depth"}, ""),
+            build_observability_event_phase(
+                "telemetry-10729", {"metric": "queue.depth"}, ""
+            ),
         )

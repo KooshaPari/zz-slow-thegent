@@ -28,7 +28,9 @@ def _ctx(**kwargs) -> dict:
     return {"context": kwargs}
 
 
-def _route(expression: str, target: str = "target-model", name: str = "test") -> CelRoute:
+def _route(
+    expression: str, target: str = "target-model", name: str = "test"
+) -> CelRoute:
     return CelRoute(expression=expression, target=target, name=name)
 
 
@@ -350,7 +352,11 @@ def test_compile_expression_caches() -> None:
 def test_cel_evaluator_direct() -> None:
     """CelEvaluator.evaluate works correctly."""
     routes = [
-        CelRoute(expression='context.tier == "premium"', target="premium-model", name="premium"),
+        CelRoute(
+            expression='context.tier == "premium"',
+            target="premium-model",
+            name="premium",
+        ),
         CelRoute(expression='context.tier == "free"', target="free-model", name="free"),
     ]
     evaluator = CelEvaluator(routes)

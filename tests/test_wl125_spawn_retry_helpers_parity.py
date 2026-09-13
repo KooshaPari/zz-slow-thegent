@@ -10,7 +10,9 @@ def test_wl125_retry_if_eagain_wrapper_delegates(monkeypatch) -> None:
         captured["exc"] = exc
         return True
 
-    monkeypatch.setattr("thegent.cli.commands.impl.spawn_retry_helpers.retry_if_eagain", _fake)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.spawn_retry_helpers.retry_if_eagain", _fake
+    )
 
     result = impl._retry_if_eagain(RuntimeError("boom"))
 

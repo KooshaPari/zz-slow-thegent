@@ -114,7 +114,9 @@ class SyncPolicyValidator:
             errors.append("version must be non-empty")
 
         # Validate allowed_connectors (simple mode) or connectors (full mode)
-        connectors = policy.allowed_connectors or (list(policy.connectors.keys()) if policy.connectors else [])
+        connectors = policy.allowed_connectors or (
+            list(policy.connectors.keys()) if policy.connectors else []
+        )
         if not connectors:
             errors.append("allowed_connectors must be non-empty")
 
@@ -158,9 +160,13 @@ def _parse_connectors(raw: object) -> dict[str, ConnectorPolicy]:
                 board_id=str(attrs.get("board_id", "")).strip(),
             )
         except KeyError as err:
-            raise ValueError(f"connector '{connector}' missing required field: {err}") from err
+            raise ValueError(
+                f"connector '{connector}' missing required field: {err}"
+            ) from err
         except (TypeError, ValueError) as err:
-            raise ValueError(f"connector '{connector}' has invalid field types") from err
+            raise ValueError(
+                f"connector '{connector}' has invalid field types"
+            ) from err
 
     return connectors
 
@@ -190,7 +196,11 @@ def _parse_tenancy(raw: object) -> TenantConfig:
         if root in seen_roots:
             raise ValueError(f"duplicate tenancy project root: {root}")
         seen_roots.add(root)
-        projects.append(TenantProject(root=root, tenant_id=tenant_id, autosync_enabled=autosync_enabled))
+        projects.append(
+            TenantProject(
+                root=root, tenant_id=tenant_id, autosync_enabled=autosync_enabled
+            )
+        )
     return TenantConfig(mode=mode, default_tenant=default_tenant, projects=projects)
 
 
@@ -198,7 +208,11 @@ def load_sync_policy_contract(
     *, project_root: Path | None = None, explicit_path: Path | None = None
 ) -> SyncPolicyContract:
     """Load and validate a sync-policy contract."""
-    path = explicit_path.resolve() if explicit_path else resolve_sync_policy_path(project_root=project_root)
+    path = (
+        explicit_path.resolve()
+        if explicit_path
+        else resolve_sync_policy_path(project_root=project_root)
+    )
     if not path.exists():
         raise FileNotFoundError(f"Sync policy file not found: {path}")
 

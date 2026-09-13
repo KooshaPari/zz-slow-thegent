@@ -76,7 +76,9 @@ class TestQueueInit:
 
     def test_init_with_none_settings(self) -> None:
 
-        with patch("thegent.governance.escalation.EscalationQueue.__init__") as mock_init:
+        with patch(
+            "thegent.governance.escalation.EscalationQueue.__init__"
+        ) as mock_init:
             mock_init.return_value = None
             # Just verify the class can be instantiated with None (via ThegentSettings)
             # In practice this calls ThegentSettings() which may fail in tests
@@ -259,7 +261,9 @@ class TestSaveLoadRoundtrip:
         )
 
         queue = EscalationQueue(settings=mock_settings)
-        esc_id = queue.escalate("r-rt", "prompt", "reason", "agent", priority=EscalationPriority.HIGH)
+        esc_id = queue.escalate(
+            "r-rt", "prompt", "reason", "agent", priority=EscalationPriority.HIGH
+        )
         item = queue.get_item(esc_id)
         assert item is not None
         assert item.run_id == "r-rt"

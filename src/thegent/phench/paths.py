@@ -119,15 +119,23 @@ def repository_root_candidates() -> list[Path]:
     base = phenotype_root() / "repos"
     if not base.exists():
         return []
-    return sorted([path for path in base.iterdir() if path.is_dir() and not path.name.startswith(".")])
+    return sorted(
+        [
+            path
+            for path in base.iterdir()
+            if path.is_dir() and not path.name.startswith(".")
+        ]
+    )
 
 
 def _load_json_file(path: Path) -> dict:
     """Load a JSON file, handling orjson/json differences."""
     import json as _json
+
     text = path.read_text(encoding="utf-8")
     try:
         import orjson
+
         return orjson.loads(text)
     except Exception:
         return _json.loads(text)

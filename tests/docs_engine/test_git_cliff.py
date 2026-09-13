@@ -19,7 +19,9 @@ def test_cliff_runner_run_calls_subprocess(tmp_path):
     runner = CliffRunner(repo_root=tmp_path, db_path=tmp_path / "test.db")
     with patch("subprocess.run") as mock_run:
         mock_run.return_value = MagicMock(returncode=0)
-        (tmp_path / "CHANGELOG.md").write_text("# Changelog\n\n## v0.1.0\n\n- feat: initial\n")
+        (tmp_path / "CHANGELOG.md").write_text(
+            "# Changelog\n\n## v0.1.0\n\n- feat: initial\n"
+        )
         runner.run(output=tmp_path / "CHANGELOG.md")
         mock_run.assert_called_once()
 
@@ -28,7 +30,9 @@ def test_cliff_runner_indexes_changelog(tmp_path):
     from docs_engine.db.queries import DocQueries
 
     runner = CliffRunner(repo_root=tmp_path, db_path=tmp_path / "test.db")
-    (tmp_path / "CHANGELOG.md").write_text("# Changelog\n\n## v0.1.0\n\n- feat: initial\n")
+    (tmp_path / "CHANGELOG.md").write_text(
+        "# Changelog\n\n## v0.1.0\n\n- feat: initial\n"
+    )
     with patch("subprocess.run") as mock_run:
         mock_run.return_value = MagicMock(returncode=0)
         runner.run(output=tmp_path / "CHANGELOG.md")

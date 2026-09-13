@@ -71,6 +71,7 @@ def _process_sse_line(line: str) -> dict[str, Any] | None:
     """
     if line.startswith("data: "):
         import json
+
         return json.loads(line[6:])
     return None
 

@@ -95,9 +95,13 @@ class SpeculativeConfig:
         if self.timeout_ms < 0:
             raise ValueError(f"timeout_ms must be >= 0 (got {self.timeout_ms})")
         if self.historical_latency_p95_ms < 0:
-            raise ValueError(f"historical_latency_p95_ms must be >= 0 (got {self.historical_latency_p95_ms})")
+            raise ValueError(
+                f"historical_latency_p95_ms must be >= 0 (got {self.historical_latency_p95_ms})"
+            )
         if self.historical_quality_avg < 0:
-            raise ValueError(f"historical_quality_avg must be >= 0 (got {self.historical_quality_avg})")
+            raise ValueError(
+                f"historical_quality_avg must be >= 0 (got {self.historical_quality_avg})"
+            )
 
 
 def should_terminate_early(

@@ -21,7 +21,9 @@ def _require_non_empty_string(payload: dict[str, Any], key: str) -> str:
 def _validate_issue(issue: dict[str, Any], index: int) -> dict[str, Any]:
     missing = sorted(_ISSUE_FIELDS - issue.keys())
     if missing:
-        raise ValueError(f"issues[{index}] is missing required keys: {', '.join(missing)}.")
+        raise ValueError(
+            f"issues[{index}] is missing required keys: {', '.join(missing)}."
+        )
     extra = sorted(issue.keys() - _ISSUE_FIELDS)
     if extra:
         raise ValueError(f"issues[{index}] has unsupported keys: {', '.join(extra)}.")
@@ -55,7 +57,9 @@ def validate_review_output(payload: dict[str, Any]) -> dict[str, Any]:
 
     missing = sorted(_TOP_LEVEL_FIELDS - payload.keys())
     if missing:
-        raise ValueError(f"Review output is missing required keys: {', '.join(missing)}.")
+        raise ValueError(
+            f"Review output is missing required keys: {', '.join(missing)}."
+        )
     extra = sorted(payload.keys() - _TOP_LEVEL_FIELDS)
     if extra:
         raise ValueError(f"Review output has unsupported keys: {', '.join(extra)}.")

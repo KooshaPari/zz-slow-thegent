@@ -20,7 +20,9 @@ class BoardArtifactParser:
     """Parser for board artifacts in various formats."""
 
     REQUIRED_COLUMNS: ClassVar[frozenset[str]] = frozenset({"id", "title"})
-    OPTIONAL_COLUMNS: ClassVar[frozenset[str]] = frozenset({"status", "priority", "source", "effort", "depends_on", "evidence"})
+    OPTIONAL_COLUMNS: ClassVar[frozenset[str]] = frozenset(
+        {"status", "priority", "source", "effort", "depends_on", "evidence"}
+    )
     ALL_COLUMNS: ClassVar[frozenset[str]] = REQUIRED_COLUMNS | OPTIONAL_COLUMNS
 
     DEFAULT_VALUES: ClassVar[dict[str, Any]] = {
@@ -106,7 +108,9 @@ class BoardArtifactParser:
             title_idx = next((i for i, h in enumerate(headers) if "title" in h), None)
 
             if id_idx is None or title_idx is None:
-                logger.warning(f"Markdown table missing ID or Title column in {file_path}")
+                logger.warning(
+                    f"Markdown table missing ID or Title column in {file_path}"
+                )
                 return []
 
             for row in table[1:]:
@@ -120,7 +124,11 @@ class BoardArtifactParser:
                 for i, header in enumerate(headers):
                     if i < len(row) and header in self.ALL_COLUMNS:
                         value = row[i].strip()
-                        item[header] = self._clean_strikethrough(value) if value else self.DEFAULT_VALUES.get(header)
+                        item[header] = (
+                            self._clean_strikethrough(value)
+                            if value
+                            else self.DEFAULT_VALUES.get(header)
+                        )
 
                 for col in self.ALL_COLUMNS:
                     if col not in item:
@@ -235,7 +243,9 @@ class BoardArtifactIntegrator:
         r"EXECUTION_BOARD_(\d{4}-\d{2}-\d{2})\.(csv|json|md)",
     ]
 
-    GITHUB_IMPORT_PATTERN = r"GITHUB_PROJECT_IMPORT_([A-Z0-9_]+)_(\d{4}-\d{2}-\d{2})\.csv"
+    GITHUB_IMPORT_PATTERN = (
+        r"GITHUB_PROJECT_IMPORT_([A-Z0-9_]+)_(\d{4}-\d{2}-\d{2})\.csv"
+    )
 
     def __init__(self, board_artifacts_dir: Path | str | None = None) -> None:
         """Initialize the board artifact integrator.
@@ -372,7 +382,9 @@ class BoardArtifactIntegrator:
             "|----|----|--------|----------|--------|--------|---------|",
         ]
 
-        for item in sorted(items, key=lambda x: (x.get("priority", "P9"), x.get("id", ""))):
+        for item in sorted(
+            items, key=lambda x: (x.get("priority", "P9"), x.get("id", ""))
+        ):
             item_id = item.get("id", "")
 
             if item.get("status") == "COMPLETED":
@@ -385,12 +397,16 @@ class BoardArtifactIntegrator:
             source = item.get("source", "BOARD")
             depends = item.get("depends_on") or "-"
 
-            lines.append(f"| {item_id} | {title} | {status} | {priority} | {effort} | {source} | {depends} |")
+            lines.append(
+                f"| {item_id} | {title} | {status} | {priority} | {effort} | {source} | {depends} |"
+            )
 
         return "\n".join(lines)
 
 
-def create_board_artifact_integrator(board_artifacts_dir: Path | None = None) -> BoardArtifactIntegrator:
+def create_board_artifact_integrator(
+    board_artifacts_dir: Path | None = None,
+) -> BoardArtifactIntegrator:
     """Factory function to create a BoardArtifactIntegrator.
 
     Args:

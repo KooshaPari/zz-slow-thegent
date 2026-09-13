@@ -65,7 +65,10 @@ def _mock_playwright(monkeypatch: pytest.MonkeyPatch) -> None:
         async def start(self) -> _FakePlaywright:
             return _FakePlaywright()
 
-    monkeypatch.setattr("thegent.doc_tools.playwright_recorder.async_playwright", lambda: _FakeAsyncPlaywright())
+    monkeypatch.setattr(
+        "thegent.doc_tools.playwright_recorder.async_playwright",
+        lambda: _FakeAsyncPlaywright(),
+    )
 
 
 class TestRecordingConfig:
@@ -263,7 +266,9 @@ class TestPlaywrightRecorder:
             assert output_dir.exists()
 
     @pytest.mark.asyncio
-    async def test_recorder_context_manager(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    async def test_recorder_context_manager(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Test recorder as async context manager."""
         _mock_playwright(monkeypatch)
         config = RecordingConfig(headless=True)
@@ -276,7 +281,9 @@ class TestPlaywrightRecorder:
         assert recorder.browser is not None
 
     @pytest.mark.asyncio
-    async def test_recorder_launches_and_closes(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    async def test_recorder_launches_and_closes(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Test recorder launch and close."""
         _mock_playwright(monkeypatch)
         config = RecordingConfig(headless=True)

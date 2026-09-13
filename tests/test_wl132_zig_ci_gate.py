@@ -29,25 +29,33 @@ def _read_ci_yml() -> str:
 def test_ci_yml_contains_zig_readiness_job() -> None:
     """ci.yml must define the zig-readiness job."""
     text = _read_ci_yml()
-    assert "zig-readiness:" in text, "ci.yml missing 'zig-readiness:' job block (WL-132 B90-W2-D4)"
+    assert "zig-readiness:" in text, (
+        "ci.yml missing 'zig-readiness:' job block (WL-132 B90-W2-D4)"
+    )
 
 
 def test_ci_yml_zig_job_references_zmx_interop() -> None:
     """zig-readiness job must reference thegent-zmx-interop."""
     text = _read_ci_yml()
-    assert "thegent-zmx-interop" in text, "ci.yml zig-readiness job must reference 'thegent-zmx-interop'"
+    assert "thegent-zmx-interop" in text, (
+        "ci.yml zig-readiness job must reference 'thegent-zmx-interop'"
+    )
 
 
 def test_ci_yml_zig_job_is_blocking_required_gate() -> None:
     """zig-readiness job must be blocking after promotion to required gate."""
     text = _read_ci_yml()
-    assert "continue-on-error: true" not in text, "zig-readiness must not be non-blocking"
+    assert "continue-on-error: true" not in text, (
+        "zig-readiness must not be non-blocking"
+    )
 
 
 def test_ci_yml_zig_job_has_wl132_comment() -> None:
     """ci.yml must include WL-132 trace comment for the zig-readiness job."""
     text = _read_ci_yml()
-    assert "WL-132" in text, "ci.yml must include WL-132 reference comment in zig-readiness job"
+    assert "WL-132" in text, (
+        "ci.yml must include WL-132 reference comment in zig-readiness job"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -86,7 +94,9 @@ def test_ci_yml_zig_job_has_explicit_criteria_step() -> None:
 def test_ci_yml_zig_job_installs_rust() -> None:
     """zig-readiness job must set up a Rust toolchain."""
     text = _read_ci_yml()
-    assert "dtolnay/rust-toolchain" in text, "zig-readiness job must use dtolnay/rust-toolchain to set up Rust"
+    assert "dtolnay/rust-toolchain" in text, (
+        "zig-readiness job must use dtolnay/rust-toolchain to set up Rust"
+    )
 
 
 # ---------------------------------------------------------------------------

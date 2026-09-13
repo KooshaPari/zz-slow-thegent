@@ -51,7 +51,11 @@ class VirtualKeyStore:
         """Register or replace a virtual key configuration."""
         with self._lock:
             self._keys[config.key_id] = config
-            _log.debug("Registered virtual key key_id=%s owner=%s", config.key_id, config.owner_id)
+            _log.debug(
+                "Registered virtual key key_id=%s owner=%s",
+                config.key_id,
+                config.owner_id,
+            )
 
     def get(self, key_id: str) -> VirtualKeyConfig | None:
         """Return the VirtualKeyConfig for key_id, or None if not found."""

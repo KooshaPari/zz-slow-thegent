@@ -12,7 +12,9 @@ class SmartMerge:
     def __init__(self, mesh_root: Path) -> None:
         self.mesh_root = mesh_root
 
-    def merge_ast_aware(self, base: Path, ours: Path, theirs: Path, output: Path) -> bool:
+    def merge_ast_aware(
+        self, base: Path, ours: Path, theirs: Path, output: Path
+    ) -> bool:
         """Mergiraf integration (AST-aware merge) (SCLI-P5.1)."""
         # Mergiraf command line: mergiraf merge --base <base> --ours <ours> --theirs <theirs> --output <output>
         try:
@@ -46,7 +48,9 @@ class SmartMerge:
             except subprocess.CalledProcessError:
                 return False
 
-    def predict_conflicts(self, agent_intents: list[dict]) -> list[tuple[str, str, str]]:
+    def predict_conflicts(
+        self, agent_intents: list[dict]
+    ) -> list[tuple[str, str, str]]:
         """Conflict prediction before commit (trial merge from intents) (SCLI-P5.2)."""
         # Intent format: {"agent_id": "...", "files": ["...", "..."], "type": "write"}
         conflicts = []
@@ -63,7 +67,9 @@ class SmartMerge:
 
         return conflicts
 
-    def resolve_imports(self, content_a: str, content_b: str, language: str = "python") -> str:
+    def resolve_imports(
+        self, content_a: str, content_b: str, language: str = "python"
+    ) -> str:
         """Import union auto-resolution (SCLI-P5.3)."""
         # Simple regex-based import union for Python/JS
         import_lines = set()

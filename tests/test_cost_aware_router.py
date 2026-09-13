@@ -121,7 +121,9 @@ def test_near_daily_limit_selects_cheap_half():
     """At 80% of daily limit → cheapest 50% selected. Traces to: FR-COST-003"""
     # Use a budget where daily limit is tighter than session so daily warn fires first
     # daily=10, session=100 → 80% daily = 8.0, session far from warn
-    big_session_budget = CostBudget(daily_limit_usd=10.0, session_limit_usd=100.0, warn_at_pct=0.8)
+    big_session_budget = CostBudget(
+        daily_limit_usd=10.0, session_limit_usd=100.0, warn_at_pct=0.8
+    )
     tracker = SimpleCostTracker()
     tracker.record(8.0)
     router = CostAwareRouter(big_session_budget, tracker)
@@ -161,7 +163,9 @@ def test_session_limit_exceeded_raises():
 def test_daily_limit_exceeded_raises():
     """Daily spend >= daily_limit → BudgetExceededError. Traces to: FR-COST-002"""
     # Use a budget where daily_limit is lower than session_limit so daily check fires first
-    daily_budget = CostBudget(daily_limit_usd=5.0, session_limit_usd=100.0, warn_at_pct=0.8)
+    daily_budget = CostBudget(
+        daily_limit_usd=5.0, session_limit_usd=100.0, warn_at_pct=0.8
+    )
     tracker = SimpleCostTracker()
     tracker.record(5.0)
     router = CostAwareRouter(daily_budget, tracker)

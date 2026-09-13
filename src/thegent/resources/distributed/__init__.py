@@ -1,4 +1,5 @@
 """Stub module."""
+
 from dataclasses import dataclass
 
 
@@ -16,7 +17,11 @@ class DistributedResourceCoordinator:
         return True
 
 
-__all__ = ["DistributedResourceCoordinator", "ResourceCoordinationError", "ResourceLease"]
+__all__ = [
+    "DistributedResourceCoordinator",
+    "ResourceCoordinationError",
+    "ResourceLease",
+]
 
 
 class ResourceCoordinationError(Exception):
@@ -26,6 +31,7 @@ class ResourceCoordinationError(Exception):
 @dataclass
 class ResourceLease:
     """Lease for a distributed resource."""
+
     resource_id: str
     holder_id: str = ""
     expires_at: str = ""

@@ -41,7 +41,9 @@ class TestAuthExpiryDetector:
         result = detector.detect_expiry(token_info)
 
         assert result.status == ExpiryStatus.EXPIRING_SOON
-        assert result.is_critical is False  # 12 hours is not critical (< 1 hour is critical)
+        assert (
+            result.is_critical is False
+        )  # 12 hours is not critical (< 1 hour is critical)
         assert result.hours_remaining < 24
 
     @pytest.mark.requirement("WL-241")

@@ -142,11 +142,15 @@ class TestClockInjection:
 class TestDecisionNotice:
     def test_is_deny(self) -> None:
         assert DecisionNotice(verdict="deny", reason_code="x", rule_id="r").is_deny()
-        assert not DecisionNotice(verdict="allow", reason_code="x", rule_id="r").is_deny()
+        assert not DecisionNotice(
+            verdict="allow", reason_code="x", rule_id="r"
+        ).is_deny()
 
     def test_is_warn(self) -> None:
         assert DecisionNotice(verdict="warn", reason_code="x", rule_id="r").is_warn()
-        assert not DecisionNotice(verdict="deny", reason_code="x", rule_id="r").is_warn()
+        assert not DecisionNotice(
+            verdict="deny", reason_code="x", rule_id="r"
+        ).is_warn()
 
     def test_record_decision_appends_to_bounded_deque(self) -> None:
         cockpit = OperatorCockpit()
@@ -171,7 +175,9 @@ class TestDecisionNotice:
     def test_record_decision_zero_evaluated_at_uses_clock(self) -> None:
         clock = _Clock(start=9999.0)
         cockpit = OperatorCockpit(clock=clock)
-        cockpit.record_decision(DecisionNotice(verdict="deny", reason_code="r1", rule_id="rule-1"))
+        cockpit.record_decision(
+            DecisionNotice(verdict="deny", reason_code="r1", rule_id="rule-1")
+        )
         assert cockpit._state.decision_notices[-1].evaluated_at == 9999.0
 
     def test_snapshot_includes_decision_notices(self) -> None:
@@ -190,7 +196,9 @@ class TestDecisionNotice:
         snap = cockpit.snapshot()
         assert "decision_notices" in snap
         assert snap["decision_notices"][0]["verdict"] == "deny"
-        assert snap["decision_notices"][0]["reason_code"] == "critical_lane_low_confidence"
+        assert (
+            snap["decision_notices"][0]["reason_code"] == "critical_lane_low_confidence"
+        )
 
     def test_deny_banner_surfaces_inline(self) -> None:
         """A fresh deny decision shows up as a focused banner."""
@@ -226,7 +234,11 @@ class TestDecisionNotice:
 
     def test_allow_accumulates_in_snapshot(self) -> None:
         cockpit = OperatorCockpit()
-        cockpit.record_decision(DecisionNotice(verdict="allow", reason_code="allowed", rule_id="local.default.allow"))
+        cockpit.record_decision(
+            DecisionNotice(
+                verdict="allow", reason_code="allowed", rule_id="local.default.allow"
+            )
+        )
         snap = cockpit.snapshot()
         assert len(snap["decision_notices"]) == 1
         assert snap["decision_notices"][0]["verdict"] == "allow"
@@ -300,7 +312,9 @@ class _FakeDecision:
 class TestDecisionNoticeFor:
     def test_accepts_policydecision_like_object(self) -> None:
         d = _FakeDecision(verdict="deny", reason_code="x", rule_id="r1")
-        notice = _decision_notice_for(d, agent="cursor", lane="critical", now_epoch=42.0)
+        notice = _decision_notice_for(
+            d, agent="cursor", lane="critical", now_epoch=42.0
+        )
         assert notice.verdict == "deny"
         assert notice.reason_code == "x"
         assert notice.rule_id == "r1"
@@ -326,7 +340,9 @@ class TestDecisionNoticeBridge:
     def test_feed_records_decision(self) -> None:
         cockpit = OperatorCockpit()
         bridge = DecisionNoticeBridge(cockpit)
-        result = bridge.feed(_FakeDecision(verdict="deny", reason_code="x", rule_id="r1"))
+        result = bridge.feed(
+            _FakeDecision(verdict="deny", reason_code="x", rule_id="r1")
+        )
         assert isinstance(result, BridgeResult)
         assert result.ok
         assert result.accepted == 1
@@ -337,7 +353,10 @@ class TestDecisionNoticeBridge:
     def test_feed_many_aggregates(self) -> None:
         cockpit = OperatorCockpit()
         bridge = DecisionNoticeBridge(cockpit)
-        decisions = [_FakeDecision(verdict="allow", reason_code=f"a{i}", rule_id=f"r{i}") for i in range(7)]
+        decisions = [
+            _FakeDecision(verdict="allow", reason_code=f"a{i}", rule_id=f"r{i}")
+            for i in range(7)
+        ]
         result = bridge.feed_many(decisions, agent="cursor", lane="standard")
         assert result.ok
         assert result.accepted == 7
@@ -390,7 +409,10 @@ class TestDecisionNoticeBridge:
         # Cockpit should show the deny banner.
         out = cockpit.render()
         assert "policy deny" in out
-        assert ReasonCode.CRITICAL_LANE_LOW_CONFIDENCE.value in out or "critical" in out.lower()
+        assert (
+            ReasonCode.CRITICAL_LANE_LOW_CONFIDENCE.value in out
+            or "critical" in out.lower()
+        )
 
 
 # ---------------------------------------------------------------------------

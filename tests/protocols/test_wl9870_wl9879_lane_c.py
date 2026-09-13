@@ -138,7 +138,14 @@ def test_wl9877_session_read_response_projects_turn_entries() -> None:
     assert submit_response is not None
     turn_id = submit_response["result"]["turn"]["id"]
     read_response, notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "id": "read", "method": "session/read", "params": {"session_id": session_id}})
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": "read",
+                "method": "session/read",
+                "params": {"session_id": session_id},
+            }
+        )
     )
     assert read_response is not None
     assert any(item["id"] == turn_id for item in read_response["result"]["turns"])
@@ -169,7 +176,11 @@ def test_wl9879_turn_submit_notification_keeps_side_effects_without_response() -
     session_id = _start_session()
     response, notifications = process_jsonrpc_line_full(
         json.dumps(
-            {"jsonrpc": "2.0", "method": "turn/submit", "params": {"session_id": session_id, "input": "lane-c"}}
+            {
+                "jsonrpc": "2.0",
+                "method": "turn/submit",
+                "params": {"session_id": session_id, "input": "lane-c"},
+            }
         )
     )
     assert response is None

@@ -47,7 +47,9 @@ class TestSyncAuditor:
         assert auditor._policy_modes == modes
 
     @pytest.mark.requirement("WL-244")
-    def test_generate_html_diff_artifact_includes_expected_markers(self, tmp_path: Path):
+    def test_generate_html_diff_artifact_includes_expected_markers(
+        self, tmp_path: Path
+    ):
         """HTML diff artifact should be deterministic and include local/remote side labels."""
         local_snapshot = {"status": "ok", "items": ["wl-1", "wl-2"]}
         remote_snapshot = {"status": "drift", "items": ["wl-1"]}
@@ -55,7 +57,9 @@ class TestSyncAuditor:
 
         SyncAuditor.generate_html_diff_artifact(local_snapshot, remote_snapshot, output)
         second_path = tmp_path / "sync-diff-2.html"
-        SyncAuditor.generate_html_diff_artifact(local_snapshot, remote_snapshot, second_path)
+        SyncAuditor.generate_html_diff_artifact(
+            local_snapshot, remote_snapshot, second_path
+        )
 
         html = output.read_text(encoding="utf-8")
         second = second_path.read_text(encoding="utf-8")
@@ -180,7 +184,9 @@ class TestSyncAuditor:
         is_valid, issues = auditor.validate_policy()
 
         assert is_valid is False
-        assert any("gitlab" in issue and "Missing policy mode" in issue for issue in issues)
+        assert any(
+            "gitlab" in issue and "Missing policy mode" in issue for issue in issues
+        )
 
 
 @pytest.mark.requirement("WL-249")

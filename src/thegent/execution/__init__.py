@@ -155,11 +155,17 @@ class PolicyEngine:
         from pathlib import Path
 
         self.settings = settings
-        self.session_dir = Path(getattr(settings, "session_dir", "") or "") if settings else Path.cwd()
+        self.session_dir = (
+            Path(getattr(settings, "session_dir", "") or "") if settings else Path.cwd()
+        )
         self.policies: dict[str, Any] = {}
         self._circuit_breakers: dict[str, dict[str, Any]] = {}
-        self.circuit_breaker_enabled = getattr(settings, "circuit_breaker_enabled", False)
-        self.circuit_breaker_threshold = getattr(settings, "circuit_breaker_threshold", 5)
+        self.circuit_breaker_enabled = getattr(
+            settings, "circuit_breaker_enabled", False
+        )
+        self.circuit_breaker_threshold = getattr(
+            settings, "circuit_breaker_threshold", 5
+        )
         self._cb_registry: Any = None
 
     def evaluate(self, run: RunMeta, *, registry: Any = None) -> tuple[str, str]:
@@ -177,8 +183,16 @@ class PolicyEngine:
         model = getattr(run, "model", "") or getattr(run, "agent", "")
         lane = getattr(run, "lane", "standard") or "standard"
         confidence = getattr(run, "confidence", None)
-        environment = getattr(self.settings, "environment", "development") if self.settings else "development"
-        trust_score_threshold = getattr(self.settings, "trust_score_threshold", 0.8) if self.settings else 0.8
+        environment = (
+            getattr(self.settings, "environment", "development")
+            if self.settings
+            else "development"
+        )
+        trust_score_threshold = (
+            getattr(self.settings, "trust_score_threshold", 0.8)
+            if self.settings
+            else 0.8
+        )
 
         # Apply calibration factor if registry is provided
         if registry and model and confidence is not None:
@@ -191,7 +205,9 @@ class PolicyEngine:
 
         # Check circuit breaker if enabled
         if model and getattr(self, "circuit_breaker_enabled", False):
-            cb = CircuitBreakerRegistry(str(self.session_dir), threshold=self.circuit_breaker_threshold)
+            cb = CircuitBreakerRegistry(
+                str(self.session_dir), threshold=self.circuit_breaker_threshold
+            )
             # Check model category first, then default category (for backward compatibility)
             if cb.is_open(model, category="model"):
                 return "deny", f"Circuit breaker is OPEN for model: {model}"
@@ -205,10 +221,17 @@ class PolicyEngine:
 
         # Policy 1: Critical lane + confidence < 0.9 = deny
         if lane == "critical" and confidence is not None and confidence < 0.9:
-            return "deny", f"Confidence {confidence} below threshold 0.9 for critical lane"
+            return (
+                "deny",
+                f"Confidence {confidence} below threshold 0.9 for critical lane",
+            )
 
         # Policy 2: Unknown agent in production = deny
-        if environment == "production" and model and model.lower() in ("unknown", "untrusted"):
+        if (
+            environment == "production"
+            and model
+            and model.lower() in ("unknown", "untrusted")
+        ):
             return "deny", "Unknown agent blocked in production"
 
         # Policy 3: Unknown agent in critical lane = deny
@@ -220,8 +243,15 @@ class PolicyEngine:
             return "warn", "No confidence data for recovery lane"
 
         # Policy 5: Production + confidence below threshold = deny
-        if environment == "production" and confidence is not None and confidence < trust_score_threshold:
-            return "deny", f"Confidence {confidence} below threshold {trust_score_threshold}"
+        if (
+            environment == "production"
+            and confidence is not None
+            and confidence < trust_score_threshold
+        ):
+            return (
+                "deny",
+                f"Confidence {confidence} below threshold {trust_score_threshold}",
+            )
 
         # Policy 6: Critical lane + drift exceeds budget = deny
         if lane == "critical":
@@ -494,7 +524,9 @@ class EscalationQueue:
             self.queue_path.parent.mkdir(parents=True, exist_ok=True)
             try:
                 with open(self.queue_path, "w", encoding="utf-8") as f:
-                    f.writelines(json.dumps(item, sort_keys=True) + "\n" for item in snapshot)
+                    f.writelines(
+                        json.dumps(item, sort_keys=True) + "\n" for item in snapshot
+                    )
                     f.writelines(line + "\n" for line in snapshot_corrupt)
             except OSError:
                 # The bytes may or may not have made it to disk; do
@@ -556,14 +588,20 @@ class EscalationQueue:
         if not isinstance(priority, int) or isinstance(priority, bool):
             raise TypeError(f"priority must be int, got {type(priority).__name__}")
         if priority not in self._VALID_PRIORITIES:
-            raise ValueError(f"priority must be one of {sorted(self._VALID_PRIORITIES)}, got {priority!r}")
+            raise ValueError(
+                f"priority must be one of {sorted(self._VALID_PRIORITIES)}, got {priority!r}"
+            )
         if sla_minutes is not None:
             if not isinstance(sla_minutes, int) or isinstance(sla_minutes, bool):
-                raise TypeError(f"sla_minutes must be int or None, got {type(sla_minutes).__name__}")
+                raise TypeError(
+                    f"sla_minutes must be int or None, got {type(sla_minutes).__name__}"
+                )
             if sla_minutes < 0:
                 raise ValueError(f"sla_minutes must be non-negative, got {sla_minutes}")
         if blocked_at_utc is not None and not isinstance(blocked_at_utc, str):
-            raise TypeError(f"blocked_at_utc must be str or None, got {type(blocked_at_utc).__name__}")
+            raise TypeError(
+                f"blocked_at_utc must be str or None, got {type(blocked_at_utc).__name__}"
+            )
         if owner is not None and not isinstance(owner, str):
             raise TypeError(f"owner must be str or None, got {type(owner).__name__}")
 
@@ -579,7 +617,9 @@ class EscalationQueue:
             # Calculate escalate_by_utc based on blocked_at_utc or now
             if blocked_at_utc:
                 try:
-                    blocked_dt = datetime.fromisoformat(blocked_at_utc.replace("Z", "+00:00"))
+                    blocked_dt = datetime.fromisoformat(
+                        blocked_at_utc.replace("Z", "+00:00")
+                    )
                 except (ValueError, TypeError):
                     blocked_dt = datetime.now(UTC)
             else:
@@ -669,7 +709,9 @@ class EscalationQueue:
                             if not escalate_by:
                                 continue
                             try:
-                                escalate_dt = datetime.fromisoformat(escalate_by.replace("Z", "+00:00"))
+                                escalate_dt = datetime.fromisoformat(
+                                    escalate_by.replace("Z", "+00:00")
+                                )
                                 now = datetime.now(UTC)
                                 is_past_sla = now >= escalate_dt
                                 if is_past_sla:
@@ -775,7 +817,9 @@ class MessageEntry:
         if not isinstance(role, str):
             raise TypeError(f"role must be str, got {type(role).__name__}")
         if role not in self._VALID_ROLES:
-            raise ValueError(f"role must be one of {sorted(self._VALID_ROLES)}, got {role!r}")
+            raise ValueError(
+                f"role must be one of {sorted(self._VALID_ROLES)}, got {role!r}"
+            )
         if not isinstance(content, str):
             raise TypeError(f"content must be str, got {type(content).__name__}")
         if not isinstance(timestamp, str):
@@ -795,7 +839,11 @@ class MessageEntry:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, MessageEntry):
             return NotImplemented
-        return self.role == other.role and self.content == other.content and self.timestamp == other.timestamp
+        return (
+            self.role == other.role
+            and self.content == other.content
+            and self.timestamp == other.timestamp
+        )
 
     def __hash__(self) -> int:
         return hash((self.role, self.content, self.timestamp))
@@ -906,7 +954,9 @@ class OverrideRegistry:
             # the IO failure directly.
             raise
 
-    def record(self, owner: str, reason: str, ttl_seconds: int = 3600) -> dict[str, Any]:
+    def record(
+        self, owner: str, reason: str, ttl_seconds: int = 3600
+    ) -> dict[str, Any]:
         """Record an override.
 
         Args:
@@ -986,7 +1036,9 @@ class OverrideRegistry:
             if "expires_at_utc" not in record:
                 continue
             try:
-                expires = datetime.fromisoformat(record["expires_at_utc"].replace("Z", "+00:00"))
+                expires = datetime.fromisoformat(
+                    record["expires_at_utc"].replace("Z", "+00:00")
+                )
             except (ValueError, TypeError):
                 # AUDIT-N+30 NEW-6: surface the malformed-timestamp
                 # branch instead of silently skipping so a buggy
@@ -1021,7 +1073,9 @@ class OverrideRegistry:
             return cleared
 
     @staticmethod
-    def _validate_record_inputs(owner: object, reason: object, ttl_seconds: object) -> None:
+    def _validate_record_inputs(
+        owner: object, reason: object, ttl_seconds: object
+    ) -> None:
         """AUDIT-N+30 NEW-3: defensive input validation.
 
         Fires before any state mutation or JSONL write so a buggy
@@ -1032,19 +1086,27 @@ class OverrideRegistry:
         surface stays uniform.
         """
         if not isinstance(owner, str):
-            raise ValueError(f"override_registry: owner must be a string, got {type(owner).__name__}")
+            raise ValueError(
+                f"override_registry: owner must be a string, got {type(owner).__name__}"
+            )
         if not owner:
             raise ValueError("override_registry: owner must be a non-empty string")
         if not isinstance(reason, str):
-            raise ValueError(f"override_registry: reason must be a string, got {type(reason).__name__}")
+            raise ValueError(
+                f"override_registry: reason must be a string, got {type(reason).__name__}"
+            )
         # ``ttl_seconds`` must be a non-negative int. We
         # explicitly reject ``bool`` (which is an ``int`` subclass
         # in Python but rarely a meaningful TTL) and ``float``
         # (which would silently truncate via ``timedelta``).
         if isinstance(ttl_seconds, bool) or not isinstance(ttl_seconds, int):
-            raise ValueError(f"override_registry: ttl_seconds must be int, got {type(ttl_seconds).__name__}")
+            raise ValueError(
+                f"override_registry: ttl_seconds must be int, got {type(ttl_seconds).__name__}"
+            )
         if ttl_seconds < 0:
-            raise ValueError(f"override_registry: ttl_seconds must be non-negative, got {ttl_seconds}")
+            raise ValueError(
+                f"override_registry: ttl_seconds must be non-negative, got {ttl_seconds}"
+            )
 
 
 __all__ = [
@@ -1112,12 +1174,16 @@ class ConcurrencyController:
                 try:
                     self.standard_lane_slots = int(env_standard)
                 except ValueError:
-                    self.standard_lane_slots = max_concurrency - self.critical_lane_slots
+                    self.standard_lane_slots = (
+                        max_concurrency - self.critical_lane_slots
+                    )
             # Defensive: bypass max_concurrency arithmetic when it's a
             # mocked/non-numeric value (e.g. MagicMock from pytest tests
             # using partial settings) so comparison in acquire() doesn't
             # raise ``TypeError: '<' not supported between 'MagicMock' and 'int'``.
-            elif isinstance(max_concurrency, int) and not isinstance(max_concurrency, bool):
+            elif isinstance(max_concurrency, int) and not isinstance(
+                max_concurrency, bool
+            ):
                 self.standard_lane_slots = max_concurrency - self.critical_lane_slots
             else:
                 self.standard_lane_slots = max(1, 10 - self.critical_lane_slots)
@@ -1200,7 +1266,9 @@ class ConcurrencyController:
         harness_cards = getattr(self, "harness_cards", {})
 
         slow_points = self.bottleneck_detector.identify_slow_points()
-        resource_contention = self.bottleneck_detector.detect_resource_contention(snapshot, harness_cards)
+        resource_contention = self.bottleneck_detector.detect_resource_contention(
+            snapshot, harness_cards
+        )
 
         return {
             "slow_points": slow_points,
@@ -1514,7 +1582,12 @@ class RunRegistry:
                 self.runs.pop(run.run_id, None)
                 raise
 
-    def register_pause(self, run_id: str, reason: str = "manual", metadata: dict[str, Any] | None = None) -> None:
+    def register_pause(
+        self,
+        run_id: str,
+        reason: str = "manual",
+        metadata: dict[str, Any] | None = None,
+    ) -> None:
         """Register a run pause."""
         self._states[run_id] = RunState.PAUSED
         self._pause_reasons[run_id] = reason
@@ -1608,7 +1681,9 @@ class RunRegistry:
             canonical_duration = 0.0
         else:
             if math.isnan(canonical_duration) or math.isinf(canonical_duration):
-                raise ValueError(f"register_end: duration must be a finite number, got {canonical_duration!r}")
+                raise ValueError(
+                    f"register_end: duration must be a finite number, got {canonical_duration!r}"
+                )
             if canonical_duration < 0:
                 canonical_duration = 0.0
 
@@ -1700,7 +1775,9 @@ class RunRegistry:
         del previous_state
 
     @staticmethod
-    def _validate_register_end_inputs(run_id: object, exit_code: object, status: object) -> None:
+    def _validate_register_end_inputs(
+        run_id: object, exit_code: object, status: object
+    ) -> None:
         """AUDIT-N+29 NEW-5: defensive input validation.
 
         Fires before any state mutation or JSONL write so a buggy
@@ -1710,13 +1787,19 @@ class RunRegistry:
         so the caller-facing exception surface stays uniform.
         """
         if not isinstance(run_id, str):
-            raise ValueError(f"register_end: run_id must be a string, got {type(run_id).__name__}")
+            raise ValueError(
+                f"register_end: run_id must be a string, got {type(run_id).__name__}"
+            )
         if not run_id:
             raise ValueError("register_end: run_id must be a non-empty string")
         if not isinstance(exit_code, int) or isinstance(exit_code, bool):
-            raise ValueError(f"register_end: exit_code must be int, got {type(exit_code).__name__}")
+            raise ValueError(
+                f"register_end: exit_code must be int, got {type(exit_code).__name__}"
+            )
         if not isinstance(status, str):
-            raise ValueError(f"register_end: status must be a string, got {type(status).__name__}")
+            raise ValueError(
+                f"register_end: status must be a string, got {type(status).__name__}"
+            )
         # ``status`` set is permissive — we accept the canonical
         # three plus the orchestrator aliases. Anything else is a
         # caller bug (see ``register_end`` for the unknown-status
@@ -1729,7 +1812,9 @@ class RunRegistry:
             "aborted",
         }
         if status not in _allowed_status:
-            raise ValueError(f"register_end: status must be one of {sorted(_allowed_status)}, got {status!r}")
+            raise ValueError(
+                f"register_end: status must be one of {sorted(_allowed_status)}, got {status!r}"
+            )
 
     def get_run_state(self, run_id: str) -> RunState | None:
         """Get the current state of a run."""
@@ -1844,7 +1929,11 @@ class RunRegistry:
             return 1.0
 
         # Find runs with feedback
-        runs_with_feedback = [r for r in agent_runs if hasattr(r, "feedback_score") and r.feedback_score is not None]
+        runs_with_feedback = [
+            r
+            for r in agent_runs
+            if hasattr(r, "feedback_score") and r.feedback_score is not None
+        ]
         if not runs_with_feedback:
             return 1.0
 
@@ -1903,13 +1992,17 @@ class RunRegistry:
                         if started_at:
                             try:
                                 if "+" in started_at or "Z" in started_at:
-                                    dt = datetime.fromisoformat(started_at.replace("Z", "+00:00"))
+                                    dt = datetime.fromisoformat(
+                                        started_at.replace("Z", "+00:00")
+                                    )
                                 else:
                                     dt = datetime.fromisoformat(started_at)
                                 # Determine retention days based on domain_tag
                                 domain_tag = data.get("domain_tag", "")
                                 retention_days = by_domain.get(domain_tag, default_days)
-                                cutoff = datetime.now(UTC).timestamp() - (retention_days * 86400)
+                                cutoff = datetime.now(UTC).timestamp() - (
+                                    retention_days * 86400
+                                )
                                 if dt.timestamp() < cutoff:
                                     purged += 1
                                     continue
@@ -2020,9 +2113,13 @@ class Auditor:
                     entry_hash = data.get("hash", "")
 
                     # Verify hash matches computed hash of data (excluding hash and signature fields)
-                    data_for_hash = {k: v for k, v in data.items() if k not in ("hash", "signature")}
+                    data_for_hash = {
+                        k: v for k, v in data.items() if k not in ("hash", "signature")
+                    }
                     computed_hash = hashlib.sha256(
-                        json.dumps(data_for_hash, sort_keys=True, separators=(",", ":")).encode()
+                        json.dumps(
+                            data_for_hash, sort_keys=True, separators=(",", ":")
+                        ).encode()
                     ).hexdigest()
 
                     if entry_hash and entry_hash != computed_hash:
@@ -2212,7 +2309,9 @@ class CheckpointRegistry:
         # inside the locked section) cannot deadlock.
         self._append_lock = threading.RLock()
 
-    def create_checkpoint(self, reason: str, dag_content: str, owner: str) -> CheckpointMeta:
+    def create_checkpoint(
+        self, reason: str, dag_content: str, owner: str
+    ) -> CheckpointMeta:
         """Create a new checkpoint.
 
         AUDIT-N+31 NEW-2: defensive input validation. Fires before
@@ -2324,7 +2423,9 @@ class HandoffManager:
         # concurrent callers cannot interleave dict mutations.
         self._append_lock = threading.RLock()
 
-    def register_handoff(self, from_agent: str, to_agent: str, context: dict[str, Any]) -> None:
+    def register_handoff(
+        self, from_agent: str, to_agent: str, context: dict[str, Any]
+    ) -> None:
         """Register a handoff between agents.
 
         AUDIT-N+31 NEW-2: defensive input validation. Fires before
@@ -2343,7 +2444,11 @@ class HandoffManager:
 
         key = f"{from_agent}->{to_agent}"
         with self._append_lock:
-            self._handoffs[key] = {"from": from_agent, "to": to_agent, "context": context}
+            self._handoffs[key] = {
+                "from": from_agent,
+                "to": to_agent,
+                "context": context,
+            }
 
     def get_handoff(self, from_agent: str, to_agent: str) -> dict[str, Any] | None:
         """Get a handoff by agents.
@@ -2404,7 +2509,9 @@ class KPIManager:
         # callers cannot interleave mutations on ``kpis`` / ``events``.
         self._append_lock = threading.RLock()
 
-    def record(self, kpi_name: str, value: float, metadata: dict[str, Any] | None = None) -> None:
+    def record(
+        self, kpi_name: str, value: float, metadata: dict[str, Any] | None = None
+    ) -> None:
         """Record a KPI value.
 
         AUDIT-N+31 NEW-2: defensive input validation. Fires before
@@ -2425,7 +2532,9 @@ class KPIManager:
 
         with self._append_lock:
             self.kpis[kpi_name] = float(value)
-            self.events.append({"kpi": kpi_name, "value": float(value), "metadata": metadata or {}})
+            self.events.append(
+                {"kpi": kpi_name, "value": float(value), "metadata": metadata or {}}
+            )
 
     def get(self, kpi_name: str) -> float | None:
         """Get a KPI value."""

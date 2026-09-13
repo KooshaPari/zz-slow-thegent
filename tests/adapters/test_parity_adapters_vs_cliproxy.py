@@ -31,7 +31,9 @@ import pytest
 
 CLIPROXY_REPO = Path("/Users/kooshapari/temp-PRODVERCEL/485/kush/cliproxyapi-plusplus")
 CLIPROXY_ACP_TRANSLATOR_BIN = CLIPROXY_REPO / "cmd" / "acp-translator" / "main.go"
-CLIPROXY_TEST_HELPER = CLIPROXY_REPO / "pkg" / "llmproxy" / "translator" / "acp" / "acp_adapter.go"
+CLIPROXY_TEST_HELPER = (
+    CLIPROXY_REPO / "pkg" / "llmproxy" / "translator" / "acp" / "acp_adapter.go"
+)
 
 # Markers to skip tests if CLIProxy is not available
 pytestmark = []
@@ -39,7 +41,9 @@ pytestmark = []
 
 def _cliproxy_available() -> bool:
     """Check if CLIProxy source is available."""
-    return CLIPROXY_REPO.exists() and (CLIPROXY_ACP_TRANSLATOR_BIN.exists() or CLIPROXY_TEST_HELPER.exists())
+    return CLIPROXY_REPO.exists() and (
+        CLIPROXY_ACP_TRANSLATOR_BIN.exists() or CLIPROXY_TEST_HELPER.exists()
+    )
 
 
 def _go_compiler_available() -> bool:
@@ -136,7 +140,9 @@ def minimal_request() -> dict[str, Any]:
 class TestPythonAcpAdapter:
     """Test the Python ACP adapter directly."""
 
-    def test_translate_simple_message(self, simple_message_request: dict[str, Any]) -> None:
+    def test_translate_simple_message(
+        self, simple_message_request: dict[str, Any]
+    ) -> None:
         """Test translation of a simple message."""
         from thegent.mcp.server_dispatch_helpers import (
             parse_acp_payload,
@@ -254,7 +260,9 @@ class TestParity:
             "messages": request["messages"],
         }
 
-    def test_parity_simple_message(self, simple_message_request: dict[str, Any]) -> None:
+    def test_parity_simple_message(
+        self, simple_message_request: dict[str, Any]
+    ) -> None:
         """Test that Python and Go adapters produce equivalent output for a simple message."""
         from thegent.mcp.server_dispatch_helpers import parse_acp_payload
 
@@ -310,8 +318,12 @@ class TestParity:
         go_output = self._go_translate_request(system_prompt_request)
 
         # Both must preserve the system message exactly
-        py_system = next((m for m in py_context["messages"] if m["role"] == "system"), None)
-        go_system = next((m for m in go_output["messages"] if m["role"] == "system"), None)
+        py_system = next(
+            (m for m in py_context["messages"] if m["role"] == "system"), None
+        )
+        go_system = next(
+            (m for m in go_output["messages"] if m["role"] == "system"), None
+        )
 
         assert py_system is not None
         assert go_system is not None
@@ -438,7 +450,9 @@ class TestEdgeCases:
 class TestIntegration:
     """Integration tests combining parsing and formatting."""
 
-    def test_round_trip_parse_and_respond(self, simple_message_request: dict[str, Any]) -> None:
+    def test_round_trip_parse_and_respond(
+        self, simple_message_request: dict[str, Any]
+    ) -> None:
         """Test parsing a request and formatting a response."""
         from thegent.mcp.server_dispatch_helpers import (
             format_acp_response,

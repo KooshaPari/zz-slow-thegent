@@ -74,8 +74,12 @@ def test_wl103_append_context_usage_emits_ratio_without_window_fields() -> None:
     assert "context_usage" not in payload
 
 
-@pytest.mark.parametrize("ratio", ["oops", float("nan"), float("inf"), -0.01, 1.01, True])
-def test_wl103_append_context_usage_omits_invalid_ratio_without_window_fields(ratio: object) -> None:
+@pytest.mark.parametrize(
+    "ratio", ["oops", float("nan"), float("inf"), -0.01, 1.01, True]
+)
+def test_wl103_append_context_usage_omits_invalid_ratio_without_window_fields(
+    ratio: object,
+) -> None:
     payload: dict[str, object] = {}
     result = RunResult(
         exit_code=0,
@@ -105,7 +109,9 @@ def test_wl108_context_line_uses_display_helper() -> None:
     assert line == "Context usage: 700/1k"
 
 
-def test_wl108_context_line_prefers_shared_threshold_path_over_precomputed_display() -> None:
+def test_wl108_context_line_prefers_shared_threshold_path_over_precomputed_display() -> (
+    None
+):
     line = _format_context_usage_line({"used": 700, "max": 1000, "display": "stale"})
     assert line == "Context usage: 700/1k"
 
@@ -125,7 +131,9 @@ def test_wl108_build_context_usage_payload_returns_none_without_window() -> None
     assert build_context_usage_payload(used=None, max_tokens=1000, ratio=0.5) is None
 
 
-def test_wl108_build_context_usage_payload_returns_none_for_non_positive_window() -> None:
+def test_wl108_build_context_usage_payload_returns_none_for_non_positive_window() -> (
+    None
+):
     assert build_context_usage_payload(used=123, max_tokens=0, ratio=0.1) is None
 
 
@@ -204,7 +212,9 @@ def test_wl114_normalize_image_paths_rejects_url_without_image_extension() -> No
         _normalize_image_paths(["https://example.com/download"])
 
 
-def test_wl114_normalize_image_paths_rejects_unsupported_local_extension(tmp_path: Path) -> None:
+def test_wl114_normalize_image_paths_rejects_unsupported_local_extension(
+    tmp_path: Path,
+) -> None:
     """WL-114 rejects unsupported local file extensions."""
     file_path = tmp_path / "notes.txt"
     file_path.write_text("x", encoding="utf-8")
@@ -213,7 +223,9 @@ def test_wl114_normalize_image_paths_rejects_unsupported_local_extension(tmp_pat
         _normalize_image_paths([str(file_path)])
 
 
-def test_wl114_normalize_image_paths_rejects_directory_with_image_suffix(tmp_path: Path) -> None:
+def test_wl114_normalize_image_paths_rejects_directory_with_image_suffix(
+    tmp_path: Path,
+) -> None:
     folder = tmp_path / "frames.png"
     folder.mkdir()
 
@@ -221,7 +233,9 @@ def test_wl114_normalize_image_paths_rejects_directory_with_image_suffix(tmp_pat
         _normalize_image_paths([str(folder)])
 
 
-def test_wl114_run_agent_bg_forwards_image_to_bg_cmd(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl114_run_agent_bg_forwards_image_to_bg_cmd(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """WL-114 bg run path passes --image values through to bg_cmd."""
     from thegent.cli.apps.run import run_agent
 
@@ -244,8 +258,12 @@ def test_wl114_run_agent_bg_forwards_image_to_bg_cmd(monkeypatch: pytest.MonkeyP
     assert captured["image"] == ["https://example.com/a.png"]
 
 
-def test_wl114_validate_image_capability_rejects_non_vision_model(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr("thegent.cli.commands.impl._model_supports_vision", lambda _model: False)
+def test_wl114_validate_image_capability_rejects_non_vision_model(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl._model_supports_vision", lambda _model: False
+    )
     with pytest.raises(ValueError, match="does not advertise vision capability"):
         _validate_image_capability("codex", "text-only-model")
 
@@ -255,6 +273,10 @@ def test_wl114_validate_image_capability_rejects_non_codex_agent() -> None:
         _validate_image_capability("not-image-agent", "gpt-4.1")
 
 
-def test_wl114_validate_image_capability_accepts_vision_model(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr("thegent.cli.commands.impl._model_supports_vision", lambda _model: True)
+def test_wl114_validate_image_capability_accepts_vision_model(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl._model_supports_vision", lambda _model: True
+    )
     _validate_image_capability("codex", "gpt-5-codex")

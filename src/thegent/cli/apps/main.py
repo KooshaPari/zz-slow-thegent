@@ -29,7 +29,9 @@ app = typer.Typer(
 
 @app.callback()
 def main_callback(
-    version: bool = typer.Option(False, "--version", "-v", help="Show version and exit"),
+    version: bool = typer.Option(
+        False, "--version", "-v", help="Show version and exit"
+    ),
 ) -> None:
     """Main callback for the thegent CLI."""
     if version:
@@ -63,7 +65,9 @@ def _resolve_session_dir() -> Path:
 @app.command("bg", help="Run an agent in the background.")
 def bg_cmd(
     prompt: str = typer.Argument(..., help="The prompt to send to the agent"),
-    agent: str = typer.Argument("claude", help="Agent identifier (cursor-agent, claude, ...)."),
+    agent: str = typer.Argument(
+        "claude", help="Agent identifier (cursor-agent, claude, ...)."
+    ),
     cd: str | None = typer.Option(None, "--cd", help="Working directory."),
     owner: str | None = typer.Option(None, "--owner", help="Owner tag."),
 ) -> None:
@@ -96,7 +100,11 @@ def bg_cmd(
     }
     meta_path = owner_dir / f"{sid}.json"
     meta_path.write_text(json.dumps(meta), encoding="utf-8")
-    typer.echo(json.dumps({"session_id": sid, "pid": proc.pid, "owner": owner_tag, "agent": agent}))
+    typer.echo(
+        json.dumps(
+            {"session_id": sid, "pid": proc.pid, "owner": owner_tag, "agent": agent}
+        )
+    )
 
 
 @app.command("status", help="Show status of a session.")
@@ -177,7 +185,9 @@ def ps_cmd(
     all: bool = typer.Option(False, "--all", help="Show all sessions."),
     owner: str | None = typer.Option(None, "--owner", help="Filter by owner tag."),
     fmt: str | None = typer.Option(None, "--format", help="Output format."),
-    include_contract: bool = typer.Option(False, "--include-contract", help="Include contract."),
+    include_contract: bool = typer.Option(
+        False, "--include-contract", help="Include contract."
+    ),
 ) -> None:
     """Flat ``ps`` dispatcher. The ``run ps`` subcommand also reaches ``cli.ps_cmd``."""
     from thegent.cli.commands.cli import ps_cmd as _impl

@@ -1,4 +1,5 @@
 """Planning simulation module for PERT analysis, resource contention, and continuity risk."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -9,6 +10,7 @@ from typing import Any
 @dataclass
 class ContentionResult:
     """Result of contention detection."""
+
     resource_id: str
     time_window: tuple[float, float]
     peak_demand: float
@@ -20,6 +22,7 @@ class ContentionResult:
 @dataclass
 class ContinuityRiskInput:
     """Input for continuity risk analysis."""
+
     open_tasks: list[dict[str, Any]] = field(default_factory=list)
     handoff_windows: list[dict[str, Any]] = field(default_factory=list)
     snapshot_freshness: dict[str, datetime] = field(default_factory=dict)
@@ -29,6 +32,7 @@ class ContinuityRiskInput:
 @dataclass
 class ContinuityRiskResult:
     """Result of continuity risk analysis."""
+
     risk_score: float
     factors: list[str]
     high_risk_tasks: list[str] = field(default_factory=list)
@@ -38,6 +42,7 @@ class ContinuityRiskResult:
 @dataclass
 class PERTNode:
     """Node for PERT (Program Evaluation and Review Technique) analysis."""
+
     task_id: str
     optimistic_days: float
     most_likely_days: float
@@ -47,12 +52,15 @@ class PERTNode:
     @property
     def expected(self) -> float:
         """Calculate expected duration."""
-        return (self.optimistic_days + 4 * self.most_likely_days + self.pessimistic_days) / 6
+        return (
+            self.optimistic_days + 4 * self.most_likely_days + self.pessimistic_days
+        ) / 6
 
 
 @dataclass
 class PERTResult:
     """Result of PERT analysis."""
+
     task_id: str
     expected_duration: float
     variance: float
@@ -65,6 +73,7 @@ class PERTResult:
 @dataclass
 class SimulationResult:
     """Result of a simulation run."""
+
     risk_score: float = 0.0
     warnings: list[str] | None = None
     recommendations: list[str] | None = None
@@ -73,6 +82,7 @@ class SimulationResult:
 @dataclass
 class ResourceProfile:
     """Profile for resource estimation."""
+
     resource_id: str
     capacity: float
     unit: str = "concurrent"
@@ -89,6 +99,7 @@ class ResourceProfile:
 @dataclass
 class TaskResourceDemand:
     """Demand for a resource by a task."""
+
     task_id: str
     resource_id: str
     demand: float
@@ -109,7 +120,9 @@ def pert_forward_pass(nodes: list[PERTNode]) -> dict[str, PERTResult]:
 
     for node in nodes:
         # Calculate expected duration
-        expected = (node.optimistic_days + 4 * node.most_likely_days + node.pessimistic_days) / 6
+        expected = (
+            node.optimistic_days + 4 * node.most_likely_days + node.pessimistic_days
+        ) / 6
         variance = ((node.pessimistic_days - node.optimistic_days) / 6) ** 2
 
         results[node.task_id] = PERTResult(
@@ -206,7 +219,9 @@ def simulate_continuity_risk(input_data: ContinuityRiskInput) -> SimulationResul
         risk_score += 0.2
         warnings.append("High task count may cause coordination issues")
 
-    return SimulationResult(risk_score=risk_score, warnings=warnings, recommendations=[])
+    return SimulationResult(
+        risk_score=risk_score, warnings=warnings, recommendations=[]
+    )
 
 
 __all__ = [

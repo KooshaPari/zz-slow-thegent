@@ -10,7 +10,9 @@ import pytest
 from thegent import summary
 
 
-def test_get_git_commits_reports_error_metadata(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_get_git_commits_reports_error_metadata(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     (tmp_path / ".git").mkdir()
     start = datetime(2026, 1, 1, tzinfo=UTC)
     end = datetime(2026, 1, 2, tzinfo=UTC)
@@ -18,7 +20,9 @@ def test_get_git_commits_reports_error_metadata(monkeypatch: pytest.MonkeyPatch,
     monkeypatch.setattr(
         summary.subprocess,
         "run",
-        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 128, stdout="", stderr="fatal: bad revision"),
+        lambda *args, **kwargs: subprocess.CompletedProcess(
+            args[0], 128, stdout="", stderr="fatal: bad revision"
+        ),
     )
 
     result = summary.get_git_commits(tmp_path, start, end)
@@ -34,10 +38,23 @@ def test_read_log_file_tracks_invalid_timestamp_and_json_sample(tmp_path: Path) 
     end = datetime(2026, 1, 31, tzinfo=UTC)
     path = tmp_path / "chat.jsonl"
 
-    valid = {"type": "user", "timestamp": "2026-01-10T12:00:00+00:00", "message": {"content": "ok"}}
-    bad_ts = {"type": "assistant", "timestamp": "not-a-date", "message": {"content": "bad"}}
+    valid = {
+        "type": "user",
+        "timestamp": "2026-01-10T12:00:00+00:00",
+        "message": {"content": "ok"},
+    }
+    bad_ts = {
+        "type": "assistant",
+        "timestamp": "not-a-date",
+        "message": {"content": "bad"},
+    }
     path.write_text(
-        json.dumps(valid).decode() + "\n" + "not-json\n" + json.dumps(bad_ts).decode() + "\n", encoding="utf-8"
+        json.dumps(valid).decode()
+        + "\n"
+        + "not-json\n"
+        + json.dumps(bad_ts).decode()
+        + "\n",
+        encoding="utf-8",
     )
 
     payload = summary._read_log_file(path, start, end, include_diagnostics=True)
@@ -48,13 +65,19 @@ def test_read_log_file_tracks_invalid_timestamp_and_json_sample(tmp_path: Path) 
     assert payload["parse_counts"]["sampled_errors"]
 
 
-def test_read_log_file_tracks_mixed_valid_and_malformed_lines_with_bounded_samples(tmp_path: Path) -> None:
+def test_read_log_file_tracks_mixed_valid_and_malformed_lines_with_bounded_samples(
+    tmp_path: Path,
+) -> None:
     start = datetime(2026, 1, 1, tzinfo=UTC)
     end = datetime(2026, 1, 31, tzinfo=UTC)
     path = tmp_path / "chat.jsonl"
     long_bad = "x" * 1000
 
-    valid = {"type": "user", "timestamp": "2026-01-10T12:00:00+00:00", "message": {"content": "ok"}}
+    valid = {
+        "type": "user",
+        "timestamp": "2026-01-10T12:00:00+00:00",
+        "message": {"content": "ok"},
+    }
     path.write_text(
         "\n".join(
             [
@@ -77,4 +100,6 @@ def test_read_log_file_tracks_mixed_valid_and_malformed_lines_with_bounded_sampl
     assert payload["entries"] == 2
     assert payload["parse_counts"]["malformed_json"] == 25
     assert len(payload["parse_counts"]["sampled_errors"]) == 5
-    assert all(len(sample) <= 300 for sample in payload["parse_counts"]["sampled_errors"])
+    assert all(
+        len(sample) <= 300 for sample in payload["parse_counts"]["sampled_errors"]
+    )

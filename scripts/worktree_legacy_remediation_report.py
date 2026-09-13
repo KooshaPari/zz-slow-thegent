@@ -25,7 +25,9 @@ class LegacyWorktreeEntry:
 
 def _parse_git_worktree(path: Path) -> list[tuple[str, str, bool]]:
     try:
-        text = subprocess.check_output(["git", "worktree", "list", "--porcelain"], cwd=path, text=True).splitlines()
+        text = subprocess.check_output(
+            ["git", "worktree", "list", "--porcelain"], cwd=path, text=True
+        ).splitlines()
     except Exception as exc:  # pragma: no cover - surfaced by task validation
         raise RuntimeError(f"git worktree list failed for {path}: {exc}") from exc
 
@@ -60,23 +62,29 @@ def _parse_git_worktree(path: Path) -> list[tuple[str, str, bool]]:
 
 
 def _git_status_count(path: str) -> int:
-    output = subprocess.check_output(["git", "-C", path, "status", "--porcelain"], text=True)
+    output = subprocess.check_output(
+        ["git", "-C", path, "status", "--porcelain"], text=True
+    )
     return len([line for line in output.splitlines() if line.strip()])
 
 
-def _git_ahead_behind(path: str, branch: str, base_branch: str) -> tuple[int | None, int | None]:
+def _git_ahead_behind(
+    path: str, branch: str, base_branch: str
+) -> tuple[int | None, int | None]:
     if branch == "(detached)":
         return None, None
 
     try:
         ahead = int(
             subprocess.check_output(
-                ["git", "-C", path, "rev-list", "--count", f"{base_branch}..{branch}"], text=True
+                ["git", "-C", path, "rev-list", "--count", f"{base_branch}..{branch}"],
+                text=True,
             ).strip()
         )
         behind = int(
             subprocess.check_output(
-                ["git", "-C", path, "rev-list", "--count", f"{branch}..{base_branch}"], text=True
+                ["git", "-C", path, "rev-list", "--count", f"{branch}..{base_branch}"],
+                text=True,
             ).strip()
         )
     except Exception:
@@ -92,7 +100,9 @@ def _suggest_action(branch: str, dirty_count: int, prunable: bool) -> str:
     return "migrate"
 
 
-def generate_report(*, repo_root: Path | None = None, base_branch: str = "main") -> dict[str, Any]:
+def generate_report(
+    *, repo_root: Path | None = None, base_branch: str = "main"
+) -> dict[str, Any]:
     repo_root = repo_root or Path.cwd()
     root = repo_root.resolve()
     required_root = (root / ".worktrees").resolve()
@@ -173,14 +183,18 @@ def _write(payload: dict[str, Any], out_dir: Path) -> tuple[Path, Path]:
 def main() -> int:
     import argparse
 
-    parser = argparse.ArgumentParser(description="Emit a legacy worktree remediation report")
+    parser = argparse.ArgumentParser(
+        description="Emit a legacy worktree remediation report"
+    )
     parser.add_argument("--output-dir", default="docs/governance")
     parser.add_argument("--repo-root", default=".")
     parser.add_argument("--base-branch", default="main")
     parser.add_argument("--schema", default="governance.worktree.legacy_remediation.v1")
     args = parser.parse_args()
 
-    payload = generate_report(repo_root=Path(args.repo_root), base_branch=args.base_branch)
+    payload = generate_report(
+        repo_root=Path(args.repo_root), base_branch=args.base_branch
+    )
     payload["schema_version"] = args.schema
     json_out, md_out = _write(payload, Path(args.output_dir))
     print(f"Wrote {json_out}")

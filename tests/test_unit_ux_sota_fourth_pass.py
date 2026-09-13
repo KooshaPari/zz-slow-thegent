@@ -61,7 +61,9 @@ pytestmark = pytest.mark.unit
 # ---------------------------------------------------------------------------
 
 
-def _make_notice(*, verdict: str = "allow", reason_code: str = "ok", ts: float = 0.0) -> DecisionNotice:
+def _make_notice(
+    *, verdict: str = "allow", reason_code: str = "ok", ts: float = 0.0
+) -> DecisionNotice:
     """Build a DecisionNotice with the minimum required fields."""
     return DecisionNotice(
         verdict=verdict,
@@ -236,7 +238,9 @@ class TestFollowAuditLogSurvivesTransientIO:
     ``EPERM`` on permission flips) instead of crashing the tail loop;
     the truncation semantics are documented."""
 
-    def test_unlink_mid_poll_does_not_crash(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_unlink_mid_poll_does_not_crash(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """A file unlinked between ``stat()`` and ``open()`` must not
         propagate ``FileNotFoundError`` to the caller. The tail loop
         should log at DEBUG and retry on the next tick."""
@@ -368,7 +372,10 @@ class TestExplanationsRendererConsolidated:
 
         # Each helper returns a list of strings and handles empty inputs.
         empty_exp = DecisionExplanation(title="x", source="")
-        assert _header_lines(empty_exp, width=80) == ["x" + " " * (80 - 6 - len("x")) + " [?]", "=" * 80]
+        assert _header_lines(empty_exp, width=80) == [
+            "x" + " " * (80 - 6 - len("x")) + " [?]",
+            "=" * 80,
+        ]
         assert _core_attribute_lines(empty_exp, label_width=14) == []
         assert _actions_lines(empty_exp) == []
         assert _citations_lines(empty_exp) == []

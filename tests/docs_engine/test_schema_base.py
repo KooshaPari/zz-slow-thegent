@@ -27,4 +27,6 @@ def test_base_schema_valid():
 
 def test_base_schema_rejects_invalid_status():
     with pytest.raises(Exception):
-        DocFrontmatter(type=DocType.IDEA, status="NOPE", date="2026-02-21", title="x", layer=1)
+        DocFrontmatter(
+            type=DocType.IDEA, status="NOPE", date="2026-02-21", title="x", layer=1
+        )

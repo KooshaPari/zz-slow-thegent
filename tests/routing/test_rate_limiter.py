@@ -178,7 +178,9 @@ def test_multi_key_atomic_no_partial_consumption():
 
     assert not allowed
     count_after = limiter.get_current_count("mk-atomic-pass", 1.0)
-    assert count_after == count_before, "passing limit must not be consumed when another limit fails"
+    assert count_after == count_before, (
+        "passing limit must not be consumed when another limit fails"
+    )
 
 
 @pytest.mark.requirement("FR-ROUTE-019")
@@ -202,7 +204,9 @@ def test_concurrent_allows_respect_limit():
         t.join()
 
     allowed_count = sum(1 for r in results if r)
-    assert allowed_count == 50, f"Exactly 50 requests should be allowed, got {allowed_count}"
+    assert allowed_count == 50, (
+        f"Exactly 50 requests should be allowed, got {allowed_count}"
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -31,7 +31,9 @@ from thegent.protocols.turn_submit_boundaries import (
 def test_wl10690_hook_registration_and_invocation_are_separated() -> None:
     # @trace WL-10690
     registration_options = {"event": "on_submit", "async": True}
-    phase = build_hook_registration_phase("hook-10690", registration_options, {"run_id": "r1"})
+    phase = build_hook_registration_phase(
+        "hook-10690", registration_options, {"run_id": "r1"}
+    )
     assert resolve_hook_invocation_target(phase) == (
         "hook-10690",
         registration_options,
@@ -52,7 +54,9 @@ def test_wl10691_session_state_is_isolated_from_persistence_controls() -> None:
 
 def test_wl10692_cli_parse_and_handler_selection_are_separated() -> None:
     # @trace WL-10692
-    phase = build_cli_command_parse_phase("dispatch now", ["dispatch", "now"], "dispatch_handler")
+    phase = build_cli_command_parse_phase(
+        "dispatch now", ["dispatch", "now"], "dispatch_handler"
+    )
     assert resolve_cli_handler_selection_target(phase) == (
         "dispatch now",
         ["dispatch", "now"],
@@ -71,7 +75,9 @@ def test_wl10693_workflow_guard_and_execution_remain_partitioned() -> None:
     )
 
 
-def test_wl10694_queue_scheduling_priorities_are_partitioned_from_execution_window() -> None:
+def test_wl10694_queue_scheduling_priorities_are_partitioned_from_execution_window() -> (
+    None
+):
     # @trace WL-10694
     phase = build_queue_priority_phase("high", ["t-1", "t-2"], 9)
     assert resolve_queue_execution_target(phase) == ("high", ["t-1", "t-2"], 9)

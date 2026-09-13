@@ -77,7 +77,9 @@ def validate_kernel_contract(module: str, function: str, args: dict[str, Any]) -
         return
     missing = [key for key in contract.required_args if key not in args]
     if missing:
-        raise ValueError(f"Missing required args for {module}.{function}: {', '.join(missing)}")
+        raise ValueError(
+            f"Missing required args for {module}.{function}: {', '.join(missing)}"
+        )
 
 
 def build_provider_score_kernel_script() -> str:
@@ -129,7 +131,9 @@ fn main():
 def build_dispatch_script(task: MojoTask) -> str:
     """Build a dispatch script for the requested task target."""
     if not isinstance(task.args, dict):
-        raise ValueError(f"Malformed args payload for {task.module}.{task.function}: expected object")
+        raise ValueError(
+            f"Malformed args payload for {task.module}.{task.function}: expected object"
+        )
 
     contract_key = (task.module, task.function)
     if contract_key in MOJO_KERNEL_CONTRACTS:
@@ -143,12 +147,16 @@ def build_dispatch_script(task: MojoTask) -> str:
 
     target_fn = getattr(module_obj, task.function, None)
     if target_fn is None or not callable(target_fn):
-        raise ValueError(f"Unknown function '{task.function}' in module '{task.module}'.")
+        raise ValueError(
+            f"Unknown function '{task.function}' in module '{task.module}'."
+        )
 
     try:
         inspect.signature(target_fn).bind(**task.args)
     except TypeError as exc:
-        raise ValueError(f"Signature mismatch for {task.module}.{task.function}: {exc}") from exc
+        raise ValueError(
+            f"Signature mismatch for {task.module}.{task.function}: {exc}"
+        ) from exc
 
     return build_python_dispatch_kernel_script(task.module, task.function)
 
@@ -179,7 +187,9 @@ class MojoBridge:
             cache_root: Root directory for cache (default: /tmp/thegent-mojo-cache)
         """
         self.mojo_root = mojo_root or Path.home() / ".thegent" / "mojo"
-        self.cache_root = cache_root or (Path(tempfile.gettempdir()) / "thegent-mojo-cache")
+        self.cache_root = cache_root or (
+            Path(tempfile.gettempdir()) / "thegent-mojo-cache"
+        )
 
         # Ensure directories exist
         self.mojo_root.mkdir(parents=True, exist_ok=True)
@@ -277,7 +287,9 @@ class MojoBridge:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
-            stdout, _stderr = await asyncio.wait_for(process.communicate(), timeout=10.0)
+            stdout, _stderr = await asyncio.wait_for(
+                process.communicate(), timeout=10.0
+            )
             if process.returncode == 0:
                 return stdout.decode().strip()
         except (TimeoutError, FileNotFoundError, subprocess.SubprocessError):

@@ -13,7 +13,9 @@ def test_f5_report_exists():
 
 def test_f5_report_mentions_closeout():
     text = REPORT.read_text()
-    assert "Closeout" in text or "closeout" in text.lower(), "Report must mention 'Closeout' or 'closeout'"
+    assert "Closeout" in text or "closeout" in text.lower(), (
+        "Report must mention 'Closeout' or 'closeout'"
+    )
 
 
 def test_f5_report_mentions_all_waves():

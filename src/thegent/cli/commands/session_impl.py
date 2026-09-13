@@ -272,7 +272,9 @@ def _resolve_agent_model(
     """
     from thegent.cli.services import run_model_helpers
 
-    return run_model_helpers.resolve_agent_model(agent=agent, model=model, mode=mode, settings=settings)
+    return run_model_helpers.resolve_agent_model(
+        agent=agent, model=model, mode=mode, settings=settings
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -365,7 +367,9 @@ def _build_continuation_prompt(
         return prompt
     blocks: list[str] = []
     for sid in session_ids:
-        output = _load_prior_session_output(settings, sid, include_stderr=include_stderr)
+        output = _load_prior_session_output(
+            settings, sid, include_stderr=include_stderr
+        )
         if output:
             blocks.append(
                 f"Continuing from prior session {sid}.\n\n"
@@ -449,7 +453,11 @@ def _resolve_cwd(cwd: Path | None) -> Path | None:
         return _CWD_CACHE[cache_key]
 
     for parent in [current, *current.parents]:
-        if (parent / ".git").exists() or (parent / ".factory").exists() or (parent / "pyproject.toml").exists():
+        if (
+            (parent / ".git").exists()
+            or (parent / ".factory").exists()
+            or (parent / "pyproject.toml").exists()
+        ):
             _CWD_CACHE[cache_key] = parent
             return parent
 
@@ -462,7 +470,9 @@ def _resolve_cwd(cwd: Path | None) -> Path | None:
 # ---------------------------------------------------------------------------
 
 
-def _run_background_session_observer(exit_code: int, *, timed_out: bool = False) -> None:
+def _run_background_session_observer(
+    exit_code: int, *, timed_out: bool = False
+) -> None:
     """Observer hook invoked from the backgrounded session wrapper.
 
     Reads ``THGENT_SESSION_META_PATH`` / ``THGENT_SESSION_RC_PATH`` from

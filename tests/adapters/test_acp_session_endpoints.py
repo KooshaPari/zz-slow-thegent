@@ -72,7 +72,9 @@ def no_agent_adapter() -> ACPServerAdapter:
 
 
 @pytest.fixture
-def adapter_with_mock_sessions(no_agent_adapter: ACPServerAdapter) -> tuple[ACPServerAdapter, MagicMock]:
+def adapter_with_mock_sessions(
+    no_agent_adapter: ACPServerAdapter,
+) -> tuple[ACPServerAdapter, MagicMock]:
     """Adapter paired with a mock backend wired into its SessionEndpoints."""
     backend = _make_backend()
     no_agent_adapter.session_endpoints = SessionEndpoints(backend=backend)
@@ -146,7 +148,9 @@ class TestSessionEndpointsAttach:
     def test_attach_lazy_resolves_backend_on_first_call(self) -> None:
         backend = _make_backend()
         ep = SessionEndpoints(backend=None)
-        with patch("thegent.adapters.acp_server.resolve_session_backend", return_value=backend):
+        with patch(
+            "thegent.adapters.acp_server.resolve_session_backend", return_value=backend
+        ):
             result = ep.attach("lazy-session")
 
         assert result["status"] == "created"
@@ -263,8 +267,12 @@ class TestRpcSessionAttach:
     """FR-ACP-001: session/attach RPC method."""
 
     @pytest.mark.asyncio
-    async def test_attach_missing_session_name_returns_error(self, no_agent_adapter: ACPServerAdapter) -> None:
-        resp = await no_agent_adapter.handle_jsonrpc({"id": 1, "method": "session/attach", "params": {}})
+    async def test_attach_missing_session_name_returns_error(
+        self, no_agent_adapter: ACPServerAdapter
+    ) -> None:
+        resp = await no_agent_adapter.handle_jsonrpc(
+            {"id": 1, "method": "session/attach", "params": {}}
+        )
         assert "error" in resp
         assert resp["error"]["code"] == -32602
 
@@ -276,7 +284,13 @@ class TestRpcSessionAttach:
         backend.list.return_value = []
         backend.create.return_value = True
 
-        resp = await inst.handle_jsonrpc({"id": 1, "method": "session/attach", "params": {"session_name": "new-sess"}})
+        resp = await inst.handle_jsonrpc(
+            {
+                "id": 1,
+                "method": "session/attach",
+                "params": {"session_name": "new-sess"},
+            }
+        )
 
         assert "result" in resp
         assert resp["result"]["session_id"] == "new-sess"
@@ -289,12 +303,20 @@ class TestRpcSessionAttach:
         inst, backend = adapter_with_mock_sessions
         backend.list.return_value = [ZmxSession(name="old-sess", state="running")]
 
-        resp = await inst.handle_jsonrpc({"id": 1, "method": "session/attach", "params": {"session_name": "old-sess"}})
+        resp = await inst.handle_jsonrpc(
+            {
+                "id": 1,
+                "method": "session/attach",
+                "params": {"session_name": "old-sess"},
+            }
+        )
 
         assert resp["result"]["status"] == "attached"
 
     @pytest.mark.asyncio
-    async def test_attach_backend_unavailable_returns_rpc_error(self, no_agent_adapter: ACPServerAdapter) -> None:
+    async def test_attach_backend_unavailable_returns_rpc_error(
+        self, no_agent_adapter: ACPServerAdapter
+    ) -> None:
         no_agent_adapter.session_endpoints = SessionEndpoints(backend=None)
         no_agent_adapter.session_endpoints._backend_resolved = True
 
@@ -312,7 +334,9 @@ class TestRpcSessionAttach:
         backend.list.return_value = []
         backend.create.return_value = False
 
-        resp = await inst.handle_jsonrpc({"id": 1, "method": "session/attach", "params": {"session_name": "fail"}})
+        resp = await inst.handle_jsonrpc(
+            {"id": 1, "method": "session/attach", "params": {"session_name": "fail"}}
+        )
         assert "error" in resp
         assert resp["error"]["code"] == -32603
 
@@ -326,8 +350,12 @@ class TestRpcSessionInspect:
     """FR-ACP-001: session/inspect RPC method."""
 
     @pytest.mark.asyncio
-    async def test_inspect_missing_session_id_returns_error(self, no_agent_adapter: ACPServerAdapter) -> None:
-        resp = await no_agent_adapter.handle_jsonrpc({"id": 2, "method": "session/inspect", "params": {}})
+    async def test_inspect_missing_session_id_returns_error(
+        self, no_agent_adapter: ACPServerAdapter
+    ) -> None:
+        resp = await no_agent_adapter.handle_jsonrpc(
+            {"id": 2, "method": "session/inspect", "params": {}}
+        )
         assert "error" in resp
         assert resp["error"]["code"] == -32602
 
@@ -339,7 +367,11 @@ class TestRpcSessionInspect:
         backend.capture.return_value = "alpha\nbeta\ngamma"
 
         resp = await inst.handle_jsonrpc(
-            {"id": 2, "method": "session/inspect", "params": {"session_id": "s1", "last_lines": 3}}
+            {
+                "id": 2,
+                "method": "session/inspect",
+                "params": {"session_id": "s1", "last_lines": 3},
+            }
         )
 
         assert "result" in resp
@@ -352,12 +384,16 @@ class TestRpcSessionInspect:
         inst, backend = adapter_with_mock_sessions
         backend.capture.return_value = ""
 
-        await inst.handle_jsonrpc({"id": 2, "method": "session/inspect", "params": {"session_id": "s1"}})
+        await inst.handle_jsonrpc(
+            {"id": 2, "method": "session/inspect", "params": {"session_id": "s1"}}
+        )
 
         backend.capture.assert_called_once_with("s1", 50)
 
     @pytest.mark.asyncio
-    async def test_inspect_no_backend_returns_rpc_error(self, no_agent_adapter: ACPServerAdapter) -> None:
+    async def test_inspect_no_backend_returns_rpc_error(
+        self, no_agent_adapter: ACPServerAdapter
+    ) -> None:
         no_agent_adapter.session_endpoints = SessionEndpoints(backend=None)
         no_agent_adapter.session_endpoints._backend_resolved = True
 
@@ -375,7 +411,9 @@ class TestRpcSessionInspect:
         backend.name = "zmx"
         backend.capture.return_value = "output"
 
-        resp = await inst.handle_jsonrpc({"id": 2, "method": "session/inspect", "params": {"session_id": "s1"}})
+        resp = await inst.handle_jsonrpc(
+            {"id": 2, "method": "session/inspect", "params": {"session_id": "s1"}}
+        )
 
         assert resp["result"]["backend"] == "zmx"
 
@@ -389,8 +427,12 @@ class TestRpcSessionSend:
     """FR-ACP-001: session/send RPC method."""
 
     @pytest.mark.asyncio
-    async def test_send_missing_session_id_returns_error(self, no_agent_adapter: ACPServerAdapter) -> None:
-        resp = await no_agent_adapter.handle_jsonrpc({"id": 3, "method": "session/send", "params": {"text": "hello"}})
+    async def test_send_missing_session_id_returns_error(
+        self, no_agent_adapter: ACPServerAdapter
+    ) -> None:
+        resp = await no_agent_adapter.handle_jsonrpc(
+            {"id": 3, "method": "session/send", "params": {"text": "hello"}}
+        )
         assert "error" in resp
         assert resp["error"]["code"] == -32602
 
@@ -402,31 +444,47 @@ class TestRpcSessionSend:
         backend.send_keys = MagicMock(return_value=True)
 
         resp = await inst.handle_jsonrpc(
-            {"id": 3, "method": "session/send", "params": {"session_id": "s1", "text": "ls", "enter": True}}
+            {
+                "id": 3,
+                "method": "session/send",
+                "params": {"session_id": "s1", "text": "ls", "enter": True},
+            }
         )
 
         assert "result" in resp
         assert resp["result"]["success"] is True
 
     @pytest.mark.asyncio
-    async def test_send_returns_success_false_when_send_keys_missing(self, no_agent_adapter: ACPServerAdapter) -> None:
+    async def test_send_returns_success_false_when_send_keys_missing(
+        self, no_agent_adapter: ACPServerAdapter
+    ) -> None:
         # Use a backend that was built without send_keys
         backend = _make_backend(has_send_keys=False)
         no_agent_adapter.session_endpoints = SessionEndpoints(backend=backend)
 
         resp = await no_agent_adapter.handle_jsonrpc(
-            {"id": 3, "method": "session/send", "params": {"session_id": "s1", "text": "ls"}}
+            {
+                "id": 3,
+                "method": "session/send",
+                "params": {"session_id": "s1", "text": "ls"},
+            }
         )
 
         assert resp["result"]["success"] is False
 
     @pytest.mark.asyncio
-    async def test_send_no_backend_returns_success_false(self, no_agent_adapter: ACPServerAdapter) -> None:
+    async def test_send_no_backend_returns_success_false(
+        self, no_agent_adapter: ACPServerAdapter
+    ) -> None:
         no_agent_adapter.session_endpoints = SessionEndpoints(backend=None)
         no_agent_adapter.session_endpoints._backend_resolved = True
 
         resp = await no_agent_adapter.handle_jsonrpc(
-            {"id": 3, "method": "session/send", "params": {"session_id": "s", "text": "x"}}
+            {
+                "id": 3,
+                "method": "session/send",
+                "params": {"session_id": "s", "text": "x"},
+            }
         )
         assert resp["result"]["success"] is False
 
@@ -437,7 +495,13 @@ class TestRpcSessionSend:
         inst, backend = adapter_with_mock_sessions
         backend.send_keys = MagicMock(return_value=True)
 
-        await inst.handle_jsonrpc({"id": 3, "method": "session/send", "params": {"session_id": "s1", "text": "cmd"}})
+        await inst.handle_jsonrpc(
+            {
+                "id": 3,
+                "method": "session/send",
+                "params": {"session_id": "s1", "text": "cmd"},
+            }
+        )
 
         # With enter=False no newline should be appended
         backend.send_keys.assert_called_once_with("s1", "cmd")
@@ -452,7 +516,9 @@ class TestStarletteSessionRoutes:
     """FR-ACP-001: session methods accessible over HTTP /rpc."""
 
     @pytest.fixture
-    def client(self, adapter_with_mock_sessions: tuple[ACPServerAdapter, MagicMock]) -> TestClient:
+    def client(
+        self, adapter_with_mock_sessions: tuple[ACPServerAdapter, MagicMock]
+    ) -> TestClient:
         inst, _ = adapter_with_mock_sessions
         app = inst.build_starlette_app()
         return TestClient(app, raise_server_exceptions=True)
@@ -467,7 +533,12 @@ class TestStarletteSessionRoutes:
 
         resp = client.post(
             "/rpc",
-            json={"jsonrpc": "2.0", "id": 10, "method": "session/attach", "params": {"session_name": "web-session"}},
+            json={
+                "jsonrpc": "2.0",
+                "id": 10,
+                "method": "session/attach",
+                "params": {"session_name": "web-session"},
+            },
         )
         assert resp.status_code == 200
         body = resp.json()
@@ -483,7 +554,12 @@ class TestStarletteSessionRoutes:
 
         resp = client.post(
             "/rpc",
-            json={"jsonrpc": "2.0", "id": 11, "method": "session/inspect", "params": {"session_id": "s1"}},
+            json={
+                "jsonrpc": "2.0",
+                "id": 11,
+                "method": "session/inspect",
+                "params": {"session_id": "s1"},
+            },
         )
         assert resp.status_code == 200
         assert resp.json()["result"]["lines"] == ["line-a", "line-b"]
@@ -516,7 +592,10 @@ class TestStarletteSessionRoutes:
         assert resp.status_code == 422
 
     def test_initialize_lists_session_methods(self, client: TestClient) -> None:
-        resp = client.post("/rpc", json={"jsonrpc": "2.0", "id": 0, "method": "initialize", "params": {}})
+        resp = client.post(
+            "/rpc",
+            json={"jsonrpc": "2.0", "id": 0, "method": "initialize", "params": {}},
+        )
         methods = resp.json()["result"]["capabilities"]["methods"]
         assert "session/attach" in methods
         assert "session/inspect" in methods

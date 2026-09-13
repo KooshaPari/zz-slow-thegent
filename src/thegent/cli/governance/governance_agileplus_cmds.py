@@ -34,7 +34,10 @@ def govern_go_health_cmd(cd: Path | None = None, format: str | None = None) -> N
     except FileNotFoundError:
         fmt = _normalize_output_format(format)
         if fmt == "json":
-            sys.stdout.write(json.dumps({"configured": False, "hint": "thegent govern configure"}) + "\n")
+            sys.stdout.write(
+                json.dumps({"configured": False, "hint": "thegent govern configure"})
+                + "\n"
+            )
         else:
             console.print("[yellow]Govern not configured.[/yellow]")
             console.print("[dim]Run: thegent govern configure[/dim]")
@@ -55,7 +58,9 @@ def govern_go_health_cmd(cd: Path | None = None, format: str | None = None) -> N
     if fmt == "json":
         output = {
             "score": health.score,
-            "band": health.band.value if hasattr(health, "band") else get_band(health.score).value,
+            "band": health.band.value
+            if hasattr(health, "band")
+            else get_band(health.score).value,
             "dimensions": {},
         }
         for name, dim in health.dimensions.items():
@@ -63,7 +68,9 @@ def govern_go_health_cmd(cd: Path | None = None, format: str | None = None) -> N
                 "raw_value": dim.raw_value,
                 "normalized": dim.normalized,
                 "target": dim.target,
-                "status": dim.status.value if hasattr(dim.status, "value") else str(dim.status),
+                "status": dim.status.value
+                if hasattr(dim.status, "value")
+                else str(dim.status),
             }
         sys.stdout.write(json.dumps(output, indent=2) + "\n")
         return
@@ -96,7 +103,10 @@ def govern_go_health_cmd(cd: Path | None = None, format: str | None = None) -> N
             "healthy": "cyan",
             "warning": "yellow",
             "critical": "red",
-        }.get(dim.status.value if hasattr(dim.status, "value") else str(dim.status), "white")
+        }.get(
+            dim.status.value if hasattr(dim.status, "value") else str(dim.status),
+            "white",
+        )
 
         dim_table.add_row(
             name,
@@ -138,7 +148,9 @@ def govern_go_status_cmd(cd: Path | None = None) -> None:
     console.print(table)
 
 
-def govern_go_cycle_cmd(cd: Path | None = None, force: bool = False, format: str | None = None) -> None:
+def govern_go_cycle_cmd(
+    cd: Path | None = None, force: bool = False, format: str | None = None
+) -> None:
     """Run a single governance cycle."""
     import uuid
     from datetime import UTC, datetime
@@ -155,7 +167,9 @@ def govern_go_cycle_cmd(cd: Path | None = None, force: bool = False, format: str
     cycle_id = f"cycle_{uuid.uuid4().hex[:8]}"
     started_at = datetime.now(UTC).isoformat()
 
-    console.print(f"[cyan]Starting AgilePlus cycle {cycle_id} (force={force})...[/cyan]")
+    console.print(
+        f"[cyan]Starting AgilePlus cycle {cycle_id} (force={force})...[/cyan]"
+    )
 
     health_computer = HealthScoreComputer(health_targets_path)
     scanner = CodebaseScanner(project_dir=project_dir, session_dir=settings.session_dir)
@@ -177,7 +191,9 @@ def govern_go_cycle_cmd(cd: Path | None = None, force: bool = False, format: str
             "cycle_id": cycle_id,
             "state": "idle" if not should_run else "completed",
             "health_score": health.score,
-            "health_band": health.band.value if hasattr(health, "band") else get_band(health.score).value,
+            "health_band": health.band.value
+            if hasattr(health, "band")
+            else get_band(health.score).value,
             "findings_count": sum(1 for d in dimension_values.values() if d > 0),
             "tasks_planned": 0,
             "tasks_executed": 0,
@@ -228,7 +244,9 @@ def govern_go_watch_cmd(
     project_dir = _resolve_cwd(cd) or Path.cwd()
     health_targets_path = _get_health_targets_path(project_dir)
 
-    console.print(f"[cyan]Starting continuous governance (interval={interval}s, max_cycles={max_cycles})...[/cyan]")
+    console.print(
+        f"[cyan]Starting continuous governance (interval={interval}s, max_cycles={max_cycles})...[/cyan]"
+    )
     console.print("[yellow]Press Ctrl+C to stop[/yellow]")
 
     health_computer = HealthScoreComputer(health_targets_path)
@@ -253,7 +271,9 @@ def govern_go_watch_cmd(
                 {
                     "cycle_id": cycle_id,
                     "health_score": health.score,
-                    "health_band": health.band.value if hasattr(health, "band") else get_band(health.score).value,
+                    "health_band": health.band.value
+                    if hasattr(health, "band")
+                    else get_band(health.score).value,
                     "started_at": started_at,
                     "completed_at": completed_at,
                 }

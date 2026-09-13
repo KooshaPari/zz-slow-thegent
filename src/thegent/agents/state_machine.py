@@ -56,7 +56,9 @@ class PromotionGate:
         """Validate if CSM is ready for promotion based on policy."""
         issues = []
         if csm.confidence_level < policy.min_confidence_threshold:
-            issues.append(f"Confidence {csm.confidence_level} below threshold {policy.min_confidence_threshold}")
+            issues.append(
+                f"Confidence {csm.confidence_level} below threshold {policy.min_confidence_threshold}"
+            )
         if csm.blockers:
             issues.append(f"Active blockers present: {csm.blockers}")
         return issues
@@ -179,7 +181,12 @@ class FallbackStateMachine:
                 "agent_attempt",
                 attributes={"agent": current_agent, "attempt": self.state.attempt},
             )
-            _log.info("Attempting %s (attempt %d/%d)", current_agent, self.state.attempt, self.max_retries)
+            _log.info(
+                "Attempting %s (attempt %d/%d)",
+                current_agent,
+                self.state.attempt,
+                self.max_retries,
+            )
             result = runner.run(prompt=prompt, **run_kwargs)
             if result.exit_code != 0:
                 failure_kind = classify_failure(result)
@@ -229,7 +236,11 @@ class FallbackStateMachine:
                 # SLO Latency Check (WP-X6)
                 elapsed_ms = (time.time() - self.state.start_time) * 1000
                 if elapsed_ms > self.policy.max_latency_ms:
-                    _log.warning("SLO: max_latency_ms exceeded (%dms > %dms)", elapsed_ms, self.policy.max_latency_ms)
+                    _log.warning(
+                        "SLO: max_latency_ms exceeded (%dms > %dms)",
+                        elapsed_ms,
+                        self.policy.max_latency_ms,
+                    )
                     self.state.errors.append(f"SLO Timeout ({current_agent})")
                     break
 
@@ -242,7 +253,9 @@ class FallbackStateMachine:
 
                 # 2. Execution (with tenacity retry for RATE_LIMIT/TRANSIENT)
                 try:
-                    result = self._run_with_retry(runner, prompt, run_kwargs, current_agent, span)
+                    result = self._run_with_retry(
+                        runner, prompt, run_kwargs, current_agent, span
+                    )
                 except TransientAgentError as e:
                     self.state.last_result = e.result
                     _log.warning(
@@ -251,12 +264,19 @@ class FallbackStateMachine:
                         self.max_retries,
                         e.result.exit_code,
                     )
-                    self.state.errors.append(f"Run failed ({current_agent}, code {e.result.exit_code})")
+                    self.state.errors.append(
+                        f"Run failed ({current_agent}, code {e.result.exit_code})"
+                    )
                     break
                 except Exception as e:
                     import traceback
 
-                    _log.error("Execution error for %s: %s\n%s", current_agent, e, traceback.format_exc())
+                    _log.error(
+                        "Execution error for %s: %s\n%s",
+                        current_agent,
+                        e,
+                        traceback.format_exc(),
+                    )
                     self.state.errors.append(f"Execution error ({current_agent}): {e}")
                     break
 
@@ -265,19 +285,29 @@ class FallbackStateMachine:
                 # 3. Failure Classification (non-retryable)
                 failure_kind = classify_failure(result)
                 if failure_kind == FailureKind.USAGE_LIMIT:
-                    _log.warning("Usage limit reached for %s. Falling back.", current_agent)
+                    _log.warning(
+                        "Usage limit reached for %s. Falling back.", current_agent
+                    )
                     self.state.errors.append(f"Usage limit ({current_agent})")
                     break
 
                 if result.exit_code != 0:
-                    _log.warning("Run failed for %s (code %d)", current_agent, result.exit_code)
-                    self.state.errors.append(f"Run failed ({current_agent}, code {result.exit_code})")
+                    _log.warning(
+                        "Run failed for %s (code %d)", current_agent, result.exit_code
+                    )
+                    self.state.errors.append(
+                        f"Run failed ({current_agent}, code {result.exit_code})"
+                    )
                     break
 
                 # 4. Normalization and Semantic Validation
                 norm_res = normalize_output(
                     current_agent,
-                    {"stdout": result.stdout, "stderr": result.stderr, "exit_code": result.exit_code},
+                    {
+                        "stdout": result.stdout,
+                        "stderr": result.stderr,
+                        "exit_code": result.exit_code,
+                    },
                     context={"run_id": self.run_id},
                 )
                 self.state.last_normalization = norm_res
@@ -285,7 +315,11 @@ class FallbackStateMachine:
                 semantic_issues = validate_csm(norm_res.csm)
                 self.state.semantic_issues = semantic_issues
                 if semantic_issues:
-                    _log.warning("Semantic validation failed for %s: %s", current_agent, semantic_issues)
+                    _log.warning(
+                        "Semantic validation failed for %s: %s",
+                        current_agent,
+                        semantic_issues,
+                    )
 
                 # 5. Fallback Policy Evaluation
                 is_fallback = norm_res.csm.source_contract == "fallback-plain"
@@ -300,8 +334,16 @@ class FallbackStateMachine:
 
                 # 6. Record Telemetry (G-RV-07: drift event types)
                 if self.telemetry:
-                    success = not norm_res.parse_errors and not policy_violations and not semantic_issues
-                    errors = (norm_res.parse_errors or []) + policy_violations + semantic_issues
+                    success = (
+                        not norm_res.parse_errors
+                        and not policy_violations
+                        and not semantic_issues
+                    )
+                    errors = (
+                        (norm_res.parse_errors or [])
+                        + policy_violations
+                        + semantic_issues
+                    )
                     if norm_res.parse_errors:
                         event_type = EVENT_SCHEMA_DRIFT_STRUCTURAL
                         self.telemetry.emit_drift_event(
@@ -338,13 +380,21 @@ class FallbackStateMachine:
                         gate = PromotionGate(self.telemetry.session_dir)
                         gate_issues = gate.validate_promotion(norm_res.csm, self.policy)
                         if gate_issues:
-                            _log.warning("Promotion gate failed for %s: %s", current_agent, gate_issues)
-                            self.state.errors.append(f"Promotion gate failure ({current_agent})")
+                            _log.warning(
+                                "Promotion gate failed for %s: %s",
+                                current_agent,
+                                gate_issues,
+                            )
+                            self.state.errors.append(
+                                f"Promotion gate failure ({current_agent})"
+                            )
                             break
 
                         evidence_hash = gate.capture_evidence(self.run_id, norm_res.csm)
                         # store promotion evidence in the CSM raw_payload for compatibility
-                        norm_res.csm.raw_payload["promotion_evidence_hash"] = evidence_hash
+                        norm_res.csm.raw_payload["promotion_evidence_hash"] = (
+                            evidence_hash
+                        )
 
                     if self.validate_transition(self.state.status, "success"):
                         self.state.status = "success"
@@ -352,11 +402,17 @@ class FallbackStateMachine:
 
                 # If we have other providers, move to next provider
                 if self.state.provider_index < len(self.providers) - 1:
-                    _log.info("Violations found and fallbacks available. Moving to next provider.")
-                    self.state.errors.append(f"Policy/Semantic violation ({current_agent})")
+                    _log.info(
+                        "Violations found and fallbacks available. Moving to next provider."
+                    )
+                    self.state.errors.append(
+                        f"Policy/Semantic violation ({current_agent})"
+                    )
                     break
                 # No more providers. Accept if not a hard block.
-                hard_block = any("disabled" in v or "strict" in v for v in policy_violations)
+                hard_block = any(
+                    "disabled" in v or "strict" in v for v in policy_violations
+                )
                 if not hard_block:
                     _log.info("No more providers. Accepting output despite violations.")
                     self.state.status = "success"
@@ -371,5 +427,9 @@ class FallbackStateMachine:
         self.state.status = "failed"
         return (
             self.state.last_result
-            or RunResult(exit_code=1, stdout="", stderr="Orchestration failed: no results available")
+            or RunResult(
+                exit_code=1,
+                stdout="",
+                stderr="Orchestration failed: no results available",
+            )
         ), self.state.last_normalization

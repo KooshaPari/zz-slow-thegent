@@ -1,4 +1,5 @@
 """Stub module."""
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -6,6 +7,7 @@ from typing import Any
 @dataclass
 class RestToolDef:
     """REST tool definition."""
+
     name: str
     method: str = "GET"
     path: str = "/"
@@ -15,6 +17,7 @@ class RestToolDef:
 @dataclass
 class RestToolResult:
     """Result of a REST tool call."""
+
     success: bool
     data: Any = None
     error: str = ""

@@ -123,7 +123,9 @@ class TestNormalizeScoreEdgeCases:
         assert scorer.normalize_score(0, 0, "lower_is_better") == 100.0
         assert scorer.normalize_score(10, 0, "lower_is_better") == 0.0
 
-    def test_normalize_negative_actual_higher_is_better(self, config_file: Path) -> None:
+    def test_normalize_negative_actual_higher_is_better(
+        self, config_file: Path
+    ) -> None:
         """normalize_score with negative actual for higher_is_better."""
         scorer = HealthScorer(config_file)
         # Negative actual should return 0 for higher_is_better
@@ -250,7 +252,9 @@ class TestScoreDimension:
         """score_dimension uses default weight of 0.0 if not specified."""
         config = {
             "version": "1.0.0",
-            "dimensions": {"test_dim": {"target": 100, "direction": "higher_is_better"}},
+            "dimensions": {
+                "test_dim": {"target": 100, "direction": "higher_is_better"}
+            },
             "bands": {"ok": {"min": 0}},
         }
         config_path = tmp_path / "config.json"
@@ -405,7 +409,9 @@ class TestGenerateReport:
     def test_generate_report_default_version(self, tmp_path: Path) -> None:
         """generate_report uses default version if not in config."""
         config = {
-            "dimensions": {"dim": {"weight": 1.0, "target": 100, "direction": "higher_is_better"}},
+            "dimensions": {
+                "dim": {"weight": 1.0, "target": 100, "direction": "higher_is_better"}
+            },
             "bands": {"ok": {"min": 0}},
         }
         config_path = tmp_path / "config.json"
@@ -428,14 +434,28 @@ class TestTypedDictShapes:
         """DimensionScore has all required keys."""
         scorer = HealthScorer(config_file)
         result = scorer.score_dimension("test_coverage", 50)
-        required_keys = {"dimension", "weight", "target", "actual", "direction", "score", "status"}
+        required_keys = {
+            "dimension",
+            "weight",
+            "target",
+            "actual",
+            "direction",
+            "score",
+            "status",
+        }
         assert set(result.keys()) == required_keys
 
     def test_health_report_has_required_keys(self, config_file: Path) -> None:
         """HealthReport has all required keys."""
         scorer = HealthScorer(config_file)
         report = scorer.generate_report({"test_coverage": 50})
-        required_keys = {"version", "overall_score", "status", "dimensions", "timestamp"}
+        required_keys = {
+            "version",
+            "overall_score",
+            "status",
+            "dimensions",
+            "timestamp",
+        }
         assert set(report.keys()) == required_keys
 
     def test_dimensions_in_report_are_dimension_scores(self, config_file: Path) -> None:

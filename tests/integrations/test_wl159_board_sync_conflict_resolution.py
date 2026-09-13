@@ -55,7 +55,13 @@ class TestBoardSyncConflictResolution:
             work_stream_items: list[dict[str, str]],
             write_batch_size: int = 50,
         ) -> dict[str, object]:
-            calls.append({"board_id": board_id, "source": source, "status": work_stream_items[0]["status"]})
+            calls.append(
+                {
+                    "board_id": board_id,
+                    "source": source,
+                    "status": work_stream_items[0]["status"],
+                }
+            )
             return {
                 "synced": 1,
                 "failed": 0,
@@ -83,11 +89,15 @@ class TestBoardSyncConflictResolution:
             result = cmd.sync_board(board_id=None, source="github", dry_run=False)
 
         assert result.status == SyncOperationStatus.SUCCESS
-        assert calls == [{"board_id": "acme:42", "source": "github", "status": "IN_PROGRESS"}]
+        assert calls == [
+            {"board_id": "acme:42", "source": "github", "status": "IN_PROGRESS"}
+        ]
         assert result.details["conflict_precedence"] == "local_wins"
         assert result.details["reconciled_items"] == 0
 
-    def test_sync_board_remote_wins_prefers_remote_status(self, temp_root: Path) -> None:
+    def test_sync_board_remote_wins_prefers_remote_status(
+        self, temp_root: Path
+    ) -> None:
         """When remote_wins is configured, remote status overwrites local draft."""
         work_stream = temp_root / "docs" / "reference" / "WORK_STREAM.md"
         _write_work_stream(
@@ -117,7 +127,13 @@ class TestBoardSyncConflictResolution:
             work_stream_items: list[dict[str, str]],
             write_batch_size: int = 50,
         ) -> dict[str, object]:
-            calls.append({"board_id": board_id, "source": source, "status": work_stream_items[0]["status"]})
+            calls.append(
+                {
+                    "board_id": board_id,
+                    "source": source,
+                    "status": work_stream_items[0]["status"],
+                }
+            )
             return {
                 "synced": 1,
                 "failed": 0,
@@ -145,6 +161,8 @@ class TestBoardSyncConflictResolution:
             result = cmd.sync_board(board_id="ignored", source="github", dry_run=False)
 
         assert result.status == SyncOperationStatus.SUCCESS
-        assert calls == [{"board_id": "ignored", "source": "github", "status": "COMPLETED"}]
+        assert calls == [
+            {"board_id": "ignored", "source": "github", "status": "COMPLETED"}
+        ]
         assert result.details["conflict_precedence"] == "remote_wins"
         assert result.details["reconciled_items"] == 1

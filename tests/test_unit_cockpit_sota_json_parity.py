@@ -74,7 +74,9 @@ def _harvest_decisions(runner: CliRunner, corpus: Path) -> list[dict]:
     return decisions
 
 
-def _write_snapshot(runner: CliRunner, batch: Path, compare: Path, *, flip: bool) -> None:
+def _write_snapshot(
+    runner: CliRunner, batch: Path, compare: Path, *, flip: bool
+) -> None:
     """Persist a snapshot of decisions; ``flip=True`` inverts verdicts to force mismatch."""
     decisions = _harvest_decisions(runner, batch)
     if flip:

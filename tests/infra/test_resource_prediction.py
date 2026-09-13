@@ -386,9 +386,15 @@ class TestResourceManagerLimitEnforcement:
             set_calls.append((kind, value))
             limits[_kind_name(kind)] = value
 
-        monkeypatch.setattr("thegent.infra.resource_management.resource.getrlimit", _fake_getrlimit)
-        monkeypatch.setattr("thegent.infra.resource_management.resource.setrlimit", _fake_setrlimit)
-        monkeypatch.setattr("thegent.infra.resource_management.resource.RLIM_INFINITY", -1)
+        monkeypatch.setattr(
+            "thegent.infra.resource_management.resource.getrlimit", _fake_getrlimit
+        )
+        monkeypatch.setattr(
+            "thegent.infra.resource_management.resource.setrlimit", _fake_setrlimit
+        )
+        monkeypatch.setattr(
+            "thegent.infra.resource_management.resource.RLIM_INFINITY", -1
+        )
 
         applied = manager.apply_limits(memory_mb=512, proc_limit=200)
         assert applied["memory"][0] == 512 * 1024 * 1024
@@ -416,13 +422,16 @@ class TestResourceManagerLimitEnforcement:
             raise AssertionError(f"unexpected kind: {kind}")
 
         monkeypatch.setattr(
-            "thegent.infra.resource_management.resource.getrlimit", lambda kind: limits[_kind_name(kind)]
+            "thegent.infra.resource_management.resource.getrlimit",
+            lambda kind: limits[_kind_name(kind)],
         )
         monkeypatch.setattr(
             "thegent.infra.resource_management.resource.setrlimit",
             lambda kind, value: limits.__setitem__(_kind_name(kind), value),
         )
-        monkeypatch.setattr("thegent.infra.resource_management.resource.RLIM_INFINITY", -1)
+        monkeypatch.setattr(
+            "thegent.infra.resource_management.resource.RLIM_INFINITY", -1
+        )
 
         applied = manager.apply_limits(memory_mb=1024, proc_limit=1000)
         assert applied["memory"][0] == as_hard
@@ -460,7 +469,9 @@ class TestResourceManagerApplyLimitsSuccess:
             "thegent.infra.resource_management.resource.setrlimit",
             lambda kind, value: limits.__setitem__(_kind_name(kind), value),
         )
-        monkeypatch.setattr("thegent.infra.resource_management.resource.RLIM_INFINITY", -1)
+        monkeypatch.setattr(
+            "thegent.infra.resource_management.resource.RLIM_INFINITY", -1
+        )
 
         result = manager.apply_limits(memory_mb=512, proc_limit=100)
 
@@ -562,7 +573,14 @@ class TestResourceManagerMonitorUsage:
         result = manager.monitor_usage(os.getpid())
 
         # Should have these keys
-        expected_keys = ["pid", "memory_rss", "cpu_percent", "fd_count", "child_count", "status"]
+        expected_keys = [
+            "pid",
+            "memory_rss",
+            "cpu_percent",
+            "fd_count",
+            "child_count",
+            "status",
+        ]
         for key in expected_keys:
             assert key in result, f"Missing key: {key}"
 

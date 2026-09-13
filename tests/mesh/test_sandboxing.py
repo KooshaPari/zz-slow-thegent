@@ -39,7 +39,9 @@ def test_classify_operation_tiers() -> None:
 
     assert sandbox.classify_operation("ls -la", "src") == AutonomyTier.READ_ONLY
     assert sandbox.classify_operation("git status", "src") == AutonomyTier.GIT_SCOPED
-    assert sandbox.classify_operation("git commit -am", "src") == AutonomyTier.SHARED_MESH
+    assert (
+        sandbox.classify_operation("git commit -am", "src") == AutonomyTier.SHARED_MESH
+    )
     assert sandbox.classify_operation("rm -rf dist", "src") == AutonomyTier.PRODUCTION
     assert sandbox.classify_operation("python run.py", "src") == AutonomyTier.WORKTREE
 
@@ -49,4 +51,6 @@ def test_check_autonomy_limits(tmp_path: Path) -> None:
     sandbox = Sandboxing(tmp_path, "agent-5")
 
     assert sandbox.check_autonomy(AutonomyTier.WORKTREE, AutonomyTier.READ_ONLY) is True
-    assert sandbox.check_autonomy(AutonomyTier.READ_ONLY, AutonomyTier.WORKTREE) is False
+    assert (
+        sandbox.check_autonomy(AutonomyTier.READ_ONLY, AutonomyTier.WORKTREE) is False
+    )

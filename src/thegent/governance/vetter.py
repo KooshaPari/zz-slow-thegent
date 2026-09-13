@@ -303,7 +303,9 @@ class TestPassVetterCheck:
     extra_args: list[str] = field(default_factory=lambda: ["--tb=short", "-q"])
     cwd: str | None = None
 
-    def check(self, output: str, context: dict[str, Any] | None = None) -> VetterCheckResult:
+    def check(
+        self, output: str, context: dict[str, Any] | None = None
+    ) -> VetterCheckResult:
         """Run pytest on changed Python files extracted from the diff.
 
         # @trace FR-GOV-VT-010..012
@@ -343,7 +345,9 @@ class TestPassVetterCheck:
                 metadata={"error": str(exc), "files_tested": changed_files},
             )
 
-        combined_output = (proc.stdout or b"").decode(errors="replace") + (proc.stderr or b"").decode(errors="replace")
+        combined_output = (proc.stdout or b"").decode(errors="replace") + (
+            proc.stderr or b""
+        ).decode(errors="replace")
         passed = proc.returncode == 0
 
         return VetterCheckResult(
@@ -380,7 +384,9 @@ class RuffVetterCheck:
     name: str = "ruff_vetter"
     cwd: str | None = None
 
-    def check(self, output: str, context: dict[str, Any] | None = None) -> VetterCheckResult:
+    def check(
+        self, output: str, context: dict[str, Any] | None = None
+    ) -> VetterCheckResult:
         """Run ruff linter on changed Python files extracted from the diff.
 
         # @trace FR-GOV-VT-011,013
@@ -414,7 +420,9 @@ class RuffVetterCheck:
             cwd=resolved_cwd,
         )
 
-        ruff_output = (proc.stdout or b"").decode(errors="replace") + (proc.stderr or b"").decode(errors="replace")
+        ruff_output = (proc.stdout or b"").decode(errors="replace") + (
+            proc.stderr or b""
+        ).decode(errors="replace")
         passed = proc.returncode == 0
 
         return VetterCheckResult(

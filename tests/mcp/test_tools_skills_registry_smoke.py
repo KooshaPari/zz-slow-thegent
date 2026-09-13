@@ -28,7 +28,9 @@ async def test_skill_tool_parameters_match_expected_schema() -> None:
     assert list_tool.parameters["additionalProperties"] is False
 
     activate_tool = by_name["thegent_activate_skill"]
-    assert "load and return a skill payload" in (activate_tool.description or "").lower()
+    assert (
+        "load and return a skill payload" in (activate_tool.description or "").lower()
+    )
     assert activate_tool.parameters["type"] == "object"
     assert activate_tool.parameters["required"] == ["skill_name"]
     assert activate_tool.parameters["properties"]["skill_name"]["type"] == "string"

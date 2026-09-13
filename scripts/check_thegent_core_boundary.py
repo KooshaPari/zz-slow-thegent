@@ -47,11 +47,17 @@ def _extract_imports(path: Path) -> list[str]:
 
 
 def _is_allowed(import_path: str, allowed_prefixes: list[str]) -> bool:
-    return any(import_path == prefix or import_path.startswith(f"{prefix}.") for prefix in allowed_prefixes)
+    return any(
+        import_path == prefix or import_path.startswith(f"{prefix}.")
+        for prefix in allowed_prefixes
+    )
 
 
 def _is_blocked(import_path: str, blocked_prefixes: list[str]) -> bool:
-    return any(import_path == prefix or import_path.startswith(f"{prefix}.") for prefix in blocked_prefixes)
+    return any(
+        import_path == prefix or import_path.startswith(f"{prefix}.")
+        for prefix in blocked_prefixes
+    )
 
 
 def run_check(core_dir: Path, config_path: Path) -> tuple[bool, list[str]]:
@@ -73,7 +79,9 @@ def build_report(core_dir: Path, config_path: Path) -> dict[str, object]:
                 rel_display = str(py_file.relative_to(ROOT))
             except ValueError:
                 rel_display = str(py_file)
-            if _is_blocked(import_path, blocked_prefixes) and not _is_allowed(import_path, allowed_prefixes):
+            if _is_blocked(import_path, blocked_prefixes) and not _is_allowed(
+                import_path, allowed_prefixes
+            ):
                 violations.append(f"{rel_display}: blocked import '{import_path}'")
                 continue
             if not _is_allowed(import_path, allowed_prefixes):
@@ -106,7 +114,9 @@ def build_json_payload(report: dict[str, object], mode: str) -> dict[str, object
 def build_summary_payload(report: dict[str, object], mode: str) -> dict[str, object]:
     blocked_count, disallowed_count = build_violation_kind_counts(report)
     violation_file_count = build_violation_file_count(report)
-    clean_file_count = build_clean_file_count(report, violation_file_count=violation_file_count)
+    clean_file_count = build_clean_file_count(
+        report, violation_file_count=violation_file_count
+    )
     return {
         "ok": bool(report["ok"]),
         "mode": mode,
@@ -142,7 +152,9 @@ def build_violation_file_count(report: dict[str, object]) -> int:
     return len(files)
 
 
-def build_clean_file_count(report: dict[str, object], *, violation_file_count: int | None = None) -> int:
+def build_clean_file_count(
+    report: dict[str, object], *, violation_file_count: int | None = None
+) -> int:
     file_count = int(report["file_count"])
     counted_violation_files = violation_file_count
     if counted_violation_files is None:
@@ -152,14 +164,25 @@ def build_clean_file_count(report: dict[str, object], *, violation_file_count: i
 
 def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--core-dir", type=Path, default=CORE_DIR, help="Core package directory to scan.")
-    parser.add_argument("--config", type=Path, default=CONFIG_PATH, help="Boundary config TOML path.")
+    parser.add_argument(
+        "--core-dir",
+        type=Path,
+        default=CORE_DIR,
+        help="Core package directory to scan.",
+    )
+    parser.add_argument(
+        "--config", type=Path, default=CONFIG_PATH, help="Boundary config TOML path."
+    )
     parser.add_argument(
         "--strict",
         action="store_true",
         help="Exit non-zero on violations (CI mode). Default mode is advisory and exits zero.",
     )
-    parser.add_argument("--format", choices=["text", "json", "summary-json", "violations-jsonl"], default="text")
+    parser.add_argument(
+        "--format",
+        choices=["text", "json", "summary-json", "violations-jsonl"],
+        default="text",
+    )
     return parser.parse_args(argv)
 
 

@@ -95,5 +95,7 @@ class CostSensing:
         return {
             "model_id": model_id,
             "status": "optimal",
-            "slo_compliant": self.slo.is_compliant() if hasattr(self.slo, "is_compliant") else True,
+            "slo_compliant": self.slo.is_compliant()
+            if hasattr(self.slo, "is_compliant")
+            else True,
         }

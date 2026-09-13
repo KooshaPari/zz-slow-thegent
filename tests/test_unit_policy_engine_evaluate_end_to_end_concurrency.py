@@ -136,7 +136,9 @@ class TestPolicyEngineEvaluateEndToEndConcurrency:
             except BaseException as exc:  # pragma: no cover - diagnostic
                 errors.append(exc)
 
-        threads = [threading.Thread(target=worker, args=(i,)) for i in range(thread_count)]
+        threads = [
+            threading.Thread(target=worker, args=(i,)) for i in range(thread_count)
+        ]
         for t in threads:
             t.start()
         for t in threads:

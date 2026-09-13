@@ -129,9 +129,7 @@ def check_module_load_budget(
         if module_name in _checked_modules:
             elapsed_ms = _checked_modules[module_name]
             if elapsed_ms > max_load_ms:
-                msg = (
-                    f"Module '{module_name}' load time {elapsed_ms:.2f} ms exceeds budget {max_load_ms:.2f} ms (cached)"
-                )
+                msg = f"Module '{module_name}' load time {elapsed_ms:.2f} ms exceeds budget {max_load_ms:.2f} ms (cached)"
                 raise PerformanceBudgetError(
                     message=msg,
                     module_name=module_name,

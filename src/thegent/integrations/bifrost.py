@@ -70,7 +70,9 @@ class ClaimsValidator:
 
         # Clean old entries
         if identifier in self._rate_limit_cache:
-            self._rate_limit_cache[identifier] = [t for t in self._rate_limit_cache[identifier] if now - t < window]
+            self._rate_limit_cache[identifier] = [
+                t for t in self._rate_limit_cache[identifier] if now - t < window
+            ]
         else:
             self._rate_limit_cache[identifier] = []
 
@@ -120,7 +122,11 @@ class BifrostClient:
 
     def _load_config(self) -> BifrostConfig:
         config = cast("BifrostConfig", BifrostConfig.from_env("BIFROST_"))
-        config.enabled = os.environ.get("THEGENT_ENABLE_BIFROST", "").lower() in ("1", "true", "yes")
+        config.enabled = os.environ.get("THEGENT_ENABLE_BIFROST", "").lower() in (
+            "1",
+            "true",
+            "yes",
+        )
         return config
 
     @property
@@ -138,7 +144,9 @@ class BifrostClient:
             return {"valid": True, "skipped": True}
 
         if not self._validator:
-            raise BifrostValidationError("Bifrost enabled but validator not initialized")
+            raise BifrostValidationError(
+                "Bifrost enabled but validator not initialized"
+            )
 
         return self._validator.validate_claims(claims)
 

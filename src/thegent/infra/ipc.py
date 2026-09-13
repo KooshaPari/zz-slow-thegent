@@ -205,7 +205,9 @@ class QueueNotifier:
         except OSError:
             return 0
 
-    def wait_for_message(self, timeout: float = 5.0) -> tuple[QueueEvent, ...] | tuple[()]:
+    def wait_for_message(
+        self, timeout: float = 5.0
+    ) -> tuple[QueueEvent, ...] | tuple[()]:
         """Wait for queue activity.
 
         Uses watchfiles/inotify when available with a /proc-backed polling
@@ -233,7 +235,11 @@ class QueueNotifier:
             ):
                 for change in changes:
                     event_type, path = change
-                    events.append(QueueEvent(str(path), bool(Path(path).is_file()), str(event_type)))
+                    events.append(
+                        QueueEvent(
+                            str(path), bool(Path(path).is_file()), str(event_type)
+                        )
+                    )
                 if events:
                     break
                 if not stop.is_set():
@@ -264,7 +270,12 @@ class IntentBroadcaster:
         self.intents_dir.mkdir(parents=True, exist_ok=True, mode=0o1777)
 
     def broadcast(
-        self, agent_id: str, intent: str, target: str, operation: str = "read", metadata: dict[str, Any] | None = None
+        self,
+        agent_id: str,
+        intent: str,
+        target: str,
+        operation: str = "read",
+        metadata: dict[str, Any] | None = None,
     ) -> str:
         """Write a typed intent record and return the intent ID."""
         intent_id = f"{int(time.time())}.{uuid.uuid4().hex}"
@@ -313,16 +324,22 @@ class IntentConflictDetector:
         return "write"
 
     @staticmethod
-    def detect(intent: dict[str, Any], others: list[dict[str, Any]]) -> list[dict[str, str]]:
+    def detect(
+        intent: dict[str, Any], others: list[dict[str, Any]]
+    ) -> list[dict[str, str]]:
         """Return conflicting intents for ``intent`` against ``others``."""
         conflict_pairs: list[dict[str, str]] = []
         intent_target = intent.get("target")
-        intent_op = IntentConflictDetector._normalize_operation(str(intent.get("operation", "read")))
+        intent_op = IntentConflictDetector._normalize_operation(
+            str(intent.get("operation", "read"))
+        )
         for other in others:
             if other.get("target") != intent_target:
                 continue
             other_id = str(other.get("id", ""))
-            other_op = IntentConflictDetector._normalize_operation(str(other.get("operation", "read")))
+            other_op = IntentConflictDetector._normalize_operation(
+                str(other.get("operation", "read"))
+            )
             if (
                 (intent_op == "write" and other_op == "write")
                 or (intent_op == "write" and other_op == "read")
@@ -392,7 +409,12 @@ class WriteAheadLog:
 
     def log(self, operation: str, data: dict[str, Any]):
         """Append entry to WAL before execution."""
-        entry = {"timestamp": time.time(), "op": operation, "data": data, "id": uuid.uuid4().hex}
+        entry = {
+            "timestamp": time.time(),
+            "op": operation,
+            "data": data,
+            "id": uuid.uuid4().hex,
+        }
         with open(self.wal_file, "a") as f:
             fcntl.flock(f, fcntl.LOCK_EX)
             f.write(json.dumps(entry).decode() + "\n")

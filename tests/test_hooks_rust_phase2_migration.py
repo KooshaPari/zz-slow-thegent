@@ -11,7 +11,9 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-def _run_bash(script: str, env: dict[str, str], stdin_payload: str = "") -> subprocess.CompletedProcess[str]:
+def _run_bash(
+    script: str, env: dict[str, str], stdin_payload: str = ""
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         ["bash", "-lc", script],
         input=stdin_payload,
@@ -87,7 +89,9 @@ source hooks/lib/common.sh
 hook_init_full
 printf '%s|%s|%s|%s' "$PROJECT_DIR" "$TOOL_NAME" "$FILE_PATH" "$TOOL_CONTENT"
 """
-    proc = _run_bash(cmd, env=env, stdin_payload='{"tool_name":"Edit","cwd":"/tmp/project"}')
+    proc = _run_bash(
+        cmd, env=env, stdin_payload='{"tool_name":"Edit","cwd":"/tmp/project"}'
+    )
     assert proc.returncode == 0, proc.stderr
     assert proc.stdout == "/runtime/project|Write|runtime.py|runtime-content"
 

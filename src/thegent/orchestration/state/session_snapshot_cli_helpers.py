@@ -71,7 +71,9 @@ def snapshot_index_payload(date: str, session_id: str | None = None) -> dict[str
     return {"date": date, "session_id": session_id, "index": []}
 
 
-def snapshot_prune_payload(date: str, session_ids: list[str] | None = None) -> dict[str, Any]:
+def snapshot_prune_payload(
+    date: str, session_ids: list[str] | None = None
+) -> dict[str, Any]:
     """Generate prune payload for snapshot."""
     return {"date": date, "session_ids": session_ids or [], "action": "prune"}
 

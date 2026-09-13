@@ -122,7 +122,11 @@ class BatchFileOperations:
 
             for i, (path_str, content) in enumerate(operations):
                 path = normalize_path(path_str)
-                op = BatchOperation(file_path=path, operation_type="write", timestamp=datetime.now().isoformat())
+                op = BatchOperation(
+                    file_path=path,
+                    operation_type="write",
+                    timestamp=datetime.now().isoformat(),
+                )
                 try:
                     # Backup individually if not already done by atomic pre-pass
                     if not atomic and self.create_backups:

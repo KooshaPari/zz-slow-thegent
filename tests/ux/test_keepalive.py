@@ -76,7 +76,12 @@ def _non_tty_stdout(buf: _NonTtyStringIO) -> Generator[_NonTtyStringIO]:
 
 def _fast_config(**kwargs: object) -> KeepaliveConfig:
     """KeepaliveConfig with a very short interval for test speed."""
-    defaults: dict[str, object] = {"interval_s": 0.05, "message": ".", "newline_every": 10, "enabled": True}
+    defaults: dict[str, object] = {
+        "interval_s": 0.05,
+        "message": ".",
+        "newline_every": 10,
+        "enabled": True,
+    }
     defaults.update(kwargs)
     return KeepaliveConfig(
         interval_s=cast("float", defaults["interval_s"]),

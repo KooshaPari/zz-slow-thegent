@@ -115,7 +115,9 @@ def test_audit_n5_observability_impl_exposes_envelope_parity() -> None:
     ``print_exc`` so the AUDIT-N+2 envelope-parity contract holds."""
     from thegent.ux import cli_errors
 
-    observability_impl = importlib.import_module("thegent.cli.commands.observability_impl")
+    observability_impl = importlib.import_module(
+        "thegent.cli.commands.observability_impl"
+    )
     assert hasattr(observability_impl, "err_console")
     assert observability_impl.err_console.stderr is True
     assert observability_impl.print_exc is cli_errors.print_exc
@@ -173,7 +175,9 @@ def test_audit_n5_session_meta_impl_exposes_envelope_parity() -> None:
     ``print_exc`` so the AUDIT-N+2 envelope-parity contract holds."""
     from thegent.ux import cli_errors
 
-    session_meta_impl = importlib.import_module("thegent.cli.commands.session_meta_impl")
+    session_meta_impl = importlib.import_module(
+        "thegent.cli.commands.session_meta_impl"
+    )
     assert hasattr(session_meta_impl, "err_console")
     assert session_meta_impl.err_console.stderr is True
     assert session_meta_impl.print_exc is cli_errors.print_exc

@@ -168,7 +168,9 @@ async def test_connector_circuit_breaker_opens_after_repeated_failure() -> None:
 
 @pytest.mark.asyncio
 @pytest.mark.requirement("WL-196")
-async def test_prometheus_metrics_export_written(sample_workstream: Path, tmp_path: Path) -> None:
+async def test_prometheus_metrics_export_written(
+    sample_workstream: Path, tmp_path: Path
+) -> None:
     metrics_path = tmp_path / "autosync_metrics.prom"
     config = WorkstreamAutosyncConfig(
         enabled=True,

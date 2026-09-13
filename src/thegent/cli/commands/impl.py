@@ -200,7 +200,12 @@ def run_impl(
     """
     from thegent.cli.commands.run.impl_core_runners import run_impl_core
 
-    return run_impl_core(prompt=prompt, audio_files=audio_files, google_grounding=google_grounding, **kwargs)
+    return run_impl_core(
+        prompt=prompt,
+        audio_files=audio_files,
+        google_grounding=google_grounding,
+        **kwargs,
+    )
 
 
 def list_models_impl(**kwargs: Any) -> dict[str, Any]:
@@ -220,7 +225,9 @@ def list_impl(**kwargs: Any) -> dict[str, Any]:
     return {"items": [], "count": 0}
 
 
-def session_list_impl(session_ids: list[str] | None = None, **kwargs: Any) -> dict[str, Any]:
+def session_list_impl(
+    session_ids: list[str] | None = None, **kwargs: Any
+) -> dict[str, Any]:
     """Implementation for session list command.
 
     Args:
@@ -257,7 +264,9 @@ def bg_impl(prompt: str, **kwargs: Any) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 
-def status_impl(session_id: str, include_contract: bool = False, **kwargs: Any) -> dict[str, Any]:
+def status_impl(
+    session_id: str, include_contract: bool = False, **kwargs: Any
+) -> dict[str, Any]:
     """Return the canonical status payload for a session.
 
     Resolves the session-meta file via :func:`_find_session_meta`, reads
@@ -422,7 +431,10 @@ def session_meta_impl(session_id: str, **kwargs: Any) -> dict[str, Any]:
     except typer.BadParameter as exc:
         return {"error": str(exc), "session_id": session_id}
     if not meta_path.exists():
-        return {"error": f"session meta not found: {session_id}", "session_id": session_id}
+        return {
+            "error": f"session meta not found: {session_id}",
+            "session_id": session_id,
+        }
     meta = _read_session_meta(meta_path)
     return {
         "session_id": session_id,
@@ -463,7 +475,9 @@ def _normalize_contract_string(value: Any) -> str | None:
     return run_session_helpers.normalize_contract_string(value)
 
 
-def session_send_impl(session_id: str, message: str, msg_type: str = "reprompt") -> tuple[bool, str]:
+def session_send_impl(
+    session_id: str, message: str, msg_type: str = "reprompt"
+) -> tuple[bool, str]:
     """Default ``session_send_impl`` dispatcher used by ``resume_impl``.
 
     The canonical implementation lives in
@@ -583,7 +597,9 @@ def ps_impl(
                 "pid": pid,
                 "running": running,
                 "started_at_utc": meta.get("started_at_utc"),
-                "status": _resolve_session_status(meta, scope_dir / f"{sid}.rc", running=running),
+                "status": _resolve_session_status(
+                    meta, scope_dir / f"{sid}.rc", running=running
+                ),
                 "prompt_preview": prompt_preview,
             }
             if include_contract and "route_contract" in meta:
@@ -1246,7 +1262,9 @@ def get_server_meta_impl(server_name: str = "thegent", **kwargs: Any) -> dict[st
 # delegation contract is satisfied.
 # ---------------------------------------------------------------------------
 
-_DEFAULT_IMAGE_SUFFIXES: frozenset[str] = frozenset({".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tiff"})
+_DEFAULT_IMAGE_SUFFIXES: frozenset[str] = frozenset(
+    {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tiff"}
+)
 
 
 def _model_supports_vision(model: str) -> bool:
@@ -1355,7 +1373,9 @@ def _normalize_image_paths(paths: list[str]) -> list[str]:
     ``monkeypatch.setattr("thegent.cli.commands.impl.run_input_helpers.normalize_image_paths", ...)``
     to legacy callers in :mod:`thegent.cli.commands`.
     """
-    return run_input_helpers.normalize_image_paths(paths, supported_image_suffixes=set(_DEFAULT_IMAGE_SUFFIXES))
+    return run_input_helpers.normalize_image_paths(
+        paths, supported_image_suffixes=set(_DEFAULT_IMAGE_SUFFIXES)
+    )
 
 
 # ``impl._validate_image_capability`` retains the AUDIT-N+9 identity
@@ -1375,9 +1395,13 @@ def _normalize_image_paths(paths: list[str]) -> list[str]:
 # WL-125 dispatch wrapper that delegates to the canonical helper module.
 
 
-def _validate_explicit_ollama_provider(*, provider: str | None, model: str | None) -> str | None:
+def _validate_explicit_ollama_provider(
+    *, provider: str | None, model: str | None
+) -> str | None:
     """WL-125 delegate to :func:`run_model_helpers.validate_explicit_ollama_provider`."""
-    return run_model_helpers.validate_explicit_ollama_provider(provider=provider, model=model)
+    return run_model_helpers.validate_explicit_ollama_provider(
+        provider=provider, model=model
+    )
 
 
 # -- run_session_helpers / session_path_helpers / session_id_helpers ------
@@ -1398,7 +1422,9 @@ def _parse_work_stream_md(work_stream_path: Path) -> dict[str, Any]:
     return run_workstream_helpers.parse_work_stream_md(work_stream_path)
 
 
-def _collect_work_stream_items(work_stream_path: Path, limit: int) -> tuple[list[dict[str, Any]], list[str]]:
+def _collect_work_stream_items(
+    work_stream_path: Path, limit: int
+) -> tuple[list[dict[str, Any]], list[str]]:
     """WL-125 delegate to :func:`run_workstream_helpers.collect_work_stream_items`."""
     return run_workstream_helpers.collect_work_stream_items(work_stream_path, limit)
 
@@ -1559,7 +1585,9 @@ def work_stream_claim_impl(
     cd: Path | None = None,
 ) -> dict[str, Any]:
     """WL-125 thin delegate to :func:`work_stream_orchestration.work_stream_claim_impl`."""
-    return work_stream_orchestration.work_stream_claim_impl(item_id=item_id, agent_id=agent_id, cd=cd)
+    return work_stream_orchestration.work_stream_claim_impl(
+        item_id=item_id, agent_id=agent_id, cd=cd
+    )
 
 
 def work_stream_complete_impl(
@@ -1568,7 +1596,9 @@ def work_stream_complete_impl(
     cd: Path | None = None,
 ) -> dict[str, Any]:
     """WL-125 thin delegate to :func:`work_stream_orchestration.work_stream_complete_impl`."""
-    return work_stream_orchestration.work_stream_complete_impl(item_id=item_id, agent_id=agent_id, cd=cd)
+    return work_stream_orchestration.work_stream_complete_impl(
+        item_id=item_id, agent_id=agent_id, cd=cd
+    )
 
 
 def incorporate_impl(cd: Path | None = None, dry_run: bool = False) -> dict[str, Any]:

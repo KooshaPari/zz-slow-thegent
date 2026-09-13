@@ -213,14 +213,20 @@ class ACPServerAdapter:
             if agent_name is None:
                 return {
                     "type": "error",
-                    "error": {"code": "MISSING_AGENT", "message": "Agent name required"},
+                    "error": {
+                        "code": "MISSING_AGENT",
+                        "message": "Agent name required",
+                    },
                     "agent_id": agent_id,
                 }
             runner = self._resolve_runner(agent_name)
             if runner is None:
                 return {
                     "type": "error",
-                    "error": {"code": "AGENT_NOT_FOUND", "message": f"Agent {agent_name} not found"},
+                    "error": {
+                        "code": "AGENT_NOT_FOUND",
+                        "message": f"Agent {agent_name} not found",
+                    },
                     "agent_id": agent_id,
                 }
 
@@ -229,7 +235,9 @@ class ACPServerAdapter:
             self.sessions[session_id] = session
 
             try:
-                result = await _await_maybe(runner.run(payload.get("prompt", ""), cwd=payload.get("cwd")))
+                result = await _await_maybe(
+                    runner.run(payload.get("prompt", ""), cwd=payload.get("cwd"))
+                )
                 if isinstance(result, RunResult):
                     stdout = result.stdout
                     stderr = result.stderr
@@ -256,7 +264,10 @@ class ACPServerAdapter:
 
         return {
             "type": "error",
-            "error": {"code": "UNSUPPORTED_TYPE", "message": f"Type {msg_type} not supported"},
+            "error": {
+                "code": "UNSUPPORTED_TYPE",
+                "message": f"Type {msg_type} not supported",
+            },
             "agent_id": agent_id,
         }
 
@@ -298,7 +309,9 @@ class ACPServerAdapter:
             session.add_message("user", params.get("prompt", ""))
 
             try:
-                result = await _await_maybe(runner.run(params.get("prompt", ""), cwd=params.get("cwd")))
+                result = await _await_maybe(
+                    runner.run(params.get("prompt", ""), cwd=params.get("cwd"))
+                )
                 if isinstance(result, RunResult):
                     stdout = result.stdout
                     stderr = result.stderr
@@ -375,14 +388,18 @@ class ACPServerAdapter:
             if result.get("status") == "unavailable":
                 return _rpc_error(msg_id, -32603, "Session backend unavailable")
             if result.get("status") == "error":
-                return _rpc_error(msg_id, -32603, result.get("error", "Failed to attach"))
+                return _rpc_error(
+                    msg_id, -32603, result.get("error", "Failed to attach")
+                )
             return {"jsonrpc": "2.0", "id": msg_id, "result": result}
 
         if method == "session/inspect":
             session_id = params.get("session_id")
             if not session_id:
                 return _rpc_error(msg_id, -32602, "Missing 'session_id' parameter")
-            result = self.session_endpoints.inspect(session_id, params.get("last_lines", 50))
+            result = self.session_endpoints.inspect(
+                session_id, params.get("last_lines", 50)
+            )
             if result.get("error"):
                 return _rpc_error(msg_id, -32603, result["error"])
             return {"jsonrpc": "2.0", "id": msg_id, "result": result}
@@ -435,7 +452,11 @@ class ACPServerAdapter:
             # Return 422 for validation errors
             if response.get("type") == "error":
                 error_code = response.get("error", {}).get("code", "")
-                if error_code in ("MISSING_AGENT", "AGENT_NOT_FOUND", "UNSUPPORTED_TYPE"):
+                if error_code in (
+                    "MISSING_AGENT",
+                    "AGENT_NOT_FOUND",
+                    "UNSUPPORTED_TYPE",
+                ):
                     return JSONResponse(response, status_code=422)
                 return JSONResponse(response, status_code=200)
 
@@ -472,7 +493,9 @@ class ACPServerAdapter:
         """Run the server in HTTP mode."""
         import uvicorn
 
-        config = uvicorn.Config(self.build_starlette_app(), host=host, port=port, log_level="info")
+        config = uvicorn.Config(
+            self.build_starlette_app(), host=host, port=port, log_level="info"
+        )
         server = uvicorn.Server(config)
         await server.serve()
 

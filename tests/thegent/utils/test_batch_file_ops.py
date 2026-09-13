@@ -50,7 +50,9 @@ def test_batch_write_atomic_rollback(tmp_path, batch_ops):
     target_in_bad = bad_path / "fail.txt"
 
     with pytest.raises(Exception):
-        batch_ops.batch_write([(file1, "new_content"), (target_in_bad, "should fail")], atomic=True)
+        batch_ops.batch_write(
+            [(file1, "new_content"), (target_in_bad, "should fail")], atomic=True
+        )
 
     # file1 should be rolled back to 'original'
     assert file1.read_text() == "original"

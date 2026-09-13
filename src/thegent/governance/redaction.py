@@ -37,7 +37,10 @@ class PIIRedactor:
         if custom_patterns:
             self.patterns.update(custom_patterns)
 
-        self._compiled_re = {name: re.compile(pattern, re.IGNORECASE) for name, pattern in self.patterns.items()}
+        self._compiled_re = {
+            name: re.compile(pattern, re.IGNORECASE)
+            for name, pattern in self.patterns.items()
+        }
 
     def redact(self, text: str, mode: str = "support") -> str:
         """Redact PII and secrets from text.
@@ -55,7 +58,9 @@ class PIIRedactor:
         redacted = text
         for name, rex in self._compiled_re.items():
             # Standard redaction label
-            replacement = f"[REDACTED_{name.upper()}]" if mode == "audit" else "[REDACTED]"
+            replacement = (
+                f"[REDACTED_{name.upper()}]" if mode == "audit" else "[REDACTED]"
+            )
             redacted = rex.sub(replacement, redacted)
 
         return redacted

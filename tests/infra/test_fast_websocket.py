@@ -34,7 +34,9 @@ class TestFastWebSocketInit:
 
     def test_init_stores_options(self):
         """Test that options are stored."""
-        ws = FastWebSocket("ws://localhost:8080", timeout=30, headers={"X-Custom": "value"})
+        ws = FastWebSocket(
+            "ws://localhost:8080", timeout=30, headers={"X-Custom": "value"}
+        )
         assert ws.options["timeout"] == 30
         assert ws.options["headers"]["X-Custom"] == "value"
 
@@ -340,7 +342,9 @@ class TestConvenienceFunctions:
         # Mock connect_async
 
         async def mock_connect():
-            ws._backend = "websockets" if WEBSOCKETS_AVAILABLE else "websocket-client-async"
+            ws._backend = (
+                "websockets" if WEBSOCKETS_AVAILABLE else "websocket-client-async"
+            )
             ws._ws = MagicMockWebSocket()
 
         ws.connect_async = mock_connect
@@ -375,7 +379,9 @@ class TestConvenienceFunctions:
             pytest.skip("No WebSocket library available")
 
         # Create a mock connection
-        with patch.object(FastWebSocket, "connect_async", new_callable=AsyncMock) as mock_connect:
+        with patch.object(
+            FastWebSocket, "connect_async", new_callable=AsyncMock
+        ) as mock_connect:
             ws = await websocket_connect_async("ws://localhost:8080")
             assert isinstance(ws, FastWebSocket)
             mock_connect.assert_called_once()

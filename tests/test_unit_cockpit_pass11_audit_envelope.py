@@ -53,7 +53,9 @@ def _strip_ansi(text: str) -> str:
 def _drive_three_entries() -> None:
     """Drive three distinct entries through the audit-trail singleton."""
     reset_audit_trail()
-    with audited_budget(AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms", agent="cursor"):
+    with audited_budget(
+        AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms", agent="cursor"
+    ):
         pass
     record_resource_read("observe_summary_ms", agent="claude", outcome="ok")
     record_gate_check("gate_check_ms", agent="cursor", outcome="ok")
@@ -94,7 +96,9 @@ class TestCockpitRenderMcpAuditStats:
         # should be a dict, not ``null``. ``total_entries`` is the
         # canonical gauge validated by the existing MCP audit-trail
         # contract tests.
-        assert isinstance(stats, dict), f"expected dict, got {type(stats).__name__}: {stats!r}"
+        assert isinstance(stats, dict), (
+            f"expected dict, got {type(stats).__name__}: {stats!r}"
+        )
         assert stats.get("total_entries", 0) >= 1
 
     def test_render_json_no_mcp_audit_keeps_key_as_none(self) -> None:

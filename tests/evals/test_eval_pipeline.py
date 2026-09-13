@@ -27,7 +27,9 @@ pytestmark = pytest.mark.requirement("FR-EVAL-074")
 # ---------------------------------------------------------------------------
 
 
-def make_case(case_id: str = "c1", prompt: str = "q", expected: str = "expected") -> EvalCase:
+def make_case(
+    case_id: str = "c1", prompt: str = "q", expected: str = "expected"
+) -> EvalCase:
     return EvalCase(id=case_id, prompt=prompt, expected=expected)
 
 
@@ -171,7 +173,9 @@ def test_keyword_coverage_threshold():
     """Score below threshold causes passed=False."""
     # Use unambiguous multi-character keywords to avoid substring collisions.
     # 'alpha' and 'beta' are present; 'gamma' and 'delta' are absent -> 2/4 = 0.5
-    ev = KeywordCoverageEvaluator(keywords=["alpha", "beta", "gamma", "delta"], threshold=0.9)
+    ev = KeywordCoverageEvaluator(
+        keywords=["alpha", "beta", "gamma", "delta"], threshold=0.9
+    )
     case = make_case()
     result = ev.evaluate("alpha beta", "", case)
     assert result.score == pytest.approx(0.5)

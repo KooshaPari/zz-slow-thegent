@@ -11,7 +11,9 @@ def test_wl125_new_session_id_wrapper_delegates(monkeypatch) -> None:
         captured["owner"] = owner
         return "session-from-helper"
 
-    monkeypatch.setattr("thegent.cli.commands.impl.session_id_helpers.new_session_id", _fake)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.session_id_helpers.new_session_id", _fake
+    )
 
     session_id = impl._new_session_id("codex", "operator:repo")
 

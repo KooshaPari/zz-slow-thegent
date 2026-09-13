@@ -61,7 +61,9 @@ class VetterOrchestrator:
         federated_policy: Any | None = None,
     ) -> None:
         self.session_dir = session_dir
-        self.check_registry: dict[str, Any] = check_registry if check_registry is not None else {}
+        self.check_registry: dict[str, Any] = (
+            check_registry if check_registry is not None else {}
+        )
         self.evidence_store = evidence_store
         self.hitl_workflow = hitl_workflow
         self.event_log = event_log
@@ -92,7 +94,9 @@ class VetterOrchestrator:
         """
         run_id: str = str(run_context.get("run_id", "")).strip()
         start_ns = time.monotonic_ns()
-        effective_policy = self._resolve_effective_policy(policy=policy, run_context=run_context)
+        effective_policy = self._resolve_effective_policy(
+            policy=policy, run_context=run_context
+        )
 
         check_results: list[VetterCheckResult] = []
 
@@ -113,19 +117,37 @@ class VetterOrchestrator:
         failed_check_names = {cr.check_name for cr in failed_checks}
         any_failed = len(failed_checks) > 0
 
-        should_escalate = any(name in failed_check_names for name in effective_policy.escalate_on)
+        should_escalate = any(
+            name in failed_check_names for name in effective_policy.escalate_on
+        )
         revision_enabled = bool(run_context.get("enable_revision_queue", False))
-        current_round = self._resolve_current_revision_round(run_id=run_id, run_context=run_context)
-        can_request_revision = revision_enabled and current_round < effective_policy.max_revision_rounds
+        current_round = self._resolve_current_revision_round(
+            run_id=run_id, run_context=run_context
+        )
+        can_request_revision = (
+            revision_enabled and current_round < effective_policy.max_revision_rounds
+        )
 
-        revision_prompt = self._build_revision_prompt(current_round, failed_checks) if can_request_revision else None
+        revision_prompt = (
+            self._build_revision_prompt(current_round, failed_checks)
+            if can_request_revision
+            else None
+        )
 
         if should_escalate:
             verdict = VetterVerdict.ESCALATED
         elif any_failed and can_request_revision:
             verdict = VetterVerdict.REVISION_REQUESTED
-        elif any_failed and revision_enabled and current_round >= effective_policy.max_revision_rounds:
-            verdict = VetterVerdict.ESCALATED if effective_policy.on_fail == "escalate" else VetterVerdict.REJECTED
+        elif (
+            any_failed
+            and revision_enabled
+            and current_round >= effective_policy.max_revision_rounds
+        ):
+            verdict = (
+                VetterVerdict.ESCALATED
+                if effective_policy.on_fail == "escalate"
+                else VetterVerdict.REJECTED
+            )
         elif any_failed:
             verdict = VetterVerdict.REJECTED
         else:
@@ -181,16 +203,22 @@ class VetterOrchestrator:
             escalation_reason=escalation_reason,
         )
 
-    def _resolve_effective_policy(self, policy: VetterPolicy, run_context: dict[str, Any]) -> VetterPolicy:
+    def _resolve_effective_policy(
+        self, policy: VetterPolicy, run_context: dict[str, Any]
+    ) -> VetterPolicy:
         effective_policy = policy
         federated_policy = self._resolve_federated_policy(run_context=run_context)
-        jurisdiction_profile = str(run_context.get("jurisdiction_profile", "")).strip().upper()
+        jurisdiction_profile = (
+            str(run_context.get("jurisdiction_profile", "")).strip().upper()
+        )
 
         if federated_policy:
             merged = policy.model_dump(mode="python")
             merged.update(federated_policy)
             effective_policy = VetterPolicy.model_validate(merged)
-            resolved_profile = str(federated_policy.get("jurisdiction_profile", "")).strip().upper()
+            resolved_profile = (
+                str(federated_policy.get("jurisdiction_profile", "")).strip().upper()
+            )
             if resolved_profile:
                 jurisdiction_profile = resolved_profile
 
@@ -214,9 +242,13 @@ class VetterOrchestrator:
             project=str(run_context["project"]),
             environment=str(run_context["environment"]),
         )
-        resolved = self.federated_policy.resolve_policy(namespace, str(run_context["policy_id"]))
+        resolved = self.federated_policy.resolve_policy(
+            namespace, str(run_context["policy_id"])
+        )
         if not isinstance(resolved, dict):
-            raise TypeError("Federated policy manager resolve_policy() must return dict[str, Any]")
+            raise TypeError(
+                "Federated policy manager resolve_policy() must return dict[str, Any]"
+            )
         return resolved
 
     def _apply_eu_ai_act_overlay(self, policy: VetterPolicy) -> VetterPolicy:
@@ -322,10 +354,17 @@ class VetterOrchestrator:
                 "duration_ms": duration_ms,
             },
         )
-        if hasattr(self.evidence_store, "verify_integrity") and not self.evidence_store.verify_integrity():
-            raise RuntimeError("EvidenceStore hash-chain integrity failed after vetter append")
+        if (
+            hasattr(self.evidence_store, "verify_integrity")
+            and not self.evidence_store.verify_integrity()
+        ):
+            raise RuntimeError(
+                "EvidenceStore hash-chain integrity failed after vetter append"
+            )
 
-    def _resolve_current_revision_round(self, run_id: str, run_context: dict[str, Any]) -> int:
+    def _resolve_current_revision_round(
+        self, run_id: str, run_context: dict[str, Any]
+    ) -> int:
         raw_round = run_context.get("vetter_revision_round", 0)
         if isinstance(raw_round, bool) or not isinstance(raw_round, int):
             raise RuntimeError("Vetter revision round must be an integer >= 0")
@@ -343,11 +382,15 @@ class VetterOrchestrator:
         run_context: dict[str, Any],
     ) -> str:
         if self.hitl_workflow is None:
-            raise RuntimeError("Vetter escalation requires hitl_workflow when verdict is escalated")
+            raise RuntimeError(
+                "Vetter escalation requires hitl_workflow when verdict is escalated"
+            )
 
         escalation_lane = policy.escalation_lane or "standard"
         canonical_escalate_on = sorted(set(policy.escalate_on))
-        policy_escalate_on = ",".join(canonical_escalate_on) if canonical_escalate_on else "<none>"
+        policy_escalate_on = (
+            ",".join(canonical_escalate_on) if canonical_escalate_on else "<none>"
+        )
         reason = (
             f"Vetter escalation requested: failed_checks={','.join(failed_check_names)} "
             f"policy_escalate_on={policy_escalate_on} policy_lane={escalation_lane}"
@@ -381,9 +424,7 @@ class VetterOrchestrator:
         failed_ids = ", ".join(cr.check_name for cr in failed_checks) or "none"
         hints = [cr.message.strip() for cr in failed_checks if cr.message.strip()]
         hint_text = "\n".join(hints) if hints else "No revision hints provided."
-        return (
-            f"[VETTER REVISION REQUEST] Round: {next_round}\nFailed checks: {failed_ids}\nRevision hints:\n{hint_text}"
-        )
+        return f"[VETTER REVISION REQUEST] Round: {next_round}\nFailed checks: {failed_ids}\nRevision hints:\n{hint_text}"
 
     def _enqueue_revision_prompt(
         self,
@@ -393,10 +434,14 @@ class VetterOrchestrator:
         next_round: int,
     ) -> None:
         if self.prompt_queue is None:
-            raise RuntimeError("Vetter revision queue requires prompt_queue when revision is requested")
+            raise RuntimeError(
+                "Vetter revision queue requires prompt_queue when revision is requested"
+            )
         normalized_run_id = str(run_id).strip()
         if not normalized_run_id:
-            raise RuntimeError("Vetter revision queue requires non-empty run_id when revision is requested")
+            raise RuntimeError(
+                "Vetter revision queue requires non-empty run_id when revision is requested"
+            )
         self.prompt_queue.enqueue(
             revision_prompt,
             project_path=run_context.get("project_path"),

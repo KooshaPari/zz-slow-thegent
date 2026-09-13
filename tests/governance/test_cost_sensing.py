@@ -113,6 +113,8 @@ def test_budget_alert_threshold():
 
 def test_cost_prediction_accuracy():
     predictor = CostPredictor()
-    predicted = predictor.predict_cost(model="claude-sonnet-4.5", tokens_estimate=10000, action_type="learning")
+    predicted = predictor.predict_cost(
+        model="claude-sonnet-4.5", tokens_estimate=10000, action_type="learning"
+    )
     # 10k * 0.015 * 1.2 = 0.18
     assert 0.1 <= predicted <= 1.0

@@ -48,7 +48,9 @@ class TestMAIFRunnerDisabled:
     def test_disabled_when_env_unset(self, disabled_runner: MAIFRunner) -> None:
         assert disabled_runner._enabled is False  # noqa: SLF001 -- white-box test of gate flag
 
-    def test_record_run_start_returns_none_when_disabled(self, disabled_runner: MAIFRunner) -> None:
+    def test_record_run_start_returns_none_when_disabled(
+        self, disabled_runner: MAIFRunner
+    ) -> None:
         result = disabled_runner.record_run_start(
             run_id="run_test001",
             owner="alice",
@@ -57,7 +59,9 @@ class TestMAIFRunnerDisabled:
         )
         assert result is None
 
-    def test_record_run_end_returns_none_when_disabled(self, disabled_runner: MAIFRunner) -> None:
+    def test_record_run_end_returns_none_when_disabled(
+        self, disabled_runner: MAIFRunner
+    ) -> None:
         result = disabled_runner.record_run_end(
             run_id="run_test001",
             status="completed",
@@ -82,7 +86,9 @@ class TestMAIFRunnerEnabled:
     def test_enabled_when_env_is_one(self, enabled_runner: MAIFRunner) -> None:
         assert enabled_runner._enabled is True  # noqa: SLF001
 
-    def test_record_run_start_returns_artifact_id(self, enabled_runner: MAIFRunner) -> None:
+    def test_record_run_start_returns_artifact_id(
+        self, enabled_runner: MAIFRunner
+    ) -> None:
         """record_run_start returns a non-None artifact ID (hex string)."""
         with patch.object(enabled_runner, "_store_artifact"):
             result = enabled_runner.record_run_start(
@@ -95,7 +101,9 @@ class TestMAIFRunnerEnabled:
         assert isinstance(result, str)
         assert len(result) == 32  # UUID hex is 32 chars
 
-    def test_record_run_end_returns_artifact_id(self, enabled_runner: MAIFRunner) -> None:
+    def test_record_run_end_returns_artifact_id(
+        self, enabled_runner: MAIFRunner
+    ) -> None:
         """record_run_end returns a non-None artifact ID (hex string)."""
         with patch.object(enabled_runner, "_store_artifact"):
             result = enabled_runner.record_run_end(
@@ -107,7 +115,9 @@ class TestMAIFRunnerEnabled:
         assert isinstance(result, str)
         assert len(result) == 32
 
-    def test_record_run_start_metadata_contains_event(self, enabled_runner: MAIFRunner) -> None:
+    def test_record_run_start_metadata_contains_event(
+        self, enabled_runner: MAIFRunner
+    ) -> None:
         """The artifact produced by record_run_start has event='run_start' in metadata."""
         captured: list[Any] = []
 
@@ -128,7 +138,9 @@ class TestMAIFRunnerEnabled:
         assert artifact.metadata.get("run_id") == "run_meta_test"
         assert artifact.metadata.get("agent") == "gemini"
 
-    def test_record_run_end_metadata_contains_event(self, enabled_runner: MAIFRunner) -> None:
+    def test_record_run_end_metadata_contains_event(
+        self, enabled_runner: MAIFRunner
+    ) -> None:
         """The artifact produced by record_run_end has event='run_end' in metadata."""
         captured: list[Any] = []
 
@@ -152,7 +164,9 @@ class TestMAIFRunnerEnabled:
         long_prompt = "x" * 500
         captured: list[Any] = []
 
-        with patch.object(enabled_runner, "_store_artifact", side_effect=captured.append):
+        with patch.object(
+            enabled_runner, "_store_artifact", side_effect=captured.append
+        ):
             enabled_runner.record_run_start(
                 run_id="run_trunc",
                 owner="dave",
@@ -172,7 +186,9 @@ class TestMAIFRunnerEnabled:
 class TestMAIFRunnerErrorHandling:
     """Errors inside MAIFRunner must never propagate to the caller."""
 
-    def test_record_run_start_swallows_generator_error(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_record_run_start_swallows_generator_error(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """If the artifact generator raises, record_run_start returns None silently."""
         monkeypatch.setenv("THGENT_MAIF_ENABLED", "1")
         runner = MAIFRunner()
@@ -186,7 +202,9 @@ class TestMAIFRunnerErrorHandling:
             )
         assert result is None
 
-    def test_record_run_end_swallows_store_error(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_record_run_end_swallows_store_error(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """If the store raises, record_run_end returns None silently."""
         monkeypatch.setenv("THGENT_MAIF_ENABLED", "1")
         runner = MAIFRunner()
@@ -201,7 +219,9 @@ class TestMAIFRunnerErrorHandling:
         # Either way, no exception should escape.
         assert result is None or isinstance(result, str)
 
-    def test_record_run_start_swallows_import_error(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_record_run_start_swallows_import_error(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """If MAIF module imports fail, record_run_start returns None silently."""
         monkeypatch.setenv("THGENT_MAIF_ENABLED", "1")
         runner = MAIFRunner()

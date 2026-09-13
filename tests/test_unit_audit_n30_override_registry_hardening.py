@@ -45,7 +45,9 @@ class TestOverrideRegistryConcurrency:
 
     def test_append_lock_is_reentrant(self, tmp_path: Path) -> None:
         oreg = OverrideRegistry(tmp_path)
-        assert hasattr(oreg, "_append_lock"), "OverrideRegistry must carry _append_lock (NEW-1)"
+        assert hasattr(oreg, "_append_lock"), (
+            "OverrideRegistry must carry _append_lock (NEW-1)"
+        )
         # Verify the re-entrant flavour: a thread that holds the lock
         # can re-acquire it without deadlocking. ``threading.RLock`` is
         # a factory in modern Python, so we exercise the behaviour
@@ -55,7 +57,9 @@ class TestOverrideRegistryConcurrency:
         try:
             # Re-entrant acquire: a plain ``Lock`` would return False
             # here, an ``RLock`` returns True.
-            assert lock.acquire(blocking=False) is True, "_append_lock must be re-entrant (RLock)"
+            assert lock.acquire(blocking=False) is True, (
+                "_append_lock must be re-entrant (RLock)"
+            )
         finally:
             lock.release()
             lock.release()
@@ -92,7 +96,9 @@ class TestOverrideRegistryConcurrency:
 class TestOverrideRegistryIOResilience:
     """Pin the AUDIT-N+30 NEW-2 ``_save`` try/except contract."""
 
-    def test_save_raises_on_open_failure(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_save_raises_on_open_failure(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """A ``PermissionError`` on ``open`` propagates and the in-memory
         list remains the canonical truth (no torn on-disk state, no
         rollback mutation)."""
@@ -112,7 +118,9 @@ class TestOverrideRegistryIOResilience:
         assert len(oreg._records) == baseline_count
         assert all(r.get("owner") != "post-failure" for r in oreg._records)
 
-    def test_save_partial_write_recovers(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_save_partial_write_recovers(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """A first save that fails does not prevent subsequent successful saves."""
         oreg = OverrideRegistry(tmp_path)
         oreg.record("first", "first-reason", ttl_seconds=3600)
@@ -284,7 +292,9 @@ class TestOverrideRegistryClear:
 class TestOverrideRegistryMalformedTimestamps:
     """Pin the AUDIT-N+30 NEW-6 ``logger.warning`` contract."""
 
-    def test_malformed_expires_at_logs_warning(self, tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+    def test_malformed_expires_at_logs_warning(
+        self, tmp_path: Path, caplog: pytest.LogCaptureFixture
+    ) -> None:
         oreg = OverrideRegistry(tmp_path)
         # Manually craft a record with a malformed timestamp.
         oreg._records.append({"owner": "broken-owner", "expires_at_utc": "not-a-date"})
@@ -295,7 +305,9 @@ class TestOverrideRegistryMalformedTimestamps:
         warnings = [r for r in caplog.records if r.levelno == logging.WARNING]
         assert any("malformed expires_at_utc" in r.getMessage() for r in warnings)
 
-    def test_valid_timestamp_does_not_log_warning(self, tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+    def test_valid_timestamp_does_not_log_warning(
+        self, tmp_path: Path, caplog: pytest.LogCaptureFixture
+    ) -> None:
         oreg = OverrideRegistry(tmp_path)
         oreg.record("ok-owner", "ok-reason", ttl_seconds=3600)
         with caplog.at_level(logging.WARNING, logger="thegent.execution"):

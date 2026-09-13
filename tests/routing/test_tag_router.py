@@ -30,8 +30,12 @@ class TestTagRouter:
 
     def test_tag_router_priority_wins(self) -> None:
         router = TagRouter()
-        router.register(TagRoute(tags=["premium"], target="low-priority-model", priority=1))
-        router.register(TagRoute(tags=["premium"], target="high-priority-model", priority=10))
+        router.register(
+            TagRoute(tags=["premium"], target="low-priority-model", priority=1)
+        )
+        router.register(
+            TagRoute(tags=["premium"], target="high-priority-model", priority=10)
+        )
         result = router.resolve(["premium"])
         assert result == "high-priority-model"
 

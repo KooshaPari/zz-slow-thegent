@@ -80,7 +80,9 @@ class TestTagTaxonomyValidatorValidate:
         assert "not in the allowed taxonomy" in violations[0].reason
 
     @pytest.mark.requirement("WL-288")
-    def test_validate_multiple_invalid_tags(self, validator: TagTaxonomyValidator) -> None:
+    def test_validate_multiple_invalid_tags(
+        self, validator: TagTaxonomyValidator
+    ) -> None:
         """validate detects multiple invalid tags."""
         violations = validator.validate("WL-001", ["feature", "invalid1", "invalid2"])
 
@@ -96,13 +98,17 @@ class TestTagTaxonomyValidatorValidate:
         assert violations == []
 
     @pytest.mark.requirement("WL-288")
-    def test_validate_empty_wl_id_raises_error(self, validator: TagTaxonomyValidator) -> None:
+    def test_validate_empty_wl_id_raises_error(
+        self, validator: TagTaxonomyValidator
+    ) -> None:
         """validate raises ValueError for empty wl_id."""
         with pytest.raises(ValueError, match="wl_id cannot be empty"):
             validator.validate("", ["feature"])
 
     @pytest.mark.requirement("WL-288")
-    def test_validate_non_list_tags_raises_error(self, validator: TagTaxonomyValidator) -> None:
+    def test_validate_non_list_tags_raises_error(
+        self, validator: TagTaxonomyValidator
+    ) -> None:
         """validate raises ValueError if tags is not a list."""
         with pytest.raises(ValueError, match="tags must be a list"):
             validator.validate("WL-001", "feature")  # type: ignore
@@ -124,17 +130,23 @@ class TestTagTaxonomyValidatorIsValid:
         return TagTaxonomyValidator(["feature", "bug", "documentation"])
 
     @pytest.mark.requirement("WL-288")
-    def test_is_valid_true_for_valid_tags(self, validator: TagTaxonomyValidator) -> None:
+    def test_is_valid_true_for_valid_tags(
+        self, validator: TagTaxonomyValidator
+    ) -> None:
         """is_valid returns True for valid tags."""
         assert validator.is_valid("WL-001", ["feature", "bug"]) is True
 
     @pytest.mark.requirement("WL-288")
-    def test_is_valid_false_for_invalid_tags(self, validator: TagTaxonomyValidator) -> None:
+    def test_is_valid_false_for_invalid_tags(
+        self, validator: TagTaxonomyValidator
+    ) -> None:
         """is_valid returns False for invalid tags."""
         assert validator.is_valid("WL-001", ["feature", "invalid"]) is False
 
     @pytest.mark.requirement("WL-288")
-    def test_is_valid_true_for_empty_tags(self, validator: TagTaxonomyValidator) -> None:
+    def test_is_valid_true_for_empty_tags(
+        self, validator: TagTaxonomyValidator
+    ) -> None:
         """is_valid returns True for empty tag list."""
         assert validator.is_valid("WL-001", []) is True
 
@@ -158,7 +170,9 @@ class TestTagTaxonomyValidatorAddAllowed:
         return TagTaxonomyValidator(["feature", "bug"])
 
     @pytest.mark.requirement("WL-288")
-    def test_add_allowed_extends_taxonomy(self, validator: TagTaxonomyValidator) -> None:
+    def test_add_allowed_extends_taxonomy(
+        self, validator: TagTaxonomyValidator
+    ) -> None:
         """add_allowed adds new tag to allowed set."""
         validator.add_allowed("documentation")
 
@@ -180,13 +194,17 @@ class TestTagTaxonomyValidatorAddAllowed:
         assert validator.is_valid("WL-001", ["feature"]) is True
 
     @pytest.mark.requirement("WL-288")
-    def test_add_allowed_empty_raises_error(self, validator: TagTaxonomyValidator) -> None:
+    def test_add_allowed_empty_raises_error(
+        self, validator: TagTaxonomyValidator
+    ) -> None:
         """add_allowed raises ValueError for empty tag."""
         with pytest.raises(ValueError, match="tag cannot be empty"):
             validator.add_allowed("")
 
     @pytest.mark.requirement("WL-288")
-    def test_add_allowed_reflects_in_list(self, validator: TagTaxonomyValidator) -> None:
+    def test_add_allowed_reflects_in_list(
+        self, validator: TagTaxonomyValidator
+    ) -> None:
         """add_allowed updates list_allowed output."""
         original = validator.list_allowed()
         validator.add_allowed("newfeature")

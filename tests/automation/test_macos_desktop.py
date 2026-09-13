@@ -43,7 +43,10 @@ class TestIsAvailable:
     def test_available_on_darwin_with_binary(self):
         """Returns True when platform is darwin and osascript is found."""
         automation = MacOSDesktopAutomation()
-        with patch("sys.platform", "darwin"), patch("shutil.which", return_value="/usr/bin/osascript"):
+        with (
+            patch("sys.platform", "darwin"),
+            patch("shutil.which", return_value="/usr/bin/osascript"),
+        ):
             assert automation.is_available() is True
 
     def test_not_available_on_linux(self):
@@ -122,7 +125,10 @@ class TestRunApplescript:
         """TimeoutExpired returns AutomationResult(success=False, error=...timeout...)."""
         with (
             patch.object(automation, "is_available", return_value=True),
-            patch("subprocess.run", side_effect=subprocess.TimeoutExpired(cmd="osascript", timeout=5.0)),
+            patch(
+                "subprocess.run",
+                side_effect=subprocess.TimeoutExpired(cmd="osascript", timeout=5.0),
+            ),
         ):
             result = automation.run_applescript("delay 999", timeout_s=5.0)
 
@@ -205,7 +211,10 @@ class TestRunJxa:
         """TimeoutExpired in JXA mode returns graceful failure."""
         with (
             patch.object(automation, "is_available", return_value=True),
-            patch("subprocess.run", side_effect=subprocess.TimeoutExpired(cmd="osascript", timeout=3.0)),
+            patch(
+                "subprocess.run",
+                side_effect=subprocess.TimeoutExpired(cmd="osascript", timeout=3.0),
+            ),
         ):
             result = automation.run_jxa("while(true){}", timeout_s=3.0)
 

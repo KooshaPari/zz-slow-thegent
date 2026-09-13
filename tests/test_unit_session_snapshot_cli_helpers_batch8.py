@@ -44,7 +44,9 @@ def _write_snapshot(
     return path
 
 
-def test_daily_index_summary_contains_prompt_command_file_totals(tmp_path: Path) -> None:
+def test_daily_index_summary_contains_prompt_command_file_totals(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     _write_snapshot(
         scraper,
@@ -116,7 +118,9 @@ def test_snapshot_daily_totals_payload_returns_compact_totals(tmp_path: Path) ->
     assert totals["generated_at"]
 
 
-def test_daily_export_markdown_includes_total_prompts_commands_files(tmp_path: Path) -> None:
+def test_daily_export_markdown_includes_total_prompts_commands_files(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
     _write_snapshot(
         scraper,
@@ -130,7 +134,9 @@ def test_daily_export_markdown_includes_total_prompts_commands_files(tmp_path: P
         files=["f1"],
     )
 
-    payload = snapshot_daily_export_payload(scraper, out_path=str(tmp_path / "daily-index"), limit=1000)
+    payload = snapshot_daily_export_payload(
+        scraper, out_path=str(tmp_path / "daily-index"), limit=1000
+    )
     markdown_text = Path(payload["source_md"]).read_text(encoding="utf-8")
 
     assert "- Total prompts:" in markdown_text
@@ -138,7 +144,9 @@ def test_daily_export_markdown_includes_total_prompts_commands_files(tmp_path: P
     assert "- Total files:" in markdown_text
 
 
-def test_snapshot_daily_totals_payload_empty_snapshots_returns_zeroes(tmp_path: Path) -> None:
+def test_snapshot_daily_totals_payload_empty_snapshots_returns_zeroes(
+    tmp_path: Path,
+) -> None:
     scraper = SessionScraper(project_root=tmp_path)
 
     totals = snapshot_daily_totals_payload(scraper, limit=1000)

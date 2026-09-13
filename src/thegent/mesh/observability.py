@@ -42,7 +42,12 @@ class MeshLogger:
 
     def log(self, agent_id: str, event: str, data: dict | None = None):
         """Append a structured log entry."""
-        entry = {"timestamp": time.time(), "agent_id": agent_id, "event": event, "data": data or {}}
+        entry = {
+            "timestamp": time.time(),
+            "agent_id": agent_id,
+            "event": event,
+            "data": data or {},
+        }
         # PIPE_BUF aware atomic append (SCLI-P13.1)
         line = json.dumps(entry).decode() + "\n"
         if len(line) <= 4096:  # PIPE_BUF limit for atomic write
@@ -99,13 +104,17 @@ class MetricsAggregator:
             by_metric: dict[str, MetricBucket] = {}
             for point in points:
                 metric_name = str(point["name"])
-                metric_bucket = by_metric.setdefault(metric_name, {"count": 0, "sum_value": 0.0, "avg_value": 0.0})
+                metric_bucket = by_metric.setdefault(
+                    metric_name, {"count": 0, "sum_value": 0.0, "avg_value": 0.0}
+                )
                 metric_bucket["count"] += 1
                 metric_bucket["sum_value"] += float(point["value"])
 
             for metric_bucket in by_metric.values():
                 count = int(metric_bucket["count"])
-                metric_bucket["avg_value"] = float(metric_bucket["sum_value"]) / count if count else 0.0
+                metric_bucket["avg_value"] = (
+                    float(metric_bucket["sum_value"]) / count if count else 0.0
+                )
 
             summary["agents"][agent_id] = {
                 "count": agent_count,
@@ -119,15 +128,21 @@ class MetricsAggregator:
             totals["sum_value"] += agent_sum
             total_by_metric = totals["by_metric"]
             for metric_name, metric_bucket in by_metric.items():
-                total_metric = total_by_metric.setdefault(metric_name, {"count": 0, "sum_value": 0.0, "avg_value": 0.0})
+                total_metric = total_by_metric.setdefault(
+                    metric_name, {"count": 0, "sum_value": 0.0, "avg_value": 0.0}
+                )
                 total_metric["count"] += metric_bucket["count"]
                 total_metric["sum_value"] += metric_bucket["sum_value"]
 
         totals = summary["totals"]
-        totals["avg_value"] = totals["sum_value"] / totals["count"] if totals["count"] else 0.0
+        totals["avg_value"] = (
+            totals["sum_value"] / totals["count"] if totals["count"] else 0.0
+        )
         for metric_bucket in totals["by_metric"].values():
             count = int(metric_bucket["count"])
-            metric_bucket["avg_value"] = float(metric_bucket["sum_value"]) / count if count else 0.0
+            metric_bucket["avg_value"] = (
+                float(metric_bucket["sum_value"]) / count if count else 0.0
+            )
         return summary
 
 

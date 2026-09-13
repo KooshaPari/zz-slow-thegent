@@ -357,7 +357,12 @@ def merge_pr(
             pr_data: dict[str, Any] = _gh_api(f"/repos/{repo}/pulls/{pr_number}") or {}
             head_ref: str = pr_data.get("head", {}).get("ref", "")
             if head_ref:
-                _gh_cmd("api", "--method", "DELETE", f"/repos/{repo}/git/refs/heads/{head_ref}")
+                _gh_cmd(
+                    "api",
+                    "--method",
+                    "DELETE",
+                    f"/repos/{repo}/git/refs/heads/{head_ref}",
+                )
                 _log.info("Deleted branch %s in %s", head_ref, repo)
         except RuntimeError as exc:
             _log.warning("Branch deletion failed (non-fatal): %s", exc)

@@ -21,7 +21,11 @@ class ComplianceProfile:
         },
         "gdpr": {
             "name": "GDPR",
-            "requirements": ["data_protection", "right_to_erasure", "consent_management"],
+            "requirements": [
+                "data_protection",
+                "right_to_erasure",
+                "consent_management",
+            ],
         },
     }
 

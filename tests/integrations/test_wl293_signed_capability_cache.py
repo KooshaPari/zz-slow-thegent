@@ -114,25 +114,33 @@ class TestSignedCapabilityCacheStore:
         assert min_expected <= cap.expires_at <= max_expected
 
     @pytest.mark.requirement("WL-293")
-    def test_store_empty_capability_id_raises_error(self, cache: SignedCapabilityCache) -> None:
+    def test_store_empty_capability_id_raises_error(
+        self, cache: SignedCapabilityCache
+    ) -> None:
         """store raises ValueError for empty capability_id."""
         with pytest.raises(ValueError, match="capability_id cannot be empty"):
             cache.store("", "github", "read", True, "sig_abc123")
 
     @pytest.mark.requirement("WL-293")
-    def test_store_empty_connector_raises_error(self, cache: SignedCapabilityCache) -> None:
+    def test_store_empty_connector_raises_error(
+        self, cache: SignedCapabilityCache
+    ) -> None:
         """store raises ValueError for empty connector."""
         with pytest.raises(ValueError, match="connector cannot be empty"):
             cache.store("CAP-001", "", "read", True, "sig_abc123")
 
     @pytest.mark.requirement("WL-293")
-    def test_store_empty_capability_type_raises_error(self, cache: SignedCapabilityCache) -> None:
+    def test_store_empty_capability_type_raises_error(
+        self, cache: SignedCapabilityCache
+    ) -> None:
         """store raises ValueError for empty capability_type."""
         with pytest.raises(ValueError, match="capability_type cannot be empty"):
             cache.store("CAP-001", "github", "", True, "sig_abc123")
 
     @pytest.mark.requirement("WL-293")
-    def test_store_empty_signature_raises_error(self, cache: SignedCapabilityCache) -> None:
+    def test_store_empty_signature_raises_error(
+        self, cache: SignedCapabilityCache
+    ) -> None:
         """store raises ValueError for empty signature."""
         with pytest.raises(ValueError, match="signature cannot be empty"):
             cache.store("CAP-001", "github", "read", True, "")
@@ -169,7 +177,9 @@ class TestSignedCapabilityCacheGet:
         return cache
 
     @pytest.mark.requirement("WL-293")
-    def test_get_existing_capability(self, cache_with_capability: SignedCapabilityCache) -> None:
+    def test_get_existing_capability(
+        self, cache_with_capability: SignedCapabilityCache
+    ) -> None:
         """get returns existing capability."""
         cap = cache_with_capability.get("CAP-001")
 
@@ -177,7 +187,9 @@ class TestSignedCapabilityCacheGet:
         assert cap.capability_id == "CAP-001"
 
     @pytest.mark.requirement("WL-293")
-    def test_get_nonexistent_capability_returns_none(self, cache_with_capability: SignedCapabilityCache) -> None:
+    def test_get_nonexistent_capability_returns_none(
+        self, cache_with_capability: SignedCapabilityCache
+    ) -> None:
         """get returns None for nonexistent capability."""
         cap = cache_with_capability.get("CAP-999")
 
@@ -220,17 +232,23 @@ class TestSignedCapabilityCacheIsExpired:
         return cache
 
     @pytest.mark.requirement("WL-293")
-    def test_is_expired_false_for_valid(self, cache_with_capability: SignedCapabilityCache) -> None:
+    def test_is_expired_false_for_valid(
+        self, cache_with_capability: SignedCapabilityCache
+    ) -> None:
         """is_expired returns False for valid capability."""
         assert cache_with_capability.is_expired("CAP-001") is False
 
     @pytest.mark.requirement("WL-293")
-    def test_is_expired_true_for_nonexistent(self, cache_with_capability: SignedCapabilityCache) -> None:
+    def test_is_expired_true_for_nonexistent(
+        self, cache_with_capability: SignedCapabilityCache
+    ) -> None:
         """is_expired returns True for nonexistent capability."""
         assert cache_with_capability.is_expired("CAP-999") is True
 
     @pytest.mark.requirement("WL-293")
-    def test_is_expired_true_for_expired(self, cache_with_capability: SignedCapabilityCache) -> None:
+    def test_is_expired_true_for_expired(
+        self, cache_with_capability: SignedCapabilityCache
+    ) -> None:
         """is_expired returns True for expired capability."""
         cap = cache_with_capability._capabilities["CAP-001"]
         cap.expires_at = datetime.now(UTC)
@@ -255,7 +273,9 @@ class TestSignedCapabilityCacheRenew:
         return cache
 
     @pytest.mark.requirement("WL-293")
-    def test_renew_updates_signature(self, cache_with_capability: SignedCapabilityCache) -> None:
+    def test_renew_updates_signature(
+        self, cache_with_capability: SignedCapabilityCache
+    ) -> None:
         """renew updates the signature."""
         original_cap = cache_with_capability.get("CAP-001")
         assert original_cap is not None
@@ -267,7 +287,9 @@ class TestSignedCapabilityCacheRenew:
         assert renewed.signature == "sig_new456"
 
     @pytest.mark.requirement("WL-293")
-    def test_renew_updates_expiry(self, cache_with_capability: SignedCapabilityCache) -> None:
+    def test_renew_updates_expiry(
+        self, cache_with_capability: SignedCapabilityCache
+    ) -> None:
         """renew updates expires_at timestamp."""
         before = cache_with_capability.get("CAP-001")
         assert before is not None
@@ -279,7 +301,9 @@ class TestSignedCapabilityCacheRenew:
         assert renewed.expires_at > old_expiry
 
     @pytest.mark.requirement("WL-293")
-    def test_renew_updates_last_renewed(self, cache_with_capability: SignedCapabilityCache) -> None:
+    def test_renew_updates_last_renewed(
+        self, cache_with_capability: SignedCapabilityCache
+    ) -> None:
         """renew updates last_renewed_at timestamp."""
         before = datetime.now(UTC)
         renewed = cache_with_capability.renew("CAP-001", "sig_new456")
@@ -289,14 +313,18 @@ class TestSignedCapabilityCacheRenew:
         assert before <= renewed.last_renewed_at <= after
 
     @pytest.mark.requirement("WL-293")
-    def test_renew_nonexistent_returns_none(self, cache_with_capability: SignedCapabilityCache) -> None:
+    def test_renew_nonexistent_returns_none(
+        self, cache_with_capability: SignedCapabilityCache
+    ) -> None:
         """renew returns None for nonexistent capability."""
         result = cache_with_capability.renew("CAP-999", "sig_new456")
 
         assert result is None
 
     @pytest.mark.requirement("WL-293")
-    def test_renew_empty_signature_raises_error(self, cache_with_capability: SignedCapabilityCache) -> None:
+    def test_renew_empty_signature_raises_error(
+        self, cache_with_capability: SignedCapabilityCache
+    ) -> None:
         """renew raises ValueError for empty signature."""
         with pytest.raises(ValueError, match="signature cannot be empty"):
             cache_with_capability.renew("CAP-001", "")
@@ -335,7 +363,9 @@ class TestSignedCapabilityCacheListConnectorCapabilities:
         return cache
 
     @pytest.mark.requirement("WL-293")
-    def test_list_connector_capabilities_github(self, cache_with_mixed_capabilities: SignedCapabilityCache) -> None:
+    def test_list_connector_capabilities_github(
+        self, cache_with_mixed_capabilities: SignedCapabilityCache
+    ) -> None:
         """list_connector_capabilities returns only github capabilities."""
         caps = cache_with_mixed_capabilities.list_connector_capabilities("github")
 
@@ -343,7 +373,9 @@ class TestSignedCapabilityCacheListConnectorCapabilities:
         assert all(c.connector == "github" for c in caps)
 
     @pytest.mark.requirement("WL-293")
-    def test_list_connector_capabilities_linear(self, cache_with_mixed_capabilities: SignedCapabilityCache) -> None:
+    def test_list_connector_capabilities_linear(
+        self, cache_with_mixed_capabilities: SignedCapabilityCache
+    ) -> None:
         """list_connector_capabilities returns only linear capabilities."""
         caps = cache_with_mixed_capabilities.list_connector_capabilities("linear")
 
@@ -377,7 +409,9 @@ class TestSignedCapabilityCacheInvalidate:
         return cache
 
     @pytest.mark.requirement("WL-293")
-    def test_invalidate_removes_capability(self, cache_with_capability: SignedCapabilityCache) -> None:
+    def test_invalidate_removes_capability(
+        self, cache_with_capability: SignedCapabilityCache
+    ) -> None:
         """invalidate removes capability from cache."""
         assert cache_with_capability.get("CAP-001") is not None
 
@@ -387,7 +421,9 @@ class TestSignedCapabilityCacheInvalidate:
         assert cache_with_capability.get("CAP-001") is None
 
     @pytest.mark.requirement("WL-293")
-    def test_invalidate_nonexistent_returns_false(self, cache_with_capability: SignedCapabilityCache) -> None:
+    def test_invalidate_nonexistent_returns_false(
+        self, cache_with_capability: SignedCapabilityCache
+    ) -> None:
         """invalidate returns False for nonexistent capability."""
         result = cache_with_capability.invalidate("CAP-999")
 

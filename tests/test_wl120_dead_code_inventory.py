@@ -10,15 +10,21 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).parent.parent
 
-DEAD_CODE_REPORT = REPO_ROOT / "docs" / "reports" / "2026-02-21-B90-W3-D1-dead-code-inventory.md"
+DEAD_CODE_REPORT = (
+    REPO_ROOT / "docs" / "reports" / "2026-02-21-B90-W3-D1-dead-code-inventory.md"
+)
 CLI_DAG_PATH = REPO_ROOT / "src" / "thegent" / "cli" / "commands" / "cli_dag.py"
 CLI_TOOLING_PATH = REPO_ROOT / "src" / "thegent" / "cli" / "commands" / "cli_tooling.py"
-IMPL_EXECUTION_PATH = REPO_ROOT / "src" / "thegent" / "cli" / "commands" / "impl_execution.py"
+IMPL_EXECUTION_PATH = (
+    REPO_ROOT / "src" / "thegent" / "cli" / "commands" / "impl_execution.py"
+)
 
 
 def test_dead_code_inventory_report_exists() -> None:
     """The dead-code inventory report must exist."""
-    assert DEAD_CODE_REPORT.exists(), f"Dead code inventory report not found at {DEAD_CODE_REPORT}"
+    assert DEAD_CODE_REPORT.exists(), (
+        f"Dead code inventory report not found at {DEAD_CODE_REPORT}"
+    )
 
 
 def test_dead_code_report_is_non_empty() -> None:
@@ -30,7 +36,9 @@ def test_dead_code_report_is_non_empty() -> None:
 def test_dead_code_report_mentions_duplicate_functions() -> None:
     """The report must describe duplicate function status."""
     content = DEAD_CODE_REPORT.read_text()
-    assert "DUPLICATE" in content, "Dead code report must identify DUPLICATE function entries"
+    assert "DUPLICATE" in content, (
+        "Dead code report must identify DUPLICATE function entries"
+    )
 
 
 def test_cli_dag_exists() -> None:
@@ -57,4 +65,6 @@ def test_cli_tooling_is_non_empty() -> None:
 
 def test_impl_execution_exists() -> None:
     """impl_execution.py must exist (execution boundary shim)."""
-    assert IMPL_EXECUTION_PATH.exists(), f"impl_execution.py not found at {IMPL_EXECUTION_PATH}"
+    assert IMPL_EXECUTION_PATH.exists(), (
+        f"impl_execution.py not found at {IMPL_EXECUTION_PATH}"
+    )

@@ -40,7 +40,9 @@ class OutputSchemaValidator:
         try:
             self.schema: dict[str, Any] = json.loads(raw)
         except json.JSONDecodeError as exc:
-            raise ValueError(f"Schema file is not valid JSON: {schema_path}: {exc}") from exc
+            raise ValueError(
+                f"Schema file is not valid JSON: {schema_path}: {exc}"
+            ) from exc
         self.schema_path = schema_path
 
     def validate(self, output: str) -> dict[str, Any]:
@@ -79,7 +81,9 @@ class OutputSchemaValidator:
             A string containing the schema injection instruction.
         """
         schema_json = json.dumps(self.schema, indent=2)
-        return f"\n\nYou MUST respond with valid JSON matching this schema:\n{schema_json}"
+        return (
+            f"\n\nYou MUST respond with valid JSON matching this schema:\n{schema_json}"
+        )
 
     def get_codex_args(self) -> list[str]:
         """Return the CLI args to pass to the Codex harness.

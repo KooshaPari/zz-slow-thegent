@@ -27,7 +27,9 @@ def test_fast_marker_is_registered() -> None:
 def test_fast_lane_ini_file_exists() -> None:
     """pytest-fast.ini must exist for the fast lane preset."""
     ini_path = _REPO_ROOT / "pytest-fast.ini"
-    assert ini_path.exists(), f"pytest-fast.ini not found at {ini_path}. Create it with [pytest] addopts = -m fast -q"
+    assert ini_path.exists(), (
+        f"pytest-fast.ini not found at {ini_path}. Create it with [pytest] addopts = -m fast -q"
+    )
 
 
 @pytest.mark.fast
@@ -38,7 +40,9 @@ def test_fast_lane_ini_mentions_fast_or_lane_config() -> None:
         pytest.skip("pytest-fast.ini not present; covered by prior test")
     content = ini_path.read_text(encoding="utf-8")
     # Must reference fast-lane or markers
-    assert "fast" in content.lower(), "pytest-fast.ini must reference 'fast' marker or config"
+    assert "fast" in content.lower(), (
+        "pytest-fast.ini must reference 'fast' marker or config"
+    )
 
 
 @pytest.mark.fast
@@ -47,12 +51,18 @@ def test_pyproject_toml_declares_fast_and_deep_markers() -> None:
     toml_path = _REPO_ROOT / "pyproject.toml"
     assert toml_path.exists(), "pyproject.toml not found"
     content = toml_path.read_text(encoding="utf-8")
-    assert '"fast:' in content or "'fast:" in content or '"fast ' in content or "fast:" in content, (
-        "pyproject.toml [tool.pytest.ini_options] markers must include 'fast:' marker"
-    )
-    assert '"deep:' in content or "'deep:" in content or '"deep ' in content or "deep:" in content, (
-        "pyproject.toml [tool.pytest.ini_options] markers must include 'deep:' marker"
-    )
+    assert (
+        '"fast:' in content
+        or "'fast:" in content
+        or '"fast ' in content
+        or "fast:" in content
+    ), "pyproject.toml [tool.pytest.ini_options] markers must include 'fast:' marker"
+    assert (
+        '"deep:' in content
+        or "'deep:" in content
+        or '"deep ' in content
+        or "deep:" in content
+    ), "pyproject.toml [tool.pytest.ini_options] markers must include 'deep:' marker"
 
 
 @pytest.mark.fast

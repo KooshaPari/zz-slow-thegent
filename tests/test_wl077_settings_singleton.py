@@ -25,7 +25,9 @@ class TestGetSettingsSingleton:
         self._clear_lru_cache()
         fake_settings = MagicMock(name="settings_singleton")
 
-        with patch("thegent.mcp.server.ThegentSettings", return_value=fake_settings) as mock_cls:
+        with patch(
+            "thegent.mcp.server.ThegentSettings", return_value=fake_settings
+        ) as mock_cls:
             from thegent.mcp.server import _get_settings
 
             s1 = _get_settings()
@@ -39,7 +41,9 @@ class TestGetSettingsSingleton:
         self._clear_lru_cache()
         fake_settings = MagicMock(name="settings_once")
 
-        with patch("thegent.mcp.server.ThegentSettings", return_value=fake_settings) as mock_cls:
+        with patch(
+            "thegent.mcp.server.ThegentSettings", return_value=fake_settings
+        ) as mock_cls:
             from thegent.mcp.server import _get_settings
 
             for _ in range(50):
@@ -63,8 +67,12 @@ class TestGetSettingsSingleton:
         """# @trace WL-077 — _get_settings exposes cache_info() from lru_cache."""
         from thegent.mcp.server import _get_settings
 
-        assert hasattr(_get_settings, "cache_info"), "_get_settings must be decorated with lru_cache"
-        assert hasattr(_get_settings, "cache_clear"), "_get_settings must support cache_clear()"
+        assert hasattr(_get_settings, "cache_info"), (
+            "_get_settings must be decorated with lru_cache"
+        )
+        assert hasattr(_get_settings, "cache_clear"), (
+            "_get_settings must support cache_clear()"
+        )
 
     def test_bearer_auth_middleware_dispatch_uses_singleton(self):
         """# @trace WL-077 — BearerAuthMiddleware.dispatch calls _get_settings, not ThegentSettings()."""
@@ -103,7 +111,9 @@ class TestGetSettingsSingleton:
         first = MagicMock(name="first_settings")
         second = MagicMock(name="second_settings")
 
-        with patch("thegent.mcp.server.ThegentSettings", side_effect=[first, second]) as mock_cls:
+        with patch(
+            "thegent.mcp.server.ThegentSettings", side_effect=[first, second]
+        ) as mock_cls:
             from thegent.mcp.server import _get_settings
 
             s1 = _get_settings()

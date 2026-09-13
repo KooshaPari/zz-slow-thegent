@@ -73,6 +73,7 @@ def _try_relative(path: str, base: str) -> str:
 @dataclass
 class IdeaSeed:
     """An idea seed for idea generation."""
+
     id: str
     title: str
     description: str = ""

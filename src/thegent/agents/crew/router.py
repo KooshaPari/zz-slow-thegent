@@ -87,7 +87,9 @@ class RouterManager:
 
         from .router_logic import RouteMetrics
 
-        manager = SharedStateManager(mesh_root or (Path(tempfile.gettempdir()) / "thegent-bridge"))
+        manager = SharedStateManager(
+            mesh_root or (Path(tempfile.gettempdir()) / "thegent-bridge")
+        )
         mesh_metrics = manager.get_all_metrics()
 
         for provider, data in mesh_metrics.items():

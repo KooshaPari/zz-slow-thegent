@@ -160,8 +160,9 @@ def test_deprecated_message_omits_optional_parts() -> None:
         bare()
 
     message = str(caught[-1].message)
-    assert message == f"Call to deprecated {bare.__wrapped__.__qualname__}." or message.startswith(
-        "Call to deprecated bare."
+    assert (
+        message == f"Call to deprecated {bare.__wrapped__.__qualname__}."
+        or message.startswith("Call to deprecated bare.")
     )
     # None of the optional fragments should sneak in.
     assert "Use" not in message
@@ -179,7 +180,10 @@ def test_deprecated_preserves_metadata() -> None:
         return None
 
     assert my_old_thing.__name__ == "my_old_thing"
-    assert my_old_thing.__qualname__ == "test_deprecated_preserves_metadata.<locals>.my_old_thing"
+    assert (
+        my_old_thing.__qualname__
+        == "test_deprecated_preserves_metadata.<locals>.my_old_thing"
+    )
     assert callable(my_old_thing)
 
 
@@ -213,7 +217,9 @@ def test_registry_register_is_idempotent() -> None:
     """Re-registering an existing ``old_path`` returns the original
     entry; no replacement happens."""
     reg = MigrationRegistry()
-    first = reg.register("thegent.legacy.idem", "thegent.new.idem", introduced="2026-01-01")
+    first = reg.register(
+        "thegent.legacy.idem", "thegent.new.idem", introduced="2026-01-01"
+    )
     second = reg.register(
         "thegent.legacy.idem",
         "thegent.different.new",
@@ -339,7 +345,9 @@ def test_migration_entry_is_frozen() -> None:
         introduced="2026-01-01",
     )
 
-    with pytest.raises((AttributeError, Exception)) as exc_info:  # FrozenInstanceError subclasses Exception
+    with pytest.raises(
+        (AttributeError, Exception)
+    ) as exc_info:  # FrozenInstanceError subclasses Exception
         entry.old_path = "mutated"  # type: ignore[misc]
 
     # FrozenInstanceError is a subclass of AttributeError; either way the
@@ -399,7 +407,10 @@ def test_registry_is_thread_safe_under_concurrent_registration() -> None:
         except BaseException as exc:  # pragma: no cover — surfaced via errors
             errors.append(exc)
 
-    threads = [threading.Thread(target=worker, args=(idx,), name=f"reg-worker-{idx}") for idx in range(thread_count)]
+    threads = [
+        threading.Thread(target=worker, args=(idx,), name=f"reg-worker-{idx}")
+        for idx in range(thread_count)
+    ]
     for t in threads:
         t.start()
     for t in threads:

@@ -43,7 +43,9 @@ class TestGeminiFileContent:
         """Assert `expected` appears even when transport adds newline/spacing artifacts."""
         compact_output = "".join(output.split())
         compact_expected = "".join(expected.split())
-        assert compact_expected in compact_output, f"Expected '{expected}' in response: {output[:500]}"
+        assert compact_expected in compact_output, (
+            f"Expected '{expected}' in response: {output[:500]}"
+        )
 
     def test_readme_first_line_in_response(
         self,
@@ -79,11 +81,15 @@ class TestGeminiFileContent:
         assert result.exit_code == 0, result.stderr
 
         assistant_text = self._extract_assistant_text(result.stdout)
-        if not assistant_text and ('"tool_use"' in result.stdout or '"type":"assistant"' in result.stdout):
+        if not assistant_text and (
+            '"tool_use"' in result.stdout or '"type":"assistant"' in result.stdout
+        ):
             pytest.skip("gemini returned tool-use transcript instead of plain content")
         # Response must contain the known first line
         response = assistant_text or result.stdout
-        self._assert_contains_with_flexible_whitespace(response, thegent_readme_first_line)
+        self._assert_contains_with_flexible_whitespace(
+            response, thegent_readme_first_line
+        )
 
     def test_pyproject_name_in_response(
         self,
@@ -117,7 +123,11 @@ class TestGeminiFileContent:
 
         assert result.exit_code == 0, result.stderr
         assistant_text = self._extract_assistant_text(result.stdout)
-        if not assistant_text and ('"tool_use"' in result.stdout or '"type":"assistant"' in result.stdout):
+        if not assistant_text and (
+            '"tool_use"' in result.stdout or '"type":"assistant"' in result.stdout
+        ):
             pytest.skip("gemini returned tool-use transcript instead of plain content")
         response = assistant_text or result.stdout
-        assert "thegent" in response.lower(), f"Expected 'thegent' in response: {response[:500]}"
+        assert "thegent" in response.lower(), (
+            f"Expected 'thegent' in response: {response[:500]}"
+        )

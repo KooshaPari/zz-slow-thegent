@@ -14,7 +14,9 @@ class FakeSessionScraper:
         self.project_path = project_path
 
 
-def test_snapshot_export_cmd_json_prints_payload(monkeypatch, capsys, tmp_path: Path) -> None:
+def test_snapshot_export_cmd_json_prints_payload(
+    monkeypatch, capsys, tmp_path: Path
+) -> None:
     payload = {"source": "snapshots/in.json", "output": "snapshots/out.md", "ok": True}
 
     def fake_snapshot_export_payload(scraper, snapshot_path: str, out_path: str | None):
@@ -23,7 +25,9 @@ def test_snapshot_export_cmd_json_prints_payload(monkeypatch, capsys, tmp_path: 
         assert out_path == str(tmp_path / "out.md")
         return payload
 
-    monkeypatch.setattr("thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper)
+    monkeypatch.setattr(
+        "thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper
+    )
     monkeypatch.setattr(
         "thegent.orchestration.state.session_snapshot_cli_helpers.snapshot_export_payload",
         fake_snapshot_export_payload,
@@ -40,26 +44,36 @@ def test_snapshot_export_cmd_json_prints_payload(monkeypatch, capsys, tmp_path: 
     assert json.loads(out) == payload
 
 
-def test_snapshot_export_cmd_rich_prints_source_to_output(monkeypatch, capsys, tmp_path: Path) -> None:
+def test_snapshot_export_cmd_rich_prints_source_to_output(
+    monkeypatch, capsys, tmp_path: Path
+) -> None:
     payload = {"source": "snapshots/in.json", "output": "snapshots/out.md"}
 
     def fake_snapshot_export_payload(scraper, snapshot_path: str, out_path: str | None):
         assert isinstance(scraper, FakeSessionScraper)
         return payload
 
-    monkeypatch.setattr("thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper)
+    monkeypatch.setattr(
+        "thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper
+    )
     monkeypatch.setattr(
         "thegent.orchestration.state.session_snapshot_cli_helpers.snapshot_export_payload",
         fake_snapshot_export_payload,
     )
 
-    team_cmds.snapshot_export_cmd(snapshot_path=tmp_path / "in.json", project=tmp_path, out_path=tmp_path / "out.md")
+    team_cmds.snapshot_export_cmd(
+        snapshot_path=tmp_path / "in.json",
+        project=tmp_path,
+        out_path=tmp_path / "out.md",
+    )
 
     out = capsys.readouterr().out
     assert f"{payload['source']} -> {payload['output']}" in out
 
 
-def test_snapshot_daily_index_cmd_rich_prefers_snapshots_when_present(monkeypatch, capsys, tmp_path: Path) -> None:
+def test_snapshot_daily_index_cmd_rich_prefers_snapshots_when_present(
+    monkeypatch, capsys, tmp_path: Path
+) -> None:
     payload = {
         "days": [
             {
@@ -76,7 +90,9 @@ def test_snapshot_daily_index_cmd_rich_prefers_snapshots_when_present(monkeypatc
         assert limit == 123
         return payload
 
-    monkeypatch.setattr("thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper)
+    monkeypatch.setattr(
+        "thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper
+    )
     monkeypatch.setattr(
         "thegent.orchestration.state.session_snapshot_cli_helpers.snapshot_daily_index_payload",
         fake_snapshot_daily_index_payload,
@@ -105,7 +121,9 @@ def test_snapshot_daily_index_cmd_rich_falls_back_to_count_without_snapshots(
         assert isinstance(scraper, FakeSessionScraper)
         return payload
 
-    monkeypatch.setattr("thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper)
+    monkeypatch.setattr(
+        "thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper
+    )
     monkeypatch.setattr(
         "thegent.orchestration.state.session_snapshot_cli_helpers.snapshot_daily_index_payload",
         fake_snapshot_daily_index_payload,
@@ -117,14 +135,18 @@ def test_snapshot_daily_index_cmd_rich_falls_back_to_count_without_snapshots(
     assert "snapshots=4" in out
 
 
-def test_snapshot_export_cmd_json_includes_source_and_output_keys(monkeypatch, capsys, tmp_path: Path) -> None:
+def test_snapshot_export_cmd_json_includes_source_and_output_keys(
+    monkeypatch, capsys, tmp_path: Path
+) -> None:
     payload = {"source": "snapshots/in.json", "output": "snapshots/out.md", "extra": 1}
 
     def fake_snapshot_export_payload(scraper, snapshot_path: str, out_path: str | None):
         assert isinstance(scraper, FakeSessionScraper)
         return payload
 
-    monkeypatch.setattr("thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper)
+    monkeypatch.setattr(
+        "thegent.orchestration.state.session_scraper.SessionScraper", FakeSessionScraper
+    )
     monkeypatch.setattr(
         "thegent.orchestration.state.session_snapshot_cli_helpers.snapshot_export_payload",
         fake_snapshot_export_payload,

@@ -121,7 +121,9 @@ def session_contract_health_report_impl(
         "strict_checks_enabled": policy["strict"],
         "health": health,
         "issue_counts": issue_counts,
-        "issue_breakdown": [{"issue": k, "count": v} for k, v in sorted(issue_counts.items())],
+        "issue_breakdown": [
+            {"issue": k, "count": v} for k, v in sorted(issue_counts.items())
+        ],
         "owner_breakdown": {
             (owner or "all"): {
                 "total": total,
@@ -165,7 +167,9 @@ def session_contract_health_report_impl(
         "top_blocked": top_blocked,
     }
     _append_health_snapshot(record)
-    payload["payload_signature"] = _hash_health_payload({**payload, "payload_signature": {}})
+    payload["payload_signature"] = _hash_health_payload(
+        {**payload, "payload_signature": {}}
+    )
     return payload
 
 

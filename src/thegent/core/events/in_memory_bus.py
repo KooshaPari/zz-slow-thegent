@@ -185,7 +185,9 @@ class InMemoryEventBus:
                 # ``BaseException`` (not ``Exception``) so KeyboardInterrupt
                 # and SystemExit propagate; everything else is contained.
                 if self._strict:
-                    raise EventHandlerError(f"handler {handler!r} raised on event {event_type!r}") from exc
+                    raise EventHandlerError(
+                        f"handler {handler!r} raised on event {event_type!r}"
+                    ) from exc
                 # Default (non-strict) mode: swallow and continue.
                 # No logger import here to keep the bus dependency-free.
 

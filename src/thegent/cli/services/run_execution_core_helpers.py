@@ -120,10 +120,14 @@ def _apply_pareto_routing_local(
 ) -> tuple[str | None, str | None, dict[str, Any] | None, dict[str, Any] | None]:
     from thegent.cli.commands.run.impl_core_runners import _apply_pareto_routing
 
-    return _apply_pareto_routing(agent, model, routing, include_contract, route_contract, route_request)
+    return _apply_pareto_routing(
+        agent, model, routing, include_contract, route_contract, route_request
+    )
 
 
-def _inject_time_constraint_local(prompt: str, timeout: int, *, summary_mode: bool) -> str:
+def _inject_time_constraint_local(
+    prompt: str, timeout: int, *, summary_mode: bool
+) -> str:
     from thegent.cli.commands.impl import _inject_time_constraint
 
     return _inject_time_constraint(prompt, timeout, summary_mode=summary_mode)
@@ -215,7 +219,10 @@ def _phase_auto_route(
                     "route_trace": {
                         "selected_offer_id": rt.selected_offer_id,
                         "pareto_set": rt.pareto_set,
-                        "fallback_chain": [{"provider": p, "model": m} for p, m in (rt.fallback_chain or [])],
+                        "fallback_chain": [
+                            {"provider": p, "model": m}
+                            for p, m in (rt.fallback_chain or [])
+                        ],
                         "scores": rt.scores,
                         "shadow_multiplier": rt.shadow_multiplier,
                     },
@@ -256,7 +263,9 @@ def _phase_resolve_agent_from_model(
     route = resolve_route(model_id, provider_hint=provider)
     if route is None:
         routes = ModelCatalog.routes_for(model_id)
-        available = ", ".join(sorted({r.provider for r in routes})) if routes else "none"
+        available = (
+            ", ".join(sorted({r.provider for r in routes})) if routes else "none"
+        )
         suffix = f" Available: {available}." if available != "none" else ""
         return None, {
             "error": f"Model '{model}' not available via provider '{provider or 'any'}'.{suffix}",
@@ -311,15 +320,24 @@ def _phase_resolve_effective_timeout(
         request_overrides: dict[str, Any] = {}
         if timeout is not None:
             request_overrides["default_timeout"] = timeout
-        _config = config_provider.resolve(tenant_id=tenant_id, request_overrides=request_overrides)
+        _config = config_provider.resolve(
+            tenant_id=tenant_id, request_overrides=request_overrides
+        )
     effective_timeout = (
         timeout
         if timeout is not None
-        else (_config.get("default_timeout", settings.default_timeout) if _config else settings.default_timeout)
+        else (
+            _config.get("default_timeout", settings.default_timeout)
+            if _config
+            else settings.default_timeout
+        )
     )
     if agent == "claude":
         _min_claude = (
-            _config.get("default_timeout_claude", getattr(settings, "default_timeout_claude", 300))
+            _config.get(
+                "default_timeout_claude",
+                getattr(settings, "default_timeout_claude", 300),
+            )
             if _config
             else getattr(settings, "default_timeout_claude", 300)
         )
@@ -327,11 +345,17 @@ def _phase_resolve_effective_timeout(
             _min_claude = float(_min_claude)
             effective_timeout = max(float(effective_timeout), _min_claude)
         except (TypeError, ValueError) as exc:
-            _log.debug("Invalid claude timeout override '%s'; using existing timeout: %s", _min_claude, exc)
+            _log.debug(
+                "Invalid claude timeout override '%s'; using existing timeout: %s",
+                _min_claude,
+                exc,
+            )
     return int(effective_timeout)
 
 
-def _phase_resolve_cwd(cd: Path | None, rid: str) -> tuple[Path | None, dict[str, Any] | None]:
+def _phase_resolve_cwd(
+    cd: Path | None, rid: str
+) -> tuple[Path | None, dict[str, Any] | None]:
     """Resolve the working directory or short-circuit with a failure payload."""
     cwd = _resolve_cwd(cd)
     if cwd is None:
@@ -357,8 +381,12 @@ def _phase_terminal_discovery(settings: ThegentSettings, cwd: Path) -> None:
         router = TaskRouter(settings)
         existing_pane = router.find_active_terminal_for_path(str(cwd))
         if existing_pane:
-            console.print(f"[bold yellow]Found existing terminal session for this path: {existing_pane}[/bold yellow]")
-            console.print(f"[dim]You can attach with: thegent terminal attach {existing_pane}[/dim]")
+            console.print(
+                f"[bold yellow]Found existing terminal session for this path: {existing_pane}[/bold yellow]"
+            )
+            console.print(
+                f"[dim]You can attach with: thegent terminal attach {existing_pane}[/dim]"
+            )
     except Exception as e:
         _log.debug(f"Terminal discovery failed: {e}")
 
@@ -383,7 +411,9 @@ def _phase_input_guardrails(
                 "run_id": rid,
             }
     except Exception as exc:
-        _log.debug("Input guardrail check failed; continuing without guardrail result: %s", exc)
+        _log.debug(
+            "Input guardrail check failed; continuing without guardrail result: %s", exc
+        )
     return None
 
 
@@ -408,7 +438,9 @@ def _phase_acquire_concurrency(
 
             mgr = TeammateManager(settings.cache_dir / "teammates.json")
             mgr.update_status(
-                task_id, "failed", summary="Run blocked: Concurrency limit reached (resource contention)."
+                task_id,
+                "failed",
+                summary="Run blocked: Concurrency limit reached (resource contention).",
             )
         except Exception as e:
             _log.debug("Failed to update teammate delegation status: %s", e)
@@ -446,12 +478,16 @@ def _phase_idempotency_replay(
     """Replay detection (WP-1003 / WP-1008)."""
     if not idempotency_token:
         return None
-    session_id_from_token = f"run_{hashlib.sha256(idempotency_token.encode()).hexdigest()[:8]}"
+    session_id_from_token = (
+        f"run_{hashlib.sha256(idempotency_token.encode()).hexdigest()[:8]}"
+    )
     if not registry.session_exists(session_id_from_token):
         return None
     existing = registry.find_by_token(idempotency_token)
     if existing and existing.get("status") == "completed":
-        _log.info("Replay detected for token %s; skipping execution.", idempotency_token)
+        _log.info(
+            "Replay detected for token %s; skipping execution.", idempotency_token
+        )
         return {
             "stdout": existing.get("stdout", ""),
             "stderr": existing.get("stderr", ""),
@@ -462,10 +498,14 @@ def _phase_idempotency_replay(
     return None
 
 
-def _phase_trust_boundary(settings: ThegentSettings, trust_boundary: TrustBoundaryValidator) -> dict[str, Any] | None:
+def _phase_trust_boundary(
+    settings: ThegentSettings, trust_boundary: TrustBoundaryValidator
+) -> dict[str, Any] | None:
     """Environment transition check (WP-3007)."""
     last_env = trust_boundary.get_last_environment()
-    allowed, boundary_reason = trust_boundary.validate_transition(last_env, settings.environment.lower())
+    allowed, boundary_reason = trust_boundary.validate_transition(
+        last_env, settings.environment.lower()
+    )
     if not allowed:
         return {"error": f"Trust boundary violation: {boundary_reason}", "exit_code": 1}
     return None
@@ -485,10 +525,17 @@ def _phase_fatigue_freshness_burst(
     it = InterruptionTracker(settings.session_dir)
     fatigue = it.get_fatigue_score()
     if fatigue > 0.8:
-        _log.warning("High fatigue detected (%.2f); recommending non-critical deferral.", fatigue)
+        _log.warning(
+            "High fatigue detected (%.2f); recommending non-critical deferral.", fatigue
+        )
         if lane != "critical":
-            console.print("[bold yellow]ADVISORY:[/bold yellow] High system fatigue. Deferring non-critical task.")
-            return {"error": "System fatigue limit reached. Task deferred.", "exit_code": 1}
+            console.print(
+                "[bold yellow]ADVISORY:[/bold yellow] High system fatigue. Deferring non-critical task."
+            )
+            return {
+                "error": "System fatigue limit reached. Task deferred.",
+                "exit_code": 1,
+            }
     fv = FreshnessValidator(settings.session_dir)
     freshness_issues: list[str] = []
     if registry_path is not None:
@@ -506,8 +553,14 @@ def _phase_fatigue_freshness_burst(
         dq = DeferralQueue(settings.session_dir)
         burst_rid = rid or f"run_def_{uuid.uuid4().hex[:8]}"
         dq.defer(burst_rid, "System in burst mode; non-critical deferral active")
-        console.print("[bold yellow]BURST MODE:[/bold yellow] Non-critical task deferred to queue.")
-        return {"error": "System in burst mode. Task deferred.", "exit_code": 1, "run_id": burst_rid}
+        console.print(
+            "[bold yellow]BURST MODE:[/bold yellow] Non-critical task deferred to queue."
+        )
+        return {
+            "error": "System in burst mode. Task deferred.",
+            "exit_code": 1,
+            "run_id": burst_rid,
+        }
     return None
 
 
@@ -523,9 +576,13 @@ def _phase_evaluate_policy_with_override(
     pol_res, pol_reason = policy_engine.evaluate(run_meta, registry=registry)
     if pol_res == "deny":
         if override_reason:
-            console.print(f"[bold yellow]Policy OVERRIDE applied:[/bold yellow] {override_reason}")
+            console.print(
+                f"[bold yellow]Policy OVERRIDE applied:[/bold yellow] {override_reason}"
+            )
             settings = ThegentSettings()
-            override_registry.record(effective_owner, override_reason, settings.override_ttl_seconds)
+            override_registry.record(
+                effective_owner, override_reason, settings.override_ttl_seconds
+            )
             return "allow", f"Overridden: {pol_reason}"
         if override_registry.has_unexpired(effective_owner):
             console.print("[dim]Policy override (cached, within TTL)[/dim]")
@@ -611,7 +668,9 @@ def _phase_load_l3_memory_context(agent: str | None, prompt: str) -> tuple[str, 
     if not getattr(_mem_mgr, "enabled", False):
         return prompt, False
     try:
-        _mem_ctx = _asyncio.get_event_loop().run_until_complete(_mem_mgr.load_context(agent or "unknown"))
+        _mem_ctx = _asyncio.get_event_loop().run_until_complete(
+            _mem_mgr.load_context(agent or "unknown")
+        )
         if not _mem_ctx:
             return prompt, False
         ctx_block = "\n".join(f"- {c}" for c in _mem_ctx[:5])
@@ -635,7 +694,9 @@ def _phase_setup_shadow_workspace(
     ``(agent_cwd, shadow_env, shadow_ws)``.
     """
     original_cwd = cwd or Path.cwd()
-    use_shadow = bool(requested_shadow or getattr(settings, "shadow_workspaces_enabled", False))
+    use_shadow = bool(
+        requested_shadow or getattr(settings, "shadow_workspaces_enabled", False)
+    )
     if not use_shadow:
         return original_cwd, None, None
     try:
@@ -683,8 +744,14 @@ def _phase_acquire_resource_leases(
             acquired.append((path, token))
             _log.info("Acquired lease for %s", resource)
         else:
-            _log.error("Failed to acquire lease for %s; already locked by another agent.", resource)
-            return {"error": f"Resource {resource} is locked by another agent.", "exit_code": 1}
+            _log.error(
+                "Failed to acquire lease for %s; already locked by another agent.",
+                resource,
+            )
+            return {
+                "error": f"Resource {resource} is locked by another agent.",
+                "exit_code": 1,
+            }
     return acquired
 
 
@@ -704,11 +771,15 @@ def _phase_release_resource_leases(
         _log.info("Released lease for %s", path)
 
 
-def _phase_finalize_shadow(shadow_ws: Any, settings: ThegentSettings, status: str) -> None:
+def _phase_finalize_shadow(
+    shadow_ws: Any, settings: ThegentSettings, status: str
+) -> None:
     """Auto-merge or destroy the shadow workspace based on status."""
     if shadow_ws is None:
         return
-    if status == "success" and bool(getattr(settings, "shadow_workspaces_auto_merge", False)):
+    if status == "success" and bool(
+        getattr(settings, "shadow_workspaces_auto_merge", False)
+    ):
         if shadow_ws.merge_back():
             _log.info("Shadow changes merged successfully.")
         else:
@@ -779,11 +850,17 @@ def _phase_record_success_postlude(
         linter = EvidenceLinter(settings.session_dir)
         lint_issues = linter.lint(norm_res.csm)
         if lint_issues:
-            _log.warning("Evidence lint issues for %s: %s", run_meta.run_id, lint_issues)
+            _log.warning(
+                "Evidence lint issues for %s: %s", run_meta.run_id, lint_issues
+            )
             if run_meta.lane == "critical":
-                console.print(f"[bold red]LINT FAILURE:[/bold red] Evidence incomplete: {lint_issues}")
+                console.print(
+                    f"[bold red]LINT FAILURE:[/bold red] Evidence incomplete: {lint_issues}"
+                )
     try:
-        artifact = auditor.generate_maif_artifact(run_meta, output=result.stdout if result else None)
+        artifact = auditor.generate_maif_artifact(
+            run_meta, output=result.stdout if result else None
+        )
         auditor.persist_maif_artifact(settings.session_dir, artifact)
     except Exception as exc:
         _log.warning("Failed to generate/persist MAIF artifact: %s", exc)
@@ -809,7 +886,11 @@ def _phase_update_teammate_status(
         mgr = TeammateManager(settings.cache_dir / "teammates.json")
         _stdout = (result.stdout or "") if result else ""
         _stderr = (result.stderr or "") if result else ""
-        summary = _stdout[:500] if status == "completed" else (_stderr[:500] or "Failed without stderr")
+        summary = (
+            _stdout[:500]
+            if status == "completed"
+            else (_stderr[:500] or "Failed without stderr")
+        )
         mgr.update_status(task_id, status, summary=summary)
     except Exception as e:
         _log.debug("Failed to update teammate delegation status: %s", e)
@@ -848,7 +929,9 @@ def _phase_write_run_dumps(
         try:
             from thegent.orchestration.state.session_scraper import SessionScraper
 
-            SessionScraper(cwd).persist_snapshot(trigger="error" if is_error else "tool_use")
+            SessionScraper(cwd).persist_snapshot(
+                trigger="error" if is_error else "tool_use"
+            )
         except Exception as e:
             _log.debug(f"Failed to persist session snapshot: {e}")
     except Exception as e:
@@ -923,7 +1006,11 @@ def _phase_resolve_task_metadata(
         from thegent.models.task_io import TaskInput, TaskSpec
         from thegent.task import parse_task_file
     except Exception as exc:  # pragma: no cover - defensive
-        _log.warning("TaskSpec imports unavailable; skipping task metadata for %s: %s", task_id, exc)
+        _log.warning(
+            "TaskSpec imports unavailable; skipping task metadata for %s: %s",
+            task_id,
+            exc,
+        )
         return None, None
 
     tasks_dir = cwd / "tasks" if cwd else Path("tasks")
@@ -938,7 +1025,11 @@ def _phase_resolve_task_metadata(
         task_id=task_id,
         input=TaskInput(
             task=raw_prompt,
-            context={k: v for k, v in task_metadata.items() if k not in ("description", "task")},
+            context={
+                k: v
+                for k, v in task_metadata.items()
+                if k not in ("description", "task")
+            },
         ),
         agent=agent,
         model=model,
@@ -1051,12 +1142,18 @@ def _phase_build_fallback_plan(
 
     telemetry = ContractTelemetry(settings.session_dir)
     if settings.routing_parser_quality_enabled:
-        agents_to_try = rank_providers_by_parser_quality(agents_to_try, telemetry, limit=100)
+        agents_to_try = rank_providers_by_parser_quality(
+            agents_to_try, telemetry, limit=100
+        )
     policy = FallbackPolicy(
         allow_plain_fallback=settings.normalization_policy_allow_fallback,
         min_confidence_threshold=settings.normalization_policy_min_confidence,
         max_fallback_rate=settings.normalization_policy_max_fallback_rate,
-        strict_providers=[p.strip() for p in settings.normalization_policy_strict_providers.split(",") if p.strip()],
+        strict_providers=[
+            p.strip()
+            for p in settings.normalization_policy_strict_providers.split(",")
+            if p.strip()
+        ],
     )
     fsm = FallbackStateMachine(
         providers=agents_to_try,
@@ -1174,7 +1271,10 @@ def _check_unknown_contract(lane: str, norm_res: Any, error_class: str | None) -
     if norm_res is None:
         return False
     _known = ("csm-v1", "task-tool-18", "zen-rich-v1", "xml-tags", "plain")
-    return norm_res.csm.source_contract == "fallback-plain" or norm_res.csm.source_contract not in _known
+    return (
+        norm_res.csm.source_contract == "fallback-plain"
+        or norm_res.csm.source_contract not in _known
+    )
 
 
 def _phase_classify_run_result(
@@ -1334,7 +1434,9 @@ def _phase_finalize_run_outcome(
     )
 
     # WP-16002: Update teammate delegation status (no-op when task_id is falsy).
-    _phase_update_teammate_status(settings, getattr(run_meta, "task_id", None), status, result)
+    _phase_update_teammate_status(
+        settings, getattr(run_meta, "task_id", None), status, result
+    )
 
     # WP-3007/WP-2007/WP-3002: trust boundary record + evidence lint + MAIF.
     _phase_record_success_postlude(settings, run_meta, result, norm_res, auditor)
@@ -1455,7 +1557,9 @@ def _phase_resolve_grounded_agent(
     """
     agent = agent_name
     if agent is None and model:
-        agent_or_error, err_payload = _phase_resolve_agent_from_model(model, provider, rid)
+        agent_or_error, err_payload = _phase_resolve_agent_from_model(
+            model, provider, rid
+        )
         if err_payload is not None:
             return None, err_payload
         agent = agent_or_error
@@ -1647,7 +1751,9 @@ def _phase_normalize_registry_path(registry: RunRegistry) -> Path | None:
     if isinstance(raw, (str, Path, os.PathLike)):
         return Path(raw)
     if raw is not None:
-        _log.warning("Skipping freshness check; unexpected registry path type: %r", type(raw))
+        _log.warning(
+            "Skipping freshness check; unexpected registry path type: %r", type(raw)
+        )
     return None
 
 
@@ -1730,7 +1836,9 @@ def _phase_run_preflight(
         settings, agent, model, prompt, include_contract, route_contract, route_request
     )
 
-    _allowed, _contract_error, contract_deprecation_warning = _phase_evaluate_contract_version(contract_version, rid)
+    _allowed, _contract_error, contract_deprecation_warning = (
+        _phase_evaluate_contract_version(contract_version, rid)
+    )
     if _contract_error is not None:
         return _PreflightOutcome(
             payload=_contract_error,
@@ -1745,7 +1853,9 @@ def _phase_run_preflight(
             services=None,
         )
 
-    effective_timeout = _phase_resolve_effective_timeout(settings, config_provider, timeout, agent, tenant_id)
+    effective_timeout = _phase_resolve_effective_timeout(
+        settings, config_provider, timeout, agent, tenant_id
+    )
 
     cwd, cwd_error = _phase_resolve_cwd(cd, rid)
     if cwd_error is not None:
@@ -1808,7 +1918,9 @@ def _phase_run_preflight(
     )
 
 
-def _phase_apply_trust_boundary(services: "_ExecutionServices", rid: str) -> dict[str, Any] | None:
+def _phase_apply_trust_boundary(
+    services: "_ExecutionServices", rid: str
+) -> dict[str, Any] | None:
     """Apply the trust-boundary gate to a built services bundle (WL140 stretch).
 
     Returns ``None`` on success, or the canonical failure payload (with
@@ -1867,7 +1979,9 @@ def _phase_normalize_result_strings(result: Any) -> tuple[str, str]:
     return result.stdout or "", result.stderr or ""
 
 
-def _phase_assemble_unknown_agent_payload(agent: str | None, run_id: str) -> dict[str, Any]:
+def _phase_assemble_unknown_agent_payload(
+    agent: str | None, run_id: str
+) -> dict[str, Any]:
     """Build the canonical "unknown agent" failure payload (WL140 stretch).
 
     The pre-extraction inline branch returned
@@ -2151,7 +2265,9 @@ def run_impl_core(
     # MTSP-12: Shadow Workspace Integration — delegated to
     # ``_phase_setup_shadow_workspace`` so ShadowWorkspace.create() + env
     # export + ImportError fallback all live in one auditable place.
-    agent_cwd, shadow_env, shadow_ws = _phase_setup_shadow_workspace(settings, cwd, run_meta.run_id, shadow)
+    agent_cwd, shadow_env, shadow_ws = _phase_setup_shadow_workspace(
+        settings, cwd, run_meta.run_id, shadow
+    )
 
     # MTSP-15: Resource Locking (Non-worktree coordination) — delegated to
     # ``_phase_acquire_resource_leases`` so the FileLeaseRegistry claim loop
@@ -2349,7 +2465,9 @@ def _phase_bg_resolve_effective_timeout(
             tenant_id=tenant_id,
             request_overrides={"default_timeout": timeout},
         )
-    effective_timeout = _bg_config.get("default_timeout", timeout) if _bg_config else timeout
+    effective_timeout = (
+        _bg_config.get("default_timeout", timeout) if _bg_config else timeout
+    )
     if agent == "claude":
         _min_claude = (
             _bg_config.get("default_timeout_claude", settings.default_timeout_claude)
@@ -2359,7 +2477,9 @@ def _phase_bg_resolve_effective_timeout(
         try:
             effective_timeout = max(int(effective_timeout), int(_min_claude))
         except (TypeError, ValueError):
-            _log.debug("Invalid claude timeout override %r; using existing", _min_claude)
+            _log.debug(
+                "Invalid claude timeout override %r; using existing", _min_claude
+            )
     return int(effective_timeout)
 
 
@@ -2376,7 +2496,9 @@ def _phase_bg_idempotency_replay(
     """
     if not idempotency_token:
         return None
-    session_id_from_token = f"run_{hashlib.sha256(idempotency_token.encode()).hexdigest()[:8]}"
+    session_id_from_token = (
+        f"run_{hashlib.sha256(idempotency_token.encode()).hexdigest()[:8]}"
+    )
     if not registry.session_exists(session_id_from_token):
         return None
     existing = registry.find_by_token(idempotency_token)
@@ -2425,7 +2547,9 @@ def _phase_bg_init_services(
         escalation_sla_minutes = 30
 
     last_env = services["trust_boundary"].get_last_environment()
-    allowed, boundary_reason = services["trust_boundary"].validate_transition(last_env, settings.environment.lower())
+    allowed, boundary_reason = services["trust_boundary"].validate_transition(
+        last_env, settings.environment.lower()
+    )
     if not allowed:
         return (
             services,
@@ -2488,10 +2612,17 @@ def _bg_handle_policy_result(
 ) -> dict[str, Any] | None:
     """Handle deny/pause policy outcomes; return error payload or None to continue."""
     if pol_res == "deny":
-        return _phase_register_policy_denial(run_meta, escalation_sla_minutes, pol_reason, registry)
+        return _phase_register_policy_denial(
+            run_meta, escalation_sla_minutes, pol_reason, registry
+        )
     if pol_res == "pause":
         return _phase_register_hitl_pause(
-            settings, run_meta, registry, escalation_sla_minutes, pol_reason, suffix=" (bg)"
+            settings,
+            run_meta,
+            registry,
+            escalation_sla_minutes,
+            pol_reason,
+            suffix=" (bg)",
         )
     return None
 
@@ -2519,11 +2650,16 @@ def _phase_bg_remote_dispatch(
     remote_path = Path(tempfile.gettempdir()) / f"thegent-run-{run_meta.run_id}"
     _log.info("Offloading background execution to remote host: %s", remote)
     if not client.transfer_files(cwd, str(remote_path)):
-        return {"error": f"Failed to sync project to remote host: {remote}", "exit_code": 1}
+        return {
+            "error": f"Failed to sync project to remote host: {remote}",
+            "exit_code": 1,
+        }
     remote_args = [a for a in sys.argv if not a.startswith("--remote")]
     remote_command = " ".join(f'"{a}"' if " " in a else a for a in remote_args)
     _log.info("Running remote background command in %s", remote_path)
-    bg_remote_command = f"nohup {remote_command} > {remote_path}/remote_bg.log 2>&1 & echo $!"
+    bg_remote_command = (
+        f"nohup {remote_command} > {remote_path}/remote_bg.log 2>&1 & echo $!"
+    )
     remote_res = client.execute_remote(bg_remote_command, cwd=Path(remote_path))
     if remote_res.get("status") == "success":
         remote_pid = remote_res.get("stdout", "").strip()
@@ -2564,8 +2700,24 @@ def _phase_bg_build_command(
     place when ``settings.use_holdpty`` is True; the canonical sock path
     is derived from the ``in`` session path.
     """
-    cmd: list[str] = [sys.executable, "-m", "thegent.main", "run", "agent", effective_prompt]
-    cmd.extend(["--cd", str(cwd), "--timeout", str(effective_timeout), "--lane", lane or "standard"])
+    cmd: list[str] = [
+        sys.executable,
+        "-m",
+        "thegent.main",
+        "run",
+        "agent",
+        effective_prompt,
+    ]
+    cmd.extend(
+        [
+            "--cd",
+            str(cwd),
+            "--timeout",
+            str(effective_timeout),
+            "--lane",
+            lane or "standard",
+        ]
+    )
     if agent:
         cmd.extend(["--agent", agent])
     if full:
@@ -2621,15 +2773,23 @@ def _phase_bg_apply_sandbox(
     """
     from thegent.security.macos_sandbox import MacOSSandbox, SandboxLevel
 
-    _sandbox = MacOSSandbox.from_env() if hasattr(MacOSSandbox, "from_env") else MacOSSandbox(SandboxLevel.BASIC)
+    _sandbox = (
+        MacOSSandbox.from_env()
+        if hasattr(MacOSSandbox, "from_env")
+        else MacOSSandbox(SandboxLevel.BASIC)
+    )
     _sandbox_level = (
-        MacOSSandbox.level_from_settings() if hasattr(MacOSSandbox, "level_from_settings") else _sandbox.level
+        MacOSSandbox.level_from_settings()
+        if hasattr(MacOSSandbox, "level_from_settings")
+        else _sandbox.level
     )
     if _sandbox_level not in (SandboxLevel.NONE, SandboxLevel.FULL):
         apply_to_command = getattr(_sandbox, "apply_to_command", None)
         if callable(apply_to_command):
             cmd = apply_to_command(cmd, _sandbox_level, project_root=cwd)
-        _log.debug("macOS sandbox level %r applied to agent command", _sandbox_level.value)
+        _log.debug(
+            "macOS sandbox level %r applied to agent command", _sandbox_level.value
+        )
     return cmd
 
 
@@ -2643,7 +2803,11 @@ def _phase_bg_filter_env(
     """Build the subprocess env: allowlist filter + THGENT_* injection (G-GP-08)."""
     if settings.sandbox_env_filter:
         allowlist = settings.sandbox_env_allowlist
-        env = {k: v for k, v in os.environ.items() if k in allowlist or k.startswith("THGENT_")}
+        env = {
+            k: v
+            for k, v in os.environ.items()
+            if k in allowlist or k.startswith("THGENT_")
+        }
     else:
         env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
@@ -2851,12 +3015,16 @@ def bg_impl_core(
     agent, model, route_contract, route_request = _phase_auto_route(
         settings, agent, model, prompt, include_contract, route_contract, route_request
     )
-    agent_or_error, err = _phase_bg_resolve_agent_from_model(agent, model, provider, rid)
+    agent_or_error, err = _phase_bg_resolve_agent_from_model(
+        agent, model, provider, rid
+    )
     if err is not None:
         return err
     agent = resolve_agent(agent_or_error) or "unknown"
 
-    contract_err, requested_version = _phase_bg_evaluate_contract(contract_version, lane, rid)
+    contract_err, requested_version = _phase_bg_evaluate_contract(
+        contract_version, lane, rid
+    )
     if contract_err is not None:
         return contract_err
 
@@ -2864,7 +3032,9 @@ def bg_impl_core(
     if cwd is None:
         return _bg_ambig_cwd_error(run_id)
 
-    effective_timeout = _phase_bg_resolve_effective_timeout(settings, config_provider, timeout, agent, tenant_id)
+    effective_timeout = _phase_bg_resolve_effective_timeout(
+        settings, config_provider, timeout, agent, tenant_id
+    )
     full = full or True
 
     effective_prompt = prompt
@@ -2887,7 +3057,9 @@ def bg_impl_core(
     if speculative:
         _log.info("Speculative execution active in background.")
 
-    services, effective_owner, escalation_sla_minutes, tb_err = _phase_bg_init_services(settings, registry, owner, cwd)
+    services, effective_owner, escalation_sla_minutes, tb_err = _phase_bg_init_services(
+        settings, registry, owner, cwd
+    )
     if tb_err is not None:
         return tb_err
 
@@ -2915,13 +3087,17 @@ def bg_impl_core(
         override_reason=override_reason,
     )
 
-    policy_payload = _bg_handle_policy_result(pol_res, run_meta, escalation_sla_minutes, pol_reason, registry, settings)
+    policy_payload = _bg_handle_policy_result(
+        pol_res, run_meta, escalation_sla_minutes, pol_reason, registry, settings
+    )
     if policy_payload is not None:
         return policy_payload
 
     registry.register_start(run_meta)
 
-    remote_payload = _phase_bg_remote_dispatch(remote=remote, cwd=cwd, run_meta=run_meta)
+    remote_payload = _phase_bg_remote_dispatch(
+        remote=remote, cwd=cwd, run_meta=run_meta
+    )
     if remote_payload is not None:
         return remote_payload
 
@@ -2949,7 +3125,9 @@ def bg_impl_core(
 
     stdout_handle = p["stdout"].open("wb")
     stderr_handle = p["stderr"].open("wb")
-    env = _phase_bg_filter_env(settings=settings, owner_tag=owner_tag, session_id=session_id, p=p)
+    env = _phase_bg_filter_env(
+        settings=settings, owner_tag=owner_tag, session_id=session_id, p=p
+    )
     stdin_handle = _phase_bg_open_fifo(settings=settings, p=p)
 
     proc = _phase_bg_spawn(

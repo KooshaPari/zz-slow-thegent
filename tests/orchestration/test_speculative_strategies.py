@@ -4,7 +4,6 @@ Tests for SpeculativeConfig, compute_adaptive_timeout,
 select_speculative_providers, and should_terminate_early.
 """
 
-
 from thegent.orchestration.strategies.speculative_strategies import (
     SpeculativeConfig,
     SpeculativeStrategy,
@@ -31,7 +30,9 @@ class TestSpeculativeStrategy:
 
     def test_cost_quality_tradeoff_value(self) -> None:
         """Verify COST_QUALITY_TRADEOFF enum value."""
-        assert SpeculativeStrategy.COST_QUALITY_TRADEOFF.value == "cost_quality_tradeoff"
+        assert (
+            SpeculativeStrategy.COST_QUALITY_TRADEOFF.value == "cost_quality_tradeoff"
+        )
 
     def test_early_termination_value(self) -> None:
         """Verify EARLY_TERMINATION enum value."""

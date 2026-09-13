@@ -15,7 +15,9 @@ class TestMCPToolAvailability:
 
     @pytest.mark.asyncio
     @patch("thegent.mcp.server.MCPServer.list_tools")
-    async def test_mcp_tools_available_without_search_flag(self, mock_list_tools) -> None:
+    async def test_mcp_tools_available_without_search_flag(
+        self, mock_list_tools
+    ) -> None:
         """Basic MCP tool listing should work without ENABLE_TOOL_SEARCH."""
         mock_list_tools.return_value = [
             {"name": "tool1", "description": "A test tool"},

@@ -49,7 +49,9 @@ class MarkdownScanner:
 
     def __init__(self, config: ScanConfig) -> None:
         self.config = config
-        self.scan_results: dict[str, dict[str, list[str]]] = defaultdict(lambda: defaultdict(list))
+        self.scan_results: dict[str, dict[str, list[str]]] = defaultdict(
+            lambda: defaultdict(list)
+        )
 
     def get_file_date(self, filepath: Path) -> str | None:
         """Get file modification date as YYYY-MM."""
@@ -71,7 +73,9 @@ class MarkdownScanner:
         path_str = str(filepath)
         return any(pattern in path_str for pattern in self.config.exclude_patterns)
 
-    def scan_directory(self, base_path: str, recursive: bool = True, max_depth: int | None = None) -> list[Path]:
+    def scan_directory(
+        self, base_path: str, recursive: bool = True, max_depth: int | None = None
+    ) -> list[Path]:
         """Scan directory for .md files."""
         md_files = []
         base = Path(base_path)
@@ -154,7 +158,9 @@ class MarkdownScanner:
             total = sum(len(files) for files in self.scan_results[month].values())
             queue_data["summary"][month] = {
                 "total": total,
-                "by_location": {loc: len(files) for loc, files in self.scan_results[month].items()},
+                "by_location": {
+                    loc: len(files) for loc, files in self.scan_results[month].items()
+                },
             }
 
             # Add to queue
@@ -162,7 +168,9 @@ class MarkdownScanner:
 
             for location in sorted(self.scan_results[month].keys()):
                 files = sorted(self.scan_results[month][location])
-                month_entry["locations"].append({"location": location, "file_count": len(files), "files": files})
+                month_entry["locations"].append(
+                    {"location": location, "file_count": len(files), "files": files}
+                )
 
             queue_data["queue"].append(month_entry)
 
@@ -174,7 +182,11 @@ class MarkdownScanner:
     def get_summary(self) -> dict[str, Any]:
         """Get summary statistics of scan results."""
         months = sorted(self.scan_results.keys(), reverse=True)
-        total_files = sum(len(files) for month_data in self.scan_results.values() for files in month_data.values())
+        total_files = sum(
+            len(files)
+            for month_data in self.scan_results.values()
+            for files in month_data.values()
+        )
 
         return {
             "total_files": total_files,
@@ -182,7 +194,9 @@ class MarkdownScanner:
             "by_month": {
                 month: {
                     "total": sum(len(files) for files in month_data.values()),
-                    "by_location": {loc: len(files) for loc, files in month_data.items()},
+                    "by_location": {
+                        loc: len(files) for loc, files in month_data.items()
+                    },
                 }
                 for month, month_data in self.scan_results.items()
             },

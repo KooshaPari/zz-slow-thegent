@@ -1,4 +1,5 @@
 """A2A protocol support for agent-to-agent communication."""
+
 from __future__ import annotations
 
 import time
@@ -13,6 +14,7 @@ VALID_MESSAGE_TYPES = {"request", "response", "error", "event"}
 @dataclass
 class A2AMessage:
     """A2A message for agent-to-agent communication."""
+
     source_agent: str
     target_agent: str
     message_type: str  # "request", "response", "error", "event"
@@ -59,7 +61,9 @@ def validate_a2a_message(msg: A2AMessage) -> list[str]:
     if not msg.source_agent:
         errors.append("source_agent is required and cannot be empty")
     if msg.message_type not in VALID_MESSAGE_TYPES:
-        errors.append(f"message_type must be one of {VALID_MESSAGE_TYPES}, got: {msg.message_type}")
+        errors.append(
+            f"message_type must be one of {VALID_MESSAGE_TYPES}, got: {msg.message_type}"
+        )
     return errors
 
 

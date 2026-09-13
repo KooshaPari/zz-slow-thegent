@@ -114,7 +114,9 @@ def test_stub_module_only_contains_zero_returning_stubs(func_name: str) -> None:
     stub = importlib.import_module(STUB_MODULE)
     stub_fn = getattr(stub, func_name, None)
     if stub_fn is None:
-        pytest.skip(f"{STUB_MODULE} no longer exposes {func_name} (stub namespace shrunk)")
+        pytest.skip(
+            f"{STUB_MODULE} no longer exposes {func_name} (stub namespace shrunk)"
+        )
     # The stub should accept any args and return 0/None — exercise the
     # contract with a sentinel call.
     result = stub_fn("r1", "blocked", sla_minutes=15)
@@ -141,10 +143,22 @@ def test_stub_module_only_contains_zero_returning_stubs(func_name: str) -> None:
 # delegation) — they only need to be present and callable on the
 # canonical module.
 IMPL_DISPATCH: dict[tuple[str, str], str] = {
-    ("escalate_add_cmd", "thegent.cli.governance.governance_escalation_hitl_cmds"): "escalate_add_impl",
-    ("escalate_list_cmd", "thegent.cli.governance.governance_escalation_hitl_cmds"): "escalate_list_impl",
-    ("escalate_resolve_cmd", "thegent.cli.governance.governance_escalation_hitl_cmds"): "escalate_resolve_impl",
-    ("sweep_cmd", "thegent.cli.governance.governance_escalation_hitl_cmds"): "sweep_impl",
+    (
+        "escalate_add_cmd",
+        "thegent.cli.governance.governance_escalation_hitl_cmds",
+    ): "escalate_add_impl",
+    (
+        "escalate_list_cmd",
+        "thegent.cli.governance.governance_escalation_hitl_cmds",
+    ): "escalate_list_impl",
+    (
+        "escalate_resolve_cmd",
+        "thegent.cli.governance.governance_escalation_hitl_cmds",
+    ): "escalate_resolve_impl",
+    (
+        "sweep_cmd",
+        "thegent.cli.governance.governance_escalation_hitl_cmds",
+    ): "sweep_impl",
 }
 
 

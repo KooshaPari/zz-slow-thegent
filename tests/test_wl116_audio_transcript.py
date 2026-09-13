@@ -122,7 +122,9 @@ def test_transcribe_audio_file_raises_on_unsupported_suffix(tmp_path: Path) -> N
         transcribe_audio_file(txt_file)
 
 
-def test_transcribe_audio_file_raises_on_missing_api_key(tmp_path: Path, monkeypatch) -> None:
+def test_transcribe_audio_file_raises_on_missing_api_key(
+    tmp_path: Path, monkeypatch
+) -> None:
     """transcribe_audio_file must raise RuntimeError when OPENAI_API_KEY is absent."""
     # @trace WL-116
     audio = tmp_path / "clip.mp3"
@@ -153,7 +155,9 @@ def test_transcribe_audio_file_calls_openai_client(tmp_path: Path, monkeypatch) 
     assert call_kwargs["model"] == "whisper-1"
 
 
-def test_transcribe_audio_file_passes_model_parameter(tmp_path: Path, monkeypatch) -> None:
+def test_transcribe_audio_file_passes_model_parameter(
+    tmp_path: Path, monkeypatch
+) -> None:
     """transcribe_audio_file must pass the model parameter to the API."""
     # @trace WL-116
     audio = tmp_path / "audio.m4a"
@@ -177,7 +181,9 @@ def test_transcribe_audio_file_passes_model_parameter(tmp_path: Path, monkeypatc
 # ---------------------------------------------------------------------------
 
 
-def test_load_transcripts_routes_binary_audio_to_whisper(tmp_path: Path, monkeypatch) -> None:
+def test_load_transcripts_routes_binary_audio_to_whisper(
+    tmp_path: Path, monkeypatch
+) -> None:
     """load_transcripts must call transcribe_audio_file for binary audio inputs."""
     # @trace WL-116
     audio = tmp_path / "recording.mp3"
@@ -218,7 +224,9 @@ def test_run_result_has_audio_transcript_field() -> None:
 def test_run_result_audio_transcript_stores_value() -> None:
     """RunResult.audio_transcript must store a provided string value."""
     # @trace WL-116
-    result = RunResult(exit_code=0, stdout="ok", stderr="", audio_transcript="hello transcript")
+    result = RunResult(
+        exit_code=0, stdout="ok", stderr="", audio_transcript="hello transcript"
+    )
     assert result.audio_transcript == "hello transcript"
 
 

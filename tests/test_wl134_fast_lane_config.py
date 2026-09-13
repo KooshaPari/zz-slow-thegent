@@ -15,7 +15,9 @@ _ROOT = Path(__file__).parent.parent
 
 def test_pytest_fast_ini_exists() -> None:
     """pytest-fast.ini must exist in the project root."""
-    assert (_ROOT / "pytest-fast.ini").is_file(), "pytest-fast.ini not found in project root"
+    assert (_ROOT / "pytest-fast.ini").is_file(), (
+        "pytest-fast.ini not found in project root"
+    )
 
 
 def test_pytest_fast_ini_contains_addopts_exclusions() -> None:
@@ -41,6 +43,8 @@ def test_fast_deep_lane_guide_exists() -> None:
 
 def test_fast_deep_lane_guide_documents_both_lanes() -> None:
     """FAST_DEEP_LANE.md must document both fast and deep lanes."""
-    content = (_ROOT / "docs" / "guides" / "FAST_DEEP_LANE.md").read_text(encoding="utf-8")
+    content = (_ROOT / "docs" / "guides" / "FAST_DEEP_LANE.md").read_text(
+        encoding="utf-8"
+    )
     assert "fast" in content.lower(), "Guide must document the fast lane"
     assert "deep" in content.lower(), "Guide must document the deep lane"

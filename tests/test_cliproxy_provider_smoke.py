@@ -11,7 +11,9 @@ _SCRIPT_PATH = _ROOT / "scripts" / "cliproxy_provider_smoke.py"
 
 
 def _load_module():
-    spec = importlib.util.spec_from_file_location("cliproxy_provider_smoke", _SCRIPT_PATH)
+    spec = importlib.util.spec_from_file_location(
+        "cliproxy_provider_smoke", _SCRIPT_PATH
+    )
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -58,10 +60,16 @@ def test_main_starts_proxy_when_unreachable(monkeypatch) -> None:
         started["called"] = True
         return FakeProc()
 
-    monkeypatch.setattr(mod.argparse.ArgumentParser, "parse_args", lambda _self: fake_parse_args())
+    monkeypatch.setattr(
+        mod.argparse.ArgumentParser, "parse_args", lambda _self: fake_parse_args()
+    )
     monkeypatch.setattr(mod, "_reachable", fake_reachable)
     monkeypatch.setattr(mod, "_start_proxy", fake_start)
-    monkeypatch.setattr(mod, "_run_matrix", lambda *_args: {"provider_count": 1, "passed": 1, "failed": 0, "rows": []})
+    monkeypatch.setattr(
+        mod,
+        "_run_matrix",
+        lambda *_args: {"provider_count": 1, "passed": 1, "failed": 0, "rows": []},
+    )
 
     exit_code = mod.main()
     assert exit_code == 0
@@ -86,7 +94,11 @@ def test_main_strict_fails_when_any_provider_fails(monkeypatch) -> None:
 
     monkeypatch.setattr(mod.argparse.ArgumentParser, "parse_args", lambda _self: args)
     monkeypatch.setattr(mod, "_reachable", lambda *_args: True)
-    monkeypatch.setattr(mod, "_run_matrix", lambda *_args: {"provider_count": 2, "passed": 1, "failed": 1, "rows": []})
+    monkeypatch.setattr(
+        mod,
+        "_run_matrix",
+        lambda *_args: {"provider_count": 2, "passed": 1, "failed": 1, "rows": []},
+    )
 
     exit_code = mod.main()
     assert exit_code == 1
@@ -116,7 +128,15 @@ def test_main_strict_required_fails_when_provider_missing(monkeypatch) -> None:
             "provider_count": 1,
             "passed": 1,
             "failed": 0,
-            "rows": [{"provider": "openai", "model": "gpt-4.1-mini", "ok": True, "status_code": 200, "detail": ""}],
+            "rows": [
+                {
+                    "provider": "openai",
+                    "model": "gpt-4.1-mini",
+                    "ok": True,
+                    "status_code": 200,
+                    "detail": "",
+                }
+            ],
         },
     )
 
@@ -124,7 +144,9 @@ def test_main_strict_required_fails_when_provider_missing(monkeypatch) -> None:
     assert exit_code == 1
 
 
-def test_main_strict_required_passes_when_required_providers_succeed(monkeypatch) -> None:
+def test_main_strict_required_passes_when_required_providers_succeed(
+    monkeypatch,
+) -> None:
     mod = _load_module()
 
     args = SimpleNamespace(
@@ -149,9 +171,27 @@ def test_main_strict_required_passes_when_required_providers_succeed(monkeypatch
             "passed": 2,
             "failed": 1,
             "rows": [
-                {"provider": "openai", "model": "gpt-4.1-mini", "ok": True, "status_code": 200, "detail": ""},
-                {"provider": "anthropic", "model": "claude-3-haiku", "ok": True, "status_code": 200, "detail": ""},
-                {"provider": "xai", "model": "grok-3", "ok": False, "status_code": 503, "detail": "upstream"},
+                {
+                    "provider": "openai",
+                    "model": "gpt-4.1-mini",
+                    "ok": True,
+                    "status_code": 200,
+                    "detail": "",
+                },
+                {
+                    "provider": "anthropic",
+                    "model": "claude-3-haiku",
+                    "ok": True,
+                    "status_code": 200,
+                    "detail": "",
+                },
+                {
+                    "provider": "xai",
+                    "model": "grok-3",
+                    "ok": False,
+                    "status_code": 503,
+                    "detail": "upstream",
+                },
             ],
         },
     )
@@ -191,8 +231,14 @@ def test_run_matrix_retries_anthropic_with_messages_payload(monkeypatch) -> None
     def fake_post(*_args, **kwargs):
         payload = kwargs.get("json", {})
         post_calls.append(payload)
-        if payload.get("model") == "claude-3-5-haiku-20241022" and "messages" not in payload:
-            return FakeResp(400, text='{"error":{"message":"messages: at least one message is required"}}')
+        if (
+            payload.get("model") == "claude-3-5-haiku-20241022"
+            and "messages" not in payload
+        ):
+            return FakeResp(
+                400,
+                text='{"error":{"message":"messages: at least one message is required"}}',
+            )
         return FakeResp(200, text="")
 
     monkeypatch.setattr(mod.httpx, "get", fake_get)

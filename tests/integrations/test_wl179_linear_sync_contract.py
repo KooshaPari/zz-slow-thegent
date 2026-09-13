@@ -27,7 +27,9 @@ class _FakeResponse:
         return self.payload
 
 
-def test_wl179_sync_to_linear_upsert(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_wl179_sync_to_linear_upsert(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     """# @trace WL-179"""
     posted_queries: list[str] = []
     posted_inputs: list[dict[str, Any]] = []
@@ -40,8 +42,16 @@ def test_wl179_sync_to_linear_upsert(monkeypatch: pytest.MonkeyPatch, tmp_path: 
                         "key": "OPS",
                         "states": {
                             "nodes": [
-                                {"id": "S_UNSTARTED", "name": "Todo", "type": "unstarted"},
-                                {"id": "S_STARTED", "name": "In Progress", "type": "started"},
+                                {
+                                    "id": "S_UNSTARTED",
+                                    "name": "Todo",
+                                    "type": "unstarted",
+                                },
+                                {
+                                    "id": "S_STARTED",
+                                    "name": "In Progress",
+                                    "type": "started",
+                                },
                                 {"id": "S_DONE", "name": "Done", "type": "completed"},
                             ]
                         },
@@ -51,7 +61,11 @@ def test_wl179_sync_to_linear_upsert(monkeypatch: pytest.MonkeyPatch, tmp_path: 
                                     "id": "ISSUE_1",
                                     "identifier": "OPS-1",
                                     "title": "[WL-1790] Existing item",
-                                    "state": {"id": "S_UNSTARTED", "name": "Todo", "type": "unstarted"},
+                                    "state": {
+                                        "id": "S_UNSTARTED",
+                                        "name": "Todo",
+                                        "type": "unstarted",
+                                    },
                                 }
                             ]
                         },
@@ -61,7 +75,9 @@ def test_wl179_sync_to_linear_upsert(monkeypatch: pytest.MonkeyPatch, tmp_path: 
         }
     }
 
-    def fake_post(url: str, headers: dict[str, str], timeout: float, **kwargs: Any) -> _FakeResponse:
+    def fake_post(
+        url: str, headers: dict[str, str], timeout: float, **kwargs: Any
+    ) -> _FakeResponse:
         assert url.endswith("/graphql")
         assert headers["Authorization"] == "api_key"
         assert timeout == 30.0
@@ -75,20 +91,30 @@ def test_wl179_sync_to_linear_upsert(monkeypatch: pytest.MonkeyPatch, tmp_path: 
             posted_inputs.append(variables["input"])
             return _FakeResponse(
                 status_code=200,
-                payload={"data": {"issueCreate": {"success": True, "issue": {"id": "ISSUE_2"}}}},
+                payload={
+                    "data": {
+                        "issueCreate": {"success": True, "issue": {"id": "ISSUE_2"}}
+                    }
+                },
             )
         if "mutation UpdateIssue" in query:
             posted_inputs.append(variables["input"])
             return _FakeResponse(
                 status_code=200,
-                payload={"data": {"issueUpdate": {"success": True, "issue": {"id": "ISSUE_1"}}}},
+                payload={
+                    "data": {
+                        "issueUpdate": {"success": True, "issue": {"id": "ISSUE_1"}}
+                    }
+                },
             )
         raise AssertionError(f"unexpected query: {query}")
 
     monkeypatch.setattr("httpx.post", fake_post)
 
     cache_path = tmp_path / "connector_mapping_cache.json"
-    config = LinearGraphQLConfig(api_key="api_key", team_key="OPS", mapping_cache_path=cache_path)
+    config = LinearGraphQLConfig(
+        api_key="api_key", team_key="OPS", mapping_cache_path=cache_path
+    )
     result = sync_to_linear(
         config,
         [
@@ -122,8 +148,16 @@ def test_wl179_linear_schema_drift_detected_via_cached_state_ids(
                         "key": "OPS",
                         "states": {
                             "nodes": [
-                                {"id": "S_UNSTARTED_V2", "name": "Todo", "type": "unstarted"},
-                                {"id": "S_STARTED", "name": "In Progress", "type": "started"},
+                                {
+                                    "id": "S_UNSTARTED_V2",
+                                    "name": "Todo",
+                                    "type": "unstarted",
+                                },
+                                {
+                                    "id": "S_STARTED",
+                                    "name": "In Progress",
+                                    "type": "started",
+                                },
                                 {"id": "S_DONE", "name": "Done", "type": "completed"},
                             ]
                         },
@@ -146,7 +180,9 @@ def test_wl179_linear_schema_drift_detected_via_cached_state_ids(
         },
     )
 
-    def fake_post(url: str, headers: dict[str, str], timeout: float, **kwargs: Any) -> _FakeResponse:
+    def fake_post(
+        url: str, headers: dict[str, str], timeout: float, **kwargs: Any
+    ) -> _FakeResponse:
         _ = headers, timeout
         assert url.endswith("/graphql")
         payload = kwargs["json"]
@@ -160,7 +196,9 @@ def test_wl179_linear_schema_drift_detected_via_cached_state_ids(
 
     with pytest.raises(LinearGraphQLError, match="Linear schema drift"):
         sync_to_linear(
-            LinearGraphQLConfig(api_key="api_key", team_key="OPS", mapping_cache_path=cache_path),
+            LinearGraphQLConfig(
+                api_key="api_key", team_key="OPS", mapping_cache_path=cache_path
+            ),
             [{"item_id": "WL-1794", "title": "Drifted item", "status": "BACKLOG"}],
         )
 
@@ -200,7 +238,9 @@ def test_wl179_sync_from_linear_status_mapping(monkeypatch: pytest.MonkeyPatch) 
         }
     }
 
-    def fake_post(url: str, headers: dict[str, str], timeout: float, **kwargs: Any) -> _FakeResponse:
+    def fake_post(
+        url: str, headers: dict[str, str], timeout: float, **kwargs: Any
+    ) -> _FakeResponse:
         assert url.endswith("/graphql")
         assert headers["Authorization"] == "api_key"
         assert timeout == 30.0

@@ -38,11 +38,23 @@ def test_upsert_updates_existing(tmp_db):
     indexer, queries = tmp_db
     indexer.upsert_doc(
         path="docs/ideas/2026-02-21-test.md",
-        frontmatter={"type": "idea", "status": "draft", "title": "Test", "layer": 1, "date": "2026-02-21"},
+        frontmatter={
+            "type": "idea",
+            "status": "draft",
+            "title": "Test",
+            "layer": 1,
+            "date": "2026-02-21",
+        },
     )
     indexer.upsert_doc(
         path="docs/ideas/2026-02-21-test.md",
-        frontmatter={"type": "idea", "status": "active", "title": "Test", "layer": 1, "date": "2026-02-21"},
+        frontmatter={
+            "type": "idea",
+            "status": "active",
+            "title": "Test",
+            "layer": 1,
+            "date": "2026-02-21",
+        },
     )
     results = queries.get_by_type("idea")
     assert len(results) == 1  # still one row
@@ -53,10 +65,23 @@ def test_search_by_title(tmp_db):
     indexer, queries = tmp_db
     indexer.upsert_doc(
         "a.md",
-        {"type": "research", "status": "active", "title": "SQLite performance", "layer": 1, "date": "2026-02-21"},
+        {
+            "type": "research",
+            "status": "active",
+            "title": "SQLite performance",
+            "layer": 1,
+            "date": "2026-02-21",
+        },
     )
     indexer.upsert_doc(
-        "b.md", {"type": "research", "status": "active", "title": "VitePress setup", "layer": 1, "date": "2026-02-21"}
+        "b.md",
+        {
+            "type": "research",
+            "status": "active",
+            "title": "VitePress setup",
+            "layer": 1,
+            "date": "2026-02-21",
+        },
     )
     results = queries.search("SQLite")
     assert len(results) == 1
@@ -66,10 +91,24 @@ def test_search_by_title(tmp_db):
 def test_get_by_status(tmp_db):
     indexer, queries = tmp_db
     indexer.upsert_doc(
-        "a.md", {"type": "idea", "status": "draft", "title": "Draft doc", "layer": 1, "date": "2026-02-21"}
+        "a.md",
+        {
+            "type": "idea",
+            "status": "draft",
+            "title": "Draft doc",
+            "layer": 1,
+            "date": "2026-02-21",
+        },
     )
     indexer.upsert_doc(
-        "b.md", {"type": "idea", "status": "published", "title": "Published doc", "layer": 1, "date": "2026-02-21"}
+        "b.md",
+        {
+            "type": "idea",
+            "status": "published",
+            "title": "Published doc",
+            "layer": 1,
+            "date": "2026-02-21",
+        },
     )
     drafts = queries.get_by_status("draft")
     assert len(drafts) == 1

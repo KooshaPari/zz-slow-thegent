@@ -166,7 +166,9 @@ class FastSubprocess:
         try:
             from thegent.security.guardrails import validate_command
 
-            is_allowed, error = validate_command(cmd, operation_type="command_execution")
+            is_allowed, error = validate_command(
+                cmd, operation_type="command_execution"
+            )
             if not is_allowed:
                 raise ValueError(f"Guardrails blocked: {error}")
         except ImportError:
@@ -185,11 +187,15 @@ class FastSubprocess:
         # Wait for completion with timeout
         start_time = time.time()
         try:
-            stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=timeout)
+            stdout, stderr = await asyncio.wait_for(
+                process.communicate(), timeout=timeout
+            )
         except TimeoutError:
             process.kill()
             await process.wait()
-            raise subprocess.TimeoutExpired(cmd, timeout if timeout is not None else 0.0)
+            raise subprocess.TimeoutExpired(
+                cmd, timeout if timeout is not None else 0.0
+            )
 
         duration = time.time() - start_time
 
@@ -200,7 +206,9 @@ class FastSubprocess:
             stderr = stderr.decode("utf-8", errors="replace")
 
         returncode = process.returncode if process.returncode is not None else 0
-        result = subprocess.CompletedProcess(cmd, returncode, stdout or "", stderr or "")
+        result = subprocess.CompletedProcess(
+            cmd, returncode, stdout or "", stderr or ""
+        )
 
         # WP-22001: Record in context-aware history
         _record_history(
@@ -211,7 +219,9 @@ class FastSubprocess:
         )
 
         if check and result.returncode != 0:
-            raise subprocess.CalledProcessError(result.returncode, cmd, result.stdout, result.stderr)
+            raise subprocess.CalledProcessError(
+                result.returncode, cmd, result.stdout, result.stderr
+            )
 
         return result
 
@@ -285,7 +295,9 @@ class FastSubprocess:
         try:
             from thegent.security.guardrails import validate_command
 
-            is_allowed, error = validate_command(cmd, operation_type="command_execution")
+            is_allowed, error = validate_command(
+                cmd, operation_type="command_execution"
+            )
             if not is_allowed:
                 raise ValueError(f"Guardrails blocked: {error}")
         except ImportError:
@@ -293,7 +305,14 @@ class FastSubprocess:
             pass
 
         start_time = time.time()
-        result = shim_run(cmd, cwd=str(cwd) if cwd else None, env=process_env, timeout=timeout, check=check, **kwargs)
+        result = shim_run(
+            cmd,
+            cwd=str(cwd) if cwd else None,
+            env=process_env,
+            timeout=timeout,
+            check=check,
+            **kwargs,
+        )
         duration = time.time() - start_time
 
         # WP-22001: Record in context-aware history
@@ -348,7 +367,13 @@ async def run_subprocess_async(
 ) -> subprocess.CompletedProcess:
     """Run subprocess asynchronously."""
     return await FastSubprocess.run_async(
-        cmd, cwd=cwd, env=env, timeout=timeout, check=check, capture_output=capture_output, **kwargs
+        cmd,
+        cwd=cwd,
+        env=env,
+        timeout=timeout,
+        check=check,
+        capture_output=capture_output,
+        **kwargs,
     )
 
 
@@ -391,4 +416,6 @@ async def run_subprocesses_concurrent(
     commands: list[list[str]], *, max_concurrent: int = 10, **kwargs
 ) -> list[subprocess.CompletedProcess]:
     """Run multiple subprocesses concurrently."""
-    return await FastSubprocess.run_concurrent(commands, max_concurrent=max_concurrent, **kwargs)
+    return await FastSubprocess.run_concurrent(
+        commands, max_concurrent=max_concurrent, **kwargs
+    )

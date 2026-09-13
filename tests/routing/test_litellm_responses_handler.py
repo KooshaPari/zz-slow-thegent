@@ -82,7 +82,9 @@ def _make_responses_body(
     return body
 
 
-def _make_chat_chunk(content: str | None, finish_reason: str | None = None) -> dict[str, Any]:
+def _make_chat_chunk(
+    content: str | None, finish_reason: str | None = None
+) -> dict[str, Any]:
     """Build a Chat Completions streaming chunk dict."""
     delta: dict[str, Any] = {}
     if content is not None:
@@ -177,10 +179,14 @@ class TestResponsesInputToMessages:
             _responses_input_to_messages,
         )
 
-        content_parts = [{"type": "text", "text": "Caption", "metadata": {"trace": "abc"}}]
+        content_parts = [
+            {"type": "text", "text": "Caption", "metadata": {"trace": "abc"}}
+        ]
         items = [_make_message_item("user", content_parts)]
         msgs = _responses_input_to_messages(items)
-        assert msgs == [{"role": "user", "content": [{"type": "text", "text": "Caption"}]}]
+        assert msgs == [
+            {"role": "user", "content": [{"type": "text", "text": "Caption"}]}
+        ]
 
     def test_non_message_type_items_are_ignored(self) -> None:
         from thegent.utils.routing_impl.litellm_responses_handler import (
@@ -330,7 +336,10 @@ class TestResponsesToChatCompletions:
                     "type": "custom",
                     "name": "run_sql",
                     "description": "Run SQL",
-                    "input_schema": {"type": "object", "properties": {"query": {"type": "string"}}},
+                    "input_schema": {
+                        "type": "object",
+                        "properties": {"query": {"type": "string"}},
+                    },
                 }
             ],
             tool_choice={"type": "custom", "name": "run_sql"},
@@ -342,13 +351,21 @@ class TestResponsesToChatCompletions:
                 "function": {
                     "name": "run_sql",
                     "description": "Run SQL",
-                    "parameters": {"type": "object", "properties": {"query": {"type": "string"}}},
+                    "parameters": {
+                        "type": "object",
+                        "properties": {"query": {"type": "string"}},
+                    },
                 },
             }
         ]
-        assert result["tool_choice"] == {"type": "function", "function": {"name": "run_sql"}}
+        assert result["tool_choice"] == {
+            "type": "function",
+            "function": {"name": "run_sql"},
+        }
 
-    def test_schema_normalization_strips_unsupported_and_nullable_type_arrays(self) -> None:
+    def test_schema_normalization_strips_unsupported_and_nullable_type_arrays(
+        self,
+    ) -> None:
         from thegent.utils.routing_impl.litellm_responses_handler import (
             _responses_to_chat_completions,
         )
@@ -379,10 +396,17 @@ class TestResponsesToChatCompletions:
         )
 
         messages = [
-            {"role": "assistant", "content": [{"type": "thinking", "thinking": "x", "signature": "sig-1"}]},
+            {
+                "role": "assistant",
+                "content": [
+                    {"type": "thinking", "thinking": "x", "signature": "sig-1"}
+                ],
+            },
             {"role": "user", "content": "continue"},
         ]
-        result = _responses_to_chat_completions({"model": "claude-opus-4-6-thinking", "messages": messages})
+        result = _responses_to_chat_completions(
+            {"model": "claude-opus-4-6-thinking", "messages": messages}
+        )
         assert result["messages"] == messages
 
     def test_tool_choice_proxy_prefix_is_normalized(self) -> None:
@@ -552,9 +576,17 @@ class TestHandleResponsesRequest:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         assert resp.status_code == 200
         data = resp.json()
@@ -587,9 +619,17 @@ class TestHandleResponsesRequest:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=b"", headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=b"",
+                headers={"Content-Type": "application/json"},
+            )
 
         # Empty body defaults to empty dict; should not crash.
         assert resp.status_code == 200
@@ -603,7 +643,9 @@ class TestHandleResponsesRequest:
         )
 
         mock_router = MagicMock()
-        mock_router.acompletion = AsyncMock(side_effect=Exception("rate limit exceeded"))
+        mock_router.acompletion = AsyncMock(
+            side_effect=Exception("rate limit exceeded")
+        )
 
         body = json.dumps(_make_responses_body(model="gpt-4o").decode()).encode()
 
@@ -614,9 +656,17 @@ class TestHandleResponsesRequest:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         assert resp.status_code == 429
         data = resp.json()
@@ -632,7 +682,9 @@ class TestHandleResponsesRequest:
         )
 
         mock_router = MagicMock()
-        mock_router.acompletion = AsyncMock(side_effect=RuntimeError("unexpected server crash"))
+        mock_router.acompletion = AsyncMock(
+            side_effect=RuntimeError("unexpected server crash")
+        )
 
         body = json.dumps(_make_responses_body(model="gpt-4o").decode()).encode()
 
@@ -643,9 +695,17 @@ class TestHandleResponsesRequest:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         assert resp.status_code == 500
         data = resp.json()
@@ -682,9 +742,17 @@ class TestHandleResponsesRequest:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         mock_router.acompletion.assert_awaited_once()
         call_kwargs = mock_router.acompletion.call_args
@@ -709,7 +777,9 @@ class TestHandleResponsesRequest:
         mock_router = MagicMock()
         mock_router.acompletion = AsyncMock(return_value=mock_response)
 
-        body = json.dumps(_make_responses_body(model="gpt-4o", temperature=0.3).decode()).encode()
+        body = json.dumps(
+            _make_responses_body(model="gpt-4o", temperature=0.3).decode()
+        ).encode()
 
         with patch(
             "thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router",
@@ -718,9 +788,17 @@ class TestHandleResponsesRequest:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         call_kwargs = mock_router.acompletion.call_args
         assert call_kwargs.kwargs.get("temperature") == 0.3
@@ -751,9 +829,17 @@ class TestHandleResponsesRequest:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         call_kwargs = mock_router.acompletion.call_args
         assert "temperature" not in call_kwargs.kwargs
@@ -784,7 +870,9 @@ class TestHandleResponsesStream:
         mock_router = MagicMock()
         mock_router.acompletion = lambda **kwargs: _AsyncGenFromChunks(chunks)
 
-        body = json.dumps(_make_responses_body(model="gpt-4o", stream=True).decode()).encode()
+        body = json.dumps(
+            _make_responses_body(model="gpt-4o", stream=True).decode()
+        ).encode()
 
         with patch(
             "thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router",
@@ -793,9 +881,17 @@ class TestHandleResponsesStream:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         assert resp.status_code == 200
         assert "text/event-stream" in resp.headers["content-type"]
@@ -823,9 +919,13 @@ class TestHandleResponsesStream:
         )
 
         mock_router = MagicMock()
-        mock_router.acompletion = lambda **kwargs: _AsyncGenRaise(RuntimeError("upstream broke"))
+        mock_router.acompletion = lambda **kwargs: _AsyncGenRaise(
+            RuntimeError("upstream broke")
+        )
 
-        body = json.dumps(_make_responses_body(model="gpt-4o", stream=True).decode()).encode()
+        body = json.dumps(
+            _make_responses_body(model="gpt-4o", stream=True).decode()
+        ).encode()
 
         with patch(
             "thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router",
@@ -834,9 +934,17 @@ class TestHandleResponsesStream:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         assert resp.status_code == 200  # SSE always starts 200
         assert "text/event-stream" in resp.headers["content-type"]
@@ -860,7 +968,9 @@ class TestHandleResponsesStream:
         mock_router = MagicMock()
         mock_router.acompletion = lambda **kwargs: _AsyncGenRaise(bad_exc)
 
-        body = json.dumps(_make_responses_body(model="gpt-4o", stream=True).decode()).encode()
+        body = json.dumps(
+            _make_responses_body(model="gpt-4o", stream=True).decode()
+        ).encode()
 
         with patch(
             "thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router",
@@ -869,9 +979,17 @@ class TestHandleResponsesStream:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         lines = [line for line in resp.text.split("\n\n") if line.strip()]
         payload = lines[0].removeprefix("data: ")
@@ -889,7 +1007,9 @@ class TestHandleResponsesStream:
         mock_router = MagicMock()
         mock_router.acompletion = lambda **kwargs: _AsyncGenFromChunks([])
 
-        body = json.dumps(_make_responses_body(model="gpt-4o", stream=True).decode()).encode()
+        body = json.dumps(
+            _make_responses_body(model="gpt-4o", stream=True).decode()
+        ).encode()
 
         with patch(
             "thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router",
@@ -898,9 +1018,17 @@ class TestHandleResponsesStream:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         assert resp.status_code == 200
         assert resp.headers.get("cache-control") == "no-cache"
@@ -952,7 +1080,9 @@ class TestHandleResponsesWebsocket:
                     if msg.get("type") == "response.completed":
                         break
 
-        content_events = [e for e in events if e.get("type") == "response.output_item.added"]
+        content_events = [
+            e for e in events if e.get("type") == "response.output_item.added"
+        ]
         completion_events = [e for e in events if e.get("type") == "response.completed"]
         assert len(content_events) == 2
         assert len(completion_events) == 1
@@ -1119,7 +1249,9 @@ class TestPersistentHttpClient:
         mock_client.post = AsyncMock(return_value=mock_response)
         mock_client.is_closed = False
 
-        with patch.object(_mod, "_get_http_client", return_value=mock_client) as mock_getter:
+        with patch.object(
+            _mod, "_get_http_client", return_value=mock_client
+        ) as mock_getter:
             from starlette.requests import Request as StarletteRequest
 
             scope = {"type": "http", "method": "POST", "headers": []}

@@ -249,7 +249,9 @@ def test_get_pending_sorted_by_severity_desc(backlog: BacklogManager) -> None:
     assert pending[2].finding_id == "FIND-204"  # 3.0
 
 
-def test_get_pending_sorted_by_attempts_when_same_severity(backlog: BacklogManager) -> None:
+def test_get_pending_sorted_by_attempts_when_same_severity(
+    backlog: BacklogManager,
+) -> None:
     """get_pending() sorts by attempts ascending when severity is equal.
 
     Traces to: FR-GOV-001

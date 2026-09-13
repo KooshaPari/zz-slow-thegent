@@ -76,7 +76,9 @@ def _load_config(config_path: Path) -> dict[str, Any]:
     return dict(raw) if isinstance(raw, dict) else {}
 
 
-def _preflight_login(config: dict[str, Any], provider: str, *, skip_if_configured: bool) -> bool:
+def _preflight_login(
+    config: dict[str, Any], provider: str, *, skip_if_configured: bool
+) -> bool:
     """Return True when the caller should skip the login flow entirely."""
     if not skip_if_configured:
         return False
@@ -105,11 +107,21 @@ def _resolve_factory_key(
     in non-skip mode).
     """
     if skip_if_configured:
-        _LOG.info("Using API key for %s from factory config at %s.", display_name, factory_path)
+        _LOG.info(
+            "Using API key for %s from factory config at %s.",
+            display_name,
+            factory_path,
+        )
         return factory_key, False
 
     try:
-        resp = prompt_fn(f"  Found {display_name} API key in {factory_path}. Use it? [Y/n]: ").strip().lower()
+        resp = (
+            prompt_fn(
+                f"  Found {display_name} API key in {factory_path}. Use it? [Y/n]: "
+            )
+            .strip()
+            .lower()
+        )
     except Exception as exc:
         _LOG.error("Failed to read factory-key confirmation for %s: %s", provider, exc)
         return None, True  # treat as failure signal
@@ -135,9 +147,13 @@ def _open_login_url(url: str, display_name: str) -> None:
         return
     try:
         if not webbrowser.open(url):
-            _LOG.warning("Browser failed to open login URL for %s: %s", display_name, url)
+            _LOG.warning(
+                "Browser failed to open login URL for %s: %s", display_name, url
+            )
     except Exception as exc:
-        _LOG.warning("Could not open browser for %s login URL %s: %s", display_name, url, exc)
+        _LOG.warning(
+            "Could not open browser for %s login URL %s: %s", display_name, url, exc
+        )
 
 
 def _log_instructions(display_name: str, instructions: list[str]) -> None:
@@ -164,7 +180,9 @@ def _prompt_for_api_key(
     _log_instructions(display_name, instructions)
     _open_login_url(url, display_name)
     try:
-        return prompt_fn(f"Enter {display_name} API key (or press Enter to skip): ").strip()
+        return prompt_fn(
+            f"Enter {display_name} API key (or press Enter to skip): "
+        ).strip()
     except Exception as exc:
         _LOG.error("Failed to read API key input for %s: %s", provider, exc)
         return None
@@ -185,9 +203,13 @@ def _persist_and_restart(
     """
     try:
         _inject_api_key_into_cliproxy(config, provider, key, cfg)
-        config_path.write_text(yaml_dumps(config, default_flow_style=False, sort_keys=False))
+        config_path.write_text(
+            yaml_dumps(config, default_flow_style=False, sort_keys=False)
+        )
     except Exception as exc:
-        _LOG.error("Failed to persist API key for %s to %s: %s", display_name, config_path, exc)
+        _LOG.error(
+            "Failed to persist API key for %s to %s: %s", display_name, config_path, exc
+        )
         return 2
 
     if kill_proxy(settings):
@@ -196,7 +218,9 @@ def _persist_and_restart(
             base_url = ensure_proxy_running(settings)
             _LOG.debug("cliproxy ready at %s", base_url)
         except Exception as exc:
-            _LOG.error("Failed to restart cliproxy after login for %s: %s", display_name, exc)
+            _LOG.error(
+                "Failed to restart cliproxy after login for %s: %s", display_name, exc
+            )
             return 2
     else:
         _LOG.info("cliproxy not running; skipping restart for %s.", display_name)
@@ -250,7 +274,9 @@ def _normalise_provider(provider: str) -> str:
     """Lower-case and validate the provider name; raise on unknown."""
     provider_lower = provider.lower()
     if provider_lower not in PROVIDER_LOGIN_CONFIG:
-        raise ValueError(f"Unknown provider: {provider}. Supported: {', '.join(sorted(PROVIDER_LOGIN_CONFIG))}")
+        raise ValueError(
+            f"Unknown provider: {provider}. Supported: {', '.join(sorted(PROVIDER_LOGIN_CONFIG))}"
+        )
     return provider_lower
 
 
@@ -308,7 +334,9 @@ def run_login_unified(
     )
 
 
-def _build_oauth_run_kwargs(provider_lower: str, timeout_seconds: int) -> dict[str, Any]:
+def _build_oauth_run_kwargs(
+    provider_lower: str, timeout_seconds: int
+) -> dict[str, Any]:
     """Build the kwargs for the ``shim_run`` invocation of cliproxy -login."""
     requires_interactive_stdio = provider_lower == "minimax"
     kwargs: dict[str, Any] = {
@@ -341,7 +369,11 @@ def _run_oauth_login(
 
     config_path = _ensure_config(settings)
     flag = _LOGIN_FLAGS[provider_lower]
-    timeout_seconds = login_timeout if login_timeout is not None else int(os.environ.get("THGENT_LOGIN_TIMEOUT", "120"))
+    timeout_seconds = (
+        login_timeout
+        if login_timeout is not None
+        else int(os.environ.get("THGENT_LOGIN_TIMEOUT", "120"))
+    )
 
     if provider_lower == "minimax" and not sys.stdin.isatty():
         _LOG.error(
@@ -356,7 +388,9 @@ def _run_oauth_login(
         proc = shim_run([binary, "-config", str(config_path), flag], **run_kwargs)
         return proc.returncode
     except subprocess.TimeoutExpired:
-        _LOG.warning("Login timed out for provider=%s after %ss", provider_lower, timeout_seconds)
+        _LOG.warning(
+            "Login timed out for provider=%s after %ss", provider_lower, timeout_seconds
+        )
         return 124
 
 
@@ -373,7 +407,11 @@ def _route_login_path(
     delegated login routine.
     """
     if provider_lower in _LOGIN_FLAGS:
-        if not force and os.environ.get("THGENT_TESTING") != "1" and _has_oauth_credentials(settings, provider_lower):
+        if (
+            not force
+            and os.environ.get("THGENT_TESTING") != "1"
+            and _has_oauth_credentials(settings, provider_lower)
+        ):
             return 0
         return _run_oauth_login(
             settings,
@@ -401,7 +439,10 @@ def _prefers_unified_flow(provider_lower: str, force: bool) -> bool:
     # CLIP-BUG-08: Qwen OAuth endpoint is unstable; use API-key flow.
     if provider_lower == "qwen":
         return True
-    if provider_lower not in OAUTH_ONLY_PROVIDERS and provider_lower not in _LOGIN_FLAGS:
+    if (
+        provider_lower not in OAUTH_ONLY_PROVIDERS
+        and provider_lower not in _LOGIN_FLAGS
+    ):
         factory_key, _ = _get_factory_api_key(provider_lower)
         if factory_key and not force:
             return True
@@ -430,4 +471,6 @@ def run_login(
             skip_if_configured=not force,
         )
 
-    return _route_login_path(settings, provider_lower, prompt_func, force, login_timeout)
+    return _route_login_path(
+        settings, provider_lower, prompt_func, force, login_timeout
+    )

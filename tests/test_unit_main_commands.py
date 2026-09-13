@@ -51,11 +51,17 @@ def test_top_level_resume_routes_to_resume_cmd(mock_resume_cmd: MagicMock) -> No
 
 @pytest.mark.unit
 @patch("thegent.cli.commands.cli.resume_cmd")
-def test_top_level_resume_with_skill_forwards_skills(mock_resume_cmd: MagicMock) -> None:
+def test_top_level_resume_with_skill_forwards_skills(
+    mock_resume_cmd: MagicMock,
+) -> None:
     """`thegent resume --skill` forwards skill list to resume command."""
-    result = runner.invoke(app, ["resume", "sess-2", "--skill", "openai-docs", "--skill", "playwright"])
+    result = runner.invoke(
+        app, ["resume", "sess-2", "--skill", "openai-docs", "--skill", "playwright"]
+    )
     assert result.exit_code == 0
-    mock_resume_cmd.assert_called_once_with(session_id="sess-2", prompt=None, skills=["openai-docs", "playwright"])
+    mock_resume_cmd.assert_called_once_with(
+        session_id="sess-2", prompt=None, skills=["openai-docs", "playwright"]
+    )
 
 
 @pytest.mark.unit
@@ -70,7 +76,9 @@ def test_top_level_doctor_routes_to_run_doctor(mock_run_doctor: MagicMock) -> No
 
 @pytest.mark.unit
 @patch("thegent.doctor.run_doctor")
-def test_top_level_doctor_failure_propagates_exit_code(mock_run_doctor: MagicMock) -> None:
+def test_top_level_doctor_failure_propagates_exit_code(
+    mock_run_doctor: MagicMock,
+) -> None:
     """Failure from run_doctor exits non-zero."""
     mock_run_doctor.return_value = False
     result = runner.invoke(app, ["doctor", "--fix", "--dry-run"])

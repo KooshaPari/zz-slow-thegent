@@ -30,7 +30,9 @@ class TestAdaptiveSyncIntervalController:
 
     def test_increase_interval_by_factor(self):
         """# @trace WL-267 — increase() doubles the interval by default."""
-        config = SyncIntervalConfig(min_seconds=60.0, max_seconds=3600.0, current_seconds=300.0)
+        config = SyncIntervalConfig(
+            min_seconds=60.0, max_seconds=3600.0, current_seconds=300.0
+        )
 
         increased = AdaptiveSyncIntervalController.increase(config, factor=2.0)
 
@@ -40,7 +42,9 @@ class TestAdaptiveSyncIntervalController:
 
     def test_increase_respects_max_bound(self):
         """# @trace WL-267 — increase() caps at max_seconds."""
-        config = SyncIntervalConfig(min_seconds=60.0, max_seconds=3600.0, current_seconds=3000.0)
+        config = SyncIntervalConfig(
+            min_seconds=60.0, max_seconds=3600.0, current_seconds=3000.0
+        )
 
         increased = AdaptiveSyncIntervalController.increase(config, factor=2.0)
 
@@ -56,7 +60,9 @@ class TestAdaptiveSyncIntervalController:
 
     def test_decrease_interval_by_factor(self):
         """# @trace WL-267 — decrease() halves the interval by default."""
-        config = SyncIntervalConfig(min_seconds=60.0, max_seconds=3600.0, current_seconds=300.0)
+        config = SyncIntervalConfig(
+            min_seconds=60.0, max_seconds=3600.0, current_seconds=300.0
+        )
 
         decreased = AdaptiveSyncIntervalController.decrease(config, factor=2.0)
 
@@ -66,7 +72,9 @@ class TestAdaptiveSyncIntervalController:
 
     def test_decrease_respects_min_bound(self):
         """# @trace WL-267 — decrease() caps at min_seconds."""
-        config = SyncIntervalConfig(min_seconds=60.0, max_seconds=3600.0, current_seconds=100.0)
+        config = SyncIntervalConfig(
+            min_seconds=60.0, max_seconds=3600.0, current_seconds=100.0
+        )
 
         decreased = AdaptiveSyncIntervalController.decrease(config, factor=2.0)
 
@@ -82,7 +90,9 @@ class TestAdaptiveSyncIntervalController:
 
     def test_reset_to_midpoint(self):
         """# @trace WL-267 — reset() returns interval to (min + max) / 2."""
-        config = SyncIntervalConfig(min_seconds=60.0, max_seconds=3600.0, current_seconds=100.0)
+        config = SyncIntervalConfig(
+            min_seconds=60.0, max_seconds=3600.0, current_seconds=100.0
+        )
 
         reset = AdaptiveSyncIntervalController.reset(config)
 
@@ -93,7 +103,9 @@ class TestAdaptiveSyncIntervalController:
 
     def test_reset_with_asymmetric_bounds(self):
         """# @trace WL-267 — reset() computes midpoint correctly with custom bounds."""
-        config = SyncIntervalConfig(min_seconds=100.0, max_seconds=500.0, current_seconds=250.0)
+        config = SyncIntervalConfig(
+            min_seconds=100.0, max_seconds=500.0, current_seconds=250.0
+        )
 
         reset = AdaptiveSyncIntervalController.reset(config)
 
@@ -130,7 +142,9 @@ class TestAdaptiveSyncIntervalController:
 
     def test_decrease_with_very_small_interval(self):
         """# @trace WL-267 — decrease() on min_seconds stays at min."""
-        config = SyncIntervalConfig(min_seconds=60.0, max_seconds=3600.0, current_seconds=60.0)
+        config = SyncIntervalConfig(
+            min_seconds=60.0, max_seconds=3600.0, current_seconds=60.0
+        )
 
         decreased = AdaptiveSyncIntervalController.decrease(config, factor=2.0)
 

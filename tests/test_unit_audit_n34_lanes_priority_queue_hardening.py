@@ -245,31 +245,58 @@ class TestCheckCapacity:
     """NEW-7: FR-019 critical bypass + reserved slots."""
 
     def test_critical_bypasses_active_count(self) -> None:
-        assert LaneModel.check_capacity("critical", active_count=99, total_capacity=10) is True
-        assert LaneModel.check_capacity("critical", active_count=0, total_capacity=1) is True
+        assert (
+            LaneModel.check_capacity("critical", active_count=99, total_capacity=10)
+            is True
+        )
+        assert (
+            LaneModel.check_capacity("critical", active_count=0, total_capacity=1)
+            is True
+        )
 
     def test_standard_has_capacity_when_under_limit(self) -> None:
         # 10 total, 2 reserved -> 8 available for non-critical; 5 active -> ok
-        assert LaneModel.check_capacity("standard", active_count=5, total_capacity=10) is True
-        assert LaneModel.check_capacity("standard", active_count=7, total_capacity=10) is True
+        assert (
+            LaneModel.check_capacity("standard", active_count=5, total_capacity=10)
+            is True
+        )
+        assert (
+            LaneModel.check_capacity("standard", active_count=7, total_capacity=10)
+            is True
+        )
 
     def test_standard_full_rejects(self) -> None:
         # 8 active of 8 available -> at limit; 9 active -> rejected
-        assert LaneModel.check_capacity("standard", active_count=9, total_capacity=10) is False
+        assert (
+            LaneModel.check_capacity("standard", active_count=9, total_capacity=10)
+            is False
+        )
 
     def test_recovery_rejects_over_limit(self) -> None:
-        assert LaneModel.check_capacity("recovery", active_count=8, total_capacity=10) is False
+        assert (
+            LaneModel.check_capacity("recovery", active_count=8, total_capacity=10)
+            is False
+        )
 
     def test_background_rejects_over_limit(self) -> None:
-        assert LaneModel.check_capacity("background", active_count=8, total_capacity=10) is False
+        assert (
+            LaneModel.check_capacity("background", active_count=8, total_capacity=10)
+            is False
+        )
 
     def test_small_capacity_floor(self) -> None:
         # total_capacity < 2: floor at 1, so active=0 -> ok
-        assert LaneModel.check_capacity("standard", active_count=0, total_capacity=1) is True
+        assert (
+            LaneModel.check_capacity("standard", active_count=0, total_capacity=1)
+            is True
+        )
 
     def test_check_capacity_only_critical_unbounded_for_active99(self) -> None:
         # Even at 100 active, critical still gets a slot
-        assert LaneModel.check_capacity("critical", active_count=100, total_capacity=1) is True
+        assert (
+            LaneModel.check_capacity("critical", active_count=100, total_capacity=1)
+            is True
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -573,7 +600,9 @@ class TestThreadSafety:
                 with lock:
                     consumed.append(run.run_id)
 
-        producers = [threading.Thread(target=producer, args=(i * 20,)) for i in range(10)]
+        producers = [
+            threading.Thread(target=producer, args=(i * 20,)) for i in range(10)
+        ]
         consumers = [threading.Thread(target=consumer) for _ in range(10)]
 
         for t in producers + consumers:

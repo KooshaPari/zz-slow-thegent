@@ -54,7 +54,9 @@ def scan_secrets(content: str) -> list[Any]:
             continue
         for pattern in _EXTRA_SECRET_PATTERNS:
             if pattern.search(line):
-                findings.append(SecretMatch(kind="opaque_token", line=line_num, masked="****"))
+                findings.append(
+                    SecretMatch(kind="opaque_token", line=line_num, masked="****")
+                )
                 break
     return findings
 
@@ -118,7 +120,9 @@ class ShadowAuditGit:
         for file_path in changed_files:
             file_path = Path(file_path)
             if not file_path.exists():
-                raise FileNotFoundError(f"Cannot snapshot non-existent file: {file_path}")
+                raise FileNotFoundError(
+                    f"Cannot snapshot non-existent file: {file_path}"
+                )
             content = file_path.read_text(encoding="utf-8", errors="replace")
             findings = scan_secrets(content)
             if findings:
@@ -195,7 +199,10 @@ def _redact_content(content: str, findings: list[Any]) -> str:
         return "[REDACTED]\n"
 
     lines = content.splitlines(keepends=True)
-    return "".join("[REDACTED]\n" if (idx + 1) in secret_line_nums else ln for idx, ln in enumerate(lines))
+    return "".join(
+        "[REDACTED]\n" if (idx + 1) in secret_line_nums else ln
+        for idx, ln in enumerate(lines)
+    )
 
 
 __all__ = [

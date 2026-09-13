@@ -78,7 +78,9 @@ pytestmark = pytest.mark.unit
 # ---------------------------------------------------------------------------
 
 
-def _make_notice(*, verdict: str = "allow", reason_code: str = "ok", ts: float = 0.0) -> DecisionNotice:
+def _make_notice(
+    *, verdict: str = "allow", reason_code: str = "ok", ts: float = 0.0
+) -> DecisionNotice:
     """Build a DecisionNotice with the minimum required fields."""
     return DecisionNotice(
         verdict=verdict,
@@ -104,7 +106,9 @@ class TestFsyncGroupCommit:
         """Legacy ``fsync=True`` behaviour is the default."""
         assert DEFAULT_FSYNC_EVERY_N == 1
 
-    def test_fsync_every_n_groups_calls(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_fsync_every_n_groups_calls(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """``fsync_every_n=5`` should issue exactly one ``os.fsync``
         per five ``record`` calls."""
         path = tmp_path / "audit.jsonl"
@@ -147,7 +151,9 @@ class TestFsyncGroupCommit:
         # Subsequent flush is a no-op.
         assert appender.flush() is False
 
-    def test_fsync_every_n_zero_disables(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_fsync_every_n_zero_disables(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """``fsync_every_n=0`` issues no ``os.fsync`` even when ``fsync=True``."""
         path = tmp_path / "audit.jsonl"
         appender = DecisionAuditAppender(
@@ -208,7 +214,11 @@ class TestTailEventsByteOffset:
         # than the window can fit in a single read.
         with path.open("a", encoding="utf-8") as fh:
             for _ in range(100):
-                fh.write('{"event_type":"cockpit.decision.recorded","extra":"' + "x" * 1024 + '"}\n')
+                fh.write(
+                    '{"event_type":"cockpit.decision.recorded","extra":"'
+                    + "x" * 1024
+                    + '"}\n'
+                )
         tail = appender.tail_events(n=3)
         assert len(tail) >= 0  # smoke — no exception, no memory blow-up
 
@@ -222,7 +232,9 @@ class TestEvictPerStuckBreadcrumb:
     """Pin the F-7 contract: each stuck future-ts event emits a DEBUG
     breadcrumb (the WARNING on exhaustion still fires)."""
 
-    def test_debug_breadcrumb_per_stuck_event(self, caplog: pytest.LogCaptureFixture) -> None:
+    def test_debug_breadcrumb_per_stuck_event(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
         w = TrafficWindow(window_s=10.0, bucket_s=1.0, maxlen=32)
         w.set_clock(lambda: 1_000_000.0)
         # Insert three events whose ts is in the future relative to
@@ -351,7 +363,9 @@ class TestAppenderNoMkdirOnInit:
         # Parent was not created — only the first ``record`` triggers mkdir.
         assert not parent.exists()
         # Recording creates the parent on demand.
-        DecisionAuditAppender(audit_path=parent / "audit.jsonl").record(_make_notice(ts=1_700_000_000.0))
+        DecisionAuditAppender(audit_path=parent / "audit.jsonl").record(
+            _make_notice(ts=1_700_000_000.0)
+        )
         assert parent.exists()
 
 

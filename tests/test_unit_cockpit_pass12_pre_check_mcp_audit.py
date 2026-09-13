@@ -59,7 +59,9 @@ def _strip_ansi(text: str) -> str:
 def _drive_three_entries() -> None:
     """Drive three distinct entries through the audit-trail singleton."""
     reset_audit_trail()
-    with audited_budget(AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms", agent="cursor"):
+    with audited_budget(
+        AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms", agent="cursor"
+    ):
         pass
     record_resource_read("observe_summary_ms", agent="claude", outcome="ok")
     record_gate_check("gate_check_ms", agent="cursor", outcome="ok")
@@ -144,7 +146,9 @@ class TestCockpitPreCheckMcpAuditStatsSingle:
         # New envelope key populated.
         assert "mcp_audit_stats" in payload
         stats = payload["mcp_audit_stats"]
-        assert isinstance(stats, dict), f"expected dict, got {type(stats).__name__}: {stats!r}"
+        assert isinstance(stats, dict), (
+            f"expected dict, got {type(stats).__name__}: {stats!r}"
+        )
         assert stats.get("total_entries", 0) >= 1
 
     def test_include_mcp_audit_help_lists_flag(self) -> None:
@@ -180,7 +184,9 @@ class TestCockpitPreCheckMcpAuditStatsSingle:
         # No JSON envelope pollution in text mode.
         assert "mcp_audit_stats" not in result.output
 
-    def test_include_mcp_audit_no_mcp_subsystem_surfaces_error(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_include_mcp_audit_no_mcp_subsystem_surfaces_error(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """A missing MCP subsystem emits ``mcp_audit_error`` instead of crashing.
 
         Mirrors the ``cockpit traffic --include-mcp-audit`` envelope
@@ -391,7 +397,9 @@ class TestCockpitPreCheckMcpAuditStatsBatch:
 class TestPass12CrossLaneSanity:
     """Sanity tests confirming the single + batch lanes compose cleanly."""
 
-    def test_default_off_keeps_existing_harvesters_byte_identical(self, tmp_path) -> None:
+    def test_default_off_keeps_existing_harvesters_byte_identical(
+        self, tmp_path
+    ) -> None:
         """Default ``--batch --json`` output is byte-identical with or without pass 12.
 
         Pass 12 default-off is the load-bearing invariant for

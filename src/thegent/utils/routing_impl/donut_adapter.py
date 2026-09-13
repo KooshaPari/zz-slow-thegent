@@ -69,7 +69,9 @@ class RoutingDonutAdapter:
                 Defaults to ~/.thegent/routing_harvest.jsonl
         """
         self._queue_path = Path(queue_path) if queue_path else DEFAULT_QUEUE_PATH
-        self._harvest_path = Path(harvest_path) if harvest_path else DEFAULT_HARVEST_PATH
+        self._harvest_path = (
+            Path(harvest_path) if harvest_path else DEFAULT_HARVEST_PATH
+        )
         self._routers: dict[str, Any] = {}  # Router instances by policy
         self._stats = RoutingStats()
 
@@ -236,9 +238,15 @@ class RoutingDonutAdapter:
             is_error: Whether the request resulted in an error
         """
         self._stats.total_requests += 1
-        self._stats.requests_by_model[model] = self._stats.requests_by_model.get(model, 0) + 1
-        self._stats.requests_by_provider[provider] = self._stats.requests_by_provider.get(provider, 0) + 1
-        self._stats.requests_by_category[category] = self._stats.requests_by_category.get(category, 0) + 1
+        self._stats.requests_by_model[model] = (
+            self._stats.requests_by_model.get(model, 0) + 1
+        )
+        self._stats.requests_by_provider[provider] = (
+            self._stats.requests_by_provider.get(provider, 0) + 1
+        )
+        self._stats.requests_by_category[category] = (
+            self._stats.requests_by_category.get(category, 0) + 1
+        )
         self._stats.total_tokens += tokens
         self._stats.total_cost_usd += cost_usd
 

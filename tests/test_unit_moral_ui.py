@@ -17,7 +17,10 @@ class TestMoralUI:
             id="d1",
             description="Agent wants to lie to save power.",
             conflicting_principles=["Honesty", "Efficiency"],
-            proposed_options=[{"id": "o1", "text": "Lie"}, {"id": "o2", "text": "Tell truth"}],
+            proposed_options=[
+                {"id": "o1", "text": "Lie"},
+                {"id": "o2", "text": "Tell truth"},
+            ],
             context={"agent_id": "agent-1"},
         )
 
@@ -25,7 +28,10 @@ class TestMoralUI:
         assert "d1" in ui.active_dilemmas
 
         result = ArbitrationResult(
-            dilemma_id="d1", selected_option_id="o2", reasoning="Honesty is more important.", arbitrator_id="human-1"
+            dilemma_id="d1",
+            selected_option_id="o2",
+            reasoning="Honesty is more important.",
+            arbitrator_id="human-1",
         )
 
         success = ui.resolve_dilemma(result)
@@ -37,7 +43,10 @@ class TestMoralUI:
         """Resolving unknown dilemma returns False."""
         ui = MoralUI()
         result = ArbitrationResult(
-            dilemma_id="unknown", selected_option_id="o1", reasoning="N/A", arbitrator_id="human-1"
+            dilemma_id="unknown",
+            selected_option_id="o1",
+            reasoning="N/A",
+            arbitrator_id="human-1",
         )
         success = ui.resolve_dilemma(result)
         assert success is False

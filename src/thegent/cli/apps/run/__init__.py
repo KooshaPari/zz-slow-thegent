@@ -1,4 +1,5 @@
 """Stub module."""
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -6,6 +7,7 @@ from typing import Any
 @dataclass
 class AgentRunResult:
     """Result of running an agent."""
+
     success: bool
     output: str = ""
     errors: list[str] | None = None
@@ -18,6 +20,7 @@ def run_agent(task: dict[str, Any]) -> AgentRunResult:
 
 try:
     from typer import Typer
+
     app = Typer()
 except ImportError:
     app = None

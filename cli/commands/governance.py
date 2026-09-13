@@ -25,7 +25,9 @@ def governance_cmd():
 @governance_cmd.command("analyze")
 @click.argument("project_path", type=click.Path(exists=True))
 @click.option("--output", "-o", type=click.Path(), help="Output file path")
-@click.option("--format", type=click.Choice(["json", "yaml", "markdown"]), default="json")
+@click.option(
+    "--format", type=click.Choice(["json", "yaml", "markdown"]), default="json"
+)
 def analyze_project(project_path: str, output: str | None, format: str):
     """Analyze project structure and governance."""
     project = Path(project_path)
@@ -155,7 +157,11 @@ def run_audit(project_path: str, audit_type: str, output: str | None):
 
 @governance_cmd.command("report")
 @click.argument("project_path", type=click.Path(exists=True))
-@click.option("--format", type=click.Choice(["json", "yaml", "markdown", "html", "console"]), default="console")
+@click.option(
+    "--format",
+    type=click.Choice(["json", "yaml", "markdown", "html", "console"]),
+    default="console",
+)
 @click.option("--output", "-o", type=click.Path(), help="Output file path")
 def generate_report(project_path: str, format: str, output: str | None):
     """Generate comprehensive governance report."""
@@ -204,7 +210,12 @@ def generate_report(project_path: str, format: str, output: str | None):
         if output:
             output_path = Path(output)
         else:
-            ext = {"json": ".json", "yaml": ".yaml", "markdown": ".md", "html": ".html"}.get(format, ".json")
+            ext = {
+                "json": ".json",
+                "yaml": ".yaml",
+                "markdown": ".md",
+                "html": ".html",
+            }.get(format, ".json")
             output_path = project / "governance" / f"report{ext}"
 
         generator.save_report(report, output_path, format_enum)
@@ -212,9 +223,17 @@ def generate_report(project_path: str, format: str, output: str | None):
 
 
 @governance_cmd.command("tasks")
-@click.option("--status", type=click.Choice(["pending", "in_progress", "completed", "all"]), default="all")
+@click.option(
+    "--status",
+    type=click.Choice(["pending", "in_progress", "completed", "all"]),
+    default="all",
+)
 @click.option("--project", type=click.Path(), help="Filter by project")
-@click.option("--priority", type=click.Choice(["critical", "high", "medium", "low"]), help="Filter by priority")
+@click.option(
+    "--priority",
+    type=click.Choice(["critical", "high", "medium", "low"]),
+    help="Filter by priority",
+)
 def list_tasks(status: str, project: str | None, priority: str | None):
     """List tasks."""
     manager = TaskManagerEnhanced()

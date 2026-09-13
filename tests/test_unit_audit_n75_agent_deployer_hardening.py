@@ -46,7 +46,9 @@ class _FakeCostController:
         self._calls_remaining = calls_remaining
         self.recorded_calls: list[tuple[str, str, float | None]] = []
 
-    def record_call(self, dimension: str, agent: str, *, cost_usd: float | None = None) -> None:
+    def record_call(
+        self, dimension: str, agent: str, *, cost_usd: float | None = None
+    ) -> None:
         self.recorded_calls.append((dimension, agent, cost_usd))
 
     def can_spawn(self, estimated_calls: int = 1) -> bool:

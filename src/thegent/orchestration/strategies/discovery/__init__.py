@@ -48,10 +48,14 @@ class DiscoverySystem:
             self._interface = DiscoveryInterface()
             logger.info("Native discovery extension loaded successfully")
         except ImportError:
-            logger.debug("Native discovery extension not installed, using Python fallback")
+            logger.debug(
+                "Native discovery extension not installed, using Python fallback"
+            )
             self._interface = None
         except Exception:
-            logger.warning("Native discovery extension failed to initialize", exc_info=True)
+            logger.warning(
+                "Native discovery extension failed to initialize", exc_info=True
+            )
             self._interface = None
 
     def is_native_active(self) -> bool:

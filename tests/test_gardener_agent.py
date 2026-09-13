@@ -101,7 +101,9 @@ def _write_work_stream(root: Path, content: str) -> Path:
     return path
 
 
-def _write_conversation_dump(root: Path, content: str, name: str = "CONVERSATION_DUMP_2026-02-20.md") -> Path:
+def _write_conversation_dump(
+    root: Path, content: str, name: str = "CONVERSATION_DUMP_2026-02-20.md"
+) -> Path:
     path = root / "docs" / "research" / name
     path.write_text(content)
     return path
@@ -127,66 +129,98 @@ class TestReadSources:
     # @trace WL-060
     """
 
-    def test_reads_memory_jsonl_files(self, agent: GardenerAgent, tmp_memory_dir: Path) -> None:
+    def test_reads_memory_jsonl_files(
+        self, agent: GardenerAgent, tmp_memory_dir: Path
+    ) -> None:
         """read_sources returns at least one SourceDocument from memory dir JSONL."""
         # @trace WL-060
         sources = agent.read_sources()
-        mem_sources = [s for s in sources if s.path.suffix == ".jsonl" and s.path.parent == tmp_memory_dir]
+        mem_sources = [
+            s
+            for s in sources
+            if s.path.suffix == ".jsonl" and s.path.parent == tmp_memory_dir
+        ]
         assert len(mem_sources) >= 1
 
-    def test_memory_source_has_content(self, agent: GardenerAgent, tmp_memory_dir: Path) -> None:
+    def test_memory_source_has_content(
+        self, agent: GardenerAgent, tmp_memory_dir: Path
+    ) -> None:
         """Memory JSONL SourceDocument has non-empty content."""
         # @trace WL-060
         sources = agent.read_sources()
         mem_sources = [s for s in sources if s.path.suffix == ".jsonl"]
         assert all(s.content for s in mem_sources)
 
-    def test_reads_conversation_dumps(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_reads_conversation_dumps(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """read_sources includes CONVERSATION_DUMP_*.md files from docs/research/."""
         # @trace WL-060
         _write_conversation_dump(tmp_project_root, "WL-013 COMPLETED\nSome notes here.")
         sources = agent.read_sources()
-        dump_sources = [s for s in sources if s.path.name.startswith("CONVERSATION_DUMP_")]
+        dump_sources = [
+            s for s in sources if s.path.name.startswith("CONVERSATION_DUMP_")
+        ]
         assert len(dump_sources) == 1
         assert "WL-013" in dump_sources[0].content
 
-    def test_skips_conversation_dumps_when_research_dir_missing(self, tmp_memory_dir: Path, tmp_path: Path) -> None:
+    def test_skips_conversation_dumps_when_research_dir_missing(
+        self, tmp_memory_dir: Path, tmp_path: Path
+    ) -> None:
         """When docs/research/ does not exist, no conversation dump sources are added."""
         # @trace WL-060
         root = tmp_path / "no_research"
         (root / "docs" / "reference").mkdir(parents=True)
-        agent = GardenerAgent(dry_run=False, project_root=root, memory_dir=tmp_memory_dir)
+        agent = GardenerAgent(
+            dry_run=False, project_root=root, memory_dir=tmp_memory_dir
+        )
         sources = agent.read_sources()
-        dump_sources = [s for s in sources if s.path.name.startswith("CONVERSATION_DUMP_")]
+        dump_sources = [
+            s for s in sources if s.path.name.startswith("CONVERSATION_DUMP_")
+        ]
         assert len(dump_sources) == 0
 
-    def test_reads_work_stream(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_reads_work_stream(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """read_sources includes WORK_STREAM.md when it exists."""
         # @trace WL-060
-        _write_work_stream(tmp_project_root, "## WORK STREAM\n\n### [WL-001]\n**Status:** pending\n")
+        _write_work_stream(
+            tmp_project_root, "## WORK STREAM\n\n### [WL-001]\n**Status:** pending\n"
+        )
         sources = agent.read_sources()
         ws_sources = [s for s in sources if s.path.name == "WORK_STREAM.md"]
         assert len(ws_sources) == 1
 
-    def test_empty_memory_dir_returns_empty_list_of_jsonl(self, tmp_project_root: Path, tmp_path: Path) -> None:
+    def test_empty_memory_dir_returns_empty_list_of_jsonl(
+        self, tmp_project_root: Path, tmp_path: Path
+    ) -> None:
         """Empty memory dir (no *.jsonl files) produces zero memory sources."""
         # @trace WL-060
         empty_mem = tmp_path / "empty_mem"
         empty_mem.mkdir()
-        agent = GardenerAgent(dry_run=False, project_root=tmp_project_root, memory_dir=empty_mem)
+        agent = GardenerAgent(
+            dry_run=False, project_root=tmp_project_root, memory_dir=empty_mem
+        )
         sources = agent.read_sources()
         mem_sources = [s for s in sources if s.path.suffix == ".jsonl"]
         assert len(mem_sources) == 0
 
-    def test_missing_memory_dir_raises_file_not_found(self, tmp_project_root: Path, tmp_path: Path) -> None:
+    def test_missing_memory_dir_raises_file_not_found(
+        self, tmp_project_root: Path, tmp_path: Path
+    ) -> None:
         """read_sources raises FileNotFoundError when memory_dir does not exist."""
         # @trace WL-060
         missing = tmp_path / "does_not_exist"
-        agent = GardenerAgent(dry_run=False, project_root=tmp_project_root, memory_dir=missing)
+        agent = GardenerAgent(
+            dry_run=False, project_root=tmp_project_root, memory_dir=missing
+        )
         with pytest.raises(FileNotFoundError, match="Memory directory not found"):
             agent.read_sources()
 
-    def test_source_document_has_last_modified(self, agent: GardenerAgent, tmp_memory_dir: Path) -> None:
+    def test_source_document_has_last_modified(
+        self, agent: GardenerAgent, tmp_memory_dir: Path
+    ) -> None:
         """SourceDocument.last_modified is a positive float."""
         # @trace WL-060
         sources = agent.read_sources()
@@ -231,7 +265,9 @@ class TestDetectStaleDocs:
         stale_paths = [s.path for s in stale]
         assert old_doc in stale_paths
 
-    def test_skips_recent_file(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_skips_recent_file(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """detect_stale_docs excludes files modified within max_age_days."""
         # @trace WL-060
         recent_doc = tmp_project_root / "docs" / "reference" / "RECENT_DOC.md"
@@ -241,7 +277,9 @@ class TestDetectStaleDocs:
         stale_paths = [s.path for s in stale]
         assert recent_doc not in stale_paths
 
-    def test_detects_pending_wl_in_completed_sources(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_detects_pending_wl_in_completed_sources(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """Pending WL items appearing as COMPLETED in conversation dumps are flagged."""
         # @trace WL-060
         _write_work_stream(
@@ -257,7 +295,9 @@ class TestDetectStaleDocs:
         assert len(ws_stale) == 1
         assert "WL-013" in ws_stale[0].reason or "WL-060" in ws_stale[0].reason
 
-    def test_no_stale_when_all_pending_not_completed(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_no_stale_when_all_pending_not_completed(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """No WORK_STREAM stale entry when pending items are not completed in sources."""
         # @trace WL-060
         _write_work_stream(
@@ -272,7 +312,9 @@ class TestDetectStaleDocs:
         ws_stale = [s for s in stale if s.path.name == "WORK_STREAM.md"]
         assert len(ws_stale) == 0
 
-    def test_stale_doc_has_reason(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_stale_doc_has_reason(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """StaleDoc objects have a non-empty reason string."""
         # @trace WL-060
         old_doc = tmp_project_root / "docs" / "reference" / "STALE.md"
@@ -281,7 +323,9 @@ class TestDetectStaleDocs:
         stale = agent.detect_stale_docs(max_age_days=7)
         assert all(s.reason for s in stale)
 
-    def test_stale_doc_has_suggested_action(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_stale_doc_has_suggested_action(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """StaleDoc objects have a non-empty suggested_action string."""
         # @trace WL-060
         old_doc = tmp_project_root / "docs" / "reference" / "STALE2.md"
@@ -290,7 +334,9 @@ class TestDetectStaleDocs:
         stale = agent.detect_stale_docs(max_age_days=7)
         assert all(s.suggested_action for s in stale)
 
-    def test_checks_context_dir_too(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_checks_context_dir_too(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """detect_stale_docs also scans docs/context/ for stale files."""
         # @trace WL-060
         old_ctx = tmp_project_root / "docs" / "context" / "OLD_TECH.md"
@@ -313,7 +359,9 @@ class TestSynthesizeUpdate:
     # @trace WL-060
     """
 
-    def test_generates_non_empty_update(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_generates_non_empty_update(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """synthesize_update returns a non-empty string for any StaleDoc."""
         # @trace WL-060
         stale = StaleDoc(
@@ -326,7 +374,9 @@ class TestSynthesizeUpdate:
         assert result
         assert len(result) > 0
 
-    def test_work_stream_update_contains_wl_ids(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_work_stream_update_contains_wl_ids(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """synthesize_update for WORK_STREAM.md contains WL IDs from the reason."""
         # @trace WL-060
         stale = StaleDoc(
@@ -339,7 +389,9 @@ class TestSynthesizeUpdate:
         assert "WL-013" in result
         assert "WL-060" in result
 
-    def test_work_stream_update_mentions_completed(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_work_stream_update_mentions_completed(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """synthesize_update for WORK_STREAM.md mentions marking items COMPLETED."""
         # @trace WL-060
         stale = StaleDoc(
@@ -350,7 +402,9 @@ class TestSynthesizeUpdate:
         result = agent.synthesize_update(stale, [])
         assert "COMPLETED" in result
 
-    def test_generic_update_contains_reason(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_generic_update_contains_reason(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """synthesize_update for non-WORK_STREAM docs embeds the reason."""
         # @trace WL-060
         stale = StaleDoc(
@@ -361,7 +415,9 @@ class TestSynthesizeUpdate:
         result = agent.synthesize_update(stale, [])
         assert "Not modified" in result
 
-    def test_work_stream_update_includes_evidence_sources(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_work_stream_update_includes_evidence_sources(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """synthesize_update cross-references source docs that mention the WL IDs."""
         # @trace WL-060
         stale = StaleDoc(
@@ -369,7 +425,9 @@ class TestSynthesizeUpdate:
             reason="WL items marked pending but completed in sources: WL-013",
             suggested_action="Mark items as COMPLETED: WL-013",
         )
-        dump_path = tmp_project_root / "docs" / "research" / "CONVERSATION_DUMP_2026-02-20.md"
+        dump_path = (
+            tmp_project_root / "docs" / "research" / "CONVERSATION_DUMP_2026-02-20.md"
+        )
         dump_path.write_text("[WL-013] COMPLETED\n")
         sources = [
             SourceDocument(
@@ -394,7 +452,9 @@ class TestGardenRun:
     # @trace WL-060
     """
 
-    def test_dry_run_returns_result_without_writing(self, dry_agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_dry_run_returns_result_without_writing(
+        self, dry_agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """dry_run=True returns GardenResult without modifying any files."""
         # @trace WL-060
         old_doc = tmp_project_root / "docs" / "reference" / "OLD.md"
@@ -410,7 +470,9 @@ class TestGardenRun:
         # File not touched
         assert old_doc.stat().st_mtime == original_mtime
 
-    def test_dry_run_result_has_items_found(self, dry_agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_dry_run_result_has_items_found(
+        self, dry_agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """dry_run=True still populates items_found with detected stale docs."""
         # @trace WL-060
         old_doc = tmp_project_root / "docs" / "reference" / "STALE_DRY.md"
@@ -422,7 +484,9 @@ class TestGardenRun:
         assert result.docs_checked > 0
         assert any("STALE_DRY.md" in item for item in result.items_found)
 
-    def test_full_run_writes_files(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_full_run_writes_files(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """Full run (dry_run=False) writes updates to stale docs."""
         # @trace WL-060
         old_doc = tmp_project_root / "docs" / "reference" / "STALE_FULL.md"
@@ -437,7 +501,9 @@ class TestGardenRun:
         new_content = old_doc.read_text()
         assert new_content != original_content
 
-    def test_result_has_correct_counts(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_result_has_correct_counts(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """GardenResult.docs_checked equals number of stale docs detected."""
         # @trace WL-060
         for i in range(3):
@@ -449,7 +515,9 @@ class TestGardenRun:
 
         assert result.docs_checked == len(result.items_found)
 
-    def test_no_stale_docs_returns_zero_counts(self, agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_no_stale_docs_returns_zero_counts(
+        self, agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """When no stale docs exist, docs_checked and docs_updated are both 0."""
         # @trace WL-060
         # Write a fresh doc (mtime=now, not stale)
@@ -461,7 +529,9 @@ class TestGardenRun:
         assert result.docs_checked == 0
         assert result.docs_updated == 0
 
-    def test_garden_result_dry_run_flag_matches_agent(self, dry_agent: GardenerAgent, tmp_project_root: Path) -> None:
+    def test_garden_result_dry_run_flag_matches_agent(
+        self, dry_agent: GardenerAgent, tmp_project_root: Path
+    ) -> None:
         """GardenResult.dry_run mirrors the agent's dry_run setting."""
         # @trace WL-060
         result = dry_agent.run()
@@ -522,8 +592,12 @@ class TestGardeningIntegration:
         mock_result.docs_updated = 0
         mock_result.items_found = []
 
-        with patch("thegent.agents.gardener.GardenerAgent.run", return_value=mock_result):
-            with patch("thegent.agents.gardener.GardenerAgent.read_sources", return_value=[]):
+        with patch(
+            "thegent.agents.gardener.GardenerAgent.run", return_value=mock_result
+        ):
+            with patch(
+                "thegent.agents.gardener.GardenerAgent.read_sources", return_value=[]
+            ):
                 result = asyncio.run(manager.run_step("garden"))
 
         assert result["success"] is True

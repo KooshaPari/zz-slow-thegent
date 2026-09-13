@@ -83,13 +83,17 @@ class FlashAgent:
             try:
                 return await self._run_via_cliproxy(config, agent_id, start)
             except Exception as e:
-                logger.warning(f"CLIProxy call failed ({e}); attempting litellm fallback")
+                logger.warning(
+                    f"CLIProxy call failed ({e}); attempting litellm fallback"
+                )
                 return await self._run_via_litellm_fallback(config, agent_id, start)
         else:
             # CLIProxy explicitly disabled; use litellm or fail with helpful message
             return await self._run_via_litellm_fallback(config, agent_id, start)
 
-    async def _run_via_cliproxy(self, config: FlashAgentConfig, agent_id: str, start: float) -> FlashAgentResult:
+    async def _run_via_cliproxy(
+        self, config: FlashAgentConfig, agent_id: str, start: float
+    ) -> FlashAgentResult:
         """Run via CLIProxy /v1/chat/completions."""
 
         async def _call() -> str:

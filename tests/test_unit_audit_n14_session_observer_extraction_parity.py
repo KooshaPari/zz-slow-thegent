@@ -71,7 +71,9 @@ class TestRunBackgroundSessionObserverCanonicalHome:
     def test_real_signature_has_exit_code_positional(self) -> None:
         sig = inspect.signature(session_impl._run_background_session_observer)
         params = list(sig.parameters.keys())
-        assert params[0] == "exit_code", f"first positional must be 'exit_code', got {params[0]!r}"
+        assert params[0] == "exit_code", (
+            f"first positional must be 'exit_code', got {params[0]!r}"
+        )
 
     # @trace FR-AUDIT-N+14-003
     def test_real_signature_has_keyword_only_timed_out(self) -> None:
@@ -99,7 +101,10 @@ class TestImplReExportIdentity:
 
     # @trace FR-AUDIT-N+14-005
     def test_impl_run_background_session_observer_is_session_impl(self) -> None:
-        assert impl._run_background_session_observer is session_impl._run_background_session_observer
+        assert (
+            impl._run_background_session_observer
+            is session_impl._run_background_session_observer
+        )
 
     # @trace FR-AUDIT-N+14-006
     def test_impl_run_background_session_observer_signature_is_real_form(self) -> None:
@@ -109,7 +114,9 @@ class TestImplReExportIdentity:
         assert "timed_out" in sig.parameters
 
     # @trace FR-AUDIT-N+14-007
-    def test_impl_module_does_not_locally_define_run_background_session_observer(self) -> None:
+    def test_impl_module_does_not_locally_define_run_background_session_observer(
+        self,
+    ) -> None:
         """impl.py must NOT define ``_run_background_session_observer`` —
         the canonical home is session_impl and impl is a re-export shim."""
         src = inspect.getsource(impl)
@@ -142,7 +149,9 @@ class TestObservabilityImplLegacyStub:
     observability surface."""
 
     # @trace FR-AUDIT-N+14-009
-    def test_observability_impl_run_background_session_observer_is_callable(self) -> None:
+    def test_observability_impl_run_background_session_observer_is_callable(
+        self,
+    ) -> None:
         assert callable(observability_impl._run_background_session_observer)
 
     # @trace FR-AUDIT-N+14-010
@@ -150,16 +159,31 @@ class TestObservabilityImplLegacyStub:
         """Legacy AUDIT-N+9 stub form: a session_id positional arg with
         any kwargs returns None (because there's no THGENT_SESSION_META_PATH
         set, so the canonical session_impl observer no-ops)."""
-        assert observability_impl._run_background_session_observer("sess-legacy") is None
-        assert observability_impl._run_background_session_observer("sess-legacy", debug=True) is None
-        assert observability_impl._run_background_session_observer("sess-legacy", whatever=1) is None
+        assert (
+            observability_impl._run_background_session_observer("sess-legacy") is None
+        )
+        assert (
+            observability_impl._run_background_session_observer(
+                "sess-legacy", debug=True
+            )
+            is None
+        )
+        assert (
+            observability_impl._run_background_session_observer(
+                "sess-legacy", whatever=1
+            )
+            is None
+        )
 
     # @trace FR-AUDIT-N+14-011
     def test_observability_impl_accepts_new_audit_n14_form(self) -> None:
         """The shim also accepts the new AUDIT-N+14 ``(exit_code, *, timed_out)`` form
         and delegates to session_impl. Without env vars set this no-ops too."""
         assert observability_impl._run_background_session_observer(0) is None
-        assert observability_impl._run_background_session_observer(137, timed_out=True) is None
+        assert (
+            observability_impl._run_background_session_observer(137, timed_out=True)
+            is None
+        )
 
     # @trace FR-AUDIT-N+14-012
     def test_observability_impl_does_not_share_identity_with_session_impl(self) -> None:
@@ -168,7 +192,10 @@ class TestObservabilityImplLegacyStub:
         otherwise the AUDIT-N+9 identity contract (impl.X is obs.X)
         would force the canonical home back to observability_impl and
         invalidate the AUDIT-N+14 move."""
-        assert observability_impl._run_background_session_observer is not session_impl._run_background_session_observer
+        assert (
+            observability_impl._run_background_session_observer
+            is not session_impl._run_background_session_observer
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -257,7 +284,9 @@ class TestRunBackgroundSessionObserverBehavior:
         assert updated["exit_code"] == 0
 
     # @trace FR-AUDIT-N+14-019
-    def test_duration_seconds_added_when_started_at_present(self, tmp_path: Path) -> None:
+    def test_duration_seconds_added_when_started_at_present(
+        self, tmp_path: Path
+    ) -> None:
         meta = tmp_path / "sess4.json"
         # Set started_at_utc in the past so duration > 0.
         started = _time.time() - 5

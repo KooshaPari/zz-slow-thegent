@@ -83,8 +83,12 @@ class TestRecordCommit:
         assert entry.message == "Add feature X"
         assert "print('hello')" in entry.diff
 
-    def test_record_commit_scrubs_openai_key(self, shadow: ShadowAuditGit, project_id: str) -> None:
-        diff_with_secret = "OPENAI_API_KEY=sk-1234567890abcdef1234567890abcdef1234567890abcdef12"
+    def test_record_commit_scrubs_openai_key(
+        self, shadow: ShadowAuditGit, project_id: str
+    ) -> None:
+        diff_with_secret = (
+            "OPENAI_API_KEY=sk-1234567890abcdef1234567890abcdef1234567890abcdef12"
+        )
         entry = shadow.record_commit(
             project_id=project_id,
             sha="abc",
@@ -94,7 +98,9 @@ class TestRecordCommit:
         assert "sk-1234567890" not in entry.diff
         assert "<REDACTED" in entry.diff
 
-    def test_record_commit_scrubs_aws_key(self, shadow: ShadowAuditGit, project_id: str) -> None:
+    def test_record_commit_scrubs_aws_key(
+        self, shadow: ShadowAuditGit, project_id: str
+    ) -> None:
         diff_with_secret = "+AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE"
         entry = shadow.record_commit(
             project_id=project_id,
@@ -105,7 +111,9 @@ class TestRecordCommit:
         assert "AKIAIOSFODNN7EXAMPLE" not in entry.diff
         assert "<REDACTED" in entry.diff
 
-    def test_record_commit_scrubs_github_pat(self, shadow: ShadowAuditGit, project_id: str) -> None:
+    def test_record_commit_scrubs_github_pat(
+        self, shadow: ShadowAuditGit, project_id: str
+    ) -> None:
         diff_with_secret = "+token = ghp_ABCDEFghijklmnopqrstuvwxyz0123456789"
         entry = shadow.record_commit(
             project_id=project_id,
@@ -116,7 +124,9 @@ class TestRecordCommit:
         assert "ghp_ABCDEFghijklmnopqrstuvwxyz0123456789" not in entry.diff
         assert "<REDACTED" in entry.diff
 
-    def test_record_commit_preserves_clean_diff(self, shadow: ShadowAuditGit, project_id: str) -> None:
+    def test_record_commit_preserves_clean_diff(
+        self, shadow: ShadowAuditGit, project_id: str
+    ) -> None:
         clean_diff = "+def hello():\n+    return 'world'"
         entry = shadow.record_commit(
             project_id=project_id,
@@ -126,7 +136,9 @@ class TestRecordCommit:
         )
         assert entry.diff == clean_diff
 
-    def test_record_commit_scrubs_message_too(self, shadow: ShadowAuditGit, project_id: str) -> None:
+    def test_record_commit_scrubs_message_too(
+        self, shadow: ShadowAuditGit, project_id: str
+    ) -> None:
         entry = shadow.record_commit(
             project_id=project_id,
             sha="mno",
@@ -147,22 +159,36 @@ class TestGetAuditLog:
         entries = shadow.get_audit_log(project_id)
         assert entries == []
 
-    def test_get_audit_log_multiple(self, shadow: ShadowAuditGit, project_id: str) -> None:
-        shadow.record_commit(project_id=project_id, sha="a1", message="first", diff="d1")
-        shadow.record_commit(project_id=project_id, sha="a2", message="second", diff="d2")
-        shadow.record_commit(project_id=project_id, sha="a3", message="third", diff="d3")
+    def test_get_audit_log_multiple(
+        self, shadow: ShadowAuditGit, project_id: str
+    ) -> None:
+        shadow.record_commit(
+            project_id=project_id, sha="a1", message="first", diff="d1"
+        )
+        shadow.record_commit(
+            project_id=project_id, sha="a2", message="second", diff="d2"
+        )
+        shadow.record_commit(
+            project_id=project_id, sha="a3", message="third", diff="d3"
+        )
         entries = shadow.get_audit_log(project_id)
         assert len(entries) == 3
         assert entries[0].sha == "a1"
         assert entries[2].sha == "a3"
 
-    def test_get_audit_log_with_limit(self, shadow: ShadowAuditGit, project_id: str) -> None:
+    def test_get_audit_log_with_limit(
+        self, shadow: ShadowAuditGit, project_id: str
+    ) -> None:
         for i in range(10):
-            shadow.record_commit(project_id=project_id, sha=f"sha-{i}", message=f"msg {i}", diff=f"d{i}")
+            shadow.record_commit(
+                project_id=project_id, sha=f"sha-{i}", message=f"msg {i}", diff=f"d{i}"
+            )
         entries = shadow.get_audit_log(project_id, limit=3)
         assert len(entries) == 3
 
-    def test_get_audit_log_isolated_by_project(self, shadow: ShadowAuditGit, db_path: Path) -> None:
+    def test_get_audit_log_isolated_by_project(
+        self, shadow: ShadowAuditGit, db_path: Path
+    ) -> None:
         reg = ProjectRegistry(db_path=db_path)
         p1 = reg.register_project(name="proj-a", path="/a")
         p2 = reg.register_project(name="proj-b", path="/b")
@@ -178,8 +204,12 @@ class TestGetAuditLog:
 
 
 class TestExportAudit:
-    def test_export_audit_json(self, shadow: ShadowAuditGit, project_id: str, tmp_path: Path) -> None:
-        shadow.record_commit(project_id=project_id, sha="x1", message="exp msg", diff="exp diff")
+    def test_export_audit_json(
+        self, shadow: ShadowAuditGit, project_id: str, tmp_path: Path
+    ) -> None:
+        shadow.record_commit(
+            project_id=project_id, sha="x1", message="exp msg", diff="exp diff"
+        )
         out_path = tmp_path / "audit_export.json"
         shadow.export_audit(project_id, out_path)
         assert out_path.exists()
@@ -190,7 +220,9 @@ class TestExportAudit:
         assert len(data) == 1
         assert data[0]["sha"] == "x1"
 
-    def test_export_audit_empty(self, shadow: ShadowAuditGit, project_id: str, tmp_path: Path) -> None:
+    def test_export_audit_empty(
+        self, shadow: ShadowAuditGit, project_id: str, tmp_path: Path
+    ) -> None:
         out_path = tmp_path / "empty_export.json"
         shadow.export_audit(project_id, out_path)
         import json
@@ -210,7 +242,12 @@ class TestShadowPersistence:
         proj = reg.register_project(name="persist", path="/persist")
 
         s1 = ShadowAuditGit(db_path=db_path)
-        s1.record_commit(project_id=proj.id, sha="persist-sha", message="persist msg", diff="persist diff")
+        s1.record_commit(
+            project_id=proj.id,
+            sha="persist-sha",
+            message="persist msg",
+            diff="persist diff",
+        )
 
         s2 = ShadowAuditGit(db_path=db_path)
         entries = s2.get_audit_log(proj.id)

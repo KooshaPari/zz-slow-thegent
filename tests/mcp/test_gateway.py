@@ -94,7 +94,15 @@ def test_execute_returns_result() -> None:
         tool="read_file",
         arguments={"path": "/tmp/foo.txt"},
     )
-    proc = type("Proc", (), {"stdout": '{"jsonrpc":"2.0","result":{"ok":true}}\n', "returncode": 0, "stderr": ""})()
+    proc = type(
+        "Proc",
+        (),
+        {
+            "stdout": '{"jsonrpc":"2.0","result":{"ok":true}}\n',
+            "returncode": 0,
+            "stderr": "",
+        },
+    )()
     with patch("thegent.mcp.gateway.subprocess.run", return_value=proc):
         result = gw.execute(call)
     assert isinstance(result, McpToolResult)
@@ -147,7 +155,9 @@ def test_gateway_thread_safe_register() -> None:
         except Exception as exc:
             errors.append(exc)
 
-    threads = [threading.Thread(target=register_many, args=(f"t{j}",)) for j in range(4)]
+    threads = [
+        threading.Thread(target=register_many, args=(f"t{j}",)) for j in range(4)
+    ]
     for t in threads:
         t.start()
     for t in threads:

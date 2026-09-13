@@ -10,7 +10,10 @@ def test_wrapper_parse_work_stream_md_delegates(tmp_path: Path) -> None:
     work_stream_path = tmp_path / "WORK_STREAM.md"
     expected = {"backlog": [{"id": "WS-1"}], "claimed": {"WS-2"}, "completed": {"WS-3"}}
 
-    with patch("thegent.cli.services.run_workstream_helpers.parse_work_stream_md", return_value=expected) as mock_fn:
+    with patch(
+        "thegent.cli.services.run_workstream_helpers.parse_work_stream_md",
+        return_value=expected,
+    ) as mock_fn:
         result = impl._parse_work_stream_md(work_stream_path)
 
     mock_fn.assert_called_once_with(work_stream_path)
@@ -56,5 +59,8 @@ def test_parse_and_sort_functional_case(tmp_path: Path) -> None:
 
     # Functional sort check using parsed rows as input.
     priority_by_id = {"WS-2": "P3", "WS-1": "P1", "WS-3": "P2"}
-    ordered = sorted(parsed["backlog"], key=lambda item: impl._priority_sort_key(priority_by_id[item["id"]]))
+    ordered = sorted(
+        parsed["backlog"],
+        key=lambda item: impl._priority_sort_key(priority_by_id[item["id"]]),
+    )
     assert [item["id"] for item in ordered] == ["WS-1", "WS-3", "WS-2"]

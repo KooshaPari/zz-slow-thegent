@@ -124,7 +124,9 @@ def _load_snapshot_yaml(path: Path) -> list[dict[str, Any]]:
         return raw
     if isinstance(raw, dict) and isinstance(raw.get("decisions"), list):
         return raw["decisions"]
-    raise ValueError(f"yaml snapshot must be a list or an object with a 'decisions' key, got {type(raw).__name__}")
+    raise ValueError(
+        f"yaml snapshot must be a list or an object with a 'decisions' key, got {type(raw).__name__}"
+    )
 
 
 def _load_snapshot_toml(path: Path) -> list[dict[str, Any]]:
@@ -177,7 +179,9 @@ def _render_report_text(
     the same call signature.
     """
     del flipped  # text renderer intentionally ignores the flip set
-    out: list[str] = [f"sota replay: items={items} matched={matched} mismatches={len(mismatches)}"]
+    out: list[str] = [
+        f"sota replay: items={items} matched={matched} mismatches={len(mismatches)}"
+    ]
     for m in mismatches:
         out.append(m["text"])
     if audit_path:
@@ -508,10 +512,14 @@ def sota_replay(
 
     try:
         if not batch.exists():
-            err_console.print(f"[red]sota replay failed:[/red] batch path not found: {_exc_text(str(batch))}")
+            err_console.print(
+                f"[red]sota replay failed:[/red] batch path not found: {_exc_text(str(batch))}"
+            )
             raise typer.Exit(1)
         if not compare.exists():
-            err_console.print(f"[red]sota replay failed:[/red] compare path not found: {_exc_text(str(compare))}")
+            err_console.print(
+                f"[red]sota replay failed:[/red] compare path not found: {_exc_text(str(compare))}"
+            )
             raise typer.Exit(1)
 
         try:
@@ -520,7 +528,9 @@ def sota_replay(
             err_console.print(f"[red]sota replay failed:[/red] {_exc_text(exc)}")
             raise typer.Exit(1) from exc
         except json.JSONDecodeError as exc:
-            err_console.print(f"[red]sota replay failed:[/red] compare file is not valid JSON: {_exc_text(exc)}")
+            err_console.print(
+                f"[red]sota replay failed:[/red] compare file is not valid JSON: {_exc_text(exc)}"
+            )
             raise typer.Exit(1) from exc
 
         # SOTA canary workflow: ``--snapshot-flip <field>`` (optionally
@@ -546,7 +556,9 @@ def sota_replay(
         )
         if not contexts:
             # Mirror ``cockpit replay`` empty-corpus semantics.
-            err_console.print(f"[yellow]sota replay batch is empty:[/yellow] {_exc_text(str(batch))}")
+            err_console.print(
+                f"[yellow]sota replay batch is empty:[/yellow] {_exc_text(str(batch))}"
+            )
             matched_empty = not expected_snapshot
             renderer = _REPORT_RENDERERS[report_format_lc]
             if report_format_lc == "junitxml":
@@ -591,7 +603,9 @@ def sota_replay(
                         "fields": ["length"],
                         "expected": exp,
                         "actual": act,
-                        "text": (f"mismatch[{idx}]: length expected={len(expected_snapshot)} actual={len(produced)}"),
+                        "text": (
+                            f"mismatch[{idx}]: length expected={len(expected_snapshot)} actual={len(produced)}"
+                        ),
                     }
                 )
                 continue
@@ -654,7 +668,9 @@ def sota_replay(
         # line regardless of the report format. This keeps the
         # cockpit vs sota UX consistent.
         if _render_tail:
-            typer.echo(f"sota replay: matched={matched} items={len(produced)} mismatches={len(mismatches)}")
+            typer.echo(
+                f"sota replay: matched={matched} items={len(produced)} mismatches={len(mismatches)}"
+            )
 
         if not matched:
             raise typer.Exit(4)

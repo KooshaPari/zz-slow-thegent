@@ -281,7 +281,9 @@ def cancel_workflow_run(repo: str, run_id: int) -> None:
     RuntimeError
         On API failure.
     """
-    _gh_run_cmd("api", "--method", "POST", f"/repos/{repo}/actions/runs/{run_id}/cancel")
+    _gh_run_cmd(
+        "api", "--method", "POST", f"/repos/{repo}/actions/runs/{run_id}/cancel"
+    )
     _log.info("Cancelled workflow run %s in %s", run_id, repo)
 
 
@@ -303,5 +305,12 @@ def rerun_workflow(repo: str, run_id: int, *, failed_only: bool = False) -> None
         On API failure.
     """
     suffix = "/failed-jobs" if failed_only else ""
-    _gh_run_cmd("api", "--method", "POST", f"/repos/{repo}/actions/runs/{run_id}/rerun{suffix}")
-    _log.info("Re-run triggered for workflow run %s in %s (failed_only=%s)", run_id, repo, failed_only)
+    _gh_run_cmd(
+        "api", "--method", "POST", f"/repos/{repo}/actions/runs/{run_id}/rerun{suffix}"
+    )
+    _log.info(
+        "Re-run triggered for workflow run %s in %s (failed_only=%s)",
+        run_id,
+        repo,
+        failed_only,
+    )

@@ -417,7 +417,9 @@ class TestNowait:
         with pytest.raises(Empty):
             q.get_nowait()
 
-    def test_get_nowait_returns_item_when_available(self) -> None:  # @trace FR-ORC-PQ-010
+    def test_get_nowait_returns_item_when_available(
+        self,
+    ) -> None:  # @trace FR-ORC-PQ-010
         q: RunPriorityQueue = RunPriorityQueue()
         q.put(QueuedRun(run_id="r", lane="standard", priority_score=0))
         run = q.get_nowait()
@@ -448,7 +450,9 @@ class TestThreadSafety:
                 with lock:
                     consumed.append(run.run_id)
 
-        producers = [threading.Thread(target=producer, args=(i * 20,)) for i in range(10)]
+        producers = [
+            threading.Thread(target=producer, args=(i * 20,)) for i in range(10)
+        ]
         consumers = [threading.Thread(target=consumer) for _ in range(10)]
 
         for t in producers + consumers:
@@ -473,7 +477,9 @@ class TestThreadSafety:
             with lock:
                 results.append(r)
 
-        threads = [threading.Thread(target=canceller, args=(str(i),)) for i in range(50)]
+        threads = [
+            threading.Thread(target=canceller, args=(str(i),)) for i in range(50)
+        ]
         for t in threads:
             t.start()
         for t in threads:
@@ -538,7 +544,9 @@ class TestTimeout:
         t.join()
         assert result == ["late"]
 
-    def test_get_blocking_no_timeout_unblocks_on_put(self) -> None:  # @trace FR-ORC-PQ-012
+    def test_get_blocking_no_timeout_unblocks_on_put(
+        self,
+    ) -> None:  # @trace FR-ORC-PQ-012
         """A blocking get with timeout=None unblocks when an item is added."""
         q: RunPriorityQueue = RunPriorityQueue()
         received: list[str] = []

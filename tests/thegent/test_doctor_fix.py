@@ -262,19 +262,41 @@ class TestRunDoctorFix:
             with patch("thegent.doctor._check_configuration", return_value=[]):
                 with patch("thegent.doctor._check_isolation", return_value=[]):
                     with patch("thegent.doctor._check_connectivity", return_value=[]):
-                        with patch("thegent.doctor._check_environment", return_value=[]):
-                            with patch("thegent.doctor._check_shim_binaries", return_value=[]):
-                                with patch("thegent.doctor._check_shell", return_value=[]):
-                                    with patch("thegent.doctor._check_nix", return_value=[]):
-                                        with patch("thegent.doctor._check_providers", return_value=[]):
-                                            with patch("thegent.doctor._check_headless", return_value=[]):
+                        with patch(
+                            "thegent.doctor._check_environment", return_value=[]
+                        ):
+                            with patch(
+                                "thegent.doctor._check_shim_binaries", return_value=[]
+                            ):
+                                with patch(
+                                    "thegent.doctor._check_shell", return_value=[]
+                                ):
+                                    with patch(
+                                        "thegent.doctor._check_nix", return_value=[]
+                                    ):
+                                        with patch(
+                                            "thegent.doctor._check_providers",
+                                            return_value=[],
+                                        ):
+                                            with patch(
+                                                "thegent.doctor._check_headless",
+                                                return_value=[],
+                                            ):
                                                 with patch(
-                                                    "thegent.doctor._check_runtime_infrastructure", return_value=[]
+                                                    "thegent.doctor._check_runtime_infrastructure",
+                                                    return_value=[],
                                                 ):
-                                                    with patch("thegent.doctor._check_process_leaks", return_value=[]):
-                                                        with patch("thegent.doctor._check_mcp_tools", return_value=[]):
+                                                    with patch(
+                                                        "thegent.doctor._check_process_leaks",
+                                                        return_value=[],
+                                                    ):
+                                                        with patch(
+                                                            "thegent.doctor._check_mcp_tools",
+                                                            return_value=[],
+                                                        ):
                                                             with patch(
-                                                                "thegent.doctor._check_sessions", return_value=[]
+                                                                "thegent.doctor._check_sessions",
+                                                                return_value=[],
                                                             ):
                                                                 with patch(
                                                                     "thegent.doctor._check_project_hints",
@@ -285,8 +307,16 @@ class TestRunDoctorFix:
                                                                         return_value=[],
                                                                     ):
                                                                         # Test that dry_run parameter is accepted
-                                                                        result = run_doctor(fix=False, dry_run=True)
-                                                                        assert isinstance(result, bool)
+                                                                        result = run_doctor(
+                                                                            fix=False,
+                                                                            dry_run=True,
+                                                                        )
+                                                                        assert (
+                                                                            isinstance(
+                                                                                result,
+                                                                                bool,
+                                                                            )
+                                                                        )
 
     def test_run_doctor_with_fix_and_dry_run(self) -> None:
         """Test that run_doctor works with both fix and dry_run=True."""
@@ -296,19 +326,41 @@ class TestRunDoctorFix:
             with patch("thegent.doctor._check_configuration", return_value=[]):
                 with patch("thegent.doctor._check_isolation", return_value=[]):
                     with patch("thegent.doctor._check_connectivity", return_value=[]):
-                        with patch("thegent.doctor._check_environment", return_value=[]):
-                            with patch("thegent.doctor._check_shim_binaries", return_value=[]):
-                                with patch("thegent.doctor._check_shell", return_value=[]):
-                                    with patch("thegent.doctor._check_nix", return_value=[]):
-                                        with patch("thegent.doctor._check_providers", return_value=[]):
-                                            with patch("thegent.doctor._check_headless", return_value=[]):
+                        with patch(
+                            "thegent.doctor._check_environment", return_value=[]
+                        ):
+                            with patch(
+                                "thegent.doctor._check_shim_binaries", return_value=[]
+                            ):
+                                with patch(
+                                    "thegent.doctor._check_shell", return_value=[]
+                                ):
+                                    with patch(
+                                        "thegent.doctor._check_nix", return_value=[]
+                                    ):
+                                        with patch(
+                                            "thegent.doctor._check_providers",
+                                            return_value=[],
+                                        ):
+                                            with patch(
+                                                "thegent.doctor._check_headless",
+                                                return_value=[],
+                                            ):
                                                 with patch(
-                                                    "thegent.doctor._check_runtime_infrastructure", return_value=[]
+                                                    "thegent.doctor._check_runtime_infrastructure",
+                                                    return_value=[],
                                                 ):
-                                                    with patch("thegent.doctor._check_process_leaks", return_value=[]):
-                                                        with patch("thegent.doctor._check_mcp_tools", return_value=[]):
+                                                    with patch(
+                                                        "thegent.doctor._check_process_leaks",
+                                                        return_value=[],
+                                                    ):
+                                                        with patch(
+                                                            "thegent.doctor._check_mcp_tools",
+                                                            return_value=[],
+                                                        ):
                                                             with patch(
-                                                                "thegent.doctor._check_sessions", return_value=[]
+                                                                "thegent.doctor._check_sessions",
+                                                                return_value=[],
                                                             ):
                                                                 with patch(
                                                                     "thegent.doctor._check_project_hints",
@@ -319,8 +371,16 @@ class TestRunDoctorFix:
                                                                         return_value=[],
                                                                     ):
                                                                         # Test fix=True with dry_run=True
-                                                                        result = run_doctor(fix=True, dry_run=True)
-                                                                        assert isinstance(result, bool)
+                                                                        result = run_doctor(
+                                                                            fix=True,
+                                                                            dry_run=True,
+                                                                        )
+                                                                        assert (
+                                                                            isinstance(
+                                                                                result,
+                                                                                bool,
+                                                                            )
+                                                                        )
 
 
 # ---------------------------------------------------------------------------

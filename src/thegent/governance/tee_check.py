@@ -98,7 +98,9 @@ class TEEChecker:
         from thegent.config import ThegentSettings
 
         if not attestation.is_attested and ThegentSettings().tee_required:
-            raise RuntimeError("TEE_REQUIRED: Execution environment is not an attested TEE.")
+            raise RuntimeError(
+                "TEE_REQUIRED: Execution environment is not an attested TEE."
+            )
 
         if attestation.is_attested:
             _log.info(f"WP-23003: Environment attested as {attestation.tee_type.value}")

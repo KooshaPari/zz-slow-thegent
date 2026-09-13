@@ -51,6 +51,7 @@ _MODEL_ALIASES: dict[str, str] = {
     "o1-mini": "o1-mini",
 }
 
+
 def _get_codex_env() -> dict[str, Any]:
     """Get the Codex environment variables.
 
@@ -71,6 +72,7 @@ def resolve_codex_cli_path() -> str:
         Path to the codex CLI executable.
     """
     import shutil
+
     path = shutil.which("codex") or shutil.which("openai-codex")
     return path or "/usr/local/bin/codex"
 
@@ -110,16 +112,19 @@ def _resolve_provider_for_model(model_alias: str) -> str:
     elif model_alias in ("haiku", "opus", "sonnet"):
         providers = ["claude", "antigravity"]
         import os
+
         idx = int(os.environ.get("THGGENT_ROUND_ROBIN_INDEX", "0")) % len(providers)
         return providers[idx]
     elif model_alias == "glm":
         providers = ["nim", "kilo", "minimax", "glm"]
         import os
+
         idx = int(os.environ.get("THGGENT_ROUND_ROBIN_INDEX", "0")) % len(providers)
         return providers[idx]
     elif model_alias == "max":
         providers = ["nim", "kilo", "minimax"]
         import os
+
         idx = int(os.environ.get("THGGENT_ROUND_ROBIN_INDEX", "0")) % len(providers)
         return providers[idx]
     return "openai"
@@ -155,9 +160,13 @@ def _run_codex_interactive(
     env = _get_codex_env()
 
     if provider == "codex":
-        env["OPENAI_BASE_URL"] = os.environ.get("OPENAI_BASE_URL", "http://127.0.0.1:8317")
+        env["OPENAI_BASE_URL"] = os.environ.get(
+            "OPENAI_BASE_URL", "http://127.0.0.1:8317"
+        )
     elif provider == "copilot":
-        env["GITHUB_COPILOT_API_URL"] = os.environ.get("GITHUB_COPILOT_API_URL", "http://127.0.0.1:8317")
+        env["GITHUB_COPILOT_API_URL"] = os.environ.get(
+            "GITHUB_COPILOT_API_URL", "http://127.0.0.1:8317"
+        )
 
     codex_path = resolve_codex_cli_path()
 
@@ -183,6 +192,7 @@ def _run_model_cmd(model_alias: str, prompt: str) -> None:
         prompt: Prompt to send.
     """
     from thegent.cli import run_cmd
+
     # Two-level lookup: CoMp -> composer-1.5 -> cursor
     canonical_model = _MODEL_ALIAS.get(model_alias, model_alias)
     # Check if the resolved model is also an alias
@@ -194,6 +204,7 @@ def _run_model_cmd(model_alias: str, prompt: str) -> None:
 def config() -> None:
     """Launch the configuration TUI."""
     from thegent.ux.models_providers_tui import run_models_providers_tui
+
     run_models_providers_tui()
 
 
@@ -212,12 +223,15 @@ def default_dex_callback(
         dangerously_yolo=None,
     )
 
+
 @app.callback()
 def default_dex(
     ctx: typer.Context,
     force: bool = False,
     native: bool = False,
-    extra_args: list[str] = typer.Option([], help="Extra arguments to pass to the command"),
+    extra_args: list[str] = typer.Option(
+        [], help="Extra arguments to pass to the command"
+    ),
 ) -> None:
     """Default command that runs flash model."""
     import sys
@@ -230,7 +244,7 @@ def default_dex(
     # Check if extra_args were passed via --extra-args
     if extra_args:
         # Get the actual extra_args value (could be list or OptionInfo)
-        if hasattr(extra_args, '__iter__') and not isinstance(extra_args, str):
+        if hasattr(extra_args, "__iter__") and not isinstance(extra_args, str):
             actual_extra = list(extra_args)
         else:
             actual_extra = []
@@ -250,6 +264,7 @@ def default_dex(
                 skip_next = True
 
     _run_codex_interactive(model, dangerously_bypass=True, extra_args=cleaned_extra)
+
 
 # Also expose the subcommands as separate commands
 @app.command()
@@ -403,6 +418,7 @@ def bg(
         typer.echo(f"Allowed: {', '.join(allowed)}")
         raise typer.Abort()
     from thegent.cli import bg_cmd
+
     canonical_model = _MODEL_ALIAS.get(model_alias, model_alias)
     bg_cmd(model=canonical_model, prompt=prompt, remote=remote, owner=owner)
 

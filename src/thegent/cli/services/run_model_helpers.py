@@ -24,7 +24,11 @@ def resolve_agent_model(
     if agent == "claude":
         return settings.default_claude_model
     if agent == "codex":
-        return settings.default_codex_model_high if mode == "full" else settings.default_codex_model
+        return (
+            settings.default_codex_model_high
+            if mode == "full"
+            else settings.default_codex_model
+        )
     if agent == "antigravity":
         return settings.default_antigravity_model
     if agent == "minimax":
@@ -38,7 +42,9 @@ def resolve_agent_model(
     return None
 
 
-def validate_explicit_ollama_provider(*, provider: str | None, model: str | None) -> str | None:
+def validate_explicit_ollama_provider(
+    *, provider: str | None, model: str | None
+) -> str | None:
     """Validate explicit --provider ollama request for daemon/model readiness.
 
     Returns an actionable error string when validation fails, otherwise ``None``.
@@ -66,9 +72,7 @@ def validate_explicit_ollama_provider(*, provider: str | None, model: str | None
         return str(exc)
 
     if not available_models:
-        return (
-            "Ollama provider is reachable but no local models are installed. Install one with `ollama pull llama3.3`."
-        )
+        return "Ollama provider is reachable but no local models are installed. Install one with `ollama pull llama3.3`."
 
     requested = resolve_ollama_model(normalize_model_id(model))
     if requested not in set(available_models):

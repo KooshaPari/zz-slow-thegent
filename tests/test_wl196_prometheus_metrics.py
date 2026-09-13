@@ -21,7 +21,9 @@ class TestMetricSample:
 
     def test_metric_sample_creation(self):
         """Create a metric sample."""
-        sample = MetricSample(name="requests_total", value=42.0, labels={"method": "GET"})
+        sample = MetricSample(
+            name="requests_total", value=42.0, labels={"method": "GET"}
+        )
 
         assert sample.name == "requests_total"
         assert sample.value == 42.0
@@ -55,7 +57,9 @@ class TestPrometheusMetricsExporterRecord:
         """Record a metric with labels."""
         exporter = PrometheusMetricsExporter()
 
-        exporter.record("response_time", 150.5, labels={"endpoint": "/api/v1", "status": "200"})
+        exporter.record(
+            "response_time", 150.5, labels={"endpoint": "/api/v1", "status": "200"}
+        )
 
         samples = exporter.get_samples("response_time")
         assert len(samples) == 1
@@ -162,8 +166,12 @@ class TestPrometheusMetricsExporterExport:
         """Verify export format matches Prometheus text format."""
         exporter = PrometheusMetricsExporter()
 
-        exporter.record("http_requests_total", 1027.0, labels={"method": "POST", "code": "200"})
-        exporter.record("http_requests_total", 3.0, labels={"method": "POST", "code": "400"})
+        exporter.record(
+            "http_requests_total", 1027.0, labels={"method": "POST", "code": "200"}
+        )
+        exporter.record(
+            "http_requests_total", 3.0, labels={"method": "POST", "code": "400"}
+        )
 
         result = exporter.export()
 

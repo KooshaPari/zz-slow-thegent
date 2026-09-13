@@ -43,7 +43,9 @@ class TestTEEAttestation:
         assert att.provider_id is None
 
     def test_measurement_hash_optional(self):
-        att = TEEAttestation(tee_type=TEEType.MOCK, is_attested=True, measurement_hash="abc123")
+        att = TEEAttestation(
+            tee_type=TEEType.MOCK, is_attested=True, measurement_hash="abc123"
+        )
         assert att.measurement_hash == "abc123"
 
 

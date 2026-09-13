@@ -132,21 +132,27 @@ class TestFilterModels:
     def test_filters_gemini_pro(self) -> None:
         # @trace FR-MOD-003
         """gemini-*-pro variants are blacklisted."""
-        filtered = filter_models_for_provider("gemini", ["gemini-3-flash", "gemini-3-pro-preview"])
+        filtered = filter_models_for_provider(
+            "gemini", ["gemini-3-flash", "gemini-3-pro-preview"]
+        )
         assert "gemini-3-flash" in filtered
         assert "gemini-3-pro-preview" not in filtered
 
     def test_filters_claude_3(self) -> None:
         # @trace FR-MOD-003
         """claude-3-* is blacklisted."""
-        filtered = filter_models_for_provider("claude", ["claude-3-opus", "claude-haiku-4.5"])
+        filtered = filter_models_for_provider(
+            "claude", ["claude-3-opus", "claude-haiku-4.5"]
+        )
         assert "claude-haiku-4.5" in filtered
         assert "claude-3-opus" not in filtered
 
     def test_allows_claude_45_46(self) -> None:
         # @trace FR-MOD-003
         """claude 4.5 and 4.6 are allowed."""
-        filtered = filter_models_for_provider("claude", ["claude-haiku-4.5", "claude-opus-4.6"])
+        filtered = filter_models_for_provider(
+            "claude", ["claude-haiku-4.5", "claude-opus-4.6"]
+        )
         assert "claude-haiku-4.5" in filtered
         assert "claude-opus-4.6" in filtered
 
@@ -389,7 +395,9 @@ class TestToContractView:
     def test_to_contract_view_provider_filter(self) -> None:
         # @trace FR-MOD-005
         """to_contract_view filters by provider."""
-        view = ModelCatalog.to_contract_view(use_scraped=False, provider_filter="gemini")
+        view = ModelCatalog.to_contract_view(
+            use_scraped=False, provider_filter="gemini"
+        )
         routes = view["routes"]
         for route_list in routes.values():
             for r in route_list:
@@ -414,21 +422,27 @@ class TestFilterModelsBlacklistEdgeCases:
     def test_filters_claude_4_not_45_46(self) -> None:
         # @trace FR-MOD-003
         """claude-4-haiku (no 4.5 or 4.6) is blacklisted (line 126)."""
-        filtered = filter_models_for_provider("claude", ["claude-4-haiku", "claude-haiku-4.5"])
+        filtered = filter_models_for_provider(
+            "claude", ["claude-4-haiku", "claude-haiku-4.5"]
+        )
         assert "claude-4-haiku" not in filtered
         assert "claude-haiku-4.5" in filtered
 
     def test_filters_gemini_1x(self) -> None:
         # @trace FR-MOD-003
         """gemini-1.x is blacklisted (line 129)."""
-        filtered = filter_models_for_provider("gemini", ["gemini-1.5-flash", "gemini-3-flash"])
+        filtered = filter_models_for_provider(
+            "gemini", ["gemini-1.5-flash", "gemini-3-flash"]
+        )
         assert "gemini-1.5-flash" not in filtered
         assert "gemini-3-flash" in filtered
 
     def test_filters_gemini_20_flash_exp(self) -> None:
         # @trace FR-MOD-003
         """gemini-2.0-flash-exp is blacklisted (line 131)."""
-        filtered = filter_models_for_provider("gemini", ["gemini-2.0-flash-exp", "gemini-3-flash"])
+        filtered = filter_models_for_provider(
+            "gemini", ["gemini-2.0-flash-exp", "gemini-3-flash"]
+        )
         assert "gemini-2.0-flash-exp" not in filtered
 
     def test_filters_gpt4(self) -> None:
@@ -448,9 +462,27 @@ class TestCatalogMergeRoutes:
         """_merge_routes skips duplicate provider+model_alias."""
         from thegent.models.catalog import Route, _merge_routes
 
-        r1 = Route(provider="gemini", backend_type="direct", model_alias="flash", priority=0, cost_weight=0.3)
-        r2 = Route(provider="gemini", backend_type="direct", model_alias="flash", priority=10, cost_weight=0.8)
-        r3 = Route(provider="claude", backend_type="direct", model_alias="haiku", priority=0, cost_weight=0.3)
+        r1 = Route(
+            provider="gemini",
+            backend_type="direct",
+            model_alias="flash",
+            priority=0,
+            cost_weight=0.3,
+        )
+        r2 = Route(
+            provider="gemini",
+            backend_type="direct",
+            model_alias="flash",
+            priority=10,
+            cost_weight=0.8,
+        )
+        r3 = Route(
+            provider="claude",
+            backend_type="direct",
+            model_alias="haiku",
+            priority=0,
+            cost_weight=0.3,
+        )
         merged = _merge_routes([r1], [r2, r3])
         assert len(merged) == 2
         providers = {(r.provider, r.model_alias) for r in merged}
@@ -462,7 +494,13 @@ class TestCatalogMergeRoutes:
         """_merge_routes with empty base returns all extras."""
         from thegent.models.catalog import Route, _merge_routes
 
-        r1 = Route(provider="test", backend_type="direct", model_alias="m1", priority=0, cost_weight=0.3)
+        r1 = Route(
+            provider="test",
+            backend_type="direct",
+            model_alias="m1",
+            priority=0,
+            cost_weight=0.3,
+        )
         merged = _merge_routes([], [r1])
         assert len(merged) == 1
 
@@ -485,7 +523,10 @@ class TestNonStringModelIdSkipped:
 class TestToContractViewScrapedException:
     """Tests for to_contract_view scraped exception fallback (lines 308-317)."""
 
-    @patch("thegent.models.scrapers.get_scraped_catalog", side_effect=RuntimeError("scraper down"))
+    @patch(
+        "thegent.models.scrapers.get_scraped_catalog",
+        side_effect=RuntimeError("scraper down"),
+    )
     def test_to_contract_view_scraped_exception(self, mock_scraped) -> None:
         # @trace FR-MOD-005
         """to_contract_view falls back to static when scraped raises."""

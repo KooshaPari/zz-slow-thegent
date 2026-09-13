@@ -14,14 +14,28 @@ def _repo_root() -> Path:
 
 
 def _dispatcher_bin() -> Path:
-    return _repo_root() / "hooks" / "hook-dispatcher" / "target" / "debug" / "hook-dispatcher"
+    return (
+        _repo_root()
+        / "hooks"
+        / "hook-dispatcher"
+        / "target"
+        / "debug"
+        / "hook-dispatcher"
+    )
 
 
 def _run_selector_json(selector_input: str) -> dict:
     dispatcher = _dispatcher_bin()
     assert dispatcher.exists(), f"Missing dispatcher binary: {dispatcher}"
     proc = subprocess.run(
-        [str(dispatcher), "governance", "spiral-selector", "--format", "json", selector_input],
+        [
+            str(dispatcher),
+            "governance",
+            "spiral-selector",
+            "--format",
+            "json",
+            selector_input,
+        ],
         cwd=_repo_root(),
         capture_output=True,
         text=True,
@@ -44,7 +58,9 @@ def _run_selector_raw(args: list[str]) -> subprocess.CompletedProcess[str]:
 
 @pytest.mark.unit
 def test_spiral_selector_json_contract_keys_and_types() -> None:
-    payload = _run_selector_json(" regression_spiral_guard , reliability , regression_spiral_guard ")
+    payload = _run_selector_json(
+        " regression_spiral_guard , reliability , regression_spiral_guard "
+    )
     assert set(payload.keys()) == {"raw", "cleaned_raw", "canonical", "selected_mode"}
     assert isinstance(payload["raw"], str)
     assert isinstance(payload["cleaned_raw"], str)
@@ -55,7 +71,13 @@ def test_spiral_selector_json_contract_keys_and_types() -> None:
 
 @pytest.mark.unit
 def test_spiral_selector_json_snapshot_contract() -> None:
-    fixture = _repo_root() / "tests" / "fixtures" / "governance" / "spiral_selector_contract_snapshot.json"
+    fixture = (
+        _repo_root()
+        / "tests"
+        / "fixtures"
+        / "governance"
+        / "spiral_selector_contract_snapshot.json"
+    )
     snapshot = json.loads(fixture.read_text(encoding="utf-8"))
     assert snapshot["schema_version"] >= 1
     assert snapshot["changelog"], "selector snapshot changelog is required"

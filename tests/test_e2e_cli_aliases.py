@@ -31,9 +31,13 @@ class TestLogsStderr:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["logs", "session_unknown_e2e_logs_stderr", "--stderr"])
+        result = runner.invoke(
+            app, ["logs", "session_unknown_e2e_logs_stderr", "--stderr"]
+        )
         assert result.exit_code == 2
-        assert "Session not found" in result.stderr or "Log file missing" in result.stderr
+        assert (
+            "Session not found" in result.stderr or "Log file missing" in result.stderr
+        )
 
 
 @pytest.mark.e2e
@@ -197,7 +201,9 @@ class TestGateMinHealthy:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["session-contract-health-gate", "--min-healthy-ratio", "0.0"])
+        result = runner.invoke(
+            app, ["session-contract-health-gate", "--min-healthy-ratio", "0.0"]
+        )
         assert result.exit_code == 0
 
 
@@ -217,7 +223,9 @@ class TestHealthTrendOwner:
         snapshot_path = tmp_path / "health-snapshots.jsonl"
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
         monkeypatch.setenv("THGENT_HEALTH_SNAPSHOT_PATH", str(snapshot_path))
-        result = runner.invoke(app, ["session-contract-health-trend", "--owner", "e2e_owner_xyz"])
+        result = runner.invoke(
+            app, ["session-contract-health-trend", "--owner", "e2e_owner_xyz"]
+        )
         assert result.exit_code == 0
 
 
@@ -274,7 +282,9 @@ class TestReportFormatMd:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["session-contract-health-report", "--format", "md"])
+        result = runner.invoke(
+            app, ["session-contract-health-report", "--format", "md"]
+        )
         assert result.exit_code == 0
         assert "##" in result.stdout or "blocked" in result.stdout.lower()
 
@@ -293,7 +303,10 @@ class TestInspectIncludeContract:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["inspect", "--owner", "e2e_inspect_inc_contract", "--include-contract"])
+        result = runner.invoke(
+            app,
+            ["inspect", "--owner", "e2e_inspect_inc_contract", "--include-contract"],
+        )
         assert result.exit_code == 0
         assert "No sessions" in result.stdout
 
@@ -334,7 +347,11 @@ class TestArchiveBenchmark:
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
         result = runner.invoke(app, ["benchmark"])
         assert result.exit_code == 0
-        assert "No runs" in result.stdout or "Benchmark" in result.stdout or "runs" in result.stdout.lower()
+        assert (
+            "No runs" in result.stdout
+            or "Benchmark" in result.stdout
+            or "runs" in result.stdout.lower()
+        )
 
     def test_benchmark_help_exits_zero(self) -> None:
         # @trace FR-CLI-001
@@ -357,7 +374,9 @@ class TestHistoryListFormatMd:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["history", "list", "--format", "md", "--limit", "5"])
+        result = runner.invoke(
+            app, ["history", "list", "--format", "md", "--limit", "5"]
+        )
         assert result.exit_code == 0
 
 
@@ -375,7 +394,9 @@ class TestGateFormatRich:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["session-contract-health-gate", "--format", "rich"])
+        result = runner.invoke(
+            app, ["session-contract-health-gate", "--format", "rich"]
+        )
         assert result.exit_code == 0
 
 
@@ -393,7 +414,9 @@ class TestGateReportOwner:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["session-contract-health-gate", "--owner", "e2e_gate_owner"])
+        result = runner.invoke(
+            app, ["session-contract-health-gate", "--owner", "e2e_gate_owner"]
+        )
         assert result.exit_code == 0
 
     def test_report_owner_exits_zero(
@@ -406,7 +429,9 @@ class TestGateReportOwner:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["session-contract-health-report", "--owner", "e2e_report_owner"])
+        result = runner.invoke(
+            app, ["session-contract-health-report", "--owner", "e2e_report_owner"]
+        )
         assert result.exit_code == 0
 
 
@@ -605,7 +630,9 @@ class TestSessionContractsOwnerFormatMd:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["session-contracts", "--owner", "e2e_contracts_owner"])
+        result = runner.invoke(
+            app, ["session-contracts", "--owner", "e2e_contracts_owner"]
+        )
         assert result.exit_code == 0
 
     def test_session_contracts_format_md_exits_zero(
@@ -685,7 +712,9 @@ class TestHealthTrendStrictTopBlocked:
         snapshot_path = tmp_path / "health-snapshots.jsonl"
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
         monkeypatch.setenv("THGENT_HEALTH_SNAPSHOT_PATH", str(snapshot_path))
-        result = runner.invoke(app, ["session-contract-health-trend", "--top-blocked", "15"])
+        result = runner.invoke(
+            app, ["session-contract-health-trend", "--top-blocked", "15"]
+        )
         assert result.exit_code == 0
 
 
@@ -703,7 +732,9 @@ class TestHistoryEventsFormat:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["history", "events", "--format", "json", "--limit", "5"])
+        result = runner.invoke(
+            app, ["history", "events", "--format", "json", "--limit", "5"]
+        )
         assert result.exit_code == 0
 
     def test_history_events_format_md_exits_zero(
@@ -716,7 +747,9 @@ class TestHistoryEventsFormat:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["history", "events", "--format", "md", "--limit", "5"])
+        result = runner.invoke(
+            app, ["history", "events", "--format", "md", "--limit", "5"]
+        )
         assert result.exit_code == 0
 
 
@@ -1048,7 +1081,9 @@ class TestLoginRooKiloE2E:
     ) -> None:
         """thegent login roo exits 0 when CLIProxy binary accepts -roo-login."""
         mock_binary = tmp_path / "cli-proxy-api-plus"
-        mock_binary.write_text('#!/bin/sh\nfor arg in "$@"; do\n  [ "$arg" = "-roo-login" ] && exit 0\ndone\nexit 1\n')
+        mock_binary.write_text(
+            '#!/bin/sh\nfor arg in "$@"; do\n  [ "$arg" = "-roo-login" ] && exit 0\ndone\nexit 1\n'
+        )
         mock_binary.chmod(0o755)
         config_path = tmp_path / "config.yaml"
         config_path.write_text("port: 8317\n")
@@ -1065,7 +1100,9 @@ class TestLoginRooKiloE2E:
     ) -> None:
         """thegent login kilo exits 0 when CLIProxy binary accepts -kilo-login."""
         mock_binary = tmp_path / "cli-proxy-api-plus"
-        mock_binary.write_text('#!/bin/sh\nfor arg in "$@"; do\n  [ "$arg" = "-kilo-login" ] && exit 0\ndone\nexit 1\n')
+        mock_binary.write_text(
+            '#!/bin/sh\nfor arg in "$@"; do\n  [ "$arg" = "-kilo-login" ] && exit 0\ndone\nexit 1\n'
+        )
         mock_binary.chmod(0o755)
         config_path = tmp_path / "config.yaml"
         config_path.write_text("port: 8317\n")
@@ -1082,7 +1119,9 @@ class TestLoginRooKiloE2E:
     ) -> None:
         """thegent cliproxy login roo exits 0 when CLIProxy accepts -roo-login."""
         mock_binary = tmp_path / "cli-proxy-api-plus"
-        mock_binary.write_text('#!/bin/sh\nfor arg in "$@"; do\n  [ "$arg" = "-roo-login" ] && exit 0\ndone\nexit 1\n')
+        mock_binary.write_text(
+            '#!/bin/sh\nfor arg in "$@"; do\n  [ "$arg" = "-roo-login" ] && exit 0\ndone\nexit 1\n'
+        )
         mock_binary.chmod(0o755)
         config_path = tmp_path / "config.yaml"
         config_path.write_text("port: 8317\n")
@@ -1293,9 +1332,13 @@ class TestOperationsInvalidAndClosurePackNoDag:
     def test_operations_invalid_operation_exits_one(self) -> None:
         # @trace FR-CLI-001
         """operations --operation invalid_name exits 1 with message."""
-        result = runner.invoke(app, ["operations", "--operation", "invalid_operation_xyz"])
+        result = runner.invoke(
+            app, ["operations", "--operation", "invalid_operation_xyz"]
+        )
         assert result.exit_code == 1
-        assert "Unknown operation" in result.stdout or "invalid" in result.stdout.lower()
+        assert (
+            "Unknown operation" in result.stdout or "invalid" in result.stdout.lower()
+        )
 
     def test_closure_pack_no_dag_exits_one(
         # @trace FR-CLI-001
@@ -1350,7 +1393,9 @@ class TestHistoryLegacy:
         session_dir = tmp_path / "sessions"
         session_dir.mkdir(parents=True)
         monkeypatch.setenv("THGENT_SESSION_DIR", str(session_dir))
-        result = runner.invoke(app, ["history-legacy", "--format", "json", "--limit", "5"])
+        result = runner.invoke(
+            app, ["history-legacy", "--format", "json", "--limit", "5"]
+        )
         assert result.exit_code == 0
 
 
@@ -1632,7 +1677,9 @@ class TestPlanReadyStatusCheckpointsExecution:
         result = runner.invoke(app, ["plan", "ready", "--cd", str(project)])
         assert result.exit_code == 0
 
-    def test_plan_status_exits_zero(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_plan_status_exits_zero(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         # @trace FR-CLI-001
         """plan status exits 0 with empty DAG (alias for dag status)."""
         project = self._dag_project(tmp_path, with_task=False)
@@ -1732,7 +1779,9 @@ class TestRecoverPlanRollbackAndPlanMutateHelp:
 class TestPlanAddExecution:
     """E2E tests for plan add execution (alias for dag add)."""
 
-    def test_plan_add_then_list_exits_zero(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_plan_add_then_list_exits_zero(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         # @trace FR-CLI-001
         """plan add creates task; plan list shows it."""
         project = tmp_path / "project"
@@ -1746,7 +1795,9 @@ class TestPlanAddExecution:
         )
 
         monkeypatch.chdir(project)
-        add_result = runner.invoke(app, ["plan", "add", "T1", "--agent", "gemini", "--prompt", "test prompt"])
+        add_result = runner.invoke(
+            app, ["plan", "add", "T1", "--agent", "gemini", "--prompt", "test prompt"]
+        )
         assert add_result.exit_code == 0
         assert "Added task T1" in add_result.stdout
 
@@ -1775,7 +1826,9 @@ class TestPlanRemoveUpdateCancelExecution:
         )
         return project
 
-    def test_plan_remove_then_list_exits_zero(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_plan_remove_then_list_exits_zero(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         # @trace FR-CLI-001
         """plan remove removes task; plan list shows No tasks."""
         project = self._project_with_task(tmp_path)
@@ -1792,7 +1845,9 @@ class TestPlanRemoveUpdateCancelExecution:
         # @trace FR-CLI-001
         """plan update --status done updates task; plan list shows done."""
         project = self._project_with_task(tmp_path)
-        result = runner.invoke(app, ["plan", "update", "T1", "--status", "done", "--cd", str(project)])
+        result = runner.invoke(
+            app, ["plan", "update", "T1", "--status", "done", "--cd", str(project)]
+        )
         assert result.exit_code == 0
 
         list_result = runner.invoke(app, ["plan", "list", "--cd", str(project)])
@@ -1843,7 +1898,9 @@ class TestRecoverPlanRollbackExecution:
         project = self._dag_project(tmp_path)
 
         monkeypatch.chdir(project)
-        ckpt_result = runner.invoke(app, ["plan", "checkpoint", "--reason", "E2E rollback test"])
+        ckpt_result = runner.invoke(
+            app, ["plan", "checkpoint", "--reason", "E2E rollback test"]
+        )
         assert ckpt_result.exit_code == 0
         match = re.search(r"ckpt_[a-f0-9]+", ckpt_result.stdout)
         assert match, "Checkpoint ID should be printed"
@@ -1866,13 +1923,17 @@ class TestRecoverPlanRollbackExecution:
         project = self._dag_project(tmp_path)
 
         monkeypatch.chdir(project)
-        ckpt_result = runner.invoke(app, ["plan", "checkpoint", "--reason", "E2E recover rollback"])
+        ckpt_result = runner.invoke(
+            app, ["plan", "checkpoint", "--reason", "E2E recover rollback"]
+        )
         assert ckpt_result.exit_code == 0
         match = re.search(r"ckpt_[a-f0-9]+", ckpt_result.stdout)
         assert match, "Checkpoint ID should be printed"
         ckpt_id = match.group(0)
 
-        rollback_result = runner.invoke(app, ["recover", "rollback", ckpt_id, "--cd", str(project)])
+        rollback_result = runner.invoke(
+            app, ["recover", "rollback", ckpt_id, "--cd", str(project)]
+        )
         assert rollback_result.exit_code == 0
         assert "rolled back" in rollback_result.stdout.lower()
 
@@ -1986,7 +2047,9 @@ class TestOrchestrateGovernAliasExecution:
     def test_govern_migration_format_json_exits_zero(self) -> None:
         # @trace FR-CLI-001
         """govern migration --format json exits 0."""
-        result = runner.invoke(app, ["govern", "migration", "csm", "csm-v1", "--format", "json"])
+        result = runner.invoke(
+            app, ["govern", "migration", "csm", "csm-v1", "--format", "json"]
+        )
         assert result.exit_code == 0
         data = load_cli_json(result.stdout)
         assert "allowed" in data

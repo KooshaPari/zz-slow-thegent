@@ -28,7 +28,9 @@ _SOURCE_PATTERN = re.compile(
 )
 
 # Extensions and names considered shell config files
-_ZSH_EXTENSIONS = frozenset({".zsh", ".zshrc", ".zshenv", ".zprofile", ".zlogin", ".zlogout"})
+_ZSH_EXTENSIONS = frozenset(
+    {".zsh", ".zshrc", ".zshenv", ".zprofile", ".zlogin", ".zlogout"}
+)
 _ZSH_NAMES = frozenset(
     {
         ".zshrc",
@@ -59,7 +61,9 @@ def _resolve_source(source_str: str, relative_to: Path) -> Path | None:
     """
     # Expand ${ZDOTDIR:-$HOME} compound form only (bare $ZDOTDIR is unknown).
     source_str = re.sub(r"\$\{ZDOTDIR:-\$HOME\}", str(Path.home()), source_str)
-    source_str = re.sub(r"\$\{XDG_CONFIG_HOME:-[^}]*\}", str(Path.home() / ".config"), source_str)
+    source_str = re.sub(
+        r"\$\{XDG_CONFIG_HOME:-[^}]*\}", str(Path.home() / ".config"), source_str
+    )
     # Expand bare $HOME / ${HOME}
     source_str = re.sub(r"\$\{HOME\}|\$HOME(?!\w)", str(Path.home()), source_str)
     # Expand bare $XDG_CONFIG_HOME / ${XDG_CONFIG_HOME}
@@ -199,7 +203,9 @@ class ShellConfigAuditor:
                 index.setdefault(func, []).append(cfg.path)
         return {name: paths for name, paths in index.items() if len(paths) > 1}
 
-    def find_duplicate_aliases(self, configs: list[ShellConfigFile]) -> dict[str, list[Path]]:
+    def find_duplicate_aliases(
+        self, configs: list[ShellConfigFile]
+    ) -> dict[str, list[Path]]:
         """Find alias names that are defined in more than one file.
 
         Args:
@@ -249,10 +255,14 @@ class ShellConfigAuditor:
             # Warn about any duplicate functions in this file
             dupes_here = [fn for fn in cfg.functions if fn in duplicate_names]
             if dupes_here:
-                parts.append(f"# WARNING: duplicate function(s) from this file: {', '.join(dupes_here)}")
+                parts.append(
+                    f"# WARNING: duplicate function(s) from this file: {', '.join(dupes_here)}"
+                )
 
             try:
-                content = cfg.path.read_text(encoding="utf-8", errors="replace").rstrip()
+                content = cfg.path.read_text(
+                    encoding="utf-8", errors="replace"
+                ).rstrip()
             except OSError:
                 parts.append("# ERROR: Could not read file")
                 parts.append("")
@@ -284,7 +294,9 @@ class ShellConfigAuditor:
         for cfg in configs:
             for sourced in cfg.sources:
                 if sourced not in known_paths:
-                    issues.append(f"{cfg.path.name}: sources '{sourced}' which is not in the discovered set")
+                    issues.append(
+                        f"{cfg.path.name}: sources '{sourced}' which is not in the discovered set"
+                    )
 
         # Detect circular sourcing
         def _has_cycle(start: Path, visited: set[Path], stack: set[Path]) -> bool:
@@ -324,4 +336,8 @@ class ShellConfigAuditor:
         Returns:
             Mapping from file name to list of sourced file names/paths.
         """
-        return {cfg.path.name: [str(s) for s in cfg.sources] for cfg in configs if cfg.sources}
+        return {
+            cfg.path.name: [str(s) for s in cfg.sources]
+            for cfg in configs
+            if cfg.sources
+        }

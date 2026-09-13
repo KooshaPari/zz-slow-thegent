@@ -93,7 +93,9 @@ class DefaultProviderScorer:
         if metrics.latency_p99 < 0:
             raise ValueError(f"Latency cannot be negative, got {metrics.latency_p99}")
         if metrics.cost_per_1m_tokens < 0:
-            raise ValueError(f"Cost cannot be negative, got {metrics.cost_per_1m_tokens}")
+            raise ValueError(
+                f"Cost cannot be negative, got {metrics.cost_per_1m_tokens}"
+            )
 
     def _normalize_reliability(self, reliability: float) -> float:
         """

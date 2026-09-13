@@ -1,10 +1,12 @@
 """Stub module."""
+
 from dataclasses import dataclass
 
 
 @dataclass
 class ComputeNode:
     """A compute node for offloading tasks."""
+
     id: str = ""
     capacity: float = 1.0
     available: bool = True
@@ -66,7 +68,12 @@ class FederatedLoadBalancer:
         return False
 
 
-__all__ = ["ComputeNode", "ComputePoolManager", "FederatedLoadBalancer", "RemoteNodeClient"]
+__all__ = [
+    "ComputeNode",
+    "ComputePoolManager",
+    "FederatedLoadBalancer",
+    "RemoteNodeClient",
+]
 
 
 class RemoteNodeClient:
@@ -102,13 +109,22 @@ class RemoteNodeClient:
 class RemoteNodeError(Exception):
     """Error raised when a remote node operation fails."""
 
-    def __init__(self, message: str, node_id: str = "", cause: Exception | None = None) -> None:
+    def __init__(
+        self, message: str, node_id: str = "", cause: Exception | None = None
+    ) -> None:
         super().__init__(message)
         self.node_id = node_id
         self.cause = cause
 
 
-__all__ = ["ComputeNode", "ComputePoolManager", "FederatedLoadBalancer", "RemoteNodeClient", "RemoteNodeError", "TailscaleComputePool"]
+__all__ = [
+    "ComputeNode",
+    "ComputePoolManager",
+    "FederatedLoadBalancer",
+    "RemoteNodeClient",
+    "RemoteNodeError",
+    "TailscaleComputePool",
+]
 
 
 class TailscaleComputePool:

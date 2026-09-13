@@ -34,13 +34,19 @@ def _validate_policy_id(policy_id: str) -> None:
     :class:`PolicyOverridePathError` and leaves no override file behind.
     """
     if not isinstance(policy_id, str):  # defensive — surface config drift
-        raise PolicyOverridePathError(f"policy_id must be a string, got {type(policy_id).__name__}")
+        raise PolicyOverridePathError(
+            f"policy_id must be a string, got {type(policy_id).__name__}"
+        )
     if not policy_id:
         raise PolicyOverridePathError("policy_id must be a non-empty string")
     if "/" in policy_id or "\\" in policy_id:
-        raise PolicyOverridePathError(f"policy_id contains path separator: {policy_id!r}")
+        raise PolicyOverridePathError(
+            f"policy_id contains path separator: {policy_id!r}"
+        )
     if ".." in policy_id:
-        raise PolicyOverridePathError(f"policy_id contains '..' sequence: {policy_id!r}")
+        raise PolicyOverridePathError(
+            f"policy_id contains '..' sequence: {policy_id!r}"
+        )
     if "\x00" in policy_id:
         raise PolicyOverridePathError(f"policy_id contains NUL byte: {policy_id!r}")
 
@@ -100,7 +106,12 @@ class OverrideManager:
         )
 
         self._save_override(override)
-        _log.info("Applied override for policy %s by %s for %d min", policy_id, by, duration_minutes)
+        _log.info(
+            "Applied override for policy %s by %s for %d min",
+            policy_id,
+            by,
+            duration_minutes,
+        )
         return override
 
     def get_override(self, policy_id: str) -> PolicyOverride | None:

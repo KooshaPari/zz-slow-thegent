@@ -30,7 +30,9 @@ def build_grounding_tools_arg() -> list[dict[str, dict[str, str]]]:
 
 def extract_grounding_metadata_sources(response: Any) -> list[str]:
     """Extract grounding source URLs from a grounded response payload."""
-    payload = response.get("groundingMetadata", {}) if isinstance(response, dict) else {}
+    payload = (
+        response.get("groundingMetadata", {}) if isinstance(response, dict) else {}
+    )
     chunks = payload.get("groundingChunks", []) if isinstance(payload, dict) else []
 
     if not isinstance(chunks, list):
@@ -72,11 +74,15 @@ def _extract_grounding_metadata(response: Any) -> list[str] | None:
         return None
 
     payload = {}
-    if hasattr(response, "_hidden_params") and isinstance(response._hidden_params, dict):
+    if hasattr(response, "_hidden_params") and isinstance(
+        response._hidden_params, dict
+    ):
         payload = response._hidden_params
     elif hasattr(response, "model_extra") and isinstance(response.model_extra, dict):
         payload = response.model_extra
-    elif hasattr(response, "additional_kwargs") and isinstance(response.additional_kwargs, dict):
+    elif hasattr(response, "additional_kwargs") and isinstance(
+        response.additional_kwargs, dict
+    ):
         payload = response.additional_kwargs
 
     sources = extract_grounding_metadata_sources(payload)
@@ -99,7 +105,9 @@ def _resolve_completion_response_text(response: Any) -> str:
     if isinstance(response, dict):
         choices = response.get("choices", [])
         if isinstance(choices, list) and choices:
-            message = choices[0].get("message", {}) if isinstance(choices[0], dict) else {}
+            message = (
+                choices[0].get("message", {}) if isinstance(choices[0], dict) else {}
+            )
             content = message.get("content") if isinstance(message, dict) else None
             if isinstance(content, str):
                 return content

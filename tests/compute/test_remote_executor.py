@@ -185,7 +185,9 @@ class TestEnvHelpers:
         assert _load_ssh_user_from_env() == "agent"
 
     # @trace FR-COMPUTE-012
-    def test_ssh_user_empty_string_treated_as_none(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_ssh_user_empty_string_treated_as_none(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """_load_ssh_user_from_env returns None when env var is an empty string."""
         monkeypatch.setenv("THGENT_REMOTE_SSH_USER", "")
         assert _load_ssh_user_from_env() is None
@@ -440,7 +442,9 @@ class TestExecuteAsync:
         executor = RemoteExecutor(nodes=["async-node"])
         task = _make_task(task_id="async-1", node="async-node")
 
-        result = asyncio.get_event_loop().run_until_complete(executor.execute_async(task))
+        result = asyncio.get_event_loop().run_until_complete(
+            executor.execute_async(task)
+        )
 
         assert isinstance(result, RemoteResult)
         assert result.task_id == "async-1"

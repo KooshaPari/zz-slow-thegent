@@ -51,7 +51,9 @@ class RunHarness:
             if not prompt:
                 self.console.print("[red]Error: --print requires a prompt.[/red]")
                 raise SystemExit(1)
-            self._run_exec_impl(canonical, prompt, cd=cd, add_dir=add_dir, sandbox=sandbox)
+            self._run_exec_impl(
+                canonical, prompt, cd=cd, add_dir=add_dir, sandbox=sandbox
+            )
             return
 
         extra: list[str] = self._build_passthrough_args(
@@ -132,7 +134,9 @@ class RunHarness:
         if args:
             cmd.extend(args)
 
-        self.console.print(f"[bold green]Starting native {self.harness.get_binary_name()} (proxy bypass)...[/bold green]")
+        self.console.print(
+            f"[bold green]Starting native {self.harness.get_binary_name()} (proxy bypass)...[/bold green]"
+        )
         os.execvpe(cmd[0], cmd, os.environ.copy())
 
     def ensure_harness_installed(self) -> str:

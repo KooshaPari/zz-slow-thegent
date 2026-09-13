@@ -140,7 +140,13 @@ class TestTick:
 
     def test_tick_records_overrides(self) -> None:
         c = OperatorCockpit()
-        c.tick(overrides=[OverrideEvent(rule_id="o1", by="alice", reason="hotfix", expires_in_s=120)])
+        c.tick(
+            overrides=[
+                OverrideEvent(
+                    rule_id="o1", by="alice", reason="hotfix", expires_in_s=120
+                )
+            ]
+        )
         assert "o1" in c._state.overrides
 
     def test_tick_records_progress(self) -> None:
@@ -258,7 +264,10 @@ class TestRender:
         cfg = CockpitConfig(show_sparkline=True, sparkline_width=8)
         cockpit = OperatorCockpit(config=cfg)
         cockpit.tick(
-            runs=[RunEvent(run_id="r1", state=RunState.ACTIVE, confidence=v) for v in [0.1, 0.3, 0.5, 0.7, 0.9]]
+            runs=[
+                RunEvent(run_id="r1", state=RunState.ACTIVE, confidence=v)
+                for v in [0.1, 0.3, 0.5, 0.7, 0.9]
+            ]
         )
         out = cockpit.render()
         # Sparkline chars should appear somewhere in the output.
@@ -291,9 +300,17 @@ class TestSnapshot:
         c = OperatorCockpit()
         c.tick(
             runs=[
-                RunEvent(run_id="r1", state=RunState.ACTIVE, lane="critical", agent="cursor", confidence=0.7),
+                RunEvent(
+                    run_id="r1",
+                    state=RunState.ACTIVE,
+                    lane="critical",
+                    agent="cursor",
+                    confidence=0.7,
+                ),
             ],
-            overrides=[OverrideEvent(rule_id="x", by="alice", reason="r", expires_in_s=10)],
+            overrides=[
+                OverrideEvent(rule_id="x", by="alice", reason="r", expires_in_s=10)
+            ],
             progress=(1, 1),
         )
         snap = c.snapshot()
@@ -371,7 +388,10 @@ class TestPerformance:
             for i in range(30)
         ]
         overrides = [
-            OverrideEvent(rule_id=f"o{i}", by="alice", reason="r", expires_in_s=float(i * 10)) for i in range(5)
+            OverrideEvent(
+                rule_id=f"o{i}", by="alice", reason="r", expires_in_s=float(i * 10)
+            )
+            for i in range(5)
         ]
         c = OperatorCockpit()
         # Warm the cache

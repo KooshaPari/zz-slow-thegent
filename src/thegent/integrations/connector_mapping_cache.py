@@ -101,12 +101,19 @@ class ConnectorMappingCache:
         A bootstrap is required when at least one required field has no
         non-stale mapping in the cache for the given connector.
         """
-        normalized_required = [field.strip() for field in required_fields if field.strip()]
+        normalized_required = [
+            field.strip() for field in required_fields if field.strip()
+        ]
         if not normalized_required:
             return False
-        return any(self.get(connector, field_name) is None for field_name in normalized_required)
+        return any(
+            self.get(connector, field_name) is None
+            for field_name in normalized_required
+        )
 
-    def bootstrap(self, connector: str, mappings: dict[str, str], ttl_seconds: int = 3600) -> None:
+    def bootstrap(
+        self, connector: str, mappings: dict[str, str], ttl_seconds: int = 3600
+    ) -> None:
         """Persist an initial mapping set for a connector.
 
         Raises:
@@ -117,7 +124,9 @@ class ConnectorMappingCache:
                 raise ValueError("mapping field_name cannot be empty")
             if not field_id.strip():
                 raise ValueError("mapping field_id cannot be empty")
-            self.put(connector, field_name.strip(), field_id.strip(), ttl_seconds=ttl_seconds)
+            self.put(
+                connector, field_name.strip(), field_id.strip(), ttl_seconds=ttl_seconds
+            )
 
     def is_stale(self, entry: MappingEntry) -> bool:
         """Check if an entry has expired based on TTL.
@@ -175,7 +184,9 @@ class ConnectorMappingCache:
             return {"field_id": None, "status": "stale"}
         return {"field_id": entry.field_id, "status": "fresh"}
 
-    def put(self, connector: str, field_name: str, field_id: str, ttl_seconds: int = 3600) -> None:
+    def put(
+        self, connector: str, field_name: str, field_id: str, ttl_seconds: int = 3600
+    ) -> None:
         """Cache a connector field mapping.
 
         Args:
@@ -218,7 +229,9 @@ class ConnectorMappingCache:
         Returns:
             Number of entries removed.
         """
-        stale_keys = [key for key, entry in self._entries.items() if self.is_stale(entry)]
+        stale_keys = [
+            key for key, entry in self._entries.items() if self.is_stale(entry)
+        ]
         for key in stale_keys:
             del self._entries[key]
 
@@ -227,7 +240,9 @@ class ConnectorMappingCache:
 
         return len(stale_keys)
 
-    def list_entries(self, connector: str, *, include_stale: bool = False) -> list[MappingEntry]:
+    def list_entries(
+        self, connector: str, *, include_stale: bool = False
+    ) -> list[MappingEntry]:
         """List entries for one connector.
 
         Args:

@@ -129,7 +129,9 @@ class TestRegisterEndLegacyForm:
     def test_legacy_form_with_cost_usd(self, tmp_path: Path) -> None:
         reg = RunRegistry(tmp_path)
         reg.register_start(_make_meta("r4"))
-        reg.register_end("r4", 0, "completed", "2026-02-14T12:00:00Z", 1.0, cost_usd=0.05)
+        reg.register_end(
+            "r4", 0, "completed", "2026-02-14T12:00:00Z", 1.0, cost_usd=0.05
+        )
         content = reg.registry_path.read_text(encoding="utf-8")
         assert '"cost_usd": 0.05' in content
 
@@ -138,7 +140,9 @@ class TestRegisterEndLegacyForm:
         reg.register_start(_make_meta("r5"))
         reg.register_end("r5", 0, "completed", "2026-02-14T12:00:00Z", 1.0)
         finish_lines = [
-            l for l in reg.registry_path.read_text(encoding="utf-8").strip().splitlines() if '"finish"' in l
+            l
+            for l in reg.registry_path.read_text(encoding="utf-8").strip().splitlines()
+            if '"finish"' in l
         ]
         assert len(finish_lines) == 1
         assert "cost_usd" not in finish_lines[0]
@@ -211,7 +215,10 @@ class TestRegisterEndNewForm:
         finish_line = next(l for l in lines if '"finish"' in l)
         # The literal substrings must surface so the WL-119 replay test
         # (which asserts on raw text) keeps passing.
-        assert '"grounding_sources": ["https://a.example/1", "https://b.example/2"]' in finish_line
+        assert (
+            '"grounding_sources": ["https://a.example/1", "https://b.example/2"]'
+            in finish_line
+        )
         assert '"context_usage_ratio": 0.55' in finish_line
 
 
@@ -265,7 +272,9 @@ class TestRegisterEndDualMode:
         assert data["ended_at_utc"]  # defensive default present
         assert data["duration_s"] == 0.0
 
-    def test_dual_mode_hash_chain_validates_across_both_forms(self, tmp_path: Path) -> None:
+    def test_dual_mode_hash_chain_validates_across_both_forms(
+        self, tmp_path: Path
+    ) -> None:
         """The hash chain must verify when both legacy and new forms are
         interleaved (proves the canonical entry dict is form-agnostic)."""
         reg = RunRegistry(tmp_path)
@@ -330,7 +339,9 @@ class TestAuditTrailInvariants:
             reg.register_start(_make_meta(rid))
             if i % 2 == 0:
                 # Legacy form
-                reg.register_end(rid, 0, "completed", f"2026-02-14T12:0{i}:00Z", float(i))
+                reg.register_end(
+                    rid, 0, "completed", f"2026-02-14T12:0{i}:00Z", float(i)
+                )
             else:
                 # New form
                 reg.register_end(
@@ -346,7 +357,9 @@ class TestAuditTrailInvariants:
             assert "ended_at_utc" in run
             assert "duration_s" in run
 
-    def test_audit_n9_no_legacy_finish_keys_leak_into_jsonl(self, tmp_path: Path) -> None:
+    def test_audit_n9_no_legacy_finish_keys_leak_into_jsonl(
+        self, tmp_path: Path
+    ) -> None:
         """The canonical finish JSONL entry must NOT carry the legacy
         ``ended_at`` / ``duration`` keys downstream — they were renamed
         to the canonical ``ended_at_utc`` / ``duration_s`` form by

@@ -128,7 +128,11 @@ def test_extract_grounding_metadata_sources_preserves_order() -> None:
         }
     }
     result = extract_grounding_metadata_sources(payload)
-    assert result == ["https://first.example/", "https://second.example/", "https://third.example/"]
+    assert result == [
+        "https://first.example/",
+        "https://second.example/",
+        "https://third.example/",
+    ]
 
 
 # ---------------------------------------------------------------------------
@@ -138,7 +142,10 @@ def test_extract_grounding_metadata_sources_preserves_order() -> None:
 
 def test_resolve_gemini_model_returns_provided_model() -> None:
     # @trace WL-119
-    assert _resolve_gemini_model("gemini/gemini-2.0-flash-exp") == "gemini/gemini-2.0-flash-exp"
+    assert (
+        _resolve_gemini_model("gemini/gemini-2.0-flash-exp")
+        == "gemini/gemini-2.0-flash-exp"
+    )
 
 
 def test_resolve_gemini_model_defaults_when_none() -> None:
@@ -152,21 +159,27 @@ def test_resolve_gemini_model_defaults_when_none() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_resolve_gemini_api_key_from_gemini_api_key(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resolve_gemini_api_key_from_gemini_api_key(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     # @trace WL-119
     monkeypatch.setenv("GEMINI_API_KEY", "test-key-abc")
     monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
     assert _resolve_gemini_api_key() == "test-key-abc"
 
 
-def test_resolve_gemini_api_key_from_google_api_key(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resolve_gemini_api_key_from_google_api_key(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     # @trace WL-119
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     monkeypatch.setenv("GOOGLE_API_KEY", "google-key-xyz")
     assert _resolve_gemini_api_key() == "google-key-xyz"
 
 
-def test_resolve_gemini_api_key_raises_when_missing(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resolve_gemini_api_key_raises_when_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     # @trace WL-119 -- must fail loudly when API key is absent
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
     monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
@@ -190,14 +203,18 @@ def test_gemini_grounding_agents_contains_gemini_and_antigravity() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_run_gemini_with_grounding_rejects_non_gemini_model(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_run_gemini_with_grounding_rejects_non_gemini_model(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     # @trace WL-119 -- must fail loudly for non-Gemini models
     monkeypatch.setenv("GEMINI_API_KEY", "dummy")
     with pytest.raises(ValueError, match="requires a Gemini model"):
         run_gemini_with_grounding("hello", model="claude-3-5-sonnet")
 
 
-def test_run_gemini_with_grounding_rejects_openai_model(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_run_gemini_with_grounding_rejects_openai_model(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     # @trace WL-119
     monkeypatch.setenv("GEMINI_API_KEY", "dummy")
     with pytest.raises(ValueError, match="requires a Gemini model"):
@@ -209,7 +226,9 @@ def test_run_gemini_with_grounding_rejects_openai_model(monkeypatch: pytest.Monk
 # ---------------------------------------------------------------------------
 
 
-def _make_mock_completion_response(content: str, grounding_chunks: list[dict] | None = None) -> MagicMock:
+def _make_mock_completion_response(
+    content: str, grounding_chunks: list[dict] | None = None
+) -> MagicMock:
     """Build a mock litellm completion response object."""
     choice = MagicMock()
     choice.message.content = content
@@ -220,19 +239,25 @@ def _make_mock_completion_response(content: str, grounding_chunks: list[dict] | 
     if grounding_chunks is not None:
         grounding_meta = {"groundingChunks": grounding_chunks}
 
-    response._hidden_params = {"groundingMetadata": grounding_meta} if grounding_chunks else {}
+    response._hidden_params = (
+        {"groundingMetadata": grounding_meta} if grounding_chunks else {}
+    )
     response.model_extra = {}
     response.additional_kwargs = {}
     return response
 
 
-def test_run_gemini_with_grounding_returns_run_result(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_run_gemini_with_grounding_returns_run_result(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     # @trace WL-119
     monkeypatch.setenv("GEMINI_API_KEY", "test-key")
     mock_response = _make_mock_completion_response("Test response text")
 
     with patch("litellm.completion", return_value=mock_response):
-        result = run_gemini_with_grounding("What is 2+2?", model="gemini/gemini-2.0-flash")
+        result = run_gemini_with_grounding(
+            "What is 2+2?", model="gemini/gemini-2.0-flash"
+        )
 
     assert isinstance(result, RunResult)
     assert result.exit_code == 0
@@ -240,19 +265,28 @@ def test_run_gemini_with_grounding_returns_run_result(monkeypatch: pytest.Monkey
     assert result.stderr == ""
 
 
-def test_run_gemini_with_grounding_extracts_grounding_sources(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_run_gemini_with_grounding_extracts_grounding_sources(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     # @trace WL-119
     monkeypatch.setenv("GEMINI_API_KEY", "test-key")
     chunks = [
         {"web": {"uri": "https://source1.example/", "title": "Source 1"}},
         {"web": {"uri": "https://source2.example/", "title": "Source 2"}},
     ]
-    mock_response = _make_mock_completion_response("Grounded response", grounding_chunks=chunks)
+    mock_response = _make_mock_completion_response(
+        "Grounded response", grounding_chunks=chunks
+    )
 
     with patch("litellm.completion", return_value=mock_response):
-        result = run_gemini_with_grounding("Search query", model="gemini/gemini-2.0-flash")
+        result = run_gemini_with_grounding(
+            "Search query", model="gemini/gemini-2.0-flash"
+        )
 
-    assert result.grounding_sources == ["https://source1.example/", "https://source2.example/"]
+    assert result.grounding_sources == [
+        "https://source1.example/",
+        "https://source2.example/",
+    ]
 
 
 def test_run_gemini_with_grounding_grounding_sources_none_when_no_metadata(
@@ -263,12 +297,16 @@ def test_run_gemini_with_grounding_grounding_sources_none_when_no_metadata(
     mock_response = _make_mock_completion_response("Response without grounding")
 
     with patch("litellm.completion", return_value=mock_response):
-        result = run_gemini_with_grounding("Plain prompt", model="gemini/gemini-2.0-flash")
+        result = run_gemini_with_grounding(
+            "Plain prompt", model="gemini/gemini-2.0-flash"
+        )
 
     assert result.grounding_sources is None
 
 
-def test_run_gemini_with_grounding_passes_tools_to_litellm(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_run_gemini_with_grounding_passes_tools_to_litellm(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     # @trace WL-119 -- must pass tools=[{"google_search": {}}] to litellm
     monkeypatch.setenv("GEMINI_API_KEY", "test-key")
     mock_response = _make_mock_completion_response("response")

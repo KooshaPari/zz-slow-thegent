@@ -24,7 +24,6 @@ class BridgeError(Exception):
     """Base exception for bridge errors."""
 
 
-
 class MCPToolNotFoundError(BridgeError):
     """Raised when an MCP tool is not found."""
 

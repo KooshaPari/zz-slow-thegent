@@ -11,7 +11,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-REPORT_PATH = Path(__file__).parent.parent / "docs" / "reports" / "2026-02-21-B90-W3-B3-zig-promotion.md"
+REPORT_PATH = (
+    Path(__file__).parent.parent
+    / "docs"
+    / "reports"
+    / "2026-02-21-B90-W3-B3-zig-promotion.md"
+)
 
 
 def test_zig_promotion_report_exists() -> None:
@@ -22,7 +27,9 @@ def test_zig_promotion_report_exists() -> None:
 def test_zig_promotion_report_mentions_version_1_0_0() -> None:
     """The promotion report must mention '1.0.0' (the ABI contract version)."""
     content = REPORT_PATH.read_text()
-    assert "1.0.0" in content, "Zig promotion report must mention ABI contract version '1.0.0'"
+    assert "1.0.0" in content, (
+        "Zig promotion report must mention ABI contract version '1.0.0'"
+    )
 
 
 def test_zig_promotion_report_mentions_promotion_or_abi() -> None:

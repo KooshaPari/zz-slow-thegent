@@ -7,11 +7,13 @@ This module provides benchmarking functionality for thegent.
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, TypeVar
 
-T = TypeVar('T')
+T = TypeVar("T")
+
 
 @dataclass
 class BenchmarkResult:
     """Benchmark result container."""
+
     name: str
     iterations: int
     min_time: float
@@ -29,6 +31,7 @@ class BenchmarkResult:
             "std_dev": self.std_dev,
         }
 
+
 class BenchRunner:
     """Benchmark runner stub."""
 
@@ -40,6 +43,7 @@ class BenchRunner:
 
     def record(self, *args: Any, **kwargs: Any) -> None:
         pass
+
 
 class BenchStore:
     """Benchmark results store stub."""
@@ -55,5 +59,6 @@ class BenchStore:
 
     def list_all(self) -> list[str]:
         return []
+
 
 __all__ = ["BenchmarkResult", "BenchRunner", "BenchStore"]

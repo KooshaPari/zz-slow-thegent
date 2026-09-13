@@ -256,7 +256,9 @@ class KeyRotationWebhook:
             "new_expires_at": new_expires_at,
         }
 
-        _log.info("Posting key rotation event for key_id=%s to %s", key_id, self.webhook_url)
+        _log.info(
+            "Posting key rotation event for key_id=%s to %s", key_id, self.webhook_url
+        )
         response = httpx.post(
             self.webhook_url,
             content=json.dumps(payload).decode().encode(),
@@ -265,11 +267,19 @@ class KeyRotationWebhook:
         )
         response.raise_for_status()
 
-        result: dict[str, Any] = {"sent": True, "status_code": response.status_code, "payload": payload}
-        _log.info("Webhook response: status=%d for key_id=%s", response.status_code, key_id)
+        result: dict[str, Any] = {
+            "sent": True,
+            "status_code": response.status_code,
+            "payload": payload,
+        }
+        _log.info(
+            "Webhook response: status=%d for key_id=%s", response.status_code, key_id
+        )
         return result
 
-    def build_rotation_payload(self, key_id: str, new_expires_at: str) -> dict[str, Any]:
+    def build_rotation_payload(
+        self, key_id: str, new_expires_at: str
+    ) -> dict[str, Any]:
         """Build the webhook payload without executing the rotation (for inspection/testing)."""
         record = self.registry.get(key_id)
         return {

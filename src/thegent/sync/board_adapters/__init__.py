@@ -1,4 +1,5 @@
 """Stub module."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -8,6 +9,7 @@ from typing import Any
 @dataclass
 class GitHubBoardAdapter:
     """Adapter for GitHub board integration."""
+
     owner: str = ""
     repo: str = ""
 

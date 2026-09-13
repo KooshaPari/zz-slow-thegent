@@ -21,7 +21,9 @@ def test_override_apply_and_check(mock_settings):
     manager = OverrideManager(settings=mock_settings)
 
     # Apply override for 60 minutes
-    manager.apply_override("HIGH_RISK_RULE", "Emergency fix", "human-1", duration_minutes=60)
+    manager.apply_override(
+        "HIGH_RISK_RULE", "Emergency fix", "human-1", duration_minutes=60
+    )
 
     override = manager.get_override("HIGH_RISK_RULE")
     assert override is not None

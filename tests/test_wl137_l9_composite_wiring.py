@@ -66,7 +66,9 @@ def run_impl_core_source(helpers_module) -> str:
 
 
 @pytest.mark.parametrize("phase_name", list(_COMPOSITE_PHASE_HELPERS))
-def test_run_impl_core_delegates_to_composite_helpers(phase_name: str, run_impl_core_source: str) -> None:
+def test_run_impl_core_delegates_to_composite_helpers(
+    phase_name: str, run_impl_core_source: str
+) -> None:
     """``run_impl_core`` must call every composite phase helper, not inline its body.
 
     This guards against accidental re-inlining that would balloon the
@@ -107,7 +109,9 @@ def test_execution_services_dataclass_declared(helpers_module) -> None:
         '    _keepalive_interval = float(getattr(settings, "keepalive_interval", 30.0))',
     ],
 )
-def test_run_impl_core_inline_fragments_removed(forbidden_fragment: str, run_impl_core_source: str) -> None:
+def test_run_impl_core_inline_fragments_removed(
+    forbidden_fragment: str, run_impl_core_source: str
+) -> None:
     """Body fragments that used to live inside ``run_impl_core`` must be gone.
 
     Each fragment identifies one of the six composite helpers. If any
@@ -119,7 +123,9 @@ def test_run_impl_core_inline_fragments_removed(forbidden_fragment: str, run_imp
     )
 
 
-def test_run_impl_core_lost_duplicate_settings_rebind(run_impl_core_source: str) -> None:
+def test_run_impl_core_lost_duplicate_settings_rebind(
+    run_impl_core_source: str,
+) -> None:
     """The redundant ``settings = ThegentSettings()`` mid-body must be gone.
 
     Pre-WL137 the orchestrator re-bound ``settings`` and ``impl_ns`` mid-
@@ -130,7 +136,11 @@ def test_run_impl_core_lost_duplicate_settings_rebind(run_impl_core_source: str)
     # The single canonical rebind happens at L1278. Anything past that point
     # with another ``settings = ThegentSettings()`` is the dead duplicate.
     body_lines = run_impl_core_source.splitlines()
-    rebinds = [i for i, ln in enumerate(body_lines, start=1) if ln.strip() == "settings = ThegentSettings()"]
+    rebinds = [
+        i
+        for i, ln in enumerate(body_lines, start=1)
+        if ln.strip() == "settings = ThegentSettings()"
+    ]
     assert len(rebinds) == 1, (
         f"Expected exactly one canonical `settings = ThegentSettings()` "
         f"in run_impl_core; found {len(rebinds)} at line offsets {rebinds}. "
@@ -152,7 +162,9 @@ def test_phase_init_tracker_generates_canonical_rid(helpers_module) -> None:
             run_id=None,
         )
 
-    assert re.match(r"^run_[0-9a-f]{8}$", rid), f"Expected rid to match `run_<8-hex>`; got {rid!r}."
+    assert re.match(r"^run_[0-9a-f]{8}$", rid), (
+        f"Expected rid to match `run_<8-hex>`; got {rid!r}."
+    )
     assert tracker is fake_tracker
     fake_tracker.start_run.assert_called_once_with(rid)
 
@@ -229,7 +241,9 @@ def test_phase_build_execution_services_returns_dataclass(helpers_module) -> Non
     services = helpers_module._phase_build_execution_services(settings, registry)
 
     assert isinstance(services, helpers_module._ExecutionServices)
-    assert services.escalation_sla_minutes == 30, "Bad int for escalation_sla_minutes must fall back to 30."
+    assert services.escalation_sla_minutes == 30, (
+        "Bad int for escalation_sla_minutes must fall back to 30."
+    )
     assert services.maif_runner is not None  # MAIFRunner() constructed
     assert services.auditor is not None
     assert services.policy_engine is not None
@@ -295,10 +309,16 @@ def test_phase_run_under_keepalive_releases_leases_on_fsm_crash(
     fake_keepalive_ctx.__exit__ = MagicMock(return_value=None)
 
     with (
-        patch.object(helpers_module, "_phase_release_resource_leases", side_effect=fake_release),
+        patch.object(
+            helpers_module, "_phase_release_resource_leases", side_effect=fake_release
+        ),
         patch.dict(
             "sys.modules",
-            {"thegent.ux.keepalive": MagicMock(keepalive=MagicMock(return_value=fake_keepalive_ctx))},
+            {
+                "thegent.ux.keepalive": MagicMock(
+                    keepalive=MagicMock(return_value=fake_keepalive_ctx)
+                )
+            },
         ),
     ):
         with pytest.raises(RuntimeError, match="FSM crashed"):
@@ -316,7 +336,9 @@ def test_phase_run_under_keepalive_releases_leases_on_fsm_crash(
                 rid="run-7",
             )
 
-    assert released_tokens == [list(sentinel)], "Lease release must run via finally even when fsm.run raises."
+    assert released_tokens == [list(sentinel)], (
+        "Lease release must run via finally even when fsm.run raises."
+    )
 
 
 def test_phase_dispatch_policy_outcome_allow_returns_none(helpers_module) -> None:
@@ -415,7 +437,9 @@ def test_phase_dispatch_policy_outcome_warn_prints_returns_none(
 
 
 @pytest.mark.parametrize("phase_name", list(_COMPOSITE_PHASE_HELPERS))
-def test_composite_helpers_keep_cc_within_l9_budget(phase_name: str, helpers_module) -> None:
+def test_composite_helpers_keep_cc_within_l9_budget(
+    phase_name: str, helpers_module
+) -> None:
     """Each composite helper must stay within the L9 hard ceiling (CC ≤ 18).
 
     The L9 budget is 40 lines for simple helpers, but composite helpers like

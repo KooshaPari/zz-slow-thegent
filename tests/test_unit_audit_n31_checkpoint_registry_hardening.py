@@ -48,7 +48,9 @@ class TestCheckpointRegistryAppendLock:
 
     def test_lock_attribute_is_rlock(self, tmp_path: Path) -> None:
         reg = CheckpointRegistry(tmp_path)
-        assert hasattr(reg, "_append_lock"), "CheckpointRegistry must expose _append_lock"
+        assert hasattr(reg, "_append_lock"), (
+            "CheckpointRegistry must expose _append_lock"
+        )
         lock = reg._append_lock
         # RLock supports re-entry from the same thread.
         with lock, lock:  # re-entry: would deadlock if Lock, not RLock
@@ -77,19 +79,25 @@ class TestCheckpointRegistryValidation:
     """AUDIT-N+31 NEW-2: defensive input validation."""
 
     @pytest.mark.parametrize("bad_reason", ["", None, 123, [], {}, object()])
-    def test_create_checkpoint_rejects_invalid_reason(self, tmp_path: Path, bad_reason: Any) -> None:
+    def test_create_checkpoint_rejects_invalid_reason(
+        self, tmp_path: Path, bad_reason: Any
+    ) -> None:
         reg = CheckpointRegistry(tmp_path)
         with pytest.raises((ValueError, TypeError)):
             reg.create_checkpoint(bad_reason, "dag", "owner")
 
     @pytest.mark.parametrize("bad_owner", ["", None, 123, [], {}, object()])
-    def test_create_checkpoint_rejects_invalid_owner(self, tmp_path: Path, bad_owner: Any) -> None:
+    def test_create_checkpoint_rejects_invalid_owner(
+        self, tmp_path: Path, bad_owner: Any
+    ) -> None:
         reg = CheckpointRegistry(tmp_path)
         with pytest.raises((ValueError, TypeError)):
             reg.create_checkpoint("reason", "dag", bad_owner)
 
     @pytest.mark.parametrize("bad_dag", [None, 123, [], {}, object()])
-    def test_create_checkpoint_rejects_invalid_dag_content(self, tmp_path: Path, bad_dag: Any) -> None:
+    def test_create_checkpoint_rejects_invalid_dag_content(
+        self, tmp_path: Path, bad_dag: Any
+    ) -> None:
         reg = CheckpointRegistry(tmp_path)
         with pytest.raises((ValueError, TypeError)):
             reg.create_checkpoint("reason", bad_dag, "owner")
@@ -289,14 +297,27 @@ class TestKPIManagerValidation:
     """AUDIT-N+31 NEW-2: KPIManager defensive input validation."""
 
     @pytest.mark.parametrize("bad_name", ["", None, 123, [], {}, object()])
-    def test_record_rejects_invalid_kpi_name(self, tmp_path: Path, bad_name: Any) -> None:
+    def test_record_rejects_invalid_kpi_name(
+        self, tmp_path: Path, bad_name: Any
+    ) -> None:
         mgr = KPIManager(tmp_path)
         with pytest.raises((ValueError, TypeError)):
             mgr.record(bad_name, 1.0)
 
     @pytest.mark.parametrize(
         "bad_value",
-        [None, "string", [], {}, object(), float("nan"), float("inf"), float("-inf"), True, False],
+        [
+            None,
+            "string",
+            [],
+            {},
+            object(),
+            float("nan"),
+            float("inf"),
+            float("-inf"),
+            True,
+            False,
+        ],
     )
     def test_record_rejects_invalid_value(self, tmp_path: Path, bad_value: Any) -> None:
         mgr = KPIManager(tmp_path)

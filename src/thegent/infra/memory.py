@@ -115,7 +115,14 @@ class MemoryMeshV2:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
                 "INSERT INTO episodic_log (task_id, timestamp, event_type, content, outcome, metadata) VALUES (?, ?, ?, ?, ?, ?)",
-                (task_id, ts, event_type, content, outcome, json.dumps(metadata or {}).decode()),
+                (
+                    task_id,
+                    ts,
+                    event_type,
+                    content,
+                    outcome,
+                    json.dumps(metadata or {}).decode(),
+                ),
             )
             return cursor.lastrowid or 0
 
@@ -123,7 +130,10 @@ class MemoryMeshV2:
         """Retrieve historical episodes for a task to prevent reasoning loops."""
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
-            cursor = conn.execute("SELECT * FROM episodic_log WHERE task_id = ? ORDER BY timestamp ASC", (task_id,))
+            cursor = conn.execute(
+                "SELECT * FROM episodic_log WHERE task_id = ? ORDER BY timestamp ASC",
+                (task_id,),
+            )
             return [dict(row) for row in cursor]
 
     # --- Hot-path archival (WL-136 / L19 memory hygiene) ---
@@ -178,7 +188,9 @@ class MemoryMeshV2:
             # access_counts entries for absent keys are advisory and
             # do not represent archivable state.
             hot = sorted(
-                key for key, count in access_counts.items() if count >= threshold and key in self.working_memory
+                key
+                for key, count in access_counts.items()
+                if count >= threshold and key in self.working_memory
             )
         for key in hot:
             value = self.working_memory.get(key)
@@ -190,7 +202,10 @@ class MemoryMeshV2:
                     event_type="hot_path_archive",
                     content=f"{key}={value!r}",
                     outcome="archived",
-                    metadata={"key": key, "access_count": (access_counts or {}).get(key)},
+                    metadata={
+                        "key": key,
+                        "access_count": (access_counts or {}).get(key),
+                    },
                 )
             except Exception as exc:  # noqa: BLE001 — best-effort, see docstring
                 _log.warning("hot_path_archive skipped for key %r: %s", key, exc)
@@ -200,7 +215,9 @@ class MemoryMeshV2:
 
     # --- Tier 3: Semantic Memory (Knowledge Graph) ---
 
-    def add_knowledge(self, node: MemoryNode, relations: list[MemoryEdge] | None = None) -> None:
+    def add_knowledge(
+        self, node: MemoryNode, relations: list[MemoryEdge] | None = None
+    ) -> None:
         """Add a node and its relations to the knowledge graph."""
         if relations is None:
             relations = []
@@ -215,7 +232,13 @@ class MemoryMeshV2:
                     metadata=excluded.metadata,
                     timestamp=excluded.timestamp
                 """,
-                (node.id, node.type, node.content, json.dumps(node.metadata).decode(), node.timestamp),
+                (
+                    node.id,
+                    node.type,
+                    node.content,
+                    json.dumps(node.metadata).decode(),
+                    node.timestamp,
+                ),
             )
             # Add edges
             for edge in relations:

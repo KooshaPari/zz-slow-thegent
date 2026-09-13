@@ -16,7 +16,14 @@ def _repo_root() -> Path:
 
 @pytest.mark.unit
 def test_governance_contract_report_generates_outputs(tmp_path: Path) -> None:
-    dispatcher = _repo_root() / "hooks" / "hook-dispatcher" / "target" / "debug" / "hook-dispatcher"
+    dispatcher = (
+        _repo_root()
+        / "hooks"
+        / "hook-dispatcher"
+        / "target"
+        / "debug"
+        / "hook-dispatcher"
+    )
     if not dispatcher.exists():
         pytest.skip("hook-dispatcher binary not built")
 
@@ -25,7 +32,14 @@ def test_governance_contract_report_generates_outputs(tmp_path: Path) -> None:
     script = _repo_root() / "scripts" / "governance_contract_report.py"
 
     proc = subprocess.run(
-        [sys.executable, str(script), "--json-out", str(json_out), "--md-out", str(md_out)],
+        [
+            sys.executable,
+            str(script),
+            "--json-out",
+            str(json_out),
+            "--md-out",
+            str(md_out),
+        ],
         cwd=_repo_root(),
         capture_output=True,
         text=True,

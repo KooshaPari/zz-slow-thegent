@@ -31,8 +31,12 @@ app.add_typer(queue_app, name="queue")
 
 @queue_app.command("enqueue")
 def queue_enqueue(
-    payload: str = typer.Argument(..., help="Task payload (JSON string or simple text)"),
-    priority: int = typer.Option(5, "--priority", "-p", help="Task priority (0-9, lower is higher)"),
+    payload: str = typer.Argument(
+        ..., help="Task payload (JSON string or simple text)"
+    ),
+    priority: int = typer.Option(
+        5, "--priority", "-p", help="Task priority (0-9, lower is higher)"
+    ),
     mesh_root: str | None = typer.Option(None, "--mesh-root", help="Path to mesh root"),
 ) -> None:
     """Enqueue a new task into the distributed mesh queue."""
@@ -55,9 +59,13 @@ def queue_enqueue(
 
 @queue_app.command("dequeue")
 def queue_dequeue(
-    agent_id: str | None = typer.Option(None, "--agent-id", help="Optional owner ID for claimed task"),
+    agent_id: str | None = typer.Option(
+        None, "--agent-id", help="Optional owner ID for claimed task"
+    ),
     mesh_root: str | None = typer.Option(None, "--mesh-root", help="Path to mesh root"),
-    ack: bool = typer.Option(False, "--ack", help="Immediately acknowledge/remove the task"),
+    ack: bool = typer.Option(
+        False, "--ack", help="Immediately acknowledge/remove the task"
+    ),
 ) -> None:
     """Claim the highest-priority task from the queue."""
     import json
@@ -114,7 +122,9 @@ def queue_list(
             str(t["priority"]),
             str(t["attempts"]),
             created,
-            str(t["payload"])[:50] + "..." if len(str(t["payload"])) > 50 else str(t["payload"]),
+            str(t["payload"])[:50] + "..."
+            if len(str(t["payload"])) > 50
+            else str(t["payload"]),
         )
 
     console.print(table)
@@ -254,7 +264,9 @@ def discover(
         help="Comma-separated regex patterns (optional; defaults to agents.conf)",
     ),
     mesh_root: str | None = typer.Option(None, "--mesh-root", help="Path to mesh root"),
-    register: bool = typer.Option(True, "--register/--no-register", help="Register discovered agents"),
+    register: bool = typer.Option(
+        True, "--register/--no-register", help="Register discovered agents"
+    ),
 ) -> None:
     """Discover active agent processes and optionally register them."""
     from pathlib import Path
@@ -302,7 +314,9 @@ def mesh_merge(
     base: Path = typer.Argument(..., help="Base file version"),
     ours: Path = typer.Argument(..., help="Our file version"),
     theirs: Path = typer.Argument(..., help="Their file version"),
-    output: Path = typer.Option(None, "--output", "-o", help="Output file (default: overwrite 'ours')"),
+    output: Path = typer.Option(
+        None, "--output", "-o", help="Output file (default: overwrite 'ours')"
+    ),
 ) -> None:
     """WP-16004: AST-aware conflict resolution using SmartMerge."""
     from thegent.governance.heliosShield_bridge import SmartMerge
@@ -329,7 +343,9 @@ def mesh_consensus(
     """WP-X: Reach consensus on a task across multiple agents."""
     console.print(f"Reaching consensus for task: [cyan]{task_id}[/cyan]...")
     # Placeholder for actual consensus logic (Phase 13)
-    console.print("[yellow]Consensus engine not yet implemented. Defaulting to majority vote...[/yellow]")
+    console.print(
+        "[yellow]Consensus engine not yet implemented. Defaulting to majority vote...[/yellow]"
+    )
     console.print("[green]Consensus reached: Accept changes.[/green]")
 
 
@@ -337,7 +353,9 @@ def mesh_consensus(
 def run_agent(
     agent_type: str = typer.Argument("claude-code", help="Type of agent to run"),
     prompt: str = typer.Option("", "--prompt", "-p", help="Initial prompt"),
-    workdir: str | None = typer.Option(None, "--workdir", "-w", help="Working directory"),
+    workdir: str | None = typer.Option(
+        None, "--workdir", "-w", help="Working directory"
+    ),
 ) -> None:
     """Start a new agent in a managed mesh session (tmux)."""
     from pathlib import Path
@@ -354,7 +372,10 @@ def run_agent(
 
     try:
         result = shim_run(
-            ["bash", str(script_path), agent_type, prompt, str(workdir)], capture_output=True, text=True, check=True
+            ["bash", str(script_path), agent_type, prompt, str(workdir)],
+            capture_output=True,
+            text=True,
+            check=True,
         )
         console.print(result.stdout)
     except subprocess.CalledProcessError as e:

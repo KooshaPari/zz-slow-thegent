@@ -12,7 +12,9 @@ from thegent.cli.apps.routing import app as routing_app
 runner = CliRunner()
 
 
-def _audit_record(provider: str, model: str, latency_ms: int, cost: float) -> dict[str, object]:
+def _audit_record(
+    provider: str, model: str, latency_ms: int, cost: float
+) -> dict[str, object]:
     return {
         "timestamp": "2026-02-23T00:00:00Z",
         "decision_id": f"decision-{provider}-{latency_ms}",
@@ -39,7 +41,9 @@ def test_routing_pareto_panel_json_output(tmp_path: Path) -> None:
         ],
     )
 
-    result = runner.invoke(routing_app, ["pareto-panel", "--audit", str(audit), "--format", "json"])
+    result = runner.invoke(
+        routing_app, ["pareto-panel", "--audit", str(audit), "--format", "json"]
+    )
 
     assert result.exit_code == 0
     payload = json.loads(result.output)
@@ -59,7 +63,9 @@ def test_routing_pareto_panel_rich_output(tmp_path: Path) -> None:
         ],
     )
 
-    result = runner.invoke(routing_app, ["pareto-panel", "--audit", str(audit), "--format", "rich"])
+    result = runner.invoke(
+        routing_app, ["pareto-panel", "--audit", str(audit), "--format", "rich"]
+    )
 
     assert result.exit_code == 0
     assert "Pareto Frontier Panel" in result.output

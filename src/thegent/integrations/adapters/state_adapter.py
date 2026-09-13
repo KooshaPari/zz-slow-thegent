@@ -15,8 +15,12 @@ class StateAdapter:
 
     def __init__(self, config: Any):
         self.config = config
-        self._status_path = config.status_file_path or Path("docs/reference/autosync_status.json")
-        self._trend_path = config.trend_path or Path("docs/reference/workstream_autosync_trend.jsonl")
+        self._status_path = config.status_file_path or Path(
+            "docs/reference/autosync_status.json"
+        )
+        self._trend_path = config.trend_path or Path(
+            "docs/reference/workstream_autosync_trend.jsonl"
+        )
         self._cycle_metrics_path = config.cycle_metrics_path or Path(
             "docs/reference/workstream_autosync_cycle_metrics.jsonl"
         )
@@ -38,7 +42,9 @@ class StateAdapter:
         return self._change_digest_path
 
     def get_autosync_metrics_path(self) -> Path:
-        return self.config.autosync_prometheus_export_path or Path("docs/reference/workstream_autosync_metrics.prom")
+        return self.config.autosync_prometheus_export_path or Path(
+            "docs/reference/workstream_autosync_metrics.prom"
+        )
 
     def get_cycle_manifest_path(self) -> Path:
         return self._status_path.parent / "autosync_cycle_manifest.jsonl"
@@ -57,12 +63,16 @@ class StateAdapter:
 
     def get_latest_snapshot_age_seconds(self) -> int | None:
         """Get age of latest snapshot in seconds."""
-        snapshot_candidates = sorted(self._status_path.parent.glob("autosync_snapshot_*.json"))
+        snapshot_candidates = sorted(
+            self._status_path.parent.glob("autosync_snapshot_*.json")
+        )
         if not snapshot_candidates:
             return None
         try:
             latest = max(snapshot_candidates, key=lambda p: p.stat().st_mtime)
-            age = datetime.now(UTC) - datetime.fromtimestamp(latest.stat().st_mtime, tz=UTC)
+            age = datetime.now(UTC) - datetime.fromtimestamp(
+                latest.stat().st_mtime, tz=UTC
+            )
             return max(0, int(age.total_seconds()))
         except OSError:
             return None
@@ -90,7 +100,9 @@ class StateAdapter:
         """Write status to file."""
         try:
             self._status_path.parent.mkdir(parents=True, exist_ok=True)
-            self._status_path.write_text(json.dumps(status, option=json.OPT_INDENT_2).decode())
+            self._status_path.write_text(
+                json.dumps(status, option=json.OPT_INDENT_2).decode()
+            )
         except Exception:
             pass
 
@@ -98,7 +110,9 @@ class StateAdapter:
         """Compact old snapshots, keeping only the most recent."""
         try:
             snapshots = sorted(
-                self._status_path.parent.glob("autosync_snapshot_*.json"), key=lambda p: p.stat().st_mtime, reverse=True
+                self._status_path.parent.glob("autosync_snapshot_*.json"),
+                key=lambda p: p.stat().st_mtime,
+                reverse=True,
             )
             for old in snapshots[keep_count:]:
                 old.unlink()

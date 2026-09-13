@@ -174,15 +174,15 @@ class ContractRegistry:
             return [c for c in self.contracts.values() if isinstance(c, SLAAgreement)]
         elif contract_type == ContractType.COMPLIANCE:
             return [
-                c for c in self.contracts.values()
-                if isinstance(c, ComplianceContract)
+                c for c in self.contracts.values() if isinstance(c, ComplianceContract)
             ]
         return []
 
     def active_slas(self) -> list[SLAAgreement]:
         """Get all active SLAs."""
         return [
-            c for c in self.contracts.values()
+            c
+            for c in self.contracts.values()
             if isinstance(c, SLAAgreement) and c.is_active()
         ]
 

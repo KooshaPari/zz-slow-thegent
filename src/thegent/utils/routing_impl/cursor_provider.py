@@ -131,7 +131,10 @@ class CursorExecutorManager:
         current = self._provider.get_token()
         if current == self._last_token:
             return 0
-        _log.info("cursor token rotated — rebinding %d active executor(s)", len(self._active_clients))
+        _log.info(
+            "cursor token rotated — rebinding %d active executor(s)",
+            len(self._active_clients),
+        )
         count = 0
         for client in list(self._active_clients):
             if hasattr(client, "aclose"):
@@ -146,7 +149,9 @@ class CursorExecutorManager:
         """Build Authorization header dict for the current token."""
         token = self._provider.get_token()
         if not token:
-            raise RuntimeError("Cursor token is empty. Run `thegent cliproxy login cursor` to authenticate.")
+            raise RuntimeError(
+                "Cursor token is empty. Run `thegent cliproxy login cursor` to authenticate."
+            )
         return {"Authorization": f"Bearer {token}"}
 
 

@@ -45,7 +45,9 @@ class TestPruneStalesShadowAndLogs:
         from thegent.orchestration.pruning.prune import _prune_stale_shadow_and_logs
 
         # cwd = workspace; root.parent = tmp_path; globs .shadow-* in tmp_path
-        with patch("thegent.orchestration.pruning.prune.Path.cwd", return_value=workspace):
+        with patch(
+            "thegent.orchestration.pruning.prune.Path.cwd", return_value=workspace
+        ):
             shadow_count, _logs = _prune_stale_shadow_and_logs(
                 dry_run=False,
                 shadow_max_age_hours=24,
@@ -69,7 +71,9 @@ class TestPruneStalesShadowAndLogs:
 
         from thegent.orchestration.pruning.prune import _prune_stale_shadow_and_logs
 
-        with patch("thegent.orchestration.pruning.prune.Path.cwd", return_value=workspace):
+        with patch(
+            "thegent.orchestration.pruning.prune.Path.cwd", return_value=workspace
+        ):
             shadow_count, _logs = _prune_stale_shadow_and_logs(
                 dry_run=True,
                 shadow_max_age_hours=24,
@@ -89,7 +93,9 @@ class TestPruneStalesShadowAndLogs:
 
         from thegent.orchestration.pruning.prune import _prune_stale_shadow_and_logs
 
-        with patch("thegent.orchestration.pruning.prune.Path.cwd", return_value=workspace):
+        with patch(
+            "thegent.orchestration.pruning.prune.Path.cwd", return_value=workspace
+        ):
             shadow_count, _logs = _prune_stale_shadow_and_logs(
                 dry_run=False,
                 shadow_max_age_hours=24,
@@ -114,7 +120,9 @@ class TestPruneStalesShadowAndLogs:
 
         from thegent.orchestration.pruning.prune import _prune_stale_shadow_and_logs
 
-        with patch("thegent.orchestration.pruning.prune.Path.cwd", return_value=workspace):
+        with patch(
+            "thegent.orchestration.pruning.prune.Path.cwd", return_value=workspace
+        ):
             shadow_count, _logs = _prune_stale_shadow_and_logs(
                 dry_run=False,
                 shadow_max_age_hours=24,
@@ -138,7 +146,9 @@ class TestPruneStalesShadowAndLogs:
 
         from thegent.orchestration.pruning.prune import _prune_stale_shadow_and_logs
 
-        with patch("thegent.orchestration.pruning.prune.Path.cwd", return_value=workspace):
+        with patch(
+            "thegent.orchestration.pruning.prune.Path.cwd", return_value=workspace
+        ):
             shadow_count, _logs = _prune_stale_shadow_and_logs(
                 dry_run=False,
                 shadow_max_age_hours=24,
@@ -164,11 +174,22 @@ class TestMcpPruneShadowIntegration:
         # Simulate ps output with a node process that will match as a candidate
         fake_ps_output = "  PID  PPID TTY    RSS COMMAND\n99999  1    ??    1000 node /fake/pyright-langserver\n"
         with (
-            patch("thegent.orchestration.pruning.prune.run_subprocess_optimized") as mock_ps,
-            patch("thegent.orchestration.pruning.prune._prune_stale_shadow_and_logs") as mock_shadow,
-            patch("thegent.orchestration.pruning.prune.list_tmux_panes", return_value=[]),
-            patch("thegent.orchestration.pruning.prune.kill_process", return_value=True),
-            patch("thegent.orchestration.pruning.prune.is_orphan_by_ppid", return_value=True),
+            patch(
+                "thegent.orchestration.pruning.prune.run_subprocess_optimized"
+            ) as mock_ps,
+            patch(
+                "thegent.orchestration.pruning.prune._prune_stale_shadow_and_logs"
+            ) as mock_shadow,
+            patch(
+                "thegent.orchestration.pruning.prune.list_tmux_panes", return_value=[]
+            ),
+            patch(
+                "thegent.orchestration.pruning.prune.kill_process", return_value=True
+            ),
+            patch(
+                "thegent.orchestration.pruning.prune.is_orphan_by_ppid",
+                return_value=True,
+            ),
         ):
             mock_ps.return_value = MagicMock(stdout=fake_ps_output, returncode=0)
             mock_shadow.return_value = (0, 0)
@@ -195,11 +216,19 @@ class TestMcpPruneShadowIntegration:
     def test_mcp_prune_dry_run_shadow_cleanup(self) -> None:
         """mcp_prune dry_run=True passes dry_run=True to shadow cleanup."""
         with (
-            patch("thegent.orchestration.pruning.prune.run_subprocess_optimized") as mock_ps,
-            patch("thegent.orchestration.pruning.prune._prune_stale_shadow_and_logs") as mock_shadow,
-            patch("thegent.orchestration.pruning.prune.list_tmux_panes", return_value=[]),
+            patch(
+                "thegent.orchestration.pruning.prune.run_subprocess_optimized"
+            ) as mock_ps,
+            patch(
+                "thegent.orchestration.pruning.prune._prune_stale_shadow_and_logs"
+            ) as mock_shadow,
+            patch(
+                "thegent.orchestration.pruning.prune.list_tmux_panes", return_value=[]
+            ),
         ):
-            mock_ps.return_value = MagicMock(stdout="  PID  PPID TTY    RSS COMMAND\n", returncode=0)
+            mock_ps.return_value = MagicMock(
+                stdout="  PID  PPID TTY    RSS COMMAND\n", returncode=0
+            )
             mock_shadow.return_value = (2, 0)
 
             from thegent.orchestration.pruning.prune import mcp_prune
@@ -282,7 +311,9 @@ class TestDoctorShadowDetection:
         if shadow_results:
             hint = shadow_results[0].fix_hint or ""
             # The hint should reference a cleanup mechanism
-            assert any(kw in hint.lower() for kw in ["prune", "cleanup", "mcp", "thegent"])
+            assert any(
+                kw in hint.lower() for kw in ["prune", "cleanup", "mcp", "thegent"]
+            )
 
 
 # ---------------------------------------------------------------------------

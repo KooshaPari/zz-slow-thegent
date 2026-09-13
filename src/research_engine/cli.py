@@ -1,4 +1,5 @@
 """CLI - STUB."""
+
 from dataclasses import dataclass
 
 # Stub application instance

@@ -1,4 +1,5 @@
 """Compositor layout engine module."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -28,6 +29,7 @@ __all__ = ["Direction", "LayoutEngine", "LayoutNode", "Padding", "Size", "SizeUn
 
 class SizeUnit(Enum):
     """Size unit for layout elements."""
+
     PIXELS = "px"
     PERCENT = "%"
     AUTO = "auto"
@@ -36,6 +38,7 @@ class SizeUnit(Enum):
 @dataclass
 class Size:
     """Size for layout elements."""
+
     width: int = 0
     height: int = 0
 
@@ -43,6 +46,7 @@ class Size:
 @dataclass
 class Padding:
     """Padding for layout elements."""
+
     top: int = 0
     right: int = 0
     bottom: int = 0

@@ -16,7 +16,9 @@ def thegent_list_operations_impl(*args: Any, **kwargs: Any) -> dict[str, Any]:
     return {"operations": [], "count": 0}
 
 
-def register_catalog_tool(tool_name: str, *, description: str = "", handler: Any = None) -> dict[str, Any]:
+def register_catalog_tool(
+    tool_name: str, *, description: str = "", handler: Any = None
+) -> dict[str, Any]:
     """Register a catalog tool (stub).
 
     Returns a confirmation envelope indicating the tool was registered.

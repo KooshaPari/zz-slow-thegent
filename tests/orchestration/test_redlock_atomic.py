@@ -26,13 +26,21 @@ from thegent.orchestration.consensus.redlock_atomic import (
 # ---------------------------------------------------------------------------
 
 
-def _fallback_controller(key: str = "test-key", ttl_ms: int = 5000) -> RedlockController:
+def _fallback_controller(
+    key: str = "test-key", ttl_ms: int = 5000
+) -> RedlockController:
     """Create a RedlockController forced into in-memory fallback mode."""
-    with patch("thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None):
-        return RedlockController(key, ttl_ms=ttl_ms, redis_nodes=["redis://localhost:6379"])
+    with patch(
+        "thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None
+    ):
+        return RedlockController(
+            key, ttl_ms=ttl_ms, redis_nodes=["redis://localhost:6379"]
+        )
 
 
-def _mock_redis_client(*, set_ok: bool = True, eval_result: int = 1, exists: bool = False) -> MagicMock:
+def _mock_redis_client(
+    *, set_ok: bool = True, eval_result: int = 1, exists: bool = False
+) -> MagicMock:
     """Build a mock Redis client."""
     client = MagicMock()
     client.ping.return_value = True
@@ -100,58 +108,84 @@ class TestInMemoryLockState:
     def state(self) -> _InMemoryLockState:
         return _InMemoryLockState()
 
-    def test_acquire_returns_true_when_free(self, state: _InMemoryLockState) -> None:  # @trace FR-ORC-003
+    def test_acquire_returns_true_when_free(
+        self, state: _InMemoryLockState
+    ) -> None:  # @trace FR-ORC-003
         assert state.acquire("lock-1", 5000) is True
 
-    def test_acquire_when_locked_returns_false(self, state: _InMemoryLockState) -> None:  # @trace FR-ORC-003
+    def test_acquire_when_locked_returns_false(
+        self, state: _InMemoryLockState
+    ) -> None:  # @trace FR-ORC-003
         state.acquire("lock-1", 5000)
         assert state.acquire("lock-2", 5000) is False
 
-    def test_release_matching_returns_true(self, state: _InMemoryLockState) -> None:  # @trace FR-ORC-003
+    def test_release_matching_returns_true(
+        self, state: _InMemoryLockState
+    ) -> None:  # @trace FR-ORC-003
         state.acquire("lock-1", 5000)
         assert state.release("lock-1") is True
 
-    def test_release_wrong_id_returns_false(self, state: _InMemoryLockState) -> None:  # @trace FR-ORC-003
+    def test_release_wrong_id_returns_false(
+        self, state: _InMemoryLockState
+    ) -> None:  # @trace FR-ORC-003
         state.acquire("lock-1", 5000)
         assert state.release("wrong-id") is False
 
-    def test_release_when_free_returns_false(self, state: _InMemoryLockState) -> None:  # @trace FR-ORC-003
+    def test_release_when_free_returns_false(
+        self, state: _InMemoryLockState
+    ) -> None:  # @trace FR-ORC-003
         assert state.release("nonexistent") is False
 
-    def test_acquire_after_release(self, state: _InMemoryLockState) -> None:  # @trace FR-ORC-003
+    def test_acquire_after_release(
+        self, state: _InMemoryLockState
+    ) -> None:  # @trace FR-ORC-003
         state.acquire("lock-1", 5000)
         state.release("lock-1")
         assert state.acquire("lock-2", 5000) is True
 
-    def test_is_locked_when_held(self, state: _InMemoryLockState) -> None:  # @trace FR-ORC-003
+    def test_is_locked_when_held(
+        self, state: _InMemoryLockState
+    ) -> None:  # @trace FR-ORC-003
         state.acquire("lock-1", 5000)
         assert state.is_locked() is True
 
-    def test_is_locked_when_free(self, state: _InMemoryLockState) -> None:  # @trace FR-ORC-003
+    def test_is_locked_when_free(
+        self, state: _InMemoryLockState
+    ) -> None:  # @trace FR-ORC-003
         assert state.is_locked() is False
 
-    def test_is_locked_after_release(self, state: _InMemoryLockState) -> None:  # @trace FR-ORC-003
+    def test_is_locked_after_release(
+        self, state: _InMemoryLockState
+    ) -> None:  # @trace FR-ORC-003
         state.acquire("lock-1", 5000)
         state.release("lock-1")
         assert state.is_locked() is False
 
-    def test_extend_updates_expiry(self, state: _InMemoryLockState) -> None:  # @trace FR-ORC-003
+    def test_extend_updates_expiry(
+        self, state: _InMemoryLockState
+    ) -> None:  # @trace FR-ORC-003
         state.acquire("lock-1", 5000)
         before = state._expires_at
         time.sleep(0.05)
         assert state.extend("lock-1", 10000) is True
         assert state._expires_at > before
 
-    def test_extend_wrong_id_returns_false(self, state: _InMemoryLockState) -> None:  # @trace FR-ORC-003
+    def test_extend_wrong_id_returns_false(
+        self, state: _InMemoryLockState
+    ) -> None:  # @trace FR-ORC-003
         state.acquire("lock-1", 5000)
         assert state.extend("wrong-id", 10000) is False
 
-    def test_expired_lock_can_be_reacquired(self, state: _InMemoryLockState) -> None:  # @trace FR-ORC-003
+    def test_expired_lock_can_be_reacquired(
+        self, state: _InMemoryLockState
+    ) -> None:  # @trace FR-ORC-003
         state.acquire("lock-1", 10)  # 10ms TTL — expires almost immediately
         time.sleep(0.05)
         assert state.acquire("lock-2", 5000) is True
 
-    def test_is_locked_false_after_expiry(self, state: _InMemoryLockState) -> None:  # @trace FR-ORC-003
+    def test_is_locked_false_after_expiry(
+        self, state: _InMemoryLockState
+    ) -> None:  # @trace FR-ORC-003
         state.acquire("lock-1", 10)  # 10ms TTL
         time.sleep(0.05)
         assert state.is_locked() is False
@@ -186,17 +220,25 @@ class TestParseRedisUrl:
 class TestParseNodeUrlsFromEnv:
     """Tests for env-based node URL parsing.  @trace FR-ORC-003"""
 
-    def test_default_single_node(self, monkeypatch: pytest.MonkeyPatch) -> None:  # @trace FR-ORC-003
+    def test_default_single_node(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:  # @trace FR-ORC-003
         monkeypatch.delenv("THGENT_REDLOCK_NODES", raising=False)
         urls = _parse_node_urls_from_env()
         assert urls == ["redis://localhost:6379"]
 
-    def test_multiple_nodes(self, monkeypatch: pytest.MonkeyPatch) -> None:  # @trace FR-ORC-003
-        monkeypatch.setenv("THGENT_REDLOCK_NODES", "redis://a:6379,redis://b:6380,redis://c:6381")
+    def test_multiple_nodes(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:  # @trace FR-ORC-003
+        monkeypatch.setenv(
+            "THGENT_REDLOCK_NODES", "redis://a:6379,redis://b:6380,redis://c:6381"
+        )
         urls = _parse_node_urls_from_env()
         assert urls == ["redis://a:6379", "redis://b:6380", "redis://c:6381"]
 
-    def test_whitespace_stripped(self, monkeypatch: pytest.MonkeyPatch) -> None:  # @trace FR-ORC-003
+    def test_whitespace_stripped(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:  # @trace FR-ORC-003
         monkeypatch.setenv("THGENT_REDLOCK_NODES", "redis://a:6379 , redis://b:6380")
         urls = _parse_node_urls_from_env()
         assert urls == ["redis://a:6379", "redis://b:6380"]
@@ -214,63 +256,91 @@ class TestRedlockControllerFallback:
     def ctrl(self) -> RedlockController:
         return _fallback_controller()
 
-    def test_is_available_false_in_fallback(self, ctrl: RedlockController) -> None:  # @trace FR-ORC-003
+    def test_is_available_false_in_fallback(
+        self, ctrl: RedlockController
+    ) -> None:  # @trace FR-ORC-003
         assert ctrl.is_available() is False
 
-    def test_acquire_returns_result(self, ctrl: RedlockController) -> None:  # @trace FR-ORC-003
+    def test_acquire_returns_result(
+        self, ctrl: RedlockController
+    ) -> None:  # @trace FR-ORC-003
         result = ctrl.acquire()
         assert isinstance(result, RedlockAcquireResult)
 
-    def test_acquire_acquired_true(self, ctrl: RedlockController) -> None:  # @trace FR-ORC-003
+    def test_acquire_acquired_true(
+        self, ctrl: RedlockController
+    ) -> None:  # @trace FR-ORC-003
         result = ctrl.acquire()
         assert result.acquired is True
 
-    def test_acquire_lock_id_nonempty(self, ctrl: RedlockController) -> None:  # @trace FR-ORC-003
+    def test_acquire_lock_id_nonempty(
+        self, ctrl: RedlockController
+    ) -> None:  # @trace FR-ORC-003
         result = ctrl.acquire()
         assert len(result.lock_id) > 0
 
-    def test_acquire_expires_at_in_future(self, ctrl: RedlockController) -> None:  # @trace FR-ORC-003
+    def test_acquire_expires_at_in_future(
+        self, ctrl: RedlockController
+    ) -> None:  # @trace FR-ORC-003
         result = ctrl.acquire()
         assert result.expires_at > time.monotonic()
 
-    def test_acquire_when_already_locked_returns_false(self, ctrl: RedlockController) -> None:  # @trace FR-ORC-003
+    def test_acquire_when_already_locked_returns_false(
+        self, ctrl: RedlockController
+    ) -> None:  # @trace FR-ORC-003
         ctrl.acquire()
         second = ctrl.acquire()
         assert second.acquired is False
         assert second.lock_id == ""
         assert second.expires_at == 0.0
 
-    def test_release_matching_lock_id_succeeds(self, ctrl: RedlockController) -> None:  # @trace FR-ORC-003
+    def test_release_matching_lock_id_succeeds(
+        self, ctrl: RedlockController
+    ) -> None:  # @trace FR-ORC-003
         result = ctrl.acquire()
         assert ctrl.release(result.lock_id) is True
 
-    def test_release_wrong_lock_id_returns_false(self, ctrl: RedlockController) -> None:  # @trace FR-ORC-003
+    def test_release_wrong_lock_id_returns_false(
+        self, ctrl: RedlockController
+    ) -> None:  # @trace FR-ORC-003
         ctrl.acquire()
         assert ctrl.release("wrong-id") is False
 
-    def test_release_allows_re_acquire(self, ctrl: RedlockController) -> None:  # @trace FR-ORC-003
+    def test_release_allows_re_acquire(
+        self, ctrl: RedlockController
+    ) -> None:  # @trace FR-ORC-003
         first = ctrl.acquire()
         ctrl.release(first.lock_id)
         second = ctrl.acquire()
         assert second.acquired is True
 
-    def test_extend_updates_ttl(self, ctrl: RedlockController) -> None:  # @trace FR-ORC-003
+    def test_extend_updates_ttl(
+        self, ctrl: RedlockController
+    ) -> None:  # @trace FR-ORC-003
         result = ctrl.acquire()
         time.sleep(0.02)
         assert ctrl.extend(result.lock_id, 10000) is True
 
-    def test_extend_wrong_id_returns_false(self, ctrl: RedlockController) -> None:  # @trace FR-ORC-003
+    def test_extend_wrong_id_returns_false(
+        self, ctrl: RedlockController
+    ) -> None:  # @trace FR-ORC-003
         ctrl.acquire()
         assert ctrl.extend("wrong-id", 10000) is False
 
-    def test_is_locked_true_when_held(self, ctrl: RedlockController) -> None:  # @trace FR-ORC-003
+    def test_is_locked_true_when_held(
+        self, ctrl: RedlockController
+    ) -> None:  # @trace FR-ORC-003
         ctrl.acquire()
         assert ctrl.is_locked() is True
 
-    def test_is_locked_false_initially(self, ctrl: RedlockController) -> None:  # @trace FR-ORC-003
+    def test_is_locked_false_initially(
+        self, ctrl: RedlockController
+    ) -> None:  # @trace FR-ORC-003
         assert ctrl.is_locked() is False
 
-    def test_is_locked_false_after_release(self, ctrl: RedlockController) -> None:  # @trace FR-ORC-003
+    def test_is_locked_false_after_release(
+        self, ctrl: RedlockController
+    ) -> None:  # @trace FR-ORC-003
         result = ctrl.acquire()
         ctrl.release(result.lock_id)
         assert ctrl.is_locked() is False
@@ -394,22 +464,30 @@ class TestMakeRedlockController:
     """Tests for the factory function.  @trace FR-ORC-003"""
 
     def test_returns_redlock_controller(self) -> None:  # @trace FR-ORC-003
-        with patch("thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None):
+        with patch(
+            "thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None
+        ):
             ctrl = make_redlock_controller("my-lock")
         assert isinstance(ctrl, RedlockController)
 
     def test_passes_ttl_ms(self) -> None:  # @trace FR-ORC-003
-        with patch("thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None):
+        with patch(
+            "thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None
+        ):
             ctrl = make_redlock_controller("my-lock", ttl_ms=1234)
         assert ctrl._ttl_ms == 1234
 
     def test_passes_redis_nodes(self) -> None:  # @trace FR-ORC-003
-        with patch("thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None):
+        with patch(
+            "thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None
+        ):
             ctrl = make_redlock_controller("my-lock", redis_nodes=["redis://a:6379"])
         assert ctrl._nodes_urls == ["redis://a:6379"]
 
     def test_factory_fallback_functional(self) -> None:  # @trace FR-ORC-003
-        with patch("thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None):
+        with patch(
+            "thegent.orchestration.redlock_atomic._import_redis_sync", return_value=None
+        ):
             ctrl = make_redlock_controller("factory-test")
         result = ctrl.acquire()
         assert result.acquired is True

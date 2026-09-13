@@ -60,7 +60,9 @@ class CircuitState:
 class CircuitBreaker:
     """Object-style API for the same persistence layer."""
 
-    def __init__(self, root: Path, circuit_name: str, threshold: int = DEFAULT_THRESHOLD) -> None:
+    def __init__(
+        self, root: Path, circuit_name: str, threshold: int = DEFAULT_THRESHOLD
+    ) -> None:
         self.root = Path(root)
         self.circuit_name = circuit_name
         self.threshold = threshold
@@ -86,7 +88,9 @@ class CircuitBreaker:
     def _save(self, state: CircuitState) -> None:
         self._state_file.parent.mkdir(parents=True, exist_ok=True)
         # Atomic write: tmp file + rename
-        fd, tmp = tempfile.mkstemp(dir=self._state_file.parent, prefix=".cb_", suffix=".tmp")
+        fd, tmp = tempfile.mkstemp(
+            dir=self._state_file.parent, prefix=".cb_", suffix=".tmp"
+        )
         try:
             with os.fdopen(fd, "w") as f:
                 json.dump(state.to_dict(), f)
@@ -161,12 +165,16 @@ def is_open(root: Path, circuit_name: str, threshold: int = DEFAULT_THRESHOLD) -
     return state.count >= state.threshold
 
 
-def should_allow(root: Path, circuit_name: str, threshold: int = DEFAULT_THRESHOLD) -> bool:
+def should_allow(
+    root: Path, circuit_name: str, threshold: int = DEFAULT_THRESHOLD
+) -> bool:
     """Return ``True`` if calls through the named circuit should proceed."""
     return not is_open(root, circuit_name, threshold=threshold)
 
 
-def record_failure(root: Path, circuit_name: str, threshold: int = DEFAULT_THRESHOLD) -> CircuitState:
+def record_failure(
+    root: Path, circuit_name: str, threshold: int = DEFAULT_THRESHOLD
+) -> CircuitState:
     """Increment the failure counter for the named circuit and persist it."""
     state = _load_state(root, circuit_name, threshold)
     new_state = CircuitState(
@@ -179,7 +187,9 @@ def record_failure(root: Path, circuit_name: str, threshold: int = DEFAULT_THRES
     return new_state
 
 
-def record_success(root: Path, circuit_name: str, threshold: int = DEFAULT_THRESHOLD) -> CircuitState | None:
+def record_success(
+    root: Path, circuit_name: str, threshold: int = DEFAULT_THRESHOLD
+) -> CircuitState | None:
     """Reset the failure counter for the named circuit."""
     state = _load_state(root, circuit_name, threshold)
     if state.count == 0 and not state.opened_at:

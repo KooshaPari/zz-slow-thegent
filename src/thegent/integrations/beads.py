@@ -34,7 +34,11 @@ class BeadsWrapper:
 
     def _load_config(self) -> BeadsConfig:
         config = cast("BeadsConfig", BeadsConfig.from_env("BEADS_"))
-        config.enabled = os.environ.get("THEGENT_ENABLE_BEADS", "").lower() in ("1", "true", "yes")
+        config.enabled = os.environ.get("THEGENT_ENABLE_BEADS", "").lower() in (
+            "1",
+            "true",
+            "yes",
+        )
         return config
 
     def _check_availability(self):

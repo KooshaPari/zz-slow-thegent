@@ -11,7 +11,9 @@ def _write_json(path: Path, payload: str = "{}") -> None:
 
 
 @pytest.mark.unit
-def test_do_next_impl_blocks_when_evidence_missing(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_do_next_impl_blocks_when_evidence_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """Missing evidence returns governance block payload with empty next items."""
     from thegent.cli.commands.impl import do_next_impl
 
@@ -32,7 +34,9 @@ def test_do_next_impl_blocks_when_evidence_missing(tmp_path: Path, monkeypatch: 
 
 
 @pytest.mark.unit
-def test_pre_work_gate_returns_none_when_evidence_fresh(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_pre_work_gate_returns_none_when_evidence_fresh(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """Fresh evidence should not return governance block shape from helper."""
     from thegent.cli.commands.impl import _enforce_pre_work_hard_gate
 
@@ -83,7 +87,9 @@ def test_pre_work_gate_reads_hook_yaml_thresholds_from_project_fixture(
 
 
 @pytest.mark.unit
-def test_work_stream_claim_impl_blocks_when_evidence_missing(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_work_stream_claim_impl_blocks_when_evidence_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """Claim command returns success=false with governance block when evidence is missing."""
     from thegent.cli.commands.impl import work_stream_claim_impl
 
@@ -104,7 +110,9 @@ def test_work_stream_claim_impl_blocks_when_evidence_missing(tmp_path: Path, mon
 
 
 @pytest.mark.unit
-def test_spawn_next_impl_blocks_when_evidence_missing(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_spawn_next_impl_blocks_when_evidence_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """Spawn-next returns governance block payload instead of silently reporting empty."""
     from thegent.cli.commands.impl import spawn_next_impl
 

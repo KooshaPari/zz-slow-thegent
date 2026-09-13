@@ -48,11 +48,15 @@ def sample_app() -> typer.Typer:
         (["run", "missing"], False),
     ],
 )
-def test_command_path_exists(sample_app: typer.Typer, path: tuple[str, ...] | list[str], expected: bool) -> None:
+def test_command_path_exists(
+    sample_app: typer.Typer, path: tuple[str, ...] | list[str], expected: bool
+) -> None:
     assert command_path_exists(sample_app, path) is expected
 
 
-def test_command_path_exists_non_group_intermediate_segment(sample_app: typer.Typer) -> None:
+def test_command_path_exists_non_group_intermediate_segment(
+    sample_app: typer.Typer,
+) -> None:
     assert command_path_exists(sample_app, ["run", "extra"]) is False
 
 

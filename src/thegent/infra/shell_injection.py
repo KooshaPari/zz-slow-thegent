@@ -21,7 +21,9 @@ class TmuxInjector:
     def list_agent_sessions(self) -> list[str]:
         """List all tmux sessions matching agent prefix."""
         try:
-            result = shim_run(["tmux", "ls", "-F", "#S"], capture_output=True, text=True, check=False)
+            result = shim_run(
+                ["tmux", "ls", "-F", "#S"], capture_output=True, text=True, check=False
+            )
             if result.returncode != 0:
                 return []
             sessions = result.stdout.splitlines()
@@ -29,14 +31,18 @@ class TmuxInjector:
         except FileNotFoundError:
             return []
 
-    def inject_command(self, session_id: str, command: str, wait_for_readiness: bool = True) -> bool:
+    def inject_command(
+        self, session_id: str, command: str, wait_for_readiness: bool = True
+    ) -> bool:
         """Inject command into tmux session using send-keys."""
         if wait_for_readiness and not self.wait_for_ready(session_id):
             logger.warning(f"Session {session_id} not ready, but injecting anyway.")
 
         # send-keys -l for literal string, then Enter
         try:
-            shim_run(["tmux", "send-keys", "-t", session_id, command, "C-m"], check=True)
+            shim_run(
+                ["tmux", "send-keys", "-t", session_id, command, "C-m"], check=True
+            )
             logger.info(f"Injected command into {session_id}: {command}")
             return True
         except subprocess.CalledProcessError:
@@ -55,7 +61,12 @@ class TmuxInjector:
         """Check if session is at a prompt (idle)."""
         try:
             # Capture last few lines of the pane
-            result = shim_run(["tmux", "capture-pane", "-pt", session_id], capture_output=True, text=True, check=False)
+            result = shim_run(
+                ["tmux", "capture-pane", "-pt", session_id],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
             output = result.stdout.strip()
             if not output:
                 return False

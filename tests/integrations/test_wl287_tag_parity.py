@@ -157,7 +157,9 @@ class TestTagParityCheckerIsInParity:
         assert checker.is_in_parity(result) is True
 
     @pytest.mark.requirement("WL-287")
-    def test_is_in_parity_false_when_missing_remote(self, checker: TagParityChecker) -> None:
+    def test_is_in_parity_false_when_missing_remote(
+        self, checker: TagParityChecker
+    ) -> None:
         """is_in_parity returns False when tags missing in remote."""
         result = TagParityResult(
             wl_id="WL-001",
@@ -170,7 +172,9 @@ class TestTagParityCheckerIsInParity:
         assert checker.is_in_parity(result) is False
 
     @pytest.mark.requirement("WL-287")
-    def test_is_in_parity_false_when_missing_local(self, checker: TagParityChecker) -> None:
+    def test_is_in_parity_false_when_missing_local(
+        self, checker: TagParityChecker
+    ) -> None:
         """is_in_parity returns False when tags missing in local."""
         result = TagParityResult(
             wl_id="WL-001",
@@ -183,7 +187,9 @@ class TestTagParityCheckerIsInParity:
         assert checker.is_in_parity(result) is False
 
     @pytest.mark.requirement("WL-287")
-    def test_is_in_parity_false_when_both_missing(self, checker: TagParityChecker) -> None:
+    def test_is_in_parity_false_when_both_missing(
+        self, checker: TagParityChecker
+    ) -> None:
         """is_in_parity returns False when tags missing in both."""
         result = TagParityResult(
             wl_id="WL-001",

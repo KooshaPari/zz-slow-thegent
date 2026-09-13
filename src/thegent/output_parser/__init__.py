@@ -1,4 +1,5 @@
 """Output parser for extracting structured data from model outputs."""
+
 from __future__ import annotations
 
 import contextlib
@@ -16,6 +17,7 @@ PARSE_TRUNCATED = "truncated"
 @dataclass
 class ParseResult:
     """Result of parsing output."""
+
     success: bool
     data: dict[str, Any] | None = None
     error: str = ""
@@ -63,7 +65,9 @@ def extract_condensed(raw: str) -> str:
     return raw.strip()
 
 
-def extract_condensed_structured(raw: str, schema: dict[str, Any] | None = None) -> dict[str, Any]:
+def extract_condensed_structured(
+    raw: str, schema: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """Extract structured data from condensed output.
 
     Args:
@@ -73,7 +77,10 @@ def extract_condensed_structured(raw: str, schema: dict[str, Any] | None = None)
     Returns:
         Extracted structured data
     """
-    result: dict[str, Any] = {"text": raw, "schema_version": OUTPUT_PARSER_SCHEMA_VERSION}
+    result: dict[str, Any] = {
+        "text": raw,
+        "schema_version": OUTPUT_PARSER_SCHEMA_VERSION,
+    }
 
     # Try to extract JSON from the raw output
     json_match = re.search(r"\{[^{}]*\}", raw, re.DOTALL)
@@ -104,7 +111,9 @@ def extract_condensed_validated(raw: str, schema: dict[str, Any]) -> ParseResult
         required_fields = schema.get("required", [])
         for field in required_fields:
             if field not in data:
-                return ParseResult(success=False, error=f"Missing required field: {field}")
+                return ParseResult(
+                    success=False, error=f"Missing required field: {field}"
+                )
 
         return ParseResult(success=True, data=data)
     except Exception as e:

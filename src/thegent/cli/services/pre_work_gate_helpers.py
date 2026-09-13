@@ -28,7 +28,11 @@ def pre_work_gate_thresholds(project_dir: Path) -> tuple[dict[str, Any], str]:
 
     raw_config = yaml_load(config_path) or {}
     settings_block = raw_config.get("settings", {})
-    guard_block = settings_block.get("regression_spiral_guard", {}) if isinstance(settings_block, dict) else {}
+    guard_block = (
+        settings_block.get("regression_spiral_guard", {})
+        if isinstance(settings_block, dict)
+        else {}
+    )
     if not isinstance(guard_block, dict):
         return defaults, str(config_path)
 

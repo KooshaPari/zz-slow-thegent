@@ -58,7 +58,9 @@ def test_ci_summary_runtime_buckets_and_drift_contract() -> None:
         ],
     }
 
-    summary = module._build_ci_summary("2026-02-21T00:00:00+00:00", targets_payload, history)
+    summary = module._build_ci_summary(
+        "2026-02-21T00:00:00+00:00", targets_payload, history
+    )
 
     assert summary["timestamp_utc"] == "2026-02-21T00:00:00+00:00"
     assert "thegent" in summary["targets"]
@@ -94,7 +96,9 @@ def test_ci_summary_drift_defaults_when_no_history() -> None:
         }
     }
 
-    summary = module._build_ci_summary("2026-02-21T00:00:00+00:00", targets_payload, {"version": 1, "runs": []})
+    summary = module._build_ci_summary(
+        "2026-02-21T00:00:00+00:00", targets_payload, {"version": 1, "runs": []}
+    )
     target = summary["targets"]["repo-a"]
 
     assert target["runtime_loc"] == {

@@ -67,17 +67,25 @@ def _has_open_holder(lock_path: Path) -> bool | None:
         stdout_text = (
             result.stdout
             if isinstance(result.stdout, str)
-            else (result.stdout.decode("utf-8", errors="replace") if result.stdout else "")
+            else (
+                result.stdout.decode("utf-8", errors="replace") if result.stdout else ""
+            )
         )
         stderr_text = (
             result.stderr
             if isinstance(result.stderr, str)
-            else (result.stderr.decode("utf-8", errors="replace") if result.stderr else "")
+            else (
+                result.stderr.decode("utf-8", errors="replace") if result.stderr else ""
+            )
         )
 
         if result.returncode == 0:
             return bool(stdout_text and stdout_text.strip())
-        if result.returncode == 1 and not stdout_text.strip() and not stderr_text.strip():
+        if (
+            result.returncode == 1
+            and not stdout_text.strip()
+            and not stderr_text.strip()
+        ):
             return False
         return None
     except FileNotFoundError:
@@ -167,7 +175,9 @@ def run_lock_cleanup(
 
 
 def _lock_cleanup_plist_path() -> Path:
-    return Path.home() / "Library" / "LaunchAgents" / "com.thegent.git-lock-cleanup.plist"
+    return (
+        Path.home() / "Library" / "LaunchAgents" / "com.thegent.git-lock-cleanup.plist"
+    )
 
 
 def _lock_cleanup_thegent_cmd() -> list[str]:
@@ -220,7 +230,10 @@ def _lock_cleanup_install_launchd() -> tuple[bool, str]:
 """
     plist_path.write_text(plist)
     Path.home().joinpath(".cache/thegent").mkdir(parents=True, exist_ok=True)
-    return True, f"Installed to {plist_path}. Run: thegent git lock-cleanup service start"
+    return (
+        True,
+        f"Installed to {plist_path}. Run: thegent git lock-cleanup service start",
+    )
 
 
 def _lock_cleanup_install_systemd() -> tuple[bool, str]:
@@ -263,17 +276,28 @@ def lock_cleanup_uninstall() -> tuple[bool, str]:
     """Remove launchd or systemd timer."""
     if platform.system() == "Darwin":
         plist_path = _lock_cleanup_plist_path()
-        run_subprocess_optimized(["launchctl", "unload", str(plist_path)], check=False, capture_output=True)
+        run_subprocess_optimized(
+            ["launchctl", "unload", str(plist_path)], check=False, capture_output=True
+        )
         if plist_path.exists():
             plist_path.unlink()
         return True, "Uninstalled"
     if platform.system() == "Linux":
         run_subprocess_optimized(
-            ["systemctl", "--user", "disable", "--now", "thegent-git-lock-cleanup.timer"],
+            [
+                "systemctl",
+                "--user",
+                "disable",
+                "--now",
+                "thegent-git-lock-cleanup.timer",
+            ],
             check=False,
             capture_output=True,
         )
-        for name in ("thegent-git-lock-cleanup.timer", "thegent-git-lock-cleanup.service"):
+        for name in (
+            "thegent-git-lock-cleanup.timer",
+            "thegent-git-lock-cleanup.service",
+        ):
             p = Path.home() / ".config" / "systemd" / "user" / name
             if p.exists():
                 p.unlink()
@@ -287,11 +311,19 @@ def lock_cleanup_start() -> tuple[bool, str]:
         plist_path = _lock_cleanup_plist_path()
         if not plist_path.exists():
             return False, "Not installed. Run: thegent git lock-cleanup service install"
-        run_subprocess_optimized(["launchctl", "load", str(plist_path)], capture_output=True, check=True)
+        run_subprocess_optimized(
+            ["launchctl", "load", str(plist_path)], capture_output=True, check=True
+        )
         return True, "Started"
     if platform.system() == "Linux":
         run_subprocess_optimized(
-            ["systemctl", "--user", "enable", "--now", "thegent-git-lock-cleanup.timer"],
+            [
+                "systemctl",
+                "--user",
+                "enable",
+                "--now",
+                "thegent-git-lock-cleanup.timer",
+            ],
             capture_output=True,
             check=True,
         )
@@ -305,11 +337,19 @@ def lock_cleanup_stop() -> tuple[bool, str]:
         plist_path = _lock_cleanup_plist_path()
         if not plist_path.exists():
             return False, "Not installed"
-        run_subprocess_optimized(["launchctl", "unload", str(plist_path)], check=False, capture_output=True)
+        run_subprocess_optimized(
+            ["launchctl", "unload", str(plist_path)], check=False, capture_output=True
+        )
         return True, "Stopped"
     if platform.system() == "Linux":
         run_subprocess_optimized(
-            ["systemctl", "--user", "disable", "--now", "thegent-git-lock-cleanup.timer"],
+            [
+                "systemctl",
+                "--user",
+                "disable",
+                "--now",
+                "thegent-git-lock-cleanup.timer",
+            ],
             check=False,
             capture_output=True,
         )
@@ -332,9 +372,15 @@ def lock_cleanup_status() -> tuple[bool, str]:
         stdout_text = (
             result.stdout
             if isinstance(result.stdout, str)
-            else (result.stdout.decode("utf-8", errors="replace") if result.stdout else "")
+            else (
+                result.stdout.decode("utf-8", errors="replace") if result.stdout else ""
+            )
         )
-        if result.returncode == 0 and stdout_text and "com.thegent.git-lock-cleanup" in stdout_text:
+        if (
+            result.returncode == 0
+            and stdout_text
+            and "com.thegent.git-lock-cleanup" in stdout_text
+        ):
             return True, "Running (launchd)"
         return True, "Stopped"
     if platform.system() == "Linux":
@@ -347,7 +393,9 @@ def lock_cleanup_status() -> tuple[bool, str]:
         stdout_text = (
             result.stdout
             if isinstance(result.stdout, str)
-            else (result.stdout.decode("utf-8", errors="replace") if result.stdout else "")
+            else (
+                result.stdout.decode("utf-8", errors="replace") if result.stdout else ""
+            )
         )
         if result.returncode == 0 and stdout_text and "active" in stdout_text.strip():
             return True, "Running (systemd)"

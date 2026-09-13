@@ -9,7 +9,15 @@ from pathlib import Path
 from typing import Any
 
 ALLOWED_PHASES = {"analysis", "execution", "verification", "handoff"}
-ALLOWED_FINDING_TYPES = {"discovery", "decision", "claim", "risk", "patch", "test", "question"}
+ALLOWED_FINDING_TYPES = {
+    "discovery",
+    "decision",
+    "claim",
+    "risk",
+    "patch",
+    "test",
+    "question",
+}
 ALLOWED_SEVERITY = {"low", "med", "high", "critical"}
 ALLOWED_STATUS = {"pass", "fail", "skip"}
 
@@ -46,13 +54,17 @@ def _iter_report_files(paths: list[str]) -> list[Path]:
     return files
 
 
-def _ensure(cond: bool, message: str, errors: list[str], path: Path, field: str = "") -> None:
+def _ensure(
+    cond: bool, message: str, errors: list[str], path: Path, field: str = ""
+) -> None:
     if not cond:
         prefix = f"{path}:{field + ': ' if field else ''}"
         errors.append(prefix + message)
 
 
-def _validate_string(value: Any, min_len: int, path: Path, field: str, errors: list[str]) -> bool:
+def _validate_string(
+    value: Any, min_len: int, path: Path, field: str, errors: list[str]
+) -> bool:
     if not isinstance(value, str):
         errors.append(f"{path}:{field} must be a string")
         return False
@@ -62,7 +74,9 @@ def _validate_string(value: Any, min_len: int, path: Path, field: str, errors: l
     return True
 
 
-def _validate_list(value: Any, min_len: int, path: Path, field: str, errors: list[str]) -> list[Any] | None:
+def _validate_list(
+    value: Any, min_len: int, path: Path, field: str, errors: list[str]
+) -> list[Any] | None:
     if not isinstance(value, list):
         errors.append(f"{path}:{field} must be a list")
         return None
@@ -93,18 +107,24 @@ def _validate_findings(findings: Any, path: Path, errors: list[str]) -> None:
         if item.get("type") not in ALLOWED_FINDING_TYPES:
             errors.append(f"{path}:{prefix}.type invalid ({item.get('type')})")
 
-        if not _validate_string(item.get("summary", ""), 10, path, f"{prefix}.summary", errors):
+        if not _validate_string(
+            item.get("summary", ""), 10, path, f"{prefix}.summary", errors
+        ):
             continue
 
         if item.get("severity") not in ALLOWED_SEVERITY:
             errors.append(f"{path}:{prefix}.severity invalid ({item.get('severity')})")
 
-        evidence = _validate_list(item.get("evidence"), 1, path, f"{prefix}.evidence", errors)
+        evidence = _validate_list(
+            item.get("evidence"), 1, path, f"{prefix}.evidence", errors
+        )
         if evidence is None:
             continue
         for ev_idx, ev in enumerate(evidence):
             if not isinstance(ev, str) or not ev.strip():
-                errors.append(f"{path}:{prefix}.evidence[{ev_idx}] must be a non-empty string")
+                errors.append(
+                    f"{path}:{prefix}.evidence[{ev_idx}] must be a non-empty string"
+                )
 
         confidence = item.get("confidence")
         if not isinstance(confidence, (int, float)) or not (0 <= confidence <= 1):
@@ -137,15 +157,21 @@ def _validate_validation_block(block: Any, path: Path, errors: list[str]) -> Non
         return
 
     for field in ("commands", "results"):
-        _ensure(field in block, f"missing required key {field}", errors, path, "validation")
+        _ensure(
+            field in block, f"missing required key {field}", errors, path, "validation"
+        )
 
-    commands = _validate_list(block.get("commands"), 1, path, "validation.commands", errors)
+    commands = _validate_list(
+        block.get("commands"), 1, path, "validation.commands", errors
+    )
     if commands is None:
         return
     for idx, cmd in enumerate(commands):
         _validate_string(cmd, 1, path, f"validation.commands[{idx}]", errors)
 
-    results = _validate_list(block.get("results"), 1, path, "validation.results", errors)
+    results = _validate_list(
+        block.get("results"), 1, path, "validation.results", errors
+    )
     if results is None:
         return
     for idx, item in enumerate(results):
@@ -167,7 +193,13 @@ def _validate_report(payload: dict[str, Any], path: Path, errors: list[str]) -> 
 
     _validate_string(payload.get("lane_id", ""), 3, path, "lane_id", errors)
     _validate_string(payload.get("plan_id", ""), 3, path, "plan_id", errors)
-    _validate_string(payload.get("agent_context_version", ""), 1, path, "agent_context_version", errors)
+    _validate_string(
+        payload.get("agent_context_version", ""),
+        1,
+        path,
+        "agent_context_version",
+        errors,
+    )
 
     if payload.get("phase") not in ALLOWED_PHASES:
         errors.append(f"{path}:phase must be one of {sorted(ALLOWED_PHASES)}")
@@ -186,12 +218,16 @@ def _validate_report(payload: dict[str, Any], path: Path, errors: list[str]) -> 
     _validate_list(payload.get("next_actions"), 0, path, "next_actions", errors)
     _validate_validation_block(payload.get("validation"), path, errors)
 
-    if not _validate_string(payload.get("generated_at", ""), 1, path, "generated_at", errors):
+    if not _validate_string(
+        payload.get("generated_at", ""), 1, path, "generated_at", errors
+    ):
         return
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Validate agent fork lane report JSON files.")
+    parser = argparse.ArgumentParser(
+        description="Validate agent fork lane report JSON files."
+    )
     parser.add_argument("paths", nargs="+", help="Lane report files or directories")
     args = parser.parse_args()
 

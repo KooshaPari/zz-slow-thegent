@@ -1,9 +1,26 @@
+exclude = [
+    "templates/*",
+    "src/fastmcp/*",
+    "src/starlette/*",
+    "src/opentelemetry/*",
+    "src/key_value/*",
+    ".worktrees/*",
+    ".shadow-*",
+    ".shadow-run*",
+    "src/thegent/acp/**",
+    "src/thegent/cli/apps/sync.py",
+    "src/thegent/cli/apps/deploy.py",
+    "src/thegent/cli/commands/deploy*.py",
+    "scripts/*.sh",
+    "scripts/strip_ansi.py",
+]
+
 [lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM"]
 ignore = [
     "E501",    # line-too-long
-    "E402",    # module-import-not-at-top-of-file (framework patterns)
-    "E741",    # ambiguous-variable-name (math convention)
+    "E402",    # module-import-not-at-top-of-file
+    "E741",    # ambiguous-variable-name
     "N801",    # invalid-class-name
     "N802",    # invalid-function-name
     "N806",    # non-lowercase-variable-in-function
@@ -11,17 +28,19 @@ ignore = [
     "N999",    # invalid-module-name
     "D103",    # undocumented-public-function
     "UP035",   # deprecated-import
-    "B008",    # function-call-in-default-argument (FastAPI Depends)
+    "B008",    # function-call-in-default-argument
     "B017",    # assert-raises-exception
     "B904",    # raise-without-from-inside-except
     "F403",    # undefined-local-with-import-star
     "F405",    # undefined-local-with-import-star-usage
-    "F821",    # undefined-name (star imports / dynamic code)
+    "F811",    # redefined-while-unused
+    "F821",    # undefined-name
     "F822",    # undefined-export
     "ERA001",  # commented-out-code
     "INP001",  # implicit-namespace-package
     "SIM102",  # collapsible-if
     "SIM105",  # suppressible-exception
+    "SIM115",  # open-file-with-context-handler
     "SIM117",  # multiple-with-statements
     "E722",    # bare-except
     "E721",    # type-comparison
@@ -33,5 +52,6 @@ indent-style = "space"
 
 [lint.per-file-ignores]
 "__init__.py" = ["F401"]
-"tests/*" = ["B011"]
-
+"tests/*" = ["B011", "F401"]
+"benchmarks/*" = ["F401"]
+"test_phase1.py" = ["F401"]

@@ -1,7 +1,6 @@
 """Sidebar generator - STUB."""
 
 
-
 class SidebarGenerator:
     def __init__(self, *args, **kwargs):
         pass

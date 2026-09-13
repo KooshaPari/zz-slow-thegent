@@ -32,12 +32,20 @@ def normalize_model_id(model_id: str) -> str:
 
 def resolve_route(provider: str, model_id: str | None = None) -> dict[str, Any]:
     """Resolve routing information for a model."""
-    return {"provider": provider, "model_id": model_id, "endpoint": f"https://api.{provider}.com"}
+    return {
+        "provider": provider,
+        "model_id": model_id,
+        "endpoint": f"https://api.{provider}.com",
+    }
 
 
 def route_contract(provider: str) -> dict[str, Any]:
     """Get the routing contract for a provider."""
-    return {"provider": provider, "supports_streaming": True, "supports_function_calling": True}
+    return {
+        "provider": provider,
+        "supports_streaming": True,
+        "supports_function_calling": True,
+    }
 
 
 def resolve_route_contract(provider: str) -> dict[str, Any] | None:

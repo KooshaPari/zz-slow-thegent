@@ -85,7 +85,14 @@ class TestBuilder:
         assert e.citations == ["a"]
 
     def test_no_duplicate_chain(self) -> None:
-        e = ExplanationBuilder().title("x").step("step1").step("step1").step("step2").build()
+        e = (
+            ExplanationBuilder()
+            .title("x")
+            .step("step1")
+            .step("step1")
+            .step("step2")
+            .build()
+        )
         assert e.chain == ["step1", "step2"]
 
     def test_no_duplicate_actions(self) -> None:

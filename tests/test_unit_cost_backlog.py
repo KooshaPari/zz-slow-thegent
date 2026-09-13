@@ -32,10 +32,22 @@ _TARGETS_DATA: dict = {
     "budget": {
         "daily_agent_calls": 20,
         "tiers": {
-            "normal": {"max_utilization_pct": 50, "description": "All agent types available"},
-            "cautious": {"max_utilization_pct": 80, "description": "Prefer cheaper/faster agents"},
-            "restricted": {"max_utilization_pct": 95, "description": "Only essential tasks"},
-            "halted": {"max_utilization_pct": 100, "description": "No new agent spawns"},
+            "normal": {
+                "max_utilization_pct": 50,
+                "description": "All agent types available",
+            },
+            "cautious": {
+                "max_utilization_pct": 80,
+                "description": "Prefer cheaper/faster agents",
+            },
+            "restricted": {
+                "max_utilization_pct": 95,
+                "description": "Only essential tasks",
+            },
+            "halted": {
+                "max_utilization_pct": 100,
+                "description": "No new agent spawns",
+            },
         },
     },
 }

@@ -15,7 +15,11 @@ def _sample_evidence() -> list[dict[str, object]]:
             "kind": "policy_evaluation",
             "actor": "agent-a",
             "timestamp_utc": "2026-02-23T01:00:00+00:00",
-            "payload": {"requires_action": True, "severity": "high", "reason": "policy_violation"},
+            "payload": {
+                "requires_action": True,
+                "severity": "high",
+                "reason": "policy_violation",
+            },
         },
         {
             "evidence_id": "ev-2",
@@ -29,7 +33,11 @@ def _sample_evidence() -> list[dict[str, object]]:
             "kind": "policy_evaluation",
             "actor": "agent-a",
             "timestamp_utc": "2026-02-23T01:02:00+00:00",
-            "payload": {"requires_action": True, "severity": "critical", "reason": "blocked_gate"},
+            "payload": {
+                "requires_action": True,
+                "severity": "critical",
+                "reason": "blocked_gate",
+            },
         },
     ]
 

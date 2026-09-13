@@ -226,7 +226,9 @@ class TestTrendImproving:
     def test_improving_delta(self, tmp_path: Path) -> None:
         path = _write_targets(tmp_path)
         computer = HealthScoreComputer(path)
-        result = computer.compute_with_trend({"alpha": 100, "beta": 0}, previous_score=50.0)
+        result = computer.compute_with_trend(
+            {"alpha": 100, "beta": 0}, previous_score=50.0
+        )
         assert result.trend == "improving"
 
 
@@ -241,7 +243,9 @@ class TestTrendDegrading:
     def test_degrading_delta(self, tmp_path: Path) -> None:
         path = _write_targets(tmp_path)
         computer = HealthScoreComputer(path)
-        result = computer.compute_with_trend({"alpha": 0, "beta": 100}, previous_score=90.0)
+        result = computer.compute_with_trend(
+            {"alpha": 0, "beta": 100}, previous_score=90.0
+        )
         assert result.trend == "degrading"
 
 
@@ -257,7 +261,9 @@ class TestTrendStable:
         path = _write_targets(tmp_path)
         computer = HealthScoreComputer(path)
         first = computer.compute({"alpha": 50, "beta": 5})
-        result = computer.compute_with_trend({"alpha": 50, "beta": 5}, previous_score=first.score)
+        result = computer.compute_with_trend(
+            {"alpha": 50, "beta": 5}, previous_score=first.score
+        )
         assert result.trend == "stable"
 
 
@@ -272,7 +278,9 @@ class TestTrendNone:
     def test_stable_when_none(self, tmp_path: Path) -> None:
         path = _write_targets(tmp_path)
         computer = HealthScoreComputer(path)
-        result = computer.compute_with_trend({"alpha": 50, "beta": 5}, previous_score=None)
+        result = computer.compute_with_trend(
+            {"alpha": 50, "beta": 5}, previous_score=None
+        )
         assert result.trend == "stable"
 
 

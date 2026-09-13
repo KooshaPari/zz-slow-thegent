@@ -13,7 +13,9 @@ runner = CliRunner()
 
 
 @pytest.mark.skip(reason="module path issue")
-def test_memory_snapshot_daily_index_forwards_trigger_tag_since(monkeypatch, tmp_path: Path) -> None:
+def test_memory_snapshot_daily_index_forwards_trigger_tag_since(
+    monkeypatch, tmp_path: Path
+) -> None:
     captured: dict[str, object] = {}
 
     def fake_snapshot_daily_index_cmd(

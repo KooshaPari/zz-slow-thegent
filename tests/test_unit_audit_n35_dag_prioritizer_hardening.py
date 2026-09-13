@@ -184,7 +184,9 @@ class TestLinearChainContract:
         order = prioritizer.topological_sort()
         assert order.index("a") < order.index("b") < order.index("c")
 
-    def test_priority_scores_all_on_critical_path(self, prioritizer: DagPrioritizer) -> None:
+    def test_priority_scores_all_on_critical_path(
+        self, prioritizer: DagPrioritizer
+    ) -> None:
         sa = prioritizer.get_priority_score("a")
         sb = prioritizer.get_priority_score("b")
         sc = prioritizer.get_priority_score("c")
@@ -245,7 +247,9 @@ class TestDiamondDagContract:
     def test_ready_tasks_initial(self, prioritizer: DagPrioritizer) -> None:
         assert prioritizer.ready_tasks(completed=set()) == ["a"]
 
-    def test_ready_tasks_after_a_both_branches(self, prioritizer: DagPrioritizer) -> None:
+    def test_ready_tasks_after_a_both_branches(
+        self, prioritizer: DagPrioritizer
+    ) -> None:
         ready = prioritizer.ready_tasks(completed={"a"})
         assert set(ready) == {"b", "c"}
         assert ready[0] == "b"

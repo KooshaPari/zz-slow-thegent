@@ -30,7 +30,11 @@ class UniversalToolAdapter:
         adapter = self._adapters.get(command)
         if not adapter:
             # Fallback to generic invocation (simplified)
-            return {"status": "success", "operation": entry.operation, "command": command}
+            return {
+                "status": "success",
+                "operation": entry.operation,
+                "command": command,
+            }
 
         return adapter(**kwargs)
 

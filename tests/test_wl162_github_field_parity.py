@@ -23,7 +23,9 @@ class TestFieldParityReport:
     @pytest.mark.requirement("WL-162")
     def test_report_creation_in_parity(self):
         """FieldParityReport with matching values has in_parity=True."""
-        report = FieldParityReport(field_name="title", github_value="Foo", local_value="Foo", in_parity=True)
+        report = FieldParityReport(
+            field_name="title", github_value="Foo", local_value="Foo", in_parity=True
+        )
 
         assert report.field_name == "title"
         assert report.github_value == "Foo"

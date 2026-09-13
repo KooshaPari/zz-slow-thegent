@@ -1,4 +1,5 @@
 """Stub module."""
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -6,6 +7,7 @@ from typing import Any
 @dataclass
 class SyncthingDevice:
     """Syncthing device information."""
+
     device_id: str = ""
     name: str = ""
     addresses: list[str] | None = None
@@ -14,6 +16,7 @@ class SyncthingDevice:
 @dataclass
 class SyncthingConfig:
     """Syncthing configuration."""
+
     api_key: str = ""
     url: str = "http://localhost:8384"
 
@@ -21,6 +24,7 @@ class SyncthingConfig:
 @dataclass
 class SyncthingFolder:
     """Syncthing folder information."""
+
     id: str = ""
     path: str = ""
     devices: list[str] | None = None

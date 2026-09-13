@@ -2,6 +2,7 @@
 
 FR traceability: FR-CACHE-001 (multi-level caching: L1 memory -> L2 disk)
 """
+
 from __future__ import annotations
 
 import functools
@@ -100,11 +101,19 @@ class MultiLevelCache:
             directory.mkdir(parents=True, exist_ok=True)
         except (PermissionError, OSError) as exc:
             self.l2_available = False
-            self.l2_init_status = {"ok": False, "reason": "directory_error", "detail": str(exc)}
+            self.l2_init_status = {
+                "ok": False,
+                "reason": "directory_error",
+                "detail": str(exc),
+            }
             return
         if not directory.is_dir():
             self.l2_available = False
-            self.l2_init_status = {"ok": False, "reason": "directory_error", "detail": "path is not a directory"}
+            self.l2_init_status = {
+                "ok": False,
+                "reason": "directory_error",
+                "detail": "path is not a directory",
+            }
             return
         try:
             self._l2 = _L2Wrapper(directory, ttl)
@@ -112,7 +121,11 @@ class MultiLevelCache:
             self.l2_init_status = {"ok": True}
         except Exception as exc:  # noqa: BLE001
             self.l2_available = False
-            self.l2_init_status = {"ok": False, "reason": "open_failed", "detail": str(exc)}
+            self.l2_init_status = {
+                "ok": False,
+                "reason": "open_failed",
+                "detail": str(exc),
+            }
 
     # ------------------------------------------------------------------
     # Public API

@@ -45,7 +45,9 @@ class TestBoardArtifactParserCsv:
         from thegent.planning.board_artifact_integrator import BoardArtifactParser
 
         csv_file = tmp_path / "test.csv"
-        csv_file.write_text("id,title,status,priority\nTST-001,Task1,BACKLOG,P0\nTST-002,Task2,IN_PROGRESS,P1\n")
+        csv_file.write_text(
+            "id,title,status,priority\nTST-001,Task1,BACKLOG,P0\nTST-002,Task2,IN_PROGRESS,P1\n"
+        )
         parser = BoardArtifactParser()
         items = parser.parse_csv(csv_file)
         assert len(items) == 2
@@ -55,7 +57,9 @@ class TestBoardArtifactParserCsv:
         from thegent.planning.board_artifact_integrator import BoardArtifactParser
 
         csv_file = tmp_path / "test.csv"
-        csv_file.write_text("id,title,status,priority,depends_on\nTST-001,Task1,BACKLOG,P0,-\n")
+        csv_file.write_text(
+            "id,title,status,priority,depends_on\nTST-001,Task1,BACKLOG,P0,-\n"
+        )
         parser = BoardArtifactParser()
         items = parser.parse_csv(csv_file)
         assert items[0]["depends_on"] is None
@@ -77,7 +81,18 @@ class TestBoardArtifactParserJson:
         from thegent.planning.board_artifact_integrator import BoardArtifactParser
 
         json_file = tmp_path / "test.json"
-        json_file.write_text(json.dumps([{"id": "TST-001", "title": "Task1", "status": "BACKLOG", "priority": "P0"}]).decode("utf-8"))
+        json_file.write_text(
+            json.dumps(
+                [
+                    {
+                        "id": "TST-001",
+                        "title": "Task1",
+                        "status": "BACKLOG",
+                        "priority": "P0",
+                    }
+                ]
+            ).decode("utf-8")
+        )
         parser = BoardArtifactParser()
         items = parser.parse_json(json_file)
         assert len(items) == 1
@@ -88,7 +103,9 @@ class TestBoardArtifactParserJson:
         from thegent.planning.board_artifact_integrator import BoardArtifactParser
 
         json_file = tmp_path / "test.json"
-        json_file.write_text(json.dumps({"items": [{"id": "TST-001", "title": "Task1"}]}).decode("utf-8"))
+        json_file.write_text(
+            json.dumps({"items": [{"id": "TST-001", "title": "Task1"}]}).decode("utf-8")
+        )
         parser = BoardArtifactParser()
         items = parser.parse_json(json_file)
         assert len(items) == 1
@@ -203,7 +220,9 @@ class TestBoardArtifactIntegratorFindArtifacts:
 
         board_dir = tmp_path / "planning"
         board_dir.mkdir()
-        (board_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.csv").write_text("id,title\nT1,Task1\n")
+        (board_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.csv").write_text(
+            "id,title\nT1,Task1\n"
+        )
         integrator = BoardArtifactIntegrator(board_artifacts_dir=board_dir)
         artifacts = integrator.find_board_artifacts()
         assert "execution_board_csv" in artifacts
@@ -214,9 +233,9 @@ class TestBoardArtifactIntegratorFindArtifacts:
 
         board_dir = tmp_path / "planning"
         board_dir.mkdir()
-        (board_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.json").write_text(
-            json.dumps([{"id": "T1", "title": "Task1"}]).decode("utf-8")
-        )
+        (
+            board_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.json"
+        ).write_text(json.dumps([{"id": "T1", "title": "Task1"}]).decode("utf-8"))
         integrator = BoardArtifactIntegrator(board_artifacts_dir=board_dir)
         artifacts = integrator.find_board_artifacts()
         assert "execution_board_json" in artifacts
@@ -227,7 +246,9 @@ class TestBoardArtifactIntegratorFindArtifacts:
 
         board_dir = tmp_path / "planning"
         board_dir.mkdir()
-        (board_dir / "GITHUB_PROJECT_IMPORT_CLIPROXYAPI_2000_2026-02-22.csv").write_text("id,title\nT1,Task1\n")
+        (
+            board_dir / "GITHUB_PROJECT_IMPORT_CLIPROXYAPI_2000_2026-02-22.csv"
+        ).write_text("id,title\nT1,Task1\n")
         integrator = BoardArtifactIntegrator(board_artifacts_dir=board_dir)
         artifacts = integrator.find_board_artifacts()
         assert any("github_import_csv" in k for k in artifacts)
@@ -253,8 +274,12 @@ class TestBoardArtifactIntegratorIngest:
         (board_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.csv").write_text(
             "id,title,status\nT1,CSVTask,IN_PROGRESS\n"
         )
-        (board_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.json").write_text(
-            json.dumps([{"id": "T1", "title": "JSONTask", "status": "BACKLOG"}]).decode("utf-8")
+        (
+            board_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.json"
+        ).write_text(
+            json.dumps([{"id": "T1", "title": "JSONTask", "status": "BACKLOG"}]).decode(
+                "utf-8"
+            )
         )
         integrator = BoardArtifactIntegrator(board_artifacts_dir=board_dir)
         items = integrator.ingest_artifacts()
@@ -277,7 +302,9 @@ class TestBoardArtifactIntegratorToWorkstream:
         from thegent.planning.board_artifact_integrator import BoardArtifactIntegrator
 
         integrator = BoardArtifactIntegrator()
-        items = [{"id": "TST-001", "title": "Task1", "status": "BACKLOG", "priority": "P0"}]
+        items = [
+            {"id": "TST-001", "title": "Task1", "status": "BACKLOG", "priority": "P0"}
+        ]
         result = integrator.to_workstream_format(items)
         assert "| TST-001 |" in result
         assert "Task1" in result
@@ -287,7 +314,9 @@ class TestBoardArtifactIntegratorToWorkstream:
         from thegent.planning.board_artifact_integrator import BoardArtifactIntegrator
 
         integrator = BoardArtifactIntegrator()
-        items = [{"id": "TST-001", "title": "Task1", "status": "COMPLETED", "priority": "P0"}]
+        items = [
+            {"id": "TST-001", "title": "Task1", "status": "COMPLETED", "priority": "P0"}
+        ]
         result = integrator.to_workstream_format(items)
         assert "~~TST-001~~" in result
 

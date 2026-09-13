@@ -190,7 +190,9 @@ def test_override_bridge_subscribe_without_drain_raises(
 # ---------------------------------------------------------------------------
 
 
-def test_traffic_bridge_plan_progress(cockpit: OperatorCockpit, traffic: TrafficDashboard) -> None:
+def test_traffic_bridge_plan_progress(
+    cockpit: OperatorCockpit, traffic: TrafficDashboard
+) -> None:
     traffic.record(TrafficEvent(ts=time.time(), lane="std", duration_ms=10.0))
     traffic.record(TrafficEvent(ts=time.time(), lane="std", duration_ms=20.0))
     bridge = TrafficCockpitBridge(cockpit)
@@ -201,7 +203,9 @@ def test_traffic_bridge_plan_progress(cockpit: OperatorCockpit, traffic: Traffic
     assert total >= 1
 
 
-def test_traffic_bridge_push_updates_progress(cockpit: OperatorCockpit, traffic: TrafficDashboard) -> None:
+def test_traffic_bridge_push_updates_progress(
+    cockpit: OperatorCockpit, traffic: TrafficDashboard
+) -> None:
     traffic.record(TrafficEvent(ts=time.time(), lane="std", duration_ms=10.0))
     bridge = TrafficCockpitBridge(cockpit).bind(traffic)
     result = bridge.push(traffic)
@@ -209,7 +213,9 @@ def test_traffic_bridge_push_updates_progress(cockpit: OperatorCockpit, traffic:
     assert cockpit.snapshot()["progress"][0] >= 1
 
 
-def test_traffic_bridge_triggers_notice_on_error_threshold(cockpit: OperatorCockpit, traffic: TrafficDashboard) -> None:
+def test_traffic_bridge_triggers_notice_on_error_threshold(
+    cockpit: OperatorCockpit, traffic: TrafficDashboard
+) -> None:
     # Threshold is 5% by default; force one error among two events.
     now = time.time()
     traffic.record(TrafficEvent(ts=now, status="ok", duration_ms=10.0))
@@ -220,7 +226,9 @@ def test_traffic_bridge_triggers_notice_on_error_threshold(cockpit: OperatorCock
     assert "error_rate" in plan.notice.reason
 
 
-def test_traffic_bridge_no_notice_below_threshold(cockpit: OperatorCockpit, traffic: TrafficDashboard) -> None:
+def test_traffic_bridge_no_notice_below_threshold(
+    cockpit: OperatorCockpit, traffic: TrafficDashboard
+) -> None:
     for _ in range(20):
         traffic.record(TrafficEvent(ts=time.time(), status="ok", duration_ms=5.0))
     bridge = TrafficCockpitBridge(cockpit).bind(traffic)
@@ -228,7 +236,9 @@ def test_traffic_bridge_no_notice_below_threshold(cockpit: OperatorCockpit, traf
     assert plan.notice is None
 
 
-def test_traffic_bridge_threshold_is_honoured(cockpit: OperatorCockpit, traffic: TrafficDashboard) -> None:
+def test_traffic_bridge_threshold_is_honoured(
+    cockpit: OperatorCockpit, traffic: TrafficDashboard
+) -> None:
     # 50% errors but raise threshold to 99%.
     traffic.record(TrafficEvent(ts=time.time(), status="ok", duration_ms=1.0))
     traffic.record(TrafficEvent(ts=time.time(), status="error", duration_ms=1.0))
@@ -245,7 +255,9 @@ def test_traffic_bridge_push_default_requires_binding(
         bridge.push_default()
 
 
-def test_traffic_bridge_push_default_after_bind(cockpit: OperatorCockpit, traffic: TrafficDashboard) -> None:
+def test_traffic_bridge_push_default_after_bind(
+    cockpit: OperatorCockpit, traffic: TrafficDashboard
+) -> None:
     traffic.record(TrafficEvent(ts=time.time(), status="ok", duration_ms=10.0))
     bridge = TrafficCockpitBridge(cockpit).bind(traffic)
     result = bridge.push_default()
@@ -284,8 +296,12 @@ def test_explanation_companion_respects_level(
         reason="policy",
         confidence=0.5,
     )
-    concise = ExplanationCompanion(cockpit, explanation, level=DisclosureLevel.CONCISE).render()
-    detailed = ExplanationCompanion(cockpit, explanation, level=DisclosureLevel.DETAILED).render()
+    concise = ExplanationCompanion(
+        cockpit, explanation, level=DisclosureLevel.CONCISE
+    ).render()
+    detailed = ExplanationCompanion(
+        cockpit, explanation, level=DisclosureLevel.DETAILED
+    ).render()
     assert len(detailed) >= len(concise)
 
 
@@ -300,7 +316,9 @@ def test_iter_override_events_is_passthrough() -> None:
     assert out == list(events)
 
 
-def test_install_default_bridges_returns_pair(cockpit: OperatorCockpit, traffic: TrafficDashboard) -> None:
+def test_install_default_bridges_returns_pair(
+    cockpit: OperatorCockpit, traffic: TrafficDashboard
+) -> None:
     traffic.record(TrafficEvent(ts=time.time(), status="ok", duration_ms=1.0))
     override_bridge, traffic_bridge = install_default_bridges(cockpit, traffic)
     assert isinstance(override_bridge, OverrideExpiryBridge)

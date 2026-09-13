@@ -19,7 +19,10 @@ def test_schema_created_on_init(tmp_path: Path) -> None:
     assert registry.registry_db.exists()
 
     with sqlite3.connect(registry.registry_db) as conn:
-        tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        tables = {
+            row[0]
+            for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        }
 
     assert "projects" in tables
 
@@ -41,7 +44,9 @@ def test_migrates_jsonl_registry_into_sqlite(tmp_path: Path) -> None:
             "last_active": "2026-02-20T00:10:00+00:00",
         },
     ]
-    jsonl_path.write_text("\n".join(json.dumps(r).decode() for r in rows) + "\n", encoding="utf-8")
+    jsonl_path.write_text(
+        "\n".join(json.dumps(r).decode() for r in rows) + "\n", encoding="utf-8"
+    )
 
     registry = ProjectRegistry(global_config_dir=tmp_path)
     projects = registry.list_projects()

@@ -102,7 +102,9 @@ class TestFRGovFP008EngineDefaultNamespace:
 class TestFRGovFP009RegisterStores:
     def test_register_stores_in_correct_namespace(self) -> None:
         engine = FederatedPolicyEngine()
-        rule = PolicyRule.create("r1", PolicyScope.LOCAL, "c", "a", priority=1, namespace="ns-a")
+        rule = PolicyRule.create(
+            "r1", PolicyScope.LOCAL, "c", "a", priority=1, namespace="ns-a"
+        )
         engine.register(rule)
         assert "ns-a" in engine._namespaces
         assert engine._namespaces["ns-a"]["r1"] is rule
@@ -150,8 +152,12 @@ class TestFRGovFP012ResolveIncludesGlobal:
 class TestFRGovFP013HigherScopeOverrides:
     def test_higher_scope_wins_on_conflict(self) -> None:
         engine = FederatedPolicyEngine()
-        local_rule = PolicyRule.create("r1", PolicyScope.LOCAL, "c", "allow", priority=1, namespace="team-a")
-        global_rule = PolicyRule.create("r1", PolicyScope.GLOBAL, "c", "deny", priority=1)
+        local_rule = PolicyRule.create(
+            "r1", PolicyScope.LOCAL, "c", "allow", priority=1, namespace="team-a"
+        )
+        global_rule = PolicyRule.create(
+            "r1", PolicyScope.GLOBAL, "c", "deny", priority=1
+        )
         engine.register(local_rule)
         engine.register(global_rule)
         result = engine.resolve_policies("team-a")
@@ -165,8 +171,12 @@ class TestFRGovFP013HigherScopeOverrides:
 class TestFRGovFP014EvaluateFilters:
     def test_evaluate_filters_by_context(self) -> None:
         engine = FederatedPolicyEngine()
-        r1 = PolicyRule.create("r1", PolicyScope.GLOBAL, "feature_a", "allow", priority=1)
-        r2 = PolicyRule.create("r2", PolicyScope.GLOBAL, "feature_b", "deny", priority=2)
+        r1 = PolicyRule.create(
+            "r1", PolicyScope.GLOBAL, "feature_a", "allow", priority=1
+        )
+        r2 = PolicyRule.create(
+            "r2", PolicyScope.GLOBAL, "feature_b", "deny", priority=2
+        )
         engine.register(r1)
         engine.register(r2)
         result = engine.evaluate("default", {"feature_a": True})
@@ -213,8 +223,12 @@ class TestFRGovFP017MergeHigherScopeWins:
     def test_merge_higher_scope_wins(self) -> None:
         e1 = FederatedPolicyEngine()
         e2 = FederatedPolicyEngine()
-        e1.register(PolicyRule.create("r1", PolicyScope.LOCAL, "c", "allow", priority=1))
-        e2.register(PolicyRule.create("r1", PolicyScope.GLOBAL, "c", "deny", priority=1))
+        e1.register(
+            PolicyRule.create("r1", PolicyScope.LOCAL, "c", "allow", priority=1)
+        )
+        e2.register(
+            PolicyRule.create("r1", PolicyScope.GLOBAL, "c", "deny", priority=1)
+        )
         merged = e1.merge(e2)
         resolved = merged.resolve_policies("default")
         assert len(resolved) == 1
@@ -319,6 +333,15 @@ class TestFRGovFP022LoadNonExistentFile:
 # ---------------------------------------------------------------------------
 class TestAuditCommentBlock:
     def test_audit_comment_present(self) -> None:
-        source = Path(__file__).resolve().parents[1] / "src" / "thegent" / "governance" / "federated_policy.py"
+        source = (
+            Path(__file__).resolve().parents[1]
+            / "src"
+            / "thegent"
+            / "governance"
+            / "federated_policy.py"
+        )
         first_line = source.read_text().splitlines()[0]
-        assert first_line == "# AUDIT-N+67: federated_policy hardening — all contracts verified"
+        assert (
+            first_line
+            == "# AUDIT-N+67: federated_policy hardening — all contracts verified"
+        )

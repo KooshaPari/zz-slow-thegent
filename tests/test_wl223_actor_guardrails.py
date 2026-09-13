@@ -149,7 +149,9 @@ class TestActorImpersonationGuardrails:
         """# @trace WL-223 — ActorPolicy has required fields."""
         from thegent.integrations.actor_guardrails import ActorPolicy
 
-        policy = ActorPolicy(actor_id="test", allowed_targets=["t1"], can_impersonate=True)
+        policy = ActorPolicy(
+            actor_id="test", allowed_targets=["t1"], can_impersonate=True
+        )
 
         assert policy.actor_id == "test"
         assert policy.allowed_targets == ["t1"]

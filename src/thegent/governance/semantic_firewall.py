@@ -45,7 +45,10 @@ class SemanticFirewall:
                 reason="Sensitive credential detection.",
             ),
             FirewallRule(
-                rule_id="R2", pattern=r"rm\s+-rf\s+/", action="block", reason="Destructive root command detected."
+                rule_id="R2",
+                pattern=r"rm\s+-rf\s+/",
+                action="block",
+                reason="Destructive root command detected.",
             ),
             FirewallRule(
                 rule_id="R3",
@@ -68,12 +71,17 @@ class SemanticFirewall:
 
                 if rule.action == "block":
                     _log.error("FIREWALL BLOCK: %s", rule.reason)
-                    return "ERROR: BLOCK BY SEMANTIC FIREWALL", [f"CRITICAL: {rule.reason}"]
+                    return "ERROR: BLOCK BY SEMANTIC FIREWALL", [
+                        f"CRITICAL: {rule.reason}"
+                    ]
 
                 if rule.action == "redact":
                     _log.warning("FIREWALL REDACT: %s", rule.reason)
                     modified_output = re.sub(
-                        rule.pattern, "[REDACTED BY FIREWALL]", modified_output, flags=re.IGNORECASE
+                        rule.pattern,
+                        "[REDACTED BY FIREWALL]",
+                        modified_output,
+                        flags=re.IGNORECASE,
                     )
 
                 if rule.action == "warn":

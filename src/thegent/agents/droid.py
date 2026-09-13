@@ -71,7 +71,11 @@ class DroidRunner(AgentRunner):
         self._droid_cmd = _resolve_droid_cmd(droid_cmd)
         self._model = model
         settings = ThegentSettings()
-        self._use_litellm_router = use_litellm_router if use_litellm_router is not None else settings.use_litellm_router
+        self._use_litellm_router = (
+            use_litellm_router
+            if use_litellm_router is not None
+            else settings.use_litellm_router
+        )
 
     def run(
         self,
@@ -91,7 +95,16 @@ class DroidRunner(AgentRunner):
         # Route via LiteLLM Router if enabled
         if self._use_litellm_router:
             return self._run_via_litellm_router(
-                prompt, cwd, mode, timeout, self._model, use_stream, live_output, on_stdout, on_stderr, env=env
+                prompt,
+                cwd,
+                mode,
+                timeout,
+                self._model,
+                use_stream,
+                live_output,
+                on_stdout,
+                on_stderr,
+                env=env,
             )
 
         droid_path = self.droids_dir / f"{self.droid_name}.md"
@@ -139,12 +152,16 @@ class DroidRunner(AgentRunner):
             stdout_text = (
                 proc.stdout
                 if isinstance(proc.stdout, str)
-                else (proc.stdout.decode("utf-8", errors="replace") if proc.stdout else "")
+                else (
+                    proc.stdout.decode("utf-8", errors="replace") if proc.stdout else ""
+                )
             )
             stderr_text = (
                 proc.stderr
                 if isinstance(proc.stderr, str)
-                else (proc.stderr.decode("utf-8", errors="replace") if proc.stderr else "")
+                else (
+                    proc.stderr.decode("utf-8", errors="replace") if proc.stderr else ""
+                )
             )
             return RunResult(
                 exit_code=proc.returncode,
@@ -199,11 +216,15 @@ class DroidRunner(AgentRunner):
             droid_path = self.droids_dir / f"{self.droid_name}.md"
             if droid_path.exists():
                 droid_content = droid_path.read_text()
-                combined_prompt = f"{droid_content.rstrip()}\n\n---\nUser request: {prompt}"
+                combined_prompt = (
+                    f"{droid_content.rstrip()}\n\n---\nUser request: {prompt}"
+                )
             else:
                 combined_prompt = prompt
 
-            result = router.route(combined_prompt, model=model_to_use, stream=use_stream, timeout=timeout)
+            result = router.route(
+                combined_prompt, model=model_to_use, stream=use_stream, timeout=timeout
+            )
 
             if not result.success:
                 return RunResult(
@@ -289,7 +310,11 @@ class CodexRunner(AgentRunner):
         self._codex_cmd = _resolve_codex_cmd(codex_cmd)
         self._model = model
         settings = ThegentSettings()
-        self._use_litellm_router = use_litellm_router if use_litellm_router is not None else settings.use_litellm_router
+        self._use_litellm_router = (
+            use_litellm_router
+            if use_litellm_router is not None
+            else settings.use_litellm_router
+        )
 
     def run(
         self,
@@ -309,7 +334,16 @@ class CodexRunner(AgentRunner):
         # Route via LiteLLM Router if enabled
         if self._use_litellm_router:
             return self._run_via_litellm_router(
-                prompt, cwd, mode, timeout, self._model, use_stream, live_output, on_stdout, on_stderr, env=env
+                prompt,
+                cwd,
+                mode,
+                timeout,
+                self._model,
+                use_stream,
+                live_output,
+                on_stdout,
+                on_stderr,
+                env=env,
             )
 
         droid_path = self.droids_dir / f"{self.droid_name}.md"
@@ -361,12 +395,16 @@ class CodexRunner(AgentRunner):
             stdout_text = (
                 proc.stdout
                 if isinstance(proc.stdout, str)
-                else (proc.stdout.decode("utf-8", errors="replace") if proc.stdout else "")
+                else (
+                    proc.stdout.decode("utf-8", errors="replace") if proc.stdout else ""
+                )
             )
             stderr_text = (
                 proc.stderr
                 if isinstance(proc.stderr, str)
-                else (proc.stderr.decode("utf-8", errors="replace") if proc.stderr else "")
+                else (
+                    proc.stderr.decode("utf-8", errors="replace") if proc.stderr else ""
+                )
             )
             return RunResult(
                 exit_code=proc.returncode,
@@ -415,11 +453,15 @@ class CodexRunner(AgentRunner):
             droid_path = self.droids_dir / f"{self.droid_name}.md"
             if droid_path.exists():
                 droid_content = droid_path.read_text()
-                combined_prompt = f"{droid_content.rstrip()}\n\n---\nUser request: {prompt}"
+                combined_prompt = (
+                    f"{droid_content.rstrip()}\n\n---\nUser request: {prompt}"
+                )
             else:
                 combined_prompt = prompt
 
-            result = router.route(combined_prompt, model=model, stream=use_stream, timeout=timeout)
+            result = router.route(
+                combined_prompt, model=model, stream=use_stream, timeout=timeout
+            )
 
             if not result.success:
                 return RunResult(
@@ -564,12 +606,16 @@ class CustomCliRunner(AgentRunner):
             stdout_text = (
                 proc.stdout
                 if isinstance(proc.stdout, str)
-                else (proc.stdout.decode("utf-8", errors="replace") if proc.stdout else "")
+                else (
+                    proc.stdout.decode("utf-8", errors="replace") if proc.stdout else ""
+                )
             )
             stderr_text = (
                 proc.stderr
                 if isinstance(proc.stderr, str)
-                else (proc.stderr.decode("utf-8", errors="replace") if proc.stderr else "")
+                else (
+                    proc.stderr.decode("utf-8", errors="replace") if proc.stderr else ""
+                )
             )
             return RunResult(
                 exit_code=proc.returncode,

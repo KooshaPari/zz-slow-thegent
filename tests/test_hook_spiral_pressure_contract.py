@@ -15,7 +15,9 @@ def _repo_root() -> Path:
     return Path(__file__).resolve().parents[1]
 
 
-def _load_json_artifact(path: Path, *, proc: subprocess.CompletedProcess[str], verify_dir: Path) -> dict:
+def _load_json_artifact(
+    path: Path, *, proc: subprocess.CompletedProcess[str], verify_dir: Path
+) -> dict:
     if not path.exists():
         files = sorted(p.name for p in verify_dir.glob("*"))
         pytest.fail(
@@ -68,7 +70,9 @@ def _run_governance(
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     source_cfg = _repo_root() / "hooks" / "hook-config.yaml"
-    (hooks_dir / "hook-config.yaml").write_text(source_cfg.read_text(encoding="utf-8"), encoding="utf-8")
+    (hooks_dir / "hook-config.yaml").write_text(
+        source_cfg.read_text(encoding="utf-8"), encoding="utf-8"
+    )
     (project / ".claude" / "quality.json").write_text("{}", encoding="utf-8")
 
     state = {
@@ -86,7 +90,9 @@ def _run_governance(
         "last_policy_band": "green",
         "last_directive": "seed_directive",
     }
-    (verify_dir / "regression-spiral-state.json").write_text(json.dumps(state).decode() + "\n", encoding="utf-8")
+    (verify_dir / "regression-spiral-state.json").write_text(
+        json.dumps(state).decode() + "\n", encoding="utf-8"
+    )
 
     if async_results_payload is not None:
         (home_dir / ".claude" / ".async-test-results.json").write_text(
@@ -105,9 +111,14 @@ def _run_governance(
                 "missing_required_test_types": [],
                 "detected_test_types": {},
             },
-            "security": {"signed_attestation_present": True, "slsa_provenance_present": True},
+            "security": {
+                "signed_attestation_present": True,
+                "slsa_provenance_present": True,
+            },
         }
-        (verify_dir / "qa-attestation.json").write_text(json.dumps(attestation).decode() + "\n", encoding="utf-8")
+        (verify_dir / "qa-attestation.json").write_text(
+            json.dumps(attestation).decode() + "\n", encoding="utf-8"
+        )
 
     subprocess.run(["git", "init", "-q"], cwd=project, check=True)
     subprocess.run(["git", "config", "user.email", "a@b.c"], cwd=project, check=True)
@@ -152,7 +163,9 @@ def _run_governance(
         check=False,
     )
 
-    report = _load_json_artifact(verify_dir / "regression-spiral-guard.json", proc=proc, verify_dir=verify_dir)
+    report = _load_json_artifact(
+        verify_dir / "regression-spiral-guard.json", proc=proc, verify_dir=verify_dir
+    )
 
     metrics_path = verify_dir / "regression-spiral-metrics.jsonl"
     if not metrics_path.exists():
@@ -166,7 +179,11 @@ def _run_governance(
                 ]
             )
         )
-    metric_lines = [line for line in metrics_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    metric_lines = [
+        line
+        for line in metrics_path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
     if not metric_lines:
         pytest.fail(
             "\n".join(
@@ -180,9 +197,15 @@ def _run_governance(
         )
     metric = json.loads(metric_lines[-1])
 
-    state_after = _load_json_artifact(verify_dir / "regression-spiral-state.json", proc=proc, verify_dir=verify_dir)
+    state_after = _load_json_artifact(
+        verify_dir / "regression-spiral-state.json", proc=proc, verify_dir=verify_dir
+    )
     alert_path = verify_dir / "regression-spiral-alert.json"
-    alert = json.loads(alert_path.read_text(encoding="utf-8")) if alert_path.exists() else None
+    alert = (
+        json.loads(alert_path.read_text(encoding="utf-8"))
+        if alert_path.exists()
+        else None
+    )
     return proc.returncode, report, metric, state_after, alert
 
 
@@ -310,7 +333,11 @@ def test_red_policy_band_forces_interrupt_and_fail_closed(tmp_path: Path) -> Non
     ],
 )
 def test_spiral_directive_parity_by_band(
-    tmp_path: Path, scenario: str, expected_band: str, expected_directive: str, kwargs: dict
+    tmp_path: Path,
+    scenario: str,
+    expected_band: str,
+    expected_directive: str,
+    kwargs: dict,
 ) -> None:
     _, report, metric, state, alert = _run_governance(tmp_path, **kwargs)
     assert report["policy_band"] == expected_band
@@ -333,7 +360,9 @@ def test_spiral_directive_parity_by_band(
 
 
 @pytest.mark.unit
-def test_yellow_retries_escalate_to_red_interrupt_after_threshold(tmp_path: Path) -> None:
+def test_yellow_retries_escalate_to_red_interrupt_after_threshold(
+    tmp_path: Path,
+) -> None:
     now_epoch = int(time.time())
     rc, report, metric, state, alert = _run_governance(
         tmp_path,

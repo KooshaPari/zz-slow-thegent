@@ -17,7 +17,9 @@ def test_github_adapter_sync_payload_mapping(monkeypatch: pytest.MonkeyPatch) ->
         captured["payload"] = payload
         return {"synced": 1, "failed": 0, "errors": []}
 
-    monkeypatch.setattr("thegent.integrations.gh_project_sync.sync_to_github", fake_sync_to_github)
+    monkeypatch.setattr(
+        "thegent.integrations.gh_project_sync.sync_to_github", fake_sync_to_github
+    )
     adapter = GitHubBoardAdapter()
 
     result = adapter.sync(
@@ -43,7 +45,9 @@ def test_github_adapter_sync_payload_mapping(monkeypatch: pytest.MonkeyPatch) ->
     }
 
 
-def test_github_adapter_fetch_remote_status_filters_and_maps(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_github_adapter_fetch_remote_status_filters_and_maps(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """GitHub read path filters to requested items and maps item_id/status."""
 
     def fake_sync_from_github(config):
@@ -55,7 +59,9 @@ def test_github_adapter_fetch_remote_status_filters_and_maps(monkeypatch: pytest
             ]
         }
 
-    monkeypatch.setattr("thegent.integrations.gh_project_sync.sync_from_github", fake_sync_from_github)
+    monkeypatch.setattr(
+        "thegent.integrations.gh_project_sync.sync_from_github", fake_sync_from_github
+    )
     adapter = GitHubBoardAdapter()
 
     status_map = adapter.fetch_remote_status(
@@ -69,7 +75,9 @@ def test_github_adapter_fetch_remote_status_filters_and_maps(monkeypatch: pytest
     assert status_map == {"WL-160": "COMPLETED"}
 
 
-def test_github_adapter_fetch_remote_status_retries(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_github_adapter_fetch_remote_status_retries(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Transient failures on read path are retried before success."""
     call_count = SimpleNamespace(count=0)
 
@@ -80,7 +88,9 @@ def test_github_adapter_fetch_remote_status_retries(monkeypatch: pytest.MonkeyPa
             raise RuntimeError("transient")
         return {"items": [{"item_id": "WL-159", "status": "IN PROGRESS"}]}
 
-    monkeypatch.setattr("thegent.integrations.gh_project_sync.sync_from_github", fake_sync_from_github)
+    monkeypatch.setattr(
+        "thegent.integrations.gh_project_sync.sync_from_github", fake_sync_from_github
+    )
     adapter = GitHubBoardAdapter()
 
     status_map = adapter.fetch_remote_status(
@@ -92,7 +102,9 @@ def test_github_adapter_fetch_remote_status_retries(monkeypatch: pytest.MonkeyPa
     assert call_count.count == 2
 
 
-def test_github_adapter_fetch_remote_status_requires_board_id(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_github_adapter_fetch_remote_status_requires_board_id(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Invalid GitHub locator surfaces as a user-visible error."""
     adapter = GitHubBoardAdapter()
     with pytest.raises(ValueError, match="GitHub board ID is required"):
@@ -113,24 +125,47 @@ def test_linear_adapter_sync_payload_mapping(monkeypatch: pytest.MonkeyPatch) ->
         lambda self, token, team_key: "team-id",
     )
 
-    def fake_find_issue_id(_self: LinearBoardAdapter, token: str, team_key: str, title: str) -> str | None:
+    def fake_find_issue_id(
+        _self: LinearBoardAdapter, token: str, team_key: str, title: str
+    ) -> str | None:
         assert token == "token"
         assert team_key == "OPS"
         if title.startswith("[WL-160]"):
             return "ISSUE-1"
         return None
 
-    def fake_create_issue(_self: LinearBoardAdapter, token: str, team_id: str, title: str, description: str) -> None:
+    def fake_create_issue(
+        _self: LinearBoardAdapter,
+        token: str,
+        team_id: str,
+        title: str,
+        description: str,
+    ) -> None:
         created.append((token, team_id, title))
         assert "WL: WL-161" in description
 
-    def fake_update_issue(_self: LinearBoardAdapter, token: str, issue_id: str, title: str, description: str) -> None:
+    def fake_update_issue(
+        _self: LinearBoardAdapter,
+        token: str,
+        issue_id: str,
+        title: str,
+        description: str,
+    ) -> None:
         updated.append((token, issue_id, title))
         assert "WL: WL-160" in description
 
-    monkeypatch.setattr("thegent.sync.board_adapters.LinearBoardAdapter._find_issue_id", fake_find_issue_id)
-    monkeypatch.setattr("thegent.sync.board_adapters.LinearBoardAdapter._create_issue", fake_create_issue)
-    monkeypatch.setattr("thegent.sync.board_adapters.LinearBoardAdapter._update_issue", fake_update_issue)
+    monkeypatch.setattr(
+        "thegent.sync.board_adapters.LinearBoardAdapter._find_issue_id",
+        fake_find_issue_id,
+    )
+    monkeypatch.setattr(
+        "thegent.sync.board_adapters.LinearBoardAdapter._create_issue",
+        fake_create_issue,
+    )
+    monkeypatch.setattr(
+        "thegent.sync.board_adapters.LinearBoardAdapter._update_issue",
+        fake_update_issue,
+    )
 
     adapter = LinearBoardAdapter()
     result = adapter.sync(
@@ -146,7 +181,9 @@ def test_linear_adapter_sync_payload_mapping(monkeypatch: pytest.MonkeyPatch) ->
     assert created == [("token", "team-id", "[WL-161] New")]
 
 
-def test_linear_adapter_fetch_remote_status_filters_and_maps(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_linear_adapter_fetch_remote_status_filters_and_maps(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Linear read path filters to requested items and maps item_id/status."""
     monkeypatch.setenv("THGENT_LINEAR_API_KEY", "token")
     monkeypatch.setattr(
@@ -168,7 +205,9 @@ def test_linear_adapter_fetch_remote_status_filters_and_maps(monkeypatch: pytest
     assert status_map == {"WL-160": "COMPLETED"}
 
 
-def test_linear_adapter_fetch_remote_status_retries(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_linear_adapter_fetch_remote_status_retries(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Transient failures on Linear read path are retried before success."""
     call_count = SimpleNamespace(count=0)
 
@@ -180,7 +219,9 @@ def test_linear_adapter_fetch_remote_status_retries(monkeypatch: pytest.MonkeyPa
         return {"items": [{"item_id": "WL-160", "status": "IN PROGRESS"}]}
 
     monkeypatch.setenv("THGENT_LINEAR_API_KEY", "token")
-    monkeypatch.setattr("thegent.integrations.linear_graphql.sync_from_linear", fake_sync_from_linear)
+    monkeypatch.setattr(
+        "thegent.integrations.linear_graphql.sync_from_linear", fake_sync_from_linear
+    )
 
     adapter = LinearBoardAdapter()
     status_map = adapter.fetch_remote_status(
@@ -192,11 +233,15 @@ def test_linear_adapter_fetch_remote_status_retries(monkeypatch: pytest.MonkeyPa
     assert call_count.count == 2
 
 
-def test_linear_adapter_sync_requires_api_token(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_linear_adapter_sync_requires_api_token(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Linear sync should fail clearly if API token is absent."""
     monkeypatch.delenv("THGENT_LINEAR_API_KEY", raising=False)
     monkeypatch.delenv("LINEAR_API_KEY", raising=False)
     adapter = LinearBoardAdapter()
 
-    with pytest.raises(RuntimeError, match="Linear sync requires THGENT_LINEAR_API_KEY"):
+    with pytest.raises(
+        RuntimeError, match="Linear sync requires THGENT_LINEAR_API_KEY"
+    ):
         adapter.sync(board_id="OPS", work_stream_items=[])

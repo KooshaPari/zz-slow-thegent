@@ -101,7 +101,9 @@ def apply_transforms(body: dict, max_messages: int = 20) -> dict:
             messages = result.get("messages", [])
             if isinstance(messages, list):
                 result = dict(result)
-                result["messages"] = apply_middle_out(messages, max_messages=max_messages)
+                result["messages"] = apply_middle_out(
+                    messages, max_messages=max_messages
+                )
         # Unknown transforms are silently ignored (by design per spec)
 
     return result

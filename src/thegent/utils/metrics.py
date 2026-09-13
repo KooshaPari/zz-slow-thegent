@@ -70,7 +70,9 @@ class MetricsCollector:
             result = {
                 "counters": dict(self._counters),
                 "gauges": dict(self._gauges),
-                "histograms": {name: self.get_histogram_stats(name) for name in self._histograms},
+                "histograms": {
+                    name: self.get_histogram_stats(name) for name in self._histograms
+                },
             }
         return result
 

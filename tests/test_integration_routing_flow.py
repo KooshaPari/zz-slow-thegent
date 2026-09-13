@@ -25,7 +25,9 @@ class TestFullRoutingFlow:
 
     def test_complex_task_routes_to_higher_quality(self, router):
         """COMPLEX tasks should route to higher quality models."""
-        metadata = router.classify("design a microservices architecture for payment processing")
+        metadata = router.classify(
+            "design a microservices architecture for payment processing"
+        )
         assert metadata.category in (TaskCategory.COMPLEX, TaskCategory.HIGH_COMPLEX)
         assert (
             "claude" in metadata.selected_model

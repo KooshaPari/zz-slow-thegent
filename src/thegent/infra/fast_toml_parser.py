@@ -77,7 +77,9 @@ class FastTOMLParser:
         elif TOMLKIT_AVAILABLE:
             self._backend = "tomlkit"
         else:
-            raise ImportError("No TOML parser available. Install rtoml, tomli, or tomlkit")
+            raise ImportError(
+                "No TOML parser available. Install rtoml, tomli, or tomlkit"
+            )
 
     def load(self, stream: str | Path | Any) -> dict[str, Any]:
         """Load TOML from string or file path.
@@ -122,7 +124,9 @@ class FastTOMLParser:
         toml_loads = get_toml_loads()
         return toml_loads(s)
 
-    def dump(self, data: dict[str, Any], stream: Any | None = None, **kwargs) -> str | None:
+    def dump(
+        self, data: dict[str, Any], stream: Any | None = None, **kwargs
+    ) -> str | None:
         """Dump TOML to string or file.
 
         Args:

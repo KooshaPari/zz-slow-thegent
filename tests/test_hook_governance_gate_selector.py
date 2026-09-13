@@ -188,7 +188,9 @@ def _run_governance_selected(
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     source_cfg = _repo_root() / "hooks" / "hook-config.yaml"
-    (hooks_dir / "hook-config.yaml").write_text(source_cfg.read_text(encoding="utf-8"), encoding="utf-8")
+    (hooks_dir / "hook-config.yaml").write_text(
+        source_cfg.read_text(encoding="utf-8"), encoding="utf-8"
+    )
     (project / ".claude" / "quality.json").write_text("{}", encoding="utf-8")
     (verify_dir / "regression-spiral-state.json").write_text(
         json.dumps(
@@ -225,16 +227,23 @@ def _run_governance_selected(
                 "missing_required_test_types": [],
                 "detected_test_types": {},
             },
-            "security": {"signed_attestation_present": True, "slsa_provenance_present": True},
+            "security": {
+                "signed_attestation_present": True,
+                "slsa_provenance_present": True,
+            },
         }
-        (verify_dir / "qa-attestation.json").write_text(json.dumps(attestation).decode() + "\n", encoding="utf-8")
+        (verify_dir / "qa-attestation.json").write_text(
+            json.dumps(attestation).decode() + "\n", encoding="utf-8"
+        )
 
     subprocess.run(["git", "init", "-q"], cwd=project, check=True)
     subprocess.run(["git", "config", "user.email", "a@b.c"], cwd=project, check=True)
     subprocess.run(["git", "config", "user.name", "t"], cwd=project, check=True)
     (project / "README").write_text("x\n", encoding="utf-8")
     subprocess.run(["git", "add", "README"], cwd=project, check=True)
-    subprocess.run(["git", "commit", "-q", "--allow-empty", "-m", "init"], cwd=project, check=True)
+    subprocess.run(
+        ["git", "commit", "-q", "--allow-empty", "-m", "init"], cwd=project, check=True
+    )
 
     gate_script = _repo_root() / "hooks" / "governance-gates.sh"
     env = {
@@ -286,7 +295,9 @@ def test_selector_single_gate_runs_only_regression_spiral(tmp_path: Path) -> Non
     assert "tier-enforcer" not in proc.stdout
 
     report = json.loads(
-        (tmp_path / "project/.claude/verification/regression-spiral-guard.json").read_text(encoding="utf-8")
+        (
+            tmp_path / "project/.claude/verification/regression-spiral-guard.json"
+        ).read_text(encoding="utf-8")
     )
     assert report["policy_band"] == "green"
 
@@ -317,7 +328,9 @@ def test_selector_unknown_gate_is_fail_closed(tmp_path: Path) -> None:
 
 @pytest.mark.unit
 def test_selector_malformed_token_is_fail_closed(tmp_path: Path) -> None:
-    proc = _run_governance_selected(tmp_path, selected="regression_spiral_guard;rm -rf /")
+    proc = _run_governance_selected(
+        tmp_path, selected="regression_spiral_guard;rm -rf /"
+    )
 
     assert proc.returncode == 2
     assert "unknown gate label:" in proc.stdout
@@ -325,7 +338,9 @@ def test_selector_malformed_token_is_fail_closed(tmp_path: Path) -> None:
 
 
 @pytest.mark.unit
-def test_selector_empty_entries_fail_closed_with_explicit_reason(tmp_path: Path) -> None:
+def test_selector_empty_entries_fail_closed_with_explicit_reason(
+    tmp_path: Path,
+) -> None:
     proc = _run_governance_selected(tmp_path, selected=" , , ")
 
     assert proc.returncode == 2
@@ -400,7 +415,9 @@ def test_selector_records_per_gate_execution_metrics(tmp_path: Path) -> None:
     assert entries, "missing governance_gate_execution entries"
 
     regression_entries = [
-        entry for entry in entries if entry.get("name") in {"regression_spiral_guard", "regression-spiral-guard"}
+        entry
+        for entry in entries
+        if entry.get("name") in {"regression_spiral_guard", "regression-spiral-guard"}
     ]
     assert regression_entries, "missing regression_spiral_guard metric entry"
     entry = regression_entries[-1]
@@ -426,7 +443,9 @@ def test_equivalent_selector_sets_share_cache_scope(tmp_path: Path) -> None:
         prev_streak=0,
     )
     assert first_proc.returncode == 0
-    assert "selected mode gates=regression_spiral_guard,reliability" in first_proc.stdout
+    assert (
+        "selected mode gates=regression_spiral_guard,reliability" in first_proc.stdout
+    )
 
     second_proc = _run_governance_selected(
         tmp_path,
@@ -443,7 +462,9 @@ def test_equivalent_selector_sets_share_cache_scope(tmp_path: Path) -> None:
     # If canonical selector scope is shared, this run returns cached result (rc=0).
     # Without canonicalization, this configuration would execute and fail closed (rc=2).
     assert second_proc.returncode == 0
-    assert "selected mode gates=regression_spiral_guard,reliability" in second_proc.stdout
+    assert (
+        "selected mode gates=regression_spiral_guard,reliability" in second_proc.stdout
+    )
     assert "policy_band=red" not in second_proc.stdout
 
 
@@ -469,12 +490,17 @@ def test_selector_native_dispatcher_parity_with_shell_fallback(tmp_path: Path) -
 
     assert fallback_proc.returncode == 0
     assert native_proc.returncode == 0
-    assert _extract_selected_mode_line(fallback_proc.stdout) == "regression_spiral_guard,reliability"
+    assert (
+        _extract_selected_mode_line(fallback_proc.stdout)
+        == "regression_spiral_guard,reliability"
+    )
     assert native_proc.stdout.strip() == "regression_spiral_guard,reliability"
 
 
 @pytest.mark.unit
-def test_selector_native_dispatcher_parity_for_malformed_token_fail_closed(tmp_path: Path) -> None:
+def test_selector_native_dispatcher_parity_for_malformed_token_fail_closed(
+    tmp_path: Path,
+) -> None:
     native_bin = _repo_root() / "hooks/hook-dispatcher/target/debug/hook-dispatcher"
     if not native_bin.exists():
         pytest.skip("native hook-dispatcher binary not built")
@@ -512,10 +538,20 @@ def test_selector_artifact_schema_drift_sentinel_exact_keys(tmp_path: Path) -> N
     assert proc.returncode == 2
 
     verify_dir = tmp_path / "project/.claude/verification"
-    report = json.loads((verify_dir / "regression-spiral-guard.json").read_text(encoding="utf-8"))
-    metric = json.loads((verify_dir / "regression-spiral-metrics.jsonl").read_text(encoding="utf-8").splitlines()[-1])
-    state = json.loads((verify_dir / "regression-spiral-state.json").read_text(encoding="utf-8"))
-    alert = json.loads((verify_dir / "regression-spiral-alert.json").read_text(encoding="utf-8"))
+    report = json.loads(
+        (verify_dir / "regression-spiral-guard.json").read_text(encoding="utf-8")
+    )
+    metric = json.loads(
+        (verify_dir / "regression-spiral-metrics.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()[-1]
+    )
+    state = json.loads(
+        (verify_dir / "regression-spiral-state.json").read_text(encoding="utf-8")
+    )
+    alert = json.loads(
+        (verify_dir / "regression-spiral-alert.json").read_text(encoding="utf-8")
+    )
 
     assert set(report.keys()) == {
         "contract_version",
@@ -580,7 +616,14 @@ def test_selector_artifact_schema_drift_sentinel_exact_keys(tmp_path: Path) -> N
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    ("scenario", "kwargs", "expected_returncode", "expected_band", "expect_alert", "expected_alert_severity"),
+    (
+        "scenario",
+        "kwargs",
+        "expected_returncode",
+        "expected_band",
+        "expect_alert",
+        "expected_alert_severity",
+    ),
     [
         (
             "green",
@@ -642,8 +685,12 @@ def test_selector_artifact_contract_by_policy_band(
     expect_alert: bool,
     expected_alert_severity: str | None,
 ) -> None:
-    proc = _run_governance_selected(tmp_path, selected="regression_spiral_guard", **kwargs)
-    assert proc.returncode == expected_returncode, f"{scenario} stdout={proc.stdout!r} stderr={proc.stderr!r}"
+    proc = _run_governance_selected(
+        tmp_path, selected="regression_spiral_guard", **kwargs
+    )
+    assert proc.returncode == expected_returncode, (
+        f"{scenario} stdout={proc.stdout!r} stderr={proc.stderr!r}"
+    )
 
     verify_dir = tmp_path / "project/.claude/verification"
     report_path = verify_dir / "regression-spiral-guard.json"

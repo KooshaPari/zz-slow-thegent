@@ -17,7 +17,9 @@ def test_dead_letter_replay_fixture_roundtrip(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
-    fixture = Path("tests/fixtures/workstream_autosync/replay/remote_write_dead_letter_fixture.jsonl")
+    fixture = Path(
+        "tests/fixtures/workstream_autosync/replay/remote_write_dead_letter_fixture.jsonl"
+    )
     queue_path = tmp_path / "dead-letter.jsonl"
     queue_path.write_text(fixture.read_text(encoding="utf-8"), encoding="utf-8")
 
@@ -43,7 +45,15 @@ def test_dead_letter_replay_fixture_roundtrip(
 
     result = CliRunner().invoke(
         app,
-        ["dead-letter-replay", "--source", "github", "--board", "kooshapari:1", "--limit", "10"],
+        [
+            "dead-letter-replay",
+            "--source",
+            "github",
+            "--board",
+            "kooshapari:1",
+            "--limit",
+            "10",
+        ],
     )
 
     assert result.exit_code == 0

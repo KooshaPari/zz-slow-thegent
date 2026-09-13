@@ -45,11 +45,15 @@ def test_canonical_target_set_has_no_unapproved_entries_and_is_non_empty() -> No
     assert canonical_targets <= _ALLOWED_CANONICAL_PREFIXES
 
 
-def test_allowed_canonical_prefixes_are_covered_except_deliberately_unsupported() -> None:
+def test_allowed_canonical_prefixes_are_covered_except_deliberately_unsupported() -> (
+    None
+):
     assert _DELIBERATELY_UNSUPPORTED_CANONICAL_PREFIXES <= _ALLOWED_CANONICAL_PREFIXES
 
     canonical_targets = {new_prefix for _, new_prefix in _ALIAS_REWRITE_PREFIXES}
-    expected_covered_prefixes = _ALLOWED_CANONICAL_PREFIXES - _DELIBERATELY_UNSUPPORTED_CANONICAL_PREFIXES
+    expected_covered_prefixes = (
+        _ALLOWED_CANONICAL_PREFIXES - _DELIBERATELY_UNSUPPORTED_CANONICAL_PREFIXES
+    )
     assert canonical_targets >= expected_covered_prefixes
 
 
@@ -62,13 +66,19 @@ def test_root_second_token_sets_are_exact() -> None:
 
     for root, expected_second_tokens in expected_by_root.items():
         actual_second_tokens = {
-            old_prefix[1] for old_prefix, _ in _ALIAS_REWRITE_PREFIXES if len(old_prefix) >= 2 and old_prefix[0] == root
+            old_prefix[1]
+            for old_prefix, _ in _ALIAS_REWRITE_PREFIXES
+            if len(old_prefix) >= 2 and old_prefix[0] == root
         }
         assert actual_second_tokens == expected_second_tokens
 
 
 def _is_non_empty_string_tuple(value: object) -> bool:
-    return isinstance(value, tuple) and bool(value) and all(isinstance(part, str) and bool(part) for part in value)
+    return (
+        isinstance(value, tuple)
+        and bool(value)
+        and all(isinstance(part, str) and bool(part) for part in value)
+    )
 
 
 def _is_lowercase_space_free_token(value: str) -> bool:
@@ -147,31 +157,53 @@ def test_orchestrate_and_observe_cover_same_second_tokens() -> None:
 
 
 def test_recover_old_prefixes_are_explicit_subcommand_aliases() -> None:
-    recover_old_prefixes = [old_prefix for old_prefix, _ in _ALIAS_REWRITE_PREFIXES if old_prefix[0] == "recover"]
+    recover_old_prefixes = [
+        old_prefix
+        for old_prefix, _ in _ALIAS_REWRITE_PREFIXES
+        if old_prefix[0] == "recover"
+    ]
     assert recover_old_prefixes
     assert all(len(old_prefix) == 2 for old_prefix in recover_old_prefixes)
 
 
 def test_orchestrate_and_observe_old_prefixes_are_explicit_subcommand_aliases() -> None:
     for root in ("orchestrate", "observe"):
-        old_prefixes = [old_prefix for old_prefix, _ in _ALIAS_REWRITE_PREFIXES if old_prefix[0] == root]
+        old_prefixes = [
+            old_prefix
+            for old_prefix, _ in _ALIAS_REWRITE_PREFIXES
+            if old_prefix[0] == root
+        ]
         assert old_prefixes
         assert all(len(old_prefix) == 2 for old_prefix in old_prefixes)
 
 
 def test_single_token_roots_are_exactly_legacy_run_alias_roots() -> None:
-    single_token_roots = {old_prefix[0] for old_prefix, _ in _ALIAS_REWRITE_PREFIXES if len(old_prefix) == 1}
-    multi_token_roots = {old_prefix[0] for old_prefix, _ in _ALIAS_REWRITE_PREFIXES if len(old_prefix) >= 2}
+    single_token_roots = {
+        old_prefix[0]
+        for old_prefix, _ in _ALIAS_REWRITE_PREFIXES
+        if len(old_prefix) == 1
+    }
+    multi_token_roots = {
+        old_prefix[0]
+        for old_prefix, _ in _ALIAS_REWRITE_PREFIXES
+        if len(old_prefix) >= 2
+    }
     assert single_token_roots == (_REQUIRED_LEGACY_ROOTS - multi_token_roots)
 
 
 def test_multi_token_roots_are_length_two_only() -> None:
-    multi_token_roots = {old_prefix[0] for old_prefix, _ in _ALIAS_REWRITE_PREFIXES if len(old_prefix) >= 2}
+    multi_token_roots = {
+        old_prefix[0]
+        for old_prefix, _ in _ALIAS_REWRITE_PREFIXES
+        if len(old_prefix) >= 2
+    }
     assert multi_token_roots
 
     for root in multi_token_roots:
         prefix_lengths_for_root = {
-            len(old_prefix) for old_prefix, _ in _ALIAS_REWRITE_PREFIXES if old_prefix[0] == root
+            len(old_prefix)
+            for old_prefix, _ in _ALIAS_REWRITE_PREFIXES
+            if old_prefix[0] == root
         }
         assert prefix_lengths_for_root == {2}, (
             "Multi-token legacy roots must appear only as 2-token prefixes: "
@@ -182,8 +214,14 @@ def test_multi_token_roots_are_length_two_only() -> None:
 
 
 def test_each_allowed_canonical_prefix_has_a_legacy_source_mapping() -> None:
-    canonical_target_counts = Counter(new_prefix for _, new_prefix in _ALIAS_REWRITE_PREFIXES)
-    missing_targets = sorted(target for target in _ALLOWED_CANONICAL_PREFIXES if canonical_target_counts[target] < 1)
+    canonical_target_counts = Counter(
+        new_prefix for _, new_prefix in _ALIAS_REWRITE_PREFIXES
+    )
+    missing_targets = sorted(
+        target
+        for target in _ALLOWED_CANONICAL_PREFIXES
+        if canonical_target_counts[target] < 1
+    )
     assert not missing_targets, (
         f"Every allowed canonical prefix must have at least one legacy source mapping; missing: {missing_targets!r}"
     )
@@ -207,7 +245,9 @@ def test_alias_rewrite_prefix_contract() -> None:
         path: Sequence[str] = new_prefix
         assert tuple(path) == new_prefix
 
-        assert old_prefix != new_prefix, f"Alias rewrite must change command prefix: {old_prefix!r} -> {new_prefix!r}"
+        assert old_prefix != new_prefix, (
+            f"Alias rewrite must change command prefix: {old_prefix!r} -> {new_prefix!r}"
+        )
         assert new_prefix in _ALLOWED_CANONICAL_PREFIXES, (
             f"New prefix must be one of policy-approved canonical targets: {new_prefix!r}"
         )

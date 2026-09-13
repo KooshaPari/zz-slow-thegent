@@ -70,7 +70,9 @@ class DualWriteShadowMode:
             except Exception as e:
                 logger.warning(f"Shadow write failed for record {record_id}: {e}")
 
-        result = ShadowWriteResult(record_id=record_id, primary_ok=primary_ok, shadow_ok=shadow_ok)
+        result = ShadowWriteResult(
+            record_id=record_id, primary_ok=primary_ok, shadow_ok=shadow_ok
+        )
         self._results.append(result)
 
         if primary_ok != shadow_ok:

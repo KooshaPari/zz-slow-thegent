@@ -65,7 +65,9 @@ Return a JSON object with:
 class CheckerAgent:
     """Head LLM that decides the next action in a loop."""
 
-    def __init__(self, settings: ThegentSettings, agent_name: str = "antigravity") -> None:
+    def __init__(
+        self, settings: ThegentSettings, agent_name: str = "antigravity"
+    ) -> None:
         self.settings = settings
         self.agent_name = agent_name
         self.runner = get_runner(agent_name)

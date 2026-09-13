@@ -73,7 +73,9 @@ class EditLinksGenerator:
                 # Find end of frontmatter
                 end_idx = content.find("---", 3)
                 if end_idx != -1:
-                    new_content = content[: end_idx + 3] + edit_link + content[end_idx + 3 :]
+                    new_content = (
+                        content[: end_idx + 3] + edit_link + content[end_idx + 3 :]
+                    )
                 else:
                     new_content = content + edit_link
             else:
@@ -83,7 +85,9 @@ class EditLinksGenerator:
 
         return safe_write_file(file_path, new_content)
 
-    def add_edit_links_batch(self, files: list[Path], position: str = "bottom") -> dict[str, bool]:
+    def add_edit_links_batch(
+        self, files: list[Path], position: str = "bottom"
+    ) -> dict[str, bool]:
         """Add edit links to multiple files.
 
         Args:

@@ -10,7 +10,9 @@ PROFILE_FILE = "env.profile.json"
 SNAPSHOT_DIR = "snapshots"
 SUPPORTED_MODULE_MANIFEST_SCHEMA_VERSIONS = {1}
 DEFAULT_MODULE_REFRESH_CADENCE = "never"
-_REFRESH_CADENCE_RE = re.compile(r"^(never|manual|daily|weekly|monthly|yearly|hourly|every-\d+[smhdwy])$")
+_REFRESH_CADENCE_RE = re.compile(
+    r"^(never|manual|daily|weekly|monthly|yearly|hourly|every-\d+[smhdwy])$"
+)
 DEFAULT_SHARED_MODULE_REPO_EXCLUDE = {"4sgm", "trace", "parpour", "civ"}
 DEFAULT_EXCLUDED_REPOS = frozenset(DEFAULT_SHARED_MODULE_REPO_EXCLUDE)
 SCAN_SHARED_REPOS_SCHEMA_VERSION = 1

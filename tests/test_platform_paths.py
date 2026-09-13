@@ -17,7 +17,9 @@ def test_get_config_dir_macos(monkeypatch):
             with patch("pathlib.Path.mkdir") as mock_mkdir:
                 config_dir = get_config_dir()
 
-                assert config_dir == Path("/Users/testuser/Library/Application Support/thegent")
+                assert config_dir == Path(
+                    "/Users/testuser/Library/Application Support/thegent"
+                )
                 mock_mkdir.assert_called_once_with(parents=True, exist_ok=True)
 
 
@@ -31,7 +33,10 @@ def test_get_config_dir_windows(monkeypatch):
             config_dir = get_config_dir()
 
             # Use string comparison to avoid platform-specific path separator issues in mock expectations
-            assert str(config_dir).replace("/", "\\") == "C:\\Users\\testuser\\AppData\\Roaming\\thegent"
+            assert (
+                str(config_dir).replace("/", "\\")
+                == "C:\\Users\\testuser\\AppData\\Roaming\\thegent"
+            )
             mock_mkdir.assert_called_once_with(parents=True, exist_ok=True)
 
 

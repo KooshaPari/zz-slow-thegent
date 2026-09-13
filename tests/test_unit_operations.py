@@ -95,7 +95,13 @@ class TestListOperations:
         # @trace FR-OPS-002
         """list_operations returns all five operation type keys."""
         ops = list_operations()
-        assert set(ops.keys()) == {"orchestrate", "govern", "recover", "observe", "plan"}
+        assert set(ops.keys()) == {
+            "orchestrate",
+            "govern",
+            "recover",
+            "observe",
+            "plan",
+        }
 
     def test_list_operations_entries_have_required_keys(self) -> None:
         # @trace FR-OPS-002

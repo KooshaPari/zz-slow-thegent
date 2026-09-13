@@ -139,7 +139,9 @@ class TestBoardArtifactLoader:
         assert loader.items[0].completion_pct == 45
 
         # Verify WL-158 item
-        wl158_item = next((item for item in loader.items if item.mapped_wl == "WL-158"), None)
+        wl158_item = next(
+            (item for item in loader.items if item.mapped_wl == "WL-158"), None
+        )
         assert wl158_item is not None
         assert wl158_item.board_id == "CLIPROXY-158"
         assert wl158_item.status == "In Progress"
@@ -207,7 +209,9 @@ class TestBoardArtifactLoader:
         # Verify overall completion (average of 45, 28, 0)
         assert status["overall_completion_pct"] == 24
 
-    def test_load_all_malformed_json_keeps_state_deterministic(self, board_artifacts_dir: Path) -> None:
+    def test_load_all_malformed_json_keeps_state_deterministic(
+        self, board_artifacts_dir: Path
+    ) -> None:
         loader = BoardArtifactLoader(board_artifacts_dir)
 
         # Preload a good state.
@@ -217,7 +221,10 @@ class TestBoardArtifactLoader:
         initial_slices = list(loader.slices)
 
         # Corrupt the JSON artifact and rerun.
-        json_file = board_artifacts_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.json"
+        json_file = (
+            board_artifacts_dir
+            / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.json"
+        )
         json_file.write_text("{bad json", encoding="utf-8")
         second = loader.load_all()
 
@@ -229,8 +236,13 @@ class TestBoardArtifactLoader:
         assert loader.metadata == initial_metadata
         assert loader.slices == initial_slices
 
-    def test_load_all_malformed_json_with_valid_csv_loads_items(self, board_artifacts_dir: Path) -> None:
-        json_file = board_artifacts_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.json"
+    def test_load_all_malformed_json_with_valid_csv_loads_items(
+        self, board_artifacts_dir: Path
+    ) -> None:
+        json_file = (
+            board_artifacts_dir
+            / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.json"
+        )
         json_file.write_text("{bad json", encoding="utf-8")
 
         loader = BoardArtifactLoader(board_artifacts_dir)
@@ -241,9 +253,14 @@ class TestBoardArtifactLoader:
         assert loader.slices == []
         assert loader.metadata == {}
 
-    def test_load_all_keeps_state_clean_on_malformed_json(self, board_artifacts_dir: Path) -> None:
+    def test_load_all_keeps_state_clean_on_malformed_json(
+        self, board_artifacts_dir: Path
+    ) -> None:
         """Malformed JSON should report error without mutating slices/metadata."""
-        json_file = board_artifacts_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.json"
+        json_file = (
+            board_artifacts_dir
+            / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.json"
+        )
         json_file.write_text('{"board_metadata": {"name": "bad"', encoding="utf-8")
 
         loader = BoardArtifactLoader(board_artifacts_dir)
@@ -256,9 +273,13 @@ class TestBoardArtifactLoader:
         # CSV still loads successfully and remains independent
         assert len(loader.items) == 6
 
-    def test_load_all_keeps_state_clean_on_partial_csv_failure(self, board_artifacts_dir: Path) -> None:
+    def test_load_all_keeps_state_clean_on_partial_csv_failure(
+        self, board_artifacts_dir: Path
+    ) -> None:
         """CSV parse failure should not preserve already-parsed rows."""
-        csv_file = board_artifacts_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.csv"
+        csv_file = (
+            board_artifacts_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.csv"
+        )
         csv_file.write_text(
             "\n".join(
                 [
@@ -327,9 +348,16 @@ class TestWL158Integration:
 
     def test_wl158_artifacts_exist(self, board_artifacts_dir: Path) -> None:
         """Verify all required board artifact formats exist."""
-        assert (board_artifacts_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.md").exists()
-        assert (board_artifacts_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.csv").exists()
-        assert (board_artifacts_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.json").exists()
+        assert (
+            board_artifacts_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.md"
+        ).exists()
+        assert (
+            board_artifacts_dir / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.csv"
+        ).exists()
+        assert (
+            board_artifacts_dir
+            / "CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.json"
+        ).exists()
 
     def test_wl158_workstream_mapping(self, board_artifacts_dir: Path) -> None:
         """Verify WL-158 is mapped and integrated into workstream."""
@@ -346,7 +374,9 @@ class TestWL158Integration:
         assert wl158["slice"]["slice_id"] == "C"
         assert wl158["lead_agent"] == "workstream-agent"
 
-    def test_wl158_active_execution_slices_mapped(self, board_artifacts_dir: Path) -> None:
+    def test_wl158_active_execution_slices_mapped(
+        self, board_artifacts_dir: Path
+    ) -> None:
         """Verify active execution slices are mapped into thegent WL cadence."""
         loader = BoardArtifactLoader(board_artifacts_dir)
         loader.load_all()

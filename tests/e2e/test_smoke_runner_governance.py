@@ -9,7 +9,9 @@ SMOKE_TEST_PATH = Path(__file__).with_name("test_cli_surface_smoke.py")
 
 
 def _parse() -> ast.Module:
-    return ast.parse(SMOKE_TEST_PATH.read_text(encoding="utf-8"), filename=str(SMOKE_TEST_PATH))
+    return ast.parse(
+        SMOKE_TEST_PATH.read_text(encoding="utf-8"), filename=str(SMOKE_TEST_PATH)
+    )
 
 
 def test_smoke_suite_imports_compat_cli_runner() -> None:

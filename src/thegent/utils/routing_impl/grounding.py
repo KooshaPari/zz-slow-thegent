@@ -39,7 +39,15 @@ def normalize_grounding_source_url(url: str) -> str:
     normalized_path = parts.path
     if normalized_path == "/" and not parts.query and not parts.fragment:
         normalized_path = ""
-    return urlunsplit((normalized_scheme, normalized_netloc, normalized_path, parts.query, parts.fragment))
+    return urlunsplit(
+        (
+            normalized_scheme,
+            normalized_netloc,
+            normalized_path,
+            parts.query,
+            parts.fragment,
+        )
+    )
 
 
 def extract_grounding_sources(text: str) -> list[str]:
@@ -74,11 +82,18 @@ def extract_grounding_sources_from_payload(payload: Any) -> list[str]:
         if isinstance(node, dict):
             for key, value in node.items():
                 lowered = str(key).lower()
-                if (lowered in {"uri", "url", "link"} or lowered.endswith(("uri", "url", "link"))) and isinstance(
-                    value, str
-                ):
+                if (
+                    lowered in {"uri", "url", "link"}
+                    or lowered.endswith(("uri", "url", "link"))
+                ) and isinstance(value, str):
                     _push(value)
-                elif lowered in {"groundingmetadata", "groundingchunks", "websearchqueries", "sources", "citations"}:
+                elif lowered in {
+                    "groundingmetadata",
+                    "groundingchunks",
+                    "websearchqueries",
+                    "sources",
+                    "citations",
+                }:
                     _walk(value)
                 else:
                     _walk(value)

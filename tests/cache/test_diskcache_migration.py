@@ -22,7 +22,9 @@ import pytest
 # Converting from `pytest.fail` to `pytest.importorskip` lets the file collect
 # cleanly when diskcache is absent (CI may not always install every optional
 # dep) while still skipping every test when diskcache is missing.
-pytest.importorskip("diskcache", reason="diskcache dependency is required for diskcache migration tests")
+pytest.importorskip(
+    "diskcache", reason="diskcache dependency is required for diskcache migration tests"
+)
 
 from thegent.cache.multi_level import MultiLevelCache
 
@@ -31,7 +33,9 @@ from thegent.cache.multi_level import MultiLevelCache
 # ---------------------------------------------------------------------------
 
 
-def _make_cache(tmp_path: Path, l1_ttl: float = 60, l2_ttl: float = 3600) -> MultiLevelCache:
+def _make_cache(
+    tmp_path: Path, l1_ttl: float = 60, l2_ttl: float = 3600
+) -> MultiLevelCache:
     """Factory: two-level cache backed by a temp directory."""
     cache = MultiLevelCache(
         l1_maxsize=8,

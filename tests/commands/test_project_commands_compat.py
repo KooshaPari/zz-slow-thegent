@@ -3,13 +3,17 @@ from __future__ import annotations
 from thegent.cli.commands import cli
 
 
-def test_project_register_wrapper_delegates_to_extracted_module(monkeypatch, tmp_path) -> None:
+def test_project_register_wrapper_delegates_to_extracted_module(
+    monkeypatch, tmp_path
+) -> None:
     captured: dict[str, object] = {}
 
     def _fake(*, path, name, console) -> None:
         captured.update({"path": path, "name": name, "console": console})
 
-    monkeypatch.setattr("thegent.cli.commands.project_commands.project_register_cmd", _fake)
+    monkeypatch.setattr(
+        "thegent.cli.commands.project_commands.project_register_cmd", _fake
+    )
     cli.project_register_cmd(path=tmp_path, name="demo")
 
     assert captured["path"] == tmp_path

@@ -1,4 +1,5 @@
 """roid_main - Routing orchestration and intelligence dispatcher."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -34,7 +35,9 @@ default_roid = {
 }
 
 
-async def _run_droid_with_alias(alias: str, prompt: str, **kwargs: Any) -> dict[str, Any]:
+async def _run_droid_with_alias(
+    alias: str, prompt: str, **kwargs: Any
+) -> dict[str, Any]:
     """Run droid with a model alias.
 
     Args:
@@ -54,4 +57,11 @@ async def _run_droid_with_alias(alias: str, prompt: str, **kwargs: Any) -> dict[
     }
 
 
-__all__ = ["GEMINI_FLASH_MODEL", "_MODEL_ALIAS", "RoidApp", "app", "default_roid", "_run_droid_with_alias"]
+__all__ = [
+    "GEMINI_FLASH_MODEL",
+    "_MODEL_ALIAS",
+    "RoidApp",
+    "app",
+    "default_roid",
+    "_run_droid_with_alias",
+]

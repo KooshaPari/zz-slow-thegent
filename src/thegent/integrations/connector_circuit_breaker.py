@@ -30,7 +30,9 @@ class ConnectorCircuitBreaker:
     Prevents cascading failures by blocking requests when the circuit is open.
     """
 
-    def __init__(self, failure_threshold: int = 5, recovery_timeout_seconds: float = 60.0) -> None:
+    def __init__(
+        self, failure_threshold: int = 5, recovery_timeout_seconds: float = 60.0
+    ) -> None:
         """Initialize the circuit breaker.
 
         Args:
@@ -51,7 +53,9 @@ class ConnectorCircuitBreaker:
         self._state = CircuitState.CLOSED
         self._opened_at: datetime | None = None
 
-        logger.debug(f"Initialized circuit breaker: threshold={failure_threshold}, timeout={recovery_timeout_seconds}s")
+        logger.debug(
+            f"Initialized circuit breaker: threshold={failure_threshold}, timeout={recovery_timeout_seconds}s"
+        )
 
     def record_failure(self) -> None:
         """Record a failure and update circuit state.
@@ -61,7 +65,10 @@ class ConnectorCircuitBreaker:
         """
         self._failure_count += 1
 
-        if self._failure_count >= self._failure_threshold and self._state == CircuitState.CLOSED:
+        if (
+            self._failure_count >= self._failure_threshold
+            and self._state == CircuitState.CLOSED
+        ):
             self._state = CircuitState.OPEN
             self._opened_at = datetime.now(UTC)
             logger.warning(
@@ -70,7 +77,9 @@ class ConnectorCircuitBreaker:
         elif self._state == CircuitState.HALF_OPEN:
             self._state = CircuitState.OPEN
             self._opened_at = datetime.now(UTC)
-            logger.warning("Circuit breaker returned to OPEN after failure in HALF_OPEN state")
+            logger.warning(
+                "Circuit breaker returned to OPEN after failure in HALF_OPEN state"
+            )
 
     def record_success(self) -> None:
         """Record a successful request and reset failures.
@@ -98,7 +107,9 @@ class ConnectorCircuitBreaker:
             elapsed = (datetime.now(UTC) - self._opened_at).total_seconds()
             if elapsed >= self._recovery_timeout_seconds:
                 self._state = CircuitState.HALF_OPEN
-                logger.info("Circuit breaker transitioned to HALF_OPEN for recovery attempt")
+                logger.info(
+                    "Circuit breaker transitioned to HALF_OPEN for recovery attempt"
+                )
                 return False
 
         return self._state in (CircuitState.OPEN, CircuitState.HALF_OPEN)

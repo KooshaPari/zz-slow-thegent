@@ -1,6 +1,8 @@
 import pytest
 
-pytestmark = pytest.mark.skip(reason="validated_dataclass and ContextManagerMixin not implemented")
+pytestmark = pytest.mark.skip(
+    reason="validated_dataclass and ContextManagerMixin not implemented"
+)
 
 """Tests for ValidatedMixin and related patterns."""
 

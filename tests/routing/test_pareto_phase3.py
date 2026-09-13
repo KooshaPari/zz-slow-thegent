@@ -254,7 +254,9 @@ class TestReadRoutingAudit:
     def test_returns_empty_for_missing_file(self) -> None:
         from thegent.utils.routing_impl.route_executor import read_routing_audit
 
-        result = read_routing_audit(Path("/tmp/nonexistent-routing-audit.jsonl"), limit=10)
+        result = read_routing_audit(
+            Path("/tmp/nonexistent-routing-audit.jsonl"), limit=10
+        )
         assert result == []
 
     def test_reads_single_record(self, tmp_path: Path) -> None:
@@ -384,7 +386,9 @@ class TestMakeRoutingDecision:
         )
 
         d_base = make_routing_decision_from_factors("moderate")
-        d_latency = make_routing_decision_from_factors("moderate", latency_critical=True)
+        d_latency = make_routing_decision_from_factors(
+            "moderate", latency_critical=True
+        )
         assert d_latency.risk_score < d_base.risk_score
 
     def test_invalid_complexity_raises_value_error(self) -> None:
@@ -469,14 +473,18 @@ class TestRouterSettingsConfig:
         s = ThegentSettings()
         assert s.router_max_dwell == 3600  # noqa: PLR2004
 
-    def test_env_override_override_threshold(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_env_override_override_threshold(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.setenv("THGENT_ROUTER_OVERRIDE_THRESHOLD", "0.35")
         from thegent.config import ThegentSettings
 
         s = ThegentSettings()
         assert s.router_override_threshold == pytest.approx(0.35)
 
-    def test_env_override_audit_path(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    def test_env_override_audit_path(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
         audit_path = str(tmp_path / "my_audit.jsonl")
         monkeypatch.setenv("THGENT_ROUTER_AUDIT_PATH", audit_path)
         from thegent.config import ThegentSettings

@@ -1,6 +1,5 @@
 """WP-5007: Recovery under sustained load drills test suite."""
 
-
 import pytest
 from typer.testing import CliRunner
 

@@ -289,7 +289,9 @@ class TestComputeScoreReturnsValue:
 class TestRetentionPurgeRemovesOld:
     """@trace WP-3006 — compliance evidence archival."""
 
-    def test_old_files_archived_and_removed_from_evidence(self, retention_settings: ThegentSettings):
+    def test_old_files_archived_and_removed_from_evidence(
+        self, retention_settings: ThegentSettings
+    ):
         """Files older than retention_days are moved to archive/."""
         evidence_dir = retention_settings.session_dir / "evidence"
         evidence_dir.mkdir(parents=True, exist_ok=True)
@@ -322,7 +324,9 @@ class TestRetentionPurgeRemovesOld:
         assert recent_file.exists()
         assert "recent.json" not in manager.list_archived()
 
-    def test_missing_evidence_dir_returns_zero_counts(self, retention_settings: ThegentSettings):
+    def test_missing_evidence_dir_returns_zero_counts(
+        self, retention_settings: ThegentSettings
+    ):
         """enforce_retention is a no-op when the evidence dir does not exist."""
         manager = EvidenceRetentionManager(retention_settings)
         results = manager.enforce_retention()
@@ -360,7 +364,11 @@ class TestSloMetricsRecordIncrements:
         emitter.emit(_green_metric(source="emit-1"))
         emitter.emit(_green_metric(source="emit-2"))
         assert slo_output_path.exists()
-        lines = [ln for ln in slo_output_path.read_text(encoding="utf-8").splitlines() if ln.strip()]
+        lines = [
+            ln
+            for ln in slo_output_path.read_text(encoding="utf-8").splitlines()
+            if ln.strip()
+        ]
         assert len(lines) == 2
         first = json_fast.loads(lines[0])
         second = json_fast.loads(lines[1])
@@ -393,7 +401,9 @@ class TestSloMetricsRecordIncrements:
         status = emitter.evaluate(metric, SloThresholds())
         assert status["file_loc"] == "green"
         # Verify the emitted row carries the expected provenance fields
-        row = json_fast.loads(slo_output_path.read_text(encoding="utf-8").strip().splitlines()[0])
+        row = json_fast.loads(
+            slo_output_path.read_text(encoding="utf-8").strip().splitlines()[0]
+        )
         assert row["source"] == "roundtrip"
         assert row["file_loc"] == pytest.approx(800.0)
         assert "timestamp" in row

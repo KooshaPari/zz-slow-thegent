@@ -33,16 +33,23 @@ def _start_session() -> str:
 def test_wl11020_resolve_turn_submit_parse_error_returns_error_payload() -> None:
     # @trace WL-11020
     parse_error = {"error": "oops"}
-    assert server._resolve_turn_submit_parse_error({"parse_error": parse_error}) == parse_error
+    assert (
+        server._resolve_turn_submit_parse_error({"parse_error": parse_error})
+        == parse_error
+    )
 
 
-def test_wl11021_resolve_turn_submit_parse_error_returns_none_for_missing_payload() -> None:
+def test_wl11021_resolve_turn_submit_parse_error_returns_none_for_missing_payload() -> (
+    None
+):
     # @trace WL-11021
     assert server._resolve_turn_submit_parse_error({}) is None
     assert server._resolve_turn_submit_parse_error({"parse_error": None}) is None
 
 
-def test_wl11022_build_turn_submit_parse_phase_rejects_missing_approval_diff_only_when_needed() -> None:
+def test_wl11022_build_turn_submit_parse_phase_rejects_missing_approval_diff_only_when_needed() -> (
+    None
+):
     # @trace WL-11022
     _reset_state()
     session_id = _start_session()
@@ -59,11 +66,17 @@ def test_wl11023_build_turn_submit_execution_phase_returns_execution_target() ->
     # @trace WL-11023
     _reset_state()
     session_id = _start_session()
-    plan = server._build_turn_submit_phase_plan("req", {"session_id": session_id, "input": "x"})
-    parse_phase = server._build_turn_submit_parse_phase(plan)
-    session_id_out, session_out, user_input_out, requires_approval_out, approval_diff_out = (
-        server._build_turn_submit_execution_phase(parse_phase)
+    plan = server._build_turn_submit_phase_plan(
+        "req", {"session_id": session_id, "input": "x"}
     )
+    parse_phase = server._build_turn_submit_parse_phase(plan)
+    (
+        session_id_out,
+        session_out,
+        user_input_out,
+        requires_approval_out,
+        approval_diff_out,
+    ) = server._build_turn_submit_execution_phase(parse_phase)
     assert session_id_out == session_id
     assert session_out["id"] == session_id
     assert user_input_out == "x"
@@ -71,7 +84,9 @@ def test_wl11023_build_turn_submit_execution_phase_returns_execution_target() ->
     assert approval_diff_out is None
 
 
-def test_wl11024_build_turn_submit_execution_target_rejects_invalid_plan_shape() -> None:
+def test_wl11024_build_turn_submit_execution_target_rejects_invalid_plan_shape() -> (
+    None
+):
     # @trace WL-11024
     with pytest.raises(ValueError, match="Turn submit execution target unresolved"):
         server._resolve_turn_submit_execution_target(
@@ -113,7 +128,9 @@ def test_wl11027_build_turn_submit_side_effects_phase_keeps_optional_fields() ->
         "approval_id": None,
         "tool_call_id": None,
     }
-    side_effects_phase = server._build_turn_submit_side_effects_phase("session-1", "turn-1", turn, "x", False, None)
+    side_effects_phase = server._build_turn_submit_side_effects_phase(
+        "session-1", "turn-1", turn, "x", False, None
+    )
     assert side_effects_phase["approval_diff"] is None
     assert side_effects_phase["requires_approval"] is False
     assert side_effects_phase["user_input"] == "x"
@@ -134,7 +151,11 @@ def test_wl11028_build_turn_submit_side_effects_target_rejects_bad_turn_id() -> 
         )
 
 
-def test_wl11029_resolve_turn_submit_response_approval_fields_allows_empty_diff() -> None:
+def test_wl11029_resolve_turn_submit_response_approval_fields_allows_empty_diff() -> (
+    None
+):
     # @trace WL-11029
-    fields = server._resolve_turn_submit_response_approval_fields({"id": "approval-1", "status": "requested"})
+    fields = server._resolve_turn_submit_response_approval_fields(
+        {"id": "approval-1", "status": "requested"}
+    )
     assert fields == ("approval-1", "requested", None)

@@ -30,15 +30,17 @@ def test_wl9821_commit_target_resolution_is_typed_and_stable() -> None:
             "session": {"id": "session-1", "turn_ids": ["turn-1"]},
         }
     )
-    assert resolved == ("turn-1", {"id": "turn-1", "session_id": "session-1", "input": "x"}, {"id": "session-1", "turn_ids": ["turn-1"]})
+    assert resolved == (
+        "turn-1",
+        {"id": "turn-1", "session_id": "session-1", "input": "x"},
+        {"id": "session-1", "turn_ids": ["turn-1"]},
+    )
 
 
 def test_wl9822_commit_target_fails_loudly_on_invalid_shape() -> None:
     # @trace WL-9822
     with pytest.raises(ValueError, match="commit_target"):
-        server._resolve_turn_submit_commit_target(
-            {"turn": "not-a-dict"}
-        )
+        server._resolve_turn_submit_commit_target({"turn": "not-a-dict"})
 
 
 def test_wl9823_side_effects_phase_extracts_approval_tuple() -> None:

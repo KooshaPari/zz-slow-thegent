@@ -62,7 +62,9 @@ class ProviderCircuitBreaker:
     Fail fast: when OPEN, call() raises CircuitOpenError immediately.
     """
 
-    def __init__(self, provider: str, config: ProviderCircuitBreakerConfig | None = None) -> None:
+    def __init__(
+        self, provider: str, config: ProviderCircuitBreakerConfig | None = None
+    ) -> None:
         self.provider = provider
         self.config = config or ProviderCircuitBreakerConfig()
         self._breaker = pybreaker.CircuitBreaker(
@@ -105,7 +107,9 @@ class ProviderCircuitBreaker:
                 self._breaker.fail_counter,
                 self._breaker.fail_max,
             )
-            raise CircuitOpenError(f"Circuit breaker OPEN for provider '{self.provider}': circuit open")
+            raise CircuitOpenError(
+                f"Circuit breaker OPEN for provider '{self.provider}': circuit open"
+            )
         try:
             return self._breaker.call(func, *args, **kwargs)
         except pybreaker.CircuitBreakerError as exc:
@@ -118,7 +122,9 @@ class ProviderCircuitBreaker:
                 self._breaker.fail_counter,
                 self._breaker.fail_max,
             )
-            raise CircuitOpenError(f"Circuit breaker OPEN for provider '{self.provider}': {exc}") from exc
+            raise CircuitOpenError(
+                f"Circuit breaker OPEN for provider '{self.provider}': {exc}"
+            ) from exc
 
     async def call_async(self, func, *args, **kwargs):  # noqa: ANN001, ANN002, ANN003
         """Execute async func through the circuit breaker.
@@ -139,7 +145,9 @@ class ProviderCircuitBreaker:
                 self._breaker.fail_counter,
                 self._breaker.fail_max,
             )
-            raise CircuitOpenError(f"Circuit breaker OPEN for provider '{self.provider}': circuit open")
+            raise CircuitOpenError(
+                f"Circuit breaker OPEN for provider '{self.provider}': circuit open"
+            )
 
         # Run the coroutine, capturing the outcome
         try:
@@ -205,7 +213,9 @@ class ProviderCircuitBreakerRegistry:
     _breakers: dict[str, ProviderCircuitBreaker] = field(default_factory=dict)
     _lock: threading.Lock = field(default_factory=threading.Lock)
 
-    _instance: ProviderCircuitBreakerRegistry | None = field(default=None, init=False, repr=False)
+    _instance: ProviderCircuitBreakerRegistry | None = field(
+        default=None, init=False, repr=False
+    )
 
     @classmethod
     def get_instance(cls) -> ProviderCircuitBreakerRegistry:
@@ -240,7 +250,11 @@ class ProviderCircuitBreakerRegistry:
         with self._lock:
             breaker = ProviderCircuitBreaker(provider, config)
             self._breakers[provider] = breaker
-            _log.debug("Re-registered circuit breaker for provider=%s config=%s", provider, config)
+            _log.debug(
+                "Re-registered circuit breaker for provider=%s config=%s",
+                provider,
+                config,
+            )
             return breaker
 
     def all_open(self) -> list[str]:
@@ -304,13 +318,21 @@ def get_healthy_deployments(
         Filtered model_list containing only deployments whose provider circuit
         breaker is not OPEN.  Returns the full list if all are unhealthy.
     """
-    effective_registry = registry if registry is not None else ProviderCircuitBreakerRegistry.get_instance()
+    effective_registry = (
+        registry
+        if registry is not None
+        else ProviderCircuitBreakerRegistry.get_instance()
+    )
     open_providers = set(effective_registry.all_open())
 
     if not open_providers:
         return model_list
 
-    healthy = [entry for entry in model_list if _provider_from_deployment(entry) not in open_providers]
+    healthy = [
+        entry
+        for entry in model_list
+        if _provider_from_deployment(entry) not in open_providers
+    ]
 
     if not healthy:
         _log.warning(
@@ -346,7 +368,11 @@ def record_deployment_failure(
         error: The exception that caused the failure.
         registry: Circuit breaker registry.  Defaults to the global singleton.
     """
-    effective_registry = registry if registry is not None else ProviderCircuitBreakerRegistry.get_instance()
+    effective_registry = (
+        registry
+        if registry is not None
+        else ProviderCircuitBreakerRegistry.get_instance()
+    )
     breaker = effective_registry.get(provider)
     breaker.record_failure()
     _log.warning(
@@ -371,10 +397,16 @@ def record_deployment_success(
         provider: Provider identifier (e.g. ``"openai"``).
         registry: Circuit breaker registry.  Defaults to the global singleton.
     """
-    effective_registry = registry if registry is not None else ProviderCircuitBreakerRegistry.get_instance()
+    effective_registry = (
+        registry
+        if registry is not None
+        else ProviderCircuitBreakerRegistry.get_instance()
+    )
     breaker = effective_registry.get(provider)
     breaker.record_success()
-    _log.debug("Recorded deployment success for provider=%s state=%s", provider, breaker.state)
+    _log.debug(
+        "Recorded deployment success for provider=%s state=%s", provider, breaker.state
+    )
 
 
 def with_circuit_breaker(
@@ -403,6 +435,10 @@ def with_circuit_breaker(
         CircuitOpenError: When the circuit is already OPEN before the call.
         Any exception raised by ``func`` propagates after recording the failure.
     """
-    effective_registry = registry if registry is not None else ProviderCircuitBreakerRegistry.get_instance()
+    effective_registry = (
+        registry
+        if registry is not None
+        else ProviderCircuitBreakerRegistry.get_instance()
+    )
     breaker = effective_registry.get(provider)
     return breaker.call(func, *args, **kwargs)

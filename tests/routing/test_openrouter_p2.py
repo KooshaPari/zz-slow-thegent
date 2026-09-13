@@ -43,7 +43,9 @@ class _AsyncGenFromChunks:
 # ---------------------------------------------------------------------------
 
 
-def _make_chat_chunk(content: str | None, finish_reason: str | None = None) -> dict[str, Any]:
+def _make_chat_chunk(
+    content: str | None, finish_reason: str | None = None
+) -> dict[str, Any]:
     delta: dict[str, Any] = {}
     if content is not None:
         delta["content"] = content
@@ -189,7 +191,9 @@ class TestExtractForwardHeaders:
 
         app = Starlette(routes=[Route("/", endpoint)])
         client = TestClient(app)
-        client.get("/", headers={"Authorization": "Bearer sk-secret", "x-custom-thing": "val"})
+        client.get(
+            "/", headers={"Authorization": "Bearer sk-secret", "x-custom-thing": "val"}
+        )
         assert captured == {}
 
     def test_empty_headers_returns_empty_dict(self) -> None:
@@ -251,7 +255,11 @@ class TestOR17HeadersForwardedToRouter:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
             client.post(
                 "/v1/responses",
@@ -296,7 +304,11 @@ class TestOR17HeadersForwardedToRouter:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
             client.post(
                 "/v1/responses",
@@ -338,7 +350,11 @@ class TestOR17HeadersForwardedToRouter:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
             client.post(
                 "/v1/responses",
@@ -381,7 +397,11 @@ class TestOR17HeadersForwardedToRouter:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
             client.post(
                 "/v1/responses",
@@ -421,7 +441,9 @@ class TestIsNativeResponsesCapable:
         )
 
         for provider in ("gpt-4o", "anthropic", "cursor", "gemini", "litellm", ""):
-            assert _is_native_responses_capable(provider) is False, f"Expected False for provider={provider!r}"
+            assert _is_native_responses_capable(provider) is False, (
+                f"Expected False for provider={provider!r}"
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -444,7 +466,10 @@ class TestExtractProviderFromModel:
             _extract_provider_from_model,
         )
 
-        assert _extract_provider_from_model("openrouter/anthropic/claude-opus-4-6") == "openrouter"
+        assert (
+            _extract_provider_from_model("openrouter/anthropic/claude-opus-4-6")
+            == "openrouter"
+        )
 
     def test_no_slash_returns_empty_string(self) -> None:
         from thegent.utils.routing_impl.litellm_responses_handler import (
@@ -481,7 +506,9 @@ class TestOR18NativeResponsesForwarding:
         mock_router = MagicMock()
         mock_router.acompletion = AsyncMock()
 
-        fake_response_content = json.dumps({"id": "r-native", "object": "response", "status": "completed"})
+        fake_response_content = json.dumps(
+            {"id": "r-native", "object": "response", "status": "completed"}
+        )
 
         mock_httpx_resp = MagicMock()
         mock_httpx_resp.content = fake_response_content
@@ -515,9 +542,17 @@ class TestOR18NativeResponsesForwarding:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            resp = client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            resp = client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         # LiteLLM router must NOT have been called
         mock_router.acompletion.assert_not_awaited()
@@ -529,7 +564,9 @@ class TestOR18NativeResponsesForwarding:
         assert resp.status_code == 200
 
     @pytest.mark.asyncio
-    async def test_native_forwarding_injects_api_key_and_attribution_headers(self) -> None:
+    async def test_native_forwarding_injects_api_key_and_attribution_headers(
+        self,
+    ) -> None:
         """Direct native forward must include Authorization, HTTP-Referer and X-Title headers."""
         from starlette.testclient import TestClient
 
@@ -562,13 +599,20 @@ class TestOR18NativeResponsesForwarding:
                 return_value=mock_client_instance,
             ),
         ):
-
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         sent_headers = mock_client_instance.post.call_args.kwargs["headers"]
         assert sent_headers.get("Authorization") == "Bearer sk-real-key"
@@ -614,12 +658,19 @@ class TestOR18NativeResponsesForwarding:
                 return_value=mock_client_instance,
             ),
         ):
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
             client.post(
                 "/v1/responses",
                 content=body,
-                headers={"Content-Type": "application/json", "x-session-id": "sess-native"},
+                headers={
+                    "Content-Type": "application/json",
+                    "x-session-id": "sess-native",
+                },
             )
 
         sent_headers = mock_client_instance.post.call_args.kwargs["headers"]
@@ -657,9 +708,17 @@ class TestOR18NativeResponsesForwarding:
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         # LiteLLM must have been called
         mock_router.acompletion.assert_awaited_once()
@@ -682,7 +741,10 @@ class TestAppendGenerationId:
 
         store = tmp_path / ".thegent" / "generation_id_store.jsonl"
 
-        with patch("thegent.utils.routing_impl.litellm_responses_handler._GENERATION_ID_STORE", store):
+        with patch(
+            "thegent.utils.routing_impl.litellm_responses_handler._GENERATION_ID_STORE",
+            store,
+        ):
             _append_generation_id("req-001", "gen-abc")
 
         assert store.exists()
@@ -697,7 +759,10 @@ class TestAppendGenerationId:
 
         store = tmp_path / ".thegent" / "generation_id_store.jsonl"
 
-        with patch("thegent.utils.routing_impl.litellm_responses_handler._GENERATION_ID_STORE", store):
+        with patch(
+            "thegent.utils.routing_impl.litellm_responses_handler._GENERATION_ID_STORE",
+            store,
+        ):
             _append_generation_id("req-001", "gen-aaa")
             _append_generation_id("req-002", "gen-bbb")
             _append_generation_id("req-003", "gen-ccc")
@@ -715,7 +780,10 @@ class TestAppendGenerationId:
 
         store = tmp_path / "deep" / "nested" / "dir" / "store.jsonl"
 
-        with patch("thegent.utils.routing_impl.litellm_responses_handler._GENERATION_ID_STORE", store):
+        with patch(
+            "thegent.utils.routing_impl.litellm_responses_handler._GENERATION_ID_STORE",
+            store,
+        ):
             _append_generation_id("req-x", "gen-x")
 
         assert store.exists()
@@ -727,7 +795,10 @@ class TestAppendGenerationId:
 
         store = tmp_path / "store.jsonl"
 
-        with patch("thegent.utils.routing_impl.litellm_responses_handler._GENERATION_ID_STORE", store):
+        with patch(
+            "thegent.utils.routing_impl.litellm_responses_handler._GENERATION_ID_STORE",
+            store,
+        ):
             _append_generation_id("req-json", 'gen-with-"quotes"')
 
         line = store.read_text().strip()
@@ -744,7 +815,9 @@ class TestOR19GenerationIdCaptureFromStream:
     """@trace OR-19"""
 
     @pytest.mark.asyncio
-    async def test_generation_id_written_when_chunk_contains_openrouter_field(self, tmp_path) -> None:
+    async def test_generation_id_written_when_chunk_contains_openrouter_field(
+        self, tmp_path
+    ) -> None:
         """When a chunk contains openrouter-generation-id, it must be appended to the store."""
         from starlette.testclient import TestClient
 
@@ -767,15 +840,29 @@ class TestOR19GenerationIdCaptureFromStream:
         body = json.dumps(_make_responses_body(model="gpt-4o", stream=True))
 
         with (
-            patch("thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router", return_value=mock_router),
-            patch("thegent.utils.routing_impl.litellm_responses_handler._GENERATION_ID_STORE", store),
+            patch(
+                "thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router",
+                return_value=mock_router,
+            ),
+            patch(
+                "thegent.utils.routing_impl.litellm_responses_handler._GENERATION_ID_STORE",
+                store,
+            ),
         ):
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         assert store.exists(), "generation_id_store.jsonl was not created"
         records = [json.loads(line) for line in store.read_text().splitlines() if line]
@@ -783,7 +870,9 @@ class TestOR19GenerationIdCaptureFromStream:
         assert records[0]["generation_id"] == "gen-12345"
 
     @pytest.mark.asyncio
-    async def test_generation_id_written_when_chunk_contains_x_generation_id_field(self, tmp_path) -> None:
+    async def test_generation_id_written_when_chunk_contains_x_generation_id_field(
+        self, tmp_path
+    ) -> None:
         """When a chunk contains x-generation-id, it must also be appended to the store."""
         from starlette.testclient import TestClient
 
@@ -805,22 +894,38 @@ class TestOR19GenerationIdCaptureFromStream:
         body = json.dumps(_make_responses_body(model="gpt-4o", stream=True))
 
         with (
-            patch("thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router", return_value=mock_router),
-            patch("thegent.utils.routing_impl.litellm_responses_handler._GENERATION_ID_STORE", store),
+            patch(
+                "thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router",
+                return_value=mock_router,
+            ),
+            patch(
+                "thegent.utils.routing_impl.litellm_responses_handler._GENERATION_ID_STORE",
+                store,
+            ),
         ):
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
         assert store.exists()
         records = [json.loads(line) for line in store.read_text().splitlines() if line]
         assert any(r["generation_id"] == "xgen-99" for r in records)
 
     @pytest.mark.asyncio
-    async def test_no_generation_id_in_chunks_means_no_store_write(self, tmp_path) -> None:
+    async def test_no_generation_id_in_chunks_means_no_store_write(
+        self, tmp_path
+    ) -> None:
         """When chunks contain no generation_id fields, the store file must not be written."""
         from starlette.testclient import TestClient
 
@@ -830,21 +935,40 @@ class TestOR19GenerationIdCaptureFromStream:
 
         store = tmp_path / "store.jsonl"
 
-        chunks = [_make_chat_chunk("Hello"), _make_chat_chunk(None, finish_reason="stop")]
+        chunks = [
+            _make_chat_chunk("Hello"),
+            _make_chat_chunk(None, finish_reason="stop"),
+        ]
         mock_router = MagicMock()
         mock_router.acompletion = lambda **kwargs: _AsyncGenFromChunks(chunks)
 
         body = json.dumps(_make_responses_body(model="gpt-4o", stream=True))
 
         with (
-            patch("thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router", return_value=mock_router),
-            patch("thegent.utils.routing_impl.litellm_responses_handler._GENERATION_ID_STORE", store),
+            patch(
+                "thegent.utils.routing_impl.litellm_responses_handler.get_litellm_router",
+                return_value=mock_router,
+            ),
+            patch(
+                "thegent.utils.routing_impl.litellm_responses_handler._GENERATION_ID_STORE",
+                store,
+            ),
         ):
             from starlette.applications import Starlette
             from starlette.routing import Route
 
-            app = Starlette(routes=[Route("/v1/responses", handle_responses_request, methods=["POST"])])
+            app = Starlette(
+                routes=[
+                    Route("/v1/responses", handle_responses_request, methods=["POST"])
+                ]
+            )
             client = TestClient(app, raise_server_exceptions=False)
-            client.post("/v1/responses", content=body, headers={"Content-Type": "application/json"})
+            client.post(
+                "/v1/responses",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            )
 
-        assert not store.exists(), "store should not be created when no generation_id is present"
+        assert not store.exists(), (
+            "store should not be created when no generation_id is present"
+        )

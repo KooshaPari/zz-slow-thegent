@@ -89,7 +89,9 @@ def test_render_profile_fields_stored_correctly() -> None:
     # @trace FR-UI-COMP-020
     """
     ts = time.time()
-    profile = RenderProfile(panel_id="foo", render_time_ms=42.5, timestamp=ts, cache_hit=True)
+    profile = RenderProfile(
+        panel_id="foo", render_time_ms=42.5, timestamp=ts, cache_hit=True
+    )
     assert profile.panel_id == "foo"
     assert profile.render_time_ms == 42.5
     assert profile.timestamp == ts

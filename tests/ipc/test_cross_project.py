@@ -166,21 +166,29 @@ class TestInit:
 class TestSend:
     """send() atomically delivers a file to the recipient's inbox."""
 
-    def test_send_creates_file_in_recipient_new(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_send_creates_file_in_recipient_new(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         msg_id = alice.send(bob.address, "greet", {"hello": True})
         new_dir = bob._inbox_dir / "new"
         assert (new_dir / msg_id).exists()
 
-    def test_send_returns_nonempty_msg_id(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_send_returns_nonempty_msg_id(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         msg_id = alice.send(bob.address, "t", {})
         assert isinstance(msg_id, str)
         assert msg_id
 
-    def test_send_ids_are_unique(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_send_ids_are_unique(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         ids = {alice.send(bob.address, "t", {}) for _ in range(10)}
         assert len(ids) == 10
 
-    def test_send_file_is_valid_json(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_send_file_is_valid_json(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         msg_id = alice.send(bob.address, "data", {"x": 42})
         new_path = bob._inbox_dir / "new" / msg_id
         data = json.loads(new_path.read_text())
@@ -189,7 +197,9 @@ class TestSend:
         assert data["sender"] == alice.address
         assert data["recipient"] == bob.address
 
-    def test_send_nothing_in_tmp_after_delivery(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_send_nothing_in_tmp_after_delivery(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         alice.send(bob.address, "t", {})
         assert list((bob._inbox_dir / "tmp").iterdir()) == []
 
@@ -205,7 +215,9 @@ class TestReceive:
     def test_receive_returns_none_on_empty_inbox(self, bob: CrossProjectIpc) -> None:
         assert bob.receive() is None
 
-    def test_receive_picks_up_sent_message(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_receive_picks_up_sent_message(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         msg_id = alice.send(bob.address, "ping", {"seq": 1})
         msg = bob.receive()
         assert msg is not None
@@ -213,20 +225,26 @@ class TestReceive:
         assert msg.topic == "ping"
         assert msg.payload == {"seq": 1}
 
-    def test_receive_moves_to_cur(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_receive_moves_to_cur(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         msg_id = alice.send(bob.address, "t", {})
         bob.receive()
         assert not (bob._inbox_dir / "new" / msg_id).exists()
         assert (bob._inbox_dir / "cur" / msg_id).exists()
 
-    def test_receive_nonblocking_returns_none_immediately(self, bob: CrossProjectIpc) -> None:
+    def test_receive_nonblocking_returns_none_immediately(
+        self, bob: CrossProjectIpc
+    ) -> None:
         start = time.monotonic()
         result = bob.receive(timeout=0.0)
         elapsed = time.monotonic() - start
         assert result is None
         assert elapsed < 0.5
 
-    def test_receive_with_timeout_waits_then_returns(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_receive_with_timeout_waits_then_returns(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         """receive() with timeout returns as soon as a message arrives."""
 
         def _send_later() -> None:
@@ -257,7 +275,9 @@ class TestReceive:
 class TestBroadcast:
     """broadcast() delivers to the shared broadcast inbox."""
 
-    def test_broadcast_creates_file_in_broadcast_inbox(self, alice: CrossProjectIpc, ipc_dir: Path) -> None:
+    def test_broadcast_creates_file_in_broadcast_inbox(
+        self, alice: CrossProjectIpc, ipc_dir: Path
+    ) -> None:
         msg_id = alice.broadcast("announce", {"version": 2})
         broadcast_dir = ipc_dir / "broadcast"
         assert (broadcast_dir / "new" / msg_id).exists()
@@ -281,7 +301,9 @@ class TestBroadcast:
         msg_carol = carol.receive_broadcast()
         assert msg_carol is not None
 
-    def test_broadcast_sets_recipient_wildcard(self, alice: CrossProjectIpc, ipc_dir: Path) -> None:
+    def test_broadcast_sets_recipient_wildcard(
+        self, alice: CrossProjectIpc, ipc_dir: Path
+    ) -> None:
         msg_id = alice.broadcast("event", {})
         broadcast_dir = ipc_dir / "broadcast"
         data = json.loads((broadcast_dir / "new" / msg_id).read_text())
@@ -296,7 +318,9 @@ class TestBroadcast:
 class TestReply:
     """reply() sends a message that references the original msg_id."""
 
-    def test_reply_delivered_to_sender_inbox(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_reply_delivered_to_sender_inbox(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         alice.send(bob.address, "ping", {})
         original = bob.receive()
         assert original is not None
@@ -306,7 +330,9 @@ class TestReply:
         assert reply is not None
         assert reply.payload == {"pong": True}
 
-    def test_reply_sets_reply_to_field(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_reply_sets_reply_to_field(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         msg_id = alice.send(bob.address, "req", {"n": 7})
         original = bob.receive()
         assert original is not None
@@ -317,7 +343,9 @@ class TestReply:
         data = json.loads(reply_path.read_text())
         assert data["reply_to"] == msg_id
 
-    def test_reply_preserves_topic(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_reply_preserves_topic(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         alice.send(bob.address, "compute", {})
         original = bob.receive()
         assert original is not None
@@ -335,7 +363,9 @@ class TestReply:
 class TestAck:
     """ack() removes the message file from cur/ (idempotent)."""
 
-    def test_ack_removes_from_cur(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_ack_removes_from_cur(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         alice.send(bob.address, "t", {})
         msg = bob.receive()
         assert msg is not None
@@ -361,7 +391,9 @@ class TestAck:
 class TestReceiveTopic:
     """receive_topic() returns only messages matching the given topic."""
 
-    def test_receive_topic_returns_matching_message(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_receive_topic_returns_matching_message(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         alice.send(bob.address, "irrelevant", {})
         alice.send(bob.address, "important", {"data": 99})
         msg = bob.receive_topic("important", timeout=0.5)
@@ -389,7 +421,9 @@ class TestReceiveTopic:
 class TestConcurrentSends:
     """Concurrent senders to the same inbox do not corrupt messages."""
 
-    def test_concurrent_sends_all_arrive(self, ipc_dir: Path, project_a: Path, project_b: Path) -> None:
+    def test_concurrent_sends_all_arrive(
+        self, ipc_dir: Path, project_a: Path, project_b: Path
+    ) -> None:
         """N concurrent senders each deliver exactly one message."""
         n = 20
         receiver = CrossProjectIpc("receiver", project_b, ipc_dir=ipc_dir)
@@ -417,7 +451,9 @@ class TestConcurrentSends:
         assert len(sent_ids) == n
 
         # All messages should be in the receiver's new/ inbox.
-        present = {f.name for f in (receiver._inbox_dir / "new").iterdir() if f.is_file()}
+        present = {
+            f.name for f in (receiver._inbox_dir / "new").iterdir() if f.is_file()
+        }
         for mid in sent_ids:
             assert mid in present, f"Missing message {mid}"
 
@@ -430,7 +466,9 @@ class TestConcurrentSends:
 class TestCrossProjectIpcServer:
     """CrossProjectIpcServer dispatches messages to topic handlers."""
 
-    def test_server_dispatches_to_handler(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_server_dispatches_to_handler(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         received: list[IpcMessage] = []
         server = CrossProjectIpcServer(bob, poll_interval=0.01, include_broadcast=False)
         server.register("greet", received.append)
@@ -441,7 +479,9 @@ class TestCrossProjectIpcServer:
         assert len(received) == 1
         assert received[0].topic == "greet"
 
-    def test_server_calls_default_handler_for_unknown_topic(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_server_calls_default_handler_for_unknown_topic(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         received: list[IpcMessage] = []
         server = CrossProjectIpcServer(bob, poll_interval=0.01, include_broadcast=False)
         server.set_default_handler(received.append)
@@ -466,7 +506,9 @@ class TestCrossProjectIpcServer:
         t.join()
         assert time.monotonic() - start < 2.0
 
-    def test_server_acks_processed_message(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_server_acks_processed_message(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         server = CrossProjectIpcServer(bob, poll_interval=0.01, include_broadcast=False)
         server.register("ping", lambda _: None)
 
@@ -476,7 +518,9 @@ class TestCrossProjectIpcServer:
         # Message should be acked (removed from cur/)
         assert not (bob._inbox_dir / "cur" / msg_id).exists()
 
-    def test_server_handles_broadcast_messages(self, alice: CrossProjectIpc, bob: CrossProjectIpc) -> None:
+    def test_server_handles_broadcast_messages(
+        self, alice: CrossProjectIpc, bob: CrossProjectIpc
+    ) -> None:
         bcast_received: list[IpcMessage] = []
         server = CrossProjectIpcServer(bob, poll_interval=0.01, include_broadcast=True)
         server.set_default_handler(bcast_received.append)

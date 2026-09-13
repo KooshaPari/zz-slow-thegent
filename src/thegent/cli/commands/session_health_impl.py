@@ -91,7 +91,9 @@ def _hash_health_payload(payload: dict[str, Any]) -> dict[str, str]:
     excluded so each report hashes deterministically.
     """
     payload_for_hash = {
-        key: value for key, value in payload.items() if key not in {"generated_at_utc", "payload_signature"}
+        key: value
+        for key, value in payload.items()
+        if key not in {"generated_at_utc", "payload_signature"}
     }
     import orjson as _json
 
@@ -250,7 +252,13 @@ def session_contract_audit_impl(*, owner: str | None = None) -> dict[str, Any]:
     :func:`monkeypatch.setattr("thegent.cli.commands.session_health_impl.session_contract_audit_impl", ...)`
     to drive coverage.
     """
-    return {"summary": {"total": 0, "health": {"healthy": 0, "warning": 0, "error": 0, "missing": 0}}, "rows": []}
+    return {
+        "summary": {
+            "total": 0,
+            "health": {"healthy": 0, "warning": 0, "error": 0, "missing": 0},
+        },
+        "rows": [],
+    }
 
 
 def session_contract_health_gate_impl(

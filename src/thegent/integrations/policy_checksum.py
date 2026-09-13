@@ -55,7 +55,9 @@ class PolicyChecksumDriftDetector:
         serialized = orjson.dumps(policy_data, option=orjson.OPT_SORT_KEYS)
         return hashlib.sha256(serialized).hexdigest()
 
-    def record_baseline(self, policy_id: str, policy_data: dict, cycle_id: str) -> PolicyChecksum:
+    def record_baseline(
+        self, policy_id: str, policy_data: dict, cycle_id: str
+    ) -> PolicyChecksum:
         """Record a baseline checksum for a policy.
 
         Args:

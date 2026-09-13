@@ -11,7 +11,9 @@ from dataclasses import dataclass
 from datetime import datetime
 
 
-def classify_conflict(*, field: str, connector: str, wl_id: str) -> tuple[str, str, str]:
+def classify_conflict(
+    *, field: str, connector: str, wl_id: str
+) -> tuple[str, str, str]:
     """Classify conflict routing fields deterministically."""
     normalized_field = field.strip().lower()
     normalized_connector = connector.strip().lower()

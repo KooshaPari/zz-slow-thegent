@@ -48,23 +48,38 @@ def test_wl11012_build_turn_submit_phase_plan_rejects_non_string_input() -> None
     # @trace WL-11012
     _reset_state()
     session_id = _start_session()
-    plan = server._build_turn_submit_phase_plan("req", {"session_id": session_id, "input": 17})
+    plan = server._build_turn_submit_phase_plan(
+        "req", {"session_id": session_id, "input": 17}
+    )
     assert plan["parse_error"]["error"]["data"]["reason"] == "input_must_be_string"
 
 
-def test_wl11013_build_turn_submit_phase_plan_rejects_non_bool_requires_approval_flag() -> None:
+def test_wl11013_build_turn_submit_phase_plan_rejects_non_bool_requires_approval_flag() -> (
+    None
+):
     # @trace WL-11013
     _reset_state()
     session_id = _start_session()
     plan = server._build_turn_submit_phase_plan(
-        "req", {"session_id": session_id, "requires_approval": "yes", "unified_diff": "diff"}
+        "req",
+        {"session_id": session_id, "requires_approval": "yes", "unified_diff": "diff"},
     )
-    assert plan["parse_error"]["error"]["data"]["reason"] == "requires_approval_must_be_boolean"
+    assert (
+        plan["parse_error"]["error"]["data"]["reason"]
+        == "requires_approval_must_be_boolean"
+    )
 
 
-def test_wl11014_build_turn_submit_side_effects_target_keeps_optional_missing_approval_diff() -> None:
+def test_wl11014_build_turn_submit_side_effects_target_keeps_optional_missing_approval_diff() -> (
+    None
+):
     # @trace WL-11014
-    turn = {"id": "turn-1", "session_id": "session-1", "input": "x", "status": "in_progress"}
+    turn = {
+        "id": "turn-1",
+        "session_id": "session-1",
+        "input": "x",
+        "status": "in_progress",
+    }
     resolved = server._resolve_turn_submit_side_effects_target(
         {
             "session_id": "session-1",
@@ -78,20 +93,37 @@ def test_wl11014_build_turn_submit_side_effects_target_keeps_optional_missing_ap
     assert resolved == ("session-1", "turn-1", turn, "x", False, None)
 
 
-def test_wl11015_extract_turn_submit_response_request_id_rejects_bool_request_id_when_expected() -> None:
+def test_wl11015_extract_turn_submit_response_request_id_rejects_bool_request_id_when_expected() -> (
+    None
+):
     # @trace WL-11015
-    response_phase = server._build_turn_submit_response_phase(True, True, {"id": "turn-1"}, None)
+    response_phase = server._build_turn_submit_response_phase(
+        True, True, {"id": "turn-1"}, None
+    )
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
-        server._extract_turn_submit_response_request_id(response_phase, request_has_id=True)
+        server._extract_turn_submit_response_request_id(
+            response_phase, request_has_id=True
+        )
 
 
-def test_wl11016_extract_turn_submit_response_request_id_accepts_numeric_request_id() -> None:
+def test_wl11016_extract_turn_submit_response_request_id_accepts_numeric_request_id() -> (
+    None
+):
     # @trace WL-11016
-    response_phase = server._build_turn_submit_response_phase(True, 11.5, {"id": "turn-1"}, None)
-    assert server._extract_turn_submit_response_request_id(response_phase, request_has_id=True) == 11.5
+    response_phase = server._build_turn_submit_response_phase(
+        True, 11.5, {"id": "turn-1"}, None
+    )
+    assert (
+        server._extract_turn_submit_response_request_id(
+            response_phase, request_has_id=True
+        )
+        == 11.5
+    )
 
 
-def test_wl11017_build_turn_submit_success_response_preserves_float_request_id() -> None:
+def test_wl11017_build_turn_submit_success_response_preserves_float_request_id() -> (
+    None
+):
     # @trace WL-11017
     turn = {
         "id": "turn-1",
@@ -110,13 +142,23 @@ def test_wl11017_build_turn_submit_success_response_preserves_float_request_id()
 
 def test_wl11018_handle_turn_submit_parse_failure_returns_exact_error_payload() -> None:
     # @trace WL-11018
-    parse_error = {"error": {"code": -32602, "message": "Invalid params", "data": {"reason": "input_must_be_string"}}}
+    parse_error = {
+        "error": {
+            "code": -32602,
+            "message": "Invalid params",
+            "data": {"reason": "input_must_be_string"},
+        }
+    }
     assert server._handle_turn_submit_parse_failure(parse_error) == parse_error
 
 
-def test_wl11019_resolve_turn_submit_response_target_rejects_non_dict_approval_payload_shape() -> None:
+def test_wl11019_resolve_turn_submit_response_target_rejects_non_dict_approval_payload_shape() -> (
+    None
+):
     # @trace WL-11019
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
         server._resolve_turn_submit_response_target(
-            server._build_turn_submit_response_phase(True, "req", {"id": "turn-1"}, approval_payload="bad")
+            server._build_turn_submit_response_phase(
+                True, "req", {"id": "turn-1"}, approval_payload="bad"
+            )
         )

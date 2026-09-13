@@ -89,7 +89,9 @@ class TestEvidenceStore:
     def test_append_returns_evidence_with_hash(self, tmp_path: Path) -> None:
         # @trace WL-051
         store = EvidenceStore(tmp_path / "evidence.jsonl")
-        rec = store.append(kind="human_approval", actor="user_alice", resource="run-001")
+        rec = store.append(
+            kind="human_approval", actor="user_alice", resource="run-001"
+        )
         assert rec.entry_hash != ""
         assert rec.prev_hash == ""  # first entry has empty prev_hash
 
@@ -150,7 +152,11 @@ class TestEvidenceStore:
     def test_payload_stored_and_retrieved(self, tmp_path: Path) -> None:
         # @trace WL-051
         store = EvidenceStore(tmp_path / "ev.jsonl")
-        store.append(kind="policy_evaluation", actor="engine", payload={"rule": "hitl", "decision": "block"})
+        store.append(
+            kind="policy_evaluation",
+            actor="engine",
+            payload={"rule": "hitl", "decision": "block"},
+        )
         rec = store.list_all()[0]
         assert rec.payload["rule"] == "hitl"
         assert rec.payload["decision"] == "block"
@@ -278,7 +284,12 @@ class TestRetentionEnforcer:
             granted_at=datetime.now(UTC).isoformat(),
         )
         enforcer.record_consent(consent)
-        assert enforcer.has_active_consent(tenant_id="t1", subject_id="sub_002", data_category="billing") is True
+        assert (
+            enforcer.has_active_consent(
+                tenant_id="t1", subject_id="sub_002", data_category="billing"
+            )
+            is True
+        )
 
     def test_has_active_consent_false_when_withdrawn(self, tmp_path: Path) -> None:
         # @trace WL-051
@@ -293,7 +304,12 @@ class TestRetentionEnforcer:
             withdrawn_at=datetime.now(UTC).isoformat(),
         )
         enforcer.record_consent(consent)
-        assert enforcer.has_active_consent(tenant_id="t1", subject_id="sub_003", data_category="agent_logs") is False
+        assert (
+            enforcer.has_active_consent(
+                tenant_id="t1", subject_id="sub_003", data_category="agent_logs"
+            )
+            is False
+        )
 
     def test_purge_tenant_data_no_policies_raises(self, tmp_path: Path) -> None:
         # @trace WL-051
@@ -312,7 +328,9 @@ class TestRetentionEnforcer:
         assert summary["tenant_id"] == "t_exec"
         assert "p_exec" in summary["purged_by_policy"]
 
-    def test_purge_with_consent_required_and_no_consent_raises(self, tmp_path: Path) -> None:
+    def test_purge_with_consent_required_and_no_consent_raises(
+        self, tmp_path: Path
+    ) -> None:
         # @trace WL-051
         enforcer = RetentionEnforcer(tmp_path)
         enforcer.add_policy(_make_policy("p_consent", "t_c", 30, consent_required=True))
@@ -320,7 +338,9 @@ class TestRetentionEnforcer:
         with pytest.raises(RuntimeError, match="Consent required"):
             enforcer.purge_tenant_data(tenant_id="t_c", evidence_store=store)
 
-    def test_purge_with_consent_required_and_consent_present_succeeds(self, tmp_path: Path) -> None:
+    def test_purge_with_consent_required_and_consent_present_succeeds(
+        self, tmp_path: Path
+    ) -> None:
         # @trace WL-051
         enforcer = RetentionEnforcer(tmp_path)
         enforcer.add_policy(_make_policy("p_ok", "t_ok", 30, consent_required=True))
@@ -618,7 +638,9 @@ class TestKeyRotationWebhook:
         registry = KeyRegistry(tmp_path / "keys.jsonl")
         registry.add(_make_key("wk1", "azure", days_until_expiry=30))
         webhook = KeyRotationWebhook("https://example.com/webhook", registry)
-        payload = webhook.build_rotation_payload("wk1", new_expires_at=make_expiry_utc(60))
+        payload = webhook.build_rotation_payload(
+            "wk1", new_expires_at=make_expiry_utc(60)
+        )
         assert payload["event"] == "key_rotation"
         assert payload["key_id"] == "wk1"
         assert payload["provider"] == "azure"
@@ -684,7 +706,11 @@ class TestEnterpriseCLI:
             ["compliance", "evidence", "list", "--evidence", str(evidence_path)],
         )
         assert result.exit_code == 0
-        assert "No evidence" in result.output or "Evidence Store" in result.output or result.exit_code == 0
+        assert (
+            "No evidence" in result.output
+            or "Evidence Store" in result.output
+            or result.exit_code == 0
+        )
 
     def test_compliance_evidence_list_with_records(self, tmp_path: Path) -> None:
         # @trace WL-051
@@ -704,7 +730,15 @@ class TestEnterpriseCLI:
         store.append(kind="agent_decision", actor="old_entry")
         result = _runner.invoke(
             enterprise_app,
-            ["compliance", "evidence", "purge", "--older-than-days", "0", "--evidence", str(evidence_path)],
+            [
+                "compliance",
+                "evidence",
+                "purge",
+                "--older-than-days",
+                "0",
+                "--evidence",
+                str(evidence_path),
+            ],
         )
         assert result.exit_code == 0
         assert "Purged" in result.output

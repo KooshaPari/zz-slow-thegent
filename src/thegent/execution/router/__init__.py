@@ -3,6 +3,7 @@
 Pure routing logic with no CLI imports.
 Routes requests to appropriate agents/models based on rules.
 """
+
 from __future__ import annotations
 
 from collections.abc import Callable

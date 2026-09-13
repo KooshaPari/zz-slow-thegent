@@ -45,18 +45,27 @@ def check_budget_limits(settings: ThegentSettings) -> tuple[bool, str | None]:
     # Check hourly budget
     _alert, block = alert_system.check_budget(hourly_spend, context="hourly")
     if block:
-        return True, f"Hourly budget EXCEEDED: ${hourly_spend:.2f} >= ${settings.budget_hourly_limit:.2f}"
+        return (
+            True,
+            f"Hourly budget EXCEEDED: ${hourly_spend:.2f} >= ${settings.budget_hourly_limit:.2f}",
+        )
 
     # Check daily budget
     _alert, block = alert_system.check_budget(daily_spend, context="daily")
     if block:
-        return True, f"Daily budget EXCEEDED: ${daily_spend:.2f} >= ${settings.budget_daily_limit:.2f}"
+        return (
+            True,
+            f"Daily budget EXCEEDED: ${daily_spend:.2f} >= ${settings.budget_daily_limit:.2f}",
+        )
 
     # Check run budget
     run_spend = _get_run_spend(alert_system)
     _alert, block = alert_system.check_budget(run_spend, context="run")
     if block:
-        return True, f"Run budget EXCEEDED: ${run_spend:.2f} >= ${settings.budget_run_limit:.2f}"
+        return (
+            True,
+            f"Run budget EXCEEDED: ${run_spend:.2f} >= ${settings.budget_run_limit:.2f}",
+        )
 
     return False, None
 
@@ -80,11 +89,17 @@ def check_budget_warning(settings: ThegentSettings) -> tuple[bool, str | None]:
 
     # Check hourly warning
     if hourly_spend >= settings.budget_hourly_limit * threshold:
-        return True, f"Hourly budget warning: ${hourly_spend:.2f} / ${settings.budget_hourly_limit:.2f}"
+        return (
+            True,
+            f"Hourly budget warning: ${hourly_spend:.2f} / ${settings.budget_hourly_limit:.2f}",
+        )
 
     # Check daily warning
     if daily_spend >= settings.budget_daily_limit * threshold:
-        return True, f"Daily budget warning: ${daily_spend:.2f} / ${settings.budget_daily_limit:.2f}"
+        return (
+            True,
+            f"Daily budget warning: ${daily_spend:.2f} / ${settings.budget_daily_limit:.2f}",
+        )
 
     return False, None
 

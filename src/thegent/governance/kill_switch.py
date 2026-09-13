@@ -52,6 +52,8 @@ class SafetyKillSwitch:
 
         @trace AUDIT-N+47 — FR-GOV-KS-004, FR-GOV-KS-011, FR-GOV-KS-015
         """
-        _log.info("Monitoring alignment drift... (Current rate: %.4f)", self_improvement_rate)
+        _log.info(
+            "Monitoring alignment drift... (Current rate: %.4f)", self_improvement_rate
+        )
         if self_improvement_rate > 0.9:  # arbitrary danger threshold
             self.activate("Recursive self-improvement rate exceeds alignment bounds.")

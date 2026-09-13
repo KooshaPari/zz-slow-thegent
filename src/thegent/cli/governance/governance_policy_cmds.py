@@ -37,7 +37,9 @@ err_console = Console(stderr=True)
 def policy_show_cmd() -> None:
     """Show active governance policies and thresholds."""
     settings = ThegentSettings()
-    console.print(f"[bold]Active Governance Policies[/bold] (Environment: [cyan]{settings.environment}[/cyan])")
+    console.print(
+        f"[bold]Active Governance Policies[/bold] (Environment: [cyan]{settings.environment}[/cyan])"
+    )
 
     table = Table(show_header=True)
     table.add_column("Policy Name")
@@ -48,11 +50,19 @@ def policy_show_cmd() -> None:
     table.add_row(
         "Production Trust",
         f">= {settings.trust_score_threshold}",
-        "[green]Active[/green]" if settings.environment == "production" else "[dim]Inactive[/dim]",
+        "[green]Active[/green]"
+        if settings.environment == "production"
+        else "[dim]Inactive[/dim]",
     )
-    table.add_row("Agent Restriction", "Block 'unknown' in Prod/Critical", "[green]Active[/green]")
+    table.add_row(
+        "Agent Restriction", "Block 'unknown' in Prod/Critical", "[green]Active[/green]"
+    )
     table.add_row("Audit Signing", "SHA-256 Run Signatures", "[green]Active[/green]")
-    table.add_row("Override TTL (WP-3003)", f"{settings.override_ttl_seconds}s", "[green]Active[/green]")
+    table.add_row(
+        "Override TTL (WP-3003)",
+        f"{settings.override_ttl_seconds}s",
+        "[green]Active[/green]",
+    )
 
     console.print(table)
 
@@ -69,9 +79,13 @@ def policy_purge_cmd(dry_run: bool = True) -> None:
         dry_run=dry_run,
     )
     if dry_run:
-        console.print(f"[yellow]Dry run: would purge {res['purged']} records (kept {res['kept']}).[/yellow]")
+        console.print(
+            f"[yellow]Dry run: would purge {res['purged']} records (kept {res['kept']}).[/yellow]"
+        )
     else:
-        console.print(f"[green]Purged {res['purged']} records (kept {res['kept']}).[/green]")
+        console.print(
+            f"[green]Purged {res['purged']} records (kept {res['kept']}).[/green]"
+        )
 
 
 def contracts_registry_cmd(format: str | None = None) -> None:
@@ -214,7 +228,9 @@ def contracts_conformance_cmd(
             raise typer.Exit(1)
         return
 
-    table = Table(title=f"Adapter Conformance (Passed: {report['passed']}/{report['total']})")
+    table = Table(
+        title=f"Adapter Conformance (Passed: {report['passed']}/{report['total']})"
+    )
     table.add_column("Test")
     table.add_column("Provider")
     table.add_column("Result")
@@ -224,7 +240,9 @@ def contracts_conformance_cmd(
     for r in report["results"]:
         status = "[green]PASS[/green]" if r["success"] else "[red]FAIL[/red]"
         issues = ", ".join(r["issues"]) if r["issues"] else "-"
-        table.add_row(r["name"], r["provider"], status, f"{r['confidence']:.2f}", issues)
+        table.add_row(
+            r["name"], r["provider"], status, f"{r['confidence']:.2f}", issues
+        )
 
     console.print(table)
 
@@ -267,7 +285,9 @@ def trust_status_cmd(format: str | None = None) -> None:
     console.print(f"Last Env:    [cyan]{last_env or 'None'}[/cyan]")
 
     if last_env:
-        allowed, reason = trust_boundary.validate_transition(last_env, settings.environment)
+        allowed, reason = trust_boundary.validate_transition(
+            last_env, settings.environment
+        )
         status_color = "green" if allowed else "red"
         console.print(f"Transition:  [{status_color}]{reason}[/{status_color}]")
 
@@ -279,7 +299,11 @@ def signatures_list_cmd(limit: int = 50, format: str | None = None) -> None:
 
     artifacts = []
     if artifacts_dir.exists():
-        for p in sorted(artifacts_dir.glob("maif.json"), key=lambda x: x.stat().st_mtime, reverse=True)[:limit]:
+        for p in sorted(
+            artifacts_dir.glob("maif.json"),
+            key=lambda x: x.stat().st_mtime,
+            reverse=True,
+        )[:limit]:
             _load_artifact(artifacts, p)
 
     fmt = _normalize_output_format(format)
@@ -324,7 +348,9 @@ def signatures_verify_cmd(run_id: str) -> None:
         blocks = artifact_data.get("blocks", [])
         chain = artifact_data.get("provenance_chain", [])
 
-        console.print(f"[bold cyan]Verifying MAIF Artifact: {header.get('artifact_id')}[/bold cyan]")
+        console.print(
+            f"[bold cyan]Verifying MAIF Artifact: {header.get('artifact_id')}[/bold cyan]"
+        )
 
         # 1. Verify Blocks
         all_blocks_valid = True
@@ -335,10 +361,14 @@ def signatures_verify_cmd(run_id: str) -> None:
             actual_hash = hashlib.sha256(body.encode()).hexdigest()
 
             if actual_hash != block.get("payload_hash"):
-                console.print(f"  [red]✗ Block {block.get('block_id')} payload hash mismatch![/red]")
+                console.print(
+                    f"  [red]✗ Block {block.get('block_id')} payload hash mismatch![/red]"
+                )
                 all_blocks_valid = False
             else:
-                console.print(f"  [green]✓ Block {block.get('block_id')} verified.[/green]")
+                console.print(
+                    f"  [green]✓ Block {block.get('block_id')} verified.[/green]"
+                )
 
         # 2. Verify Chain
         chain_valid = True
@@ -348,7 +378,9 @@ def signatures_verify_cmd(run_id: str) -> None:
                 link_data = f"{prev_hash}|{block.get('payload_hash')}"
                 expected_link_hash = hashlib.sha256(link_data.encode()).hexdigest()
                 if chain[i] != expected_link_hash:
-                    console.print(f"  [red]✗ Provenance chain broken at block {i}![/red]")
+                    console.print(
+                        f"  [red]✗ Provenance chain broken at block {i}![/red]"
+                    )
                     chain_valid = False
                     break
                 prev_hash = expected_link_hash
@@ -357,14 +389,20 @@ def signatures_verify_cmd(run_id: str) -> None:
         root_valid = False
         if chain and chain[-1] == header.get("root_hash"):
             root_valid = True
-            console.print(f"  [green]✓ Root hash {header.get('root_hash')[:12]}... matches chain.[/green]")
+            console.print(
+                f"  [green]✓ Root hash {header.get('root_hash')[:12]}... matches chain.[/green]"
+            )
         else:
             console.print("  [red]✗ Root hash mismatch![/red]")
 
         if all_blocks_valid and chain_valid and root_valid:
-            console.print(f"\n[bold green]RESULT: Artifact for {run_id} is VALID.[/bold green]")
+            console.print(
+                f"\n[bold green]RESULT: Artifact for {run_id} is VALID.[/bold green]"
+            )
         else:
-            console.print(f"\n[bold red]RESULT: Artifact for {run_id} is INVALID.[/bold red]")
+            console.print(
+                f"\n[bold red]RESULT: Artifact for {run_id} is INVALID.[/bold red]"
+            )
             raise typer.Exit(1)
 
     except Exception as e:
@@ -412,7 +450,9 @@ def compliance_plugin_check_cmd(plugin_id: str, signature: str) -> None:
     if verifier.verify_contract(contract):
         console.print(f"[green]Plugin {plugin_id} VERIFIED successfully.[/green]")
     else:
-        console.print(f"[red]Plugin {plugin_id} verification FAILED. Invalid signature.[/red]")
+        console.print(
+            f"[red]Plugin {plugin_id} verification FAILED. Invalid signature.[/red]"
+        )
 
 
 def compliance_redact_cmd(text: str) -> None:
@@ -428,7 +468,9 @@ def compliance_redact_cmd(text: str) -> None:
     console.print(redacted)
 
 
-def govern_cost_cmd(owner: str | None = None, days: int = 1, format: str | None = None) -> None:
+def govern_cost_cmd(
+    owner: str | None = None, days: int = 1, format: str | None = None
+) -> None:
     """Show daily cost aggregation (FR-GOV-002)."""
     settings = ThegentSettings()
     from thegent.cost.aggregator import CostAggregator
@@ -454,7 +496,9 @@ def govern_cost_cmd(owner: str | None = None, days: int = 1, format: str | None 
     console.print(f"Total: [green]${total:.4f} USD[/green]")
 
 
-def guardrails_check_cmd(prompt: str, agent: str | None = None, model: str | None = None) -> None:
+def guardrails_check_cmd(
+    prompt: str, agent: str | None = None, model: str | None = None
+) -> None:
     """Check a prompt against active guardrails (FR-GOV-003..006)."""
     from thegent.governance.input_guardrails import InputGuardrails
 
@@ -483,16 +527,28 @@ def guardrails_show_cmd() -> None:
 
     table.add_row("Max Chars", str(rails.prompt_max_chars))
     table.add_row("Blocklist Patterns", str(len(rails.prompt_blocklist_patterns)))
-    table.add_row("Agent Allowlist", ", ".join(rails.agent_allowlist) if rails.agent_allowlist else "None")
-    table.add_row("Model Allowlist", ", ".join(rails.model_allowlist) if rails.model_allowlist else "None")
     table.add_row(
-        "CWD Allowed Prefixes", ", ".join(rails.cwd_allowed_prefixes) if rails.cwd_allowed_prefixes else "None"
+        "Agent Allowlist",
+        ", ".join(rails.agent_allowlist) if rails.agent_allowlist else "None",
+    )
+    table.add_row(
+        "Model Allowlist",
+        ", ".join(rails.model_allowlist) if rails.model_allowlist else "None",
+    )
+    table.add_row(
+        "CWD Allowed Prefixes",
+        ", ".join(rails.cwd_allowed_prefixes) if rails.cwd_allowed_prefixes else "None",
     )
 
     console.print(table)
 
 
-def policy_check_cmd(agent: str, model: str | None = None, lane: str = "standard", confidence: float = 1.0) -> None:
+def policy_check_cmd(
+    agent: str,
+    model: str | None = None,
+    lane: str = "standard",
+    confidence: float = 1.0,
+) -> None:
     """Evaluate a hypothetical run against governance policies (WP-3001)."""
     settings = ThegentSettings()
     from thegent.execution import PolicyEngine, RunMeta, RunRegistry

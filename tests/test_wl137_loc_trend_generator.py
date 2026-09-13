@@ -7,7 +7,11 @@ import pytest
 
 from conftest import _load_script_module
 
-SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts" / "generate_wl120_wl136_loc_trend.py"
+SCRIPT_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "scripts"
+    / "generate_wl120_wl136_loc_trend.py"
+)
 MODULE = _load_script_module("generate_wl120_wl136_loc_trend", SCRIPT_PATH)
 
 
@@ -45,7 +49,13 @@ def test_build_payload_has_expected_schema_and_trend_flags() -> None:
         snapshots=_snapshots(),
     )
 
-    assert set(payload.keys()) == {"generated_at", "scope", "method", "snapshots", "trend"}
+    assert set(payload.keys()) == {
+        "generated_at",
+        "scope",
+        "method",
+        "snapshots",
+        "trend",
+    }
     assert payload["generated_at"] == "2026-02-21T00:00:00Z"
     assert isinstance(payload["scope"], dict)
     assert isinstance(payload["method"], dict)

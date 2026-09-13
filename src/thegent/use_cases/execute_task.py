@@ -45,11 +45,16 @@ class ExecutionOrchestrator:
         if not idempotency_token:
             return None
 
-        session_id_from_token = f"run_{hashlib.sha256(idempotency_token.encode()).hexdigest()[:8]}"
+        session_id_from_token = (
+            f"run_{hashlib.sha256(idempotency_token.encode()).hexdigest()[:8]}"
+        )
         if registry.session_exists(session_id_from_token):
             existing = registry.find_by_token(idempotency_token)
             if existing and existing.get("status") == "completed":
-                _log.info("Replay detected for token %s; skipping execution.", idempotency_token)
+                _log.info(
+                    "Replay detected for token %s; skipping execution.",
+                    idempotency_token,
+                )
                 return {
                     "stdout": existing.get("stdout", ""),
                     "stderr": existing.get("stderr", ""),
@@ -73,6 +78,7 @@ class ExecutionOrchestrator:
             # Check for usage limit errors
             try:
                 from thegent.agents.resilience import is_usage_limit
+
                 if is_usage_limit(result):
                     return "usage_limit"
             except Exception:
@@ -163,7 +169,9 @@ class ExecutionOrchestrator:
         if model:
             model_id = normalize_model_id(model)
             routes = ModelCatalog.routes_for(model_id)
-            catalog_fallbacks = [r.provider for r in routes if r.provider != primary_agent]
+            catalog_fallbacks = [
+                r.provider for r in routes if r.provider != primary_agent
+            ]
             agents.extend(catalog_fallbacks)
 
         provider_fallbacks = get_fallback_agents(primary_agent or "unknown")

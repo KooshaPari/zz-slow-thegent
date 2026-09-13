@@ -169,9 +169,14 @@ class TestExtractCondensedThinkBlocks:
                 raise RuntimeError("native strip failed")
 
         text = "Before <think>outer <think>inner</think> tail</think> After"
-        monkeypatch.setattr(output_parser_module, "_get_native_parser", lambda: _NativeFail())
+        monkeypatch.setattr(
+            output_parser_module, "_get_native_parser", lambda: _NativeFail()
+        )
         caplog.set_level("DEBUG", logger="thegent.output_parser")
-        assert output_parser_module._strip_think_blocks(text) == output_parser_module._THINK_RE.sub("", text).strip()
+        assert (
+            output_parser_module._strip_think_blocks(text)
+            == output_parser_module._THINK_RE.sub("", text).strip()
+        )
         assert "Native think-strip failed; using regex fallback" in caplog.text
 
 
@@ -473,7 +478,9 @@ class TestExtractRecordMessageNestedMessage:
     def test_item_message_dict_content(self) -> None:
         # @trace FR-OUT-001
         """Extracts content from item.message.content dict envelope."""
-        stdout = '{"type":"x","item":{"type":"message","message":{"content":"deep nested"}}}'
+        stdout = (
+            '{"type":"x","item":{"type":"message","message":{"content":"deep nested"}}}'
+        )
         result = extract_condensed(stdout)
         assert "deep nested" in result
 
@@ -645,7 +652,9 @@ class TestExtractRecordMessageItemMessageDict:
     def test_item_error_type_with_message_dict(self) -> None:
         # @trace FR-OUT-001
         """item type=error falls to message dict branch (lines 129-133)."""
-        stdout = '{"type":"x","item":{"type":"error","message":{"content":"error details"}}}'
+        stdout = (
+            '{"type":"x","item":{"type":"error","message":{"content":"error details"}}}'
+        )
         result = extract_condensed(stdout)
         assert "error details" in result
 

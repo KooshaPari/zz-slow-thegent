@@ -67,5 +67,12 @@ def test_mesh_event_has_correlation_and_utc_timestamp() -> None:
 
 
 def test_queue_port_exposes_existing_maildir_lifecycle() -> None:
-    for method in ("enqueue", "dequeue", "ack", "nack", "list_pending", "reclaim_owner"):
+    for method in (
+        "enqueue",
+        "dequeue",
+        "ack",
+        "nack",
+        "list_pending",
+        "reclaim_owner",
+    ):
         assert hasattr(QueuePort, method)

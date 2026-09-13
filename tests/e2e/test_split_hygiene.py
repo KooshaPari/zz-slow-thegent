@@ -53,7 +53,9 @@ REQUIRED_E2E_GOVERNANCE_FILES = [
     REPO_ROOT / "tests" / "e2e" / "test_top_level_command_snapshot_contract.py",
     REPO_ROOT / "tests" / "e2e" / "test_unsupported_alias_real_app_evidence.py",
 ]
-ALIAS_REWRITE_CONTRACT_TEST = REPO_ROOT / "tests" / "e2e" / "test_cli_alias_rewrite_contract.py"
+ALIAS_REWRITE_CONTRACT_TEST = (
+    REPO_ROOT / "tests" / "e2e" / "test_cli_alias_rewrite_contract.py"
+)
 E2E_README = REPO_ROOT / "tests" / "e2e" / "README.md"
 REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND = (
     "pytest -q "
@@ -109,7 +111,9 @@ def test_split_e2e_files_import_shared_cli_assertions_helpers() -> None:
     for path in SPLIT_E2E_FILES:
         module = _parse_module(path)
         has_shared_cli_assertions_import = any(
-            isinstance(node, ast.ImportFrom) and node.module == "tests.e2e.cli_assertions" for node in module.body
+            isinstance(node, ast.ImportFrom)
+            and node.module == "tests.e2e.cli_assertions"
+            for node in module.body
         )
         assert has_shared_cli_assertions_import, (
             f"{path} must import shared cli_assertions helpers from tests.e2e.cli_assertions"
@@ -124,7 +128,9 @@ def test_split_e2e_files_do_not_redefine_shared_helpers() -> None:
     for path in SPLIT_E2E_FILES:
         module = _parse_module(path)
         local_defs = {
-            node.name for node in ast.walk(module) if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+            node.name
+            for node in ast.walk(module)
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
         }
         overlap = sorted(forbidden_defs & local_defs)
         assert not overlap, f"{path} redefines shared helper(s): {', '.join(overlap)}"
@@ -157,17 +163,23 @@ def test_split_e2e_files_use_compat_cli_runner_only() -> None:
                 if node.func.id == "CliRunner":
                     has_bare_cli_runner_instantiation = True
 
-        assert imports_compat_cli_runner, f"{path} must import and/or instantiate CompatCliRunner for CLI e2e tests"
+        assert imports_compat_cli_runner, (
+            f"{path} must import and/or instantiate CompatCliRunner for CLI e2e tests"
+        )
         assert not has_bare_cli_runner_import, (
             f"{path} imports bare CliRunner; use CompatCliRunner from tests.e2e.cli_runner_compat"
         )
-        assert not has_bare_cli_runner_instantiation, f"{path} instantiates bare CliRunner(); use CompatCliRunner()"
+        assert not has_bare_cli_runner_instantiation, (
+            f"{path} instantiates bare CliRunner(); use CompatCliRunner()"
+        )
 
 
 def test_split_e2e_files_within_hard_line_cap() -> None:
     for path in SPLIT_E2E_FILES:
         line_count = sum(1 for _ in path.open(encoding="utf-8"))
-        assert line_count <= HARD_LINE_CAP, f"{path} has {line_count} lines (> {HARD_LINE_CAP})"
+        assert line_count <= HARD_LINE_CAP, (
+            f"{path} has {line_count} lines (> {HARD_LINE_CAP})"
+        )
 
 
 def test_required_e2e_governance_files_exist() -> None:
@@ -184,8 +196,9 @@ def test_required_e2e_governance_files_have_no_duplicates() -> None:
             duplicates.append(path)
         seen.add(path)
 
-    assert not duplicates, "duplicate entries in REQUIRED_E2E_GOVERNANCE_FILES: " + ", ".join(
-        str(path) for path in duplicates
+    assert not duplicates, (
+        "duplicate entries in REQUIRED_E2E_GOVERNANCE_FILES: "
+        + ", ".join(str(path) for path in duplicates)
     )
 
 
@@ -193,7 +206,9 @@ def test_alias_rewrite_contract_is_mandatory_governance_file() -> None:
     assert ALIAS_REWRITE_CONTRACT_TEST in REQUIRED_E2E_GOVERNANCE_FILES
 
 
-def test_readme_mentions_alias_rewrite_governance_and_troubleshooting_semantics() -> None:
+def test_readme_mentions_alias_rewrite_governance_and_troubleshooting_semantics() -> (
+    None
+):
     text = E2E_README.read_text(encoding="utf-8")
 
     assert "pytest -q tests/test_e2e_cli_aliases.py -k rewrite" in text
@@ -201,7 +216,9 @@ def test_readme_mentions_alias_rewrite_governance_and_troubleshooting_semantics(
     assert "No such option" in text
 
 
-def test_readme_mentions_direct_alias_rewrite_and_command_surface_unit_commands() -> None:
+def test_readme_mentions_direct_alias_rewrite_and_command_surface_unit_commands() -> (
+    None
+):
     text = E2E_README.read_text(encoding="utf-8")
 
     assert "Alias rewrite contract unit (direct)" in text
@@ -217,7 +234,9 @@ def test_readme_mentions_direct_alias_rewrite_and_command_surface_unit_commands(
     assert "Command-surface unit (direct)" in text
     assert "pytest -q tests/e2e/test_command_surface.py" in text
     assert "Compat helper extract/rewrite guard suite (direct)" in text
-    assert ("pytest -q tests/e2e/test_cli_runner_extracts.py tests/e2e/test_cli_runner_rewrite_guards.py") in text
+    assert (
+        "pytest -q tests/e2e/test_cli_runner_extracts.py tests/e2e/test_cli_runner_rewrite_guards.py"
+    ) in text
     assert "Compat skip-message contract suite (direct)" in text
     assert "pytest -q tests/e2e/test_cli_runner_skip_message_contract.py" in text
     assert "Compat skip-prefix contract suite (direct)" in text
@@ -265,11 +284,14 @@ def test_e2e_readme_exists_and_is_non_empty() -> None:
 
 
 def test_required_e2e_governance_paths_use_tests_e2e_python_files() -> None:
-    relative_paths = [path.relative_to(REPO_ROOT).as_posix() for path in REQUIRED_E2E_GOVERNANCE_FILES]
+    relative_paths = [
+        path.relative_to(REPO_ROOT).as_posix() for path in REQUIRED_E2E_GOVERNANCE_FILES
+    ]
     assert relative_paths, "REQUIRED_E2E_GOVERNANCE_FILES must not be empty"
-    assert all(path.startswith("tests/e2e/") and path.endswith(".py") for path in relative_paths), (
-        "all REQUIRED_E2E_GOVERNANCE_FILES entries must be Python files under tests/e2e/"
-    )
+    assert all(
+        path.startswith("tests/e2e/") and path.endswith(".py")
+        for path in relative_paths
+    ), "all REQUIRED_E2E_GOVERNANCE_FILES entries must be Python files under tests/e2e/"
 
 
 def test_governance_bundle_command_paths_are_mandatory_governance_tests() -> None:
@@ -283,7 +305,9 @@ def test_governance_bundle_command_paths_are_mandatory_governance_tests() -> Non
         for path in REQUIRED_E2E_GOVERNANCE_FILES
         if path.name.startswith("test_")
     }
-    assert bundle_paths, "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
+    assert bundle_paths, (
+        "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
+    )
     assert bundle_paths <= expected_governance_test_paths, (
         "bundle command includes paths not present in REQUIRED_E2E_GOVERNANCE_FILES"
     )
@@ -300,7 +324,9 @@ def test_governance_bundle_command_contains_each_mandatory_test_once() -> None:
         for path in REQUIRED_E2E_GOVERNANCE_FILES
         if path.name.startswith("test_")
     ]
-    assert bundle_test_paths, "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
+    assert bundle_test_paths, (
+        "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
+    )
     assert len(bundle_test_paths) == len(set(bundle_test_paths)), (
         "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must not contain duplicate test paths"
     )
@@ -309,7 +335,9 @@ def test_governance_bundle_command_contains_each_mandatory_test_once() -> None:
     )
 
 
-def test_governance_bundle_command_includes_split_hygiene_and_readme_e2e_commands() -> None:
+def test_governance_bundle_command_includes_split_hygiene_and_readme_e2e_commands() -> (
+    None
+):
     bundle_test_paths = {
         token
         for token in shlex.split(REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND)
@@ -327,7 +355,9 @@ def test_governance_bundle_command_path_tokens_are_ascii_only() -> None:
     ]
     assert path_tokens, "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
     non_ascii = [token for token in path_tokens if not token.isascii()]
-    assert not non_ascii, "bundle command path tokens must be ASCII-only: " + ", ".join(non_ascii)
+    assert not non_ascii, "bundle command path tokens must be ASCII-only: " + ", ".join(
+        non_ascii
+    )
 
 
 def test_governance_bundle_command_path_tokens_are_relative() -> None:
@@ -338,7 +368,10 @@ def test_governance_bundle_command_path_tokens_are_relative() -> None:
     ]
     assert path_tokens, "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
     absolute = [token for token in path_tokens if token.startswith("/")]
-    assert not absolute, "bundle command path tokens must be relative (no leading slash): " + ", ".join(absolute)
+    assert not absolute, (
+        "bundle command path tokens must be relative (no leading slash): "
+        + ", ".join(absolute)
+    )
 
 
 def test_governance_bundle_command_includes_split_hygiene_exactly_once() -> None:
@@ -365,18 +398,27 @@ def test_governance_bundle_command_includes_readme_e2e_commands_exactly_once() -
     )
 
 
-def test_governance_bundle_command_path_list_has_no_empty_or_whitespace_surrounded_tokens() -> None:
+def test_governance_bundle_command_path_list_has_no_empty_or_whitespace_surrounded_tokens() -> (
+    None
+):
     raw_tokens = REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND.split(" ")
     path_indices = [
-        index for index, token in enumerate(raw_tokens) if token.startswith("tests/e2e/") and token.endswith(".py")
+        index
+        for index, token in enumerate(raw_tokens)
+        if token.startswith("tests/e2e/") and token.endswith(".py")
     ]
-    assert path_indices, "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
+    assert path_indices, (
+        "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
+    )
     path_token_window = raw_tokens[path_indices[0] : path_indices[-1] + 1]
     empty_tokens = [token for token in path_token_window if token == ""]
-    whitespace_surrounded = [token for token in path_token_window if token and token != token.strip()]
+    whitespace_surrounded = [
+        token for token in path_token_window if token and token != token.strip()
+    ]
     assert not empty_tokens, "bundle path list must not contain empty tokens"
-    assert not whitespace_surrounded, "bundle path list must not contain whitespace-surrounded tokens: " + ", ".join(
-        whitespace_surrounded
+    assert not whitespace_surrounded, (
+        "bundle path list must not contain whitespace-surrounded tokens: "
+        + ", ".join(whitespace_surrounded)
     )
 
 
@@ -386,8 +428,12 @@ def test_governance_bundle_command_test_paths_are_lexicographically_sorted() -> 
         for token in shlex.split(REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND)
         if token.startswith("tests/e2e/") and token.endswith(".py")
     ]
-    assert bundle_test_paths, "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
-    assert bundle_test_paths == sorted(bundle_test_paths), "bundle command test paths must be lexicographically sorted"
+    assert bundle_test_paths, (
+        "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
+    )
+    assert bundle_test_paths == sorted(bundle_test_paths), (
+        "bundle command test paths must be lexicographically sorted"
+    )
 
 
 def test_governance_bundle_command_includes_only_e2e_test_modules() -> None:
@@ -396,7 +442,9 @@ def test_governance_bundle_command_includes_only_e2e_test_modules() -> None:
         for token in shlex.split(REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND)
         if token.startswith("tests/e2e/") and token.endswith(".py")
     ]
-    assert bundle_test_paths, "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
+    assert bundle_test_paths, (
+        "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
+    )
     assert all(Path(path).name.startswith("test_") for path in bundle_test_paths), (
         "bundle command must include only tests/e2e/test_*.py files"
     )
@@ -409,29 +457,42 @@ def test_governance_bundle_command_has_no_helper_module_paths() -> None:
         if token.startswith("tests/e2e/") and token.endswith(".py")
     ]
     assert path_tokens, "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
-    invalid = [token for token in path_tokens if not Path(token).name.startswith("test_")]
+    invalid = [
+        token for token in path_tokens if not Path(token).name.startswith("test_")
+    ]
     assert not invalid, (
         "bundle command must not include helper-module paths; only tests/e2e/test_*.py is allowed: "
         + ", ".join(invalid)
     )
 
 
-def test_full_governance_bundle_command_contains_no_paths_outside_tests_e2e_test_pattern() -> None:
+def test_full_governance_bundle_command_contains_no_paths_outside_tests_e2e_test_pattern() -> (
+    None
+):
     python_path_tokens = [
-        token for token in shlex.split(REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND) if token.endswith(".py")
+        token
+        for token in shlex.split(REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND)
+        if token.endswith(".py")
     ]
-    assert python_path_tokens, "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include Python test path tokens"
+    assert python_path_tokens, (
+        "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include Python test path tokens"
+    )
     invalid = [
         token
         for token in python_path_tokens
-        if not (token.startswith("tests/e2e/test_") and Path(token).name.startswith("test_"))
+        if not (
+            token.startswith("tests/e2e/test_") and Path(token).name.startswith("test_")
+        )
     ]
     assert not invalid, (
-        "full governance bundle command must not include paths outside tests/e2e/test_*.py: " + ", ".join(invalid)
+        "full governance bundle command must not include paths outside tests/e2e/test_*.py: "
+        + ", ".join(invalid)
     )
 
 
-def test_full_governance_bundle_command_matches_required_test_governance_files_exactly() -> None:
+def test_full_governance_bundle_command_matches_required_test_governance_files_exactly() -> (
+    None
+):
     bundle_test_paths = [
         token
         for token in shlex.split(REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND)
@@ -442,7 +503,9 @@ def test_full_governance_bundle_command_matches_required_test_governance_files_e
         for path in REQUIRED_E2E_GOVERNANCE_FILES
         if path.name.startswith("test_")
     ]
-    assert bundle_test_paths, "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include tests/e2e/test_*.py paths"
+    assert bundle_test_paths, (
+        "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include tests/e2e/test_*.py paths"
+    )
     assert len(bundle_test_paths) == len(required_test_paths), (
         "full governance bundle command test_* path count must match required test_* governance file count"
     )
@@ -454,22 +517,36 @@ def test_full_governance_bundle_command_matches_required_test_governance_files_e
 def test_governance_bundle_command_path_tokens_are_contiguous() -> None:
     tokens = shlex.split(REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND)
     path_indices = [
-        index for index, token in enumerate(tokens) if token.startswith("tests/e2e/") and token.endswith(".py")
+        index
+        for index, token in enumerate(tokens)
+        if token.startswith("tests/e2e/") and token.endswith(".py")
     ]
-    assert path_indices, "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
+    assert path_indices, (
+        "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
+    )
     first = path_indices[0]
     last = path_indices[-1]
-    interleaved = [token for token in tokens[first : last + 1] if not token.startswith("tests/e2e/")]
+    interleaved = [
+        token
+        for token in tokens[first : last + 1]
+        if not token.startswith("tests/e2e/")
+    ]
     assert not interleaved, (
         "bundle command path tokens must be contiguous with no interleaved non-path args after first test path: "
         + ", ".join(interleaved)
     )
 
 
-def test_governance_bundle_command_after_first_test_path_contains_only_test_paths() -> None:
+def test_governance_bundle_command_after_first_test_path_contains_only_test_paths() -> (
+    None
+):
     tokens = shlex.split(REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND)
     first_test_path_index = next(
-        (index for index, token in enumerate(tokens) if token.startswith("tests/e2e/test_") and token.endswith(".py")),
+        (
+            index
+            for index, token in enumerate(tokens)
+            if token.startswith("tests/e2e/test_") and token.endswith(".py")
+        ),
         None,
     )
     assert first_test_path_index is not None, (
@@ -478,7 +555,9 @@ def test_governance_bundle_command_after_first_test_path_contains_only_test_path
 
     trailing_tokens = tokens[first_test_path_index:]
     invalid = [
-        token for token in trailing_tokens if not (token.startswith("tests/e2e/test_") and token.endswith(".py"))
+        token
+        for token in trailing_tokens
+        if not (token.startswith("tests/e2e/test_") and token.endswith(".py"))
     ]
     assert not invalid, (
         "after the first tests/e2e/test_*.py token, all remaining tokens must be tests/e2e/test_*.py paths: "
@@ -486,19 +565,25 @@ def test_governance_bundle_command_after_first_test_path_contains_only_test_path
     )
 
 
-def test_governance_bundle_command_test_path_count_matches_required_test_file_count() -> None:
+def test_governance_bundle_command_test_path_count_matches_required_test_file_count() -> (
+    None
+):
     bundle_test_path_count = sum(
         1
         for token in shlex.split(REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND)
         if token.startswith("tests/e2e/test_") and token.endswith(".py")
     )
-    required_test_file_count = sum(1 for path in REQUIRED_E2E_GOVERNANCE_FILES if path.name.startswith("test_"))
+    required_test_file_count = sum(
+        1 for path in REQUIRED_E2E_GOVERNANCE_FILES if path.name.startswith("test_")
+    )
     assert bundle_test_path_count == required_test_file_count, (
         "bundle command tests/e2e/test_*.py path count must match REQUIRED_E2E_GOVERNANCE_FILES test_* entry count"
     )
 
 
-def test_governance_bundle_command_path_tokens_have_stable_sorted_multiset_diff() -> None:
+def test_governance_bundle_command_path_tokens_have_stable_sorted_multiset_diff() -> (
+    None
+):
     bundle_path_tokens = [
         token
         for token in shlex.split(REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND)
@@ -509,7 +594,9 @@ def test_governance_bundle_command_path_tokens_have_stable_sorted_multiset_diff(
         for path in REQUIRED_E2E_GOVERNANCE_FILES
         if path.name.startswith("test_")
     ]
-    assert bundle_path_tokens, "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
+    assert bundle_path_tokens, (
+        "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include test paths"
+    )
 
     sorted_bundle = sorted(bundle_path_tokens)
     sorted_required = sorted(required_path_tokens)
@@ -533,29 +620,40 @@ def test_full_bundle_path_basenames_match_required_test_basenames_exactly() -> N
         if token.startswith("tests/e2e/test_") and token.endswith(".py")
     )
     required_test_basenames = sorted(
-        path.name for path in REQUIRED_E2E_GOVERNANCE_FILES if path.name.startswith("test_")
+        path.name
+        for path in REQUIRED_E2E_GOVERNANCE_FILES
+        if path.name.startswith("test_")
     )
-    assert bundle_test_basenames, "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include tests/e2e/test_*.py paths"
+    assert bundle_test_basenames, (
+        "REQUIRED_E2E_GOVERNANCE_BUNDLE_COMMAND must include tests/e2e/test_*.py paths"
+    )
     assert bundle_test_basenames == required_test_basenames, (
         "full-bundle path basenames must equal required test_* basenames exactly"
     )
 
 
 def test_required_governance_files_are_lexicographically_sorted() -> None:
-    relative_paths = [path.relative_to(REPO_ROOT).as_posix() for path in REQUIRED_E2E_GOVERNANCE_FILES]
+    relative_paths = [
+        path.relative_to(REPO_ROOT).as_posix() for path in REQUIRED_E2E_GOVERNANCE_FILES
+    ]
     assert relative_paths == sorted(relative_paths), (
         "REQUIRED_E2E_GOVERNANCE_FILES must be lexicographically sorted by relative path"
     )
 
 
 def test_required_governance_files_follow_allowed_filename_policy() -> None:
-    relative_paths = [path.relative_to(REPO_ROOT).as_posix() for path in REQUIRED_E2E_GOVERNANCE_FILES]
+    relative_paths = [
+        path.relative_to(REPO_ROOT).as_posix() for path in REQUIRED_E2E_GOVERNANCE_FILES
+    ]
     assert relative_paths, "REQUIRED_E2E_GOVERNANCE_FILES must not be empty"
 
     allowed_helper_files = {"tests/e2e/cli_runner_compat.py"}
     invalid = [
-        path for path in relative_paths if path not in allowed_helper_files and not Path(path).name.startswith("test_")
+        path
+        for path in relative_paths
+        if path not in allowed_helper_files and not Path(path).name.startswith("test_")
     ]
-    assert not invalid, "REQUIRED_E2E_GOVERNANCE_FILES contains unsupported non-test helper entries: " + ", ".join(
-        invalid
+    assert not invalid, (
+        "REQUIRED_E2E_GOVERNANCE_FILES contains unsupported non-test helper entries: "
+        + ", ".join(invalid)
     )

@@ -13,19 +13,25 @@ from tests.e2e.cli_runner_compat import (
 def test_build_command_surface_drift_skip_message_with_tuple_argv() -> None:
     message = _build_command_surface_drift_skip_message(None, ("logs", "x"))
 
-    assert message == (f"{COMMAND_SURFACE_DRIFT_SKIP_MESSAGE} {ATTEMPTED_ARGV_COMMAND_PATH_PREFIX} logs x")
+    assert message == (
+        f"{COMMAND_SURFACE_DRIFT_SKIP_MESSAGE} {ATTEMPTED_ARGV_COMMAND_PATH_PREFIX} logs x"
+    )
 
 
 def test_build_command_surface_drift_skip_message_with_none_argv() -> None:
     message = _build_command_surface_drift_skip_message(None, None)
 
-    assert message == (f"{COMMAND_SURFACE_DRIFT_SKIP_MESSAGE} {ATTEMPTED_ARGV_COMMAND_PATH_PREFIX} <unspecified>")
+    assert message == (
+        f"{COMMAND_SURFACE_DRIFT_SKIP_MESSAGE} {ATTEMPTED_ARGV_COMMAND_PATH_PREFIX} <unspecified>"
+    )
 
 
 def test_build_command_surface_drift_skip_message_with_scalar_string_argv() -> None:
     message = _build_command_surface_drift_skip_message(None, "logs")
 
-    assert message == (f"{COMMAND_SURFACE_DRIFT_SKIP_MESSAGE} {ATTEMPTED_ARGV_COMMAND_PATH_PREFIX} logs")
+    assert message == (
+        f"{COMMAND_SURFACE_DRIFT_SKIP_MESSAGE} {ATTEMPTED_ARGV_COMMAND_PATH_PREFIX} logs"
+    )
 
 
 def test_alias_rewrite_argv_returns_none_when_app_is_not_typer() -> None:
@@ -57,7 +63,9 @@ def test_alias_rewrite_argv_returns_none_when_target_command_path_missing() -> N
     assert _alias_rewrite_argv(app, ["logs"]) is None
 
 
-def test_alias_rewrite_argv_returns_rewritten_list_for_exact_alias_when_target_exists() -> None:
+def test_alias_rewrite_argv_returns_rewritten_list_for_exact_alias_when_target_exists() -> (
+    None
+):
     app = typer.Typer()
     run_app = typer.Typer()
 

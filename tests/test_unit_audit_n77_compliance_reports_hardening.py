@@ -75,7 +75,10 @@ class TestGovernanceRollup:
 
     def test_deterministic_output(self):
         r = ComplianceReporter()
-        evidence = [{"kind": "a", "actor": "x", "severity": "low"}, {"kind": "b", "actor": "y", "severity": "high"}]
+        evidence = [
+            {"kind": "a", "actor": "x", "severity": "low"},
+            {"kind": "b", "actor": "y", "severity": "high"},
+        ]
         r1 = r.generate_governance_rollup(evidence)
         r2 = r.generate_governance_rollup(evidence)
         assert r1 == r2
@@ -86,8 +89,14 @@ class TestBuildGovernanceQueue:
         r = ComplianceReporter()
         queue = r.build_governance_queue(
             [
-                {"payload": {"requires_action": True, "severity": "low"}, "timestamp_utc": "2025-01-01"},
-                {"payload": {"requires_action": True, "severity": "critical"}, "timestamp_utc": "2025-01-02"},
+                {
+                    "payload": {"requires_action": True, "severity": "low"},
+                    "timestamp_utc": "2025-01-01",
+                },
+                {
+                    "payload": {"requires_action": True, "severity": "critical"},
+                    "timestamp_utc": "2025-01-02",
+                },
             ]
         )
         severities = [item["severity"] for item in queue]
@@ -97,8 +106,14 @@ class TestBuildGovernanceQueue:
         r = ComplianceReporter()
         queue = r.build_governance_queue(
             [
-                {"payload": {"requires_action": True, "severity": "unknown_xyz"}, "timestamp_utc": "2025-01-01"},
-                {"payload": {"requires_action": True, "severity": "critical"}, "timestamp_utc": "2025-01-02"},
+                {
+                    "payload": {"requires_action": True, "severity": "unknown_xyz"},
+                    "timestamp_utc": "2025-01-01",
+                },
+                {
+                    "payload": {"requires_action": True, "severity": "critical"},
+                    "timestamp_utc": "2025-01-02",
+                },
             ]
         )
         assert queue[-1]["severity"] == "unknown_xyz"
@@ -113,7 +128,9 @@ class TestGovernanceTelemetry:
 
     def test_coerces_total_records_to_int(self):
         r = ComplianceReporter()
-        result = r.generate_governance_telemetry(rollup={"total_records": "10"}, queue=[])
+        result = r.generate_governance_telemetry(
+            rollup={"total_records": "10"}, queue=[]
+        )
         assert result["total_records"] == 10
 
 
@@ -126,12 +143,16 @@ class TestExportReport:
 
     def test_exports_markdown(self, tmp_path):
         r = ComplianceReporter()
-        out = r.export_report({"findings": []}, tmp_path / "report.md", format="markdown")
+        out = r.export_report(
+            {"findings": []}, tmp_path / "report.md", format="markdown"
+        )
         assert out.exists()
 
     def test_creates_parent_dirs(self, tmp_path):
         r = ComplianceReporter()
-        out = r.export_report({"findings": []}, tmp_path / "sub" / "dir" / "report.json")
+        out = r.export_report(
+            {"findings": []}, tmp_path / "sub" / "dir" / "report.json"
+        )
         assert out.exists()
 
 

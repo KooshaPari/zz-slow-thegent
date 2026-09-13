@@ -20,6 +20,7 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 @dataclass(frozen=True)
 class ProviderConfig:
     """Configuration for a specific LLM provider."""
+
     provider: str
     model_prefix: str
     api_key_env: str
@@ -78,7 +79,7 @@ class LLMRouter:
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=2, max=10),
-        reraise=True
+        reraise=True,
     )
     async def route(
         self,
@@ -88,7 +89,7 @@ class LLMRouter:
         temperature: float = 0.7,
         max_tokens: int | None = None,
         stream: bool = False,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Any:
         """Route a completion request to the specified provider.
 
@@ -111,7 +112,7 @@ class LLMRouter:
                     max_tokens=max_tokens,
                     api_key=api_key,
                     stream=True,
-                    **kwargs
+                    **kwargs,
                 )
             else:
                 return await acompletion(
@@ -120,7 +121,7 @@ class LLMRouter:
                     temperature=temperature,
                     max_tokens=max_tokens,
                     api_key=api_key,
-                    **kwargs
+                    **kwargs,
                 )
         except Exception:
             # Log and re-raise for tenacity retry
@@ -131,7 +132,7 @@ class LLMRouter:
         messages: list[dict[str, str]],
         model: str,
         providers: list[str] | None = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Any:
         """Route with automatic fallback to next provider on failure."""
         providers = providers or self._fallback_chain
@@ -146,18 +147,11 @@ class LLMRouter:
 
         raise last_error or RuntimeError("All providers failed")
 
-    def estimate_cost(
-        self,
-        model: str,
-        input_tokens: int,
-        output_tokens: int
-    ) -> float:
+    def estimate_cost(self, model: str, input_tokens: int, output_tokens: int) -> float:
         """Estimate cost for a request using LiteLLM's cost calculator."""
         try:
             return completion_cost(
-                model=model,
-                prompt=str(input_tokens),
-                completion=str(output_tokens)
+                model=model, prompt=str(input_tokens), completion=str(output_tokens)
             )
         except Exception:
             return 0.0  # Fallback if cost data unavailable
@@ -180,7 +174,7 @@ async def route_llm(
     messages: list[dict[str, str]],
     model: str = "gpt-4",
     provider: str = "openai",
-    **kwargs: Any
+    **kwargs: Any,
 ) -> Any:
     """Simple function to route an LLM request."""
     return await get_router().route(messages, model, provider, **kwargs)

@@ -33,7 +33,8 @@ class ResourceStats:
         """
         return (
             self.fd_usage_percent > 80.0
-            or self.process_count > 500  # Increased from 100 - 611 processes may be normal for dev systems
+            or self.process_count
+            > 500  # Increased from 100 - 611 processes may be normal for dev systems
             or self.memory_mb > 2048  # 2GB
         )
 

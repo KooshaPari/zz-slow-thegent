@@ -18,6 +18,7 @@ def _compute_models_etag(models: list[dict[str, Any]]) -> str:
         ETag string.
     """
     import hashlib
+
     content = str(sorted(models, key=lambda m: m.get("id", "")))
     return f'"{hashlib.md5(content.encode()).hexdigest()}"'
 

@@ -123,4 +123,6 @@ def test_hourly_change_digest_requires_timestamp() -> None:
     from research_engine.digest import build_hourly_change_digest
 
     with pytest.raises(ValueError, match="timestamp"):
-        build_hourly_change_digest([{"connector": "github", "action": "write", "outcome": "success"}])
+        build_hourly_change_digest(
+            [{"connector": "github", "action": "write", "outcome": "success"}]
+        )

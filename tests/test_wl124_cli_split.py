@@ -277,7 +277,9 @@ def test_domain_module_importable(module_name: str) -> None:
     # @trace WL-124
     """
     mod = _import(module_name)
-    assert isinstance(mod, types.ModuleType), f"{module_name} did not import as a module"
+    assert isinstance(mod, types.ModuleType), (
+        f"{module_name} did not import as a module"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -294,7 +296,9 @@ def test_all_names_defined_in_module(module_name: str) -> None:
     mod = _import(module_name)
     assert hasattr(mod, "__all__"), f"{module_name} must define __all__"
     missing = [name for name in mod.__all__ if not hasattr(mod, name)]
-    assert not missing, f"{module_name}.__all__ lists names not defined in module: {missing}"
+    assert not missing, (
+        f"{module_name}.__all__ lists names not defined in module: {missing}"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -333,7 +337,9 @@ def test_backward_compat_via_cli_module(expected_name: str) -> None:
     # @trace WL-124
     """
     cli = _import(CLI_MODULE)
-    assert hasattr(cli, expected_name), f"thegent.cli.commands.cli missing re-exported name: {expected_name}"
+    assert hasattr(cli, expected_name), (
+        f"thegent.cli.commands.cli missing re-exported name: {expected_name}"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -357,7 +363,9 @@ def test_cli_shared_exports_expected_names(name: str) -> None:
     # @trace WL-124
     """
     mod = _import(SHARED_MODULE)
-    assert hasattr(mod, name), f"thegent.cli.commands._cli_shared missing expected name: {name}"
+    assert hasattr(mod, name), (
+        f"thegent.cli.commands._cli_shared missing expected name: {name}"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -418,7 +426,9 @@ def test_cli_module_wildcard_import_works() -> None:
         "handoff_cmd",  # team_cmds
     ]
     for name in spot_check:
-        assert hasattr(cli, name), f"thegent.cli.commands.cli missing spot-check name: {name}"
+        assert hasattr(cli, name), (
+            f"thegent.cli.commands.cli missing spot-check name: {name}"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -431,7 +441,9 @@ def test_expected_domain_module_count() -> None:
 
     # @trace WL-124
     """
-    assert len(DOMAIN_MODULES) == 7, f"Expected 7 domain modules, got {len(DOMAIN_MODULES)}: {DOMAIN_MODULES}"
+    assert len(DOMAIN_MODULES) == 7, (
+        f"Expected 7 domain modules, got {len(DOMAIN_MODULES)}: {DOMAIN_MODULES}"
+    )
 
 
 def test_total_exported_names_count() -> None:
@@ -440,7 +452,9 @@ def test_total_exported_names_count() -> None:
     # @trace WL-124
     """
     total = sum(len(v) for v in EXPECTED_EXPORTS.values())
-    assert total == 173, f"Expected 173 total exported names across all domains, got {total}"
+    assert total == 173, (
+        f"Expected 173 total exported names across all domains, got {total}"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -464,4 +478,6 @@ def test_command_functions_are_callable(module_name: str, fn_name: str) -> None:
     """
     mod = _import(module_name)
     fn = getattr(mod, fn_name)
-    assert callable(fn), f"{module_name}.{fn_name} is not callable (expected a function/command)"
+    assert callable(fn), (
+        f"{module_name}.{fn_name} is not callable (expected a function/command)"
+    )

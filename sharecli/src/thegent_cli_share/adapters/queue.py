@@ -1,6 +1,5 @@
 """In-memory queue adapter for task queue operations."""
 
-
 from ..domain.entities import QueuePriority, TaskQueueItem
 
 
@@ -14,11 +13,17 @@ class InMemoryQueueAdapter:
         """Add item to queue."""
         self._queue.append(item)
         # Sort by priority
-        self._queue.sort(key=lambda x: (
-            0 if x.priority == QueuePriority.CRITICAL else
-            1 if x.priority == QueuePriority.HIGH else
-            2 if x.priority == QueuePriority.NORMAL else 3
-        ))
+        self._queue.sort(
+            key=lambda x: (
+                0
+                if x.priority == QueuePriority.CRITICAL
+                else 1
+                if x.priority == QueuePriority.HIGH
+                else 2
+                if x.priority == QueuePriority.NORMAL
+                else 3
+            )
+        )
         return item
 
     def dequeue(self) -> TaskQueueItem | None:

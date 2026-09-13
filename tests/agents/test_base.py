@@ -276,9 +276,13 @@ class TestProcessOutputDeferrals:
             stderr="",
         )
 
-        with patch("thegent.orchestration.resilience.deferral.extract_deferred_tasks") as mock_extract:
+        with patch(
+            "thegent.orchestration.resilience.deferral.extract_deferred_tasks"
+        ) as mock_extract:
             mock_extract.return_value = ["follow-up task"]
-            with patch("thegent.orchestration.resilience.deferral.inject_deferred_tasks") as mock_inject:
+            with patch(
+                "thegent.orchestration.resilience.deferral.inject_deferred_tasks"
+            ) as mock_inject:
                 mock_inject.return_value = 1
                 with patch("thegent.config.ThegentSettings"):
                     runner._process_output_deferrals(result, cwd=Path("/project"))

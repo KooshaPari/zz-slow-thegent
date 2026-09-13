@@ -153,7 +153,9 @@ class MockRunner:
         timeout: int = 90,
         **kwargs: Any,
     ) -> Any:
-        self.calls.append({"prompt": prompt, "cwd": cwd, "mode": mode, "timeout": timeout, **kwargs})
+        self.calls.append(
+            {"prompt": prompt, "cwd": cwd, "mode": mode, "timeout": timeout, **kwargs}
+        )
         if self._call_index < len(self.results):
             result = self.results[self._call_index]
             self._call_index += 1
@@ -168,7 +170,9 @@ class MockRunner:
         timeout: int = 90,
         **kwargs: Any,
     ) -> Any:
-        self.calls.append({"prompt": prompt, "cwd": cwd, "mode": mode, "timeout": timeout, **kwargs})
+        self.calls.append(
+            {"prompt": prompt, "cwd": cwd, "mode": mode, "timeout": timeout, **kwargs}
+        )
         if self._call_index < len(self.results):
             result = self.results[self._call_index]
             self._call_index += 1

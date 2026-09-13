@@ -1,4 +1,5 @@
 """Stub module."""
+
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -22,7 +23,12 @@ class ConversationDumper:
         self.history.append({"role": role, "content": content})
 
 
-__all__ = ["ConversationDumper", "ConversationRecord", "DEFAULT_DUMPS_DIR", "get_dumper"]
+__all__ = [
+    "ConversationDumper",
+    "ConversationRecord",
+    "DEFAULT_DUMPS_DIR",
+    "get_dumper",
+]
 
 
 def get_dumper(dumper_type: str = "json") -> ConversationDumper:
@@ -40,6 +46,7 @@ def get_dumper(dumper_type: str = "json") -> ConversationDumper:
 @dataclass
 class ConversationRecord:
     """Record of a conversation."""
+
     id: str = ""
     messages: list[dict[str, str]] = None
 

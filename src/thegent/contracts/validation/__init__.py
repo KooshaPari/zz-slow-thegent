@@ -88,19 +88,25 @@ def validate_csm(csm) -> list[str]:
 
     # IN_PROGRESS invariants.
     if status == CSMStatus.IN_PROGRESS and progress >= 1.0:
-        issues.append(f"CSM in IN_PROGRESS state cannot have progress >= 1.0 (got {progress})")
+        issues.append(
+            f"CSM in IN_PROGRESS state cannot have progress >= 1.0 (got {progress})"
+        )
 
     # FAILED invariants: must surface a reason via either ``issues`` or
     # an explicit ``decision_reason_code``.
     if status == CSMStatus.FAILED:
         if not issues_list and not decision_reason_code:
-            issues.append("CSM in FAILED state must include either issues[] or decision_reason_code")
+            issues.append(
+                "CSM in FAILED state must include either issues[] or decision_reason_code"
+            )
 
     # Phase-aware rules.
     if phase == CSMPhase.REVIEWER and not decision_reason_code:
         issues.append("CSM in REVIEWER phase requires a non-empty decision_reason_code")
     if phase == CSMPhase.PLANNER and status == CSMStatus.COMPLETED and not objective:
-        issues.append("CSM in PLANNER phase with COMPLETED status requires a non-empty objective")
+        issues.append(
+            "CSM in PLANNER phase with COMPLETED status requires a non-empty objective"
+        )
 
     return issues
 

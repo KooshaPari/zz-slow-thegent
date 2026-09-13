@@ -1,4 +1,5 @@
 """Agent roles spec module."""
+
 from __future__ import annotations
 
 

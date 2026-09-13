@@ -7,20 +7,28 @@ import pytest
 from thegent.protocols import jsonrpc_agent_server as server
 
 
-def test_wl11080_extract_turn_submit_response_request_id_allows_none_when_notification() -> None:
+def test_wl11080_extract_turn_submit_response_request_id_allows_none_when_notification() -> (
+    None
+):
     # @trace WL-11080
-    phase = server._build_turn_submit_response_phase(False, None, {"id": "turn-1"}, None)
+    phase = server._build_turn_submit_response_phase(
+        False, None, {"id": "turn-1"}, None
+    )
     assert server._extract_turn_submit_response_request_id(phase, False) is None
 
 
-def test_wl11081_extract_turn_submit_response_request_id_rejects_none_when_required() -> None:
+def test_wl11081_extract_turn_submit_response_request_id_rejects_none_when_required() -> (
+    None
+):
     # @trace WL-11081
     phase = server._build_turn_submit_response_phase(True, None, {"id": "turn-1"}, None)
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
         server._extract_turn_submit_response_request_id(phase, True)
 
 
-def test_wl11082_extract_turn_submit_response_request_id_rejects_boolean_when_required() -> None:
+def test_wl11082_extract_turn_submit_response_request_id_rejects_boolean_when_required() -> (
+    None
+):
     # @trace WL-11082
     phase = server._build_turn_submit_response_phase(True, True, {"id": "turn-1"}, None)
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
@@ -29,7 +37,9 @@ def test_wl11082_extract_turn_submit_response_request_id_rejects_boolean_when_re
 
 def test_wl11083_extract_turn_submit_response_approval_payload_accepts_none() -> None:
     # @trace WL-11083
-    phase = server._build_turn_submit_response_phase(True, "req-11083", {"id": "turn-1"}, None)
+    phase = server._build_turn_submit_response_phase(
+        True, "req-11083", {"id": "turn-1"}, None
+    )
     assert server._extract_turn_submit_response_approval_payload(phase) is None
 
 
@@ -59,7 +69,9 @@ def test_wl11087_validate_turn_submit_approval_payload_rejects_missing_status() 
         server._validate_turn_submit_approval_payload(payload)
 
 
-def test_wl11088_build_turn_submit_result_payload_flat_includes_approval_when_present() -> None:
+def test_wl11088_build_turn_submit_result_payload_flat_includes_approval_when_present() -> (
+    None
+):
     # @trace WL-11088
     turn = {
         "id": "turn-1",
@@ -77,7 +89,9 @@ def test_wl11088_build_turn_submit_result_payload_flat_includes_approval_when_pr
     assert result["approval"] == approval
 
 
-def test_wl11089_build_turn_submit_success_response_includes_approval_when_present() -> None:
+def test_wl11089_build_turn_submit_success_response_includes_approval_when_present() -> (
+    None
+):
     # @trace WL-11089
     response = server._build_turn_submit_success_response(
         True,

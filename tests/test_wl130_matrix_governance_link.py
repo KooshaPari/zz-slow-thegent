@@ -47,7 +47,9 @@ def test_governance_summary_has_wl130_section() -> None:
 def test_governance_summary_has_wl130_table() -> None:
     """GOVERNANCE_SUMMARY.md Runtime Modularization section must have a table."""
     content = GOVERNANCE_SUMMARY.read_text(encoding="utf-8")
-    assert "| Workload |" in content, "GOVERNANCE_SUMMARY.md must include workload table"
+    assert "| Workload |" in content, (
+        "GOVERNANCE_SUMMARY.md must include workload table"
+    )
 
 
 def test_modernization_plan_references_machine_readable_contract() -> None:

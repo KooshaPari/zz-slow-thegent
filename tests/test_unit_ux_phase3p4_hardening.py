@@ -38,7 +38,9 @@ pytestmark = pytest.mark.unit
 # ---------------------------------------------------------------------------
 
 
-def _make_notice(*, verdict: str = "allow", reason_code: str = "ok", ts: float = 0.0) -> DecisionNotice:
+def _make_notice(
+    *, verdict: str = "allow", reason_code: str = "ok", ts: float = 0.0
+) -> DecisionNotice:
     """Build a DecisionNotice with the minimum required fields."""
     return DecisionNotice(
         verdict=verdict,
@@ -61,7 +63,9 @@ class TestDecisionAuditRotation:
 
     def test_no_rotation_under_threshold(self, tmp_path: Path) -> None:
         path = tmp_path / "audit.jsonl"
-        appender = DecisionAuditAppender(audit_path=path, max_bytes=10_000, max_lines=10_000)
+        appender = DecisionAuditAppender(
+            audit_path=path, max_bytes=10_000, max_lines=10_000
+        )
         for i in range(10):
             appender.record(_make_notice(reason_code=f"ok.{i}", ts=1000.0 + i))
         stats = appender.audit_stats()
@@ -91,7 +95,9 @@ class TestDecisionAuditRotation:
     def test_rotates_when_max_bytes_exceeded(self, tmp_path: Path) -> None:
         path = tmp_path / "audit.jsonl"
         # Tight budget so even a single record triggers rotation.
-        appender = DecisionAuditAppender(audit_path=path, max_bytes=80, max_lines=10_000)
+        appender = DecisionAuditAppender(
+            audit_path=path, max_bytes=80, max_lines=10_000
+        )
         for i in range(5):
             # Use a verbose reason to inflate the JSON payload.
             big = "x" * 200
@@ -171,7 +177,15 @@ class TestDecisionAuditRotation:
         appender = DecisionAuditAppender(audit_path=path, max_bytes=0, max_lines=0)
         snap = appender.audit_stats()
         # Surface contract: every documented key is present.
-        for key in ("line_count", "bytes_written", "rotation_count", "fsync", "max_bytes", "max_lines", "max_backups"):
+        for key in (
+            "line_count",
+            "bytes_written",
+            "rotation_count",
+            "fsync",
+            "max_bytes",
+            "max_lines",
+            "max_backups",
+        ):
             assert key in snap
 
 
@@ -196,7 +210,13 @@ class TestDecisionAuditTailerAtomicDrain:
         n = tailer.drain_once()
         assert n == 5
         # JSONL file received the records.
-        lines = [ln for ln in (tmp_path / "audit.jsonl").read_text(encoding="utf-8").splitlines() if ln]
+        lines = [
+            ln
+            for ln in (tmp_path / "audit.jsonl")
+            .read_text(encoding="utf-8")
+            .splitlines()
+            if ln
+        ]
         assert len(lines) == 5
 
     def test_drain_once_is_idempotent(self, tmp_path: Path) -> None:

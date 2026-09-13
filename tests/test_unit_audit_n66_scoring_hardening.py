@@ -273,7 +273,9 @@ class TestFRGOOSCR015NormalizeCaseInsensitive:
 
     def test_uppercase(self) -> None:
         scorer = DefaultProviderScorer()
-        assert scorer.normalize(0.5, "RELIABILITY") == scorer.normalize(0.5, "reliability")
+        assert scorer.normalize(0.5, "RELIABILITY") == scorer.normalize(
+            0.5, "reliability"
+        )
 
     def test_mixed_case(self) -> None:
         scorer = DefaultProviderScorer()
@@ -426,7 +428,9 @@ class TestFRGOOSCR023AllScoresInRange:
     def test_worst_values(self) -> None:
         scorer = DefaultProviderScorer()
         # Worst: zero reliability, huge latency, huge cost
-        worst = _metrics(reliability=0.0, latency_p99=10_000.0, cost_per_1m_tokens=100.0)
+        worst = _metrics(
+            reliability=0.0, latency_p99=10_000.0, cost_per_1m_tokens=100.0
+        )
         worst_score = scorer.score(worst)
         for val in (
             worst_score.reliability_score,

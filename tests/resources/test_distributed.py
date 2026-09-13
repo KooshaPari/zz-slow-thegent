@@ -130,7 +130,9 @@ def test_acquire_returns_lease(coordinator: DistributedResourceCoordinator) -> N
     assert lease.expires_at > time.time()
 
 
-def test_acquire_stores_lease_on_disk(coordinator: DistributedResourceCoordinator, lease_file: Path) -> None:
+def test_acquire_stores_lease_on_disk(
+    coordinator: DistributedResourceCoordinator, lease_file: Path
+) -> None:
     """After acquire, the lease file exists and is valid JSON."""
     coordinator.acquire(resource="cpu", amount=1.0, owner="agent-1")
     assert lease_file.exists()
@@ -445,7 +447,9 @@ def test_release_from_different_coordinator_instance(tmp_path: Path) -> None:
     assert c1.get_active_leases() == []
 
 
-def test_cleanup_from_different_coordinator_affects_shared_store(tmp_path: Path) -> None:
+def test_cleanup_from_different_coordinator_affects_shared_store(
+    tmp_path: Path,
+) -> None:
     """Cleanup by one coordinator removes expired leases visible to another."""
     shared = tmp_path / "shared_leases.json"
     c1 = DistributedResourceCoordinator(lease_file=shared)

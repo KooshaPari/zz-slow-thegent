@@ -19,7 +19,9 @@ def instrument_genai_call(
     system: str | None = None,
 ) -> Iterator[Span]:
     """Open a CLIENT span for a single GenAI tool invocation."""
-    with _TRACER.start_as_current_span("thegent.genai.call", kind=SpanKind.CLIENT) as span:
+    with _TRACER.start_as_current_span(
+        "thegent.genai.call", kind=SpanKind.CLIENT
+    ) as span:
         span.set_attribute("gen_ai.agent.name", agent_name)
         span.set_attribute("gen_ai.request.model", model)
         if system:

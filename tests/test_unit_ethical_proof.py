@@ -47,7 +47,11 @@ class TestEthicalProof:
 
         # Manually create a proof with no evidence
         proof = FormalEthicalProof(
-            verified_principles=["P1"], critique_hash="hash", aligned=True, signature="sig", evidence_ids=[]
+            verified_principles=["P1"],
+            critique_hash="hash",
+            aligned=True,
+            signature="sig",
+            evidence_ids=[],
         )
 
         success = verifier.verify(proof)

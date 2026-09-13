@@ -85,7 +85,9 @@ class BudgetTracker:
 
     def __init__(self, plan: OrchestrationPlan) -> None:
         if not isinstance(plan, OrchestrationPlan):
-            raise TypeError(f"plan must be OrchestrationPlan, got {type(plan).__name__}")
+            raise TypeError(
+                f"plan must be OrchestrationPlan, got {type(plan).__name__}"
+            )
         self._plan = plan
         self._usage: dict[str, int] = {}
 
@@ -214,9 +216,13 @@ class BudgetTracker:
                 if value is None:
                     return None
                 if isinstance(value, bool) or not isinstance(value, int):
-                    raise TypeError(f"budget_tokens for node {node_id!r} must be int, got {type(value).__name__}")
+                    raise TypeError(
+                        f"budget_tokens for node {node_id!r} must be int, got {type(value).__name__}"
+                    )
                 if value < 0:
-                    raise ValueError(f"budget_tokens for node {node_id!r} must be non-negative")
+                    raise ValueError(
+                        f"budget_tokens for node {node_id!r} must be non-negative"
+                    )
                 return value
         # _require_known_node guards this branch; explicit raise keeps
         # mypy happy in case callers bypass the public API.

@@ -105,7 +105,9 @@ class TestCheckModuleLoadBudget:
 
     def test_failure_exceeds_budget(self):
         """Mock a slow import to trigger PerformanceBudgetError."""
-        with patch("thegent.infra.perf_budget.time.perf_counter", side_effect=[0.0, 100.0]):
+        with patch(
+            "thegent.infra.perf_budget.time.perf_counter", side_effect=[0.0, 100.0]
+        ):
             with pytest.raises(PerformanceBudgetError, match="exceeds budget"):
                 check_module_load_budget("json", max_load_ms=50.0)
 
@@ -145,7 +147,9 @@ class TestCheckMemoryBudget:
 
     def test_failure_exceeds_budget(self):
         """Mock RSS well above budget."""
-        with patch("thegent.infra.perf_budget._current_rss_bytes", return_value=20_000_000):
+        with patch(
+            "thegent.infra.perf_budget._current_rss_bytes", return_value=20_000_000
+        ):
             with pytest.raises(PerformanceBudgetError, match="Memory budget exceeded"):
                 check_memory_budget("big-block", max_bytes=10_000_000)
 
@@ -164,7 +168,9 @@ class TestCheckMemoryBudget:
         usage_mock = MagicMock()
         usage_mock.ru_maxrss = 1024  # 1 KB
         with patch("thegent.infra.perf_budget.sys.platform", "linux"):
-            with patch("thegent.infra.perf_budget.resource.getrusage", return_value=usage_mock):
+            with patch(
+                "thegent.infra.perf_budget.resource.getrusage", return_value=usage_mock
+            ):
                 rss = _current_rss_bytes()
                 assert rss == 1024 * 1024  # 1 MB in bytes
 
@@ -173,7 +179,9 @@ class TestCheckMemoryBudget:
         usage_mock = MagicMock()
         usage_mock.ru_maxrss = 2_000_000
         with patch("thegent.infra.perf_budget.sys.platform", "darwin"):
-            with patch("thegent.infra.perf_budget.resource.getrusage", return_value=usage_mock):
+            with patch(
+                "thegent.infra.perf_budget.resource.getrusage", return_value=usage_mock
+            ):
                 rss = _current_rss_bytes()
                 assert rss == 2_000_000
 
@@ -202,7 +210,9 @@ class TestGetPerfSummary:
         assert summary["total_load_ms"] > 0
 
     def test_violations_recorded(self):
-        with patch("thegent.infra.perf_budget._current_rss_bytes", return_value=50_000_000):
+        with patch(
+            "thegent.infra.perf_budget._current_rss_bytes", return_value=50_000_000
+        ):
             with pytest.raises(PerformanceBudgetError):
                 check_memory_budget("over", max_bytes=10_000_000)
         summary = get_perf_summary()

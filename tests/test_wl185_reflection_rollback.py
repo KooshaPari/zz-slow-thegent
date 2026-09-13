@@ -32,7 +32,9 @@ class TestRollbackEntry:
     def test_rollback_entry_snapshot_copy(self):
         """# @trace WL-185 — RollbackEntry stores snapshot as-is."""
         snapshot = {"data": {"nested": "value"}}
-        entry = RollbackEntry(entry_id="test", timestamp=datetime.now(UTC), snapshot=snapshot)
+        entry = RollbackEntry(
+            entry_id="test", timestamp=datetime.now(UTC), snapshot=snapshot
+        )
         assert entry.snapshot == {"data": {"nested": "value"}}
 
 

@@ -159,7 +159,13 @@ class TestPersonaRecord:
             last_seen=datetime(2026, 1, 1, tzinfo=UTC),
         )
         d = record.to_dict()
-        assert set(d) == {"name", "project_root", "capabilities", "persona_file", "last_seen"}
+        assert set(d) == {
+            "name",
+            "project_root",
+            "capabilities",
+            "persona_file",
+            "last_seen",
+        }
 
     def test_from_dict_round_trip(self, tmp_path: Path) -> None:
         """PersonaRecord survives a to_dict/from_dict round-trip."""
@@ -235,7 +241,9 @@ class TestDiscoverPersonas:
         """Capabilities are parsed from frontmatter and returned in the record."""
         # @trace FR-AGT-020
         agents_dir = _make_agents_dir(tmp_path)
-        _write_persona(agents_dir, "cap.md", "---\nname: cap\ntools: search, read\n---\n")
+        _write_persona(
+            agents_dir, "cap.md", "---\nname: cap\ntools: search, read\n---\n"
+        )
 
         reg = CrossProjectRegistry(registry_file=tmp_path / "reg.json")
         records = reg.discover_personas(tmp_path)
@@ -302,7 +310,9 @@ class TestRegisterProject:
         """Re-registering the same project overwrites the previous record."""
         # @trace FR-AGT-020
         agents_dir = _make_agents_dir(tmp_path)
-        md = _write_persona(agents_dir, "agent.md", "---\nname: agent\ntools: read\n---\n")
+        md = _write_persona(
+            agents_dir, "agent.md", "---\nname: agent\ntools: read\n---\n"
+        )
 
         reg = CrossProjectRegistry(registry_file=tmp_path / "reg.json")
         reg.register_project(tmp_path)
@@ -334,9 +344,17 @@ class TestSearch:
 
     def _populate(self, tmp_path: Path, reg: CrossProjectRegistry) -> None:
         agents_dir = _make_agents_dir(tmp_path)
-        _write_persona(agents_dir, "reader.md", "---\nname: reader\ntools: read-only\n---\n")
-        _write_persona(agents_dir, "writer.md", "---\nname: writer\ntools: write\n---\n")
-        _write_persona(agents_dir, "all.md", "---\nname: all\ntools: read-only, write, search\n---\n")
+        _write_persona(
+            agents_dir, "reader.md", "---\nname: reader\ntools: read-only\n---\n"
+        )
+        _write_persona(
+            agents_dir, "writer.md", "---\nname: writer\ntools: write\n---\n"
+        )
+        _write_persona(
+            agents_dir,
+            "all.md",
+            "---\nname: all\ntools: read-only, write, search\n---\n",
+        )
         reg.register_project(tmp_path)
 
     def test_search_finds_matching_capability(self, tmp_path: Path) -> None:
@@ -395,7 +413,9 @@ class TestSaveLoad:
         """Records survive a save/load cycle."""
         # @trace FR-AGT-020
         agents_dir = _make_agents_dir(tmp_path)
-        _write_persona(agents_dir, "persisted.md", "---\nname: persisted\ntools: search\n---\n")
+        _write_persona(
+            agents_dir, "persisted.md", "---\nname: persisted\ntools: search\n---\n"
+        )
 
         reg_file = tmp_path / "reg.json"
         reg1 = CrossProjectRegistry(registry_file=reg_file)

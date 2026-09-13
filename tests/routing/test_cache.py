@@ -489,7 +489,9 @@ def test_convenience_roundtrip():
 def test_convenience_miss_returns_none():
     """cache_get must return None when the entry is not cached."""
     reset_cache()
-    result = cache_get("never-cached-model", [{"role": "user", "content": "unique xyz123"}])
+    result = cache_get(
+        "never-cached-model", [{"role": "user", "content": "unique xyz123"}]
+    )
     assert result is None
     reset_cache()
 

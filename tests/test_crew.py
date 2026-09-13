@@ -320,7 +320,11 @@ class TestWorkflowEngine:
         engine.add_stage(s3)
         engine.add_stage(s1)
         engine.add_stage(s2)
-        assert [stage.id for stage in engine.resolve_stage_dependencies()] == ["s1", "s2", "s3"]
+        assert [stage.id for stage in engine.resolve_stage_dependencies()] == [
+            "s1",
+            "s2",
+            "s3",
+        ]
 
     def test_wl9471_unknown_dependency_fails_fast(self):
         # @trace WL-9471
@@ -553,9 +557,15 @@ class TestMonitoringEngine:
         engine = MonitoringEngine()
 
         results = {
-            "task1": ExecutionResult(task_id="task1", success=True, duration_seconds=10.0),
-            "task2": ExecutionResult(task_id="task2", success=True, duration_seconds=20.0),
-            "task3": ExecutionResult(task_id="task3", success=False, duration_seconds=5.0),
+            "task1": ExecutionResult(
+                task_id="task1", success=True, duration_seconds=10.0
+            ),
+            "task2": ExecutionResult(
+                task_id="task2", success=True, duration_seconds=20.0
+            ),
+            "task3": ExecutionResult(
+                task_id="task3", success=False, duration_seconds=5.0
+            ),
         }
 
         metrics = engine.track_performance("crew1", results)
@@ -570,8 +580,12 @@ class TestMonitoringEngine:
         engine = MonitoringEngine()
 
         results = {
-            "task1": ExecutionResult(task_id="task1", success=True, tokens_used=100, cost_usd=0.01),
-            "task2": ExecutionResult(task_id="task2", success=True, tokens_used=200, cost_usd=0.02),
+            "task1": ExecutionResult(
+                task_id="task1", success=True, tokens_used=100, cost_usd=0.01
+            ),
+            "task2": ExecutionResult(
+                task_id="task2", success=True, tokens_used=200, cost_usd=0.02
+            ),
         }
 
         metrics = engine.track_costs("crew1", results)

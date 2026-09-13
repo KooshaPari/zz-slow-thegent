@@ -1,7 +1,6 @@
 """Targeted tests to increase coverage."""
 
 
-
 class TestExecutionPolicy:
     """Test execution policy module."""
 

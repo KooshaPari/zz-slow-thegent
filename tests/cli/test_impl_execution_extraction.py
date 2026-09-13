@@ -77,9 +77,9 @@ def test_run_impl_signature_intact() -> None:
     for param in ("prompt", "audio_files", "google_grounding"):
         assert param in sig.parameters, f"run_impl missing explicit param: {param}"
     # agent, cd, model arrive through **kwargs.
-    assert any(p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()), (
-        "run_impl must accept **kwargs for agent/cd/model forwarding"
-    )
+    assert any(
+        p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()
+    ), "run_impl must accept **kwargs for agent/cd/model forwarding"
 
 
 def test_bg_impl_signature_intact() -> None:

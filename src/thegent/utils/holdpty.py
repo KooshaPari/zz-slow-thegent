@@ -13,7 +13,13 @@ from typing import cast
 class PTYHolder:
     """Wraps a process in a PTY and exposes it via a Unix socket."""
 
-    def __init__(self, socket_path: Path, cmd: list[str], cwd: str | None = None, env: dict | None = None) -> None:
+    def __init__(
+        self,
+        socket_path: Path,
+        cmd: list[str],
+        cwd: str | None = None,
+        env: dict | None = None,
+    ) -> None:
         self.socket_path = socket_path
         self.cmd = cmd
         self.cwd = cwd
@@ -67,7 +73,9 @@ class PTYHolder:
     def _handle_connection(self, conn: socket.socket):
         """Proxy between the socket and the PTY master."""
         conn.setblocking(False)
-        assert self.master_fd is not None, "PTY master_fd must be set before handling connections"
+        assert self.master_fd is not None, (
+            "PTY master_fd must be set before handling connections"
+        )
         master_fd: int = cast("int", self.master_fd)
 
         while not self._stop_event.is_set():
@@ -97,7 +105,9 @@ class PTYHolder:
         """Mirror PTY output to the holder's stdout (so thegent logs work)."""
         import sys
 
-        assert self.master_fd is not None, "PTY master_fd must be set before mirroring stdout"
+        assert self.master_fd is not None, (
+            "PTY master_fd must be set before mirroring stdout"
+        )
         master_fd: int = cast("int", self.master_fd)
 
         while not self._stop_event.is_set():

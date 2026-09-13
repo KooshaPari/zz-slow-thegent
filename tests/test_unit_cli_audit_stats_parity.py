@@ -219,7 +219,6 @@ class TestAuditStatsCmdJsonOutput:
         audit_stats_cmd(audit_path=log, json_output=True)
         # Re-parse what was emitted.
 
-
         # The cleanest way to read what ``audit_stats_cmd`` emitted
         # is to monkey-patch ``typer.echo`` and capture the
         # payload. This avoids re-reading capsys after a second
@@ -304,7 +303,9 @@ class TestAuditStatsCmdHumanOutput:
         clean = _strip_ansi(captured.out)
         lines = [ln for ln in clean.splitlines() if ln.strip()]
         # 8 lines, one per expected key.
-        assert len(lines) == 8, f"audit_stats human output should have 8 lines, got {len(lines)}: {lines!r}"
+        assert len(lines) == 8, (
+            f"audit_stats human output should have 8 lines, got {len(lines)}: {lines!r}"
+        )
         # No JSON braces.
         assert "{" not in clean and "}" not in clean, (
             f"audit_stats human output should be a key-value table, not JSON (rendered: {clean!r})."
@@ -316,7 +317,9 @@ class TestAuditStatsCmdHumanOutput:
             key = ln.split(":", 1)[0].strip()
             parsed_keys.append(key)
         # Sorted.
-        assert parsed_keys == sorted(parsed_keys), f"audit_stats human keys are not sorted: {parsed_keys!r}"
+        assert parsed_keys == sorted(parsed_keys), (
+            f"audit_stats human keys are not sorted: {parsed_keys!r}"
+        )
 
     def test_human_mode_exact_lines_capsys(
         self,
@@ -683,10 +686,14 @@ class TestReadFileWithByteBudget:
         # (``"BBBBBB"`` + remainder) must be discarded.
         result = appender._read_file_with_byte_budget(fp, byte_window=25)
         # The trailing line must be intact.
-        assert result[-1] == "CCCCCCCCCC", f"byte-tail path did not preserve the trailing line: {result!r}"
+        assert result[-1] == "CCCCCCCCCC", (
+            f"byte-tail path did not preserve the trailing line: {result!r}"
+        )
         # And the partial chunk must NOT appear as a standalone
         # line (i.e. no ``"BBBBBB"`` token leaked through).
-        assert "BBBBBB" not in result, f"byte-tail path leaked the partial first line: {result!r}"
+        assert "BBBBBB" not in result, (
+            f"byte-tail path leaked the partial first line: {result!r}"
+        )
 
     def test_empty_file_returns_empty_list(self, tmp_path: Path) -> None:
         """An empty file (size 0) returns ``[]`` — the legacy

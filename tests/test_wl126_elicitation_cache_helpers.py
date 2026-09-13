@@ -22,7 +22,9 @@ def test_wl126_elicitation_cache_key_is_deterministic() -> None:
 
 def test_wl126_elicitation_cache_roundtrip() -> None:
     cache = server_create_elicitation_cache(maxsize=10, ttl_seconds=60)
-    assert server_get_cached_elicitation(cache, prompt="cwd?", response_type=str) is None
+    assert (
+        server_get_cached_elicitation(cache, prompt="cwd?", response_type=str) is None
+    )
 
     server_cache_elicitation_response(
         cache,
@@ -31,7 +33,10 @@ def test_wl126_elicitation_cache_roundtrip() -> None:
         response="~/repo",
     )
 
-    assert server_get_cached_elicitation(cache, prompt="cwd?", response_type=str) == "~/repo"
+    assert (
+        server_get_cached_elicitation(cache, prompt="cwd?", response_type=str)
+        == "~/repo"
+    )
 
 
 class _Meta:
@@ -64,7 +69,9 @@ class _Cancelled:
 
 
 def test_wl126_meta_helpers_extract_owner_and_cwd() -> None:
-    ctx = _Ctx(request_context=_RequestContext(meta=_Meta(cwd="~/repo", owner="agent-e")))
+    ctx = _Ctx(
+        request_context=_RequestContext(meta=_Meta(cwd="~/repo", owner="agent-e"))
+    )
 
     cwd = server_default_cwd_from_context(ctx)
     owner = server_default_owner_from_context(ctx)

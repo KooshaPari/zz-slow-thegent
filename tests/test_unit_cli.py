@@ -208,7 +208,13 @@ class TestSessionCommands:
             # Put options first (Click/Typer parses options-after-positionals as commands)
             result = runner.invoke(
                 app,
-                ["bg", f"--cd={tmp_path}", "--owner=test-owner", "say hi", "cursor-agent"],
+                [
+                    "bg",
+                    f"--cd={tmp_path}",
+                    "--owner=test-owner",
+                    "say hi",
+                    "cursor-agent",
+                ],
             )
 
         assert result.exit_code == 0
@@ -218,13 +224,23 @@ class TestSessionCommands:
         assert meta["agent"] == "cursor-agent"
         assert meta["pid"] == 43210
 
-    def test_run_model_first_invalid_provider_shows_available(self, tmp_path: Path) -> None:
+    def test_run_model_first_invalid_provider_shows_available(
+        self, tmp_path: Path
+    ) -> None:
         # @trace FR-CLI-004
         """When -P provider doesn't serve model, error includes 'Available: ...' (Phase 11)."""
         (tmp_path / ".git").mkdir()
         result = runner.invoke(
             app,
-            ["run", "-M", "gemini-3-flash", "-P", "minimax", f"--cd={tmp_path}", "prompt"],
+            [
+                "run",
+                "-M",
+                "gemini-3-flash",
+                "-P",
+                "minimax",
+                f"--cd={tmp_path}",
+                "prompt",
+            ],
         )
         assert result.exit_code == 1
         assert "not available via provider 'minimax'" in result.stdout
@@ -271,12 +287,16 @@ class TestSessionCommands:
             return calls["n"] == 1
 
         with patch.dict("os.environ", {"THGENT_SESSION_DIR": str(session_dir)}):
-            with patch("thegent.cli.commands.cli._is_pid_running", side_effect=fake_running):
+            with patch(
+                "thegent.cli.commands.cli._is_pid_running", side_effect=fake_running
+            ):
                 with patch("thegent.cli.commands.cli.os.killpg") as killpg:
                     stop_cmd(sid, force=False, wind_down=True, grace=1)
                     killpg.assert_called_once()
 
-    def test_stop_wind_down_reports_still_running_after_grace(self, tmp_path: Path) -> None:
+    def test_stop_wind_down_reports_still_running_after_grace(
+        self, tmp_path: Path
+    ) -> None:
         # @trace FR-CLI-004
         session_dir = tmp_path / "sessions"
         scoped = session_dir / "owner"
@@ -294,7 +314,10 @@ class TestSessionCommands:
             with patch("thegent.cli.commands.cli._is_pid_running", return_value=True):
                 with patch("thegent.cli.commands.cli.os.killpg") as killpg:
                     with patch("thegent.cli.commands.cli.time.sleep"):
-                        with patch("thegent.cli.commands.cli.time.time", side_effect=[0.0, 0.3, 0.7, 1.2]):
+                        with patch(
+                            "thegent.cli.commands.cli.time.time",
+                            side_effect=[0.0, 0.3, 0.7, 1.2],
+                        ):
                             stop_cmd(sid, force=False, wind_down=True, grace=1)
                             # Wind-down sends SIGTERM then, after the grace
                             # period elapses, escalates to SIGKILL.
@@ -382,7 +405,9 @@ class TestObserveSummaryImpl:
                 assert window_size == 20
                 return []
 
-            def get_drift_budget_status(self, structural_budget_pct, semantic_budget_pct, limit=500):
+            def get_drift_budget_status(
+                self, structural_budget_pct, semantic_budget_pct, limit=500
+            ):
                 assert structural_budget_pct == 7.5
                 assert semantic_budget_pct == 12.5
                 assert limit == 123
@@ -398,7 +423,9 @@ class TestObserveSummaryImpl:
             def __init__(self, _session_dir) -> None:
                 pass
 
-            def list_pending(self, past_sla_only: bool = False, limit: int = 50) -> list[dict]:
+            def list_pending(
+                self, past_sla_only: bool = False, limit: int = 50
+            ) -> list[dict]:
                 assert limit >= 20
                 if past_sla_only:
                     return [
@@ -441,7 +468,9 @@ class TestObserveSummaryImpl:
                     },
                 ]
 
-        monkeypatch.setattr("thegent.contracts.telemetry.ContractTelemetry", _FakeTelemetry)
+        monkeypatch.setattr(
+            "thegent.contracts.telemetry.ContractTelemetry", _FakeTelemetry
+        )
         monkeypatch.setattr("thegent.execution.EscalationQueue", _FakeEscalationQueue)
 
         result = cli_impl.observe_summary_impl(
@@ -495,7 +524,9 @@ class TestObserveSummaryImpl:
             def detect_drift(self, window_size: int = 50) -> list[str]:
                 return []
 
-            def get_drift_budget_status(self, structural_budget_pct, semantic_budget_pct, limit=500):
+            def get_drift_budget_status(
+                self, structural_budget_pct, semantic_budget_pct, limit=500
+            ):
                 return {
                     "within_budget": True,
                     "structural_rate_pct": 0.0,
@@ -508,10 +539,14 @@ class TestObserveSummaryImpl:
             def __init__(self, _session_dir) -> None:
                 pass
 
-            def list_pending(self, past_sla_only: bool = False, limit: int = 50) -> list[dict]:
+            def list_pending(
+                self, past_sla_only: bool = False, limit: int = 50
+            ) -> list[dict]:
                 return []
 
-        monkeypatch.setattr("thegent.contracts.telemetry.ContractTelemetry", _FakeTelemetry)
+        monkeypatch.setattr(
+            "thegent.contracts.telemetry.ContractTelemetry", _FakeTelemetry
+        )
         monkeypatch.setattr("thegent.execution.EscalationQueue", _FakeEscalationQueue)
         snapshot_file = tmp_path / "observe_summary_snapshots.jsonl"
         monkeypatch.setenv("THGENT_HEALTH_SNAPSHOT_PATH", str(snapshot_file))
@@ -531,4 +566,9 @@ class TestObserveSummaryImpl:
         assert result["trend_summary"]["trend_effective_samples"] == 3
         assert result["trend_summary"]["history_sample_count"] == 0
         assert result["generated_query"]["trend_samples"] == 3
-        assert result["trend_summary"]["trend_snapshot_health"] in {"good", "warning", "degraded", "critical"}
+        assert result["trend_summary"]["trend_snapshot_health"] in {
+            "good",
+            "warning",
+            "degraded",
+            "critical",
+        }

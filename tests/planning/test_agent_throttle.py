@@ -34,8 +34,12 @@ from thegent.planning.auto_launch import (
 # ---------------------------------------------------------------------------
 
 
-def _make_throttle_result(action: str, count: int = 0, limit: int = 20) -> _ThrottleResult:
-    return _ThrottleResult(action=action, count=count, limit=limit, message=f"test {action}")
+def _make_throttle_result(
+    action: str, count: int = 0, limit: int = 20
+) -> _ThrottleResult:
+    return _ThrottleResult(
+        action=action, count=count, limit=limit, message=f"test {action}"
+    )
 
 
 def _non_blocked_do_next() -> dict[str, object]:
@@ -70,7 +74,9 @@ class TestGetActiveAgentCount:
         assert isinstance(count, int)
         assert count >= 0
 
-    def test_counts_running_sessions_with_live_pid(self) -> None:  # @trace FR-ALS-THROTTLE-011
+    def test_counts_running_sessions_with_live_pid(
+        self,
+    ) -> None:  # @trace FR-ALS-THROTTLE-011
         """Running sessions whose PID is alive are counted."""
         sessions = [
             {"status": "running", "pid": 1234},
@@ -96,7 +102,9 @@ class TestGetActiveAgentCount:
             count = get_active_agent_count()
         assert count == 0
 
-    def test_psutil_scan_adds_untracked_agents(self) -> None:  # @trace FR-ALS-THROTTLE-011
+    def test_psutil_scan_adds_untracked_agents(
+        self,
+    ) -> None:  # @trace FR-ALS-THROTTLE-011
         """Agent processes found by psutil but not in registry are counted."""
         fake_proc = MagicMock()
         fake_proc.pid = 7777
@@ -109,7 +117,9 @@ class TestGetActiveAgentCount:
             count = get_active_agent_count()
         assert count == 1
 
-    def test_no_double_count_when_pid_in_both_sources(self) -> None:  # @trace FR-ALS-THROTTLE-011
+    def test_no_double_count_when_pid_in_both_sources(
+        self,
+    ) -> None:  # @trace FR-ALS-THROTTLE-011
         """PIDs already counted from registry are not double-counted by psutil scan."""
         sessions = [{"status": "running", "pid": 2222}]
         fake_proc = MagicMock()
@@ -124,14 +134,18 @@ class TestGetActiveAgentCount:
             count = get_active_agent_count()
         assert count == 1  # counted once only
 
-    def test_ps_impl_exception_falls_back_to_psutil(self) -> None:  # @trace FR-ALS-THROTTLE-001
+    def test_ps_impl_exception_falls_back_to_psutil(
+        self,
+    ) -> None:  # @trace FR-ALS-THROTTLE-001
         """Registry errors are swallowed; psutil scan still provides a count."""
         fake_proc = MagicMock()
         fake_proc.pid = 3333
         fake_proc.info = {"pid": 3333, "name": "codex", "cmdline": ["codex"]}
 
         with (
-            patch("thegent.cli.commands.impl.ps_impl", side_effect=RuntimeError("db gone")),
+            patch(
+                "thegent.cli.commands.impl.ps_impl", side_effect=RuntimeError("db gone")
+            ),
             patch("psutil.process_iter", return_value=[fake_proc]),
         ):
             count = get_active_agent_count()
@@ -146,9 +160,13 @@ class TestGetActiveAgentCount:
 class TestCheckAgentThrottle:
     """Unit tests for check_agent_throttle. @trace FR-ALS-THROTTLE-002--005,012"""
 
-    def _call(self, count: int, warn: int = 20, throttle: int = 50, hard_stop: int = 80) -> _ThrottleResult:
+    def _call(
+        self, count: int, warn: int = 20, throttle: int = 50, hard_stop: int = 80
+    ) -> _ThrottleResult:
         """Helper: call check_agent_throttle with explicit count (no psutil)."""
-        return check_agent_throttle(count=count, warn_at=warn, throttle_at=throttle, hard_stop_at=hard_stop)
+        return check_agent_throttle(
+            count=count, warn_at=warn, throttle_at=throttle, hard_stop_at=hard_stop
+        )
 
     def test_below_warn_is_ok(self) -> None:  # @trace FR-ALS-THROTTLE-002
         result = self._call(count=0)
@@ -164,20 +182,28 @@ class TestCheckAgentThrottle:
         assert result.count == 20
         assert result.limit == 20
 
-    def test_above_warn_below_throttle_is_warn(self) -> None:  # @trace FR-ALS-THROTTLE-003
+    def test_above_warn_below_throttle_is_warn(
+        self,
+    ) -> None:  # @trace FR-ALS-THROTTLE-003
         result = self._call(count=35)
         assert result.action == "warn"
 
-    def test_at_throttle_threshold_is_throttle(self) -> None:  # @trace FR-ALS-THROTTLE-004
+    def test_at_throttle_threshold_is_throttle(
+        self,
+    ) -> None:  # @trace FR-ALS-THROTTLE-004
         result = self._call(count=50)
         assert result.action == "throttle"
         assert result.count == 50
 
-    def test_above_throttle_below_hard_stop_is_throttle(self) -> None:  # @trace FR-ALS-THROTTLE-004
+    def test_above_throttle_below_hard_stop_is_throttle(
+        self,
+    ) -> None:  # @trace FR-ALS-THROTTLE-004
         result = self._call(count=65)
         assert result.action == "throttle"
 
-    def test_at_hard_stop_threshold_is_hard_stop(self) -> None:  # @trace FR-ALS-THROTTLE-005
+    def test_at_hard_stop_threshold_is_hard_stop(
+        self,
+    ) -> None:  # @trace FR-ALS-THROTTLE-005
         result = self._call(count=80)
         assert result.action == "hard_stop"
         assert result.count == 80
@@ -189,7 +215,9 @@ class TestCheckAgentThrottle:
     def test_explicit_count_skips_psutil(self) -> None:  # @trace FR-ALS-THROTTLE-012
         """Passing count= must not trigger psutil or registry calls."""
         with patch("thegent.planning.auto_launch.get_active_agent_count") as mock_count:
-            result = check_agent_throttle(count=5, warn_at=20, throttle_at=50, hard_stop_at=80)
+            result = check_agent_throttle(
+                count=5, warn_at=20, throttle_at=50, hard_stop_at=80
+            )
         mock_count.assert_not_called()
         assert result.action == "ok"
 
@@ -206,9 +234,13 @@ class TestCheckAgentThrottle:
 
     def test_custom_thresholds(self) -> None:  # @trace FR-ALS-THROTTLE-003
         """Non-default thresholds are respected."""
-        result = check_agent_throttle(count=5, warn_at=3, throttle_at=7, hard_stop_at=10)
+        result = check_agent_throttle(
+            count=5, warn_at=3, throttle_at=7, hard_stop_at=10
+        )
         assert result.action == "warn"
-        result2 = check_agent_throttle(count=2, warn_at=3, throttle_at=7, hard_stop_at=10)
+        result2 = check_agent_throttle(
+            count=2, warn_at=3, throttle_at=7, hard_stop_at=10
+        )
         assert result2.action == "ok"
 
 
@@ -250,7 +282,9 @@ class TestTryLaunchNextThrottle:
 
         system.launch_batch.assert_not_called()
 
-    def test_throttle_sleeps_then_aborts_if_still_throttled(self) -> None:  # @trace FR-ALS-THROTTLE-007
+    def test_throttle_sleeps_then_aborts_if_still_throttled(
+        self,
+    ) -> None:  # @trace FR-ALS-THROTTLE-007
         """_try_launch_next sleeps then aborts if still throttled after sleep."""
 
         system = self._make_system()
@@ -265,17 +299,24 @@ class TestTryLaunchNextThrottle:
                 ],
             ),
             patch("time.sleep") as mock_sleep,
-            patch("thegent.cli.commands.impl.do_next_impl", return_value=_non_blocked_do_next()),
+            patch(
+                "thegent.cli.commands.impl.do_next_impl",
+                return_value=_non_blocked_do_next(),
+            ),
         ):
             asyncio.get_event_loop().run_until_complete(system._try_launch_next())
 
         mock_sleep.assert_called_once()
         system.launch_batch.assert_not_called()
 
-    def test_throttle_then_ok_after_sleep_proceeds(self) -> None:  # @trace FR-ALS-THROTTLE-013
+    def test_throttle_then_ok_after_sleep_proceeds(
+        self,
+    ) -> None:  # @trace FR-ALS-THROTTLE-013
         """_try_launch_next proceeds to launch_batch when throttle clears after sleep."""
         system = self._make_system()
-        system.db.get_ready_items.return_value = [{"item_id": "ws-001", "prompt": "do stuff"}]
+        system.db.get_ready_items.return_value = [
+            {"item_id": "ws-001", "prompt": "do stuff"}
+        ]
         system.db.get_running_count.return_value = 0
 
         with (
@@ -290,23 +331,35 @@ class TestTryLaunchNextThrottle:
             patch(
                 "thegent.planning.auto_launch.sample_resources",
                 return_value=MagicMock(
-                    cpu_count=4, load_1m=0.5, fd_used=50, fd_limit=1024, mem_rss_mb=200, mem_available_mb=8000
+                    cpu_count=4,
+                    load_1m=0.5,
+                    fd_used=50,
+                    fd_limit=1024,
+                    mem_rss_mb=200,
+                    mem_available_mb=8000,
                 ),
             ),
             patch(
                 "thegent.planning.auto_launch.compute_dynamic_limit",
                 return_value=(10, {}),
             ),
-            patch("thegent.cli.commands.impl.do_next_impl", return_value=_non_blocked_do_next()),
+            patch(
+                "thegent.cli.commands.impl.do_next_impl",
+                return_value=_non_blocked_do_next(),
+            ),
         ):
             asyncio.get_event_loop().run_until_complete(system._try_launch_next())
 
         system.launch_batch.assert_called_once()
 
-    def test_warn_level_proceeds_without_sleep(self) -> None:  # @trace FR-ALS-THROTTLE-008
+    def test_warn_level_proceeds_without_sleep(
+        self,
+    ) -> None:  # @trace FR-ALS-THROTTLE-008
         """_try_launch_next logs a warning but does not sleep or abort on warn."""
         system = self._make_system()
-        system.db.get_ready_items.return_value = [{"item_id": "ws-002", "prompt": "do more"}]
+        system.db.get_ready_items.return_value = [
+            {"item_id": "ws-002", "prompt": "do more"}
+        ]
         system.db.get_running_count.return_value = 0
 
         with (
@@ -318,14 +371,22 @@ class TestTryLaunchNextThrottle:
             patch(
                 "thegent.planning.auto_launch.sample_resources",
                 return_value=MagicMock(
-                    cpu_count=4, load_1m=0.5, fd_used=50, fd_limit=1024, mem_rss_mb=200, mem_available_mb=8000
+                    cpu_count=4,
+                    load_1m=0.5,
+                    fd_used=50,
+                    fd_limit=1024,
+                    mem_rss_mb=200,
+                    mem_available_mb=8000,
                 ),
             ),
             patch(
                 "thegent.planning.auto_launch.compute_dynamic_limit",
                 return_value=(10, {}),
             ),
-            patch("thegent.cli.commands.impl.do_next_impl", return_value=_non_blocked_do_next()),
+            patch(
+                "thegent.cli.commands.impl.do_next_impl",
+                return_value=_non_blocked_do_next(),
+            ),
         ):
             asyncio.get_event_loop().run_until_complete(system._try_launch_next())
 
@@ -369,7 +430,9 @@ class TestLaunchBatchThrottle:
         async def _run():
             with patch(
                 "thegent.planning.auto_launch.check_agent_throttle",
-                return_value=check_agent_throttle(count=80, warn_at=20, throttle_at=50, hard_stop_at=80),
+                return_value=check_agent_throttle(
+                    count=80, warn_at=20, throttle_at=50, hard_stop_at=80
+                ),
             ):
                 await system.launch_batch([{"item_id": "x", "prompt": "p"}])
 

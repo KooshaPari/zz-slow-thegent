@@ -27,7 +27,9 @@ class TestSyncTestResult:
     @pytest.mark.requirement("WL-178")
     def test_sync_test_result_with_details(self) -> None:
         """Test creating a SyncTestResult with details."""
-        result = SyncTestResult(test_name="test_pull", passed=False, details="Connection timeout")
+        result = SyncTestResult(
+            test_name="test_pull", passed=False, details="Connection timeout"
+        )
         assert result.test_name == "test_pull"
         assert result.passed is False
         assert result.details == "Connection timeout"

@@ -13,6 +13,7 @@ from enum import StrEnum
 
 class EventType(StrEnum):
     """Event type enumeration."""
+
     LOCK_ACQUIRED = "lock_acquired"
     LOCK_RELEASED = "lock_released"
     LOCK_COMPLETED = "lock_completed"
@@ -31,6 +32,7 @@ class EventType(StrEnum):
 @dataclass(frozen=True)
 class CliShareEvent:
     """Base event for CLI share operations."""
+
     event_type: EventType
     timestamp: datetime
     cmd_hash: str
@@ -41,6 +43,7 @@ class CliShareEvent:
 @dataclass(frozen=True)
 class TaskEvent:
     """Event for task queue operations."""
+
     event_type: EventType
     timestamp: datetime
     task_id: str
@@ -50,6 +53,7 @@ class TaskEvent:
 @dataclass(frozen=True)
 class MergeEvent:
     """Event for merge operations."""
+
     event_type: EventType
     timestamp: datetime
     base_commit: str
@@ -61,6 +65,7 @@ class MergeEvent:
 @dataclass(frozen=True)
 class CoordinationEvent:
     """Event for coordination operations."""
+
     event_type: EventType
     timestamp: datetime
     resource_id: str

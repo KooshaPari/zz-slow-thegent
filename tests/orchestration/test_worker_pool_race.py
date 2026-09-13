@@ -30,7 +30,9 @@ class TestTaskWorkerPoolRaceConditions:
 
     def test_concurrent_task_submission(self, pool: TaskWorkerPool) -> None:
         """Multiple tasks submitted concurrently should all be persisted."""
-        tasks = [TaskRequest(id=f"task_{i}", command=["echo", str(i)]) for i in range(20)]
+        tasks = [
+            TaskRequest(id=f"task_{i}", command=["echo", str(i)]) for i in range(20)
+        ]
         for t in tasks:
             pool.submit_task(t)
 
@@ -82,7 +84,9 @@ class TestTaskWorkerPoolRaceConditions:
         assert fetched.exit_code == 0
 
     @pytest.mark.asyncio
-    async def test_multiple_workers_no_duplicate_processing(self, pool_dir: Path) -> None:
+    async def test_multiple_workers_no_duplicate_processing(
+        self, pool_dir: Path
+    ) -> None:
         """Multiple workers should not process the same task twice."""
         pool = TaskWorkerPool(max_workers=4, queue_dir=pool_dir)
 
@@ -102,7 +106,9 @@ class TestTaskWorkerPoolRaceConditions:
         async def tracking_worker(worker_id: int) -> None:
             """Worker that tracks claims without actually executing."""
             for _ in range(20):  # poll iterations
-                task_files = sorted(pool.inbox.glob("*.json"), key=lambda p: p.stat().st_mtime)
+                task_files = sorted(
+                    pool.inbox.glob("*.json"), key=lambda p: p.stat().st_mtime
+                )
                 if not task_files:
                     await asyncio.sleep(0.01)
                     continue
@@ -121,7 +127,9 @@ class TestTaskWorkerPoolRaceConditions:
         await asyncio.gather(*workers)
 
         # No duplicate claims
-        assert len(claimed) == len(set(claimed)), f"Duplicate task claims detected: {claimed}"
+        assert len(claimed) == len(set(claimed)), (
+            f"Duplicate task claims detected: {claimed}"
+        )
 
 
 class TestTaskWorkerPoolSubmitResult:

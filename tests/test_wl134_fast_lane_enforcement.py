@@ -21,21 +21,27 @@ def test_pytest_fast_ini_exists() -> None:
 def test_pytest_fast_ini_has_exitfirst() -> None:
     """pytest-fast.ini must configure --exitfirst for fail-fast behavior."""
     content = PYTEST_FAST_INI.read_text(encoding="utf-8")
-    assert "--exitfirst" in content, "pytest-fast.ini must include --exitfirst in addopts"
+    assert "--exitfirst" in content, (
+        "pytest-fast.ini must include --exitfirst in addopts"
+    )
 
 
 def test_pytest_fast_ini_excludes_slow_markers() -> None:
     """pytest-fast.ini must exclude slow/integration/e2e/load markers."""
     content = PYTEST_FAST_INI.read_text(encoding="utf-8")
     assert "not slow" in content, "pytest-fast.ini must exclude 'slow' marker"
-    assert "not integration" in content, "pytest-fast.ini must exclude 'integration' marker"
+    assert "not integration" in content, (
+        "pytest-fast.ini must exclude 'integration' marker"
+    )
     assert "not e2e" in content, "pytest-fast.ini must exclude 'e2e' marker"
 
 
 def test_pyproject_fast_lane_marker_defined() -> None:
     """pyproject.toml must define the fast lane marker expression."""
     content = PYPROJECT.read_text(encoding="utf-8")
-    assert "fast_lane_marker" in content, "pyproject.toml must define fast_lane_marker in [tool.thegent.pytest_lanes]"
+    assert "fast_lane_marker" in content, (
+        "pyproject.toml must define fast_lane_marker in [tool.thegent.pytest_lanes]"
+    )
 
 
 def test_pyproject_addopts_not_globally_set_to_exitfirst() -> None:
@@ -46,7 +52,11 @@ def test_pyproject_addopts_not_globally_set_to_exitfirst() -> None:
     for line in content.splitlines():
         if "[tool.pytest.ini_options]" in line:
             in_pytest_section = True
-        if in_pytest_section and line.startswith("[") and "[tool.pytest.ini_options]" not in line:
+        if (
+            in_pytest_section
+            and line.startswith("[")
+            and "[tool.pytest.ini_options]" not in line
+        ):
             break
         if in_pytest_section and "--exitfirst" in line:
             raise AssertionError(
@@ -58,4 +68,6 @@ def test_pyproject_addopts_not_globally_set_to_exitfirst() -> None:
 def test_taskfile_fast_lane_uses_fast_ini() -> None:
     """Taskfile.yml test:fast-lane must use pytest-fast.ini for opt-in fail-fast."""
     content = TASKFILE.read_text(encoding="utf-8")
-    assert "pytest-fast.ini" in content, "Taskfile.yml test:fast-lane must reference pytest-fast.ini"
+    assert "pytest-fast.ini" in content, (
+        "Taskfile.yml test:fast-lane must reference pytest-fast.ini"
+    )

@@ -70,7 +70,9 @@ class TestExecution:
         """Environment variables are set during execution."""
         ctx = provider.allocate_tenant("test-tenant-1", "agent-1")
         # Execute command that prints env var
-        result = provider.execute_in_context(ctx, ["sh", "-c", "echo $THEGENT_TENANT_ID"])
+        result = provider.execute_in_context(
+            ctx, ["sh", "-c", "echo $THEGENT_TENANT_ID"]
+        )
         assert result["returncode"] == 0
         assert "test-tenant-1" in result["stdout"]
 

@@ -27,7 +27,9 @@ class CostAggregator:
         """Initialize cost aggregator."""
         self.runs: list[dict[str, Any]] = []
 
-    def record_run_cost(self, run_id: str, cost: float, model: str, tokens: dict[str, int]) -> None:
+    def record_run_cost(
+        self, run_id: str, cost: float, model: str, tokens: dict[str, int]
+    ) -> None:
         """Record cost for a run.
 
         Args:

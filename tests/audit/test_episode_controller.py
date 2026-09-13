@@ -41,7 +41,9 @@ def project_id(registry: ProjectRegistry) -> str:
 
 
 @pytest.fixture
-def controller(registry: ProjectRegistry, shadow: ShadowAuditGit, project_id: str) -> EpisodeController:
+def controller(
+    registry: ProjectRegistry, shadow: ShadowAuditGit, project_id: str
+) -> EpisodeController:
     return EpisodeController(
         project_id=project_id,
         agent_id="test-agent",
@@ -151,7 +153,9 @@ class TestContextManager:
 
 
 class TestMetadata:
-    def test_start_with_metadata(self, registry: ProjectRegistry, shadow: ShadowAuditGit, project_id: str) -> None:
+    def test_start_with_metadata(
+        self, registry: ProjectRegistry, shadow: ShadowAuditGit, project_id: str
+    ) -> None:
         ctrl = EpisodeController(
             project_id=project_id,
             agent_id="agent-meta",

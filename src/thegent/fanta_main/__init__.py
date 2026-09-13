@@ -39,4 +39,10 @@ def default_fanta(ctx: Any) -> None:
     run_anen("flash", args)
 
 
-__all__ = ["GEMINI_FLASH_MODEL", "_MODEL_ALIAS", "app", "_run_anen_with_alias", "default_fanta"]
+__all__ = [
+    "GEMINI_FLASH_MODEL",
+    "_MODEL_ALIAS",
+    "app",
+    "_run_anen_with_alias",
+    "default_fanta",
+]

@@ -55,7 +55,9 @@ def test_wl103_litellm_run_result_surfaces_context_usage_ratio(monkeypatch) -> N
     assert result.context_usage_ratio > 0
 
 
-def test_wl103_litellm_run_result_clamps_context_usage_ratio_to_one(monkeypatch) -> None:
+def test_wl103_litellm_run_result_clamps_context_usage_ratio_to_one(
+    monkeypatch,
+) -> None:
     class _Message:
         content = "ok"
 

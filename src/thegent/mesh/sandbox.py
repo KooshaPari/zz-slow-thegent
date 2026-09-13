@@ -40,7 +40,9 @@ class Sandboxing:
 
         if tier >= AutonomyTier.WORKTREE:
             # Allow writes to a specific worktree directory
-            worktree_dir = self.project_root / ".mesh" / "worktrees" / f"agent-{self.agent_id}"
+            worktree_dir = (
+                self.project_root / ".mesh" / "worktrees" / f"agent-{self.agent_id}"
+            )
             worktree_dir.mkdir(parents=True, exist_ok=True)
             args += ["--bind", str(worktree_dir), str(self.project_root)]
         else:

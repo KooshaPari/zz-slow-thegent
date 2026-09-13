@@ -41,7 +41,10 @@ def _make_mock_plan(
         node.status = "pending"
         node.result = None
         node.error = None
-        node.metadata = {"agent_hint": "coder" if i == 0 else None, "budget_tokens": 500 if i == 0 else None}
+        node.metadata = {
+            "agent_hint": "coder" if i == 0 else None,
+            "budget_tokens": 500 if i == 0 else None,
+        }
         nodes.append(node)
         prev_id = node.id
 
@@ -164,7 +167,9 @@ class TestOrchestratePlanImpl:
 
             orchestrate_plan_impl("deep goal", max_depth=7)
 
-        instance.decompose_to_orchestration_plan.assert_awaited_once_with("deep goal", 7)
+        instance.decompose_to_orchestration_plan.assert_awaited_once_with(
+            "deep goal", 7
+        )
 
     # @trace WL-088
     def test_model_passed_to_planner_constructor(self) -> None:
@@ -404,7 +409,10 @@ class TestOrchestrateCLIPlan:
             ],
         }
 
-        with patch("thegent.cli.apps.orchestrate.orchestrate_plan_impl", return_value=mock_result):
+        with patch(
+            "thegent.cli.apps.orchestrate.orchestrate_plan_impl",
+            return_value=mock_result,
+        ):
             result = runner.invoke(app, ["plan", "build login"])
 
         assert result.exit_code == 0
@@ -431,7 +439,10 @@ class TestOrchestrateCLIPlan:
             ],
         }
 
-        with patch("thegent.cli.apps.orchestrate.orchestrate_plan_impl", return_value=mock_result):
+        with patch(
+            "thegent.cli.apps.orchestrate.orchestrate_plan_impl",
+            return_value=mock_result,
+        ):
             result = runner.invoke(app, ["plan", "write unit tests"])
 
         assert "write unit tests" in result.output
@@ -451,7 +462,10 @@ class TestOrchestrateCLIPlan:
             "nodes": [],
         }
 
-        with patch("thegent.cli.apps.orchestrate.orchestrate_plan_impl", return_value=mock_result):
+        with patch(
+            "thegent.cli.apps.orchestrate.orchestrate_plan_impl",
+            return_value=mock_result,
+        ):
             result = runner.invoke(app, ["plan", "json test", "--json"])
 
         assert result.exit_code == 0
@@ -471,10 +485,15 @@ class TestOrchestrateCLIPlan:
             "nodes": [],
         }
 
-        with patch("thegent.cli.apps.orchestrate.orchestrate_plan_impl", return_value=mock_result) as mock_impl:
+        with patch(
+            "thegent.cli.apps.orchestrate.orchestrate_plan_impl",
+            return_value=mock_result,
+        ) as mock_impl:
             runner.invoke(app, ["plan", "g", "--max-depth", "5"])
 
-        mock_impl.assert_called_once_with("g", max_depth=5, model="claude-haiku-4.5", timeout_s=30.0)
+        mock_impl.assert_called_once_with(
+            "g", max_depth=5, model="claude-haiku-4.5", timeout_s=30.0
+        )
 
     # @trace WL-088
     def test_plan_custom_model_forwarded(self, runner: CliRunner) -> None:
@@ -489,10 +508,15 @@ class TestOrchestrateCLIPlan:
             "nodes": [],
         }
 
-        with patch("thegent.cli.apps.orchestrate.orchestrate_plan_impl", return_value=mock_result) as mock_impl:
+        with patch(
+            "thegent.cli.apps.orchestrate.orchestrate_plan_impl",
+            return_value=mock_result,
+        ) as mock_impl:
             runner.invoke(app, ["plan", "g", "--model", "gemini-flash"])
 
-        mock_impl.assert_called_once_with("g", max_depth=3, model="gemini-flash", timeout_s=30.0)
+        mock_impl.assert_called_once_with(
+            "g", max_depth=3, model="gemini-flash", timeout_s=30.0
+        )
 
 
 @pytest.mark.requirement("FR-ORC-088")
@@ -513,12 +537,27 @@ class TestOrchestrateCLIRun:
             "errors": [],
             "events": [],
             "nodes": [
-                {"id": "n1", "task": "Task 1", "status": "done", "result": "ok", "error": None},
-                {"id": "n2", "task": "Task 2", "status": "done", "result": "ok", "error": None},
+                {
+                    "id": "n1",
+                    "task": "Task 1",
+                    "status": "done",
+                    "result": "ok",
+                    "error": None,
+                },
+                {
+                    "id": "n2",
+                    "task": "Task 2",
+                    "status": "done",
+                    "result": "ok",
+                    "error": None,
+                },
             ],
         }
 
-        with patch("thegent.cli.apps.orchestrate.orchestrate_run_impl", return_value=mock_result):
+        with patch(
+            "thegent.cli.apps.orchestrate.orchestrate_run_impl",
+            return_value=mock_result,
+        ):
             result = runner.invoke(app, ["run", "execute pipeline"])
 
         assert result.exit_code == 0
@@ -537,12 +576,27 @@ class TestOrchestrateCLIRun:
             "errors": ["node failed"],
             "events": [],
             "nodes": [
-                {"id": "n1", "task": "Task 1", "status": "done", "result": "ok", "error": None},
-                {"id": "n2", "task": "Task 2", "status": "failed", "result": None, "error": "node failed"},
+                {
+                    "id": "n1",
+                    "task": "Task 1",
+                    "status": "done",
+                    "result": "ok",
+                    "error": None,
+                },
+                {
+                    "id": "n2",
+                    "task": "Task 2",
+                    "status": "failed",
+                    "result": None,
+                    "error": "node failed",
+                },
             ],
         }
 
-        with patch("thegent.cli.apps.orchestrate.orchestrate_run_impl", return_value=mock_result):
+        with patch(
+            "thegent.cli.apps.orchestrate.orchestrate_run_impl",
+            return_value=mock_result,
+        ):
             result = runner.invoke(app, ["run", "failing pipeline"])
 
         assert result.exit_code == 1
@@ -562,10 +616,21 @@ class TestOrchestrateCLIRun:
             "all_passed": True,
             "errors": [],
             "events": [],
-            "nodes": [{"id": "n1", "task": "T", "status": "done", "result": "ok", "error": None}],
+            "nodes": [
+                {
+                    "id": "n1",
+                    "task": "T",
+                    "status": "done",
+                    "result": "ok",
+                    "error": None,
+                }
+            ],
         }
 
-        with patch("thegent.cli.apps.orchestrate.orchestrate_run_impl", return_value=mock_result):
+        with patch(
+            "thegent.cli.apps.orchestrate.orchestrate_run_impl",
+            return_value=mock_result,
+        ):
             result = runner.invoke(app, ["run", "json run", "--json"])
 
         assert result.exit_code == 0
@@ -588,7 +653,10 @@ class TestOrchestrateCLIRun:
             "nodes": [],
         }
 
-        with patch("thegent.cli.apps.orchestrate.orchestrate_run_impl", return_value=mock_result):
+        with patch(
+            "thegent.cli.apps.orchestrate.orchestrate_run_impl",
+            return_value=mock_result,
+        ):
             result = runner.invoke(app, ["run", "g", "--json"])
 
         assert result.exit_code == 1
@@ -614,10 +682,21 @@ class TestOrchestrateCLIRun:
                     "timestamp": "2026-01-01T00:00:00",
                 }
             ],
-            "nodes": [{"id": "n1", "task": "T", "status": "done", "result": "ok", "error": None}],
+            "nodes": [
+                {
+                    "id": "n1",
+                    "task": "T",
+                    "status": "done",
+                    "result": "ok",
+                    "error": None,
+                }
+            ],
         }
 
-        with patch("thegent.cli.apps.orchestrate.orchestrate_run_impl", return_value=mock_result):
+        with patch(
+            "thegent.cli.apps.orchestrate.orchestrate_run_impl",
+            return_value=mock_result,
+        ):
             result = runner.invoke(app, ["run", "event test"])
 
         assert "started" in result.output
@@ -638,7 +717,10 @@ class TestOrchestrateCLIRun:
             "nodes": [],
         }
 
-        with patch("thegent.cli.apps.orchestrate.orchestrate_run_impl", return_value=mock_result) as mock_impl:
+        with patch(
+            "thegent.cli.apps.orchestrate.orchestrate_run_impl",
+            return_value=mock_result,
+        ) as mock_impl:
             runner.invoke(app, ["run", "g", "--fail-fast"])
 
         call_kwargs = mock_impl.call_args
@@ -660,7 +742,10 @@ class TestOrchestrateCLIRun:
             "nodes": [],
         }
 
-        with patch("thegent.cli.apps.orchestrate.orchestrate_run_impl", return_value=mock_result) as mock_impl:
+        with patch(
+            "thegent.cli.apps.orchestrate.orchestrate_run_impl",
+            return_value=mock_result,
+        ) as mock_impl:
             runner.invoke(app, ["run", "g", "--model", "gemini-ultra"])
 
         call_kwargs = mock_impl.call_args
@@ -682,7 +767,10 @@ class TestOrchestrateCLIRun:
             "nodes": [],
         }
 
-        with patch("thegent.cli.apps.orchestrate.orchestrate_run_impl", return_value=mock_result):
+        with patch(
+            "thegent.cli.apps.orchestrate.orchestrate_run_impl",
+            return_value=mock_result,
+        ):
             result = runner.invoke(app, ["run", "my pipeline"])
 
         assert "PASSED" in result.output
@@ -703,7 +791,10 @@ class TestOrchestrateCLIRun:
             "nodes": [],
         }
 
-        with patch("thegent.cli.apps.orchestrate.orchestrate_run_impl", return_value=mock_result):
+        with patch(
+            "thegent.cli.apps.orchestrate.orchestrate_run_impl",
+            return_value=mock_result,
+        ):
             result = runner.invoke(app, ["run", "my pipeline"])
 
         assert "FAILED" in result.output

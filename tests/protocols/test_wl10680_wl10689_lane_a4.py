@@ -33,14 +33,22 @@ def test_wl10681_policy_gating_separates_matching_and_enforcement_paths() -> Non
     # @trace WL-10681
     rules = ["allow:default", "require:approval"]
     phase = build_policy_match_phase("policy-10681", rules, "allow")
-    assert resolve_policy_enforcement_plan_target(phase) == ("policy-10681", rules, "allow")
+    assert resolve_policy_enforcement_plan_target(phase) == (
+        "policy-10681",
+        rules,
+        "allow",
+    )
 
 
 def test_wl10682_session_consistency_separates_state_updates_and_persistence() -> None:
     # @trace WL-10682
     state_changes = {"last_action": "dispatch", "status": "active"}
     phase = build_session_state_update_phase("session-10682", state_changes, 9)
-    assert resolve_session_persistence_plan_target(phase) == ("session-10682", state_changes, 9)
+    assert resolve_session_persistence_plan_target(phase) == (
+        "session-10682",
+        state_changes,
+        9,
+    )
 
 
 def test_wl10683_observability_separates_events_from_serialization() -> None:
@@ -62,7 +70,9 @@ def test_wl10684_error_semantics_separates_retry_loops_and_terminal_outcomes() -
 
 def test_wl10685_workflow_progression_fails_when_guard_blocks_execution() -> None:
     # @trace WL-10685
-    phase = build_workflow_guard_phase("wf-blocked", {"session_exists": False}, "dispatch")
+    phase = build_workflow_guard_phase(
+        "wf-blocked", {"session_exists": False}, "dispatch"
+    )
     with pytest.raises(ValueError, match="Workflow execution target unresolved"):
         resolve_workflow_execution_target(phase)
 
@@ -84,11 +94,15 @@ def test_wl10687_session_consistency_rejects_negative_persistence_revision() -> 
 def test_wl10688_observability_rejects_unknown_serialization_format() -> None:
     # @trace WL-10688
     phase = build_observability_event_phase("lane-a4-observe", {"status": "ok"}, "")
-    with pytest.raises(ValueError, match="Observability serialization target unresolved"):
+    with pytest.raises(
+        ValueError, match="Observability serialization target unresolved"
+    ):
         resolve_observability_serialization_target(phase)
 
 
-def test_wl10689_error_semantics_rejects_terminal_outcome_with_excess_attempts() -> None:
+def test_wl10689_error_semantics_rejects_terminal_outcome_with_excess_attempts() -> (
+    None
+):
     # @trace WL-10689
     phase = build_retry_loop_phase(5, 3, "failed")
     with pytest.raises(ValueError, match="attempt_count exceeds max_attempts"):

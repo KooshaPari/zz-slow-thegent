@@ -143,7 +143,12 @@ def pick_command_interactive(catalog: RunnerCatalog) -> RunnerCommand:
     return catalog.commands[index - 1]
 
 
-def run_command(repo_checkout: Path, runner: str, command_name: str, env_overrides: dict[str, str] | None = None) -> int:
+def run_command(
+    repo_checkout: Path,
+    runner: str,
+    command_name: str,
+    env_overrides: dict[str, str] | None = None,
+) -> int:
     if runner == "task":
         cmd = ["task", command_name]
     elif runner == "just":

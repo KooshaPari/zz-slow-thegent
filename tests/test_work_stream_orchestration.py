@@ -22,7 +22,9 @@ def test_normalize_item_id(raw_item_id: str, expected: str) -> None:
 
 
 @pytest.mark.unit
-def test_spawn_next_impl_normalizes_and_dedupes_item_ids(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_spawn_next_impl_normalizes_and_dedupes_item_ids(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     spawned_ids: list[str] = []
 
     monkeypatch.setattr(
@@ -41,7 +43,9 @@ def test_spawn_next_impl_normalizes_and_dedupes_item_ids(monkeypatch: pytest.Mon
         "thegent.cli.commands.impl._resolve_cwd",
         lambda cd: Path(cd) if cd is not None else tmp_path,
     )
-    monkeypatch.setattr("thegent.cli.commands.impl._default_owner_tag", lambda _: "owner")
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl._default_owner_tag", lambda _: "owner"
+    )
     monkeypatch.setattr("thegent.config_provider.get_config_provider", lambda: object())
     monkeypatch.setattr("thegent.discovery.get_current_agent_id", lambda: "agent-1")
 

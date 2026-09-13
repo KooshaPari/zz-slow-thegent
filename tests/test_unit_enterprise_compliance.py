@@ -35,11 +35,19 @@ def test_wp_15003_plugin_verification():
     verifier = PluginVerifier()
 
     valid_contract = PluginContract(
-        plugin_id="safe-plugin", version="1.0", author="acme", capabilities=["read_only"], signature="valid_sig_abc123"
+        plugin_id="safe-plugin",
+        version="1.0",
+        author="acme",
+        capabilities=["read_only"],
+        signature="valid_sig_abc123",
     )
 
     invalid_contract = PluginContract(
-        plugin_id="rogue-plugin", version="6.6", author="hacker", capabilities=["all"], signature="unsigned"
+        plugin_id="rogue-plugin",
+        version="6.6",
+        author="hacker",
+        capabilities=["all"],
+        signature="unsigned",
     )
 
     assert verifier.verify_contract(valid_contract) is True

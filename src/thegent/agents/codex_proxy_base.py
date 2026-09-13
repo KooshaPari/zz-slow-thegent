@@ -309,7 +309,12 @@ def _run_with_activity_monitoring(
         with lock:
             last_activity["t"] = time.monotonic()
 
-    def _drain(stream, collector: list[str], cb: Callable[[str], None] | None, filter_noise: bool) -> None:
+    def _drain(
+        stream,
+        collector: list[str],
+        cb: Callable[[str], None] | None,
+        filter_noise: bool,
+    ) -> None:
         for line in stream:
             clean = strip_ansi(line)
             if filter_noise and _is_ignorable_stderr_line(clean):
@@ -319,8 +324,12 @@ def _run_with_activity_monitoring(
             if cb:
                 cb(clean.rstrip("\n"))
 
-    t_out = threading.Thread(target=_drain, args=(proc.stdout, out_lines, on_stdout, False), daemon=True)
-    t_err = threading.Thread(target=_drain, args=(proc.stderr, err_lines, on_stderr, True), daemon=True)
+    t_out = threading.Thread(
+        target=_drain, args=(proc.stdout, out_lines, on_stdout, False), daemon=True
+    )
+    t_err = threading.Thread(
+        target=_drain, args=(proc.stderr, err_lines, on_stderr, True), daemon=True
+    )
     t_out.start()
     t_err.start()
 

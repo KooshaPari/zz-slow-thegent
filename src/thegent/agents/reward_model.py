@@ -78,7 +78,9 @@ class RecursiveRewardModel:
             return {"status": "no_data", "epoch": self._optimization_epoch}
 
         # Calculate average reward
-        avg_reward = sum(s.reward_value for s in self._reward_history) / len(self._reward_history)
+        avg_reward = sum(s.reward_value for s in self._reward_history) / len(
+            self._reward_history
+        )
 
         # Find best performing agent
         agent_rewards: dict[str, list[float]] = {}

@@ -1,6 +1,5 @@
 """Mesh resource-management tests for SCLI-P12.x."""
 
-
 from thegent.mesh.resources import ResourceManager
 
 

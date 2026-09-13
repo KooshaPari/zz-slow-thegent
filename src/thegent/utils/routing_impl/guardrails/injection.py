@@ -81,7 +81,9 @@ def get_compiled_patterns() -> list[tuple[InjectionPattern, re.Pattern]]:
     """Return compiled (pattern, regex) pairs (cached at module level)."""
     global _compiled_cache  # noqa: PLW0603
     if _compiled_cache is None:
-        _compiled_cache = [(p, re.compile(p.pattern, re.IGNORECASE)) for p in INJECTION_PATTERNS]
+        _compiled_cache = [
+            (p, re.compile(p.pattern, re.IGNORECASE)) for p in INJECTION_PATTERNS
+        ]
     return _compiled_cache
 
 
@@ -117,7 +119,9 @@ def check_injection(
     for pat, regex in compiled:
         if regex.search(text):
             matched.append(pat.name)
-            if _SEVERITY_RANK.get(pat.severity, 0) > _SEVERITY_RANK.get(highest_severity, 0):
+            if _SEVERITY_RANK.get(pat.severity, 0) > _SEVERITY_RANK.get(
+                highest_severity, 0
+            ):
                 highest_severity = pat.severity
 
     total = len(compiled) if compiled else 1

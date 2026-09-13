@@ -197,7 +197,9 @@ def _get_health_targets_path() -> Path:
 
     WL-124 stable import surface.
     """
-    return Path(os.environ.get("THGENT_HEALTH_TARGETS", "/tmp/thegent/health_targets.yaml"))
+    return Path(
+        os.environ.get("THGENT_HEALTH_TARGETS", "/tmp/thegent/health_targets.yaml")
+    )
 
 
 def _health_targets_exists() -> bool:
@@ -275,6 +277,7 @@ def _serialize_health_report_md(results: list[dict]) -> str:
     from thegent.cli.commands.session_health_report_impl import (
         _serialize_health_report_md as _impl,
     )
+
     return _impl(results)
 
 
@@ -305,6 +308,7 @@ def _write_health_trend_export(
         p.write_text("\n".join(lines), encoding="utf-8")
     elif fmt == "csv":
         import csv as _csv
+
         with p.open("w", newline="", encoding="utf-8") as fh:
             writer = _csv.writer(fh)
             writer.writerow(["key", "value"])
@@ -312,6 +316,7 @@ def _write_health_trend_export(
                 writer.writerow([k, v])
     else:  # json / jsonl
         import orjson as _orjson
+
         p.write_text(
             _orjson.dumps(result, option=_orjson.OPT_INDENT_2).decode(),
             encoding="utf-8",

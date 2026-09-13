@@ -27,8 +27,12 @@ class ConnectorConfigAdapter:
     def get_connector_breaker(self, connector: str) -> Any:
         """Get circuit breaker for connector."""
         cb_config = ProviderCircuitBreakerConfig(
-            failure_threshold=max(1, self.config.connector_circuit_breaker_failure_threshold),
-            success_threshold=max(1, self.config.connector_circuit_breaker_success_threshold),
+            failure_threshold=max(
+                1, self.config.connector_circuit_breaker_failure_threshold
+            ),
+            success_threshold=max(
+                1, self.config.connector_circuit_breaker_success_threshold
+            ),
             timeout_sec=max(0.1, self.config.connector_circuit_breaker_timeout_seconds),
         )
         return self._breaker_registry.get(connector, config=cb_config)
@@ -43,7 +47,9 @@ class ConnectorConfigAdapter:
             return max(0.001, self.config.linear_write_timeout_seconds)
         if connector == "linear" and direction == "read":
             return max(0.001, self.config.linear_read_timeout_seconds)
-        raise ValueError(f"Unsupported connector timeout target: {connector}/{direction}")
+        raise ValueError(
+            f"Unsupported connector timeout target: {connector}/{direction}"
+        )
 
     def get_error_budget(self, connector: str) -> ErrorBudgetTracker:
         """Get error budget tracker for connector."""

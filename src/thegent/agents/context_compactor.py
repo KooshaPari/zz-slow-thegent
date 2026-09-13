@@ -121,7 +121,9 @@ class ContextCompactor:
         """
         return sum(self.estimate_turn_tokens(t) for t in turns)
 
-    def usage_ratio(self, turns: list[dict[str, Any]], context_window_max: int) -> float:
+    def usage_ratio(
+        self, turns: list[dict[str, Any]], context_window_max: int
+    ) -> float:
         """Return tokens_used / context_window_max across all turns.
 
         # @trace WL-103
@@ -131,7 +133,9 @@ class ContextCompactor:
         used = self.count_turns_tokens(turns)
         return used / float(context_window_max)
 
-    def compact(self, turns: list[dict[str, str]], context_window_max: int) -> ContextCompactionResult:
+    def compact(
+        self, turns: list[dict[str, str]], context_window_max: int
+    ) -> ContextCompactionResult:
         """Compact turns if usage_ratio > threshold_ratio and len(turns) >= 4.
 
         Old turns (all except the final two) are replaced with a deterministic
@@ -141,7 +145,9 @@ class ContextCompactor:
         """
         ratio = self.usage_ratio(turns, context_window_max)
         if ratio <= self._threshold_ratio or len(turns) < 4:
-            return ContextCompactionResult(turns=turns, usage_ratio=ratio, compacted=False)
+            return ContextCompactionResult(
+                turns=turns, usage_ratio=ratio, compacted=False
+            )
 
         turns_to_summarize = turns[:-2]
         summary_lines = ["Summary of prior context:"]
@@ -153,4 +159,6 @@ class ContextCompactor:
         summary_turn = {"role": "system", "content": "\n".join(summary_lines)}
         compacted_turns = [summary_turn, *turns[-2:]]
         compacted_ratio = self.usage_ratio(compacted_turns, context_window_max)
-        return ContextCompactionResult(turns=compacted_turns, usage_ratio=compacted_ratio, compacted=True)
+        return ContextCompactionResult(
+            turns=compacted_turns, usage_ratio=compacted_ratio, compacted=True
+        )

@@ -172,7 +172,9 @@ class TestMigrationControllerEvaluateVersionShape:
             version="csm-v0",
             description="old",
             deprecated=True,
-            migration_window_end=(datetime.now(UTC) + timedelta(days=2)).replace(tzinfo=None).isoformat(),
+            migration_window_end=(datetime.now(UTC) + timedelta(days=2))
+            .replace(tzinfo=None)
+            .isoformat(),
         )
         reg = _make_registry_with_versions(cv)
         mc = MigrationController(registry=reg)
@@ -209,7 +211,9 @@ class TestMigrationControllerGetPreferredVersion:
             description="old",
             deprecated=True,
         )
-        v_new = ContractVersion(contract_id="csm", version="csm-v1", description="active")
+        v_new = ContractVersion(
+            contract_id="csm", version="csm-v1", description="active"
+        )
         reg = _make_registry_with_versions(v_old, v_new)
         mc = MigrationController(registry=reg)
         assert mc.get_preferred_version("csm") == "csm-v1"
@@ -233,8 +237,12 @@ class TestMigrationControllerGetPreferredVersion:
         assert mc.get_preferred_version("csm") == "csm-v1"
 
     def test_preferred_ignores_other_contract_ids(self) -> None:
-        v_other = ContractVersion(contract_id="other", version="other-v9", description="x")
-        v_csm = ContractVersion(contract_id="csm", version="csm-v1", description="active")
+        v_other = ContractVersion(
+            contract_id="other", version="other-v9", description="x"
+        )
+        v_csm = ContractVersion(
+            contract_id="csm", version="csm-v1", description="active"
+        )
         reg = _make_registry_with_versions(v_other, v_csm)
         mc = MigrationController(registry=reg)
         assert mc.get_preferred_version("csm") == "csm-v1"

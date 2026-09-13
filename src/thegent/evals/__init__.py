@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional
 @dataclass
 class EvalResult:
     """Evaluation result stub."""
+
     metric: str
     value: float
     passed: bool
@@ -23,6 +24,7 @@ class EvalResult:
             "details": self.details or {},
         }
 
+
 class EvalPipeline:
     """Evaluation pipeline stub."""
 
@@ -34,5 +36,6 @@ class EvalPipeline:
 
     def add_metric(self, *args: Any, **kwargs: Any) -> None:
         pass
+
 
 __all__ = ["EvalResult", "EvalPipeline"]

@@ -45,7 +45,9 @@ class TestPolicyChecksumDriftDetector:
         return PolicyChecksumDriftDetector()
 
     @pytest.mark.requirement("WL-312")
-    def test_compute_checksum_simple(self, detector: PolicyChecksumDriftDetector) -> None:
+    def test_compute_checksum_simple(
+        self, detector: PolicyChecksumDriftDetector
+    ) -> None:
         """Can compute checksum of simple dict."""
         data = {"role": "admin", "permission": "read"}
         checksum = detector.compute_checksum(data)
@@ -54,7 +56,9 @@ class TestPolicyChecksumDriftDetector:
         assert len(checksum) == 64  # SHA256 hex is 64 chars
 
     @pytest.mark.requirement("WL-312")
-    def test_compute_checksum_deterministic(self, detector: PolicyChecksumDriftDetector) -> None:
+    def test_compute_checksum_deterministic(
+        self, detector: PolicyChecksumDriftDetector
+    ) -> None:
         """Checksum computation is deterministic."""
         data = {"role": "admin", "permission": "read"}
 
@@ -64,7 +68,9 @@ class TestPolicyChecksumDriftDetector:
         assert checksum1 == checksum2
 
     @pytest.mark.requirement("WL-312")
-    def test_compute_checksum_order_independent(self, detector: PolicyChecksumDriftDetector) -> None:
+    def test_compute_checksum_order_independent(
+        self, detector: PolicyChecksumDriftDetector
+    ) -> None:
         """Checksum is independent of dict key order."""
         data1 = {"role": "admin", "permission": "read"}
         data2 = {"permission": "read", "role": "admin"}
@@ -75,7 +81,9 @@ class TestPolicyChecksumDriftDetector:
         assert checksum1 == checksum2
 
     @pytest.mark.requirement("WL-312")
-    def test_compute_checksum_value_changes(self, detector: PolicyChecksumDriftDetector) -> None:
+    def test_compute_checksum_value_changes(
+        self, detector: PolicyChecksumDriftDetector
+    ) -> None:
         """Different data produces different checksum."""
         data1 = {"role": "admin"}
         data2 = {"role": "user"}
@@ -86,14 +94,18 @@ class TestPolicyChecksumDriftDetector:
         assert checksum1 != checksum2
 
     @pytest.mark.requirement("WL-312")
-    def test_compute_checksum_empty_dict(self, detector: PolicyChecksumDriftDetector) -> None:
+    def test_compute_checksum_empty_dict(
+        self, detector: PolicyChecksumDriftDetector
+    ) -> None:
         """Can compute checksum of empty dict."""
         checksum = detector.compute_checksum({})
         assert isinstance(checksum, str)
         assert len(checksum) == 64
 
     @pytest.mark.requirement("WL-312")
-    def test_compute_checksum_nested_dict(self, detector: PolicyChecksumDriftDetector) -> None:
+    def test_compute_checksum_nested_dict(
+        self, detector: PolicyChecksumDriftDetector
+    ) -> None:
         """Can compute checksum of nested dict."""
         data = {"policy": {"role": "admin", "permissions": ["read", "write"]}}
         checksum = detector.compute_checksum(data)
@@ -111,7 +123,9 @@ class TestPolicyChecksumDriftDetector:
         assert baseline.checksum == detector.compute_checksum(data)
 
     @pytest.mark.requirement("WL-312")
-    def test_record_baseline_overwrites_previous(self, detector: PolicyChecksumDriftDetector) -> None:
+    def test_record_baseline_overwrites_previous(
+        self, detector: PolicyChecksumDriftDetector
+    ) -> None:
         """Recording baseline twice overwrites the previous one."""
         data1 = {"role": "admin"}
         data2 = {"role": "user"}
@@ -123,7 +137,9 @@ class TestPolicyChecksumDriftDetector:
         assert detector.get_baseline("policy-001").checksum == baseline2.checksum
 
     @pytest.mark.requirement("WL-312")
-    def test_check_drift_no_baseline_raises_error(self, detector: PolicyChecksumDriftDetector) -> None:
+    def test_check_drift_no_baseline_raises_error(
+        self, detector: PolicyChecksumDriftDetector
+    ) -> None:
         """check_drift raises KeyError if no baseline exists."""
         data = {"role": "admin"}
 
@@ -141,7 +157,9 @@ class TestPolicyChecksumDriftDetector:
         assert has_drift is False
 
     @pytest.mark.requirement("WL-312")
-    def test_check_drift_with_drift(self, detector: PolicyChecksumDriftDetector) -> None:
+    def test_check_drift_with_drift(
+        self, detector: PolicyChecksumDriftDetector
+    ) -> None:
         """check_drift returns True if data differs from baseline."""
         baseline_data = {"role": "admin", "permission": "read"}
         current_data = {"role": "admin", "permission": "write"}
@@ -152,7 +170,9 @@ class TestPolicyChecksumDriftDetector:
         assert has_drift is True
 
     @pytest.mark.requirement("WL-312")
-    def test_check_drift_detects_field_addition(self, detector: PolicyChecksumDriftDetector) -> None:
+    def test_check_drift_detects_field_addition(
+        self, detector: PolicyChecksumDriftDetector
+    ) -> None:
         """check_drift detects when fields are added."""
         baseline_data = {"role": "admin"}
         current_data = {"role": "admin", "permission": "read"}
@@ -163,7 +183,9 @@ class TestPolicyChecksumDriftDetector:
         assert has_drift is True
 
     @pytest.mark.requirement("WL-312")
-    def test_check_drift_detects_field_removal(self, detector: PolicyChecksumDriftDetector) -> None:
+    def test_check_drift_detects_field_removal(
+        self, detector: PolicyChecksumDriftDetector
+    ) -> None:
         """check_drift detects when fields are removed."""
         baseline_data = {"role": "admin", "permission": "read"}
         current_data = {"role": "admin"}
@@ -174,7 +196,9 @@ class TestPolicyChecksumDriftDetector:
         assert has_drift is True
 
     @pytest.mark.requirement("WL-312")
-    def test_check_drift_order_independent(self, detector: PolicyChecksumDriftDetector) -> None:
+    def test_check_drift_order_independent(
+        self, detector: PolicyChecksumDriftDetector
+    ) -> None:
         """check_drift returns False regardless of dict order."""
         baseline_data = {"role": "admin", "permission": "read"}
         current_data = {"permission": "read", "role": "admin"}
@@ -196,14 +220,18 @@ class TestPolicyChecksumDriftDetector:
         assert retrieved.checksum == recorded.checksum
 
     @pytest.mark.requirement("WL-312")
-    def test_get_baseline_nonexistent_raises_error(self, detector: PolicyChecksumDriftDetector) -> None:
+    def test_get_baseline_nonexistent_raises_error(
+        self, detector: PolicyChecksumDriftDetector
+    ) -> None:
         """get_baseline raises KeyError for nonexistent policy."""
         with pytest.raises(KeyError, match="No baseline"):
             detector.get_baseline("nonexistent")
 
     @pytest.mark.requirement("WL-312")
     @pytest.mark.requirement("WL-226")
-    def test_workflow_baseline_and_check(self, detector: PolicyChecksumDriftDetector) -> None:
+    def test_workflow_baseline_and_check(
+        self, detector: PolicyChecksumDriftDetector
+    ) -> None:
         """Typical workflow: record baseline, then check for drift."""
         policy_id = "policy-rbac-001"
         cycle_id = "cycle-001"

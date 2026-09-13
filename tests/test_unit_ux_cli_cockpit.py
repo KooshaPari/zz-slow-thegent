@@ -47,11 +47,27 @@ class TestCockpitRender:
     def test_render_with_frozen_clock_is_deterministic(self) -> None:
         a = runner.invoke(
             cockpit_app,
-            ["render", "--clock", "1700000000.0", "--progress-done", "3", "--progress-total", "7"],
+            [
+                "render",
+                "--clock",
+                "1700000000.0",
+                "--progress-done",
+                "3",
+                "--progress-total",
+                "7",
+            ],
         )
         b = runner.invoke(
             cockpit_app,
-            ["render", "--clock", "1700000000.0", "--progress-done", "3", "--progress-total", "7"],
+            [
+                "render",
+                "--clock",
+                "1700000000.0",
+                "--progress-done",
+                "3",
+                "--progress-total",
+                "7",
+            ],
         )
         assert a.exit_code == 0
         assert b.exit_code == 0
@@ -105,9 +121,13 @@ class TestCockpitRender:
         assert result.exit_code == 0
         assert "no-network" in result.output
 
-    def test_render_runs_file_with_invalid_state_exits_nonzero(self, tmp_path: Path) -> None:
+    def test_render_runs_file_with_invalid_state_exits_nonzero(
+        self, tmp_path: Path
+    ) -> None:
         runs = tmp_path / "runs.json"
-        runs.write_text(json.dumps([{"run_id": "r1", "state": "bogus"}]), encoding="utf-8")
+        runs.write_text(
+            json.dumps([{"run_id": "r1", "state": "bogus"}]), encoding="utf-8"
+        )
         result = runner.invoke(cockpit_app, ["render", "--runs", str(runs)])
         assert result.exit_code != 0
 
@@ -131,7 +151,9 @@ class TestCockpitRender:
 
 class TestCockpitTraffic:
     def test_traffic_summary_empty(self) -> None:
-        result = runner.invoke(cockpit_app, ["traffic", "summary", "--clock", "1700000000.0"])
+        result = runner.invoke(
+            cockpit_app, ["traffic", "summary", "--clock", "1700000000.0"]
+        )
         assert result.exit_code == 0
         assert "TRAFFIC" in result.output
         assert "count:" in result.output
@@ -141,14 +163,34 @@ class TestCockpitTraffic:
         events.write_text(
             json.dumps(
                 [
-                    {"ts": 1700000000.0, "lane": "critical", "agent": "cursor", "status": "ok", "duration_ms": 120},
-                    {"ts": 1700000000.5, "lane": "standard", "agent": "claude", "status": "error", "duration_ms": 80},
-                    {"ts": 1700000001.0, "lane": "critical", "agent": "cursor", "status": "ok", "duration_ms": 200},
+                    {
+                        "ts": 1700000000.0,
+                        "lane": "critical",
+                        "agent": "cursor",
+                        "status": "ok",
+                        "duration_ms": 120,
+                    },
+                    {
+                        "ts": 1700000000.5,
+                        "lane": "standard",
+                        "agent": "claude",
+                        "status": "error",
+                        "duration_ms": 80,
+                    },
+                    {
+                        "ts": 1700000001.0,
+                        "lane": "critical",
+                        "agent": "cursor",
+                        "status": "ok",
+                        "duration_ms": 200,
+                    },
                 ]
             ),
             encoding="utf-8",
         )
-        result = runner.invoke(cockpit_app, ["traffic", "summary", "--events", str(events)])
+        result = runner.invoke(
+            cockpit_app, ["traffic", "summary", "--events", str(events)]
+        )
         assert result.exit_code == 0
         assert "TRAFFIC" in result.output
         assert "by_status" in result.output
@@ -286,7 +328,9 @@ class TestCockpitAudit:
                 reason="",
             )
         )
-        result = runner.invoke(cockpit_app, ["audit", "tail", "--path", str(log), "--lines", "10"])
+        result = runner.invoke(
+            cockpit_app, ["audit", "tail", "--path", str(log), "--lines", "10"]
+        )
         assert result.exit_code == 0
         # Two lines, each a JSON object.
         lines = [line for line in result.output.splitlines() if line.strip()]
@@ -358,7 +402,10 @@ class TestCockpitReplay:
         assert result.exit_code == 0
         # Match the description string rather than flag names (the
         # rendered help has ANSI codes that confuse substring matching).
-        assert "Replay a corpus against an expected PolicyDecision snapshot" in result.output
+        assert (
+            "Replay a corpus against an expected PolicyDecision snapshot"
+            in result.output
+        )
 
     def test_replay_help_documents_shim_flags(self) -> None:
         """The help text advertises the ``--snapshot-format`` / ``--report-format`` shim."""
@@ -498,7 +545,9 @@ class TestCockpitReplay:
         # appear (it would mean we hit the legacy code path).
         assert "replay: items=" not in result.output
 
-    def test_replay_json_flag_translates_to_report_format_json(self, tmp_path: Path) -> None:
+    def test_replay_json_flag_translates_to_report_format_json(
+        self, tmp_path: Path
+    ) -> None:
         """The legacy ``--json`` flag is honoured via the sota shim path."""
         runner = CliRunner()
         corpus = tmp_path / "corpus.json"
@@ -552,7 +601,9 @@ class TestCockpitReplay:
         assert '"matched"' in result.output
         assert '"decisions"' in result.output
 
-    def test_replay_snapshot_format_yaml_delegates_to_sota(self, tmp_path: Path) -> None:
+    def test_replay_snapshot_format_yaml_delegates_to_sota(
+        self, tmp_path: Path
+    ) -> None:
         """``--snapshot-format yaml`` triggers the sota shim and reads YAML."""
         runner = CliRunner()
         try:
@@ -622,7 +673,9 @@ class TestCockpitReplay:
         tail_lines = [ln for ln in lines if ln.startswith("sota replay: matched=")]
         assert not tail_lines, f"unexpected sota tail lines: {tail_lines}"
 
-    def test_replay_report_format_junitxml_delegates_to_sota(self, tmp_path: Path) -> None:
+    def test_replay_report_format_junitxml_delegates_to_sota(
+        self, tmp_path: Path
+    ) -> None:
         """``--report-format junitxml`` triggers the sota shim and emits XML."""
         runner = CliRunner()
         corpus = tmp_path / "corpus.json"
@@ -694,7 +747,16 @@ class TestCockpitDispatchedFromMain:
 
         result = runner.invoke(
             main_app,
-            ["cockpit", "render", "--clock", "1700000000.0", "--progress-done", "1", "--progress-total", "2"],
+            [
+                "cockpit",
+                "render",
+                "--clock",
+                "1700000000.0",
+                "--progress-done",
+                "1",
+                "--progress-total",
+                "2",
+            ],
         )
         assert result.exit_code == 0
         assert "operator cockpit" in result.output

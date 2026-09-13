@@ -102,7 +102,9 @@ class TestMastF02:
         from thegent.agents.base import RunResult
         from thegent.agents.resilience import is_retryable
 
-        result = RunResult(exit_code=1, stdout="", stderr="JSONDecodeError: invalid syntax")
+        result = RunResult(
+            exit_code=1, stdout="", stderr="JSONDecodeError: invalid syntax"
+        )
         assert is_retryable(result) is False
 
     async def test_circuit_breaker_trips_on_parse_errors(self) -> None:
@@ -147,7 +149,9 @@ class TestMastF03:
             return "never"
 
         with pytest.raises(ProviderLoopTimeout):
-            await run_with_provider_loop_timeout(_slow_loop(), timeout_sec=1, context="f03-test")
+            await run_with_provider_loop_timeout(
+                _slow_loop(), timeout_sec=1, context="f03-test"
+            )
 
     async def test_provider_loop_timeout_carries_context(self) -> None:
         # @trace WL-039 WP-2004 F-03
@@ -157,7 +161,9 @@ class TestMastF03:
 
         exc = None
         with pytest.raises(ProviderLoopTimeout) as exc_info:
-            await run_with_provider_loop_timeout(_slow(), timeout_sec=1, context="provider-X")
+            await run_with_provider_loop_timeout(
+                _slow(), timeout_sec=1, context="provider-X"
+            )
         exc = exc_info.value
         assert exc.timeout_sec == 1
         assert "provider-X" in exc.context
@@ -231,7 +237,9 @@ class TestMastF05:
                 await asyncio.sleep(0.1)
 
         with pytest.raises(ProviderLoopTimeout) as exc_info:
-            await run_with_provider_loop_timeout(_infinite_loop(), timeout_sec=1, context="F-05")
+            await run_with_provider_loop_timeout(
+                _infinite_loop(), timeout_sec=1, context="F-05"
+            )
 
         assert exc_info.value.timeout_sec == 1
 
@@ -289,7 +297,9 @@ class TestMastF06:
 
         # All should be either RuntimeError or CircuitOpenError — nothing else
         for r in results:
-            assert isinstance(r, (RuntimeError, CircuitOpenError, pybreaker.CircuitBreakerError))
+            assert isinstance(
+                r, (RuntimeError, CircuitOpenError, pybreaker.CircuitBreakerError)
+            )
 
         # Breaker must be in a deterministic state (open or closed, not corrupted)
         assert breaker.state in ("open", "closed", "half-open")
@@ -309,7 +319,9 @@ class TestMastF06:
         # All must be the same object (singleton per provider)
         first = breakers[0]
         for b in breakers[1:]:
-            assert b is first, "Registry must return identical breaker instance under concurrency"
+            assert b is first, (
+                "Registry must return identical breaker instance under concurrency"
+            )
 
     async def test_fail_counter_monotonically_increases_under_concurrency(self) -> None:
         # @trace WL-039 WP-2004 F-06

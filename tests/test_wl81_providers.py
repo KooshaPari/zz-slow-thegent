@@ -42,6 +42,9 @@ class TestProviderSelection:
 
     def test_selects_cheapest(self) -> None:
         """Should select cheapest provider."""
-        providers = [{"name": "openai", "cost": 0.001}, {"name": "anthropic", "cost": 0.003}]
+        providers = [
+            {"name": "openai", "cost": 0.001},
+            {"name": "anthropic", "cost": 0.003},
+        ]
         cheapest = min(providers, key=lambda p: p["cost"])
         assert cheapest["name"] == "openai"

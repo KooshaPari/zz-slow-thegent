@@ -18,7 +18,9 @@ import pytest
 # every optional dep) while still skipping every test when diskcache is missing.
 # The fine-grained `@pytest.mark.skipif(not _DISKCACHE_AVAILABLE, ...)` on
 # individual tests is preserved for symmetry.
-pytest.importorskip("diskcache", reason="diskcache dependency is required for cache integration tests")
+pytest.importorskip(
+    "diskcache", reason="diskcache dependency is required for cache integration tests"
+)
 
 from thegent.cache.multi_level import (
     _DISKCACHE_AVAILABLE,
@@ -43,7 +45,9 @@ def l1_only_cache() -> MultiLevelCache:
 @pytest.fixture
 def two_level_cache(tmp_path: Path) -> MultiLevelCache:
     """Return a two-level cache backed by a temp directory."""
-    cache = MultiLevelCache(l1_maxsize=10, l1_ttl=60, l2_dir=tmp_path / "cache", l2_ttl=3600)
+    cache = MultiLevelCache(
+        l1_maxsize=10, l1_ttl=60, l2_dir=tmp_path / "cache", l2_ttl=3600
+    )
     yield cache
     cache.close()
 
@@ -77,7 +81,9 @@ class TestL1Only:
         l1_only_cache.delete("key")
         assert l1_only_cache.get("key") is None
 
-    def test_delete_nonexistent_key_is_noop(self, l1_only_cache: MultiLevelCache) -> None:
+    def test_delete_nonexistent_key_is_noop(
+        self, l1_only_cache: MultiLevelCache
+    ) -> None:
         # @trace FR-CACHE-001
         l1_only_cache.delete("no-such-key")  # must not raise
 
@@ -145,7 +151,9 @@ class TestTwoLevel:
         # @trace FR-CACHE-001
         assert two_level_cache.l2_available
 
-    def test_write_through_to_l2(self, two_level_cache: MultiLevelCache, tmp_path: Path) -> None:
+    def test_write_through_to_l2(
+        self, two_level_cache: MultiLevelCache, tmp_path: Path
+    ) -> None:
         # @trace FR-CACHE-001
         two_level_cache.set("key", "value")
         # Read directly from L2 to confirm write-through
@@ -169,14 +177,18 @@ class TestTwoLevel:
         # @trace FR-CACHE-001
         assert two_level_cache.get("ghost") is None
 
-    def test_delete_removes_from_both_levels(self, two_level_cache: MultiLevelCache) -> None:
+    def test_delete_removes_from_both_levels(
+        self, two_level_cache: MultiLevelCache
+    ) -> None:
         # @trace FR-CACHE-001
         two_level_cache.set("key", "value")
         two_level_cache.delete("key")
         assert two_level_cache.get("key") is None
         assert two_level_cache._l2.get("key") is None
 
-    def test_clear_removes_from_both_levels(self, two_level_cache: MultiLevelCache) -> None:
+    def test_clear_removes_from_both_levels(
+        self, two_level_cache: MultiLevelCache
+    ) -> None:
         # @trace FR-CACHE-001
         for i in range(3):
             two_level_cache.set(f"k{i}", i)
@@ -185,7 +197,9 @@ class TestTwoLevel:
             assert two_level_cache.get(f"k{i}") is None
             assert two_level_cache._l2.get(f"k{i}") is None
 
-    def test_custom_per_entry_ttl_propagates_to_l2(self, two_level_cache: MultiLevelCache) -> None:
+    def test_custom_per_entry_ttl_propagates_to_l2(
+        self, two_level_cache: MultiLevelCache
+    ) -> None:
         # @trace FR-CACHE-001
         # Verify ttl override is accepted without error (actual expiry tested by L2 itself)
         two_level_cache.set("key", "val", ttl=10)
@@ -198,7 +212,9 @@ class TestTwoLevel:
         assert "l2_size" in stats
         assert stats["l2_size"] >= 1
 
-    def test_l1_serves_hit_without_touching_l2(self, two_level_cache: MultiLevelCache) -> None:
+    def test_l1_serves_hit_without_touching_l2(
+        self, two_level_cache: MultiLevelCache
+    ) -> None:
         # @trace FR-CACHE-001
         two_level_cache.set("key", "value")
         mock_l2_get = MagicMock(return_value="value")
@@ -253,7 +269,9 @@ class TestDiskcacheFallback:
 class TestThreadSafety:
     """FR-CACHE-001: Concurrent reads and writes are safe."""
 
-    def test_concurrent_writes_do_not_corrupt(self, l1_only_cache: MultiLevelCache) -> None:
+    def test_concurrent_writes_do_not_corrupt(
+        self, l1_only_cache: MultiLevelCache
+    ) -> None:
         # @trace FR-CACHE-001
         errors: list[Exception] = []
 
@@ -309,7 +327,9 @@ class TestThreadSafety:
 class TestCachedMultiDecorator:
     """FR-CACHE-001: cached_multi wraps functions with multi-level caching."""
 
-    def test_decorator_caches_return_value(self, l1_only_cache: MultiLevelCache) -> None:
+    def test_decorator_caches_return_value(
+        self, l1_only_cache: MultiLevelCache
+    ) -> None:
         # @trace FR-CACHE-001
         call_count = 0
 
@@ -323,7 +343,9 @@ class TestCachedMultiDecorator:
         assert compute(5) == 10
         assert call_count == 1  # second call served from cache
 
-    def test_different_args_cached_separately(self, l1_only_cache: MultiLevelCache) -> None:
+    def test_different_args_cached_separately(
+        self, l1_only_cache: MultiLevelCache
+    ) -> None:
         # @trace FR-CACHE-001
         call_count = 0
 
@@ -366,7 +388,9 @@ class TestCachedMultiDecorator:
         assert might_return_none(True) is None
         assert call_count == 2  # None not cached; function called both times
 
-    def test_cache_attribute_exposed_on_wrapper(self, l1_only_cache: MultiLevelCache) -> None:
+    def test_cache_attribute_exposed_on_wrapper(
+        self, l1_only_cache: MultiLevelCache
+    ) -> None:
         # @trace FR-CACHE-001
         @cached_multi(l1_only_cache)
         def fn(x: int) -> int:
@@ -388,7 +412,9 @@ class TestCachedMultiDecorator:
         assert add(1, b=2) == 3
         assert call_count == 1
 
-    def test_functools_wraps_preserves_name(self, l1_only_cache: MultiLevelCache) -> None:
+    def test_functools_wraps_preserves_name(
+        self, l1_only_cache: MultiLevelCache
+    ) -> None:
         # @trace FR-CACHE-001
         @cached_multi(l1_only_cache)
         def my_func() -> int:
@@ -397,7 +423,9 @@ class TestCachedMultiDecorator:
         assert my_func.__name__ == "my_func"
 
     @pytest.mark.skipif(not _DISKCACHE_AVAILABLE, reason="diskcache not installed")
-    def test_decorator_with_two_level_cache(self, two_level_cache: MultiLevelCache) -> None:
+    def test_decorator_with_two_level_cache(
+        self, two_level_cache: MultiLevelCache
+    ) -> None:
         # @trace FR-CACHE-001
         call_count = 0
 

@@ -16,6 +16,7 @@ class BatchFileOpsError(Exception):
 @dataclass
 class BatchOperation:
     """Represents a single file operation in a batch."""
+
     file_path: str
     operation_type: str  # 'read', 'write', 'delete'
     success: bool = False
@@ -25,6 +26,7 @@ class BatchOperation:
 @dataclass
 class BatchOperationResult:
     """Result of a batch operation."""
+
     total: int
     successful: int
     failed: int

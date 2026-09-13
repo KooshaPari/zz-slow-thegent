@@ -66,7 +66,11 @@ class OptimisticConcurrencyControl:
     def claim_version(self, file_path: Path, agent_id: str) -> str:
         """Record the version of a file at claim time (SCLI-P6.1)."""
         version = self.get_version(file_path)
-        claim_data = {"agent_id": agent_id, "version": version, "timestamp": str(HLCTimestamp().update())}
+        claim_data = {
+            "agent_id": agent_id,
+            "version": version,
+            "timestamp": str(HLCTimestamp().update()),
+        }
 
         file_id = hashlib.sha256(str(file_path).encode()).hexdigest()
         with open(self.version_dir / f"{file_id}-{agent_id}.json", "w") as f:
@@ -96,7 +100,9 @@ class FileClaimsRegistry:
         self.claims_dir = mesh_root / "claims"
         self.claims_dir.mkdir(parents=True, exist_ok=True, mode=0o1777)
 
-    def acquire_lease(self, file_path: Path, agent_id: str, mode: str = "exclusive", ttl: int = 30) -> bool:
+    def acquire_lease(
+        self, file_path: Path, agent_id: str, mode: str = "exclusive", ttl: int = 30
+    ) -> bool:
         """Acquire a lease on a file (SCLI-P6.3)."""
         file_id = hashlib.sha256(str(file_path).encode()).hexdigest()
         claim_file = self.claims_dir / f"{file_id}.lock"
@@ -195,7 +201,9 @@ class IntentRegistry:
 
     def register_intent(self, intent: EditIntent) -> Path:
         """Register an agent's edit intent."""
-        intent_id = hashlib.sha256(f"{intent.agent_id}:{intent.file_path}:{intent.timestamp}".encode()).hexdigest()
+        intent_id = hashlib.sha256(
+            f"{intent.agent_id}:{intent.file_path}:{intent.timestamp}".encode()
+        ).hexdigest()
         intent_file = self.intents_dir / f"{intent_id}.json"
         data = {
             "agent_id": intent.agent_id,
@@ -209,7 +217,9 @@ class IntentRegistry:
             json.dump(data, f)
         return intent_file
 
-    def _load_intent(self, intent_file: Path, agent_id: str | None) -> EditIntent | None:
+    def _load_intent(
+        self, intent_file: Path, agent_id: str | None
+    ) -> EditIntent | None:
         """Load an intent from file, optionally filtering by agent_id."""
         with open(intent_file) as f:
             data = json.load(f)

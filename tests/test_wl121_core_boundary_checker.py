@@ -7,7 +7,9 @@ import yaml
 
 from conftest import _load_script_module
 
-SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts" / "check_thegent_core_boundary.py"
+SCRIPT_PATH = (
+    Path(__file__).resolve().parents[1] / "scripts" / "check_thegent_core_boundary.py"
+)
 MODULE = _load_script_module("check_thegent_core_boundary", SCRIPT_PATH)
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -94,19 +96,25 @@ def test_main_strict_mode_returns_nonzero_on_violations(tmp_path: Path) -> None:
     _write_boundary_config(config_path)
     (core_dir / "bad.py").write_text("import thegent\n", encoding="utf-8")
 
-    exit_code = MODULE.main(["--core-dir", str(core_dir), "--config", str(config_path), "--strict"])
+    exit_code = MODULE.main(
+        ["--core-dir", str(core_dir), "--config", str(config_path), "--strict"]
+    )
 
     assert exit_code == 1
 
 
-def test_main_json_format_emits_machine_readable_payload(tmp_path: Path, capsys) -> None:
+def test_main_json_format_emits_machine_readable_payload(
+    tmp_path: Path, capsys
+) -> None:
     core_dir = tmp_path / "src" / "thegent" / "core"
     core_dir.mkdir(parents=True)
     config_path = tmp_path / "boundary.toml"
     _write_boundary_config(config_path)
     (core_dir / "bad.py").write_text("import thegent\n", encoding="utf-8")
 
-    exit_code = MODULE.main(["--core-dir", str(core_dir), "--config", str(config_path), "--format", "json"])
+    exit_code = MODULE.main(
+        ["--core-dir", str(core_dir), "--config", str(config_path), "--format", "json"]
+    )
 
     assert exit_code == 0
     payload = json.loads(capsys.readouterr().out)
@@ -122,12 +130,18 @@ def test_build_report_contains_policy_and_scan_counts(tmp_path: Path) -> None:
     core_dir.mkdir(parents=True)
     config_path = tmp_path / "boundary.toml"
     _write_boundary_config(config_path)
-    (core_dir / "ok.py").write_text("from thegent.core import worker_pool\n", encoding="utf-8")
+    (core_dir / "ok.py").write_text(
+        "from thegent.core import worker_pool\n", encoding="utf-8"
+    )
 
     report = MODULE.build_report(core_dir=core_dir, config_path=config_path)
 
     assert report["ok"] is True
-    assert report["allowed_prefixes"] == ["thegent.core", "thegent.queue", "thegent.config"]
+    assert report["allowed_prefixes"] == [
+        "thegent.core",
+        "thegent.queue",
+        "thegent.config",
+    ]
     assert report["blocked_prefixes"] == ["thegent"]
     assert report["file_count"] == 1
     assert report["import_count"] == 1
@@ -140,7 +154,16 @@ def test_main_summary_json_format_emits_compact_counts(tmp_path: Path, capsys) -
     _write_boundary_config(config_path)
     (core_dir / "bad.py").write_text("import thegent\n", encoding="utf-8")
 
-    exit_code = MODULE.main(["--core-dir", str(core_dir), "--config", str(config_path), "--format", "summary-json"])
+    exit_code = MODULE.main(
+        [
+            "--core-dir",
+            str(core_dir),
+            "--config",
+            str(config_path),
+            "--format",
+            "summary-json",
+        ]
+    )
 
     assert exit_code == 0
     payload = json.loads(capsys.readouterr().out)
@@ -240,22 +263,40 @@ def test_build_violation_entries_returns_ordered_jsonl_payload() -> None:
 
     entries = MODULE.build_violation_entries(report)
 
-    assert entries == [{"kind": "violation", "message": "src/thegent/core/a.py: blocked import 'thegent.mcp'"}]
+    assert entries == [
+        {
+            "kind": "violation",
+            "message": "src/thegent/core/a.py: blocked import 'thegent.mcp'",
+        }
+    ]
 
 
-def test_main_violations_jsonl_format_emits_line_delimited_entries(tmp_path: Path, capsys) -> None:
+def test_main_violations_jsonl_format_emits_line_delimited_entries(
+    tmp_path: Path, capsys
+) -> None:
     core_dir = tmp_path / "src" / "thegent" / "core"
     core_dir.mkdir(parents=True)
     config_path = tmp_path / "boundary.toml"
     _write_boundary_config(config_path)
     (core_dir / "bad.py").write_text("import thegent\n", encoding="utf-8")
 
-    exit_code = MODULE.main(["--core-dir", str(core_dir), "--config", str(config_path), "--format", "violations-jsonl"])
+    exit_code = MODULE.main(
+        [
+            "--core-dir",
+            str(core_dir),
+            "--config",
+            str(config_path),
+            "--format",
+            "violations-jsonl",
+        ]
+    )
 
     assert exit_code == 0
     lines = [json.loads(line) for line in capsys.readouterr().out.strip().splitlines()]
     assert lines == [{"kind": "violation", "message": lines[0]["message"]}]
-    assert lines[0]["message"].endswith("src/thegent/core/bad.py: blocked import 'thegent'")
+    assert lines[0]["message"].endswith(
+        "src/thegent/core/bad.py: blocked import 'thegent'"
+    )
 
 
 def test_wl121_ci_uses_strict_mode_and_local_task_stays_advisory() -> None:
@@ -268,8 +309,14 @@ def test_wl121_ci_uses_strict_mode_and_local_task_stays_advisory() -> None:
         "{ok, mode, violation_count, violation_file_count, clean_file_count, blocked_count, "
         "disallowed_count, file_count, import_count}"
     ) in qa_guide
-    assert "| allow | `thegent.core` | `from thegent.core import prompt_queue` | Allowed |" in qa_guide
-    assert "| block | `thegent` | `from thegent.mcp import server` | Blocked unless also allowlisted |" in qa_guide
+    assert (
+        "| allow | `thegent.core` | `from thegent.core import prompt_queue` | Allowed |"
+        in qa_guide
+    )
+    assert (
+        "| block | `thegent` | `from thegent.mcp import server` | Blocked unless also allowlisted |"
+        in qa_guide
+    )
     assert taskfile["tasks"]["quality:core-boundary"]["cmds"] == [
         "uv run python scripts/check_thegent_core_boundary.py"
     ]

@@ -16,7 +16,15 @@ def search_local_agslag(workspace_root: Path) -> list[dict[str, str]]:
     # Try using 'rg' for fast search
     try:
         # Search for 'agslag' in file contents
-        cmd = ["rg", "-i", "agslag", str(workspace_root), "--files-with-matches", "--max-depth", "5"]
+        cmd = [
+            "rg",
+            "-i",
+            "agslag",
+            str(workspace_root),
+            "--files-with-matches",
+            "--max-depth",
+            "5",
+        ]
         process = shim_run(cmd, capture_output=True, text=True, check=False)
         if process.returncode == 0:
             for line in process.stdout.splitlines():
@@ -48,7 +56,9 @@ def search_local_agslag(workspace_root: Path) -> list[dict[str, str]]:
 
 
 def research_agslag_project(
-    workspace_root: Path, query: str = "agslag project", subreddits: list[str] | None = None
+    workspace_root: Path,
+    query: str = "agslag project",
+    subreddits: list[str] | None = None,
 ) -> dict[str, Any]:
     """Perform comprehensive research on the agslag project."""
     # 1. Local search
@@ -108,9 +118,20 @@ def update_research_queue(results: dict[str, Any], queue_file: Path):
         # Insert after the header or at the end
         if "## Agslag Project Research" in content:
             parts = content.split("## Agslag Project Research")
-            new_content = parts[0] + "## Agslag Project Research\n\n" + "\n".join(new_links) + "\n" + parts[1]
+            new_content = (
+                parts[0]
+                + "## Agslag Project Research\n\n"
+                + "\n".join(new_links)
+                + "\n"
+                + parts[1]
+            )
         else:
-            new_content = content + "\n\n## Agslag Project Research\n\n" + "\n".join(new_links) + "\n"
+            new_content = (
+                content
+                + "\n\n## Agslag Project Research\n\n"
+                + "\n".join(new_links)
+                + "\n"
+            )
 
         with open(queue_file, "w") as f:
             f.write(new_content)

@@ -197,16 +197,24 @@ class TestIntentRegistry:
     def test_get_intents_filters_by_agent(self, tmp_path: Path):
         """get_intents with agent_id filter returns only that agent's intents."""
         reg = IntentRegistry(tmp_path)
-        reg.register_intent(EditIntent(agent_id="a1", file_path="x.py", operation="modify"))
-        reg.register_intent(EditIntent(agent_id="a2", file_path="y.py", operation="create"))
+        reg.register_intent(
+            EditIntent(agent_id="a1", file_path="x.py", operation="modify")
+        )
+        reg.register_intent(
+            EditIntent(agent_id="a2", file_path="y.py", operation="create")
+        )
         assert len(reg.get_intents(agent_id="a1")) == 1
         assert len(reg.get_intents(agent_id="a2")) == 1
 
     def test_clear_intents_removes_agent_intents(self, tmp_path: Path):
         """clear_intents removes all intents for the specified agent."""
         reg = IntentRegistry(tmp_path)
-        reg.register_intent(EditIntent(agent_id="a1", file_path="x.py", operation="modify"))
-        reg.register_intent(EditIntent(agent_id="a2", file_path="y.py", operation="modify"))
+        reg.register_intent(
+            EditIntent(agent_id="a1", file_path="x.py", operation="modify")
+        )
+        reg.register_intent(
+            EditIntent(agent_id="a2", file_path="y.py", operation="modify")
+        )
         removed = reg.clear_intents("a1")
         assert removed == 1
         assert len(reg.get_intents(agent_id="a1")) == 0

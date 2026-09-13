@@ -43,11 +43,15 @@ def test_risk_register_has_required_baseline_risks() -> None:
     """Risk register must contain the four baseline risk IDs from the plan."""
     content = RISK_REGISTER.read_text(encoding="utf-8")
     for risk_id in ["R-W2-01", "R-W2-02", "R-W2-03", "R-W2-04"]:
-        assert risk_id in content, f"Required risk {risk_id} must appear in risk register"
+        assert risk_id in content, (
+            f"Required risk {risk_id} must appear in risk register"
+        )
 
 
 def test_risk_register_has_new_wave2_risks() -> None:
     """Risk register must include at least one new risk discovered during Wave-2."""
     content = RISK_REGISTER.read_text(encoding="utf-8")
     # R-W2-05 onwards are Wave-2-observed risks
-    assert "R-W2-05" in content, "Risk register must include at least one new Wave-2 risk (R-W2-05)"
+    assert "R-W2-05" in content, (
+        "Risk register must include at least one new Wave-2 risk (R-W2-05)"
+    )

@@ -40,6 +40,8 @@ def test_list_dumps_recurses_categories(tmp_path: Path) -> None:
 
 def test_dump_conversation_infers_tags_when_missing(tmp_path: Path) -> None:
     dumper = ConversationDumper(docs_dir=tmp_path)
-    path = dumper.dump_conversation("run-c", "fact: keep parity\ndecision: add flag #wl156")
+    path = dumper.dump_conversation(
+        "run-c", "fact: keep parity\ndecision: add flag #wl156"
+    )
     content = path.read_text(encoding="utf-8")
     assert 'tags: ["wl156", "decision", "fact"]' in content

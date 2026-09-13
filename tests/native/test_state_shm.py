@@ -78,19 +78,25 @@ class TestPurePythonBreakerStore:
 
     def test_no_failures_circuit_closed(self) -> None:
         store = _PurePythonBreakerStore()
-        assert not store.is_open("target", "agent", threshold=3, window_s=300, recovery_s=60)
+        assert not store.is_open(
+            "target", "agent", threshold=3, window_s=300, recovery_s=60
+        )
 
     def test_below_threshold_circuit_closed(self) -> None:
         store = _PurePythonBreakerStore()
         store.record_failure("target", "agent")
         store.record_failure("target", "agent")
-        assert not store.is_open("target", "agent", threshold=3, window_s=300, recovery_s=60)
+        assert not store.is_open(
+            "target", "agent", threshold=3, window_s=300, recovery_s=60
+        )
 
     def test_at_threshold_circuit_opens(self) -> None:
         store = _PurePythonBreakerStore()
         for _ in range(3):
             store.record_failure("target", "agent")
-        assert store.is_open("target", "agent", threshold=3, window_s=300, recovery_s=60)
+        assert store.is_open(
+            "target", "agent", threshold=3, window_s=300, recovery_s=60
+        )
 
     def test_failures_outside_window_do_not_count(self) -> None:
         store = _PurePythonBreakerStore()
@@ -98,15 +104,23 @@ class TestPurePythonBreakerStore:
         now = time.time()
         store._failures["target:agent"] = [now - 400, now - 350]  # outside 300s window
         store.record_failure("target", "agent")  # only 1 recent failure
-        assert not store.is_open("target", "agent", threshold=3, window_s=300, recovery_s=60)
+        assert not store.is_open(
+            "target", "agent", threshold=3, window_s=300, recovery_s=60
+        )
 
     def test_half_open_after_recovery(self) -> None:
         store = _PurePythonBreakerStore()
         # Inject failures just beyond the recovery window
         now = time.time()
-        store._failures["target:agent"] = [now - 10, now - 10, now - 10]  # threshold=3 met
+        store._failures["target:agent"] = [
+            now - 10,
+            now - 10,
+            now - 10,
+        ]  # threshold=3 met
         # recovery_s=5: last failure was 10s ago > 5s, so half-open (returns False)
-        assert not store.is_open("target", "agent", threshold=3, window_s=300, recovery_s=5)
+        assert not store.is_open(
+            "target", "agent", threshold=3, window_s=300, recovery_s=5
+        )
 
     def test_clear_specific_target(self) -> None:
         store = _PurePythonBreakerStore()
@@ -115,7 +129,9 @@ class TestPurePythonBreakerStore:
         for _ in range(5):
             store.record_failure("beta", "agent")
         store.clear("alpha")
-        assert not store.is_open("alpha", "agent", threshold=3, window_s=300, recovery_s=60)
+        assert not store.is_open(
+            "alpha", "agent", threshold=3, window_s=300, recovery_s=60
+        )
         assert store.is_open("beta", "agent", threshold=3, window_s=300, recovery_s=60)
 
     def test_clear_all(self) -> None:
@@ -123,14 +139,18 @@ class TestPurePythonBreakerStore:
         for _ in range(5):
             store.record_failure("alpha", "agent")
         store.clear()
-        assert not store.is_open("alpha", "agent", threshold=3, window_s=300, recovery_s=60)
+        assert not store.is_open(
+            "alpha", "agent", threshold=3, window_s=300, recovery_s=60
+        )
 
     def test_different_categories_independent(self) -> None:
         store = _PurePythonBreakerStore()
         for _ in range(3):
             store.record_failure("target", "agent")
         # model category has no failures
-        assert not store.is_open("target", "model", threshold=3, window_s=300, recovery_s=60)
+        assert not store.is_open(
+            "target", "model", threshold=3, window_s=300, recovery_s=60
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -316,7 +336,10 @@ class TestIsNativeAvailable:
         assert is_native_available() == (_mod._native_module is not None)
 
 
-if os.environ.get("THGENT_ENFORCE_NATIVE_SHM_TESTS", "0") == "1" and not is_native_available():
+if (
+    os.environ.get("THGENT_ENFORCE_NATIVE_SHM_TESTS", "0") == "1"
+    and not is_native_available()
+):
     pytest.fail(
         "THGENT_ENFORCE_NATIVE_SHM_TESTS=1 but thegent_shm native extension is unavailable",
         pytrace=False,
@@ -328,7 +351,9 @@ if os.environ.get("THGENT_ENFORCE_NATIVE_SHM_TESTS", "0") == "1" and not is_nati
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.skipif(not is_native_available(), reason="thegent_shm native extension not compiled")
+@pytest.mark.skipif(
+    not is_native_available(), reason="thegent_shm native extension not compiled"
+)
 class TestCircuitBreakerShmNative:
     """Smoke tests for native SHM path (requires compiled thegent_shm wheel)."""
 
@@ -362,8 +387,14 @@ class TestCircuitBreakerShmNative:
 class TestEnvVarControl:
     """THGENT_USE_NATIVE_SHM=0 should force fallback even if native present."""
 
-    def test_env_zero_disables_native(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_env_zero_disables_native(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.setenv("THGENT_USE_NATIVE_SHM", "0")
         # Re-evaluate the module-level probe by simulating what the module does
-        enabled = os.environ.get("THGENT_USE_NATIVE_SHM", "1").strip() not in ("0", "false", "no")
+        enabled = os.environ.get("THGENT_USE_NATIVE_SHM", "1").strip() not in (
+            "0",
+            "false",
+            "no",
+        )
         assert not enabled

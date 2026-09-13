@@ -216,7 +216,9 @@ def test_normalize_lower_is_better(computer: HealthScoreComputer) -> None:
     assert computer._normalize(10.0, 0.0, "lower_is_better") == 0.0
 
 
-def test_normalize_lower_is_better_nonzero_target(computer: HealthScoreComputer) -> None:
+def test_normalize_lower_is_better_nonzero_target(
+    computer: HealthScoreComputer,
+) -> None:
     """Lower-is-better with nonzero target: 0/10 -> 1.0, 5/10 -> 0.5, 10/10 -> 0.0.
 
     Traces to: FR-GOV-001

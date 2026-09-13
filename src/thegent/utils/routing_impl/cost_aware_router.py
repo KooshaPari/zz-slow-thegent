@@ -83,7 +83,9 @@ class BudgetExceededError(Exception):
         self.budget_type = budget_type
         self.limit = limit
         self.current = current
-        super().__init__(f"{budget_type} budget exceeded: current=${current:.4f} > limit=${limit:.4f}")
+        super().__init__(
+            f"{budget_type} budget exceeded: current=${current:.4f} > limit=${limit:.4f}"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -99,7 +101,12 @@ class CostMeter:
         self.cost_history: list[dict[str, Any]] = []
 
     async def record_cost(
-        self, project_id: str, model: str, input_tokens: int, output_tokens: int, cost: float
+        self,
+        project_id: str,
+        model: str,
+        input_tokens: int,
+        output_tokens: int,
+        cost: float,
     ) -> None:
         """Record cost for a single request (FR-COST-001)."""
         key = f"{project_id}:{model}"
@@ -118,7 +125,11 @@ class CostMeter:
 
     def get_project_cost(self, project_id: str) -> float:
         """Get total cost for a project across all models."""
-        return sum(cost for key, cost in self.current_costs.items() if key.startswith(f"{project_id}:"))
+        return sum(
+            cost
+            for key, cost in self.current_costs.items()
+            if key.startswith(f"{project_id}:")
+        )
 
 
 class BudgetManager:
@@ -131,13 +142,19 @@ class BudgetManager:
         """Add a budget allocation."""
         self.budgets[budget.id] = budget
 
-    def check_budget(self, project_id: str, requested_cost: float = 0.0) -> BudgetStatus:
+    def check_budget(
+        self, project_id: str, requested_cost: float = 0.0
+    ) -> BudgetStatus:
         """Check if any budget for project_id is exceeded."""
-        relevant_budgets = [b for b in self.budgets.values() if b.project_id == project_id]
+        relevant_budgets = [
+            b for b in self.budgets.values() if b.project_id == project_id
+        ]
 
         if not relevant_budgets:
             # If no budget is defined, we allow by default but warn
-            return BudgetStatus(can_proceed=True, remaining_budget=float("inf"), utilization=0.0)
+            return BudgetStatus(
+                can_proceed=True, remaining_budget=float("inf"), utilization=0.0
+            )
 
         for budget in relevant_budgets:
             if budget.spent + requested_cost > budget.amount:
@@ -151,7 +168,9 @@ class BudgetManager:
         # Return the most constrained budget's status
         most_constrained = min(relevant_budgets, key=lambda b: b.remaining)
         return BudgetStatus(
-            can_proceed=True, remaining_budget=most_constrained.remaining, utilization=most_constrained.utilization
+            can_proceed=True,
+            remaining_budget=most_constrained.remaining,
+            utilization=most_constrained.utilization,
         )
 
     def record_spend(self, project_id: str, cost: float) -> None:
@@ -182,7 +201,10 @@ class BudgetAwareRouter:
         self.degraded_at_pct = degraded_at_pct
 
     def route(
-        self, project_id: str, candidates: list[_ParetoRouteCandidate], strategy: str = "balanced"
+        self,
+        project_id: str,
+        candidates: list[_ParetoRouteCandidate],
+        strategy: str = "balanced",
     ) -> _ParetoRouteCandidate:
         """Select the best candidate given current budget state and Pareto strategy."""
         if not candidates:
@@ -193,7 +215,10 @@ class BudgetAwareRouter:
 
         if not status.can_proceed:
             # If strictly over budget, select the absolute cheapest candidate
-            _log.warning("Budget exceeded for project %s. Routing to cheapest candidate.", project_id)
+            _log.warning(
+                "Budget exceeded for project %s. Routing to cheapest candidate.",
+                project_id,
+            )
             return min(candidates, key=lambda c: c.cost_per_1k)  # type: ignore[attr-defined]
 
         # 2. Degraded Mode (90%+)
@@ -219,7 +244,9 @@ class BudgetAwareRouter:
         # 4. Normal Routing
         return self.router.select_by_strategy(strategy, candidates)
 
-    def _cheapest_half(self, candidates: list[_ParetoRouteCandidate]) -> list[_ParetoRouteCandidate]:
+    def _cheapest_half(
+        self, candidates: list[_ParetoRouteCandidate]
+    ) -> list[_ParetoRouteCandidate]:
         """Return the cheapest 50% (rounded up) of candidates by cost_per_1k."""
         sorted_by_cost = sorted(candidates, key=lambda c: c.cost_per_1k)  # type: ignore[attr-defined]
         cutoff = max(1, (len(sorted_by_cost) + 1) // 2)  # ceil(n/2), min 1
@@ -294,14 +321,27 @@ class CostAwareRouter:
 
         # Hard stop: exceeded
         if session >= self._budget.session_limit_usd:
-            raise BudgetExceededError("session", self._budget.session_limit_usd, session)
+            raise BudgetExceededError(
+                "session", self._budget.session_limit_usd, session
+            )
         if daily >= self._budget.daily_limit_usd:
             raise BudgetExceededError("daily", self._budget.daily_limit_usd, daily)
 
         # Warn mode: near limit -> cheapest half, best quality among them
-        session_pct = session / self._budget.session_limit_usd if self._budget.session_limit_usd > 0 else 0.0
-        daily_pct = daily / self._budget.daily_limit_usd if self._budget.daily_limit_usd > 0 else 0.0
-        if session_pct >= self._budget.warn_at_pct or daily_pct >= self._budget.warn_at_pct:
+        session_pct = (
+            session / self._budget.session_limit_usd
+            if self._budget.session_limit_usd > 0
+            else 0.0
+        )
+        daily_pct = (
+            daily / self._budget.daily_limit_usd
+            if self._budget.daily_limit_usd > 0
+            else 0.0
+        )
+        if (
+            session_pct >= self._budget.warn_at_pct
+            or daily_pct >= self._budget.warn_at_pct
+        ):
             pool = self._cheapest_half_simple(candidates)
         else:
             pool = candidates
@@ -340,7 +380,9 @@ class ProviderBudgetRouter:
     """
 
     def __init__(self, configs: list[ProviderBudgetConfig]) -> None:
-        self._configs: dict[str, ProviderBudgetConfig] = {c.provider: c for c in configs}
+        self._configs: dict[str, ProviderBudgetConfig] = {
+            c.provider: c for c in configs
+        }
         self._daily_spend: dict[str, float] = {c.provider: 0.0 for c in configs}
 
     def record_spend(self, provider: str, cost_usd: float) -> None:
@@ -367,7 +409,11 @@ class ProviderBudgetRouter:
         if not over_budget:
             return model_list
 
-        filtered = [entry for entry in model_list if not self._entry_matches_providers(entry, over_budget)]
+        filtered = [
+            entry
+            for entry in model_list
+            if not self._entry_matches_providers(entry, over_budget)
+        ]
 
         # If all entries were filtered out, fall back to the full list
         if not filtered:
@@ -410,7 +456,9 @@ class ProviderBudgetRouter:
 _default_budget_router: ProviderBudgetRouter | None = None
 
 
-def get_provider_budget_router(configs: list[ProviderBudgetConfig] | None = None) -> ProviderBudgetRouter:
+def get_provider_budget_router(
+    configs: list[ProviderBudgetConfig] | None = None,
+) -> ProviderBudgetRouter:
     """Get or create the default ProviderBudgetRouter.
 
     On first call, builds configs from env vars:
@@ -434,7 +482,9 @@ def get_provider_budget_router(configs: list[ProviderBudgetConfig] | None = None
             provider_upper = key[len(prefix) : -len(suffix)]
             provider = provider_upper.lower()
             daily_limit = float(value)
-            env_configs.append(ProviderBudgetConfig(provider=provider, daily_limit_usd=daily_limit))
+            env_configs.append(
+                ProviderBudgetConfig(provider=provider, daily_limit_usd=daily_limit)
+            )
 
     _default_budget_router = ProviderBudgetRouter(env_configs)
     return _default_budget_router
@@ -489,7 +539,9 @@ class DeploymentPoolManager:
                     "weight": deployment.weight,
                 }
                 if deployment.api_key_env is not None:
-                    litellm_params["api_key"] = os.environ.get(deployment.api_key_env, "dummy-key")
+                    litellm_params["api_key"] = os.environ.get(
+                        deployment.api_key_env, "dummy-key"
+                    )
                 if deployment.api_base is not None:
                     litellm_params["api_base"] = deployment.api_base
                 entries.append(

@@ -155,7 +155,9 @@ class ProviderMetricsCollector:
             # Log but don't fail - metrics collection shouldn't break execution
             pass
 
-    def get_metrics(self, provider_id: str, window_hours: int = 24) -> ProviderMetricsSnapshot | None:
+    def get_metrics(
+        self, provider_id: str, window_hours: int = 24
+    ) -> ProviderMetricsSnapshot | None:
         """
         Get current metrics snapshot for a provider.
 

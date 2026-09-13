@@ -10,7 +10,9 @@ from pathlib import Path
 SCRIPT_PATH = Path("scripts/mojo_score_rank_harness.py")
 
 
-def _run_harness(args: list[str], *, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
+def _run_harness(
+    args: list[str], *, env: dict[str, str] | None = None
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [sys.executable, str(SCRIPT_PATH), *args],
         capture_output=True,
@@ -39,13 +41,19 @@ def test_generate_fixtures_is_deterministic(tmp_path: Path) -> None:
         "11",
     ]
 
-    first = _run_harness(["generate-fixtures", "--output-root", str(out_a), *common_args])
-    second = _run_harness(["generate-fixtures", "--output-root", str(out_b), *common_args])
+    first = _run_harness(
+        ["generate-fixtures", "--output-root", str(out_a), *common_args]
+    )
+    second = _run_harness(
+        ["generate-fixtures", "--output-root", str(out_b), *common_args]
+    )
     assert first.returncode == 0, first.stderr
     assert second.returncode == 0, second.stderr
 
     for name in ["small_128.json", "medium_1024.json", "large_8192.json"]:
-        assert (out_a / name).read_text(encoding="utf-8") == (out_b / name).read_text(encoding="utf-8")
+        assert (out_a / name).read_text(encoding="utf-8") == (out_b / name).read_text(
+            encoding="utf-8"
+        )
 
     fixture = json.loads((out_a / "small_128.json").read_text(encoding="utf-8"))
     assert fixture["dataset_id"] == "small-128"
@@ -88,7 +96,10 @@ def test_run_fails_loudly_without_mojo(tmp_path: Path) -> None:
     combined = f"{result.stdout}\n{result.stderr}"
     assert "Mojo executable not found on PATH" in combined
     assert "Install Mojo" in combined
-    assert "python3 scripts/mojo_score_rank_harness.py run --mojo-kernel <path/to/score_rank.mojo>" in combined
+    assert (
+        "python3 scripts/mojo_score_rank_harness.py run --mojo-kernel <path/to/score_rank.mojo>"
+        in combined
+    )
 
 
 def test_run_smoke_with_fake_mojo(tmp_path: Path) -> None:

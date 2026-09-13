@@ -83,7 +83,9 @@ class SubAgentRequest:
         # When ``agent_type`` is supplied and ``request_id`` is not,
         # treat ``agent_type`` as the canonical request id (dormant
         # contract).
-        self.request_id = kwargs.get("request_id", request_id or "") or (agent_type or "")
+        self.request_id = kwargs.get("request_id", request_id or "") or (
+            agent_type or ""
+        )
         self.task = kwargs.get("task", task if task is not None else "")
         self.agent_type = agent_type or ""
 
@@ -151,7 +153,12 @@ class SubAgentEvent:
         # first positional arg is NOT a request-id-shaped string AND
         # the second positional arg IS a dict, treat it as the
         # historical form.  Otherwise, treat it as canonical kwargs.
-        if isinstance(event_type, dict) and not isinstance(payload, dict) and data is None and not kwargs:
+        if (
+            isinstance(event_type, dict)
+            and not isinstance(payload, dict)
+            and data is None
+            and not kwargs
+        ):
             self.event_type = request_id
             self.data = event_type
             self.request_id = ""
@@ -159,8 +166,16 @@ class SubAgentEvent:
             return
         # Canonical form (dormant + future).
         self.request_id = request_id or kwargs.get("request_id", "")
-        self.event_type = event_type if event_type is not None else kwargs.get("event_type", "")
-        self.payload = payload if payload is not None else data if data is not None else kwargs.get("payload", {})
+        self.event_type = (
+            event_type if event_type is not None else kwargs.get("event_type", "")
+        )
+        self.payload = (
+            payload
+            if payload is not None
+            else data
+            if data is not None
+            else kwargs.get("payload", {})
+        )
         self.data = self.payload  # mirror
 
 

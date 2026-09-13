@@ -218,8 +218,18 @@ class TestCrossConnectorVerifier:
         """# @trace WL-271 — split-brain detector reports divergent connector states."""
         verifier = CrossConnectorVerifier()
         states = [
-            {"wl_id": "WL-500", "connector_name": "github", "status": "BACKLOG", "priority": "P1"},
-            {"wl_id": "WL-500", "connector_name": "linear", "status": "COMPLETED", "priority": "P1"},
+            {
+                "wl_id": "WL-500",
+                "connector_name": "github",
+                "status": "BACKLOG",
+                "priority": "P1",
+            },
+            {
+                "wl_id": "WL-500",
+                "connector_name": "linear",
+                "status": "COMPLETED",
+                "priority": "P1",
+            },
         ]
         findings = verifier.detect_split_brain(states)
         assert len(findings) == 1
@@ -232,8 +242,18 @@ class TestCrossConnectorVerifier:
         """# @trace WL-271 — split-brain detector ignores equivalent states."""
         verifier = CrossConnectorVerifier()
         states = [
-            {"wl_id": "WL-501", "connector_name": "github", "status": "BACKLOG", "priority": "P1"},
-            {"wl_id": "WL-501", "connector_name": "linear", "status": "BACKLOG", "priority": "P1"},
+            {
+                "wl_id": "WL-501",
+                "connector_name": "github",
+                "status": "BACKLOG",
+                "priority": "P1",
+            },
+            {
+                "wl_id": "WL-501",
+                "connector_name": "linear",
+                "status": "BACKLOG",
+                "priority": "P1",
+            },
         ]
         findings = verifier.detect_split_brain(states)
         assert findings == []

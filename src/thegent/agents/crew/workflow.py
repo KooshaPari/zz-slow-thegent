@@ -38,7 +38,9 @@ class WorkflowEngine:
         """Add a stage to the workflow."""
         self.stages.append(stage)
 
-    def _build_stage_graph(self) -> tuple[dict[str, CrewStage], dict[str, int], dict[str, list[str]]]:
+    def _build_stage_graph(
+        self,
+    ) -> tuple[dict[str, CrewStage], dict[str, int], dict[str, list[str]]]:
         """Build and validate stage graph structures.
 
         Validation is intentionally strict: duplicate stage IDs, unknown
@@ -58,7 +60,9 @@ class WorkflowEngine:
         for stage in self.stages:
             for dep_id in stage.depends_on:
                 if dep_id not in stage_map:
-                    raise ValueError(f"Unknown dependency {dep_id!r} for stage {stage.id!r}")
+                    raise ValueError(
+                        f"Unknown dependency {dep_id!r} for stage {stage.id!r}"
+                    )
                 if dep_id == stage.id:
                     raise ValueError(f"Stage {stage.id!r} cannot depend on itself")
                 graph[dep_id].append(stage.id)

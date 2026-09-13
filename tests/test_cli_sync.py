@@ -39,7 +39,16 @@ def test_sync_freeze_and_unfreeze_commands(tmp_path):
 
     freeze_result = runner.invoke(
         app,
-        ["sync", "freeze", "--reason", "maintenance", "--actor", "lane7", "--state-file", str(state_file)],
+        [
+            "sync",
+            "freeze",
+            "--reason",
+            "maintenance",
+            "--actor",
+            "lane7",
+            "--state-file",
+            str(state_file),
+        ],
     )
     assert freeze_result.exit_code == 0
     assert "frozen" in freeze_result.stdout.lower()

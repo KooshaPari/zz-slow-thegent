@@ -360,7 +360,9 @@ class TestRunWithProviderLoopTimeout:
             await asyncio.sleep(10)
 
         with pytest.raises(ProviderLoopTimeout) as exc_info:
-            await run_with_provider_loop_timeout(_slow(), timeout_sec=1, context="openai")
+            await run_with_provider_loop_timeout(
+                _slow(), timeout_sec=1, context="openai"
+            )
         assert "openai" in exc_info.value.context
 
 
@@ -395,4 +397,6 @@ class TestCircuitBreakerAndLoopTimeout:
 
         # Circuit is open; CircuitOpenError must bubble, not be masked as ProviderLoopTimeout
         with pytest.raises(CircuitOpenError):
-            await run_with_provider_loop_timeout(_loop_with_open_breaker(), timeout_sec=5, context="integration")
+            await run_with_provider_loop_timeout(
+                _loop_with_open_breaker(), timeout_sec=5, context="integration"
+            )

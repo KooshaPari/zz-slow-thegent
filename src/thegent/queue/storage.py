@@ -98,7 +98,9 @@ class PromptQueue:
 
     def _save(self, items: list[dict[str, Any]]) -> None:
         self.storage_dir.mkdir(parents=True, exist_ok=True)
-        fd, tmp = tempfile.mkstemp(dir=self.storage_dir, prefix=".queue_", suffix=".tmp")
+        fd, tmp = tempfile.mkstemp(
+            dir=self.storage_dir, prefix=".queue_", suffix=".tmp"
+        )
         try:
             with os.fdopen(fd, "w", encoding="utf-8") as f:
                 for item in items:

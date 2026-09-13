@@ -18,8 +18,12 @@ def test_dex_flash_env_contract(monkeypatch, tmp_path):
         cliproxy_config_path=tmp_path / "cliproxy.yaml",
     )
     monkeypatch.setattr("thegent.dex_main._get_settings", lambda: settings)
-    monkeypatch.setattr("thegent.agents.cliproxy_manager._ensure_config", lambda _settings: None)
-    monkeypatch.setattr("thegent.agents.cliproxy_manager.ensure_proxy_running", lambda _settings: None)
+    monkeypatch.setattr(
+        "thegent.agents.cliproxy_manager._ensure_config", lambda _settings: None
+    )
+    monkeypatch.setattr(
+        "thegent.agents.cliproxy_manager.ensure_proxy_running", lambda _settings: None
+    )
     monkeypatch.setattr(
         "thegent.agents.cliproxy_manager._has_provider_credentials",
         lambda _config, _provider: True,
@@ -40,7 +44,9 @@ def test_clode_flash_env_contract(monkeypatch, tmp_path):
         cache_dir=tmp_path / "cache",
     )
     monkeypatch.setattr("thegent.clode_main._get_settings", lambda: settings)
-    monkeypatch.setattr("thegent.agents.cliproxy_manager.ensure_proxy_running", lambda _settings: None)
+    monkeypatch.setattr(
+        "thegent.agents.cliproxy_manager.ensure_proxy_running", lambda _settings: None
+    )
 
     env = _get_claude_env(GEMINI_FLASH_PROVIDER, model_override=GEMINI_FLASH_MODEL)
     assert env["ANTHROPIC_API_KEY"] == GEMINI_FLASH_PROVIDER
@@ -63,15 +69,21 @@ def test_dex_clode_flash_share_same_proxy_host_port(monkeypatch, tmp_path):
     )
     monkeypatch.setattr("thegent.dex_main._get_settings", lambda: codex_settings)
     monkeypatch.setattr("thegent.clode_main._get_settings", lambda: clode_settings)
-    monkeypatch.setattr("thegent.agents.cliproxy_manager._ensure_config", lambda _settings: None)
-    monkeypatch.setattr("thegent.agents.cliproxy_manager.ensure_proxy_running", lambda _settings: None)
+    monkeypatch.setattr(
+        "thegent.agents.cliproxy_manager._ensure_config", lambda _settings: None
+    )
+    monkeypatch.setattr(
+        "thegent.agents.cliproxy_manager.ensure_proxy_running", lambda _settings: None
+    )
     monkeypatch.setattr(
         "thegent.agents.cliproxy_manager._has_provider_credentials",
         lambda _config, _provider: True,
     )
 
     dex_env = _get_codex_env(GEMINI_FLASH_PROVIDER, GEMINI_FLASH_MODEL)
-    clode_env = _get_claude_env(GEMINI_FLASH_PROVIDER, model_override=GEMINI_FLASH_MODEL)
+    clode_env = _get_claude_env(
+        GEMINI_FLASH_PROVIDER, model_override=GEMINI_FLASH_MODEL
+    )
     dex_url = urlparse(dex_env["OPENAI_BASE_URL"])
     clode_url = urlparse(clode_env["ANTHROPIC_BASE_URL"])
     assert (dex_url.hostname, dex_url.port) == (clode_url.hostname, clode_url.port)
@@ -81,7 +93,9 @@ def test_droid_codex_flash_uses_dex_proxy_env(tmp_path):
     droids_dir = tmp_path / "droids"
     droids_dir.mkdir()
     (droids_dir / "factory.md").write_text("# Factory Droid")
-    runner = CodexRunner("factory", droids_dir, codex_cmd="codex", model=GEMINI_FLASH_MODEL)
+    runner = CodexRunner(
+        "factory", droids_dir, codex_cmd="codex", model=GEMINI_FLASH_MODEL
+    )
 
     fake_env = {
         "OPENAI_BASE_URL": "http://127.0.0.1:8317/v1",
@@ -89,7 +103,10 @@ def test_droid_codex_flash_uses_dex_proxy_env(tmp_path):
         "THGENT_CLIPROXY_ADAPTER": "1",
     }
     with (
-        patch("thegent.dex_main._resolve_provider_for_model", return_value=GEMINI_FLASH_PROVIDER) as resolve_provider,
+        patch(
+            "thegent.dex_main._resolve_provider_for_model",
+            return_value=GEMINI_FLASH_PROVIDER,
+        ) as resolve_provider,
         patch("thegent.dex_main._get_codex_env", return_value=fake_env) as get_env,
         patch("thegent.agents.droid.subprocess.run") as run_proc,
     ):
@@ -110,7 +127,9 @@ def test_droid_codex_non_flash_uses_dex_provider_resolution(tmp_path):
     fake_env = {"OPENAI_BASE_URL": "http://127.0.0.1:8317/v1", "OPENAI_API_KEY": "nim"}
 
     with (
-        patch("thegent.dex_main._resolve_provider_for_model", return_value="nim") as resolve_provider,
+        patch(
+            "thegent.dex_main._resolve_provider_for_model", return_value="nim"
+        ) as resolve_provider,
         patch("thegent.dex_main._get_codex_env", return_value=fake_env) as get_env,
         patch("thegent.agents.droid.subprocess.run") as run_proc,
     ):

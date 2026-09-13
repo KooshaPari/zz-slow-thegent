@@ -30,7 +30,9 @@ def test_ci_workflow_has_quality_unified_job_on_pr_and_schedule() -> None:
     text = CI_WORKFLOW.read_text(encoding="utf-8")
     assert "schedule:" in text
     assert "quality-unified:" in text
-    assert "github.event_name == 'pull_request' || github.event_name == 'schedule'" in text
+    assert (
+        "github.event_name == 'pull_request' || github.event_name == 'schedule'" in text
+    )
 
 
 def test_ci_workflow_sets_mode_from_event_and_runs_unified_task() -> None:

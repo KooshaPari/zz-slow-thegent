@@ -69,7 +69,9 @@ class FastYAMLParser:
         elif PYYAML_AVAILABLE:
             self._backend = "pyyaml"
         else:
-            raise ImportError("No YAML parser available. Install oyaml, ruamel.yaml, or PyYAML")
+            raise ImportError(
+                "No YAML parser available. Install oyaml, ruamel.yaml, or PyYAML"
+            )
 
     def load(self, stream: str | Path | Any) -> dict[str, Any]:
         """Load YAML from string or file path.
@@ -111,7 +113,9 @@ class FastYAMLParser:
         """
         return self.load(s)
 
-    def dump(self, data: dict[str, Any], stream: Any | None = None, **kwargs) -> str | None:
+    def dump(
+        self, data: dict[str, Any], stream: Any | None = None, **kwargs
+    ) -> str | None:
         """Dump YAML to string or file.
 
         Args:

@@ -15,7 +15,10 @@ _UNSUPPORTED_CANONICAL_RATIONALE: dict[tuple[str, ...], str] = {
 
 def test_unsupported_canonical_targets_have_explicit_rationale_map() -> None:
     assert _UNSUPPORTED_CANONICAL_RATIONALE
-    assert set(_UNSUPPORTED_CANONICAL_RATIONALE) == _DELIBERATELY_UNSUPPORTED_CANONICAL_PREFIXES
+    assert (
+        set(_UNSUPPORTED_CANONICAL_RATIONALE)
+        == _DELIBERATELY_UNSUPPORTED_CANONICAL_PREFIXES
+    )
 
 
 def test_unsupported_canonical_rationale_entries_are_non_empty() -> None:

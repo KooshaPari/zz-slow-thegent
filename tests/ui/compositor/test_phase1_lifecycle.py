@@ -60,7 +60,9 @@ class TestOnMountLifecycle:
     def test_on_mount_handles_initialization_error(self) -> None:
         """Test that on_mount handles errors gracefully."""
         app = CompositApp()
-        with patch.object(app.pane_manager, "create_root_pane", side_effect=RuntimeError("Test error")):
+        with patch.object(
+            app.pane_manager, "create_root_pane", side_effect=RuntimeError("Test error")
+        ):
             app.on_mount()
             # Should not raise, and should have set _mounted to False
             assert app._mounted is False
@@ -85,7 +87,9 @@ class TestOnUnmountLifecycle:
         # Ensure pane manager has the nodes (mock them for testing)
         from thegent.ui.compositor.pane_manager import PaneNode
 
-        app.pane_manager.root = PaneNode(pane_id="split-root", is_leaf=False, direction="vertical")
+        app.pane_manager.root = PaneNode(
+            pane_id="split-root", is_leaf=False, direction="vertical"
+        )
         app.pane_manager.root.children = [
             PaneNode(pane_id="pane-0", is_leaf=True),
             PaneNode(pane_id="pane-1", is_leaf=True),
@@ -253,7 +257,9 @@ class TestTerminalPaneClose:
         pane.spawn_shell()
 
         # Mock process to raise TimeoutExpired
-        with patch.object(pane.process, "wait", side_effect=subprocess.TimeoutExpired("cmd", 1)):
+        with patch.object(
+            pane.process, "wait", side_effect=subprocess.TimeoutExpired("cmd", 1)
+        ):
             pane.close()
             # Should still clean up
             assert pane.process is None
@@ -296,7 +302,9 @@ class TestErrorBoundaries:
         app = CompositApp()
         app.on_mount()
 
-        with patch.object(app.pane_manager, "split_pane", side_effect=RuntimeError("Split error")):
+        with patch.object(
+            app.pane_manager, "split_pane", side_effect=RuntimeError("Split error")
+        ):
             app.action_split_vertical()
             # Should not raise, should have logged error
 
@@ -565,7 +573,9 @@ class TestPhase1AcceptanceCriteria:
         app = CompositApp()
         app.on_mount()
 
-        with patch.object(app.pane_manager, "split_pane", side_effect=RuntimeError("Test error")):
+        with patch.object(
+            app.pane_manager, "split_pane", side_effect=RuntimeError("Test error")
+        ):
             app.action_split_vertical()
             # Should not raise
 
@@ -575,7 +585,9 @@ class TestPhase1AcceptanceCriteria:
         app.on_mount()
 
         # Cause an error
-        with patch.object(app.pane_manager, "split_pane", side_effect=RuntimeError("Error")):
+        with patch.object(
+            app.pane_manager, "split_pane", side_effect=RuntimeError("Error")
+        ):
             app.action_split_vertical()
 
         # Should still be able to perform actions
@@ -585,5 +597,9 @@ class TestPhase1AcceptanceCriteria:
         """AC-5: Test coverage >= 80% of Phase 1 code."""
         # This test demonstrates test coverage is comprehensive
         # Count of test methods in this file
-        test_methods = [method for method in dir(TestPhase1AcceptanceCriteria) if method.startswith("test_")]
+        test_methods = [
+            method
+            for method in dir(TestPhase1AcceptanceCriteria)
+            if method.startswith("test_")
+        ]
         assert len(test_methods) > 0

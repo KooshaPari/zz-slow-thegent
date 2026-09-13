@@ -87,7 +87,9 @@ class GitNative:
             result["modified"] = modified.split("\n")
 
         # Get untracked
-        untracked = _run_git_command(self.repo_path, "ls-files", "--others", "--exclude-standard")
+        untracked = _run_git_command(
+            self.repo_path, "ls-files", "--others", "--exclude-standard"
+        )
         if untracked:
             result["untracked"] = untracked.split("\n")
 
@@ -130,7 +132,11 @@ class GitNative:
                         insertions = int(part.split()[0])
                     elif "deletion" in part:
                         deletions = int(part.split()[0])
-                return {"files_changed": files_changed, "insertions": insertions, "deletions": deletions}
+                return {
+                    "files_changed": files_changed,
+                    "insertions": insertions,
+                    "deletions": deletions,
+                }
         except (ValueError, IndexError):
             pass
 

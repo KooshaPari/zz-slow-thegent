@@ -175,7 +175,8 @@ class AgentHierarchyManager:
     def __init__(
         self,
         routing_strategy: RoutingStrategy = RoutingStrategy.CAPABILITY_MATCH,
-        task_executor: Callable[[AgentNode, str, dict[str, Any]], TaskResult] | None = None,
+        task_executor: Callable[[AgentNode, str, dict[str, Any]], TaskResult]
+        | None = None,
     ) -> None:
         """Initialise the hierarchy manager.
 
@@ -330,7 +331,9 @@ class AgentHierarchyManager:
 
         if self.routing_strategy == RoutingStrategy.CAPABILITY_MATCH:
             # Prefer exact full-match first, then partial
-            full_match = [c for c in candidates if required_capabilities.issubset(c.capabilities)]
+            full_match = [
+                c for c in candidates if required_capabilities.issubset(c.capabilities)
+            ]
             return full_match[0] if full_match else candidates[0]
 
         if self.routing_strategy == RoutingStrategy.LEAST_LOADED:
@@ -395,12 +398,16 @@ class AgentHierarchyManager:
         # than being swallowed as a task failure.
         if node.smolagent is None and self.task_executor is None:
             node.active_task_count = max(0, node.active_task_count - 1)
-            raise RuntimeError(f"No smolagent attached and no task_executor configured for agent '{agent_id}'")
+            raise RuntimeError(
+                f"No smolagent attached and no task_executor configured for agent '{agent_id}'"
+            )
 
         try:
             if node.smolagent is not None:
                 # SmolAgents integration path
-                raw_output = node.smolagent.run(task_description, **(ctx.get("smolagent_kwargs", {})))
+                raw_output = node.smolagent.run(
+                    task_description, **(ctx.get("smolagent_kwargs", {}))
+                )
                 result = TaskResult(
                     task_id=tid,
                     agent_id=agent_id,
@@ -452,7 +459,9 @@ class AgentHierarchyManager:
         loop = asyncio.get_running_loop()
         return await loop.run_in_executor(
             None,
-            lambda: self.execute_task(agent_id, task_description, context, task_id=task_id),
+            lambda: self.execute_task(
+                agent_id, task_description, context, task_id=task_id
+            ),
         )
 
     def execute_parallel(
@@ -594,7 +603,9 @@ class AgentHierarchyManager:
                 "name": node.name,
                 "capabilities": [c.name for c in node.capabilities],
                 "state": node.state.value,
-                "children": [_build(cid) for cid in node.children if cid in self._nodes],
+                "children": [
+                    _build(cid) for cid in node.children if cid in self._nodes
+                ],
             }
 
         return _build(start_id)

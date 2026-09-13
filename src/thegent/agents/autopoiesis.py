@@ -30,7 +30,11 @@ class AutopoiesisManager:
 
     def author_persona(self, spec: AgentPersonaSpec) -> SynthesisResult:
         """Autonomously author a new agent persona based on a purpose spec."""
-        _log.info("🌿 Starting Autopoiesis: Authoring new persona '%s' for: %s", spec.name, spec.purpose)
+        _log.info(
+            "🌿 Starting Autopoiesis: Authoring new persona '%s' for: %s",
+            spec.name,
+            spec.purpose,
+        )
 
         # 1. Generate Formal Definition
         formal_spec = f"PERSONA: {spec.name}\nPURPOSE: {spec.purpose}\nINVARIANTS: Termination, ToolSafety"
@@ -41,7 +45,9 @@ class AutopoiesisManager:
         result = self.synthesizer.synthesize(prompt, formal_spec)
 
         if result.verified:
-            _log.info("Autopoiesis successful. New persona architecture synthesized and verified.")
+            _log.info(
+                "Autopoiesis successful. New persona architecture synthesized and verified."
+            )
         else:
             _log.error("Autopoiesis failed verification. Retrying synthesis...")
 

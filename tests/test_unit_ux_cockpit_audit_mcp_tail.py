@@ -52,7 +52,9 @@ def _drive_three_entries() -> None:
     ``--kind`` filter tests have something to discriminate on.
     """
     reset_audit_trail()
-    with audited_budget(AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms", agent="cursor"):
+    with audited_budget(
+        AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms", agent="cursor"
+    ):
         pass
     record_resource_read("observe_summary_ms", agent="claude", outcome="ok")
     record_gate_check("gate_check_ms", agent="cursor", outcome="ok")
@@ -86,7 +88,14 @@ class TestMcpTailRegistration:
         assert result.exit_code == 0
         clean = _strip_ansi(result.output)
         # The filter flags that the CLI exposes should appear in --help.
-        for needle in ("--kind", "--lines", "--agent", "--outcome", "--stats", "--json"):
+        for needle in (
+            "--kind",
+            "--lines",
+            "--agent",
+            "--outcome",
+            "--stats",
+            "--json",
+        ):
             assert needle in clean, f"missing {needle!r} in:\n{clean}"
 
 
@@ -118,14 +127,18 @@ class TestMcpTailJsonOutput:
 
     def test_json_lines_caps_returned_count(self) -> None:
         _drive_three_entries()
-        result = CliRunner().invoke(cockpit_app, ["audit", "mcp-tail", "--json", "--lines", "2"])
+        result = CliRunner().invoke(
+            cockpit_app, ["audit", "mcp-tail", "--json", "--lines", "2"]
+        )
         assert result.exit_code == 0
         lines = [ln for ln in result.output.splitlines() if ln.strip()]
         assert len(lines) == 2
 
     def test_json_kind_filter_narrows_to_one_kind(self) -> None:
         _drive_three_entries()
-        result = CliRunner().invoke(cockpit_app, ["audit", "mcp-tail", "--json", "--kind", "gate_check"])
+        result = CliRunner().invoke(
+            cockpit_app, ["audit", "mcp-tail", "--json", "--kind", "gate_check"]
+        )
         assert result.exit_code == 0
         lines = [ln for ln in result.output.splitlines() if ln.strip()]
         assert len(lines) == 1
@@ -204,7 +217,9 @@ class TestMcpTailFilters:
 
     def test_kind_filter_narrows_to_one_kind(self) -> None:
         _drive_three_entries()
-        result = CliRunner().invoke(cockpit_app, ["audit", "mcp-tail", "--json", "--kind", "gate_check"])
+        result = CliRunner().invoke(
+            cockpit_app, ["audit", "mcp-tail", "--json", "--kind", "gate_check"]
+        )
         assert result.exit_code == 0
         lines = [ln for ln in result.output.splitlines() if ln.strip()]
         assert len(lines) == 1
@@ -214,7 +229,9 @@ class TestMcpTailFilters:
 
     def test_agent_filter_narrows_to_one_agent(self) -> None:
         _drive_three_entries()
-        result = CliRunner().invoke(cockpit_app, ["audit", "mcp-tail", "--json", "--agent", "claude"])
+        result = CliRunner().invoke(
+            cockpit_app, ["audit", "mcp-tail", "--json", "--agent", "claude"]
+        )
         assert result.exit_code == 0
         lines = [ln for ln in result.output.splitlines() if ln.strip()]
         assert len(lines) == 1
@@ -223,7 +240,9 @@ class TestMcpTailFilters:
 
     def test_outcome_filter_narrows_to_matching_outcome(self) -> None:
         _drive_three_entries()
-        result = CliRunner().invoke(cockpit_app, ["audit", "mcp-tail", "--json", "--outcome", "ok"])
+        result = CliRunner().invoke(
+            cockpit_app, ["audit", "mcp-tail", "--json", "--outcome", "ok"]
+        )
         assert result.exit_code == 0
         # All three entries are outcome=ok.
         lines = [ln for ln in result.output.splitlines() if ln.strip()]
@@ -274,7 +293,9 @@ class TestMcpTailErrors:
 
     def test_unknown_kind_exits_nonzero_with_helpful_message(self) -> None:
         _drive_three_entries()
-        result = CliRunner().invoke(cockpit_app, ["audit", "mcp-tail", "--kind", "nonsense"])
+        result = CliRunner().invoke(
+            cockpit_app, ["audit", "mcp-tail", "--kind", "nonsense"]
+        )
         assert result.exit_code != 0
         clean = _strip_ansi(result.output)
         # Should mention the offending kind.
@@ -310,7 +331,9 @@ class TestMcpTailAfterAuditedBudget:
         assert result.exit_code == 0
         assert result.output.strip() == ""
         # Record one entry via the audited_budget helper.
-        with audited_budget(AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms", agent="forge"):
+        with audited_budget(
+            AuditEntryKind.TOOL_INVOCATION, "tool_invoke_ms", agent="forge"
+        ):
             pass
         # Second invocation sees it.
         result = CliRunner().invoke(cockpit_app, ["audit", "mcp-tail", "--json"])

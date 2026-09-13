@@ -60,15 +60,21 @@ def test_pyproject_no_duplicate_ruff_sections() -> None:
     """pyproject.toml must not contain duplicate [tool.ruff] sections."""
     text = PYPROJECT.read_text(encoding="utf-8")
     count = sum(1 for line in text.splitlines() if line.strip() == "[tool.ruff]")
-    assert count <= 1, f"pyproject.toml has {count} [tool.ruff] sections. Only one is allowed."
+    assert count <= 1, (
+        f"pyproject.toml has {count} [tool.ruff] sections. Only one is allowed."
+    )
 
 
 # @trace WL-128 B90-W3-C1
 def test_pyproject_no_duplicate_pytest_sections() -> None:
     """pyproject.toml must not contain duplicate [tool.pytest.ini_options] sections."""
     text = PYPROJECT.read_text(encoding="utf-8")
-    count = sum(1 for line in text.splitlines() if line.strip() == "[tool.pytest.ini_options]")
-    assert count <= 1, f"pyproject.toml has {count} [tool.pytest.ini_options] sections. Only one is allowed."
+    count = sum(
+        1 for line in text.splitlines() if line.strip() == "[tool.pytest.ini_options]"
+    )
+    assert count <= 1, (
+        f"pyproject.toml has {count} [tool.pytest.ini_options] sections. Only one is allowed."
+    )
 
 
 # @trace WL-128 B90-W3-C1

@@ -173,7 +173,9 @@ class TestSpeculativeStrategyEnum:
         assert SpeculativeStrategy.ADAPTIVE_TIMEOUT.value == "adaptive_timeout"
 
     def test_cost_quality_tradeoff_value(self) -> None:
-        assert SpeculativeStrategy.COST_QUALITY_TRADEOFF.value == "cost_quality_tradeoff"
+        assert (
+            SpeculativeStrategy.COST_QUALITY_TRADEOFF.value == "cost_quality_tradeoff"
+        )
 
     def test_early_termination_value(self) -> None:
         assert SpeculativeStrategy.EARLY_TERMINATION.value == "early_termination"
@@ -292,7 +294,9 @@ class TestSelectSpeculativeProvidersTopN:
 
     def test_race_first_caps_at_three(self) -> None:
         providers = ["p1", "p2", "p3", "p4"]
-        assert select_speculative_providers(providers, SpeculativeStrategy.RACE_FIRST) == [
+        assert select_speculative_providers(
+            providers, SpeculativeStrategy.RACE_FIRST
+        ) == [
             "p1",
             "p2",
             "p3",
@@ -300,7 +304,9 @@ class TestSelectSpeculativeProvidersTopN:
 
     def test_race_best_caps_at_three(self) -> None:
         providers = ["p1", "p2", "p3"]
-        assert select_speculative_providers(providers, SpeculativeStrategy.RACE_BEST) == [
+        assert select_speculative_providers(
+            providers, SpeculativeStrategy.RACE_BEST
+        ) == [
             "p1",
             "p2",
             "p3",
@@ -308,15 +314,27 @@ class TestSelectSpeculativeProvidersTopN:
 
     def test_adaptive_timeout_returns_input_when_two_or_fewer(self) -> None:
         providers = ["p1", "p2"]
-        assert select_speculative_providers(providers, SpeculativeStrategy.ADAPTIVE_TIMEOUT) == providers
+        assert (
+            select_speculative_providers(
+                providers, SpeculativeStrategy.ADAPTIVE_TIMEOUT
+            )
+            == providers
+        )
 
     def test_early_termination_returns_input_when_three_or_fewer(self) -> None:
         providers = ["p1", "p2", "p3"]
-        assert select_speculative_providers(providers, SpeculativeStrategy.EARLY_TERMINATION) == providers
+        assert (
+            select_speculative_providers(
+                providers, SpeculativeStrategy.EARLY_TERMINATION
+            )
+            == providers
+        )
 
     def test_adaptive_timeout_caps_at_three(self) -> None:
         providers = ["p1", "p2", "p3", "p4", "p5"]
-        assert select_speculative_providers(providers, SpeculativeStrategy.ADAPTIVE_TIMEOUT) == [
+        assert select_speculative_providers(
+            providers, SpeculativeStrategy.ADAPTIVE_TIMEOUT
+        ) == [
             "p1",
             "p2",
             "p3",

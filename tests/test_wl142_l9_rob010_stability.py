@@ -197,7 +197,9 @@ def test_standard_lane_accepts_any_version(helpers_module, any_version) -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_bg_impl_core_delegates_to_phase_bg_evaluate_contract(bg_impl_core_source: str) -> None:
+def test_bg_impl_core_delegates_to_phase_bg_evaluate_contract(
+    bg_impl_core_source: str,
+) -> None:
     """``bg_impl_core`` must call ``_phase_bg_evaluate_contract(...)``.
 
     Guards against accidental re-inlining that would silently drop the

@@ -149,7 +149,9 @@ class TestContextWindowLimits:
             "gemini-1.5-flash",
         ]
         for model in expected_models:
-            assert model in CONTEXT_WINDOW_LIMITS, f"Model {model!r} missing from CONTEXT_WINDOW_LIMITS"
+            assert model in CONTEXT_WINDOW_LIMITS, (
+                f"Model {model!r} missing from CONTEXT_WINDOW_LIMITS"
+            )
 
     def test_limits_are_positive_ints(self) -> None:
         for model, limit in CONTEXT_WINDOW_LIMITS.items():

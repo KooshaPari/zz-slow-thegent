@@ -28,7 +28,9 @@ class TestMaintenanceBanner:
     @pytest.mark.requirement("WL-229")
     def test_create_banner_with_all_fields(self) -> None:
         """Can create a MaintenanceBanner with all fields specified."""
-        banner = MaintenanceBanner(message="Critical maintenance", active=True, severity="critical")
+        banner = MaintenanceBanner(
+            message="Critical maintenance", active=True, severity="critical"
+        )
 
         assert banner.message == "Critical maintenance"
         assert banner.active is True
@@ -60,7 +62,9 @@ class TestMaintenanceBannerPropagator:
         assert result.active is False
 
     @pytest.mark.requirement("WL-229")
-    def test_set_banner_with_severity(self, propagator: MaintenanceBannerPropagator) -> None:
+    def test_set_banner_with_severity(
+        self, propagator: MaintenanceBannerPropagator
+    ) -> None:
         """Can set a banner with custom severity."""
         result = propagator.set_banner("Critical outage", severity="critical")
 
@@ -68,7 +72,9 @@ class TestMaintenanceBannerPropagator:
         assert result.severity == "critical"
 
     @pytest.mark.requirement("WL-229")
-    def test_set_banner_invalid_severity(self, propagator: MaintenanceBannerPropagator) -> None:
+    def test_set_banner_invalid_severity(
+        self, propagator: MaintenanceBannerPropagator
+    ) -> None:
         """set_banner raises ValueError for invalid severity."""
         with pytest.raises(ValueError, match="Invalid severity"):
             propagator.set_banner("Test", severity="invalid")
@@ -82,7 +88,9 @@ class TestMaintenanceBannerPropagator:
         assert propagator.is_active() is True
 
     @pytest.mark.requirement("WL-229")
-    def test_activate_without_set_raises(self, propagator: MaintenanceBannerPropagator) -> None:
+    def test_activate_without_set_raises(
+        self, propagator: MaintenanceBannerPropagator
+    ) -> None:
         """activate raises RuntimeError if no banner is set."""
         with pytest.raises(RuntimeError, match="No banner has been set"):
             propagator.activate()
@@ -98,29 +106,39 @@ class TestMaintenanceBannerPropagator:
         assert propagator.is_active() is False
 
     @pytest.mark.requirement("WL-229")
-    def test_deactivate_without_set_raises(self, propagator: MaintenanceBannerPropagator) -> None:
+    def test_deactivate_without_set_raises(
+        self, propagator: MaintenanceBannerPropagator
+    ) -> None:
         """deactivate raises RuntimeError if no banner is set."""
         with pytest.raises(RuntimeError, match="No banner has been set"):
             propagator.deactivate()
 
     @pytest.mark.requirement("WL-229")
-    def test_is_active_false_when_not_set(self, propagator: MaintenanceBannerPropagator) -> None:
+    def test_is_active_false_when_not_set(
+        self, propagator: MaintenanceBannerPropagator
+    ) -> None:
         """is_active returns False when no banner is set."""
         assert propagator.is_active() is False
 
     @pytest.mark.requirement("WL-229")
-    def test_is_active_false_when_inactive(self, propagator: MaintenanceBannerPropagator) -> None:
+    def test_is_active_false_when_inactive(
+        self, propagator: MaintenanceBannerPropagator
+    ) -> None:
         """is_active returns False when banner is set but inactive."""
         propagator.set_banner("Maintenance")
         assert propagator.is_active() is False
 
     @pytest.mark.requirement("WL-229")
-    def test_current_none_when_not_set(self, propagator: MaintenanceBannerPropagator) -> None:
+    def test_current_none_when_not_set(
+        self, propagator: MaintenanceBannerPropagator
+    ) -> None:
         """current returns None when no banner is set."""
         assert propagator.current() is None
 
     @pytest.mark.requirement("WL-229")
-    def test_current_returns_banner(self, propagator: MaintenanceBannerPropagator) -> None:
+    def test_current_returns_banner(
+        self, propagator: MaintenanceBannerPropagator
+    ) -> None:
         """current returns the set banner."""
         propagator.set_banner("Test banner", severity="warning")
 
@@ -130,7 +148,9 @@ class TestMaintenanceBannerPropagator:
         assert current.severity == "warning"
 
     @pytest.mark.requirement("WL-229")
-    def test_update_banner_replaces(self, propagator: MaintenanceBannerPropagator) -> None:
+    def test_update_banner_replaces(
+        self, propagator: MaintenanceBannerPropagator
+    ) -> None:
         """Setting a new banner replaces the previous one."""
         propagator.set_banner("Old message")
         propagator.set_banner("New message", severity="critical")
@@ -141,7 +161,9 @@ class TestMaintenanceBannerPropagator:
         assert current.severity == "critical"
 
     @pytest.mark.requirement("WL-229")
-    def test_lifecycle_set_activate_deactivate(self, propagator: MaintenanceBannerPropagator) -> None:
+    def test_lifecycle_set_activate_deactivate(
+        self, propagator: MaintenanceBannerPropagator
+    ) -> None:
         """Complete lifecycle: set -> activate -> deactivate."""
         # Initially inactive
         assert propagator.is_active() is False

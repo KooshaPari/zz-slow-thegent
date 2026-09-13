@@ -275,7 +275,11 @@ class TestResourceSessionMeta:
     @patch("thegent.mcp.server.status_impl")
     def test_returns_json_for_session(self, mock_status: MagicMock) -> None:
         """Returns JSON string with session metadata."""
-        mock_status.return_value = {"session_id": "abc", "status": "running", "pid": 1234}
+        mock_status.return_value = {
+            "session_id": "abc",
+            "status": "running",
+            "pid": 1234,
+        }
         result = _mcp_mod.resource_session_meta(id="abc")
         data = json.loads(result)
         assert data["session_id"] == "abc"
@@ -335,7 +339,9 @@ class TestResourceModelsContract:
     # @trace FR-MCP-075
     def test_returns_route_contract(self) -> None:
         """Returns route contract schema metadata."""
-        with patch("thegent.models.route_contract", return_value={"schema": "v1", "routes": []}):
+        with patch(
+            "thegent.models.route_contract", return_value={"schema": "v1", "routes": []}
+        ):
             result = _mcp_mod.resource_models_contract()
             data = json.loads(result)
             assert data["schema"] == "v1"
@@ -353,15 +359,21 @@ class TestResourceSessionContracts:
         result = _mcp_mod.resource_session_contracts()
         data = json.loads(result)
         assert data["total"] == 5
-        mock_audit.assert_called_once_with(owner=None, all=False, missing_only=False, summary_only=False, strict=False)
+        mock_audit.assert_called_once_with(
+            owner=None, all=False, missing_only=False, summary_only=False, strict=False
+        )
 
     # @trace FR-MCP-077
     @patch("thegent.mcp.server.session_contract_audit_impl")
     def test_passes_all_params(self, mock_audit: MagicMock) -> None:
         """Passes all parameters through to impl."""
         mock_audit.return_value = {"total": 0}
-        _mcp_mod.resource_session_contracts(owner="team-a", all=True, missing_only=True, summary_only=True, strict=True)
-        mock_audit.assert_called_once_with(owner="team-a", all=True, missing_only=True, summary_only=True, strict=True)
+        _mcp_mod.resource_session_contracts(
+            owner="team-a", all=True, missing_only=True, summary_only=True, strict=True
+        )
+        mock_audit.assert_called_once_with(
+            owner="team-a", all=True, missing_only=True, summary_only=True, strict=True
+        )
 
 
 # ===================================================================
@@ -376,7 +388,9 @@ class TestResourceOperations:
     # @trace FR-MCP-078
     def test_list_all_operations(self) -> None:
         """Returns all operations when no filter given."""
-        with patch("thegent.operations.list_operations", return_value={"orchestrate": []}):
+        with patch(
+            "thegent.operations.list_operations", return_value={"orchestrate": []}
+        ):
             result = _mcp_mod.resource_operations()
             data = json.loads(result)
             assert "orchestrate" in data
@@ -389,7 +403,9 @@ class TestResourceOperations:
         mock_entry.command = "thegent run"
         mock_entry.description = "Run agent"
         mock_entry.mcp_tool = "thegent_run"
-        with patch("thegent.operations.get_operations_by_type", return_value=[mock_entry]):
+        with patch(
+            "thegent.operations.get_operations_by_type", return_value=[mock_entry]
+        ):
             result = _mcp_mod.resource_operations(operation="orchestrate")
             data = json.loads(result)
             assert "orchestrate" in data
@@ -410,7 +426,10 @@ class TestResourceModes:
     # @trace FR-MCP-081
     def test_list_all_modes(self) -> None:
         """Returns all modes when no filter given."""
-        with patch("thegent.orchestration_modes.list_modes", return_value=[{"mode": "sequential_delegation"}]):
+        with patch(
+            "thegent.orchestration_modes.list_modes",
+            return_value=[{"mode": "sequential_delegation"}],
+        ):
             result = _mcp_mod.resource_modes()
             data = json.loads(result)
             assert len(data) == 1
@@ -459,7 +478,9 @@ class TestPrompts:
     # @trace FR-MCP-085
     def test_run_agent_prompt_with_cd(self) -> None:
         """Generates run prompt with cd hint."""
-        result = _mcp_mod.thegent_run_agent(agent="gemini", prompt="build it", cd="/project")
+        result = _mcp_mod.thegent_run_agent(
+            agent="gemini", prompt="build it", cd="/project"
+        )
         assert "/project" in result
 
     # @trace FR-MCP-086
@@ -506,15 +527,21 @@ class TestThegentSessionContractsTool:
         result = _mcp_mod.thegent_session_contracts()
         data = _json_content(result)
         assert data["total"] == 3
-        mock_impl.assert_called_once_with(owner=None, all=False, missing_only=False, summary_only=False, strict=False)
+        mock_impl.assert_called_once_with(
+            owner=None, all=False, missing_only=False, summary_only=False, strict=False
+        )
 
     # @trace FR-MCP-091
     @patch("thegent.mcp.server.session_contract_audit_impl")
     def test_session_contracts_with_filters(self, mock_impl: MagicMock) -> None:
         """Passes filter params to impl."""
         mock_impl.return_value = {"total": 1, "sessions": []}
-        _mcp_mod.thegent_session_contracts(owner="me", all=True, missing_only=True, summary_only=True, strict=True)
-        mock_impl.assert_called_once_with(owner="me", all=True, missing_only=True, summary_only=True, strict=True)
+        _mcp_mod.thegent_session_contracts(
+            owner="me", all=True, missing_only=True, summary_only=True, strict=True
+        )
+        mock_impl.assert_called_once_with(
+            owner="me", all=True, missing_only=True, summary_only=True, strict=True
+        )
 
     # @trace FR-MCP-092
     @patch("thegent.mcp.server.session_contract_audit_impl")
@@ -538,7 +565,10 @@ class TestThegentListOperationsTool:
     # @trace FR-MCP-093
     def test_list_all_operations(self) -> None:
         """Returns all operations."""
-        with patch("thegent.operations.list_operations", return_value={"orchestrate": [], "govern": []}):
+        with patch(
+            "thegent.operations.list_operations",
+            return_value={"orchestrate": [], "govern": []},
+        ):
             result = _mcp_mod.thegent_list_operations()
             data = _json_content(result)
             assert "orchestrate" in data
@@ -558,7 +588,10 @@ class TestThegentListModesTool:
     # @trace FR-MCP-095
     def test_list_all_modes(self) -> None:
         """Returns all modes."""
-        with patch("thegent.orchestration_modes.list_modes", return_value=[{"mode": "review_loop"}]):
+        with patch(
+            "thegent.orchestration_modes.list_modes",
+            return_value=[{"mode": "review_loop"}],
+        ):
             result = _mcp_mod.thegent_list_modes()
             data = _json_content(result)
             assert len(data) == 1
@@ -588,7 +621,9 @@ class TestThegentSuggestPromptDeep:
         async def _run() -> None:
             ctx = AsyncMock()
             ctx.sample = AsyncMock(side_effect=RuntimeError("no sampling"))
-            result = await _mcp_mod.thegent_suggest_prompt(raw_prompt="do something", ctx=ctx)
+            result = await _mcp_mod.thegent_suggest_prompt(
+                raw_prompt="do something", ctx=ctx
+            )
             data = _json_content(result)
             assert data["suggested_prompt"] == "do something"
             assert data["sampling_used"] is False
@@ -604,7 +639,9 @@ class TestThegentSuggestPromptDeep:
             sample_result = MagicMock()
             sample_result.text = "Refined: do something better"
             ctx.sample = AsyncMock(return_value=sample_result)
-            result = await _mcp_mod.thegent_suggest_prompt(raw_prompt="do something", ctx=ctx)
+            result = await _mcp_mod.thegent_suggest_prompt(
+                raw_prompt="do something", ctx=ctx
+            )
             data = _json_content(result)
             assert data["suggested_prompt"] == "Refined: do something better"
             assert data["sampling_used"] is True
@@ -620,7 +657,9 @@ class TestThegentSuggestPromptDeep:
             sample_result = MagicMock()
             sample_result.text = "  trimmed prompt  "
             ctx.sample = AsyncMock(return_value=sample_result)
-            result = await _mcp_mod.thegent_suggest_prompt(raw_prompt="do something", ctx=ctx)
+            result = await _mcp_mod.thegent_suggest_prompt(
+                raw_prompt="do something", ctx=ctx
+            )
             data = _json_content(result)
             assert data["suggested_prompt"] == "trimmed prompt"
 
@@ -639,7 +678,9 @@ class TestThegentDagListDeep:
     # @trace FR-MCP-051
     @patch("thegent.mcp.server._resolve_cwd", return_value=None)
     @patch("thegent.mcp.server.dag_list_impl")
-    def test_dag_list_declined_elicitation(self, mock_dag: MagicMock, mock_cwd: MagicMock) -> None:
+    def test_dag_list_declined_elicitation(
+        self, mock_dag: MagicMock, mock_cwd: MagicMock
+    ) -> None:
         """Returns error when user declines CWD elicitation."""
         try:
             from fastmcp.server.context import DeclinedElicitation
@@ -663,7 +704,9 @@ class TestThegentDagListDeep:
     # @trace FR-MCP-052
     @patch("thegent.mcp.server._resolve_cwd", return_value=None)
     @patch("thegent.mcp.server.dag_list_impl")
-    def test_dag_list_cancelled_elicitation(self, mock_dag: MagicMock, mock_cwd: MagicMock) -> None:
+    def test_dag_list_cancelled_elicitation(
+        self, mock_dag: MagicMock, mock_cwd: MagicMock
+    ) -> None:
         """Returns error when CWD elicitation is cancelled."""
         try:
             from fastmcp.server.context import CancelledElicitation
@@ -686,7 +729,9 @@ class TestThegentDagListDeep:
     # @trace FR-MCP-053
     @patch("thegent.mcp.server._resolve_cwd", return_value=None)
     @patch("thegent.mcp.server.dag_list_impl")
-    def test_dag_list_ambiguous_elicitation(self, mock_dag: MagicMock, mock_cwd: MagicMock) -> None:
+    def test_dag_list_ambiguous_elicitation(
+        self, mock_dag: MagicMock, mock_cwd: MagicMock
+    ) -> None:
         """Returns error for unrecognized elicitation type."""
         ambiguous = MagicMock()
         ambiguous.__class__ = type("UnknownElicitation", (), {})
@@ -704,13 +749,20 @@ class TestThegentDagListDeep:
     # @trace FR-MCP-054
     @patch("thegent.mcp.server._resolve_cwd", return_value=Path("/tmp/project"))
     @patch("thegent.mcp.server.dag_list_impl")
-    def test_dag_list_with_resolved_cwd(self, mock_dag: MagicMock, mock_cwd: MagicMock) -> None:
+    def test_dag_list_with_resolved_cwd(
+        self, mock_dag: MagicMock, mock_cwd: MagicMock
+    ) -> None:
         """Returns DAG data when CWD resolves successfully."""
-        mock_dag.return_value = {"frontmatter": {"project": "test"}, "tasks": [{"id": "T1"}]}
+        mock_dag.return_value = {
+            "frontmatter": {"project": "test"},
+            "tasks": [{"id": "T1"}],
+        }
 
         async def _run() -> ToolResult:
             ctx = AsyncMock()
-            return await _mcp_mod.thegent_dag_list(cd="/tmp/project", ctx=ctx, default_cwd=None)
+            return await _mcp_mod.thegent_dag_list(
+                cd="/tmp/project", ctx=ctx, default_cwd=None
+            )
 
         result = asyncio.run(_run())
         data = _json_content(result)
@@ -763,7 +815,11 @@ class TestGetEventStore:
     # @trace FR-MCP-057
     def test_redis_store_when_url_set(self) -> None:
         """Returns EventStore with Redis storage when URL is set."""
-        with patch.dict(os.environ, {"FASTMCP_EVENT_STORE_URL": "redis://localhost:6379"}, clear=False):
+        with patch.dict(
+            os.environ,
+            {"FASTMCP_EVENT_STORE_URL": "redis://localhost:6379"},
+            clear=False,
+        ):
             with patch("key_value.aio.stores.redis.RedisStore") as mock_redis:
                 mock_redis.return_value = MagicMock()
                 store = _mcp_mod._get_event_store()
@@ -817,7 +873,10 @@ class TestRunFunction:
     @patch("thegent.config.ThegentSettings")
     @patch.object(_mcp_mod.mcp, "http_app")
     def test_run_default_host_port(
-        self, mock_http_app: MagicMock, mock_settings_cls: MagicMock, mock_uvicorn: MagicMock
+        self,
+        mock_http_app: MagicMock,
+        mock_settings_cls: MagicMock,
+        mock_uvicorn: MagicMock,
     ) -> None:
         """Uses settings.mcp_host and settings.mcp_port when no overrides."""
         with patch.dict(os.environ, {}, clear=False):
@@ -840,7 +899,10 @@ class TestRunFunction:
     @patch("thegent.config.ThegentSettings")
     @patch.object(_mcp_mod.mcp, "http_app")
     def test_run_custom_host_port(
-        self, mock_http_app: MagicMock, mock_settings_cls: MagicMock, mock_uvicorn: MagicMock
+        self,
+        mock_http_app: MagicMock,
+        mock_settings_cls: MagicMock,
+        mock_uvicorn: MagicMock,
     ) -> None:
         """Uses explicit host/port when provided."""
         with patch.dict(os.environ, {}, clear=False):
@@ -931,7 +993,11 @@ class TestResourceSessionContractHealthTrend:
     @patch("thegent.mcp.server.session_contract_health_trend_impl")
     def test_returns_trend_data(self, mock_impl: MagicMock) -> None:
         """Returns trend payload with stable JSON."""
-        mock_impl.return_value = {"snapshots": [], "delta_summary": {}, "payload_type": "trend"}
+        mock_impl.return_value = {
+            "snapshots": [],
+            "delta_summary": {},
+            "payload_type": "trend",
+        }
         result = _mcp_mod.resource_session_contract_health_trend()
         data = json.loads(result)
         assert data["payload_type"] == "trend"
@@ -1114,7 +1180,9 @@ class TestResourceSessionsDeep:
 
     # @trace FR-MCP-069
     @patch("thegent.mcp.server.ps_impl")
-    def test_resource_sessions_passes_include_contract(self, mock_ps: MagicMock) -> None:
+    def test_resource_sessions_passes_include_contract(
+        self, mock_ps: MagicMock
+    ) -> None:
         """Passes include_contract flag through."""
         mock_ps.return_value = []
         _mcp_mod.resource_sessions(include_contract=True)
@@ -1166,7 +1234,9 @@ class TestThegentListModelsDeep:
         result = _mcp_mod.thegent_list_models(by_model=True)
         data = _json_content(result)
         assert "claude-sonnet-4" in data
-        mock_impl.assert_called_once_with(provider=None, include_contract=False, by_model=True)
+        mock_impl.assert_called_once_with(
+            provider=None, include_contract=False, by_model=True
+        )
 
 
 # ===================================================================
@@ -1219,7 +1289,9 @@ class TestResourceSessionContractHealthGateDeep:
     def test_passes_regression_params(self, mock_impl: MagicMock) -> None:
         """Passes no_worse_than_baseline and regression_tolerance."""
         mock_impl.return_value = {"pass": True}
-        _mcp_mod.resource_session_contract_health_gate(no_worse_than_baseline=True, regression_tolerance=0.1)
+        _mcp_mod.resource_session_contract_health_gate(
+            no_worse_than_baseline=True, regression_tolerance=0.1
+        )
         call_kwargs = mock_impl.call_args[1]
         assert call_kwargs["no_worse_than_baseline"] is True
         assert call_kwargs["regression_tolerance"] == 0.1

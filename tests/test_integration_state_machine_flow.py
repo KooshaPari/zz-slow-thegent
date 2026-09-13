@@ -199,7 +199,10 @@ class TestStateMachineWithTelemetry:
 
         # Read telemetry file and verify an event was recorded
         assert telemetry.telemetry_path.exists()
-        events = [json.loads(line) for line in telemetry.telemetry_path.read_text().strip().splitlines()]
+        events = [
+            json.loads(line)
+            for line in telemetry.telemetry_path.read_text().strip().splitlines()
+        ]
         assert len(events) >= 1
         norm_events = [e for e in events if e["event_type"] == EVENT_NORMALIZATION]
         assert len(norm_events) >= 1
@@ -235,7 +238,10 @@ class TestStateMachineWithTelemetry:
         )
         sm.run(factory, prompt="Test")
 
-        events = [json.loads(line) for line in telemetry.telemetry_path.read_text().strip().splitlines()]
+        events = [
+            json.loads(line)
+            for line in telemetry.telemetry_path.read_text().strip().splitlines()
+        ]
         event_types = {e["event_type"] for e in events}
         # The adapter puts validate_csm issues into parse_errors, so the state
         # machine sees them as structural drift rather than semantic drift.
@@ -270,7 +276,10 @@ class TestStateMachineWithTelemetry:
         )
         sm.run(factory, prompt="Test")
 
-        events = [json.loads(line) for line in telemetry.telemetry_path.read_text().strip().splitlines()]
+        events = [
+            json.loads(line)
+            for line in telemetry.telemetry_path.read_text().strip().splitlines()
+        ]
         # Should record at least one event (either structural drift or normalization with errors)
         assert len(events) >= 1
 
@@ -280,7 +289,9 @@ class TestStateMachineWithTelemetry:
         telemetry = ContractTelemetry(tmp_path)
         runner = SyncMockRunner()
         runner.add_result(make_run_result(exit_code=0, stdout=_make_xml_stdout()))
-        runner.add_result(make_run_result(exit_code=0, stdout=_make_xml_stdout(summary="Second")))
+        runner.add_result(
+            make_run_result(exit_code=0, stdout=_make_xml_stdout(summary="Second"))
+        )
         factory = _runner_factory_from_dict({"claude": runner})
 
         # Run twice

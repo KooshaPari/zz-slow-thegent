@@ -41,7 +41,9 @@ def chaos_engine():
 
 @pytest.mark.deep
 @patch("thegent.agents.loop_controller.run_impl")
-def test_lifecycle_loop_resilience_to_transient_failures(mock_run, controller, chaos_engine):
+def test_lifecycle_loop_resilience_to_transient_failures(
+    mock_run, controller, chaos_engine
+):
     """Lifecycle Loop should retry on transient failures injected by Chaos Engine."""
 
     # Define a side effect that fails with a retryable error first, then succeeds
@@ -63,7 +65,9 @@ def test_lifecycle_loop_resilience_to_transient_failures(mock_run, controller, c
     assert state.stopped is True
     assert "Human stop signal" in state.stop_reason
     assert call_count == 2  # One failure, one success after retry
-    assert state.iteration == 1  # Success happened in iteration 1 (after internal retries)
+    assert (
+        state.iteration == 1
+    )  # Success happened in iteration 1 (after internal retries)
 
 
 @pytest.mark.deep
@@ -71,7 +75,11 @@ def test_lifecycle_loop_resilience_to_transient_failures(mock_run, controller, c
 def test_lifecycle_loop_stops_on_permanent_failure(mock_run, controller):
     """Lifecycle Loop should NOT retry on permanent failures."""
 
-    mock_run.return_value = {"exit_code": 1, "stdout": "Permanent Error: Invalid Config", "stderr": ""}
+    mock_run.return_value = {
+        "exit_code": 1,
+        "stdout": "Permanent Error: Invalid Config",
+        "stderr": "",
+    }
 
     state = controller.run_loop("Start", "Todo")
 

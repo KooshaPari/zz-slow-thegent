@@ -25,7 +25,9 @@ def test_run_hook_timeout_handles_text_streams(monkeypatch) -> None:
     )
 
     def _raise_timeout(*args, **kwargs):
-        raise subprocess.TimeoutExpired(cmd=args[0], timeout=5, output="partial-out", stderr="partial-err")
+        raise subprocess.TimeoutExpired(
+            cmd=args[0], timeout=5, output="partial-out", stderr="partial-err"
+        )
 
     monkeypatch.setattr("thegent.infra.hook_runner.subprocess.run", _raise_timeout)
 
@@ -57,4 +59,10 @@ def test_run_hook_builds_powershell_file_command(monkeypatch) -> None:
 
     result = run_hook(Path("hooks/example.ps1"))
     assert result.returncode == 0
-    assert calls[0] == ["pwsh", "-NoProfile", "-NonInteractive", "-File", "hooks/example.ps1"]
+    assert calls[0] == [
+        "pwsh",
+        "-NoProfile",
+        "-NonInteractive",
+        "-File",
+        "hooks/example.ps1",
+    ]

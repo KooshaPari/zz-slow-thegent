@@ -32,8 +32,12 @@ def list_timeline(
     limit: int = 30,
     branch: str | None = None,
 ) -> dict[str, list[str] | bool | str]:
-    branches = run_git(repo_path, ["for-each-ref", "--format=%(refname:short)", "refs/heads"]).splitlines()
-    tags = run_git(repo_path, ["for-each-ref", "--format=%(refname:short)", "refs/tags"]).splitlines()
+    branches = run_git(
+        repo_path, ["for-each-ref", "--format=%(refname:short)", "refs/heads"]
+    ).splitlines()
+    tags = run_git(
+        repo_path, ["for-each-ref", "--format=%(refname:short)", "refs/tags"]
+    ).splitlines()
     selected_ref = "HEAD"
     head_sha = run_git(repo_path, ["rev-parse", "HEAD^{commit}"])
     branch_exists = False
@@ -73,14 +77,24 @@ def _safe_remove_path(path: Path) -> None:
     shutil.rmtree(path)
 
 
-def materialize_repo_checkout(source_repo: Path, checkout_path: Path, resolved_sha: str) -> None:
+def materialize_repo_checkout(
+    source_repo: Path, checkout_path: Path, resolved_sha: str
+) -> None:
     checkout_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Remove existing materialization to keep deterministic state.
     if checkout_path.exists():
         # Attempt to remove as worktree first; ignore if not registered.
         subprocess.run(
-            ["git", "-C", str(source_repo), "worktree", "remove", "--force", str(checkout_path)],
+            [
+                "git",
+                "-C",
+                str(source_repo),
+                "worktree",
+                "remove",
+                "--force",
+                str(checkout_path),
+            ],
             capture_output=True,
             text=True,
             check=False,
@@ -88,7 +102,16 @@ def materialize_repo_checkout(source_repo: Path, checkout_path: Path, resolved_s
         _safe_remove_path(checkout_path)
 
     proc = subprocess.run(
-        ["git", "-C", str(source_repo), "worktree", "add", "--detach", str(checkout_path), resolved_sha],
+        [
+            "git",
+            "-C",
+            str(source_repo),
+            "worktree",
+            "add",
+            "--detach",
+            str(checkout_path),
+            resolved_sha,
+        ],
         capture_output=True,
         text=True,
         check=False,

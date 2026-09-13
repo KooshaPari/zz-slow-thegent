@@ -12,7 +12,9 @@ class _Settings:
         self.session_dir = session_dir
 
 
-def test_load_calibration_logs_corrupt_json_and_returns_empty(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+def test_load_calibration_logs_corrupt_json_and_returns_empty(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
     calibration_file = tmp_path / "confidence_calibration.json"
     calibration_file.write_text("{bad", encoding="utf-8")
 
@@ -22,7 +24,9 @@ def test_load_calibration_logs_corrupt_json_and_returns_empty(tmp_path: Path, ca
     assert "Failed to parse calibration JSON" in caplog.text
 
 
-def test_load_calibration_logs_wrong_shape_and_returns_empty(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+def test_load_calibration_logs_wrong_shape_and_returns_empty(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
     calibration_file = tmp_path / "confidence_calibration.json"
     calibration_file.write_text('["not", "a", "map"]', encoding="utf-8")
 

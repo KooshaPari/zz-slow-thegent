@@ -18,10 +18,15 @@ OBSERVE_SUMMARY_SCHEMA_VERSION = "observe-summary-schema-v1"
 def hash_observe_summary_payload(payload: dict[str, Any]) -> dict[str, str]:
     """Return a stable hash for an observe-summary payload."""
     payload_for_hash = {
-        key: value for key, value in payload.items() if key not in {"generated_at_utc", "payload_signature"}
+        key: value
+        for key, value in payload.items()
+        if key not in {"generated_at_utc", "payload_signature"}
     }
     body = json.dumps(payload_for_hash, option=json.OPT_SORT_KEYS).decode()
-    return {"algorithm": "sha256", "value": hashlib.sha256(body.encode("utf-8")).hexdigest()}
+    return {
+        "algorithm": "sha256",
+        "value": hashlib.sha256(body.encode("utf-8")).hexdigest(),
+    }
 
 
 def build_observe_summary_trend_scope(
@@ -154,8 +159,12 @@ def classify_observe_summary_trend_health(
     trend_sampling_mode: str,
 ) -> dict[str, Any]:
     policy: dict[str, Any] = {
-        "healthy_threshold": parse_observe_summary_env_int("THGENT_OBSERVE_SUMMARY_TREND_HEALTH_GOOD_THRESHOLD", 95),
-        "warning_threshold": parse_observe_summary_env_int("THGENT_OBSERVE_SUMMARY_TREND_HEALTH_WARNING_THRESHOLD", 80),
+        "healthy_threshold": parse_observe_summary_env_int(
+            "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_GOOD_THRESHOLD", 95
+        ),
+        "warning_threshold": parse_observe_summary_env_int(
+            "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_WARNING_THRESHOLD", 80
+        ),
         "degraded_threshold": parse_observe_summary_env_int(
             "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_DEGRADED_THRESHOLD", 50
         ),
@@ -172,14 +181,21 @@ def classify_observe_summary_trend_health(
             "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_DEFICIT_PENALTY_PER_MISSING_SAMPLE", 15
         ),
         "invalid_timestamp_penalty_per_event": parse_observe_summary_env_float(
-            "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_INVALID_TIMESTAMP_PENALTY_PER_EVENT", 12
+            "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_INVALID_TIMESTAMP_PENALTY_PER_EVENT",
+            12,
         ),
-        "stale_penalty": parse_observe_summary_env_float("THGENT_OBSERVE_SUMMARY_TREND_HEALTH_STALE_PENALTY", 8),
-        "critical_penalty": parse_observe_summary_env_float("THGENT_OBSERVE_SUMMARY_TREND_HEALTH_CRITICAL_PENALTY", 20),
+        "stale_penalty": parse_observe_summary_env_float(
+            "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_STALE_PENALTY", 8
+        ),
+        "critical_penalty": parse_observe_summary_env_float(
+            "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_CRITICAL_PENALTY", 20
+        ),
         "unknown_or_future_penalty": parse_observe_summary_env_float(
             "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_UNKNOWN_OR_FUTURE_PENALTY", 30
         ),
-        "gap_penalty": parse_observe_summary_env_float("THGENT_OBSERVE_SUMMARY_TREND_HEALTH_GAP_PENALTY", 10),
+        "gap_penalty": parse_observe_summary_env_float(
+            "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_GAP_PENALTY", 10
+        ),
         "missing_baseline_penalty": parse_observe_summary_env_float(
             "THGENT_OBSERVE_SUMMARY_TREND_HEALTH_MISSING_BASELINE_PENALTY", 45
         ),
@@ -230,14 +246,19 @@ def classify_observe_summary_trend_health(
         penalties["coverage"] = 0.0
     elif trend_snapshot_coverage_pct < policy["min_coverage_pct"]:
         coverage_shortfall = policy["min_coverage_pct"] - trend_snapshot_coverage_pct
-        penalties["coverage"] = round(coverage_shortfall * policy["coverage_penalty_per_pct"], 6)
+        penalties["coverage"] = round(
+            coverage_shortfall * policy["coverage_penalty_per_pct"], 6
+        )
 
     if trend_snapshot_deficit > 0:
-        penalties["deficit"] = trend_snapshot_deficit * policy["deficit_penalty_per_missing_sample"]
+        penalties["deficit"] = (
+            trend_snapshot_deficit * policy["deficit_penalty_per_missing_sample"]
+        )
 
     if trend_snapshot_invalid_timestamps > policy["max_invalid_timestamps"]:
         penalties["invalid_timestamps"] = (
-            trend_snapshot_invalid_timestamps * policy["invalid_timestamp_penalty_per_event"]
+            trend_snapshot_invalid_timestamps
+            * policy["invalid_timestamp_penalty_per_event"]
         )
 
     if trend_snapshot_freshness_bucket == "stale":
@@ -267,15 +288,25 @@ def classify_observe_summary_trend_health(
             "Increase capture coverage by reducing trend sample window or lowering requested samples."
         )
     if trend_snapshot_deficit > 0:
-        recommendations.append("Trend history is incomplete; expected samples were not all available.")
+        recommendations.append(
+            "Trend history is incomplete; expected samples were not all available."
+        )
     if trend_snapshot_invalid_timestamps > policy["max_invalid_timestamps"]:
-        recommendations.append("Snapshot contains invalid/missing timestamps; normalize capture time format.")
+        recommendations.append(
+            "Snapshot contains invalid/missing timestamps; normalize capture time format."
+        )
     if trend_snapshot_freshness_bucket in {"stale", "critical"}:
-        recommendations.append("Trend freshness is degraded; capture cadence may be too low.")
+        recommendations.append(
+            "Trend freshness is degraded; capture cadence may be too low."
+        )
     if trend_snapshot_gap_count > 0:
-        recommendations.append("Snapshot gaps detected; verify persistence and scheduler cadence.")
+        recommendations.append(
+            "Snapshot gaps detected; verify persistence and scheduler cadence."
+        )
     if not baseline_available:
-        recommendations.append("No baseline snapshot available; next run may enable full delta reporting.")
+        recommendations.append(
+            "No baseline snapshot available; next run may enable full delta reporting."
+        )
     if not recommendations:
         recommendations.append("Trend quality is healthy.")
 
@@ -351,49 +382,87 @@ def append_observe_summary_snapshot(
         "scope_key_json": scope_key_json,
         "scope_signature": trend_scope_signature,
         "trend_scope_signature": trend_scope_signature,
-        "trend_previous_samples_requested": trend_summary.get("trend_previous_samples_requested", 0),
-        "trend_snapshot_expected_count": trend_summary.get("trend_snapshot_expected_count", 0),
+        "trend_previous_samples_requested": trend_summary.get(
+            "trend_previous_samples_requested", 0
+        ),
+        "trend_snapshot_expected_count": trend_summary.get(
+            "trend_snapshot_expected_count", 0
+        ),
         "trend_snapshot_deficit": trend_summary.get("trend_snapshot_deficit", 0),
-        "trend_snapshot_interval_seconds_avg": trend_summary.get("trend_snapshot_interval_seconds_avg"),
-        "trend_snapshot_interval_seconds_min": trend_summary.get("trend_snapshot_interval_seconds_min"),
-        "trend_snapshot_interval_seconds_max": trend_summary.get("trend_snapshot_interval_seconds_max"),
+        "trend_snapshot_interval_seconds_avg": trend_summary.get(
+            "trend_snapshot_interval_seconds_avg"
+        ),
+        "trend_snapshot_interval_seconds_min": trend_summary.get(
+            "trend_snapshot_interval_seconds_min"
+        ),
+        "trend_snapshot_interval_seconds_max": trend_summary.get(
+            "trend_snapshot_interval_seconds_max"
+        ),
         "trend_snapshot_gap_count": trend_summary.get("trend_snapshot_gap_count", 0),
-        "trend_snapshot_invalid_timestamps": trend_summary.get("trend_snapshot_invalid_timestamps", 0),
+        "trend_snapshot_invalid_timestamps": trend_summary.get(
+            "trend_snapshot_invalid_timestamps", 0
+        ),
         "trend_snapshot_coverage_pct": trend_summary.get("trend_snapshot_coverage_pct"),
-        "trend_snapshot_freshness_bucket": trend_summary.get("trend_snapshot_freshness_bucket", "unknown"),
-        "trend_snapshot_freshness_seconds": trend_summary.get("trend_snapshot_freshness_seconds"),
+        "trend_snapshot_freshness_bucket": trend_summary.get(
+            "trend_snapshot_freshness_bucket", "unknown"
+        ),
+        "trend_snapshot_freshness_seconds": trend_summary.get(
+            "trend_snapshot_freshness_seconds"
+        ),
         "trend_snapshot_health": trend_summary.get("trend_snapshot_health", "disabled"),
         "trend_snapshot_health_score": trend_summary.get("trend_snapshot_health_score"),
-        "trend_snapshot_recommendations": trend_summary.get("trend_snapshot_recommendations", []),
-        "trend_snapshot_health_breakdown": trend_summary.get("trend_snapshot_health_breakdown", {}),
+        "trend_snapshot_recommendations": trend_summary.get(
+            "trend_snapshot_recommendations", []
+        ),
+        "trend_snapshot_health_breakdown": trend_summary.get(
+            "trend_snapshot_health_breakdown", {}
+        ),
         "trend_snapshot_ids": trend_snapshot_ids,
         "trend_snapshot_ids_csv": trend_summary.get("trend_snapshot_ids_csv", ""),
         "trend_snapshot_ids_hash": trend_summary.get("trend_snapshot_ids_hash", ""),
-        "trend_snapshot_window_seconds": trend_summary.get("trend_snapshot_window_seconds"),
+        "trend_snapshot_window_seconds": trend_summary.get(
+            "trend_snapshot_window_seconds"
+        ),
         "trend_sampling_mode": trend_summary.get("trend_sampling_mode", "disabled"),
         "trend_enabled": trend_summary.get("enabled", False),
-        "schema_version": payload.get("payload_schema_version", OBSERVE_SUMMARY_SCHEMA_VERSION),
+        "schema_version": payload.get(
+            "payload_schema_version", OBSERVE_SUMMARY_SCHEMA_VERSION
+        ),
         "payload_type": "observe_summary",
         "status": payload.get("status", ""),
         "total_events": payload.get("kpis", {}).get("total_events", 0),
         "fallback_rate": payload.get("kpis", {}).get("fallback_rate", 0.0),
         "success_rate": payload.get("kpis", {}).get("success_rate", 0.0),
         "avg_confidence": payload.get("kpis", {}).get("avg_confidence", 0.0),
-        "structural_drift_pct": payload.get("kpis", {}).get("structural_drift_pct", 0.0),
+        "structural_drift_pct": payload.get("kpis", {}).get(
+            "structural_drift_pct", 0.0
+        ),
         "semantic_drift_pct": payload.get("kpis", {}).get("semantic_drift_pct", 0.0),
-        "drift_structural_rate_pct": payload.get("drift", {}).get("structural_rate_pct", 0.0),
-        "drift_semantic_rate_pct": payload.get("drift", {}).get("semantic_rate_pct", 0.0),
+        "drift_structural_rate_pct": payload.get("drift", {}).get(
+            "structural_rate_pct", 0.0
+        ),
+        "drift_semantic_rate_pct": payload.get("drift", {}).get(
+            "semantic_rate_pct", 0.0
+        ),
         "backlog_count": payload.get("escalation", {}).get("backlog_count", 0),
         "past_sla_count": payload.get("escalation", {}).get("past_sla_count", 0),
         "provider": payload.get("generated_query", {}).get("provider", None),
         "drift_window": payload.get("generated_query", {}).get("drift_window", 0),
-        "structural_budget_pct": payload.get("generated_query", {}).get("structural_budget_pct", 0.0),
-        "semantic_budget_pct": payload.get("generated_query", {}).get("semantic_budget_pct", 0.0),
+        "structural_budget_pct": payload.get("generated_query", {}).get(
+            "structural_budget_pct", 0.0
+        ),
+        "semantic_budget_pct": payload.get("generated_query", {}).get(
+            "semantic_budget_pct", 0.0
+        ),
         "top_escalations": payload.get("generated_query", {}).get("top_escalations", 0),
         "limit": payload.get("generated_query", {}).get("limit", 0),
-        "trend_samples_requested": payload.get("generated_query", {}).get("trend_samples", 0),
+        "trend_samples_requested": payload.get("generated_query", {}).get(
+            "trend_samples", 0
+        ),
         "trend_effective_samples": trend_summary.get("trend_effective_samples", 0),
-        "trend_scope_payload_type": trend_scope_key.get("payload_type", "observe_summary"),
+        "trend_scope_payload_type": trend_scope_key.get(
+            "payload_type", "observe_summary"
+        ),
     }
 
     path = health_snapshot_log_path()
@@ -409,7 +478,9 @@ def append_observe_summary_snapshot(
 def hash_health_payload(payload: dict[str, Any]) -> dict[str, str]:
     """Return a stable hash for a health payload while ignoring timestamp/signature fields."""
     payload_for_hash = {
-        key: value for key, value in payload.items() if key not in {"generated_at_utc", "payload_signature"}
+        key: value
+        for key, value in payload.items()
+        if key not in {"generated_at_utc", "payload_signature"}
     }
     body = json.dumps(payload_for_hash, option=json.OPT_SORT_KEYS).decode()
     return {"algorithm": "sha256", "value": hashlib.sha256(body.encode()).hexdigest()}
@@ -418,7 +489,11 @@ def hash_health_payload(payload: dict[str, Any]) -> dict[str, str]:
 def health_snapshot_log_path() -> Path:
     settings = ThegentSettings()
     raw = str(settings.health_snapshot_path) if settings.health_snapshot_path else ""
-    path = Path(raw).expanduser() if raw else Path.home() / ".thegent" / "health-snapshots.jsonl"
+    path = (
+        Path(raw).expanduser()
+        if raw
+        else Path.home() / ".thegent" / "health-snapshots.jsonl"
+    )
     path.parent.mkdir(parents=True, exist_ok=True)
     return path
 

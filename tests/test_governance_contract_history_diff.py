@@ -15,7 +15,9 @@ def _repo_root() -> Path:
 
 
 @pytest.mark.unit
-def test_governance_contract_history_diff_handles_missing_previous(tmp_path: Path) -> None:
+def test_governance_contract_history_diff_handles_missing_previous(
+    tmp_path: Path,
+) -> None:
     current = tmp_path / "current.json"
     current.write_text(
         json.dumps(
@@ -62,7 +64,9 @@ def test_governance_contract_history_diff_handles_missing_previous(tmp_path: Pat
 
 
 @pytest.mark.unit
-def test_governance_contract_history_diff_reports_changed_checks(tmp_path: Path) -> None:
+def test_governance_contract_history_diff_reports_changed_checks(
+    tmp_path: Path,
+) -> None:
     prev = tmp_path / "prev.json"
     current = tmp_path / "current.json"
     prev.write_text(
@@ -121,4 +125,6 @@ def test_governance_contract_history_diff_reports_changed_checks(tmp_path: Path)
     payload = json.loads(diff_json.read_text(encoding="utf-8"))
     assert payload["previous_available"] is True
     assert payload["failed_delta"] == 1
-    assert payload["changed_checks"] == [{"name": "a", "prev_ok": True, "curr_ok": False}]
+    assert payload["changed_checks"] == [
+        {"name": "a", "prev_ok": True, "curr_ok": False}
+    ]

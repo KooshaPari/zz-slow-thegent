@@ -46,11 +46,17 @@ def test_escalation_queue_sorting(mock_settings):
     queue = EscalationQueue(settings=mock_settings)
 
     # Normal priority, long deadline
-    queue.escalate("r1", "p1", "re1", "a1", priority=EscalationPriority.NORMAL, sla_minutes=100)
+    queue.escalate(
+        "r1", "p1", "re1", "a1", priority=EscalationPriority.NORMAL, sla_minutes=100
+    )
     # Urgent priority, short deadline
-    queue.escalate("r2", "p2", "re2", "a1", priority=EscalationPriority.URGENT, sla_minutes=10)
+    queue.escalate(
+        "r2", "p2", "re2", "a1", priority=EscalationPriority.URGENT, sla_minutes=10
+    )
     # High priority
-    queue.escalate("r3", "p3", "re3", "a1", priority=EscalationPriority.HIGH, sla_minutes=50)
+    queue.escalate(
+        "r3", "p3", "re3", "a1", priority=EscalationPriority.HIGH, sla_minutes=50
+    )
 
     items = queue.list_items()
     assert len(items) == 3

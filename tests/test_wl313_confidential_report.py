@@ -140,7 +140,9 @@ def test_redact_confidential_nested_lists_and_dicts() -> None:
 def test_wrap_report_public() -> None:
     """Test wrap_report with PUBLIC sensitivity."""
     report = {"user": "alice", "token": "secret123"}
-    result = ConfidentialReportFilter.wrap_report(report, ReportSensitivity.PUBLIC, "REP-001")
+    result = ConfidentialReportFilter.wrap_report(
+        report, ReportSensitivity.PUBLIC, "REP-001"
+    )
     assert result["report_id"] == "REP-001"
     assert result["sensitivity"] == "public"
     assert result["data"]["token"] == "secret123"
@@ -153,7 +155,9 @@ def test_wrap_report_public() -> None:
 def test_wrap_report_confidential() -> None:
     """Test wrap_report with CONFIDENTIAL sensitivity."""
     report = {"user": "alice", "token": "secret123"}
-    result = ConfidentialReportFilter.wrap_report(report, ReportSensitivity.CONFIDENTIAL, "REP-002")
+    result = ConfidentialReportFilter.wrap_report(
+        report, ReportSensitivity.CONFIDENTIAL, "REP-002"
+    )
     assert result["report_id"] == "REP-002"
     assert result["sensitivity"] == "confidential"
     assert result["data"]["user"] == "alice"
@@ -166,7 +170,9 @@ def test_wrap_report_includes_iso_timestamp() -> None:
     """Test wrap_report includes valid ISO timestamp."""
     report = {"data": "test"}
     before = datetime.now(UTC)
-    result = ConfidentialReportFilter.wrap_report(report, ReportSensitivity.PUBLIC, "REP-003")
+    result = ConfidentialReportFilter.wrap_report(
+        report, ReportSensitivity.PUBLIC, "REP-003"
+    )
     after = datetime.now(UTC)
 
     timestamp = datetime.fromisoformat(result["generated_at"])

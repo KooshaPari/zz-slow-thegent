@@ -14,7 +14,9 @@ logger = logging.getLogger(__name__)
 class SubprocessManager:
     """Manager for subprocess lifecycle with resource tracking."""
 
-    MAX_CONCURRENT_PROCESSES = 300  # Increased from 50 to support 30-300 concurrent sessions
+    MAX_CONCURRENT_PROCESSES = (
+        300  # Increased from 50 to support 30-300 concurrent sessions
+    )
     MAX_PROCESS_UPTIME = 3600  # 1 hour
 
     def __init__(self) -> None:
@@ -33,7 +35,9 @@ class SubprocessManager:
         # Check resource limits
         with self._lock:
             if self._active_count >= self.MAX_CONCURRENT_PROCESSES:
-                raise RuntimeError(f"Maximum concurrent processes ({self.MAX_CONCURRENT_PROCESSES}) exceeded")
+                raise RuntimeError(
+                    f"Maximum concurrent processes ({self.MAX_CONCURRENT_PROCESSES}) exceeded"
+                )
             self._active_count += 1
 
         proc: subprocess.Popen | None = None

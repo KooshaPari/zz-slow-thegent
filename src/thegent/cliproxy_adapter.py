@@ -73,17 +73,26 @@ class _LegacyModelsTransformResult(bytes):
         yield self._etag
 
 
-def _transform_models_response(content: bytes | memoryview, *, inject_openrouter: bool = False) -> bytes | None:
+def _transform_models_response(
+    content: bytes | memoryview, *, inject_openrouter: bool = False
+) -> bytes | None:
     """Return the legacy adapter helper output as response bytes only."""
     import orjson as json
 
     try:
         raw = bytes(content) if isinstance(content, memoryview) else content
         parsed = json.loads(raw.decode(errors="replace"))
-        if isinstance(parsed, dict) and "models" in parsed and parsed.get("object") != "list" and "data" not in parsed:
+        if (
+            isinstance(parsed, dict)
+            and "models" in parsed
+            and parsed.get("object") != "list"
+            and "data" not in parsed
+        ):
             return None
 
-        transformed = transform_models_response(content, inject_openrouter=inject_openrouter)
+        transformed = transform_models_response(
+            content, inject_openrouter=inject_openrouter
+        )
         if transformed is None:
             return None
         full_body, etag = transformed
@@ -92,7 +101,11 @@ def _transform_models_response(content: bytes | memoryview, *, inject_openrouter
         models = parsed.get("models", [])
         if not isinstance(models, list):
             return None
-        compact_models = [{"id": model.get("id")} for model in models if isinstance(model, dict) and model.get("id")]
+        compact_models = [
+            {"id": model.get("id")}
+            for model in models
+            if isinstance(model, dict) and model.get("id")
+        ]
         compact_body = json.dumps({"models": compact_models}).decode().encode()
         return _LegacyModelsTransformResult(compact_body, full_body, etag)
     except (TypeError, json.JSONDecodeError):

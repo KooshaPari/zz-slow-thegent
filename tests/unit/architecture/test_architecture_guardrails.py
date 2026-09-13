@@ -117,7 +117,9 @@ def _write_baseline(path: Path, offenders: list[dict[str, Any]]) -> None:
         fh.write("\n")
 
 
-def _diff(baseline: list[dict[str, Any]], current: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _diff(
+    baseline: list[dict[str, Any]], current: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
     """Return entries in ``current`` representing *new* offenders.
 
     A "new offender" is a path (and its identifier key) that was **not**

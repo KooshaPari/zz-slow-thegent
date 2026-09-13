@@ -29,7 +29,9 @@ def _run_prompt_guard(
         env["PROJECT_DIR"] = str(project_dir)
     if env_override:
         env.update(env_override)
-    stdin = json.dumps({"tool_input": {"prompt": prompt}, "cwd": str(project_dir or ".").decode()})
+    stdin = json.dumps(
+        {"tool_input": {"prompt": prompt}, "cwd": str(project_dir or ".").decode()}
+    )
     return subprocess.run(
         [str(script)],
         input=stdin,
@@ -123,8 +125,12 @@ class TestHarvestPendingQueue:
 
     def test_flushes_queue_to_handoff_and_clears_queue(self, tmp_path: Path) -> None:
         """Reads queue, writes handoff, clears queue."""
-        queue_content = '{"ts":"2026-02-16T12:00:00Z","prompt":"Add tests","project":"/x"}\n'
-        queue_content += '{"ts":"2026-02-16T12:01:00Z","prompt":"Refactor login","project":"/x"}\n'
+        queue_content = (
+            '{"ts":"2026-02-16T12:00:00Z","prompt":"Add tests","project":"/x"}\n'
+        )
+        queue_content += (
+            '{"ts":"2026-02-16T12:01:00Z","prompt":"Refactor login","project":"/x"}\n'
+        )
         result = _run_harvest_pending_queue(
             project_dir=tmp_path,
             queue_content=queue_content,
@@ -149,7 +155,9 @@ class TestHarvestPendingQueue:
         """When project queue empty, uses global queue if present."""
         state = tmp_path / "state"
         state.mkdir()
-        queue_content = '{"ts":"2026-02-16T12:00:00Z","prompt":"Global deferred","project":""}\n'
+        queue_content = (
+            '{"ts":"2026-02-16T12:00:00Z","prompt":"Global deferred","project":""}\n'
+        )
         (state / "pending-queue.jsonl").write_text(queue_content)
         result = _run_harvest_pending_queue(
             project_dir=tmp_path,
@@ -193,7 +201,9 @@ def _run_harvest_idea_seeds(
 class TestHarvestIdeaSeedsDefer:
     """Integration tests: harvest-idea-seeds $defer/$pending filter."""
 
-    def test_harvest_defer_from_claude_history_appends_to_handoff(self, tmp_path: Path) -> None:
+    def test_harvest_defer_from_claude_history_appends_to_handoff(
+        self, tmp_path: Path
+    ) -> None:
         """$defer in Claude history is harvested to pending-handoff.md."""
         project = tmp_path / "proj"
         project.mkdir()

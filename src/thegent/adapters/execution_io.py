@@ -74,7 +74,9 @@ class ShadowWorkspaceManager:
 
     __slots__ = ("merge_back_on_success", "root")
 
-    def __init__(self, root: Path | None = None, *, merge_back_on_success: bool = True) -> None:
+    def __init__(
+        self, root: Path | None = None, *, merge_back_on_success: bool = True
+    ) -> None:
         self.root = root
         self.merge_back_on_success = merge_back_on_success
 
@@ -118,7 +120,9 @@ class ResourceLockManager:
     def release_lease(self, path: Path, run_id: str, token: LeaseToken) -> None:
         """Decomposition placeholder — no-op."""
 
-    def extend_lease(self, path: Path, run_id: str, token: LeaseToken, *, extra_ttl: int) -> LeaseToken | None:
+    def extend_lease(
+        self, path: Path, run_id: str, token: LeaseToken, *, extra_ttl: int
+    ) -> LeaseToken | None:
         """Decomposition placeholder — returns ``None``."""
         return None
 
@@ -155,7 +159,11 @@ class ProcessEnvironmentBuilder:
         """
         base = dict(base_env) if base_env is not None else dict(os.environ)
         if self.allowlist:
-            filtered = {k: v for k, v in base.items() if k in self.allowlist or k.startswith("THGENT_")}
+            filtered = {
+                k: v
+                for k, v in base.items()
+                if k in self.allowlist or k.startswith("THGENT_")
+            }
         else:
             filtered = base
         filtered.setdefault("PYTHONUNBUFFERED", "1")
@@ -176,7 +184,9 @@ class ProcessSpawner:
 
     __slots__ = ("_spawn",)
 
-    def __init__(self, spawn_fn: Callable[..., subprocess.Popen[bytes]] | None = None) -> None:
+    def __init__(
+        self, spawn_fn: Callable[..., subprocess.Popen[bytes]] | None = None
+    ) -> None:
         self._spawn = spawn_fn
 
     def spawn(
@@ -195,7 +205,9 @@ class ProcessSpawner:
         ``spawn_with_eagain_retry`` lazy-resolution pattern.
         """
         if self._spawn is None:
-            raise RuntimeError("ProcessSpawner.spawn invoked without configured spawn_fn")
+            raise RuntimeError(
+                "ProcessSpawner.spawn invoked without configured spawn_fn"
+            )
         proc = self._spawn(
             list(cmd),
             cwd=str(cwd) if cwd is not None else None,
@@ -204,4 +216,7 @@ class ProcessSpawner:
             stdout=stdout,
             stderr=stderr,
         )
-        return SpawnResult(pid=getattr(proc, "pid", -1), stdin_fd=stdin if isinstance(stdin, int) else None)
+        return SpawnResult(
+            pid=getattr(proc, "pid", -1),
+            stdin_fd=stdin if isinstance(stdin, int) else None,
+        )

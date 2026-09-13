@@ -245,7 +245,9 @@ class TestGovernErrorEnvelopeConvention:
             r"print_exc\(\s*err_console,\s*"
             rf'"govern {subcommand} failed:",'
         )
-        assert re.search(pattern, src), f"missing 'govern {subcommand} failed:' envelope in apps/govern.py"
+        assert re.search(pattern, src), (
+            f"missing 'govern {subcommand} failed:' envelope in apps/govern.py"
+        )
 
     def test_no_naked_exc_interpolation_remains(self) -> None:
         """No ``console.print(f"[red]Error:[/red] {exc}")`` (or
@@ -457,9 +459,12 @@ class TestGovernErrorEnvelopeFunctional:
             width=200,
         )
 
-        with patch.object(govern_mod, "err_console", captured_console), patch(
-            "thegent.cli.governance.governance.govern_vet_impl",
-            side_effect=ValueError("[red]malicious[/red] boom"),
+        with (
+            patch.object(govern_mod, "err_console", captured_console),
+            patch(
+                "thegent.cli.governance.governance.govern_vet_impl",
+                side_effect=ValueError("[red]malicious[/red] boom"),
+            ),
         ):
             # Click 8.2+ removed `mix_stderr`; stderr is always separated.
             # Capture both stdout and stderr explicitly via result.
@@ -561,7 +566,9 @@ class TestGovernErrorEnvelopeFunctional:
         red_spans = [span for span in line.spans if str(span.style) == "red"]
         assert red_spans, f"no 'red' style span found: {list(line.spans)}"
         prefix_span = red_spans[0]
-        assert line.plain[prefix_span.start : prefix_span.end] == "govern approve failed:"
+        assert (
+            line.plain[prefix_span.start : prefix_span.end] == "govern approve failed:"
+        )
 
         # The user-data segment (after the prefix + space) has no
         # styling span over it — i.e. Rich's parser cannot apply any
@@ -609,11 +616,15 @@ class TestGovernErrorEnvelopeCliIntegration:
                 timeout=10,
             )
         except (FileNotFoundError, subprocess.TimeoutExpired):
-            pytest.skip("thegent CLI binary not on $PATH; skipping CLI integration tests")
+            pytest.skip(
+                "thegent CLI binary not on $PATH; skipping CLI integration tests"
+            )
         return binary
 
     @pytest.mark.parametrize("subcommand", _GOVERN_FAILING_SUBCOMMANDS)
-    def test_subcommand_help_through_root_cli(self, thegent_binary: str, subcommand: str) -> None:
+    def test_subcommand_help_through_root_cli(
+        self, thegent_binary: str, subcommand: str
+    ) -> None:
         result = subprocess.run(
             [thegent_binary, "govern", subcommand, "--help"],
             capture_output=True,

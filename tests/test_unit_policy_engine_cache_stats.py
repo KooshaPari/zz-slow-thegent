@@ -116,8 +116,12 @@ class TestCacheStatsMissHit:
 
     def test_distinct_contexts_each_count_miss(self, engine: PolicyEngine) -> None:
         """Two distinct contexts produce two misses, zero hits."""
-        ctx_a = PolicyContext(agent="cursor", environment="development", confidence=0.95)
-        ctx_b = PolicyContext(agent="gemini", environment="development", confidence=0.95)
+        ctx_a = PolicyContext(
+            agent="cursor", environment="development", confidence=0.95
+        )
+        ctx_b = PolicyContext(
+            agent="gemini", environment="development", confidence=0.95
+        )
         engine.evaluate(ctx_a)
         engine.evaluate(ctx_b)
         stats = engine.cache_stats()
@@ -181,8 +185,12 @@ class TestCacheStatsConcurrent:
         snapshot's ``hits + misses`` equals the total number of
         ``engine.evaluate`` calls made.
         """
-        ctx_writer_a = PolicyContext(agent="writer-a", environment="development", confidence=0.95)
-        ctx_writer_b = PolicyContext(agent="writer-b", environment="development", confidence=0.95)
+        ctx_writer_a = PolicyContext(
+            agent="writer-a", environment="development", confidence=0.95
+        )
+        ctx_writer_b = PolicyContext(
+            agent="writer-b", environment="development", confidence=0.95
+        )
         # Pre-populate so the reader threads have something to hit.
         engine.evaluate(ctx_writer_a)
         engine.evaluate(ctx_writer_b)
@@ -212,8 +220,12 @@ class TestCacheStatsConcurrent:
                     )
                 )
 
-        threads = [threading.Thread(target=reader_loop, name=f"reader-{i}") for i in range(readers)] + [
-            threading.Thread(target=writer_loop, name=f"writer-{i}") for i in range(writers)
+        threads = [
+            threading.Thread(target=reader_loop, name=f"reader-{i}")
+            for i in range(readers)
+        ] + [
+            threading.Thread(target=writer_loop, name=f"writer-{i}")
+            for i in range(writers)
         ]
         for t in threads:
             t.start()
@@ -239,7 +251,14 @@ class TestCacheStatsShape:
     def test_keys_match_contract(self, engine: PolicyEngine) -> None:
         """The keys match the docstring contract."""
         stats = engine.cache_stats()
-        assert set(stats.keys()) == {"size", "maxsize", "hits", "misses", "total", "hit_rate"}
+        assert set(stats.keys()) == {
+            "size",
+            "maxsize",
+            "hits",
+            "misses",
+            "total",
+            "hit_rate",
+        }
 
     def test_is_json_serialisable(self, engine: PolicyEngine) -> None:
         """SOTA tooling JSON-serialises the snapshot for downstream consumers."""

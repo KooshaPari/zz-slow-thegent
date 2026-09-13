@@ -34,7 +34,11 @@ class DispatchResolver:
         if not self.registry.is_supported(cap_id):
             # WP-10006: Suggestion engine
             all_caps = self.registry.list_capabilities()
-            suggestions = [c.id for c in all_caps if c.id and resolved_command and resolved_command in c.id]
+            suggestions = [
+                c.id
+                for c in all_caps
+                if c.id and resolved_command and resolved_command in c.id
+            ]
 
             return {
                 "status": "unsupported",

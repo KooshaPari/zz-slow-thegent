@@ -1,4 +1,5 @@
 """Task I/O module."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -36,6 +37,7 @@ class TaskOutput:
 @dataclass
 class TaskSpec:
     """Task specification."""
+
     name: str
     description: str = ""
 

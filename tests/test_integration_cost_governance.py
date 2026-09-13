@@ -66,7 +66,9 @@ class TestCostEstimatorAggregatorPipeline:
         # Register and complete two runs with cost data
         run1 = make_run_meta(agent="claude")
         registry.register_start(run1)
-        cost1 = estimator.estimate(model="claude-sonnet-4", tokens_in=2000, tokens_out=1000)
+        cost1 = estimator.estimate(
+            model="claude-sonnet-4", tokens_in=2000, tokens_out=1000
+        )
         registry.register_end(
             run_id=run1.run_id,
             exit_code=0,
@@ -78,7 +80,9 @@ class TestCostEstimatorAggregatorPipeline:
 
         run2 = make_run_meta(agent="gemini")
         registry.register_start(run2)
-        cost2 = estimator.estimate(model="gemini-2.0-flash", tokens_in=5000, tokens_out=2000)
+        cost2 = estimator.estimate(
+            model="gemini-2.0-flash", tokens_in=5000, tokens_out=2000
+        )
         registry.register_end(
             run_id=run2.run_id,
             exit_code=0,

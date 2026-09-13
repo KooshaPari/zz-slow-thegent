@@ -22,7 +22,9 @@ class TestChaosConfig:
     @pytest.mark.requirement("WL-314")
     def test_custom_values(self) -> None:
         """Test ChaosConfig with custom values."""
-        config = ChaosConfig(enabled=True, min_delay_ms=50.0, max_delay_ms=500.0, failure_rate=0.25)
+        config = ChaosConfig(
+            enabled=True, min_delay_ms=50.0, max_delay_ms=500.0, failure_rate=0.25
+        )
         assert config.enabled is True
         assert config.min_delay_ms == 50.0
         assert config.max_delay_ms == 500.0

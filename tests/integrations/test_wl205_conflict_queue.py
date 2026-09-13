@@ -106,7 +106,9 @@ class TestConflictQueueEnqueue:
         assert queued.owner_domain == "source-control"
 
     @pytest.mark.requirement("WL-269")
-    def test_enqueue_assigns_state_conflict_high_severity(self, queue: ConflictQueue) -> None:
+    def test_enqueue_assigns_state_conflict_high_severity(
+        self, queue: ConflictQueue
+    ) -> None:
         """enqueue classifies status/priority conflicts as high severity."""
         now = datetime.now(UTC)
         entry = ConflictEntry(
@@ -130,7 +132,9 @@ class TestConflictClassification:
 
     @pytest.mark.requirement("WL-269")
     def test_classify_conflict_for_schema_field(self) -> None:
-        category, severity, owner = classify_conflict(field="custom_field", connector="jira", wl_id="WL-300")
+        category, severity, owner = classify_conflict(
+            field="custom_field", connector="jira", wl_id="WL-300"
+        )
         assert category == "schema_mismatch"
         assert severity == "low"
         assert owner == "operations"
@@ -202,7 +206,9 @@ class TestConflictQueueDequeue:
         return queue
 
     @pytest.mark.requirement("WL-205")
-    def test_dequeue_returns_first_unresolved(self, queue_with_entries: ConflictQueue) -> None:
+    def test_dequeue_returns_first_unresolved(
+        self, queue_with_entries: ConflictQueue
+    ) -> None:
         """dequeue returns first unresolved entry in FIFO order."""
         entry = queue_with_entries.dequeue()
 
@@ -301,13 +307,17 @@ class TestConflictQueueResolve:
         assert resolved_entry.resolved is True
 
     @pytest.mark.requirement("WL-205")
-    def test_resolve_not_found_raises_error(self, queue_with_entries: ConflictQueue) -> None:
+    def test_resolve_not_found_raises_error(
+        self, queue_with_entries: ConflictQueue
+    ) -> None:
         """resolve raises KeyError for non-existent conflict_id."""
         with pytest.raises(KeyError, match="not found"):
             queue_with_entries.resolve("CONF-999")
 
     @pytest.mark.requirement("WL-205")
-    def test_resolve_empty_id_raises_error(self, queue_with_entries: ConflictQueue) -> None:
+    def test_resolve_empty_id_raises_error(
+        self, queue_with_entries: ConflictQueue
+    ) -> None:
         """resolve raises KeyError for empty conflict_id."""
         with pytest.raises(KeyError, match="cannot be empty"):
             queue_with_entries.resolve("")

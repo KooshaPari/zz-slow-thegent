@@ -54,7 +54,9 @@ class ToolAdapter:
         return required
 
     @classmethod
-    def _validate_kwargs(cls, tool: ToolDefinition, kwargs: dict[str, Any]) -> dict[str, Any] | None:
+    def _validate_kwargs(
+        cls, tool: ToolDefinition, kwargs: dict[str, Any]
+    ) -> dict[str, Any] | None:
         expected = set(tool.parameters.keys())
         required = cls._extract_required_parameters(tool)
         provided = set(kwargs.keys())
@@ -75,7 +77,9 @@ class ToolAdapter:
         return None
 
     @staticmethod
-    async def _execute_mcp(tool: ToolDefinition, kwargs: dict[str, Any]) -> dict[str, Any]:
+    async def _execute_mcp(
+        tool: ToolDefinition, kwargs: dict[str, Any]
+    ) -> dict[str, Any]:
         if not tool.target:
             raise ValueError(f"Tool {tool.tool_id} missing MCP target.")
         return {
@@ -87,7 +91,9 @@ class ToolAdapter:
         }
 
     @staticmethod
-    async def _execute_rest(tool: ToolDefinition, kwargs: dict[str, Any]) -> dict[str, Any]:
+    async def _execute_rest(
+        tool: ToolDefinition, kwargs: dict[str, Any]
+    ) -> dict[str, Any]:
         if not tool.endpoint:
             raise ValueError(f"Tool {tool.tool_id} missing REST endpoint.")
         method = (tool.method or "POST").upper()
@@ -103,9 +109,13 @@ class ToolAdapter:
         }
 
     @staticmethod
-    async def _execute_python(tool: ToolDefinition, kwargs: dict[str, Any]) -> dict[str, Any]:
+    async def _execute_python(
+        tool: ToolDefinition, kwargs: dict[str, Any]
+    ) -> dict[str, Any]:
         if not tool.target or ":" not in tool.target:
-            raise ValueError(f"Tool {tool.tool_id} missing python target in module:function format.")
+            raise ValueError(
+                f"Tool {tool.tool_id} missing python target in module:function format."
+            )
         module_name, attr = tool.target.split(":", 1)
         module = import_module(module_name)
         fn = getattr(module, attr, None)
@@ -120,7 +130,9 @@ class ToolAdapter:
         }
 
     @staticmethod
-    async def _execute_cli(tool: ToolDefinition, kwargs: dict[str, Any]) -> dict[str, Any]:
+    async def _execute_cli(
+        tool: ToolDefinition, kwargs: dict[str, Any]
+    ) -> dict[str, Any]:
         if not tool.command:
             raise ValueError(f"Tool {tool.tool_id} missing CLI command.")
         cmd = shlex.split(tool.command)
@@ -128,7 +140,10 @@ class ToolAdapter:
             cmd.extend([f"--{key.replace('_', '-')}", str(kwargs[key])])
         process = shim_run(cmd, capture_output=True, text=True, check=False)
         if process.returncode != 0:
-            raise RuntimeError(process.stderr.strip() or f"Command failed with exit code {process.returncode}")
+            raise RuntimeError(
+                process.stderr.strip()
+                or f"Command failed with exit code {process.returncode}"
+            )
         return {
             "status": "success",
             "tool": tool.tool_id,
@@ -167,10 +182,14 @@ class ToolAdapter:
         if not tool:
             raise ValueError(f"Tool {tool_id} not found in discovery cache.")
 
-        _log.info("Adapting interface for tool: %s (protocol: %s)", tool_id, tool.protocol)
+        _log.info(
+            "Adapting interface for tool: %s (protocol: %s)", tool_id, tool.protocol
+        )
 
         async def adapted_call(**kwargs):
-            _log.info("Executing adapted tool call for %s with args: %s", tool_id, kwargs)
+            _log.info(
+                "Executing adapted tool call for %s with args: %s", tool_id, kwargs
+            )
             validation_error = self._validate_kwargs(tool, kwargs)
             if validation_error is not None:
                 return validation_error

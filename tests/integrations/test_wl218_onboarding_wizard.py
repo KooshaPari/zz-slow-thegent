@@ -118,7 +118,9 @@ class TestOnboardingWizard:
         assert next_step.step_id == "configure_connectors"
 
     @pytest.mark.requirement("WL-218")
-    def test_next_incomplete_after_completing_one(self, wizard: OnboardingWizard) -> None:
+    def test_next_incomplete_after_completing_one(
+        self, wizard: OnboardingWizard
+    ) -> None:
         """next_incomplete skips completed steps."""
         wizard.complete_step("configure_connectors")
         next_step = wizard.next_incomplete()
@@ -127,7 +129,9 @@ class TestOnboardingWizard:
         assert next_step.step_id == "validate_auth"
 
     @pytest.mark.requirement("WL-218")
-    def test_next_incomplete_returns_none_when_complete(self, wizard: OnboardingWizard) -> None:
+    def test_next_incomplete_returns_none_when_complete(
+        self, wizard: OnboardingWizard
+    ) -> None:
         """next_incomplete returns None when all steps are completed."""
         for step_dict in OnboardingWizard.STEPS:
             wizard.complete_step(step_dict["step_id"])

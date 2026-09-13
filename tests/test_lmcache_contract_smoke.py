@@ -31,15 +31,18 @@ def test_redis_backend_missing_env():
 
 def test_redis_backend_success():
     """Test Redis backend success."""
-    with patch.dict(
-        os.environ,
-        {
-            "LMCACHE_ENABLED": "1",
-            "LMCACHE_BACKEND": "redis",
-            "LMCACHE_REDIS_HOST": "localhost",
-            "LMCACHE_REDIS_PORT": "6379",
-        },
-    ), patch("redis.Redis") as mock_redis:
+    with (
+        patch.dict(
+            os.environ,
+            {
+                "LMCACHE_ENABLED": "1",
+                "LMCACHE_BACKEND": "redis",
+                "LMCACHE_REDIS_HOST": "localhost",
+                "LMCACHE_REDIS_PORT": "6379",
+            },
+        ),
+        patch("redis.Redis") as mock_redis,
+    ):
         mock_instance = MagicMock()
         mock_instance.ping.return_value = True
         mock_redis.return_value = mock_instance

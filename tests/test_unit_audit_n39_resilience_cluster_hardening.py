@@ -335,7 +335,9 @@ class TestGetOversightAction:
         assert get_oversight_action(10) == "escalate"
 
     def test_forced_action_from_context(self) -> None:
-        assert get_oversight_action(1, context={"forced_action": "escalate"}) == "escalate"
+        assert (
+            get_oversight_action(1, context={"forced_action": "escalate"}) == "escalate"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -498,7 +500,9 @@ class TestSmartPrunerTripleLock:
             last_check_time=time.time(),
             idle_count=IDLE_COUNT_THRESHOLD,
         )
-        is_idle, is_complete, docs = pruner.check_triple_lock(snap, "Task finished\n", time.time() - 10, time.time())
+        is_idle, is_complete, docs = pruner.check_triple_lock(
+            snap, "Task finished\n", time.time() - 10, time.time()
+        )
         assert is_idle is True
         assert is_complete is True
         assert docs is True
@@ -551,8 +555,14 @@ class TestSmartPrunerRunCycle:
         pruner, session = self._make_pruner_with_session(tmp_path)
         with (
             patch.object(pruner, "_prune_session") as mock_prune,
-            patch("thegent.orchestration.pruning.smart_prune.ps_impl", return_value=[session]),
-            patch("thegent.orchestration.pruning.smart_prune.list_tmux_panes", return_value=[]),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.ps_impl",
+                return_value=[session],
+            ),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.list_tmux_panes",
+                return_value=[],
+            ),
             patch(
                 "thegent.orchestration.pruning.smart_prune.capture_tmux_pane",
                 return_value="Task finished\n",
@@ -566,8 +576,14 @@ class TestSmartPrunerRunCycle:
         pruner, session = self._make_pruner_with_session(tmp_path)
         with (
             patch.object(pruner, "_prune_session") as mock_prune,
-            patch("thegent.orchestration.pruning.smart_prune.ps_impl", return_value=[session]),
-            patch("thegent.orchestration.pruning.smart_prune.list_tmux_panes", return_value=[]),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.ps_impl",
+                return_value=[session],
+            ),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.list_tmux_panes",
+                return_value=[],
+            ),
             patch(
                 "thegent.orchestration.pruning.smart_prune.capture_tmux_pane",
                 return_value="Task finished\n",
@@ -581,8 +597,14 @@ class TestSmartPrunerRunCycle:
         pruner, session = self._make_pruner_with_session(tmp_path)
         with (
             patch.object(pruner, "_prune_session") as mock_prune,
-            patch("thegent.orchestration.pruning.smart_prune.ps_impl", return_value=[session]),
-            patch("thegent.orchestration.pruning.smart_prune.list_tmux_panes", return_value=[]),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.ps_impl",
+                return_value=[session],
+            ),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.list_tmux_panes",
+                return_value=[],
+            ),
             patch(
                 "thegent.orchestration.pruning.smart_prune.capture_tmux_pane",
                 return_value="Task finished\n",
@@ -592,13 +614,21 @@ class TestSmartPrunerRunCycle:
         mock_prune.assert_called_once()
         assert results["pruned"] == 1
 
-    @pytest.mark.parametrize("agent", ["cursor-agent", "claude", "codex", "droid", "thegent", "bash"])
+    @pytest.mark.parametrize(
+        "agent", ["cursor-agent", "claude", "codex", "droid", "thegent", "bash"]
+    )
     def test_protected_agent_skipped(self, agent: str, tmp_path: Path) -> None:
         pruner, session = self._make_pruner_with_session(tmp_path, agent=agent)
         with (
             patch.object(pruner, "_prune_session") as mock_prune,
-            patch("thegent.orchestration.pruning.smart_prune.ps_impl", return_value=[session]),
-            patch("thegent.orchestration.pruning.smart_prune.list_tmux_panes", return_value=[]),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.ps_impl",
+                return_value=[session],
+            ),
+            patch(
+                "thegent.orchestration.pruning.smart_prune.list_tmux_panes",
+                return_value=[],
+            ),
         ):
             results = pruner.run_cycle(force_prune=True, dry_run=False, yes=True)
         mock_prune.assert_not_called()

@@ -4,7 +4,9 @@
 
 import pytest
 
-pytestmark = pytest.mark.skip(reason="API mismatch - requires full WorktreePool implementation")
+pytestmark = pytest.mark.skip(
+    reason="API mismatch - requires full WorktreePool implementation"
+)
 
 from pathlib import Path
 from unittest.mock import MagicMock, Mock, patch
@@ -103,7 +105,9 @@ class TestWorktreePool:
         project_root = Path("/tmp/project")
         with (
             patch("thegent.mesh.git_parallelism._git_available", return_value=True),
-            patch("thegent.mesh.git_parallelism._worktrees_supported", return_value=True),
+            patch(
+                "thegent.mesh.git_parallelism._worktrees_supported", return_value=True
+            ),
             patch("pathlib.Path.mkdir"),
         ):
             pool = WorktreePool(project_root)
@@ -115,7 +119,9 @@ class TestWorktreePool:
         project_root = Path("/tmp/project")
         with (
             patch("thegent.mesh.git_parallelism._git_available", return_value=True),
-            patch("thegent.mesh.git_parallelism._worktrees_supported", return_value=True),
+            patch(
+                "thegent.mesh.git_parallelism._worktrees_supported", return_value=True
+            ),
             patch("pathlib.Path.mkdir"),
         ):
             pool = WorktreePool(project_root, target_branch="main")
@@ -127,7 +133,9 @@ class TestWorktreePool:
         project_root = Path("/tmp/project")
         with (
             patch("thegent.mesh.git_parallelism._git_available", return_value=True),
-            patch("thegent.mesh.git_parallelism._worktrees_supported", return_value=True),
+            patch(
+                "thegent.mesh.git_parallelism._worktrees_supported", return_value=True
+            ),
             patch("thegent.mesh.git_parallelism._PoolStateLock") as mock_lock_class,
         ):
             mock_lock = MagicMock()
@@ -157,7 +165,9 @@ class TestWorktreePool:
         project_root = Path("/tmp/project")
         with (
             patch("thegent.mesh.git_parallelism._git_available", return_value=True),
-            patch("thegent.mesh.git_parallelism._worktrees_supported", return_value=True),
+            patch(
+                "thegent.mesh.git_parallelism._worktrees_supported", return_value=True
+            ),
             patch("thegent.mesh.git_parallelism._PoolStateLock") as mock_lock_class,
         ):
             mock_lock = MagicMock()
@@ -178,7 +188,9 @@ class TestWorktreePool:
         project_root = Path("/tmp/project")
         with (
             patch("thegent.mesh.git_parallelism._git_available", return_value=True),
-            patch("thegent.mesh.git_parallelism._worktrees_supported", return_value=True),
+            patch(
+                "thegent.mesh.git_parallelism._worktrees_supported", return_value=True
+            ),
             patch("thegent.mesh.git_parallelism._PoolStateLock") as mock_lock_class,
         ):
             mock_lock = MagicMock()
@@ -199,7 +211,9 @@ class TestWorktreePool:
         project_root = Path("/tmp/project")
         with (
             patch("thegent.mesh.git_parallelism._git_available", return_value=True),
-            patch("thegent.mesh.git_parallelism._worktrees_supported", return_value=True),
+            patch(
+                "thegent.mesh.git_parallelism._worktrees_supported", return_value=True
+            ),
             patch("thegent.mesh.git_parallelism._PoolStateLock") as mock_lock_class,
         ):
             mock_lock = MagicMock()
@@ -218,7 +232,9 @@ class TestWorktreePool:
         project_root = Path("/tmp/project")
         with (
             patch("thegent.mesh.git_parallelism._git_available", return_value=True),
-            patch("thegent.mesh.git_parallelism._worktrees_supported", return_value=True),
+            patch(
+                "thegent.mesh.git_parallelism._worktrees_supported", return_value=True
+            ),
             patch("thegent.mesh.git_parallelism._PoolStateLock") as mock_lock_class,
         ):
             mock_lock = MagicMock()
@@ -237,7 +253,9 @@ class TestWorktreePool:
 
             with (
                 patch.object(pool, "acquire_worktree", return_value=ctx),
-                patch.object(pool, "release_worktree", return_value=True) as mock_release,
+                patch.object(
+                    pool, "release_worktree", return_value=True
+                ) as mock_release,
             ):
                 with pool.worktree("agent-1") as acquired_ctx:
                     assert acquired_ctx.agent_id == "agent-1"
@@ -249,7 +267,9 @@ class TestWorktreePool:
         project_root = Path("/tmp/project")
         with (
             patch("thegent.mesh.git_parallelism._git_available", return_value=True),
-            patch("thegent.mesh.git_parallelism._worktrees_supported", return_value=True),
+            patch(
+                "thegent.mesh.git_parallelism._worktrees_supported", return_value=True
+            ),
             patch("thegent.mesh.git_parallelism._PoolStateLock") as mock_lock_class,
         ):
             mock_lock = MagicMock()
@@ -273,7 +293,9 @@ class TestWorktreePool:
         project_root = Path("/tmp/project")
         with (
             patch("thegent.mesh.git_parallelism._git_available", return_value=True),
-            patch("thegent.mesh.git_parallelism._worktrees_supported", return_value=True),
+            patch(
+                "thegent.mesh.git_parallelism._worktrees_supported", return_value=True
+            ),
             patch("thegent.mesh.git_parallelism._PoolStateLock") as mock_lock_class,
             patch("pathlib.Path.mkdir"),
         ):
@@ -292,7 +314,9 @@ class TestWorktreePool:
                 patch.object(pool, "_try_delete_branch"),
             ):
                 # Mock the Path.exists checks in cleanup_stale
-                with patch("thegent.mesh.git_parallelism.Path.exists") as mock_path_exists:
+                with patch(
+                    "thegent.mesh.git_parallelism.Path.exists"
+                ) as mock_path_exists:
                     mock_path_exists.side_effect = [False, True]
                     removed = pool.cleanup_stale()
                     # Note: removed count may vary based on mocking depth

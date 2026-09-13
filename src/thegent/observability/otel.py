@@ -33,10 +33,14 @@ _log = logging.getLogger(__name__)
 
 try:
     _otel_trace = import_module("opentelemetry.trace")
-    OTLPSpanExporter = import_module("opentelemetry.exporter.otlp.proto.grpc.trace_exporter").OTLPSpanExporter
+    OTLPSpanExporter = import_module(
+        "opentelemetry.exporter.otlp.proto.grpc.trace_exporter"
+    ).OTLPSpanExporter
     Resource = import_module("opentelemetry.sdk.resources").Resource
     TracerProvider = import_module("opentelemetry.sdk.trace").TracerProvider
-    BatchSpanProcessor = import_module("opentelemetry.sdk.trace.export").BatchSpanProcessor
+    BatchSpanProcessor = import_module(
+        "opentelemetry.sdk.trace.export"
+    ).BatchSpanProcessor
 
     _OTEL_AVAILABLE = True
 except Exception:
@@ -140,7 +144,11 @@ def configure_otel(config: OtelConfig) -> None:
 
     _provider = provider
     _tracer = _otel_trace.get_tracer("thegent.gateway")
-    _log.info("OTel OTLP exporter configured: endpoint=%s service=%s", config.endpoint, config.service_name)
+    _log.info(
+        "OTel OTLP exporter configured: endpoint=%s service=%s",
+        config.endpoint,
+        config.service_name,
+    )
 
 
 def get_tracer() -> Any:

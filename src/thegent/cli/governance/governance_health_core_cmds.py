@@ -60,7 +60,10 @@ def govern_go_health_cmd(cd: Path | None = None, format: str | None = None) -> N
     except FileNotFoundError:
         fmt = _normalize_output_format(format)
         if fmt == "json":
-            sys.stdout.write(json.dumps({"configured": False, "hint": "thegent govern configure"}) + "\n")
+            sys.stdout.write(
+                json.dumps({"configured": False, "hint": "thegent govern configure"})
+                + "\n"
+            )
         else:
             console.print("[yellow]Govern not configured.[/yellow]")
             console.print("[dim]Run: thegent govern configure[/dim]")
@@ -126,7 +129,9 @@ def govern_go_status_cmd(cd: Path | None = None) -> None:
     console.print(table)
 
 
-def govern_go_cycle_cmd(cd: Path | None = None, force: bool = False, format: str | None = None) -> None:
+def govern_go_cycle_cmd(
+    cd: Path | None = None, force: bool = False, format: str | None = None
+) -> None:
     """Run a single governance cycle."""
     from datetime import UTC, datetime
 
@@ -141,7 +146,9 @@ def govern_go_cycle_cmd(cd: Path | None = None, force: bool = False, format: str
     cycle_id = f"cycle_{uuid.uuid4().hex[:8]}"
     started_at = datetime.now(UTC).isoformat()
 
-    console.print(f"[cyan]Starting AgilePlus cycle {cycle_id} (force={force})...[/cyan]")
+    console.print(
+        f"[cyan]Starting AgilePlus cycle {cycle_id} (force={force})...[/cyan]"
+    )
 
     # Compute health score
     health_computer = HealthScoreComputer(health_targets_path)
@@ -205,7 +212,9 @@ def govern_go_watch_cmd(
     project_dir = _resolve_cwd(cd) or Path.cwd()
     health_targets_path = _get_health_targets_path(project_dir)
 
-    console.print(f"[cyan]Starting continuous governance (interval={interval}s, max_cycles={max_cycles})...[/cyan]")
+    console.print(
+        f"[cyan]Starting continuous governance (interval={interval}s, max_cycles={max_cycles})...[/cyan]"
+    )
     console.print("[yellow]Press Ctrl+C to stop[/yellow]")
 
     health_computer = HealthScoreComputer(health_targets_path)
@@ -237,7 +246,9 @@ def govern_go_watch_cmd(
             )
 
             cycles_run += 1
-            console.print(f"Cycle {cycles_run} ({cycle_id}): score={health.score:.2f}, band={health_band_value}")
+            console.print(
+                f"Cycle {cycles_run} ({cycle_id}): score={health.score:.2f}, band={health_band_value}"
+            )
 
             if max_cycles is not None and cycles_run >= max_cycles:
                 break

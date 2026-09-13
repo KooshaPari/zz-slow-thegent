@@ -54,17 +54,25 @@ def test_wl138_progress_script_emits_json(tmp_path: Path) -> None:
     assert payload["execution_gates"]["skipped"] is True
 
     runtime_matrix_checkpoint = next(
-        item for item in payload["checkpoints"] if item["checkpoint_id"] == "runtime-matrix-artifacts"
+        item
+        for item in payload["checkpoints"]
+        if item["checkpoint_id"] == "runtime-matrix-artifacts"
     )
     matrix_paths = [check["path"] for check in runtime_matrix_checkpoint["checks"]]
     assert "contracts/runtime/runtime-modularization-matrix.json" in matrix_paths
 
-    rust_checkpoint = next(item for item in payload["checkpoints"] if item["checkpoint_id"] == "rust-hook-splits")
+    rust_checkpoint = next(
+        item
+        for item in payload["checkpoints"]
+        if item["checkpoint_id"] == "rust-hook-splits"
+    )
     assert rust_checkpoint["evaluation"]["total_execution_gates"] >= 1
     assert rust_checkpoint["execution_gates"][0]["status"] == "skipped"
 
 
-def test_build_progress_fails_checkpoint_when_execution_gate_fails(tmp_path: Path) -> None:
+def test_build_progress_fails_checkpoint_when_execution_gate_fails(
+    tmp_path: Path,
+) -> None:
     repo_root = _repo_root()
     single_checkpoint = tmp_path / "checkpoint.json"
     output = tmp_path / "single_checkpoint_result.json"

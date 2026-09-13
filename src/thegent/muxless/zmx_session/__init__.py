@@ -1,4 +1,5 @@
 """Zmx session module."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -8,6 +9,7 @@ from typing import Any
 @dataclass
 class ZmxSessionConfig:
     """Configuration for ZmxSession."""
+
     session_id: str = ""
     timeout: int = 30
     options: dict[str, Any] | None = None

@@ -11,7 +11,10 @@ from thegent.contracts.validation import validate_csm
 def test_validation_layer():
     # 1. Test Workload Consistency
     csm = CanonicalStructuredMessage(
-        status=CSMStatus.COMPLETED, progress=1.0, summary="Done", actions_pending=["some task"]
+        status=CSMStatus.COMPLETED,
+        progress=1.0,
+        summary="Done",
+        actions_pending=["some task"],
     )
     issues = validate_csm(csm)
     assert any("actions_pending" in i for i in issues)

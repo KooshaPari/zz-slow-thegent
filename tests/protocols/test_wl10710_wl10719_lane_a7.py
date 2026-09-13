@@ -15,7 +15,11 @@ from thegent.protocols.turn_submit_boundaries import (
 def test_wl10710_queue_priority_is_separated_from_dispatch_window() -> None:
     # @trace WL-10710
     phase = build_queue_priority_phase("critical", ["turn-1", "turn-2"], 12)
-    assert resolve_queue_execution_target(phase) == ("critical", ["turn-1", "turn-2"], 12)
+    assert resolve_queue_execution_target(phase) == (
+        "critical",
+        ["turn-1", "turn-2"],
+        12,
+    )
 
 
 def test_wl10711_retry_loop_rejects_over_max_attempts() -> None:

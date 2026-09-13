@@ -38,7 +38,9 @@ class TestRunRegistryStateAware:
         """After register_start, state is RUNNING."""
         with tempfile.TemporaryDirectory() as d:
             r = RunRegistry(Path(d))
-            m = RunMeta(run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u")
+            m = RunMeta(
+                run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u"
+            )
             r.register_start(m)
             assert r.get_run_state("run_1") == RunState.RUNNING
 
@@ -47,7 +49,9 @@ class TestRunRegistryStateAware:
         """After register_pause, state is PAUSED."""
         with tempfile.TemporaryDirectory() as d:
             r = RunRegistry(Path(d))
-            m = RunMeta(run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u")
+            m = RunMeta(
+                run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u"
+            )
             r.register_start(m)
             r.register_pause("run_1", "manual", {"phase": "operator"})
             assert r.get_run_state("run_1") == RunState.PAUSED
@@ -57,7 +61,9 @@ class TestRunRegistryStateAware:
         """After register_resume, state is RUNNING."""
         with tempfile.TemporaryDirectory() as d:
             r = RunRegistry(Path(d))
-            m = RunMeta(run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u")
+            m = RunMeta(
+                run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u"
+            )
             r.register_start(m)
             r.register_pause("run_1", "manual")
             r.register_resume("run_1")
@@ -68,7 +74,9 @@ class TestRunRegistryStateAware:
         """After register_end with completed, state is COMPLETED."""
         with tempfile.TemporaryDirectory() as d:
             r = RunRegistry(Path(d))
-            m = RunMeta(run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u")
+            m = RunMeta(
+                run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u"
+            )
             r.register_start(m)
             r.register_end("run_1", 0, "completed", "2026-02-14T12:00:00Z", 1.0)
             assert r.get_run_state("run_1") == RunState.COMPLETED
@@ -78,7 +86,9 @@ class TestRunRegistryStateAware:
         """After register_end with failed, state is FAILED."""
         with tempfile.TemporaryDirectory() as d:
             r = RunRegistry(Path(d))
-            m = RunMeta(run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u")
+            m = RunMeta(
+                run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u"
+            )
             r.register_start(m)
             r.register_end("run_1", 1, "failed", "2026-02-14T12:00:00Z", 1.0)
             assert r.get_run_state("run_1") == RunState.FAILED
@@ -101,7 +111,9 @@ class TestPolicyEngineEvaluate:
         # @trace FR-EXE-008
         """Standard lane in development environment is allowed."""
         engine = PolicyEngine(self._make_settings())
-        run = RunMeta(agent="gemini", prompt="test", cwd="/tmp", owner="u", lane="standard")
+        run = RunMeta(
+            agent="gemini", prompt="test", cwd="/tmp", owner="u", lane="standard"
+        )
         result, _reason = engine.evaluate(run)
         assert result == "allow"
 
@@ -135,7 +147,9 @@ class TestPolicyEngineEvaluate:
             confidence=0.95,
         )
         with patch("thegent.contracts.telemetry.ContractTelemetry") as mock_ct:
-            mock_ct.return_value.get_drift_budget_status.return_value = {"within_budget": True}
+            mock_ct.return_value.get_drift_budget_status.return_value = {
+                "within_budget": True
+            }
             result, _reason = engine.evaluate(run)
         assert result == "allow"
 
@@ -168,7 +182,9 @@ class TestPolicyEngineEvaluate:
             confidence=0.95,
         )
         with patch("thegent.contracts.telemetry.ContractTelemetry") as mock_ct:
-            mock_ct.return_value.get_drift_budget_status.return_value = {"within_budget": True}
+            mock_ct.return_value.get_drift_budget_status.return_value = {
+                "within_budget": True
+            }
             result, _reason = engine.evaluate(run)
         assert result == "deny"
 
@@ -191,7 +207,9 @@ class TestPolicyEngineEvaluate:
     def test_deny_production_below_trust_threshold(self) -> None:
         # @trace FR-EXE-006
         """Production denies when confidence below trust_score_threshold."""
-        engine = PolicyEngine(self._make_settings(environment="production", trust_score_threshold=0.8))
+        engine = PolicyEngine(
+            self._make_settings(environment="production", trust_score_threshold=0.8)
+        )
         run = RunMeta(
             agent="gemini",
             prompt="test",
@@ -207,7 +225,9 @@ class TestPolicyEngineEvaluate:
     def test_allow_production_above_trust_threshold(self) -> None:
         # @trace FR-EXE-006
         """Production allows when confidence above trust_score_threshold."""
-        engine = PolicyEngine(self._make_settings(environment="production", trust_score_threshold=0.8))
+        engine = PolicyEngine(
+            self._make_settings(environment="production", trust_score_threshold=0.8)
+        )
         run = RunMeta(
             agent="gemini",
             prompt="test",
@@ -575,7 +595,12 @@ class TestAuditorVerifyRegistry:
         """sign_run produces deterministic signature for same input."""
         auditor = Auditor(tmp_path / "registry.jsonl")
         m = RunMeta(
-            run_id="run_1", agent="gemini", prompt="x", cwd="/tmp", owner="u", started_at_utc="2026-01-01T00:00:00Z"
+            run_id="run_1",
+            agent="gemini",
+            prompt="x",
+            cwd="/tmp",
+            owner="u",
+            started_at_utc="2026-01-01T00:00:00Z",
         )
         sig1 = auditor.sign_run(m)
         sig2 = auditor.sign_run(m)
@@ -594,12 +619,26 @@ class TestRunRegistryRetention:
 
         # Old record (expired)
         old_ts = "2020-01-01T00:00:00Z"
-        m_old = RunMeta(run_id="run_old", agent="gemini", prompt="old", cwd="/tmp", owner="u", started_at_utc=old_ts)
+        m_old = RunMeta(
+            run_id="run_old",
+            agent="gemini",
+            prompt="old",
+            cwd="/tmp",
+            owner="u",
+            started_at_utc=old_ts,
+        )
         reg.register_start(m_old)
 
         # New record (not expired)
         now_ts = datetime.now(UTC).isoformat()
-        m_new = RunMeta(run_id="run_new", agent="gemini", prompt="new", cwd="/tmp", owner="u", started_at_utc=now_ts)
+        m_new = RunMeta(
+            run_id="run_new",
+            agent="gemini",
+            prompt="new",
+            cwd="/tmp",
+            owner="u",
+            started_at_utc=now_ts,
+        )
         reg.register_start(m_new)
 
         result = reg.purge_expired(default_days=30, by_domain={}, dry_run=True)
@@ -623,17 +662,31 @@ class TestRunRegistryRetention:
 
         # Domain 'short' with 5 day retention (should be purged)
         m1 = RunMeta(
-            run_id="r1", agent="a", prompt="p", cwd="/tmp", owner="u", started_at_utc=ts_10d, domain_tag="short"
+            run_id="r1",
+            agent="a",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            started_at_utc=ts_10d,
+            domain_tag="short",
         )
         reg.register_start(m1)
 
         # Domain 'long' with 20 day retention (should be kept)
         m2 = RunMeta(
-            run_id="r2", agent="a", prompt="p", cwd="/tmp", owner="u", started_at_utc=ts_10d, domain_tag="long"
+            run_id="r2",
+            agent="a",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            started_at_utc=ts_10d,
+            domain_tag="long",
         )
         reg.register_start(m2)
 
-        result = reg.purge_expired(default_days=30, by_domain={"short": 5, "long": 20}, dry_run=False)
+        result = reg.purge_expired(
+            default_days=30, by_domain={"short": 5, "long": 20}, dry_run=False
+        )
         assert result["purged"] == 1
         assert result["kept"] == 2  # r2 + schema marker
 
@@ -666,10 +719,20 @@ class TestRunRegistryListRuns:
         """list_runs returns runs that have been started."""
         reg = RunRegistry(tmp_path)
         m1 = RunMeta(
-            run_id="run_a", agent="gemini", prompt="p1", cwd="/tmp", owner="u", started_at_utc="2026-02-14T10:00:00Z"
+            run_id="run_a",
+            agent="gemini",
+            prompt="p1",
+            cwd="/tmp",
+            owner="u",
+            started_at_utc="2026-02-14T10:00:00Z",
         )
         m2 = RunMeta(
-            run_id="run_b", agent="claude", prompt="p2", cwd="/tmp", owner="u", started_at_utc="2026-02-14T11:00:00Z"
+            run_id="run_b",
+            agent="claude",
+            prompt="p2",
+            cwd="/tmp",
+            owner="u",
+            started_at_utc="2026-02-14T11:00:00Z",
         )
         reg.register_start(m1)
         reg.register_start(m2)
@@ -736,7 +799,14 @@ class TestRunRegistryFindByToken:
         # @trace FR-EXE-009
         """find_by_token returns None when no run has the token."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", idempotency_token="tok-other")
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            idempotency_token="tok-other",
+        )
         reg.register_start(m)
         assert reg.find_by_token("tok-abc") is None
 
@@ -744,7 +814,14 @@ class TestRunRegistryFindByToken:
         # @trace FR-EXE-009
         """find_by_token returns the run matching the token."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", idempotency_token="tok-abc")
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            idempotency_token="tok-abc",
+        )
         reg.register_start(m)
         result = reg.find_by_token("tok-abc")
         assert result is not None
@@ -783,7 +860,14 @@ class TestRunRegistryFindByToken:
         # @trace FR-EXE-009
         """find_by_token merges finish event data when same run_id."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_tok", agent="gemini", prompt="p", cwd="/tmp", owner="u", idempotency_token="tok-fin")
+        m = RunMeta(
+            run_id="run_tok",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            idempotency_token="tok-fin",
+        )
         reg.register_start(m)
         # Write finish event with matching token
         finish_event = {
@@ -803,7 +887,14 @@ class TestRunRegistryFindByToken:
         # @trace FR-EXE-009
         """find_by_token merges feedback_score from feedback events."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_fb", agent="gemini", prompt="p", cwd="/tmp", owner="u", idempotency_token="tok-fb")
+        m = RunMeta(
+            run_id="run_fb",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            idempotency_token="tok-fb",
+        )
         reg.register_start(m)
         feedback_event = {
             "run_id": "run_fb",
@@ -833,7 +924,14 @@ class TestCalibrationFactor:
         # @trace FR-EXE-006
         """Returns 1.0 when no feedback scores exist for agent."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", confidence=0.9)
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=0.9,
+        )
         reg.register_start(m)
         assert reg.get_calibration_factor("gemini") == 1.0
 
@@ -841,7 +939,14 @@ class TestCalibrationFactor:
         # @trace FR-EXE-006
         """Returns factor < 1.0 when agent is overconfident (high confidence, low feedback)."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", confidence=0.9)
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=0.9,
+        )
         reg.register_start(m)
         reg.register_feedback("run_1", score=0.5)
         factor = reg.get_calibration_factor("gemini")
@@ -852,7 +957,14 @@ class TestCalibrationFactor:
         # @trace FR-EXE-006
         """Returns factor > 1.0 when agent is underconfident (low confidence, high feedback)."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", confidence=0.3)
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=0.3,
+        )
         reg.register_start(m)
         reg.register_feedback("run_1", score=0.9)
         factor = reg.get_calibration_factor("gemini")
@@ -863,7 +975,14 @@ class TestCalibrationFactor:
         # @trace FR-EXE-006
         """Feedback for a different agent is not included in calibration."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="claude", prompt="p", cwd="/tmp", owner="u", confidence=0.9)
+        m = RunMeta(
+            run_id="run_1",
+            agent="claude",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=0.9,
+        )
         reg.register_start(m)
         reg.register_feedback("run_1", score=0.1)
         assert reg.get_calibration_factor("gemini") == 1.0
@@ -872,7 +991,14 @@ class TestCalibrationFactor:
         # @trace FR-EXE-006
         """Calibration factor is clamped to max 2.0."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", confidence=0.1)
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=0.1,
+        )
         reg.register_start(m)
         reg.register_feedback("run_1", score=1.0)
         factor = reg.get_calibration_factor("gemini")
@@ -882,7 +1008,14 @@ class TestCalibrationFactor:
         # @trace FR-EXE-006
         """Calibration factor is clamped to min 0.5."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", confidence=1.0)
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=1.0,
+        )
         reg.register_start(m)
         reg.register_feedback("run_1", score=0.1)
         factor = reg.get_calibration_factor("gemini")
@@ -940,7 +1073,9 @@ class TestPolicyEngineOPAQuery:
         run = RunMeta(agent="gemini", prompt="test", cwd="/tmp", owner="u")
 
         mock_resp = MagicMock()
-        mock_resp.json.return_value = {"result": {"allow": False, "reason": "Not allowed"}}
+        mock_resp.json.return_value = {
+            "result": {"allow": False, "reason": "Not allowed"}
+        }
         mock_resp.raise_for_status.return_value = None
         with patch("thegent.execution.httpx.post", return_value=mock_resp):
             result = engine._query_opa(run)
@@ -977,7 +1112,9 @@ class TestCircuitBreakerHalfOpen:
     def test_circuit_remains_open_within_recovery(self, tmp_path: Path) -> None:
         # @trace FR-EXE-005
         """Circuit stays open within recovery period."""
-        cb = CircuitBreakerRegistry(tmp_path, threshold=2, window_s=600, recovery_s=9999)
+        cb = CircuitBreakerRegistry(
+            tmp_path, threshold=2, window_s=600, recovery_s=9999
+        )
         cb.record_failure("agent-x")
         cb.record_failure("agent-x")
         assert cb.is_open("agent-x") is True
@@ -1072,9 +1209,13 @@ class TestRunRegistryHashChaining:
         # @trace FR-GOV-007
         """register_end records cost_usd when provided."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_cost", agent="gemini", prompt="p", cwd="/tmp", owner="u")
+        m = RunMeta(
+            run_id="run_cost", agent="gemini", prompt="p", cwd="/tmp", owner="u"
+        )
         reg.register_start(m)
-        reg.register_end("run_cost", 0, "completed", "2026-02-14T12:00:00Z", 1.0, cost_usd=0.05)
+        reg.register_end(
+            "run_cost", 0, "completed", "2026-02-14T12:00:00Z", 1.0, cost_usd=0.05
+        )
         content = reg.registry_path.read_text(encoding="utf-8")
         assert '"cost_usd": 0.05' in content
 
@@ -1082,7 +1223,9 @@ class TestRunRegistryHashChaining:
         # @trace FR-GOV-007
         """register_end omits cost_usd when not provided."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_nocost", agent="gemini", prompt="p", cwd="/tmp", owner="u")
+        m = RunMeta(
+            run_id="run_nocost", agent="gemini", prompt="p", cwd="/tmp", owner="u"
+        )
         reg.register_start(m)
         reg.register_end("run_nocost", 0, "completed", "2026-02-14T12:00:00Z", 1.0)
         lines = reg.registry_path.read_text(encoding="utf-8").strip().split("\n")
@@ -1145,7 +1288,14 @@ class TestFindByTokenExceptionPath:
         # @trace FR-EXE-009
         """find_by_token skips corrupt JSON lines."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", idempotency_token="tok-1")
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            idempotency_token="tok-1",
+        )
         reg.register_start(m)
         with reg.registry_path.open("a", encoding="utf-8") as f:
             f.write("{{corrupt}}\n")
@@ -1162,7 +1312,14 @@ class TestCalibrationFactorExceptionPath:
         # @trace FR-EXE-006
         """get_calibration_factor skips corrupt lines and still returns valid result."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", confidence=0.5)
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=0.5,
+        )
         reg.register_start(m)
         reg.register_feedback("run_1", score=0.5)
         with reg.registry_path.open("a", encoding="utf-8") as f:
@@ -1170,11 +1327,20 @@ class TestCalibrationFactorExceptionPath:
         factor = reg.get_calibration_factor("gemini")
         assert 0.5 <= factor <= 2.0
 
-    def test_calibration_factor_zero_confidence_returns_one(self, tmp_path: Path) -> None:
+    def test_calibration_factor_zero_confidence_returns_one(
+        self, tmp_path: Path
+    ) -> None:
         # @trace FR-EXE-006
         """get_calibration_factor returns 1.0 when avg_confidence is 0."""
         reg = RunRegistry(tmp_path)
-        m = RunMeta(run_id="run_1", agent="gemini", prompt="p", cwd="/tmp", owner="u", confidence=0)
+        m = RunMeta(
+            run_id="run_1",
+            agent="gemini",
+            prompt="p",
+            cwd="/tmp",
+            owner="u",
+            confidence=0,
+        )
         reg.register_start(m)
         reg.register_feedback("run_1", score=0.5)
         factor = reg.get_calibration_factor("gemini")
@@ -1221,14 +1387,19 @@ class TestPurgeExpiredExceptionPaths:
         """purge_expired handles naive timestamps by adding UTC (line 385)."""
         reg = RunRegistry(tmp_path)
         # Write a record with a naive timestamp (no timezone info)
-        naive_ts_record = {"run_id": "run_naive", "started_at_utc": "2020-01-01T00:00:00"}
+        naive_ts_record = {
+            "run_id": "run_naive",
+            "started_at_utc": "2020-01-01T00:00:00",
+        }
         with reg.registry_path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(naive_ts_record).decode() + "\n")
         result = reg.purge_expired(default_days=30, by_domain={}, dry_run=False)
         # Old record should be purged
         assert result["purged"] >= 1
 
-    def test_purge_expired_exception_in_second_pass_keeps_line(self, tmp_path: Path) -> None:
+    def test_purge_expired_exception_in_second_pass_keeps_line(
+        self, tmp_path: Path
+    ) -> None:
         # @trace FR-GOV-007
         """purge_expired keeps line on exception in second pass (lines 396-397)."""
         reg = RunRegistry(tmp_path)
@@ -1286,7 +1457,9 @@ class TestPolicyEngineCircuitBreakerModel:
         cb = CircuitBreakerRegistry(tmp_path, threshold=1)
         cb.record_failure("gpt-4", category="model")
 
-        run = RunMeta(agent="gemini", model="gpt-4", prompt="test", cwd="/tmp", owner="u")
+        run = RunMeta(
+            agent="gemini", model="gpt-4", prompt="test", cwd="/tmp", owner="u"
+        )
         result, reason = engine.evaluate(run)
         assert result == "deny"
         assert "model" in reason.lower()
@@ -1296,7 +1469,9 @@ class TestPolicyEngineCircuitBreakerModel:
 class TestTrustBoundaryValidatorGetLastEnvironmentException:
     """Tests for TrustBoundaryValidator.get_last_environment exception (lines 606-607)."""
 
-    def test_get_last_environment_corrupt_file_returns_none(self, tmp_path: Path) -> None:
+    def test_get_last_environment_corrupt_file_returns_none(
+        self, tmp_path: Path
+    ) -> None:
         # @trace FR-EXE-010
         """get_last_environment returns None when state file is corrupt."""
         v = TrustBoundaryValidator(tmp_path)
@@ -1423,7 +1598,11 @@ class TestOverrideRegistryExceptionPaths:
         # @trace FR-EXE-005
         """has_unexpired skips records without expires_at_utc (line 803)."""
         oreg = OverrideRegistry(tmp_path)
-        no_expiry = {"owner": "user1", "reason": "test", "timestamp": "2026-01-01T00:00:00+00:00"}
+        no_expiry = {
+            "owner": "user1",
+            "reason": "test",
+            "timestamp": "2026-01-01T00:00:00+00:00",
+        }
         oreg.session_dir.mkdir(parents=True, exist_ok=True)
         with oreg.registry_path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(no_expiry).decode() + "\n")
@@ -1457,7 +1636,12 @@ class TestEscalationQueueExceptionPaths:
         # @trace FR-EXE-005
         """list_pending skips items without escalate_by_utc (line 865)."""
         eq = EscalationQueue(tmp_path)
-        no_sla = {"run_id": "run_nosla", "status": "pending", "reason": "test", "priority": 0}
+        no_sla = {
+            "run_id": "run_nosla",
+            "status": "pending",
+            "reason": "test",
+            "priority": 0,
+        }
         eq.session_dir.mkdir(parents=True, exist_ok=True)
         with eq.queue_path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(no_sla).decode() + "\n")
@@ -1523,7 +1707,9 @@ class TestConcurrencyControllerCriticalLane:
     Traces to: FR-EXE-011 (Critical lane slot reservation prevents starvation).
     """
 
-    def _make_controller(self, tmp_path: Path, max_concurrency: int = 5, critical_lane_slots: int = 2):
+    def _make_controller(
+        self, tmp_path: Path, max_concurrency: int = 5, critical_lane_slots: int = 2
+    ):
         """Build a ConcurrencyController with load-based limits disabled for deterministic tests."""
         from thegent.execution import ConcurrencyController
 
@@ -1550,7 +1736,9 @@ class TestConcurrencyControllerCriticalLane:
         """ConcurrencyController defaults critical_lane_slots to 2."""
         from thegent.execution import ConcurrencyController
 
-        cc = ConcurrencyController(session_dir=tmp_path, max_concurrency=5, use_load_based=False)
+        cc = ConcurrencyController(
+            session_dir=tmp_path, max_concurrency=5, use_load_based=False
+        )
         assert cc.critical_lane_slots == 2
 
     def test_critical_lane_slots_explicit(self, tmp_path: Path) -> None:
@@ -1565,19 +1753,27 @@ class TestConcurrencyControllerCriticalLane:
         from thegent.execution import ConcurrencyController
 
         monkeypatch.setenv("THGENT_CRITICAL_LANE_SLOTS", "4")
-        cc = ConcurrencyController(session_dir=tmp_path, max_concurrency=10, use_load_based=False)
+        cc = ConcurrencyController(
+            session_dir=tmp_path, max_concurrency=10, use_load_based=False
+        )
         assert cc.critical_lane_slots == 4
 
-    def test_critical_lane_slots_env_invalid_falls_back_to_default(self, tmp_path: Path, monkeypatch) -> None:
+    def test_critical_lane_slots_env_invalid_falls_back_to_default(
+        self, tmp_path: Path, monkeypatch
+    ) -> None:
         # @trace FR-EXE-011
         """Invalid THGENT_CRITICAL_LANE_SLOTS env var falls back to default 2."""
         from thegent.execution import ConcurrencyController
 
         monkeypatch.setenv("THGENT_CRITICAL_LANE_SLOTS", "not-a-number")
-        cc = ConcurrencyController(session_dir=tmp_path, max_concurrency=10, use_load_based=False)
+        cc = ConcurrencyController(
+            session_dir=tmp_path, max_concurrency=10, use_load_based=False
+        )
         assert cc.critical_lane_slots == 2
 
-    def test_standard_run_blocked_when_standard_slots_full(self, tmp_path: Path) -> None:
+    def test_standard_run_blocked_when_standard_slots_full(
+        self, tmp_path: Path
+    ) -> None:
         # @trace FR-EXE-011
         """Standard run is blocked when all standard-available slots are occupied.
 
@@ -1589,7 +1785,9 @@ class TestConcurrencyControllerCriticalLane:
             # 3 running == standard cap (5-2=3) → blocked
             assert cc.acquire(priority="standard") is False
 
-    def test_critical_run_admitted_when_standard_slots_full(self, tmp_path: Path) -> None:
+    def test_critical_run_admitted_when_standard_slots_full(
+        self, tmp_path: Path
+    ) -> None:
         # @trace FR-EXE-011
         """Critical run is admitted even when all standard-available slots are occupied.
 

@@ -63,7 +63,9 @@ class BoardIdRegistry:
         self._registry.clear()
 
 
-_LEGACY_BOARD_ID_PATTERN = re.compile(r"^(?:wl[-_ ]?)?(\d+)$|^board[-_ ]?(\d+)$", re.IGNORECASE)
+_LEGACY_BOARD_ID_PATTERN = re.compile(
+    r"^(?:wl[-_ ]?)?(\d+)$|^board[-_ ]?(\d+)$", re.IGNORECASE
+)
 
 
 def migrate_legacy_board_id(legacy_id: str) -> str:

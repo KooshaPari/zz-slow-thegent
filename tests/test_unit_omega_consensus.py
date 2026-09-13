@@ -37,7 +37,9 @@ class TestOmegaConsensus:
         """Consensus fails if YES votes are below threshold."""
         consensus = OmegaConsensus(swarm_size=10, threshold=0.8)
 
-        proposal_id = consensus.propose_state(proposer_id="agent-master", state={"status": "failed"}, metadata={})
+        proposal_id = consensus.propose_state(
+            proposer_id="agent-master", state={"status": "failed"}, metadata={}
+        )
 
         # Cast 7/10 YES votes (70% < 80% threshold)
         for i in range(7):

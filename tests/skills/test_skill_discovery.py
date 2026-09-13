@@ -108,7 +108,9 @@ class TestSkillDiscovery:
     def test_discover_multiple_skills(self, tmp_path: Path) -> None:
         dir_a = tmp_path / "a"
         dir_a.mkdir()
-        (dir_a / "SKILL.md").write_text("# Alpha\n\nAlpha instructions.", encoding="utf-8")
+        (dir_a / "SKILL.md").write_text(
+            "# Alpha\n\nAlpha instructions.", encoding="utf-8"
+        )
 
         dir_b = tmp_path / "b"
         dir_b.mkdir()
@@ -127,7 +129,9 @@ class TestSkillDiscovery:
     def test_find_returns_skill_by_name(self, tmp_path: Path) -> None:
         skills_dir = tmp_path / "skills"
         skills_dir.mkdir()
-        (skills_dir / "SKILL.md").write_text("# Target\n\nTarget instructions.", encoding="utf-8")
+        (skills_dir / "SKILL.md").write_text(
+            "# Target\n\nTarget instructions.", encoding="utf-8"
+        )
 
         sd = SkillDiscovery(search_dirs=[skills_dir])
         result = sd.find("Target")
@@ -209,7 +213,9 @@ class TestSkillActivator:
         result = activator.activate("X", original)
         assert result.startswith(original)
 
-    def test_activate_empty_instructions_appends_nothing_extra(self, tmp_path: Path) -> None:
+    def test_activate_empty_instructions_appends_nothing_extra(
+        self, tmp_path: Path
+    ) -> None:
         skills_dir = tmp_path / "skills"
         skills_dir.mkdir()
         (skills_dir / "skill.json").write_text(

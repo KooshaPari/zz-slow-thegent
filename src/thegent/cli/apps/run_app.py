@@ -97,7 +97,14 @@ def _safe_model_unavailable_line(model: object, provider: object, suffix: str) -
     additional operator-controlled data into the suffix stays
     safe-by-construction.
     """
-    return "Model '" + exc_text(model) + "' not available via provider '" + exc_text(provider) + "'." + exc_text(suffix)
+    return (
+        "Model '"
+        + exc_text(model)
+        + "' not available via provider '"
+        + exc_text(provider)
+        + "'."
+        + exc_text(suffix)
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -107,7 +114,9 @@ def _safe_model_unavailable_line(model: object, provider: object, suffix: str) -
 def _run_callback(
     ctx: typer.Context,
     model: str | None = typer.Option(None, "--model", "-M", help="Model to use."),
-    provider: str | None = typer.Option(None, "--provider", "-P", help="Provider to use."),
+    provider: str | None = typer.Option(
+        None, "--provider", "-P", help="Provider to use."
+    ),
     cd: str | None = typer.Option(None, "--cd", help="Working directory."),
     agent: str | None = typer.Option(None, "--agent", "-a", help="Agent identifier."),
     mode: str | None = typer.Option(None, "--mode", help="Run mode."),
@@ -173,7 +182,11 @@ def _run_callback(
             route = resolve_route(model_id, provider_hint=provider)
             if route is None:
                 routes = ModelCatalog.routes_for(model_id)
-                available = ", ".join(sorted({r.provider for r in routes})) if routes else "none"
+                available = (
+                    ", ".join(sorted({r.provider for r in routes}))
+                    if routes
+                    else "none"
+                )
                 suffix = f" Available: {available}." if available != "none" else ""
                 # AUDIT-N+3 — route the operator-controlled ``model``
                 # and ``provider`` segments through ``exc_text`` so a
@@ -234,24 +247,38 @@ def _register_subcommand_table() -> dict[str, click.Command]:
 def _agent(
     prompt: str = typer.Argument(..., help="Prompt to send to the agent."),
     agent: str = typer.Option("claude", "--agent", "-a", help="Agent identifier."),
-    model: str | None = typer.Option(None, "--model", "-M", help="Optional model override."),
-    provider: str | None = typer.Option(None, "--provider", "-P", help="Optional provider override."),
+    model: str | None = typer.Option(
+        None, "--model", "-M", help="Optional model override."
+    ),
+    provider: str | None = typer.Option(
+        None, "--provider", "-P", help="Optional provider override."
+    ),
     cd: str | None = typer.Option(None, "--cd", help="Working directory."),
     mode: str | None = typer.Option(None, "--mode", help="Run mode."),
     timeout: int | None = typer.Option(None, "--timeout", help="Timeout in seconds."),
     live: bool = typer.Option(False, "--live", help="Stream live output."),
     failover: bool = typer.Option(False, "--failover", help="Allow failover."),
     routing: str | None = typer.Option(None, "--routing", help="Routing preference."),
-    include_contract: bool = typer.Option(False, "--include-contract", help="Include contract."),
+    include_contract: bool = typer.Option(
+        False, "--include-contract", help="Include contract."
+    ),
     lane: str | None = typer.Option(None, "--lane", help="Lane identifier."),
-    confidence: float | None = typer.Option(None, "--confidence", help="Confidence threshold."),
+    confidence: float | None = typer.Option(
+        None, "--confidence", help="Confidence threshold."
+    ),
     override: str | None = typer.Option(None, "--override", help="Override spec."),
     domain: str | None = typer.Option(None, "--domain", help="Domain filter."),
     bg_flag: bool = typer.Option(False, "--bg", help="Background mode."),
     owner: str | None = typer.Option(None, "--owner", help="Owner tag."),
-    continuation: str | None = typer.Option(None, "--continuation", help="Continuation token."),
-    idempotency_token: str | None = typer.Option(None, "--idempotency-token", help="Idempotency token."),
-    arbitration: str | None = typer.Option(None, "--arbitration", help="Arbitration policy."),
+    continuation: str | None = typer.Option(
+        None, "--continuation", help="Continuation token."
+    ),
+    idempotency_token: str | None = typer.Option(
+        None, "--idempotency-token", help="Idempotency token."
+    ),
+    arbitration: str | None = typer.Option(
+        None, "--arbitration", help="Arbitration policy."
+    ),
     fmt: str | None = typer.Option(None, "--format", help="Output format."),
 ) -> None:
     """Dispatch to ``cli.run_cmd`` (or ``cli.bg_cmd`` when ``--bg``)."""
@@ -302,7 +329,9 @@ def _agent(
 def _stop(
     session_id: str = typer.Argument(..., help="Session ID to stop."),
     force: bool = typer.Option(False, "--force", "-f", help="Force kill."),
-    wind_down: bool = typer.Option(False, "--wind-down", help="Allow graceful shutdown."),
+    wind_down: bool = typer.Option(
+        False, "--wind-down", help="Allow graceful shutdown."
+    ),
     grace: int = typer.Option(5, "--grace", help="Grace period in seconds."),
 ) -> None:
     """Dispatch to ``cli.stop_cmd``."""
@@ -314,7 +343,9 @@ def _ps(
     all: bool = typer.Option(False, "--all", help="Show all sessions."),
     owner: str | None = typer.Option(None, "--owner", help="Filter by owner tag."),
     fmt: str | None = typer.Option(None, "--format", help="Output format."),
-    include_contract: bool = typer.Option(False, "--include-contract", help="Include contract."),
+    include_contract: bool = typer.Option(
+        False, "--include-contract", help="Include contract."
+    ),
 ) -> None:
     """Dispatch to ``cli.ps_cmd``."""
     _cli.ps_cmd(all=all, owner=owner, format=fmt, include_contract=include_contract)

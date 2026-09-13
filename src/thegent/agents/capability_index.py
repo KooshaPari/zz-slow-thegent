@@ -89,7 +89,9 @@ def _parse_frontmatter(content: str) -> tuple[dict[str, Any], str]:
     if parsed is None:
         return {}, body
     if not isinstance(parsed, dict):
-        raise ValueError(f"Frontmatter must be a YAML mapping, got {type(parsed).__name__}")
+        raise ValueError(
+            f"Frontmatter must be a YAML mapping, got {type(parsed).__name__}"
+        )
     return parsed, body
 
 
@@ -167,7 +169,9 @@ def _tokenize(text: str) -> list[str]:
     return re.findall(r"[a-z0-9]+", text.lower())
 
 
-def _tf_idf_score(query_tokens: list[str], agent: AgentRecord, idf: dict[str, float]) -> float:
+def _tf_idf_score(
+    query_tokens: list[str], agent: AgentRecord, idf: dict[str, float]
+) -> float:
     """Compute a TF-IDF-based overlap score between query and agent text corpus.
 
     The agent corpus is: description tokens + capability tokens.
@@ -223,7 +227,9 @@ class CapabilityIndex:
                 df[tok] = df.get(tok, 0) + 1
 
         # IDF = log((N + 1) / (df + 1)) + 1  (smoothed)
-        self._idf = {tok: math.log((N + 1) / (cnt + 1)) + 1.0 for tok, cnt in df.items()}
+        self._idf = {
+            tok: math.log((N + 1) / (cnt + 1)) + 1.0 for tok, cnt in df.items()
+        }
 
     @classmethod
     def build(cls, extra_dirs: list[Path] | None = None) -> CapabilityIndex:
@@ -239,7 +245,11 @@ class CapabilityIndex:
                 if record is not None:
                     agents.append(record)
 
-        logger.debug("CapabilityIndex: loaded %d agents from %d dirs", len(agents), len(scan_dirs))
+        logger.debug(
+            "CapabilityIndex: loaded %d agents from %d dirs",
+            len(agents),
+            len(scan_dirs),
+        )
         return cls(agents)
 
     @classmethod
@@ -262,7 +272,9 @@ class CapabilityIndex:
         """Return all indexed agents."""
         return list(self._agents)
 
-    def recommend(self, task_description: str, top_n: int = 3) -> list[AgentRecommendation]:
+    def recommend(
+        self, task_description: str, top_n: int = 3
+    ) -> list[AgentRecommendation]:
         """Recommend top-N agents for the given task description.
 
         Uses TF-IDF keyword overlap between task_description and each agent's

@@ -169,9 +169,7 @@ class ProxyHealthChecker:
         """Check if proxy is reachable at base_url."""
         base = base_url.rstrip("/")
         paths = (
-            ("/models", "/")
-            if base.endswith("/v1")
-            else ("/v1/models", "/models", "/")
+            ("/models", "/") if base.endswith("/v1") else ("/v1/models", "/models", "/")
         )
 
         for path in paths:
@@ -192,9 +190,7 @@ class ProxyHealthChecker:
         """Check if server at base_url is the adapter (has /v1/responses)."""
         try:
             base = base_url.rstrip("/")
-            url = (
-                f"{base}/models" if base.endswith("/v1") else f"{base}/v1/models"
-            )
+            url = f"{base}/models" if base.endswith("/v1") else f"{base}/v1/models"
             resp = httpx.get(url, timeout=2)
             if not resp.is_success:
                 return False

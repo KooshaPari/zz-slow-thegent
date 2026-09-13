@@ -1,6 +1,5 @@
 """Tests for ContentTabs component."""
 
-
 from thegent.docgen.content_tabs import ContentTabs
 
 
@@ -59,12 +58,24 @@ class TestContentTabs:
         assert "Content 2" in html
 
         # Check for active state
-        assert 'class="tab-button active" role="tab" aria-selected="true" aria-controls="panel-0" id="tab-0"' in html
-        assert 'class="tab-panel active" id="panel-0" role="tabpanel" aria-labelledby="tab-0"' in html
+        assert (
+            'class="tab-button active" role="tab" aria-selected="true" aria-controls="panel-0" id="tab-0"'
+            in html
+        )
+        assert (
+            'class="tab-panel active" id="panel-0" role="tabpanel" aria-labelledby="tab-0"'
+            in html
+        )
 
         # Check for inactive state
-        assert 'class="tab-button " role="tab" aria-selected="false" aria-controls="panel-1" id="tab-1"' in html
-        assert 'class="tab-panel " id="panel-1" role="tabpanel" aria-labelledby="tab-1" hidden="true"' in html
+        assert (
+            'class="tab-button " role="tab" aria-selected="false" aria-controls="panel-1" id="tab-1"'
+            in html
+        )
+        assert (
+            'class="tab-panel " id="panel-1" role="tabpanel" aria-labelledby="tab-1" hidden="true"'
+            in html
+        )
 
     def test_render_code_tab(self) -> None:
         """Test rendering code content type."""

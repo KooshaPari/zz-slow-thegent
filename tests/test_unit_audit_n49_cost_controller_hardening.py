@@ -46,7 +46,9 @@ class TestModuleImport:
 # ---------------------------------------------------------------------------
 
 
-def _make_health_targets(tmp: Path, *, daily: int = 20, tiers: dict | None = None) -> Path:
+def _make_health_targets(
+    tmp: Path, *, daily: int = 20, tiers: dict | None = None
+) -> Path:
     """Create a minimal health-targets.json for testing."""
     tiers = tiers or {
         "normal": {"max_utilization_pct": 50},
@@ -72,7 +74,9 @@ class TestInitGuards:
         from thegent.governance.cost_controller import CostController
 
         with pytest.raises(ValueError, match="relative"):
-            CostController(session_dir=tmp_path, health_targets_path=Path("relative/ht.json"))
+            CostController(
+                session_dir=tmp_path, health_targets_path=Path("relative/ht.json")
+            )
 
     def test_accepts_absolute_paths(self, tmp_path: Path) -> None:
         from thegent.governance.cost_controller import CostController
@@ -284,7 +288,9 @@ class TestPersist:
         ctrl = CostController(session_dir=tmp_path, health_targets_path=ht)
         # Manually write an old-day record
         ctrl._usage_dir.mkdir(parents=True, exist_ok=True)
-        old_record = json.dumps({"date": "2020-01-01", "calls_used": 5, "calls_limit": 20})
+        old_record = json.dumps(
+            {"date": "2020-01-01", "calls_used": 5, "calls_limit": 20}
+        )
         ctrl._usage_path.write_text(old_record + "\n")
         # Record a new call
         ctrl.record_call("d", "a")
@@ -332,7 +338,12 @@ class TestBudgetTierEnum:
     def test_all_tiers_exist(self) -> None:
         from thegent.governance.cost_controller import BudgetTier
 
-        assert set(BudgetTier) == {BudgetTier.NORMAL, BudgetTier.CAUTIOUS, BudgetTier.RESTRICTED, BudgetTier.HALTED}
+        assert set(BudgetTier) == {
+            BudgetTier.NORMAL,
+            BudgetTier.CAUTIOUS,
+            BudgetTier.RESTRICTED,
+            BudgetTier.HALTED,
+        }
 
     def test_tier_values_are_strings(self) -> None:
         from thegent.governance.cost_controller import BudgetTier

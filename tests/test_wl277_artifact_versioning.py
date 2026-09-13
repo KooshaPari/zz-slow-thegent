@@ -22,7 +22,9 @@ class TestArtifactVersion:
     def test_artifact_version_creation(self) -> None:
         """Test creating an ArtifactVersion."""
         now = datetime.now(UTC)
-        version = ArtifactVersion(format_version="1.0", schema_hash="abc123", created_at=now)
+        version = ArtifactVersion(
+            format_version="1.0", schema_hash="abc123", created_at=now
+        )
         assert version.format_version == "1.0"
         assert version.schema_hash == "abc123"
         assert version.created_at == now
@@ -30,7 +32,9 @@ class TestArtifactVersion:
     def test_artifact_version_fields(self) -> None:
         """Test ArtifactVersion has expected fields."""
         now = datetime.now(UTC)
-        version = ArtifactVersion(format_version="2.0", schema_hash="def456", created_at=now)
+        version = ArtifactVersion(
+            format_version="2.0", schema_hash="def456", created_at=now
+        )
         assert hasattr(version, "format_version")
         assert hasattr(version, "schema_hash")
         assert hasattr(version, "created_at")

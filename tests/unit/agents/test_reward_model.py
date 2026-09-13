@@ -1,6 +1,5 @@
 """Unit tests for Recursive Reward Model (WP-39003)."""
 
-
 import pytest
 
 from thegent.agents.reward_model import RecursiveRewardModel

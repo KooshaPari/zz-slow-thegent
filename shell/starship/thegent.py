@@ -111,7 +111,14 @@ def get_lsp_servers() -> str | None:
             return None
 
         # Count LSP-related processes
-        lsp_patterns = ["pyright", "ruff", "typescript-language", "gopls", "rust-analyzer", "clangd"]
+        lsp_patterns = [
+            "pyright",
+            "ruff",
+            "typescript-language",
+            "gopls",
+            "rust-analyzer",
+            "clangd",
+        ]
         servers = []
 
         for pattern in lsp_patterns:
@@ -164,7 +171,12 @@ def get_context() -> dict:
     }
 
 
-def format_module(status: str, work_stream: str | None = None, lsp: str | None = None, mcp: str | None = None) -> str:
+def format_module(
+    status: str,
+    work_stream: str | None = None,
+    lsp: str | None = None,
+    mcp: str | None = None,
+) -> str:
     """Format the module output."""
     parts = []
 

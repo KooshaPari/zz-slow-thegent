@@ -49,7 +49,9 @@ class CostController:
         if not session_dir.is_absolute():
             raise ValueError(f"session_dir must be absolute, got: {session_dir}")
         if not health_targets_path.is_absolute():
-            raise ValueError(f"health_targets_path must be absolute, got: {health_targets_path}")
+            raise ValueError(
+                f"health_targets_path must be absolute, got: {health_targets_path}"
+            )
         self._session_dir = session_dir
         self._usage_dir = session_dir / "agileplus"
         self._usage_path = self._usage_dir / "daily_usage.jsonl"
@@ -58,7 +60,9 @@ class CostController:
             with open(health_targets_path) as fh:
                 data = json.load(fh)
         except (FileNotFoundError, json.JSONDecodeError) as exc:
-            _log.warning("Failed to load health targets from %s: %s", health_targets_path, exc)
+            _log.warning(
+                "Failed to load health targets from %s: %s", health_targets_path, exc
+            )
             data = {"budget": {"daily_agent_calls": 20, "tiers": {}}}
 
         budget = data.get("budget", {})
@@ -67,7 +71,10 @@ class CostController:
         # Build ordered tier list from config (ascending by max_utilization_pct)
         raw_tiers = budget.get("tiers", {})
         self._tier_thresholds: list[tuple[BudgetTier, float]] = sorted(
-            [(BudgetTier(name), cfg["max_utilization_pct"] / 100.0) for name, cfg in raw_tiers.items()],
+            [
+                (BudgetTier(name), cfg["max_utilization_pct"] / 100.0)
+                for name, cfg in raw_tiers.items()
+            ],
             key=lambda t: t[1],
         )
 

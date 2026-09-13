@@ -154,7 +154,9 @@ class TestOutputSchemaValidatorValidate:
         with pytest.raises(ValueError, match="Output schema validation failed"):
             validator.validate('{"name": "Alice", "count": "not-a-number"}')
 
-    def test_raises_for_json_array_when_object_expected(self, schema_file: Path) -> None:
+    def test_raises_for_json_array_when_object_expected(
+        self, schema_file: Path
+    ) -> None:
         # @trace WL-113
         """ValueError is raised when a JSON array is given but object is expected."""
         validator = OutputSchemaValidator(schema_file)
@@ -191,7 +193,9 @@ class TestOutputSchemaValidatorSystemPromptInjection:
         injection = validator.get_system_prompt_injection()
         assert json.dumps(SIMPLE_SCHEMA, indent=2).decode() in injection
 
-    def test_injection_contains_must_respond_instruction(self, schema_file: Path) -> None:
+    def test_injection_contains_must_respond_instruction(
+        self, schema_file: Path
+    ) -> None:
         # @trace WL-113
         """The injection string contains the mandatory instruction phrase."""
         validator = OutputSchemaValidator(schema_file)
@@ -284,7 +288,9 @@ class TestRunImplOutputSchema:
         sig = inspect.signature(run_impl)
         assert sig.parameters["output_schema"].default is None
 
-    def test_schema_injection_appended_to_prompt(self, schema_file: Path, tmp_path: Path) -> None:
+    def test_schema_injection_appended_to_prompt(
+        self, schema_file: Path, tmp_path: Path
+    ) -> None:
         # @trace WL-113
         """Schema injection is appended to the prompt before agent execution."""
         validator = OutputSchemaValidator(schema_file)

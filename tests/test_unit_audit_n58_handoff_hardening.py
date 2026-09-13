@@ -123,7 +123,9 @@ class TestHOAnalyzeWellFormed:
     def test_well_formed_high_score(self, tmp_path: Path) -> None:
         (tmp_path / "main.py").write_text("# main", encoding="utf-8")
         hi = HandoffIntegrity(tmp_path)
-        result = hi.analyze_prompt("Create a function in main.py to refactor the auth module")
+        result = hi.analyze_prompt(
+            "Create a function in main.py to refactor the auth module"
+        )
         assert result["completeness_score"] >= 2
 
 
@@ -200,7 +202,9 @@ class TestHOValidateComplete:
     def test_valid_returns_true(self, tmp_path: Path) -> None:
         (tmp_path / "main.py").write_text("# main", encoding="utf-8")
         hi = HandoffIntegrity(tmp_path)
-        ok, msg = hi.validate_handoff("Create a function in main.py to refactor the auth module")
+        ok, msg = hi.validate_handoff(
+            "Create a function in main.py to refactor the auth module"
+        )
         assert ok is True
         assert "valid" in msg.lower()
 

@@ -73,7 +73,9 @@ def govern_approve(
             console.print(f"[dim]{DiffRenderer.render_summary(payload)}[/dim]")
             console.print(DiffRenderer.render_ansi(payload))
         else:
-            console.print("[dim]No unified diff available for this approval request.[/dim]")
+            console.print(
+                "[dim]No unified diff available for this approval request.[/dim]"
+            )
         if reason is None:
             reason = typer.prompt("Approval reason", default="approved")
         result = govern_approve_impl(run_id=run_id, reason=reason)
@@ -102,12 +104,24 @@ def govern_reject(
 def govern_vet(
     run_id: str = typer.Argument(..., help="Run ID to vet"),
     policy: str = typer.Option("default", "--policy", help="Vetter policy name"),
-    session: str | None = typer.Option(None, "--session", help="Override session directory path"),
-    dry_run: bool = typer.Option(False, "--dry-run", help="Preview checks without executing"),
-    org: str | None = typer.Option(None, "--org", help="Federated policy namespace org"),
-    project: str | None = typer.Option(None, "--project", help="Federated policy namespace project"),
-    environment: str | None = typer.Option(None, "--environment", help="Federated policy namespace environment"),
-    policy_id: str | None = typer.Option(None, "--policy-id", help="Federated policy id override"),
+    session: str | None = typer.Option(
+        None, "--session", help="Override session directory path"
+    ),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Preview checks without executing"
+    ),
+    org: str | None = typer.Option(
+        None, "--org", help="Federated policy namespace org"
+    ),
+    project: str | None = typer.Option(
+        None, "--project", help="Federated policy namespace project"
+    ),
+    environment: str | None = typer.Option(
+        None, "--environment", help="Federated policy namespace environment"
+    ),
+    policy_id: str | None = typer.Option(
+        None, "--policy-id", help="Federated policy id override"
+    ),
     json_output: bool = typer.Option(False, "--json", help="Output JSON result"),
 ) -> None:
     from thegent.cli.governance.governance import govern_vet_impl
@@ -131,7 +145,11 @@ def govern_vet(
         console.print(f"[cyan]Policy:[/cyan] {result['policy']}")
         console.print(f"[cyan]Verdict:[/cyan] {result['verdict']}")
         for check in result.get("checks", []):
-            status = "pass" if check.get("passed") else ("dry-run" if check.get("passed") is None else "fail")
+            status = (
+                "pass"
+                if check.get("passed")
+                else ("dry-run" if check.get("passed") is None else "fail")
+            )
             console.print(f"- {check.get('check_name')}: {status}")
         if result.get("verdict") == "rejected":
             raise typer.Exit(1)
@@ -140,11 +158,17 @@ def govern_vet(
         raise typer.Exit(1) from exc
 
 
-@app.command("register-host", help="Register a new host for remote agent harness execution.")
+@app.command(
+    "register-host", help="Register a new host for remote agent harness execution."
+)
 def govern_register_host(
     host_id: str = typer.Argument(..., help="Unique host identifier"),
-    harness: str = typer.Argument(..., help="Harness type (cursor, codex, claude, ante, droid)"),
-    prefix: str = typer.Option("", "--prefix", "-p", help="Command prefix (e.g., 'ssh user@host')"),
+    harness: str = typer.Argument(
+        ..., help="Harness type (cursor, codex, claude, ante, droid)"
+    ),
+    prefix: str = typer.Option(
+        "", "--prefix", "-p", help="Command prefix (e.g., 'ssh user@host')"
+    ),
 ) -> None:
     """Register a new host device for remote harness execution."""
     from thegent.cli.governance.governance_impl import harness_register_host_impl
@@ -158,14 +182,22 @@ def govern_register_host(
     if result.get("success"):
         console.print(f"[green]Registered:[/green] {host_id} ({harness})")
     else:
-        print_exc(err_console, "govern register-host failed:", result.get("error", "Unknown error"))
+        print_exc(
+            err_console,
+            "govern register-host failed:",
+            result.get("error", "Unknown error"),
+        )
 
 
-@app.command("resolve-config", help="Resolve configuration overrides for a tenant or session.")
+@app.command(
+    "resolve-config", help="Resolve configuration overrides for a tenant or session."
+)
 def govern_resolve_config(
     tenant_id: str | None = typer.Option(None, "--tenant", help="Tenant ID"),
     session_id: str | None = typer.Option(None, "--session", help="Session ID"),
-    key: str | None = typer.Option(None, "--key", "-k", help="Specific config key to resolve"),
+    key: str | None = typer.Option(
+        None, "--key", "-k", help="Specific config key to resolve"
+    ),
 ) -> None:
     """Resolve configuration overrides for a tenant or session."""
     from thegent.mcp.server.tools_runtime import config_resolve_impl
@@ -183,7 +215,9 @@ def govern_resolve_config(
 @app.command("negotiate", help="Negotiate a contract version with the agent.")
 def govern_negotiate(
     contract_id: str = typer.Argument(..., help="Contract ID to negotiate"),
-    versions: str = typer.Option(..., "--versions", "-v", help="Comma-separated supported versions"),
+    versions: str = typer.Option(
+        ..., "--versions", "-v", help="Comma-separated supported versions"
+    ),
 ) -> None:
     """Negotiate a contract version."""
     from thegent.cli.commands.session_control_impl import (
@@ -201,24 +235,40 @@ def govern_negotiate(
     console.print(result_str)
 
 
-@app.command("session-contract-health-trend", help="Session contract health trend analysis.")
+@app.command(
+    "session-contract-health-trend", help="Session contract health trend analysis."
+)
 def govern_health_trend(
     payload_type: str = typer.Option(
         "session_contract_health_report",
         "--payload-type",
         help="Payload type to trend (session_contract_health_report, session_contract_health_gate)",
     ),
-    all_sessions: bool = typer.Option(False, "--all", "-a", help="Include all sessions (not just current owner)"),
+    all_sessions: bool = typer.Option(
+        False, "--all", "-a", help="Include all sessions (not just current owner)"
+    ),
     owner: str | None = typer.Option(None, "--owner", "-o", help="Owner tag filter"),
     strict: bool = typer.Option(False, "--strict", help="Strict health check mode"),
-    policy_profile: str | None = typer.Option(None, "--policy-profile", help="Health policy profile"),
-    min_healthy_ratio: float = typer.Option(1.0, "--min-healthy-ratio", help="Minimum healthy ratio threshold"),
-    top_blocked: int = typer.Option(25, "--top-blocked", help="Top N blocked rows to include"),
+    policy_profile: str | None = typer.Option(
+        None, "--policy-profile", help="Health policy profile"
+    ),
+    min_healthy_ratio: float = typer.Option(
+        1.0, "--min-healthy-ratio", help="Minimum healthy ratio threshold"
+    ),
+    top_blocked: int = typer.Option(
+        25, "--top-blocked", help="Top N blocked rows to include"
+    ),
     limit: int = typer.Option(20, "--limit", help="Maximum snapshots to analyze"),
-    format: str = typer.Option("rich", "--format", "-f", help="Output format: rich|json|md"),
+    format: str = typer.Option(
+        "rich", "--format", "-f", help="Output format: rich|json|md"
+    ),
     output: str | None = typer.Option(None, "--output", help="Export to file"),
-    export_format: str | None = typer.Option(None, "--export-format", help="Export format override"),
-    overwrite: bool = typer.Option(False, "--overwrite", help="Overwrite existing export file"),
+    export_format: str | None = typer.Option(
+        None, "--export-format", help="Export format override"
+    ),
+    overwrite: bool = typer.Option(
+        False, "--overwrite", help="Overwrite existing export file"
+    ),
 ) -> None:
     """Analyze session contract health trends."""
     from pathlib import Path

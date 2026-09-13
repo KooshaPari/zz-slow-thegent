@@ -22,7 +22,9 @@ def test_render_slo_dashboard_runs_without_error() -> None:
         text=True,
         cwd=str(ROOT),
     )
-    assert result.returncode == 0, f"Script failed:\nstdout={result.stdout}\nstderr={result.stderr}"
+    assert result.returncode == 0, (
+        f"Script failed:\nstdout={result.stdout}\nstderr={result.stderr}"
+    )
 
 
 def test_slo_dashboard_file_exists() -> None:
@@ -33,7 +35,9 @@ def test_slo_dashboard_file_exists() -> None:
 def test_slo_dashboard_contains_table_headers() -> None:
     """Dashboard must contain expected markdown table headers."""
     content = DASHBOARD.read_text(encoding="utf-8")
-    assert "| Metric | Value | Status | Threshold (Green) | Threshold (Red) |" in content
+    assert (
+        "| Metric | Value | Status | Threshold (Green) | Threshold (Red) |" in content
+    )
     assert "|--------|" in content
 
 

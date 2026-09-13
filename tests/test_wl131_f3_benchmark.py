@@ -23,7 +23,9 @@ def test_f3_report_mentions_baseline():
 
 def test_f3_report_mentions_maturin_or_rust():
     text = REPORT.read_text()
-    assert "maturin" in text or "Rust" in text, "Report must mention 'maturin' or 'Rust'"
+    assert "maturin" in text or "Rust" in text, (
+        "Report must mention 'maturin' or 'Rust'"
+    )
 
 
 def test_f3_baseline_json_exists():
@@ -33,4 +35,6 @@ def test_f3_baseline_json_exists():
 def test_f3_baseline_json_is_valid():
     data = json.loads(BASELINE_JSON.read_text())
     assert isinstance(data, dict), "Baseline JSON must be a JSON object"
-    assert "per_call_us" in data or "elapsed_s" in data, "Baseline JSON must contain timing data"
+    assert "per_call_us" in data or "elapsed_s" in data, (
+        "Baseline JSON must contain timing data"
+    )

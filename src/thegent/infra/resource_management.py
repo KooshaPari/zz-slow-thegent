@@ -17,7 +17,9 @@ class ResourceManager:
     def __init__(self) -> None:
         self._applied_limits: dict[str, tuple[int, int]] = {}
 
-    def apply_limits(self, memory_mb: int = 512, proc_limit: int = 100) -> dict[str, tuple[int, int]]:
+    def apply_limits(
+        self, memory_mb: int = 512, proc_limit: int = 100
+    ) -> dict[str, tuple[int, int]]:
         """Apply soft/hard limits using resource module."""
         if memory_mb <= 0:
             raise ValueError("memory_mb must be > 0")
@@ -27,9 +29,15 @@ class ResourceManager:
         mem_bytes = memory_mb * 1024 * 1024
         nofile_limit = 1024
 
-        self._applied_limits["memory"] = self._enforce_limit(resource.RLIMIT_AS, mem_bytes, "memory")
-        self._applied_limits["processes"] = self._enforce_limit(resource.RLIMIT_NPROC, proc_limit, "processes")
-        self._applied_limits["nofile"] = self._enforce_limit(resource.RLIMIT_NOFILE, nofile_limit, "nofile")
+        self._applied_limits["memory"] = self._enforce_limit(
+            resource.RLIMIT_AS, mem_bytes, "memory"
+        )
+        self._applied_limits["processes"] = self._enforce_limit(
+            resource.RLIMIT_NPROC, proc_limit, "processes"
+        )
+        self._applied_limits["nofile"] = self._enforce_limit(
+            resource.RLIMIT_NOFILE, nofile_limit, "nofile"
+        )
 
         logger.info(
             "Applied resource limits: memory=%sB processes=%s nofile=%s",
@@ -53,7 +61,9 @@ class ResourceManager:
         resource.setrlimit(kind, (soft_limit, hard_limit))
         current_soft, current_hard = resource.getrlimit(kind)
         if current_soft != soft_limit:
-            raise RuntimeError(f"failed to enforce {label} limit: expected {soft_limit}, got {current_soft}")
+            raise RuntimeError(
+                f"failed to enforce {label} limit: expected {soft_limit}, got {current_soft}"
+            )
         return current_soft, current_hard
 
     def get_applied_limits(self) -> dict[str, tuple[int, int]]:
@@ -106,7 +116,9 @@ class ResourcePredictionEngine:
 
         # Safety buffer
         if (current_free_mb - predicted_usage) < 256:
-            logger.warning(f"Predictive throttle: Spawning {harness_type} may cause OOM.")
+            logger.warning(
+                f"Predictive throttle: Spawning {harness_type} may cause OOM."
+            )
             return False
         return True
 

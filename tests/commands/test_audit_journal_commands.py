@@ -31,18 +31,38 @@ def mock_git_journal():
     with patch("thegent.cli.apps.audit.GitJournalEnhanced") as mock:
         # Mock list_sessions
         mock.list_sessions.return_value = [
-            {"session_id": "test-session-1", "last_commit": "2024-01-15", "sha": "abc123def456"},
-            {"session_id": "test-session-2", "last_commit": "2024-01-16", "sha": "789xyz123abc"},
+            {
+                "session_id": "test-session-1",
+                "last_commit": "2024-01-15",
+                "sha": "abc123def456",
+            },
+            {
+                "session_id": "test-session-2",
+                "last_commit": "2024-01-16",
+                "sha": "789xyz123abc",
+            },
         ]
 
         # Mock instance for journal operations
         mock_instance = MagicMock()
         mock_instance.get_audit_log.return_value = [
-            {"sha": "abc123", "message": "Initial commit", "timestamp": "2024-01-15T10:00:00"},
-            {"sha": "def456", "message": "Second entry", "timestamp": "2024-01-15T11:00:00"},
+            {
+                "sha": "abc123",
+                "message": "Initial commit",
+                "timestamp": "2024-01-15T10:00:00",
+            },
+            {
+                "sha": "def456",
+                "message": "Second entry",
+                "timestamp": "2024-01-15T11:00:00",
+            },
         ]
         mock_instance.get_attestations.return_value = [
-            {"commit_sha": "abc123", "timestamp": "2024-01-15T10:00:00", "algorithm": "sha256"},
+            {
+                "commit_sha": "abc123",
+                "timestamp": "2024-01-15T10:00:00",
+                "algorithm": "sha256",
+            },
         ]
         mock_instance.get_performance_stats.return_value = {
             "native_scanner": True,
@@ -87,7 +107,9 @@ class TestJournalList:
 class TestJournalStatus:
     def test_status_with_session(self, mock_git_journal) -> None:
         """Test getting status for a specific session."""
-        result = runner.invoke(audit.app, ["journal", "status", "--session", "test-session-1"])
+        result = runner.invoke(
+            audit.app, ["journal", "status", "--session", "test-session-1"]
+        )
         assert result.exit_code == 0
         assert "Journal Status" in result.output or "test-session-1" in result.output
 
@@ -95,13 +117,18 @@ class TestJournalStatus:
         """Test status requires --session flag."""
         result = runner.invoke(audit.app, ["journal", "status"])
         assert result.exit_code == 1
-        assert "--session required" in result.output.lower() or "error" in result.output.lower()
+        assert (
+            "--session required" in result.output.lower()
+            or "error" in result.output.lower()
+        )
 
     def test_status_no_entries(self, mock_git_journal) -> None:
         """Test status with session that has no entries."""
         mock_instance = mock_git_journal.return_value
         mock_instance.get_audit_log.return_value = []
-        result = runner.invoke(audit.app, ["journal", "status", "--session", "empty-session"])
+        result = runner.invoke(
+            audit.app, ["journal", "status", "--session", "empty-session"]
+        )
         assert result.exit_code == 0
         assert "No entries" in result.output or "empty-session" in result.output
 
@@ -114,7 +141,10 @@ class TestJournalStatus:
 class TestJournalSnapshot:
     def test_snapshot_with_session(self, mock_git_journal) -> None:
         """Test creating snapshot with explicit session ID."""
-        result = runner.invoke(audit.app, ["journal", "snapshot", "--session", "test-session-1", "--batch", "5"])
+        result = runner.invoke(
+            audit.app,
+            ["journal", "snapshot", "--session", "test-session-1", "--batch", "5"],
+        )
         assert result.exit_code == 0
         assert "snapshot" in result.output.lower()
         assert "test-session-1" in result.output
@@ -127,7 +157,9 @@ class TestJournalSnapshot:
 
     def test_snapshot_with_flags(self, mock_git_journal) -> None:
         """Test snapshot with --watch and --attest flags."""
-        result = runner.invoke(audit.app, ["journal", "snapshot", "--watch", "--attest", "--batch", "20"])
+        result = runner.invoke(
+            audit.app, ["journal", "snapshot", "--watch", "--attest", "--batch", "20"]
+        )
         assert result.exit_code == 0
         assert "snapshot" in result.output.lower() or "Created" in result.output
 
@@ -162,7 +194,9 @@ class TestJournalPrune:
 class TestJournalShow:
     def test_show_with_session(self, mock_git_journal) -> None:
         """Test showing audit log for a session."""
-        result = runner.invoke(audit.app, ["journal", "show", "--session", "test-session-1"])
+        result = runner.invoke(
+            audit.app, ["journal", "show", "--session", "test-session-1"]
+        )
         assert result.exit_code == 0
         assert "Audit Log" in result.output or "test-session-1" in result.output
         assert "abc123" in result.output
@@ -171,7 +205,10 @@ class TestJournalShow:
         """Test show requires --session flag."""
         result = runner.invoke(audit.app, ["journal", "show"])
         assert result.exit_code == 1
-        assert "--session required" in result.output.lower() or "error" in result.output.lower()
+        assert (
+            "--session required" in result.output.lower()
+            or "error" in result.output.lower()
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -188,7 +225,9 @@ class TestJournalWatch:
 
     def test_watch_with_session(self, mock_git_journal) -> None:
         """Test watch with explicit session ID."""
-        result = runner.invoke(audit.app, ["journal", "watch", "--session", "watch-session"])
+        result = runner.invoke(
+            audit.app, ["journal", "watch", "--session", "watch-session"]
+        )
         assert result.exit_code == 0
         assert "watch" in result.output.lower() or "watch-session" in result.output
 
@@ -207,7 +246,9 @@ class TestJournalWatch:
 class TestJournalAttest:
     def test_attest_with_session(self, mock_git_journal) -> None:
         """Test getting attestations for a session."""
-        result = runner.invoke(audit.app, ["journal", "attest", "--session", "test-session-1"])
+        result = runner.invoke(
+            audit.app, ["journal", "attest", "--session", "test-session-1"]
+        )
         assert result.exit_code == 0
         assert "Attestations" in result.output or "test-session-1" in result.output
 
@@ -215,13 +256,18 @@ class TestJournalAttest:
         """Test attest requires --session flag."""
         result = runner.invoke(audit.app, ["journal", "attest"])
         assert result.exit_code == 1
-        assert "--session required" in result.output.lower() or "error" in result.output.lower()
+        assert (
+            "--session required" in result.output.lower()
+            or "error" in result.output.lower()
+        )
 
     def test_attest_no_entries(self, mock_git_journal) -> None:
         """Test attest with session that has no attestations."""
         mock_instance = mock_git_journal.return_value
         mock_instance.get_attestations.return_value = []
-        result = runner.invoke(audit.app, ["journal", "attest", "--session", "no-attest-session"])
+        result = runner.invoke(
+            audit.app, ["journal", "attest", "--session", "no-attest-session"]
+        )
         assert result.exit_code == 0
         assert "No attestations" in result.output
 
@@ -234,7 +280,9 @@ class TestJournalAttest:
 class TestJournalStats:
     def test_stats_with_session(self, mock_git_journal) -> None:
         """Test getting performance stats for a session."""
-        result = runner.invoke(audit.app, ["journal", "stats", "--session", "test-session-1"])
+        result = runner.invoke(
+            audit.app, ["journal", "stats", "--session", "test-session-1"]
+        )
         assert result.exit_code == 0
         assert "Stats" in result.output or "test-session-1" in result.output
         assert "native_scanner" in result.output or "batch_size" in result.output
@@ -243,7 +291,10 @@ class TestJournalStats:
         """Test stats requires --session flag."""
         result = runner.invoke(audit.app, ["journal", "stats"])
         assert result.exit_code == 1
-        assert "--session required" in result.output.lower() or "error" in result.output.lower()
+        assert (
+            "--session required" in result.output.lower()
+            or "error" in result.output.lower()
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -290,6 +341,8 @@ class TestJournalFlags:
 
     def test_path_flag(self, mock_git_journal) -> None:
         """Test --path flag is accepted."""
-        result = runner.invoke(audit.app, ["journal", "list", "--path", "/tmp/test-repo"])
+        result = runner.invoke(
+            audit.app, ["journal", "list", "--path", "/tmp/test-repo"]
+        )
         assert result.exit_code == 0
         mock_git_journal.list_sessions.assert_called()

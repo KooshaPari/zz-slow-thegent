@@ -48,7 +48,9 @@ class GovernanceDLQIntegration:
             except Exception as e:
                 retry_count += 1
                 if retry_count >= max_retries:
-                    self.escalation_queue.move_to_dlq(item, f"Max retries exceeded: {e}")
+                    self.escalation_queue.move_to_dlq(
+                        item, f"Max retries exceeded: {e}"
+                    )
                     retry_count = 0
                 else:
                     # Re-queue for retry

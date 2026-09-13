@@ -17,7 +17,9 @@ _log = logging.getLogger(__name__)
 class MAIFAgentRunner(AgentRunner):
     """Wraps an AgentRunner to automatically generate MAIF artifacts using ExecutionEngine."""
 
-    def __init__(self, runner: AgentRunner, engine: Optional["ExecutionEngine"] = None) -> None:
+    def __init__(
+        self, runner: AgentRunner, engine: Optional["ExecutionEngine"] = None
+    ) -> None:
         self.runner = runner
         if engine is None:
             from thegent.orchestration.execution.engine import ExecutionEngine
@@ -55,4 +57,11 @@ class MAIFAgentRunner(AgentRunner):
             started_at_utc=datetime.now(UTC).isoformat(),
         )
 
-        return self.engine.execute(runner=self.runner, run_meta=run_meta, cwd=cwd, mode=mode, timeout=timeout, **kwargs)
+        return self.engine.execute(
+            runner=self.runner,
+            run_meta=run_meta,
+            cwd=cwd,
+            mode=mode,
+            timeout=timeout,
+            **kwargs,
+        )

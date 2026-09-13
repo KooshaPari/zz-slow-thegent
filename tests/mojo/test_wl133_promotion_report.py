@@ -11,7 +11,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-REPORT_PATH = Path(__file__).parent.parent.parent / "docs" / "reports" / "2026-02-21-B90-W3-B4-mojo-promotion.md"
+REPORT_PATH = (
+    Path(__file__).parent.parent.parent
+    / "docs"
+    / "reports"
+    / "2026-02-21-B90-W3-B4-mojo-promotion.md"
+)
 
 
 def test_mojo_promotion_report_exists() -> None:
@@ -22,7 +27,9 @@ def test_mojo_promotion_report_exists() -> None:
 def test_mojo_promotion_report_mentions_deterministic() -> None:
     """The promotion report must mention 'deterministic' to confirm replay scope."""
     content = REPORT_PATH.read_text()
-    assert "deterministic" in content.lower(), "Mojo promotion report must mention 'deterministic'"
+    assert "deterministic" in content.lower(), (
+        "Mojo promotion report must mention 'deterministic'"
+    )
 
 
 def test_mojo_promotion_report_mentions_kernel() -> None:

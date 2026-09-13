@@ -62,7 +62,11 @@ def resolve_cwd(cd: Any) -> Path | None:
     else:
         cwd = Path.cwd().resolve()
 
-        if (cwd / ".git").exists() or (cwd / ".factory").exists() or (cwd / "pyproject.toml").exists():
+        if (
+            (cwd / ".git").exists()
+            or (cwd / ".factory").exists()
+            or (cwd / "pyproject.toml").exists()
+        ):
             resolved_p = cwd
         elif (cwd.parent / ".factory").exists() and cwd.parent != cwd:
             resolved_p = cwd.parent
@@ -80,15 +84,21 @@ def resolve_agent_model(
     mode: str,
     settings: ThegentSettings,
 ) -> str | None:
-    return run_model_helpers.resolve_agent_model(agent=agent, model=model, mode=mode, settings=settings)
+    return run_model_helpers.resolve_agent_model(
+        agent=agent, model=model, mode=mode, settings=settings
+    )
 
 
 def scope_key(owner: str) -> str:
     return session_owner_helpers.scope_key(owner)
 
 
-def default_owner_tag(cwd: Path | None = None, *, include_process_id: bool = False) -> str:
-    return session_owner_helpers.default_owner_tag(cwd, include_process_id=include_process_id)
+def default_owner_tag(
+    cwd: Path | None = None, *, include_process_id: bool = False
+) -> str:
+    return session_owner_helpers.default_owner_tag(
+        cwd, include_process_id=include_process_id
+    )
 
 
 def compose_owner_tag(user: str, cwd: Path, scope: str = "") -> str:
@@ -117,7 +127,9 @@ def new_session_id(*, agent: str | None, owner: str) -> str:
     ``session_id_helpers`` instead.
     """
     now = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
-    digest = hashlib.sha1(f"{time.time_ns()}:{os.getpid()}:{owner}".encode()).hexdigest()[:8]
+    digest = hashlib.sha1(
+        f"{time.time_ns()}:{os.getpid()}:{owner}".encode()
+    ).hexdigest()[:8]
     agent_tag = agent or "any"
     return f"{now}-{agent_tag}-p{os.getpid()}-{digest}"
 

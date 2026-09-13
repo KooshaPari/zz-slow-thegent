@@ -27,13 +27,27 @@ class ModelPricing:
 
 # Well-known model pricing used when model_metadata lookup lacks separate prompt/completion data.
 FALLBACK_PRICING: dict[str, ModelPricing] = {
-    "gpt-4o": ModelPricing("gpt-4o", prompt_usd_per_1m=2.50, completion_usd_per_1m=10.00),
-    "gpt-4o-mini": ModelPricing("gpt-4o-mini", prompt_usd_per_1m=0.15, completion_usd_per_1m=0.60),
-    "claude-opus-4-5": ModelPricing("claude-opus-4-5", prompt_usd_per_1m=15.00, completion_usd_per_1m=75.00),
-    "claude-sonnet-4-5": ModelPricing("claude-sonnet-4-5", prompt_usd_per_1m=3.00, completion_usd_per_1m=15.00),
-    "claude-haiku-4-5": ModelPricing("claude-haiku-4-5", prompt_usd_per_1m=0.80, completion_usd_per_1m=4.00),
-    "gemini-1.5-flash": ModelPricing("gemini-1.5-flash", prompt_usd_per_1m=0.075, completion_usd_per_1m=0.30),
-    "gemini-1.5-pro": ModelPricing("gemini-1.5-pro", prompt_usd_per_1m=1.25, completion_usd_per_1m=5.00),
+    "gpt-4o": ModelPricing(
+        "gpt-4o", prompt_usd_per_1m=2.50, completion_usd_per_1m=10.00
+    ),
+    "gpt-4o-mini": ModelPricing(
+        "gpt-4o-mini", prompt_usd_per_1m=0.15, completion_usd_per_1m=0.60
+    ),
+    "claude-opus-4-5": ModelPricing(
+        "claude-opus-4-5", prompt_usd_per_1m=15.00, completion_usd_per_1m=75.00
+    ),
+    "claude-sonnet-4-5": ModelPricing(
+        "claude-sonnet-4-5", prompt_usd_per_1m=3.00, completion_usd_per_1m=15.00
+    ),
+    "claude-haiku-4-5": ModelPricing(
+        "claude-haiku-4-5", prompt_usd_per_1m=0.80, completion_usd_per_1m=4.00
+    ),
+    "gemini-1.5-flash": ModelPricing(
+        "gemini-1.5-flash", prompt_usd_per_1m=0.075, completion_usd_per_1m=0.30
+    ),
+    "gemini-1.5-pro": ModelPricing(
+        "gemini-1.5-pro", prompt_usd_per_1m=1.25, completion_usd_per_1m=5.00
+    ),
 }
 
 
@@ -116,7 +130,9 @@ def calculate_cost_from_response(response: Any) -> float:
             return 0.0
         model = response.get("model", "unknown")
         prompt_tokens = int(usage.get("prompt_tokens", usage.get("input_tokens", 0)))
-        completion_tokens = int(usage.get("completion_tokens", usage.get("output_tokens", 0)))
+        completion_tokens = int(
+            usage.get("completion_tokens", usage.get("output_tokens", 0))
+        )
     else:
         # Object format (ModelResponse or similar)
         usage = getattr(response, "usage", None)

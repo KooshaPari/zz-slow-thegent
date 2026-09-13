@@ -33,13 +33,17 @@ def apply_connection_pragmas(
 class Database:
     """Simple SQLite wrapper."""
 
-    def __init__(self, path: str = ":memory:", busy_timeout_ms: int = DEFAULT_BUSY_TIMEOUT_MS):
+    def __init__(
+        self, path: str = ":memory:", busy_timeout_ms: int = DEFAULT_BUSY_TIMEOUT_MS
+    ):
         self.path = path
         self.busy_timeout_ms = busy_timeout_ms
         self.conn: sqlite3.Connection | None = None
 
     def connect(self) -> None:
-        self.conn = sqlite3.connect(self.path, timeout=max(1.0, self.busy_timeout_ms / 1000.0))
+        self.conn = sqlite3.connect(
+            self.path, timeout=max(1.0, self.busy_timeout_ms / 1000.0)
+        )
         apply_connection_pragmas(self.conn, busy_timeout_ms=self.busy_timeout_ms)
 
     def execute(self, query: str, params: tuple = ()) -> list[dict[str, Any]]:

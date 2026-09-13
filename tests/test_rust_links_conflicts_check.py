@@ -10,7 +10,9 @@ SCRIPT_PATH = ROOT / "scripts" / "check_rust_links_conflicts.py"
 
 
 def _load_module():
-    spec = importlib.util.spec_from_file_location("check_rust_links_conflicts", SCRIPT_PATH)
+    spec = importlib.util.spec_from_file_location(
+        "check_rust_links_conflicts", SCRIPT_PATH
+    )
     assert spec is not None
     assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
@@ -23,7 +25,12 @@ def test_build_report_from_metadata_passes_when_links_are_unique() -> None:
     metadata = {
         "packages": [
             {"id": "a 0.1.0", "name": "crate-a", "version": "0.1.0", "links": "python"},
-            {"id": "b 0.2.0", "name": "crate-b", "version": "0.2.0", "links": "sqlite3"},
+            {
+                "id": "b 0.2.0",
+                "name": "crate-b",
+                "version": "0.2.0",
+                "links": "sqlite3",
+            },
             {"id": "c 0.3.0", "name": "crate-c", "version": "0.3.0"},
         ]
     }
@@ -60,6 +67,6 @@ def test_taskfile_wires_links_conflict_check_before_pyo3_drift() -> None:
     quality_cmds = taskfile["tasks"]["quality"]["cmds"]
     assert {"task": "quality:rust:links-conflicts"} in quality_cmds
     assert {"task": "quality:rust:pyo3-drift"} in quality_cmds
-    assert quality_cmds.index({"task": "quality:rust:links-conflicts"}) < quality_cmds.index(
-        {"task": "quality:rust:pyo3-drift"}
-    )
+    assert quality_cmds.index(
+        {"task": "quality:rust:links-conflicts"}
+    ) < quality_cmds.index({"task": "quality:rust:pyo3-drift"})

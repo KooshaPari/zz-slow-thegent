@@ -50,11 +50,15 @@ class MeshManager:
             path.mkdir(parents=True, exist_ok=True)
             path.chmod(mode)
 
-    def _check_process(self, proc: psutil.Process, patterns: list[str]) -> dict[str, Any] | None:
+    def _check_process(
+        self, proc: psutil.Process, patterns: list[str]
+    ) -> dict[str, Any] | None:
         """Check if a process matches patterns. Returns process info or None."""
         try:
             cmdline = " ".join(proc.info["cmdline"] or [])
-            if any(re.search(pattern, cmdline, flags=re.IGNORECASE) for pattern in patterns):
+            if any(
+                re.search(pattern, cmdline, flags=re.IGNORECASE) for pattern in patterns
+            ):
                 return {
                     "pid": proc.info["pid"],
                     "name": proc.info["name"],
@@ -85,7 +89,9 @@ class MeshManager:
         hb_file = self.agents_dir / f"{agent_id}.heartbeat"
         hb_file.touch()
 
-    def start_heartbeat_loop(self, agent_id: str, stop_event: threading.Event | None = None) -> threading.Event:
+    def start_heartbeat_loop(
+        self, agent_id: str, stop_event: threading.Event | None = None
+    ) -> threading.Event:
         """Start a background heartbeat loop for *agent_id* (5 seconds by default)."""
         if stop_event is None:
             stop_event = threading.Event()

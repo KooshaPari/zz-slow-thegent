@@ -29,7 +29,9 @@ _log = logging.getLogger(__name__)
 _RESTRICTIVE_MIN_KEYS: frozenset[str] = frozenset(
     {"risk_threshold", "cost_cap", "sla_minutes", "escalation_sla_minutes"}
 )
-_RESTRICTIVE_MAX_KEYS: frozenset[str] = frozenset({"audit_retention_days", "max_tokens", "max_retries"})
+_RESTRICTIVE_MAX_KEYS: frozenset[str] = frozenset(
+    {"audit_retention_days", "max_tokens", "max_retries"}
+)
 _RESTRICTIVE_OR_KEYS: frozenset[str] = frozenset(
     {"human_in_loop_required", "require_human_approval", "deny", "require_audit"}
 )
@@ -97,7 +99,9 @@ _REGION_TO_PROFILE: dict[str, str] = {
 }
 
 
-def _apply_jurisdiction_overlay(base: dict[str, Any], profile_name: str) -> dict[str, Any]:
+def _apply_jurisdiction_overlay(
+    base: dict[str, Any], profile_name: str
+) -> dict[str, Any]:
     """Apply a jurisdiction profile as an additive overlay (FR-FED-003).
 
     Constraints are additive (union), not overriding.  The most-restrictive
@@ -226,7 +230,9 @@ class FederatedPolicyManager:
                         if proj_p.is_dir():
                             for env_p in proj_p.iterdir():
                                 if env_p.is_dir():
-                                    namespaces.append(f"{org_p.name}.{proj_p.name}.{env_p.name}")
+                                    namespaces.append(
+                                        f"{org_p.name}.{proj_p.name}.{env_p.name}"
+                                    )
         status = "healthy" if namespaces else "empty"
         drift_report = self._detect_drift(namespaces)
         return {
@@ -273,14 +279,18 @@ class FederatedPolicyManager:
         for ns_str in ns.get_hierarchy():
             parts = ns_str.split(".")
             if len(parts) >= 3:
-                path = self.base_dir / parts[0] / parts[1] / parts[2] / f"{policy_id}.json"
+                path = (
+                    self.base_dir / parts[0] / parts[1] / parts[2] / f"{policy_id}.json"
+                )
                 if path.exists():
                     return json.loads(path.read_text(encoding="utf-8"))
         return {}
 
     # -- FR-FED-003: Jurisdiction overlays ------------------------------------
 
-    def apply_jurisdiction_constraints(self, policy: dict[str, Any], region: str) -> dict[str, Any]:
+    def apply_jurisdiction_constraints(
+        self, policy: dict[str, Any], region: str
+    ) -> dict[str, Any]:
         """Apply jurisdiction overlay as additive constraints (FR-FED-003).
 
         Profiles: EU-AI-ACT, US-SEC.  Constraints are additive (union) — the
@@ -291,7 +301,9 @@ class FederatedPolicyManager:
             return dict(policy)
         return _apply_jurisdiction_overlay(policy, profile_name)
 
-    def apply_jurisdiction_profile(self, policy: dict[str, Any], profile_name: str) -> dict[str, Any]:
+    def apply_jurisdiction_profile(
+        self, policy: dict[str, Any], profile_name: str
+    ) -> dict[str, Any]:
         """Apply a named jurisdiction profile directly (FR-FED-003)."""
         return _apply_jurisdiction_overlay(policy, profile_name)
 

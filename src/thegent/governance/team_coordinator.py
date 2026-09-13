@@ -175,7 +175,9 @@ class TeamCoordinator:
             "status": team.status,
         }
 
-    def _is_team_relationship(self, relationship: AgentRelationship, team_id: str) -> bool:
+    def _is_team_relationship(
+        self, relationship: AgentRelationship, team_id: str
+    ) -> bool:
         """Check if relationship involves team members."""
         parent = self.hierarchy.get_agent(relationship.parent_id)
         child = self.hierarchy.get_agent(relationship.child_id)
@@ -215,10 +217,14 @@ class TeamCoordinator:
         coordination_mode = team.coordination_mode
 
         if coordination_mode == CoordinationMode.HIERARCHICAL:
-            return self.coordinate_team_task_hierarchical(team_id, task, context, active_members)
+            return self.coordinate_team_task_hierarchical(
+                team_id, task, context, active_members
+            )
 
         if coordination_mode == CoordinationMode.COLLABORATIVE:
-            return self.coordinate_team_task_collaborative(team_id, task, context, active_members)
+            return self.coordinate_team_task_collaborative(
+                team_id, task, context, active_members
+            )
 
         if coordination_mode == CoordinationMode.SWARM:
             # All members work independently
@@ -238,7 +244,11 @@ class TeamCoordinator:
         if coordination_mode == CoordinationMode.ADAPTIVE:
             # Choose mode based on task complexity
             complexity = self._evaluate_task_complexity(task, context)
-            target_mode = CoordinationMode.HIERARCHICAL if complexity >= 0.5 else CoordinationMode.COLLABORATIVE
+            target_mode = (
+                CoordinationMode.HIERARCHICAL
+                if complexity >= 0.5
+                else CoordinationMode.COLLABORATIVE
+            )
 
             _log.info(
                 "Adaptive coordination: task complexity %.2f -> %s",
@@ -249,12 +259,21 @@ class TeamCoordinator:
             # Delegate to appropriate mode logic
             # For simplicity, we just call the same logic as above but with the target_mode
             if target_mode == CoordinationMode.HIERARCHICAL:
-                return self.coordinate_team_task_hierarchical(team_id, task, context, active_members)
-            return self.coordinate_team_task_collaborative(team_id, task, context, active_members)
+                return self.coordinate_team_task_hierarchical(
+                    team_id, task, context, active_members
+                )
+            return self.coordinate_team_task_collaborative(
+                team_id, task, context, active_members
+            )
 
-        return {"status": "error", "message": f"Unknown coordination mode: {coordination_mode}"}
+        return {
+            "status": "error",
+            "message": f"Unknown coordination mode: {coordination_mode}",
+        }
 
-    def _evaluate_task_complexity(self, task: str, context: dict[str, Any] | None = None) -> float:
+    def _evaluate_task_complexity(
+        self, task: str, context: dict[str, Any] | None = None
+    ) -> float:
         """
         Evaluate task complexity (0.0 to 1.0).
 

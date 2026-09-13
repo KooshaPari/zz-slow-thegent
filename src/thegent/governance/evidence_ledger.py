@@ -50,9 +50,13 @@ class EvidenceLedger:
 
     SCHEMA_VERSION = 1
 
-    def __init__(self, session_dir: Path) -> None:  # @trace AUDIT-N+51 FR-GOV-EL-001, FR-GOV-EL-002
+    def __init__(
+        self, session_dir: Path
+    ) -> None:  # @trace AUDIT-N+51 FR-GOV-EL-001, FR-GOV-EL-002
         if not session_dir.is_absolute():
-            raise ValueError(f"session_dir must be an absolute path, got: {session_dir!r}")
+            raise ValueError(
+                f"session_dir must be an absolute path, got: {session_dir!r}"
+            )
         self.session_dir = session_dir
         self._lock = threading.RLock()
         self._ensure_dir()
@@ -66,7 +70,9 @@ class EvidenceLedger:
         """Create the agileplus subdirectory if it does not exist."""
         self.ledger_path.parent.mkdir(parents=True, exist_ok=True)
 
-    def _ensure_version_marker(self) -> None:  # @trace AUDIT-N+51 FR-GOV-EL-005, FR-GOV-EL-006
+    def _ensure_version_marker(
+        self,
+    ) -> None:  # @trace AUDIT-N+51 FR-GOV-EL-005, FR-GOV-EL-006
         """Write a schema version marker if the ledger file is new."""
         with self._lock:
             if not self.ledger_path.exists():
@@ -98,7 +104,9 @@ class EvidenceLedger:
                         try:
                             json.loads(stripped)
                         except json.JSONDecodeError:
-                            _log.warning("Skipping corrupt JSONL line in _get_last_hash")
+                            _log.warning(
+                                "Skipping corrupt JSONL line in _get_last_hash"
+                            )
                             continue
                         last_line = stripped
                     if last_line:
@@ -115,7 +123,11 @@ class EvidenceLedger:
         return hashlib.sha256(body.encode()).hexdigest()
 
     def record(
-        self, event_type: str, cycle_id: str, payload: dict[str, Any] | None = None, **kwargs: Any
+        self,
+        event_type: str,
+        cycle_id: str,
+        payload: dict[str, Any] | None = None,
+        **kwargs: Any,
     ) -> str:  # @trace AUDIT-N+51 FR-GOV-EL-007, FR-GOV-EL-008, FR-GOV-EL-009
         """Record an evidence event with hash chaining.
 
@@ -146,7 +158,11 @@ class EvidenceLedger:
                 with self.ledger_path.open("a", encoding="utf-8") as f:
                     f.write(event.model_dump_json() + "\n")
             except (OSError, json.JSONDecodeError):
-                _log.exception("Failed to record evidence event %s for cycle %s", event_type, cycle_id)
+                _log.exception(
+                    "Failed to record evidence event %s for cycle %s",
+                    event_type,
+                    cycle_id,
+                )
                 raise
             _log.debug("Recorded evidence event %s for cycle %s", event_type, cycle_id)
             return event.hash
@@ -208,7 +224,11 @@ class EvidenceLedger:
                         return False
                     expected_hash = self._calculate_hash(data)
                     if recorded_hash != expected_hash:
-                        _log.warning("Hash mismatch: recorded=%s expected=%s", recorded_hash, expected_hash)
+                        _log.warning(
+                            "Hash mismatch: recorded=%s expected=%s",
+                            recorded_hash,
+                            expected_hash,
+                        )
                         return False
                     recorded_prev = data.get("prev_hash")
                     if recorded_prev != prev_hash:
@@ -221,6 +241,8 @@ class EvidenceLedger:
                     prev_hash = recorded_hash
             return True
 
-    def link_to_graph(self, graph: EvidenceGraph, event_hash: str, artifact_id: str) -> None:
+    def link_to_graph(
+        self, graph: EvidenceGraph, event_hash: str, artifact_id: str
+    ) -> None:
         """Link an evidence event to an artifact in the EvidenceGraph."""
         graph.add_link(event_hash, artifact_id)

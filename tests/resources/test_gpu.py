@@ -185,8 +185,22 @@ class TestParseNvidiaSmiOutput:
     def test_multiple_gpus(self, monitor: GpuMonitor) -> None:
         output = _nvidia_smi_output(
             [
-                {"index": 0, "name": "GPU-0", "util": 10, "mem_used": 1024, "mem_total": 8192, "temp": 55},
-                {"index": 1, "name": "GPU-1", "util": 80, "mem_used": 6000, "mem_total": 8192, "temp": 85},
+                {
+                    "index": 0,
+                    "name": "GPU-0",
+                    "util": 10,
+                    "mem_used": 1024,
+                    "mem_total": 8192,
+                    "temp": 55,
+                },
+                {
+                    "index": 1,
+                    "name": "GPU-1",
+                    "util": 80,
+                    "mem_used": 6000,
+                    "mem_total": 8192,
+                    "temp": 85,
+                },
             ]
         )
         gpus = monitor._parse_nvidia_smi_output(output)
@@ -267,23 +281,37 @@ class TestIsAvailable:
             pynvml_mock.nvmlInit.assert_called()
             pynvml_mock.nvmlShutdown.assert_called()
 
-    def test_available_via_nvidia_smi_when_pynvml_absent(self, monitor: GpuMonitor) -> None:
-        completed = subprocess.CompletedProcess(args=[], returncode=0, stdout="0\n", stderr="")
-        with patch("thegent.resources.gpu._import_pynvml", side_effect=ImportError("no pynvml")):
+    def test_available_via_nvidia_smi_when_pynvml_absent(
+        self, monitor: GpuMonitor
+    ) -> None:
+        completed = subprocess.CompletedProcess(
+            args=[], returncode=0, stdout="0\n", stderr=""
+        )
+        with patch(
+            "thegent.resources.gpu._import_pynvml", side_effect=ImportError("no pynvml")
+        ):
             with patch("thegent.resources.gpu._run_subprocess", return_value=completed):
                 assert monitor.is_available() is True
 
     def test_not_available_when_both_absent(self, monitor: GpuMonitor) -> None:
-        with patch("thegent.resources.gpu._import_pynvml", side_effect=ImportError("no pynvml")):
+        with patch(
+            "thegent.resources.gpu._import_pynvml", side_effect=ImportError("no pynvml")
+        ):
             with patch(
                 "thegent.resources.gpu._run_subprocess",
                 side_effect=FileNotFoundError("nvidia-smi not found"),
             ):
                 assert monitor.is_available() is False
 
-    def test_not_available_when_nvidia_smi_returns_nonzero(self, monitor: GpuMonitor) -> None:
-        completed = subprocess.CompletedProcess(args=[], returncode=1, stdout="", stderr="error")
-        with patch("thegent.resources.gpu._import_pynvml", side_effect=ImportError("no pynvml")):
+    def test_not_available_when_nvidia_smi_returns_nonzero(
+        self, monitor: GpuMonitor
+    ) -> None:
+        completed = subprocess.CompletedProcess(
+            args=[], returncode=1, stdout="", stderr="error"
+        )
+        with patch(
+            "thegent.resources.gpu._import_pynvml", side_effect=ImportError("no pynvml")
+        ):
             with patch("thegent.resources.gpu._run_subprocess", return_value=completed):
                 assert monitor.is_available() is False
 
@@ -375,7 +403,9 @@ class TestGetGpusNvidiaSmi:
 
     def test_single_gpu_via_smi(self, monitor: GpuMonitor) -> None:
         smi_out = "0, RTX 3090, 30, 4096, 24576, 65\n"
-        completed = subprocess.CompletedProcess(args=[], returncode=0, stdout=smi_out, stderr="")
+        completed = subprocess.CompletedProcess(
+            args=[], returncode=0, stdout=smi_out, stderr=""
+        )
         with self._patch_no_pynvml():
             with patch("thegent.resources.gpu._run_subprocess", return_value=completed):
                 gpus = monitor.get_gpus()
@@ -384,25 +414,34 @@ class TestGetGpusNvidiaSmi:
         assert gpus[0].utilization_pct == 30.0
 
     def test_no_gpu_returns_empty_list(self, monitor: GpuMonitor) -> None:
-        with self._patch_no_pynvml(), patch(
-            "thegent.resources.gpu._run_subprocess",
-            side_effect=FileNotFoundError("nvidia-smi not found"),
+        with (
+            self._patch_no_pynvml(),
+            patch(
+                "thegent.resources.gpu._run_subprocess",
+                side_effect=FileNotFoundError("nvidia-smi not found"),
+            ),
         ):
             gpus = monitor.get_gpus()
         assert gpus == []
 
     def test_nonzero_returncode_returns_empty(self, monitor: GpuMonitor) -> None:
-        completed = subprocess.CompletedProcess(args=[], returncode=9, stdout="", stderr="driver error")
+        completed = subprocess.CompletedProcess(
+            args=[], returncode=9, stdout="", stderr="driver error"
+        )
         with self._patch_no_pynvml():
             with patch("thegent.resources.gpu._run_subprocess", return_value=completed):
                 gpus = monitor.get_gpus()
         assert gpus == []
 
     def test_timeout_raises_gpu_monitor_error(self, monitor: GpuMonitor) -> None:
-        with self._patch_no_pynvml(), patch(
-            "thegent.resources.gpu._run_subprocess",
-            side_effect=subprocess.TimeoutExpired(cmd="nvidia-smi", timeout=10),
-        ), pytest.raises(GpuMonitorError, match="timed out"):
+        with (
+            self._patch_no_pynvml(),
+            patch(
+                "thegent.resources.gpu._run_subprocess",
+                side_effect=subprocess.TimeoutExpired(cmd="nvidia-smi", timeout=10),
+            ),
+            pytest.raises(GpuMonitorError, match="timed out"),
+        ):
             monitor.get_gpus()
 
     def test_smi_multiple_gpus(self, monitor: GpuMonitor) -> None:
@@ -412,7 +451,9 @@ class TestGetGpusNvidiaSmi:
                 {"index": 1, "util": 90, "temp": 88},
             ]
         )
-        completed = subprocess.CompletedProcess(args=[], returncode=0, stdout=smi_out, stderr="")
+        completed = subprocess.CompletedProcess(
+            args=[], returncode=0, stdout=smi_out, stderr=""
+        )
         with self._patch_no_pynvml():
             with patch("thegent.resources.gpu._run_subprocess", return_value=completed):
                 gpus = monitor.get_gpus()

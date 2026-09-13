@@ -155,7 +155,10 @@ def test_apply_reasoning_for_provider_gemini() -> None:
     body = {"model": "gemini-pro", "reasoning": {"effort": "high"}}
     result = apply_reasoning_for_provider(body, "google")
     assert "thinking_config" in result
-    assert result["thinking_config"]["thinking_budget"] == THINKING_BUDGET[ReasoningEffort.HIGH]
+    assert (
+        result["thinking_config"]["thinking_budget"]
+        == THINKING_BUDGET[ReasoningEffort.HIGH]
+    )
     assert "reasoning" not in result
 
 

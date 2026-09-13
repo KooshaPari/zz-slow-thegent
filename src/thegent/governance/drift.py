@@ -29,7 +29,9 @@ class DriftDetector:
         # FR-GOV-DR-002 — absolute session_dir required.
         session_dir = Path(settings.session_dir)
         if not session_dir.is_absolute():
-            raise ValueError(f"session_dir must be an absolute path (got {session_dir!s})")
+            raise ValueError(
+                f"session_dir must be an absolute path (got {session_dir!s})"
+            )
         self.settings = settings
         self.om = OverrideManager(settings)
         self.drift_log = session_dir / "policy_drift.jsonl"
@@ -81,24 +83,36 @@ class DriftDetector:
             if not isinstance(contracts_obj, dict):
                 raise ValueError("Invalid policy baseline format")
             baseline_contracts: dict[str, str] = {
-                str(k): str(v) for k, v in contracts_obj.items() if isinstance(k, str) and isinstance(v, str)
+                str(k): str(v)
+                for k, v in contracts_obj.items()
+                if isinstance(k, str) and isinstance(v, str)
             }
             for name, base_content in baseline_contracts.items():
                 if name not in current_contracts:
                     report["policy_mismatches"].append(
-                        {"contract": name, "type": "removed", "diff": f"baseline/{name}"}
+                        {
+                            "contract": name,
+                            "type": "removed",
+                            "diff": f"baseline/{name}",
+                        }
                     )
                     report["drift_detected"] = True
                     continue
                 cur_content = current_contracts[name]
                 if cur_content != base_content:
                     report["policy_mismatches"].append(
-                        {"contract": name, "type": "changed", "diff": f"baseline/{name} -> current/{name}"}
+                        {
+                            "contract": name,
+                            "type": "changed",
+                            "diff": f"baseline/{name} -> current/{name}",
+                        }
                     )
                     report["drift_detected"] = True
             for name in current_contracts:
                 if name not in baseline_contracts:
-                    report["policy_mismatches"].append({"contract": name, "type": "added", "diff": f"current/{name}"})
+                    report["policy_mismatches"].append(
+                        {"contract": name, "type": "added", "diff": f"current/{name}"}
+                    )
                     report["drift_detected"] = True
 
         if report["drift_detected"]:

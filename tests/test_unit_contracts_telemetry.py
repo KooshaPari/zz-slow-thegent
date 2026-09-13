@@ -34,7 +34,9 @@ class TestContractTelemetryRecording:
     def test_record_event_fields(self, tmp_path) -> None:
         # @trace FR-CTR-006
         tel = ContractTelemetry(tmp_path)
-        tel.record_normalization("r1", "copilot", "xml-tags", 0.9, True, errors=["warn"])
+        tel.record_normalization(
+            "r1", "copilot", "xml-tags", 0.9, True, errors=["warn"]
+        )
         event = json.loads(tel.telemetry_path.read_text().strip())
         assert event["run_id"] == "r1"
         assert event["provider"] == "copilot"
@@ -66,7 +68,9 @@ class TestContractTelemetryDriftEvents:
     def test_emit_structural_drift(self, tmp_path) -> None:
         # @trace FR-CTR-006
         tel = ContractTelemetry(tmp_path)
-        tel.emit_drift_event("r1", "copilot", "xml-tags", "structural", {"field": "status"})
+        tel.emit_drift_event(
+            "r1", "copilot", "xml-tags", "structural", {"field": "status"}
+        )
         event = json.loads(tel.telemetry_path.read_text().strip())
         assert event["event_type"] == EVENT_SCHEMA_DRIFT_STRUCTURAL
         assert event["drift_type"] == "structural"

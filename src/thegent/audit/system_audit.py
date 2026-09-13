@@ -14,6 +14,7 @@ from typing import Any
 
 class AuditStatus(Enum):
     """Audit status enumeration."""
+
     PASS = "pass"
     FAIL = "fail"
     WARNING = "warning"
@@ -47,6 +48,7 @@ class AuditResult:
 @dataclass
 class AuditReport:
     """Audit report containing results from multiple checks."""
+
     report_id: str = ""
     timestamp: str = ""
     status: AuditStatus = AuditStatus.PASS

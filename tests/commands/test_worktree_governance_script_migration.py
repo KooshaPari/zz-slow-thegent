@@ -11,19 +11,38 @@ from tests.commands.worktree_governance_script_helpers import init_repo, run_scr
 
 
 @pytest.mark.unit
-def test_worktree_governance_migrate_legacy_moves_clean_legacy_worktree(tmp_path: Path) -> None:
+def test_worktree_governance_migrate_legacy_moves_clean_legacy_worktree(
+    tmp_path: Path,
+) -> None:
     """`worktree_governance.sh migrate-legacy` relocates a clean legacy worktree into the canonical root."""
     repo_root = init_repo(tmp_path)
     legacy_path = repo_root.parent / "legacy-cache"
 
     subprocess.run(
-        ["git", "worktree", "add", "-q", "-b", "feat/migrate-cache", str(legacy_path), "main"],
+        [
+            "git",
+            "worktree",
+            "add",
+            "-q",
+            "-b",
+            "feat/migrate-cache",
+            str(legacy_path),
+            "main",
+        ],
         cwd=repo_root,
         check=True,
         capture_output=True,
     )
 
-    migrate = run_script(repo_root, "migrate-legacy", str(legacy_path), "infra", "m", "migrate-cache", "blocked")
+    migrate = run_script(
+        repo_root,
+        "migrate-legacy",
+        str(legacy_path),
+        "infra",
+        "m",
+        "migrate-cache",
+        "blocked",
+    )
     assert migrate.returncode == 0, migrate.stderr
     assert "[OK] migrated legacy worktree" in migrate.stdout
 

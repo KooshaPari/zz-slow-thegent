@@ -101,7 +101,11 @@ class WorkStreamOps:
             if lines[i].startswith("##"):
                 insert_idx = i
                 break
-            if lines[i].startswith("|") and "| ID |" not in lines[i] and "|----" not in lines[i]:
+            if (
+                lines[i].startswith("|")
+                and "| ID |" not in lines[i]
+                and "|----" not in lines[i]
+            ):
                 insert_idx = i + 1
 
         # Create claim entry

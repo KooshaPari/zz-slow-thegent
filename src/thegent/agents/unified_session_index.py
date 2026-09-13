@@ -147,7 +147,13 @@ class UnifiedSessionIndex:
                         harness=HarnessType.UNKNOWN,
                         project_path=None,
                         started_at=datetime.now(UTC),
-                        metadata={"source": "zmx", "pid": s.pid, "state": s.state, "cmd": s.cmd, "live": is_alive},
+                        metadata={
+                            "source": "zmx",
+                            "pid": s.pid,
+                            "state": s.state,
+                            "cmd": s.cmd,
+                            "live": is_alive,
+                        },
                     )
                     self._upsert_session(session)
                     count += 1
@@ -236,7 +242,9 @@ class UnifiedSessionIndex:
                         session_id=data.get("session_id", path.stem),
                         harness=HarnessType.CURSOR,
                         project_path=data.get("project"),
-                        started_at=datetime.fromisoformat(data.get("timestamp", datetime.now(UTC).isoformat())),
+                        started_at=datetime.fromisoformat(
+                            data.get("timestamp", datetime.now(UTC).isoformat())
+                        ),
                         messages=data.get("messages", []),
                         metadata={"source": "transcript"},
                     )
@@ -257,7 +265,9 @@ class UnifiedSessionIndex:
             try:
                 with sqlite3.connect(sqlite_db) as conn:
                     conn.row_factory = sqlite3.Row
-                    cur = conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                    cur = conn.execute(
+                        "SELECT name FROM sqlite_master WHERE type='table'"
+                    )
                     for row in cur.fetchall():
                         table = row["name"]
                         if "automation" in table.lower():
@@ -284,7 +294,11 @@ class UnifiedSessionIndex:
         sessions_dir = ante_root / "sessions"
         if sessions_dir.exists():
             try:
-                for session_file in sorted(sessions_dir.glob("*.json"), key=lambda x: x.stat().st_mtime, reverse=True):
+                for session_file in sorted(
+                    sessions_dir.glob("*.json"),
+                    key=lambda x: x.stat().st_mtime,
+                    reverse=True,
+                ):
                     parsed = self._parse_ante_session(session_file)
                     if parsed:
                         self._upsert_session(parsed)
@@ -313,14 +327,18 @@ class UnifiedSessionIndex:
                                     session_id=session_id,
                                     harness=HarnessType.ANTE,
                                     project_path=None,
-                                    started_at=datetime.fromisoformat(timestamp.replace("Z", "+00:00")),
+                                    started_at=datetime.fromisoformat(
+                                        timestamp.replace("Z", "+00:00")
+                                    ),
                                     messages=[{"role": "user", "content": prompt}],
                                     metadata={"source": "user_input_history"},
                                 )
                                 self._upsert_session(session)
                                 count += 1
                             except Exception as parse_err:
-                                _log.debug(f"Error parsing Ante history line: {parse_err}")
+                                _log.debug(
+                                    f"Error parsing Ante history line: {parse_err}"
+                                )
             except Exception as e:
                 _log.debug(f"Ante history error: {e}")
 
@@ -344,8 +362,12 @@ class UnifiedSessionIndex:
 
             # Extract usage stats
             usage = data.get("usage", {})
-            input_tokens = int(usage.get("input_tokens", 0)) if isinstance(usage, dict) else 0
-            output_tokens = int(usage.get("output_tokens", 0)) if isinstance(usage, dict) else 0
+            input_tokens = (
+                int(usage.get("input_tokens", 0)) if isinstance(usage, dict) else 0
+            )
+            output_tokens = (
+                int(usage.get("output_tokens", 0)) if isinstance(usage, dict) else 0
+            )
 
             # Extract timestamps
             started_time = data.get("started_time")
@@ -366,11 +388,17 @@ class UnifiedSessionIndex:
                 nanos = int(duration.get("nanos", 0))
                 duration_secs = secs + (nanos / 1_000_000_000)
                 if duration_secs > 0:
-                    ended_at = datetime.fromtimestamp(started_at.timestamp() + duration_secs, tz=UTC)
+                    ended_at = datetime.fromtimestamp(
+                        started_at.timestamp() + duration_secs, tz=UTC
+                    )
 
             # Extract model and provider info
             model_info = data.get("model", {})
-            model = model_info.get("name", "unknown") if isinstance(model_info, dict) else str(model_info or "unknown")
+            model = (
+                model_info.get("name", "unknown")
+                if isinstance(model_info, dict)
+                else str(model_info or "unknown")
+            )
 
             provider_info = data.get("provider", {})
             provider = (
@@ -395,7 +423,9 @@ class UnifiedSessionIndex:
                     "source": "ante_session_json",
                     "model": model,
                     "provider": provider,
-                    "thinking": model_info.get("thinking", "Unknown") if isinstance(model_info, dict) else None,
+                    "thinking": model_info.get("thinking", "Unknown")
+                    if isinstance(model_info, dict)
+                    else None,
                 },
             )
             return session
@@ -468,7 +498,9 @@ class UnifiedSessionIndex:
             harness=HarnessType(row["harness"]),
             project_path=row["project_path"],
             started_at=datetime.fromisoformat(row["started_at"]),
-            ended_at=datetime.fromisoformat(row["ended_at"]) if row["ended_at"] else None,
+            ended_at=datetime.fromisoformat(row["ended_at"])
+            if row["ended_at"]
+            else None,
             prompt_tokens=row["prompt_tokens"],
             completion_tokens=row["completion_tokens"],
             messages=json.loads(row["messages_json"] or "[]"),
@@ -590,7 +622,12 @@ def main() -> None:
     parser.add_argument("--db", type=Path, help="SQLite DB path")
     parser.add_argument("--index", action="store_true", help="Full index all harnesses")
     parser.add_argument("--search", type=str, help="Search query")
-    parser.add_argument("--harness", type=str, choices=["cursor", "codex", "ante"], help="Filter by harness")
+    parser.add_argument(
+        "--harness",
+        type=str,
+        choices=["cursor", "codex", "ante"],
+        help="Filter by harness",
+    )
     parser.add_argument("--project", type=str, help="Filter by project path")
     parser.add_argument("--watch", action="store_true", help="Start live watching")
     parser.add_argument("--limit", type=int, default=20, help="Result limit")
@@ -733,7 +770,9 @@ class HarnessTUIMapper:
             custom_actions: Override or add harness-specific commands.
                            Format: {action: {harness: command_template}}
         """
-        self._actions: dict[str, dict[str, str | dict[str, str]]] = dict(self.HARNESS_ACTIONS)
+        self._actions: dict[str, dict[str, str | dict[str, str]]] = dict(
+            self.HARNESS_ACTIONS
+        )
         if custom_actions:
             for k, v in custom_actions.items():
                 self._actions[k] = cast("dict[str, str | dict[str, str]]", v)
@@ -812,10 +851,14 @@ class HarnessTUIMapper:
             cmd_template = self._actions[action][harness.value]
 
         if not cmd_template:
-            raise HarnessActionError(f"No command mapping for action={action} harness={harness.value}")
+            raise HarnessActionError(
+                f"No command mapping for action={action} harness={harness.value}"
+            )
 
         if not isinstance(cmd_template, str):
-            raise HarnessActionError(f"Command mapping for action={action} harness={harness.value} is not a string")
+            raise HarnessActionError(
+                f"Command mapping for action={action} harness={harness.value} is not a string"
+            )
 
         # Substitute template variables
         try:
@@ -846,7 +889,9 @@ class HarnessTUIMapper:
                 "command": cmd,
             }
         except FileNotFoundError:
-            raise HarnessActionError(f"Harness '{harness.value}' CLI not found. Is it installed?")
+            raise HarnessActionError(
+                f"Harness '{harness.value}' CLI not found. Is it installed?"
+            )
 
     def list_actions(self) -> list[str]:
         """List all available abstract actions."""

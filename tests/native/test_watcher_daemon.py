@@ -47,7 +47,9 @@ pytestmark = pytest.mark.unit
 # Helpers
 # ---------------------------------------------------------------------------
 
-_SETTLE_S = 0.5  # time to wait for watchdog observer to dispatch events on macOS FSEvents
+_SETTLE_S = (
+    0.5  # time to wait for watchdog observer to dispatch events on macOS FSEvents
+)
 
 
 def _make_daemon() -> WatcherDaemon:
@@ -65,26 +67,42 @@ class TestWatchEvent:
 
     def test_fields_stored(self) -> None:
         # @trace BKM-09
-        ev = WatchEvent(event_type="created", src_path="/tmp/a.py", dest_path=None, is_directory=False)
+        ev = WatchEvent(
+            event_type="created",
+            src_path="/tmp/a.py",
+            dest_path=None,
+            is_directory=False,
+        )
         assert ev.event_type == "created"
         assert ev.src_path == "/tmp/a.py"
         assert ev.dest_path is None
         assert ev.is_directory is False
 
     def test_moved_event_has_dest(self) -> None:
-        ev = WatchEvent(event_type="moved", src_path="/a", dest_path="/b", is_directory=False)
+        ev = WatchEvent(
+            event_type="moved", src_path="/a", dest_path="/b", is_directory=False
+        )
         assert ev.dest_path == "/b"
 
     def test_directory_event(self) -> None:
-        ev = WatchEvent(event_type="deleted", src_path="/some/dir", dest_path=None, is_directory=True)
+        ev = WatchEvent(
+            event_type="deleted",
+            src_path="/some/dir",
+            dest_path=None,
+            is_directory=True,
+        )
         assert ev.is_directory is True
 
     def test_frozen_is_dataclass(self) -> None:
-        ev = WatchEvent(event_type="created", src_path="/x", dest_path=None, is_directory=False)
+        ev = WatchEvent(
+            event_type="created", src_path="/x", dest_path=None, is_directory=False
+        )
         assert dataclasses.is_dataclass(ev)
         # Verify WatchEvent is declared as frozen by checking all fields are unhashable-proof
         field_names = {f.name for f in dataclasses.fields(ev)}
-        assert {"event_type", "src_path", "dest_path", "is_directory"}.issubset(field_names)
+        assert {"event_type", "src_path", "dest_path", "is_directory"}.issubset(
+            field_names
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -98,13 +116,17 @@ class TestWatchSpec:
     def test_default_construction(self, tmp_path: Path) -> None:
         # @trace BKM-09
         events: list[WatchEvent] = []
-        spec = WatchSpec(root=tmp_path, patterns=["*.py"], recursive=False, callback=events.append)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*.py"], recursive=False, callback=events.append
+        )
         assert spec.root == tmp_path
         assert spec.patterns == ["*.py"]
         assert spec.recursive is False
 
     def test_empty_patterns_allowed(self, tmp_path: Path) -> None:
-        spec = WatchSpec(root=tmp_path, patterns=[], recursive=True, callback=lambda ev: None)
+        spec = WatchSpec(
+            root=tmp_path, patterns=[], recursive=True, callback=lambda ev: None
+        )
         assert spec.patterns == []
 
 
@@ -170,7 +192,9 @@ class TestWatchManagement:
         daemon = _make_daemon()
         daemon.start()
         try:
-            spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=lambda ev: None)
+            spec = WatchSpec(
+                root=tmp_path, patterns=["*"], recursive=False, callback=lambda ev: None
+            )
             wid = daemon.add_watch(spec)
             assert isinstance(wid, str)
             assert len(wid) > 0
@@ -181,7 +205,9 @@ class TestWatchManagement:
         daemon = _make_daemon()
         daemon.start()
         try:
-            spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=lambda ev: None)
+            spec = WatchSpec(
+                root=tmp_path, patterns=["*"], recursive=False, callback=lambda ev: None
+            )
             ids = {daemon.add_watch(spec) for _ in range(5)}
             assert len(ids) == 5  # all unique
         finally:
@@ -191,7 +217,9 @@ class TestWatchManagement:
         daemon = _make_daemon()
         daemon.start()
         try:
-            spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=lambda ev: None)
+            spec = WatchSpec(
+                root=tmp_path, patterns=["*"], recursive=False, callback=lambda ev: None
+            )
             wid = daemon.add_watch(spec)
             result = daemon.remove_watch(wid)
             assert result is True
@@ -219,7 +247,12 @@ class TestWatchManagement:
         daemon = _make_daemon()
         daemon.start()
         try:
-            spec = WatchSpec(root=tmp_path, patterns=["*.py"], recursive=True, callback=lambda ev: None)
+            spec = WatchSpec(
+                root=tmp_path,
+                patterns=["*.py"],
+                recursive=True,
+                callback=lambda ev: None,
+            )
             wid = daemon.add_watch(spec)
             watches = daemon.list_watches()
             assert len(watches) == 1
@@ -234,7 +267,9 @@ class TestWatchManagement:
         daemon = _make_daemon()
         daemon.start()
         try:
-            spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=lambda ev: None)
+            spec = WatchSpec(
+                root=tmp_path, patterns=["*"], recursive=False, callback=lambda ev: None
+            )
             wid = daemon.add_watch(spec)
             daemon.remove_watch(wid)
             assert daemon.list_watches() == []
@@ -248,7 +283,12 @@ class TestWatchManagement:
             for i in range(3):
                 subdir = tmp_path / f"dir{i}"
                 subdir.mkdir()
-                spec = WatchSpec(root=subdir, patterns=["*"], recursive=False, callback=lambda ev: None)
+                spec = WatchSpec(
+                    root=subdir,
+                    patterns=["*"],
+                    recursive=False,
+                    callback=lambda ev: None,
+                )
                 daemon.add_watch(spec)
             assert len(daemon.list_watches()) == 3
         finally:
@@ -257,7 +297,9 @@ class TestWatchManagement:
     def test_add_watch_before_start(self, tmp_path: Path) -> None:
         """Watches can be registered before start() is called."""
         daemon = _make_daemon()
-        spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=lambda ev: None)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*"], recursive=False, callback=lambda ev: None
+        )
         wid = daemon.add_watch(spec)
         assert isinstance(wid, str)
         daemon.start()
@@ -444,7 +486,9 @@ class TestPatternFiltering:
             events.append(ev)
 
         daemon = _make_daemon()
-        spec = WatchSpec(root=tmp_path, patterns=["*.py", "*.toml"], recursive=False, callback=cb)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*.py", "*.toml"], recursive=False, callback=cb
+        )
         daemon.add_watch(spec)
         daemon.start()
         try:
@@ -495,7 +539,9 @@ class TestRecursiveWatching:
             events.append(ev)
 
         daemon = _make_daemon()
-        spec = WatchSpec(root=tmp_path, patterns=["*.txt"], recursive=False, callback=cb)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*.txt"], recursive=False, callback=cb
+        )
         daemon.add_watch(spec)
         daemon.start()
         try:
@@ -525,8 +571,12 @@ class TestMultipleWatchSpecs:
         events_b: list[WatchEvent] = []
 
         daemon = _make_daemon()
-        spec_a = WatchSpec(root=dir_a, patterns=["*"], recursive=False, callback=events_a.append)
-        spec_b = WatchSpec(root=dir_b, patterns=["*"], recursive=False, callback=events_b.append)
+        spec_a = WatchSpec(
+            root=dir_a, patterns=["*"], recursive=False, callback=events_a.append
+        )
+        spec_b = WatchSpec(
+            root=dir_b, patterns=["*"], recursive=False, callback=events_b.append
+        )
         daemon.add_watch(spec_a)
         daemon.add_watch(spec_b)
         daemon.start()
@@ -550,8 +600,12 @@ class TestMultipleWatchSpecs:
         events_b: list[WatchEvent] = []
 
         daemon = _make_daemon()
-        spec_a = WatchSpec(root=dir_a, patterns=["*"], recursive=False, callback=lambda ev: None)
-        spec_b = WatchSpec(root=dir_b, patterns=["*"], recursive=False, callback=events_b.append)
+        spec_a = WatchSpec(
+            root=dir_a, patterns=["*"], recursive=False, callback=lambda ev: None
+        )
+        spec_b = WatchSpec(
+            root=dir_b, patterns=["*"], recursive=False, callback=events_b.append
+        )
         wid_a = daemon.add_watch(spec_a)
         daemon.add_watch(spec_b)
         daemon.start()
@@ -580,7 +634,9 @@ class TestCallbackExceptionResilience:
             raise ValueError(msg)
 
         daemon = _make_daemon()
-        spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=bad_cb)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*"], recursive=False, callback=bad_cb
+        )
         daemon.add_watch(spec)
         daemon.start()
         try:
@@ -599,7 +655,9 @@ class TestCallbackExceptionResilience:
 
         daemon = _make_daemon()
         daemon._breaker = mock_breaker
-        spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=bad_cb)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*"], recursive=False, callback=bad_cb
+        )
         daemon.add_watch(spec)
         daemon.start()
         try:
@@ -655,7 +713,9 @@ class TestCircuitBreakerIntegration:
             msg = "test failure"
             raise RuntimeError(msg)
 
-        spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=failing_cb)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*"], recursive=False, callback=failing_cb
+        )
         handler = _SpecHandler(watch_id="test-id", spec=spec, breaker=mock_breaker)
 
         handler.on_created(FileCreatedEvent(str(tmp_path / "x.txt")))
@@ -668,12 +728,16 @@ class TestCircuitBreakerIntegration:
             msg = "no breaker"
             raise RuntimeError(msg)
 
-        spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=bad_cb)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*"], recursive=False, callback=bad_cb
+        )
         handler = _SpecHandler(watch_id="tid", spec=spec, breaker=None)
 
         handler.on_created(FileCreatedEvent(str(tmp_path / "y.txt")))
 
-    def test_handler_breaker_record_failure_error_is_suppressed(self, tmp_path: Path) -> None:
+    def test_handler_breaker_record_failure_error_is_suppressed(
+        self, tmp_path: Path
+    ) -> None:
         from watchdog.events import FileCreatedEvent
 
         mock_breaker = MagicMock()
@@ -683,7 +747,9 @@ class TestCircuitBreakerIntegration:
             msg = "cb err"
             raise RuntimeError(msg)
 
-        spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=bad_cb)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*"], recursive=False, callback=bad_cb
+        )
         handler = _SpecHandler(watch_id="tid2", spec=spec, breaker=mock_breaker)
         # Must not propagate the breaker's error
         handler.on_created(FileCreatedEvent(str(tmp_path / "z.txt")))
@@ -755,7 +821,12 @@ class TestThreadSafety:
             lock = threading.Lock()
 
             def add_one() -> None:
-                spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=lambda ev: None)
+                spec = WatchSpec(
+                    root=tmp_path,
+                    patterns=["*"],
+                    recursive=False,
+                    callback=lambda ev: None,
+                )
                 wid = daemon.add_watch(spec)
                 with lock:
                     ids.append(wid)
@@ -776,7 +847,9 @@ class TestThreadSafety:
         daemon = _make_daemon()
         daemon.start()
         try:
-            spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=lambda ev: None)
+            spec = WatchSpec(
+                root=tmp_path, patterns=["*"], recursive=False, callback=lambda ev: None
+            )
             wids = [daemon.add_watch(spec) for _ in range(5)]
 
             results: list[bool] = []
@@ -811,7 +884,9 @@ class TestSpecHandlerDirect:
         from watchdog.events import FileCreatedEvent
 
         events: list[WatchEvent] = []
-        spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=events.append)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*"], recursive=False, callback=events.append
+        )
         handler = _SpecHandler(watch_id="h1", spec=spec, breaker=None)
         handler.on_created(FileCreatedEvent(str(tmp_path / "new.py")))
         assert len(events) == 1
@@ -822,7 +897,9 @@ class TestSpecHandlerDirect:
         from watchdog.events import FileModifiedEvent
 
         events: list[WatchEvent] = []
-        spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=events.append)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*"], recursive=False, callback=events.append
+        )
         handler = _SpecHandler(watch_id="h2", spec=spec, breaker=None)
         handler.on_modified(FileModifiedEvent(str(tmp_path / "mod.py")))
         assert events[0].event_type == "modified"
@@ -831,7 +908,9 @@ class TestSpecHandlerDirect:
         from watchdog.events import FileDeletedEvent
 
         events: list[WatchEvent] = []
-        spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=events.append)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*"], recursive=False, callback=events.append
+        )
         handler = _SpecHandler(watch_id="h3", spec=spec, breaker=None)
         handler.on_deleted(FileDeletedEvent(str(tmp_path / "gone.py")))
         assert events[0].event_type == "deleted"
@@ -840,9 +919,13 @@ class TestSpecHandlerDirect:
         from watchdog.events import FileMovedEvent
 
         events: list[WatchEvent] = []
-        spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=events.append)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*"], recursive=False, callback=events.append
+        )
         handler = _SpecHandler(watch_id="h4", spec=spec, breaker=None)
-        handler.on_moved(FileMovedEvent(str(tmp_path / "src.py"), str(tmp_path / "dst.py")))
+        handler.on_moved(
+            FileMovedEvent(str(tmp_path / "src.py"), str(tmp_path / "dst.py"))
+        )
         assert events[0].event_type == "moved"
         assert events[0].dest_path is not None
         assert "dst.py" in events[0].dest_path
@@ -851,7 +934,9 @@ class TestSpecHandlerDirect:
         from watchdog.events import DirCreatedEvent
 
         events: list[WatchEvent] = []
-        spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=events.append)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*"], recursive=False, callback=events.append
+        )
         handler = _SpecHandler(watch_id="h5", spec=spec, breaker=None)
         handler.on_created(DirCreatedEvent(str(tmp_path / "subdir")))
         assert events[0].is_directory is True
@@ -860,9 +945,13 @@ class TestSpecHandlerDirect:
         from watchdog.events import DirMovedEvent
 
         events: list[WatchEvent] = []
-        spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=events.append)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*"], recursive=False, callback=events.append
+        )
         handler = _SpecHandler(watch_id="h6", spec=spec, breaker=None)
-        handler.on_moved(DirMovedEvent(str(tmp_path / "oldir"), str(tmp_path / "newdir")))
+        handler.on_moved(
+            DirMovedEvent(str(tmp_path / "oldir"), str(tmp_path / "newdir"))
+        )
         assert events[0].event_type == "moved"
         assert events[0].dest_path is not None
         assert events[0].is_directory is True
@@ -871,7 +960,9 @@ class TestSpecHandlerDirect:
         from watchdog.events import DirDeletedEvent
 
         events: list[WatchEvent] = []
-        spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=events.append)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*"], recursive=False, callback=events.append
+        )
         handler = _SpecHandler(watch_id="h7", spec=spec, breaker=None)
         handler.on_deleted(DirDeletedEvent(str(tmp_path / "rmdir")))
         assert events[0].event_type == "deleted"
@@ -881,7 +972,9 @@ class TestSpecHandlerDirect:
         from watchdog.events import DirModifiedEvent
 
         events: list[WatchEvent] = []
-        spec = WatchSpec(root=tmp_path, patterns=["*"], recursive=False, callback=events.append)
+        spec = WatchSpec(
+            root=tmp_path, patterns=["*"], recursive=False, callback=events.append
+        )
         handler = _SpecHandler(watch_id="h8", spec=spec, breaker=None)
         handler.on_modified(DirModifiedEvent(str(tmp_path / "moddir")))
         assert events[0].event_type == "modified"

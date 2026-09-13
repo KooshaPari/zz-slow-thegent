@@ -166,17 +166,25 @@ async def websocket_responses_handler(websocket: Any) -> None:
             preamble_emitted = False
             done_received = False
             try:
-                async with client.stream("POST", url, content=body, headers=headers) as resp:
+                async with client.stream(
+                    "POST", url, content=body, headers=headers
+                ) as resp:
                     if resp.status_code != 200:
                         # GW-05 + GW-06: preserve backend error body with semantic code context
                         err_body = await resp.aread()
-                        _log.warning("ws backend error %s: %s", resp.status_code, err_body[:200])
+                        _log.warning(
+                            "ws backend error %s: %s", resp.status_code, err_body[:200]
+                        )
                         err_obj = _make_error_body(resp.status_code, err_body)
-                        await websocket.send_json({"type": "response.failed", **err_obj})
+                        await websocket.send_json(
+                            {"type": "response.failed", **err_obj}
+                        )
                         continue
                     buffer = bytearray()
                     async for chunk in resp.aiter_bytes():
-                        events, done_received = await _process_sse_chunk(chunk, buffer=buffer, state=state)
+                        events, done_received = await _process_sse_chunk(
+                            chunk, buffer=buffer, state=state
+                        )
                         if not preamble_emitted and events:
                             for ev in state.preamble_events():
                                 await websocket.send_json(ev)
@@ -191,7 +199,9 @@ async def websocket_responses_handler(websocket: Any) -> None:
             except Exception as exc:
                 _log.warning("ws responses: stream error: %s", exc)
                 with contextlib.suppress(Exception):
-                    await websocket.send_json({"type": "response.failed", "error": {"message": str(exc)}})
+                    await websocket.send_json(
+                        {"type": "response.failed", "error": {"message": str(exc)}}
+                    )
 
     with contextlib.suppress(Exception):
         await websocket.close(1000)

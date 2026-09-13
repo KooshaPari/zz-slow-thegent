@@ -25,18 +25,25 @@ def load_alias_mapping(mapping_path: Path) -> dict[str, object]:
     required = {"deprecated_aliases", "replacement_suggestions", "canonical_commands"}
     missing = sorted(required.difference(payload))
     if missing:
-        raise ValueError(f"Alias mapping file missing required keys: {', '.join(missing)}")
+        raise ValueError(
+            f"Alias mapping file missing required keys: {', '.join(missing)}"
+        )
 
     deprecated_aliases = payload["deprecated_aliases"]
     replacement_suggestions = payload["replacement_suggestions"]
     canonical_commands = payload["canonical_commands"]
-    if not isinstance(deprecated_aliases, list) or not all(isinstance(x, str) for x in deprecated_aliases):
+    if not isinstance(deprecated_aliases, list) or not all(
+        isinstance(x, str) for x in deprecated_aliases
+    ):
         raise ValueError("'deprecated_aliases' must be a list[str].")
     if not isinstance(replacement_suggestions, dict) or not all(
-        isinstance(k, str) and isinstance(v, str) for k, v in replacement_suggestions.items()
+        isinstance(k, str) and isinstance(v, str)
+        for k, v in replacement_suggestions.items()
     ):
         raise ValueError("'replacement_suggestions' must be a dict[str, str].")
-    if not isinstance(canonical_commands, list) or not all(isinstance(x, str) for x in canonical_commands):
+    if not isinstance(canonical_commands, list) or not all(
+        isinstance(x, str) for x in canonical_commands
+    ):
         raise ValueError("'canonical_commands' must be a list[str].")
 
     return {
@@ -55,7 +62,9 @@ def extract_task_names(taskfile_text: str) -> set[str]:
     return names
 
 
-def extract_task_names_with_includes(taskfile_path: Path, taskfile_text: str) -> set[str]:
+def extract_task_names_with_includes(
+    taskfile_path: Path, taskfile_text: str
+) -> set[str]:
     names = extract_task_names(taskfile_text)
     taskfile_payload = yaml.safe_load(taskfile_text) or {}
     includes = taskfile_payload.get("includes", {})
@@ -92,9 +101,15 @@ def build_report(
     replacement_suggestions_map: dict[str, str],
     canonical_commands: list[str],
 ) -> dict[str, object]:
-    deprecated_present = sorted(alias for alias in deprecated_aliases if alias in task_names)
-    canonical_missing = sorted(name for name in canonical_commands if name not in task_names)
-    replacement_suggestions = {alias: replacement_suggestions_map[alias] for alias in deprecated_present}
+    deprecated_present = sorted(
+        alias for alias in deprecated_aliases if alias in task_names
+    )
+    canonical_missing = sorted(
+        name for name in canonical_commands if name not in task_names
+    )
+    replacement_suggestions = {
+        alias: replacement_suggestions_map[alias] for alias in deprecated_present
+    }
     return {
         "deprecated_present": deprecated_present,
         "deprecated_count": len(deprecated_present),
@@ -164,7 +179,12 @@ def build_unmapped_deprecated_count(report: dict[str, object]) -> int:
 
 def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--taskfile", type=Path, default=Path("Taskfile.yml"), help="Taskfile path to audit.")
+    parser.add_argument(
+        "--taskfile",
+        type=Path,
+        default=Path("Taskfile.yml"),
+        help="Taskfile path to audit.",
+    )
     parser.add_argument(
         "--mapping-file",
         type=Path,
@@ -178,7 +198,15 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     )
     parser.add_argument(
         "--format",
-        choices=["text", "json", "migration", "migration-md", "migration-json", "migration-jsonl", "summary-json"],
+        choices=[
+            "text",
+            "json",
+            "migration",
+            "migration-md",
+            "migration-json",
+            "migration-jsonl",
+            "summary-json",
+        ],
         default="text",
     )
     return parser.parse_args(argv)
@@ -245,7 +273,9 @@ def main(argv: list[str] | None = None) -> int:
         if report["canonical_missing"]:
             print("- canonical missing: " + ", ".join(report["canonical_missing"]))
 
-    if args.strict and (report["deprecated_count"] or report["canonical_missing_count"]):
+    if args.strict and (
+        report["deprecated_count"] or report["canonical_missing_count"]
+    ):
         return 1
 
     return 0

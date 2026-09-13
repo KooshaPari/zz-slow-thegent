@@ -58,7 +58,10 @@ class TestSanity:
         assert Verdict.DENY.value == "deny"
         assert Verdict.WARN.value == "warn"
         assert ReasonCode.OVERRIDE_ACTIVE.value == "override_active"
-        assert ReasonCode.CRITICAL_LANE_LOW_CONFIDENCE.value == "critical_lane_low_confidence"
+        assert (
+            ReasonCode.CRITICAL_LANE_LOW_CONFIDENCE.value
+            == "critical_lane_low_confidence"
+        )
         assert ReasonCode.TRUST_BOUNDARY_VIOLATION.value == "trust_boundary_violation"
         assert ReasonCode.FEDERATED_POLICY_BLOCK.value == "federated_policy_block"
 
@@ -97,34 +100,46 @@ class TestLocalRules:
     """WP-3001: local default policy mirrors execution-layer checks (FR-003)."""
 
     def test_default_allows_when_no_rules_fire(self, engine: PolicyEngine) -> None:
-        d = engine.evaluate(PolicyContext(agent="cursor", environment="development", confidence=0.95))
+        d = engine.evaluate(
+            PolicyContext(agent="cursor", environment="development", confidence=0.95)
+        )
         assert d.verdict == Verdict.ALLOW
         assert d.reason_code == ReasonCode.ALLOWED
 
     def test_critical_lane_low_confidence_denied(self, engine: PolicyEngine) -> None:
-        d = engine.evaluate(PolicyContext(agent="cursor", lane="critical", confidence=0.5))
+        d = engine.evaluate(
+            PolicyContext(agent="cursor", lane="critical", confidence=0.5)
+        )
         assert d.verdict == Verdict.DENY
         assert d.reason_code == ReasonCode.CRITICAL_LANE_LOW_CONFIDENCE
         assert d.rule_id == "local.critical.confidence"
 
     def test_unknown_agent_in_critical_denied(self, engine: PolicyEngine) -> None:
-        d = engine.evaluate(PolicyContext(agent="unknown", lane="critical", confidence=0.99))
+        d = engine.evaluate(
+            PolicyContext(agent="unknown", lane="critical", confidence=0.99)
+        )
         assert d.verdict == Verdict.DENY
         assert d.reason_code == ReasonCode.UNKNOWN_AGENT_CRITICAL
         assert d.rule_id == "local.critical.unknown_agent"
 
     def test_recovery_lane_no_confidence_warns(self, engine: PolicyEngine) -> None:
-        d = engine.evaluate(PolicyContext(agent="cursor", lane="recovery", confidence=None))
+        d = engine.evaluate(
+            PolicyContext(agent="cursor", lane="recovery", confidence=None)
+        )
         assert d.verdict == Verdict.WARN
         assert d.reason_code == ReasonCode.RECOVERY_NO_CONFIDENCE
 
     def test_production_low_confidence_denied(self, engine: PolicyEngine) -> None:
-        d = engine.evaluate(PolicyContext(agent="cursor", environment="production", confidence=0.1))
+        d = engine.evaluate(
+            PolicyContext(agent="cursor", environment="production", confidence=0.1)
+        )
         assert d.verdict == Verdict.DENY
         assert d.reason_code == ReasonCode.CRITICAL_LANE_LOW_CONFIDENCE
 
     def test_unknown_agent_in_production_denied(self, engine: PolicyEngine) -> None:
-        d = engine.evaluate(PolicyContext(agent="unknown", environment="production", confidence=0.95))
+        d = engine.evaluate(
+            PolicyContext(agent="unknown", environment="production", confidence=0.95)
+        )
         assert d.verdict == Verdict.DENY
         assert d.reason_code == ReasonCode.UNKNOWN_AGENT_PRODUCTION
 
@@ -137,7 +152,9 @@ class TestLocalRules:
 class TestTrustBoundary:
     """Sensitive-keyword prompts must not flow to EXTERNAL agents."""
 
-    def test_sensitive_prompt_to_external_agent_denied(self, engine: PolicyEngine) -> None:
+    def test_sensitive_prompt_to_external_agent_denied(
+        self, engine: PolicyEngine
+    ) -> None:
         d = engine.evaluate(
             PolicyContext(
                 agent="gemini",
@@ -170,7 +187,9 @@ class TestTrustBoundary:
 class TestFederatedAndOverride:
     """Federated scope rules and override path combine correctly."""
 
-    def test_federated_rule_deny_with_metadata_match(self, federated_engine: PolicyEngine) -> None:
+    def test_federated_rule_deny_with_metadata_match(
+        self, federated_engine: PolicyEngine
+    ) -> None:
         federated_engine.register_rule(
             rule_id="no-cursor-prod",
             when={"agent": "cursor", "environment": "production"},
@@ -178,19 +197,25 @@ class TestFederatedAndOverride:
             reason="r1",
             priority=10,
         )
-        d = federated_engine.evaluate(PolicyContext(agent="cursor", environment="production", confidence=0.95))
+        d = federated_engine.evaluate(
+            PolicyContext(agent="cursor", environment="production", confidence=0.95)
+        )
         assert d.verdict == Verdict.DENY
         assert d.rule_id == "no-cursor-prod"
         assert d.reason_code == ReasonCode.FEDERATED_POLICY_BLOCK
 
-    def test_federated_rule_does_not_match_other_env(self, federated_engine: PolicyEngine) -> None:
+    def test_federated_rule_does_not_match_other_env(
+        self, federated_engine: PolicyEngine
+    ) -> None:
         federated_engine.register_rule(
             rule_id="no-cursor-prod",
             when={"agent": "cursor", "environment": "production"},
             verdict="deny",
             reason="r1",
         )
-        d = federated_engine.evaluate(PolicyContext(agent="cursor", environment="development", confidence=0.95))
+        d = federated_engine.evaluate(
+            PolicyContext(agent="cursor", environment="development", confidence=0.95)
+        )
         assert d.verdict == Verdict.ALLOW
 
     def test_override_flips_deny_to_allow(self, federated_engine: PolicyEngine) -> None:
@@ -206,12 +231,16 @@ class TestFederatedAndOverride:
             by="sre-team",
             duration_minutes=2,
         )
-        d = federated_engine.evaluate(PolicyContext(agent="cursor", environment="production", confidence=0.95))
+        d = federated_engine.evaluate(
+            PolicyContext(agent="cursor", environment="production", confidence=0.95)
+        )
         assert d.verdict == Verdict.ALLOW
         assert d.reason_code == ReasonCode.OVERRIDE_ACTIVE
         assert d.override_applied is True
 
-    def test_register_rule_ignored_when_federation_off(self, engine: PolicyEngine) -> None:
+    def test_register_rule_ignored_when_federation_off(
+        self, engine: PolicyEngine
+    ) -> None:
         # No exception: rule registration is silently ignored.
         engine.register_rule(
             rule_id="noop",
@@ -236,7 +265,9 @@ class TestFederatedAndOverride:
 class TestDecisionCache:
     """OPT-008: repeated evaluations are sub-50ms via TTLCache."""
 
-    def test_cache_returns_fresh_instance_with_cached_flag(self, federated_engine: PolicyEngine) -> None:
+    def test_cache_returns_fresh_instance_with_cached_flag(
+        self, federated_engine: PolicyEngine
+    ) -> None:
         federated_engine.register_rule(
             rule_id="c1",
             when={"agent": "cursor", "environment": "production"},
@@ -282,11 +313,15 @@ class TestHelper:
     """evaluate_pre_check is a thin wrapper around PolicyEngine.evaluate."""
 
     def test_helper_default_returns_allow(self) -> None:
-        d = evaluate_pre_check(agent="cursor", environment="development", confidence=0.9)
+        d = evaluate_pre_check(
+            agent="cursor", environment="development", confidence=0.9
+        )
         assert d.verdict == Verdict.ALLOW
 
     def test_helper_returns_object(self) -> None:
-        d = evaluate_pre_check(agent="cursor", environment="production", confidence=0.95)
+        d = evaluate_pre_check(
+            agent="cursor", environment="production", confidence=0.95
+        )
         assert isinstance(d, PolicyDecision)
         assert d.verdict in (Verdict.ALLOW, Verdict.DENY, Verdict.WARN)
 
@@ -306,29 +341,43 @@ class TestDefaultNamespaceKwarg:
     working unchanged.
     """
 
-    def test_default_namespace_kwarg_propagates_to_federated_engine(self, settings: ThegentSettings) -> None:
+    def test_default_namespace_kwarg_propagates_to_federated_engine(
+        self, settings: ThegentSettings
+    ) -> None:
         """Explicit ``default_namespace="acme"`` flows into the federated engine."""
-        engine = PolicyEngine(settings=settings, use_federation=True, default_namespace="acme")
+        engine = PolicyEngine(
+            settings=settings, use_federation=True, default_namespace="acme"
+        )
         assert engine.federated is not None
         assert engine.federated.default_namespace == "acme"
         assert engine.default_namespace == "acme"
 
-    def test_default_namespace_default_is_global(self, settings: ThegentSettings) -> None:
+    def test_default_namespace_default_is_global(
+        self, settings: ThegentSettings
+    ) -> None:
         """The default ``"global"`` is preserved for backward compatibility."""
         engine = PolicyEngine(settings=settings, use_federation=True)
         assert engine.federated is not None
         assert engine.federated.default_namespace == "global"
         assert engine.default_namespace == "global"
 
-    def test_default_namespace_without_federation_still_records_value(self, settings: ThegentSettings) -> None:
+    def test_default_namespace_without_federation_still_records_value(
+        self, settings: ThegentSettings
+    ) -> None:
         """``default_namespace`` is exposed on the engine even when federation is off."""
-        engine = PolicyEngine(settings=settings, use_federation=False, default_namespace="team-x")
+        engine = PolicyEngine(
+            settings=settings, use_federation=False, default_namespace="team-x"
+        )
         assert engine.federated is None
         assert engine.default_namespace == "team-x"
 
-    def test_default_namespace_explicit_global_still_propagates(self, settings: ThegentSettings) -> None:
+    def test_default_namespace_explicit_global_still_propagates(
+        self, settings: ThegentSettings
+    ) -> None:
         """Passing ``"global"`` explicitly is equivalent to the implicit default."""
-        engine = PolicyEngine(settings=settings, use_federation=True, default_namespace="global")
+        engine = PolicyEngine(
+            settings=settings, use_federation=True, default_namespace="global"
+        )
         assert engine.federated is not None
         assert engine.federated.default_namespace == "global"
 
@@ -360,7 +409,9 @@ class TestRegisterOverridePathTraversalGuard:
     leave no override registered on the engine.
     """
 
-    def test_register_override_rejects_forward_slash(self, engine: PolicyEngine) -> None:
+    def test_register_override_rejects_forward_slash(
+        self, engine: PolicyEngine
+    ) -> None:
         """A ``/`` in ``rule_id`` is rejected before the override_manager is called."""
         with pytest.raises(PolicyEngineConfigError) as exc_info:
             engine.register_override(
@@ -384,7 +435,9 @@ class TestRegisterOverridePathTraversalGuard:
                 duration_minutes=1,
             )
 
-    def test_register_override_rejects_double_dot_sequence(self, engine: PolicyEngine) -> None:
+    def test_register_override_rejects_double_dot_sequence(
+        self, engine: PolicyEngine
+    ) -> None:
         """A bare ``..`` substring (without separators) is rejected."""
         with pytest.raises(PolicyEngineConfigError):
             engine.register_override(
@@ -394,7 +447,9 @@ class TestRegisterOverridePathTraversalGuard:
                 duration_minutes=1,
             )
 
-    def test_register_override_rejects_absolute_path(self, engine: PolicyEngine) -> None:
+    def test_register_override_rejects_absolute_path(
+        self, engine: PolicyEngine
+    ) -> None:
         """A leading ``/etc/passwd`` style traversal is rejected."""
         with pytest.raises(PolicyEngineConfigError):
             engine.register_override(
@@ -404,7 +459,9 @@ class TestRegisterOverridePathTraversalGuard:
                 duration_minutes=1,
             )
 
-    def test_register_override_rejects_parent_traversal(self, engine: PolicyEngine) -> None:
+    def test_register_override_rejects_parent_traversal(
+        self, engine: PolicyEngine
+    ) -> None:
         """A ``../foo`` parent-directory escape is rejected."""
         with pytest.raises(PolicyEngineConfigError):
             engine.register_override(
@@ -414,7 +471,9 @@ class TestRegisterOverridePathTraversalGuard:
                 duration_minutes=1,
             )
 
-    def test_register_override_accepts_clean_rule_id(self, engine: PolicyEngine) -> None:
+    def test_register_override_accepts_clean_rule_id(
+        self, engine: PolicyEngine
+    ) -> None:
         """A rule_id with only ``[A-Za-z0-9_-]`` is accepted.
 
         This is the negative control: if the guard over-rejects, this
@@ -430,7 +489,9 @@ class TestRegisterOverridePathTraversalGuard:
             duration_minutes=1,
         )
 
-    def test_register_override_rejects_even_with_federation_enabled(self, federated_engine: PolicyEngine) -> None:
+    def test_register_override_rejects_even_with_federation_enabled(
+        self, federated_engine: PolicyEngine
+    ) -> None:
         """The guard fires regardless of ``use_federation=True``.
 
         Some refactors might gate the guard behind the federated-engine
@@ -446,7 +507,9 @@ class TestRegisterOverridePathTraversalGuard:
                 duration_minutes=1,
             )
 
-    def test_register_override_rejected_does_not_register_override(self, engine: PolicyEngine) -> None:
+    def test_register_override_rejected_does_not_register_override(
+        self, engine: PolicyEngine
+    ) -> None:
         """A rejected call leaves no override behind on the override_manager.
 
         Guards must fail closed: a bad ``rule_id`` must not partially
@@ -464,7 +527,9 @@ class TestRegisterOverridePathTraversalGuard:
             )
         # No partial state — a clean evaluate on the same agent must
         # not be affected by the rejected override.
-        d = engine.evaluate(PolicyContext(agent="cursor", environment="development", confidence=0.95))
+        d = engine.evaluate(
+            PolicyContext(agent="cursor", environment="development", confidence=0.95)
+        )
         assert d.verdict == Verdict.ALLOW
 
     # ------------------------------------------------------------------
@@ -547,7 +612,9 @@ class TestRegisterOverridePathTraversalGuard:
         """
         from thegent.governance import overrides as overrides_module
 
-        sentinel = AssertionError("manager.apply_override should not be called for bad rule_id")
+        sentinel = AssertionError(
+            "manager.apply_override should not be called for bad rule_id"
+        )
         original_apply = engine.override_manager.apply_override
         calls: list[str] = []
 
@@ -556,7 +623,11 @@ class TestRegisterOverridePathTraversalGuard:
             return original_apply(*args, **kwargs)  # pragma: no cover - not reached
 
         monkeypatch.setattr(engine.override_manager, "apply_override", spy_apply)
-        monkeypatch.setattr(overrides_module, "_validate_policy_id", lambda _id: (_ for _ in ()).throw(sentinel))
+        monkeypatch.setattr(
+            overrides_module,
+            "_validate_policy_id",
+            lambda _id: (_ for _ in ()).throw(sentinel),
+        )
 
         with pytest.raises(PolicyEngineConfigError):
             engine.register_override(
@@ -565,7 +636,9 @@ class TestRegisterOverridePathTraversalGuard:
                 by="sre",
                 duration_minutes=1,
             )
-        assert calls == [], f"manager.apply_override was invoked for a rejected rule_id: {calls}"
+        assert calls == [], (
+            f"manager.apply_override was invoked for a rejected rule_id: {calls}"
+        )
 
     def test_register_override_engine_guard_fires_before_manager_on_empty(
         self,
@@ -581,7 +654,9 @@ class TestRegisterOverridePathTraversalGuard:
         """
         from thegent.governance import overrides as overrides_module
 
-        sentinel = AssertionError("manager.apply_override should not be called for empty rule_id")
+        sentinel = AssertionError(
+            "manager.apply_override should not be called for empty rule_id"
+        )
         original_apply = engine.override_manager.apply_override
         calls: list[str] = []
 
@@ -590,7 +665,11 @@ class TestRegisterOverridePathTraversalGuard:
             return original_apply(*args, **kwargs)  # pragma: no cover - not reached
 
         monkeypatch.setattr(engine.override_manager, "apply_override", spy_apply)
-        monkeypatch.setattr(overrides_module, "_validate_policy_id", lambda _id: (_ for _ in ()).throw(sentinel))
+        monkeypatch.setattr(
+            overrides_module,
+            "_validate_policy_id",
+            lambda _id: (_ for _ in ()).throw(sentinel),
+        )
 
         with pytest.raises(PolicyEngineConfigError):
             engine.register_override(
@@ -599,7 +678,9 @@ class TestRegisterOverridePathTraversalGuard:
                 by="sre",
                 duration_minutes=1,
             )
-        assert calls == [], f"manager.apply_override was invoked for an empty rule_id: {calls}"
+        assert calls == [], (
+            f"manager.apply_override was invoked for an empty rule_id: {calls}"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -610,10 +691,14 @@ class TestRegisterOverridePathTraversalGuard:
 class TestGovernanceEdgeCases:
     """Pin governance edge-case paths identified in the SOTA audit."""
 
-    def test_evaluate_federated_zero_rules_allows(self, settings: ThegentSettings) -> None:
+    def test_evaluate_federated_zero_rules_allows(
+        self, settings: ThegentSettings
+    ) -> None:
         """Empty federated registry falls through to local default ALLOW."""
         eng = PolicyEngine(settings=settings, use_federation=True)
-        result = eng.evaluate(PolicyContext(agent="cursor", environment="development", confidence=0.95))
+        result = eng.evaluate(
+            PolicyContext(agent="cursor", environment="development", confidence=0.95)
+        )
         assert result.verdict.value == "allow"
         assert result.rule_id == "local.default.allow"
 
@@ -642,13 +727,19 @@ class TestGovernanceEdgeCases:
         result = federated_engine.evaluate(PolicyContext(agent="cursor"))
         assert result.verdict.value == "deny"
 
-    def test_evaluate_federated_empty_registry_unknown_agent_production(self, settings: ThegentSettings) -> None:
+    def test_evaluate_federated_empty_registry_unknown_agent_production(
+        self, settings: ThegentSettings
+    ) -> None:
         """Empty registry + unknown agent in production → local deny rule fires."""
         eng = PolicyEngine(settings=settings, use_federation=True)
-        result = eng.evaluate(PolicyContext(agent="unknown", environment="production", confidence=0.95))
+        result = eng.evaluate(
+            PolicyContext(agent="unknown", environment="production", confidence=0.95)
+        )
         assert result.verdict.value == "deny"
 
-    def test_evaluate_federated_rule_match_overrides_local_allow(self, settings: ThegentSettings) -> None:
+    def test_evaluate_federated_rule_match_overrides_local_allow(
+        self, settings: ThegentSettings
+    ) -> None:
         """Federated DENY rule takes precedence over local default ALLOW."""
         eng = PolicyEngine(settings=settings, use_federation=True)
         eng.register_rule(
@@ -658,7 +749,9 @@ class TestGovernanceEdgeCases:
             reason="block dev env",
             priority=1,
         )
-        result = eng.evaluate(PolicyContext(agent="cursor", environment="development", confidence=0.95))
+        result = eng.evaluate(
+            PolicyContext(agent="cursor", environment="development", confidence=0.95)
+        )
         assert result.verdict.value == "deny"
         assert result.rule_id != "local.default.allow"
 
@@ -670,7 +763,9 @@ class TestGovernanceEdgeCases:
         assert merged.resolve_policies("global") == []
         assert merged.default_namespace == e1.default_namespace
 
-    def test_evaluate_override_flips_federated_deny_to_allow(self, settings: ThegentSettings) -> None:
+    def test_evaluate_override_flips_federated_deny_to_allow(
+        self, settings: ThegentSettings
+    ) -> None:
         """Override reverses a federated DENY back to ALLOW."""
         eng = PolicyEngine(settings=settings, use_federation=True)
         eng.register_rule(
@@ -686,6 +781,8 @@ class TestGovernanceEdgeCases:
             by="admin",
             duration_minutes=5,
         )
-        result = eng.evaluate(PolicyContext(agent="cursor", environment="production", confidence=0.95))
+        result = eng.evaluate(
+            PolicyContext(agent="cursor", environment="production", confidence=0.95)
+        )
         assert result.verdict.value == "allow"
         assert result.override_applied is True

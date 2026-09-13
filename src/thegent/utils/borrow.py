@@ -402,7 +402,9 @@ class ToolBorrower:
 
     def __init__(self, config: BorrowConfig | None = None) -> None:
         self._config = config or BorrowConfig()
-        self._catalog: list[ToolManifest] = [ToolManifest(**dict(entry.items())) for entry in _TOOL_CATALOG]
+        self._catalog: list[ToolManifest] = [
+            ToolManifest(**dict(entry.items())) for entry in _TOOL_CATALOG
+        ]
 
     # ------------------------------------------------------------------
     # Public API
@@ -460,7 +462,9 @@ class ToolBorrower:
                     "description": "thegent MCP server — agent orchestration and governance platform",
                     "borrowed_tools": selected,
                     "tool_count": len(manifests),
-                    "categories": sorted({m.category for m in manifests if m is not None}),
+                    "categories": sorted(
+                        {m.category for m in manifests if m is not None}
+                    ),
                 },
             }
         }
@@ -496,7 +500,9 @@ class ToolBorrower:
             try:
                 existing = json.loads(target.read_text(encoding="utf-8"))
             except (json.JSONDecodeError, OSError) as exc:
-                _log.warning("Could not parse existing %s (%s); overwriting", target, exc)
+                _log.warning(
+                    "Could not parse existing %s (%s); overwriting", target, exc
+                )
                 existing = {}
         else:
             existing = {}
@@ -504,7 +510,9 @@ class ToolBorrower:
         existing.setdefault("mcpServers", {})
         existing["mcpServers"].update(server_config)
 
-        target.write_text(json.dumps(existing, indent=2, sort_keys=True), encoding="utf-8")
+        target.write_text(
+            json.dumps(existing, indent=2, sort_keys=True), encoding="utf-8"
+        )
         _log.info("Wrote mcp.json to %s", target)
         return target
 
@@ -582,5 +590,7 @@ class ToolBorrower:
             )
             return resp.status_code == 200
         except Exception as exc:
-            _log.debug("thegent MCP server not reachable at %s: %s", self._config.url, exc)
+            _log.debug(
+                "thegent MCP server not reachable at %s: %s", self._config.url, exc
+            )
             return False

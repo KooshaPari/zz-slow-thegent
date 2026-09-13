@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class _ThrottleResult:
     """Result of an agent throttle check."""
+
     action: str
     count: int
     limit: int
@@ -85,12 +86,14 @@ def get_active_agent_count() -> int:
 
     try:
         from thegent.cli.commands.impl import ps_impl
+
         sessions = ps_impl()
         for session in sessions:
             if session.get("status") == "running":
                 pid = session.get("pid")
                 if pid:
                     import psutil
+
                     if psutil.pid_exists(pid):
                         tracked_pids.add(pid)
                         count += 1
@@ -99,6 +102,7 @@ def get_active_agent_count() -> int:
 
     try:
         import psutil
+
         for proc in psutil.process_iter(["pid", "name", "cmdline"]):
             try:
                 info = proc.info
@@ -125,12 +129,15 @@ def _is_agent_process(name: str, cmdline: list[str]) -> bool:
     if any(agent_name in name_lower for agent_name in agent_names):
         return True
 
-    return any(any(keyword in cmd for keyword in agent_cmdline_keywords) for cmd in cmdline)
+    return any(
+        any(keyword in cmd for keyword in agent_cmdline_keywords) for cmd in cmdline
+    )
 
 
 @dataclass
 class _ResourceSample:
     """Snapshot of system resources."""
+
     cpu_count: int
     load_1m: float
     fd_used: int
@@ -201,7 +208,9 @@ def compute_dynamic_limit(resources: _ResourceSample) -> tuple[int, dict[str, An
     fd_ratio = resources.fd_used / max(resources.fd_limit, 1)
     fd_factor = max(0.0, 1.0 - fd_ratio)
 
-    mem_ratio = resources.mem_rss_mb / max(resources.mem_rss_mb + resources.mem_available_mb, 1)
+    mem_ratio = resources.mem_rss_mb / max(
+        resources.mem_rss_mb + resources.mem_available_mb, 1
+    )
     mem_factor = max(0.0, 1.0 - mem_ratio)
 
     combined_factor = (load_factor + fd_factor + mem_factor) / 3.0
@@ -263,10 +272,13 @@ class AutoLaunchSystem:
         # by governance, do not proceed to throttle or launch paths.
         try:
             from thegent.cli.commands.impl import do_next_impl
+
             do_next_result = do_next_impl()
         except Exception:
             do_next_result = None
-        if isinstance(do_next_result, dict) and do_next_result.get("governance_blocked"):
+        if isinstance(do_next_result, dict) and do_next_result.get(
+            "governance_blocked"
+        ):
             gate = (do_next_result.get("governance_block") or {}).get("gate")
             self.record_event("governance_blocked", gate=gate)
             return
@@ -274,11 +286,15 @@ class AutoLaunchSystem:
         result = check_agent_throttle()
 
         if result.action == "hard_stop":
-            self.record_event("throttle_hard_stop", count=result.count, limit=result.limit)
+            self.record_event(
+                "throttle_hard_stop", count=result.count, limit=result.limit
+            )
             return
 
         if result.action == "throttle":
-            self.record_event("throttle_waiting", count=result.count, limit=result.limit)
+            self.record_event(
+                "throttle_waiting", count=result.count, limit=result.limit
+            )
             time.sleep(5)
             result = check_agent_throttle()
             if result.action in ("throttle", "hard_stop"):
@@ -291,17 +307,23 @@ class AutoLaunchSystem:
         if self.db is None:
             return
 
-        ready_items = self.db.get_ready_items() if hasattr(self.db, "get_ready_items") else []
+        ready_items = (
+            self.db.get_ready_items() if hasattr(self.db, "get_ready_items") else []
+        )
         if not ready_items:
             return
 
-        running_count = self.db.get_running_count() if hasattr(self.db, "get_running_count") else 0
+        running_count = (
+            self.db.get_running_count() if hasattr(self.db, "get_running_count") else 0
+        )
 
         resources = sample_resources()
         dynamic_limit, _ = compute_dynamic_limit(resources)
 
         if running_count >= dynamic_limit:
-            self.record_event("dynamic_limit_reached", running=running_count, limit=dynamic_limit)
+            self.record_event(
+                "dynamic_limit_reached", running=running_count, limit=dynamic_limit
+            )
             return
 
         await self.launch_batch(ready_items[:1])
@@ -330,11 +352,15 @@ class AutoLaunchSystem:
                 if claim_result.get("governance_blocked"):
                     self.record_event("claim_failed", reason="governance_block")
                 else:
-                    self.record_event("claim_failed", reason=claim_result.get("error", "unknown"))
+                    self.record_event(
+                        "claim_failed", reason=claim_result.get("error", "unknown")
+                    )
                 return
 
             bg_result = bg_impl(item, model=model, budget=budget)
-            self.record_event("item_launched", item_id=item.get("item_id"), result=bg_result)
+            self.record_event(
+                "item_launched", item_id=item.get("item_id"), result=bg_result
+            )
 
         except Exception as e:
             self.record_event("launch_error", item_id=item.get("item_id"), error=str(e))

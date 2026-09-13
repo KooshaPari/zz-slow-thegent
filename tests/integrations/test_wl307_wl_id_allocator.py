@@ -57,13 +57,17 @@ class TestWLIdAllocator:
         assert wl_range.end == 42
 
     @pytest.mark.requirement("WL-307")
-    def test_reserve_range_start_greater_than_end_raises_error(self, allocator: WLIdAllocator) -> None:
+    def test_reserve_range_start_greater_than_end_raises_error(
+        self, allocator: WLIdAllocator
+    ) -> None:
         """Reserving with start > end raises ValueError."""
         with pytest.raises(ValueError, match=r"start.*must be.*end"):
             allocator.reserve_range(100, 1, "Bad", "alice")
 
     @pytest.mark.requirement("WL-307")
-    def test_reserve_overlapping_range_raises_error(self, allocator: WLIdAllocator) -> None:
+    def test_reserve_overlapping_range_raises_error(
+        self, allocator: WLIdAllocator
+    ) -> None:
         """Reserving overlapping range raises ValueError."""
         allocator.reserve_range(1, 100, "Phase 1", "alice")
 
@@ -188,7 +192,9 @@ class TestWLIdAllocator:
         assert allocator.check_overlap(1, 100) is True
 
     @pytest.mark.requirement("WL-307")
-    def test_check_overlap_partial_overlap_start(self, allocator: WLIdAllocator) -> None:
+    def test_check_overlap_partial_overlap_start(
+        self, allocator: WLIdAllocator
+    ) -> None:
         """check_overlap returns True for overlap at start."""
         allocator.reserve_range(100, 200, "Phase 1", "alice")
 
@@ -202,7 +208,9 @@ class TestWLIdAllocator:
         assert allocator.check_overlap(150, 250) is True
 
     @pytest.mark.requirement("WL-307")
-    def test_check_overlap_contained_in_existing(self, allocator: WLIdAllocator) -> None:
+    def test_check_overlap_contained_in_existing(
+        self, allocator: WLIdAllocator
+    ) -> None:
         """check_overlap returns True for range contained in existing."""
         allocator.reserve_range(1, 200, "Phase 1", "alice")
 

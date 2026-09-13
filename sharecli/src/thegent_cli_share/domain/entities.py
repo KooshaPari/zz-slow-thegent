@@ -15,6 +15,7 @@ from pydantic import BaseModel, Field
 
 class LockStatus(StrEnum):
     """Lock status for command deduplication."""
+
     UNLOCKED = "unlocked"
     LOCKED = "locked"
     COMPLETED = "completed"
@@ -23,6 +24,7 @@ class LockStatus(StrEnum):
 
 class QueuePriority(StrEnum):
     """Task queue priority levels."""
+
     LOW = "low"
     NORMAL = "normal"
     HIGH = "high"
@@ -31,6 +33,7 @@ class QueuePriority(StrEnum):
 
 class MergeStrategy(StrEnum):
     """Merge strategies for smart merge."""
+
     AUTO = "auto"
     THEIRS = "theirs"
     OURS = "ours"
@@ -43,6 +46,7 @@ class CommandLock(BaseModel):
     Implements the cmd_share functionality - ensures only one
     instance of a command runs at a time.
     """
+
     cmd_hash: str = Field(description="Unique command hash")
     pid: int = Field(default=0, description="Process ID holding lock")
     status: LockStatus = Field(default=LockStatus.UNLOCKED)
@@ -80,6 +84,7 @@ class CommandLock(BaseModel):
 
 class TaskQueueItem(BaseModel):
     """Task queue item for Maildir-style queue."""
+
     id: UUID = Field(default_factory=uuid4)
     command: str = Field(description="Command to execute")
     priority: QueuePriority = Field(default=QueuePriority.NORMAL)
@@ -117,6 +122,7 @@ class TaskQueueItem(BaseModel):
 
 class MergeCandidate(BaseModel):
     """Merge candidate for smart merge."""
+
     id: UUID = Field(default_factory=uuid4)
     base_commit: str = Field(description="Base commit SHA")
     theirs_commit: str = Field(description="Their branch commit")
@@ -129,6 +135,7 @@ class MergeCandidate(BaseModel):
 
 class CoordinationState(BaseModel):
     """Coordination state for distributed locking."""
+
     resource_id: str = Field(description="Resource being coordinated")
     owner_id: str | None = Field(default=None)
     lease_expires_at: datetime | None = None
@@ -142,6 +149,7 @@ class CoordinationState(BaseModel):
     def acquire_lease(self, owner_id: str, duration_seconds: int) -> None:
         """Acquire a lease on the resource."""
         from datetime import timedelta
+
         self.owner_id = owner_id
         self.lease_expires_at = datetime.now() + timedelta(seconds=duration_seconds)
         self.version += 1
@@ -157,6 +165,7 @@ class CoordinationState(BaseModel):
 
 class EditIntent(BaseModel):
     """Edit intent for file coordination between agents."""
+
     id: UUID = Field(default_factory=uuid4)
     agent_id: str = Field(description="Agent creating the intent")
     file_path: str = Field(description="File being edited")
@@ -170,6 +179,5 @@ class EditIntent(BaseModel):
             return False
         # Check if ranges overlap
         return not (
-            self.end_line < other.start_line or
-            other.end_line < self.start_line
+            self.end_line < other.start_line or other.end_line < self.start_line
         )

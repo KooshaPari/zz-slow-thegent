@@ -64,7 +64,15 @@ class TestPlanNode:
         """to_dict contains all expected keys."""
         node = PlanNode(task="test", depends_on=["abc"])
         d = node.to_dict()
-        assert set(d.keys()) == {"id", "task", "depends_on", "status", "result", "error", "metadata"}
+        assert set(d.keys()) == {
+            "id",
+            "task",
+            "depends_on",
+            "status",
+            "result",
+            "error",
+            "metadata",
+        }
 
     def test_to_dict_values(self) -> None:
         """to_dict values are consistent with the instance."""

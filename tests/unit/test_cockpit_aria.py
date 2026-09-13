@@ -80,7 +80,9 @@ class TestAriaWireFormat:
     def test_runs_pane_uses_status_live_polite(self) -> None:
         """Live Runs pane lands in a polite live region with the status role."""
         out = _populated_cockpit().render()
-        runs_lines = [line for line in out.splitlines() if "Live Runs" in line and "└" in line]
+        runs_lines = [
+            line for line in out.splitlines() if "Live Runs" in line and "└" in line
+        ]
         assert runs_lines, "Live Runs pane closing line not found in output"
         closing = runs_lines[-1]
         # The trailer rides on the closing border of the box.
@@ -92,7 +94,11 @@ class TestAriaWireFormat:
         """Lane Distribution pane mirrors the live-runs annotation."""
         out = _populated_cockpit().render()
         closing = next(
-            (line for line in out.splitlines() if "Lane Distribution" in line and "└" in line),
+            (
+                line
+                for line in out.splitlines()
+                if "Lane Distribution" in line and "└" in line
+            ),
             None,
         )
         assert closing, "Lane Distribution pane closing line not found"
@@ -114,7 +120,11 @@ class TestAriaWireFormat:
         """Active Overrides pane carries the live-region annotation."""
         out = _populated_cockpit().render()
         closing = next(
-            (line for line in out.splitlines() if "Active Overrides" in line and "└" in line),
+            (
+                line
+                for line in out.splitlines()
+                if "Active Overrides" in line and "└" in line
+            ),
             None,
         )
         assert closing, "Active Overrides pane closing line not found"
@@ -125,7 +135,11 @@ class TestAriaWireFormat:
         """Decision History uses ``role="log"`` (audit log, not status)."""
         out = _populated_cockpit().render()
         closing = next(
-            (line for line in out.splitlines() if "Decision History" in line and "└" in line),
+            (
+                line
+                for line in out.splitlines()
+                if "Decision History" in line and "└" in line
+            ),
             None,
         )
         assert closing, "Decision History pane closing line not found"
@@ -175,7 +189,9 @@ class TestAriaPerPane:
         # The Live Runs pane's closing border rides on the same line as the
         # Lane Distribution pane's closing border (2x2 grid layout). The
         # Live Runs trailer is the FIRST bracketed trailer on the line.
-        runs_line = next(line for line in out.splitlines() if "Live Runs" in line and "└" in line)
+        runs_line = next(
+            line for line in out.splitlines() if "Live Runs" in line and "└" in line
+        )
         # The Live Runs trailer is the first '[' on the line; the
         # second '[' is the Lane Distribution trailer.
         trailer = runs_line[runs_line.index("[") : runs_line.index("]") + 1]
@@ -254,7 +270,9 @@ class TestAriaCustomLabels:
         c = OperatorCockpit(config=cfg)
         c.tick(
             runs=[RunEvent(run_id="r1", state=RunState.ACTIVE, lane="critical")],
-            overrides=[OverrideEvent(rule_id="o1", by="alice", reason="r", expires_in_s=10)],
+            overrides=[
+                OverrideEvent(rule_id="o1", by="alice", reason="r", expires_in_s=10)
+            ],
             progress=(1, 1),
         )
         out = c.render()
@@ -287,7 +305,11 @@ class TestAriaDecisionLogRole:
             )
         )
         out = c.render()
-        lines = [line for line in out.splitlines() if "Decision History" in line and "└" in line]
+        lines = [
+            line
+            for line in out.splitlines()
+            if "Decision History" in line and "└" in line
+        ]
         assert lines, "Decision History pane closing line not found"
         assert "[role=log aria-live=polite" in lines[-1]
 
@@ -308,7 +330,9 @@ class TestAriaHelper:
             aria_live="polite",
             aria_label="Live Runs",
         )
-        assert result == 'Live Runs [role=status aria-live=polite aria-label="Live Runs"]'
+        assert (
+            result == 'Live Runs [role=status aria-live=polite aria-label="Live Runs"]'
+        )
 
     def test_annotate_log_role_distinct(self) -> None:
         result = annotate(
@@ -382,9 +406,12 @@ class TestAriaLiteral:
     def test_log_role_token_present(self) -> None:
         out = _populated_cockpit().render()
         assert "[role=log aria-live=polite" in out, (
-            "Decision-history pane must emit '[role=log aria-live=polite]'. Got output:\n" + out
+            "Decision-history pane must emit '[role=log aria-live=polite]'. Got output:\n"
+            + out
         )
 
     def test_region_role_token_present(self) -> None:
         out = _populated_cockpit().render()
-        assert "[role=region" in out, "Header must emit '[role=region' landmark. Got output:\n" + out
+        assert "[role=region" in out, (
+            "Header must emit '[role=region' landmark. Got output:\n" + out
+        )

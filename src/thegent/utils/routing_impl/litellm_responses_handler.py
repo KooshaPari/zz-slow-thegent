@@ -69,7 +69,9 @@ async def close_http_client() -> None:
 
 
 # OR-17: Headers to forward from incoming request to OpenRouter upstream.
-_FORWARD_HEADERS: frozenset[str] = frozenset({"x-session-id", "x-anthropic-beta", "streaming-options"})
+_FORWARD_HEADERS: frozenset[str] = frozenset(
+    {"x-session-id", "x-anthropic-beta", "streaming-options"}
+)
 
 # OR-18: Providers that support the Responses API natively (no transform required).
 _NATIVE_RESPONSES_PROVIDERS: frozenset[str] = frozenset({"openrouter"})
@@ -77,7 +79,9 @@ _UNSUPPORTED_SCHEMA_KEYS: frozenset[str] = frozenset({"$id", "patternProperties"
 
 # OR-19: Path to the generation-id store (append-only JSONL).
 _GENERATION_ID_STORE: Path = Path.home() / ".thegent" / "generation_id_store.jsonl"
-_THINKING_SIGNATURE_KEYS: frozenset[str] = frozenset({"signature", "thought_signature", "metadata"})
+_THINKING_SIGNATURE_KEYS: frozenset[str] = frozenset(
+    {"signature", "thought_signature", "metadata"}
+)
 
 
 def _extract_forward_headers(request: Request) -> dict[str, str]:
@@ -117,12 +121,16 @@ def _append_generation_id(request_id: str, generation_id: str) -> None:
     Creates the parent directory if it does not exist.
     """
     _GENERATION_ID_STORE.parent.mkdir(parents=True, exist_ok=True)
-    record = json.dumps({"request_id": request_id, "generation_id": generation_id}).decode()
+    record = json.dumps(
+        {"request_id": request_id, "generation_id": generation_id}
+    ).decode()
     with _GENERATION_ID_STORE.open("a", encoding="utf-8") as fh:
         fh.write(record + "\n")
 
 
-def _build_fallback_chain_extra(models: list[str], primary_model: str) -> dict[str, Any]:
+def _build_fallback_chain_extra(
+    models: list[str], primary_model: str
+) -> dict[str, Any]:
     """Build LiteLLM extra kwargs to implement a model fallback chain.
 
     GW-12: When a request specifies multiple models, configure LiteLLM Router
@@ -193,7 +201,9 @@ def _error_response(exc: Exception) -> Response:
         if raw_text:
             try:
                 parsed = json.loads(raw_text)
-                upstream_err = parsed.get("error", {}) if isinstance(parsed, dict) else {}
+                upstream_err = (
+                    parsed.get("error", {}) if isinstance(parsed, dict) else {}
+                )
                 if isinstance(upstream_err, dict) and upstream_err.get("metadata"):
                     error_obj["metadata"] = upstream_err["metadata"]
             except (json.JSONDecodeError, ValueError):
@@ -254,14 +264,18 @@ def _strip_thinking_signatures(content: Any) -> Any:
     sanitized: list[dict[str, Any]] = []
     for part in content:
         if isinstance(part, dict):
-            sanitized.append({k: v for k, v in part.items() if k not in _THINKING_SIGNATURE_KEYS})
+            sanitized.append(
+                {k: v for k, v in part.items() if k not in _THINKING_SIGNATURE_KEYS}
+            )
             continue
         if isinstance(part, str):
             sanitized.append({"type": "text", "text": part})
     return sanitized or [{"type": "text", "text": ""}]
 
 
-def _responses_input_to_messages(input_items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _responses_input_to_messages(
+    input_items: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
     """Convert Responses API input items to Chat Completions messages.
 
     OR-16: Preserves full content arrays (including cache_control, image_url, etc.)
@@ -364,7 +378,9 @@ def _normalize_tool(tool: dict[str, Any]) -> dict[str, Any]:
             return tool
         function: dict[str, Any] = {
             "name": function_name,
-            "parameters": _normalize_schema_for_provider(tool.get("input_schema") or {}),
+            "parameters": _normalize_schema_for_provider(
+                tool.get("input_schema") or {}
+            ),
         }
         description = tool.get("description")
         if isinstance(description, str) and description:
@@ -375,11 +391,15 @@ def _normalize_tool(tool: dict[str, Any]) -> dict[str, Any]:
         return converted
     if tool_type == "function":
         function_value = tool.get("function")
-        function_payload: dict[str, Any] = function_value if isinstance(function_value, dict) else {}
+        function_payload: dict[str, Any] = (
+            function_value if isinstance(function_value, dict) else {}
+        )
         if "parameters" in function_payload:
             converted = dict(tool)
             converted_function = dict(function_payload)
-            converted_function["parameters"] = _normalize_schema_for_provider(function_payload.get("parameters"))
+            converted_function["parameters"] = _normalize_schema_for_provider(
+                function_payload.get("parameters")
+            )
             converted["function"] = converted_function
             return converted
     return tool
@@ -472,7 +492,9 @@ def _responses_to_chat_completions(body: dict[str, Any]) -> dict[str, Any]:
 
     tools = chat.get("tools")
     if isinstance(tools, list):
-        chat["tools"] = [_normalize_tool(tool) for tool in tools if isinstance(tool, dict)]
+        chat["tools"] = [
+            _normalize_tool(tool) for tool in tools if isinstance(tool, dict)
+        ]
 
     response_format = chat.get("response_format")
     if isinstance(response_format, dict):
@@ -480,12 +502,16 @@ def _responses_to_chat_completions(body: dict[str, Any]) -> dict[str, Any]:
         json_schema = updated_response_format.get("json_schema")
         if isinstance(json_schema, dict) and "schema" in json_schema:
             updated_json_schema = dict(json_schema)
-            updated_json_schema["schema"] = _normalize_schema_for_provider(json_schema.get("schema"))
+            updated_json_schema["schema"] = _normalize_schema_for_provider(
+                json_schema.get("schema")
+            )
             updated_response_format["json_schema"] = updated_json_schema
         chat["response_format"] = updated_response_format
 
     if "structured_outputs" in chat:
-        chat["structured_outputs"] = _normalize_schema_for_provider(chat["structured_outputs"])
+        chat["structured_outputs"] = _normalize_schema_for_provider(
+            chat["structured_outputs"]
+        )
 
     # GW-12: extract models[] array for fallback chain support.
     # Stored as _models (underscore prefix) to avoid collision with LiteLLM's
@@ -580,12 +606,20 @@ async def handle_responses_request(request: Request) -> Response:
 
         if stream:
             return await handle_responses_stream(
-                request, chat_request, router, forward_headers=forward_headers, _models=_models
+                request,
+                chat_request,
+                router,
+                forward_headers=forward_headers,
+                _models=_models,
             )
 
         # Non-streaming request — route through LiteLLM Router for
         # fallback, cost tracking, and caching support.
-        extra = {k: v for k, v in chat_request.items() if k not in ("model", "messages", "stream")}
+        extra = {
+            k: v
+            for k, v in chat_request.items()
+            if k not in ("model", "messages", "stream")
+        }
         # OR-17: inject forwarded headers as extra_headers when present
         if forward_headers:
             extra["extra_headers"] = forward_headers
@@ -604,7 +638,9 @@ async def handle_responses_request(request: Request) -> Response:
         actual_model = getattr(response, "model", model) or model
         actual_model = _to_json_compatible(actual_model)
         response_id = _to_json_compatible(getattr(response, "id", None))
-        content = _to_json_compatible(response.choices[0].message.content if response.choices else "")
+        content = _to_json_compatible(
+            response.choices[0].message.content if response.choices else ""
+        )
         responses_data: dict[str, Any] = {
             "id": response_id,
             "object": "response",
@@ -691,13 +727,19 @@ async def _forward_native_responses(
     if inspect.isawaitable(resp_headers):
         resp_headers = await resp_headers
     response_headers: dict[str, str] = (
-        {str(k): str(v) for k, v in resp_headers.items()} if isinstance(resp_headers, Mapping) else {}
+        {str(k): str(v) for k, v in resp_headers.items()}
+        if isinstance(resp_headers, Mapping)
+        else {}
     )
 
     return Response(
         content=resp.content,
         status_code=resp.status_code,
-        headers={k: v for k, v in response_headers.items() if k.lower() not in ("transfer-encoding", "connection")},
+        headers={
+            k: v
+            for k, v in response_headers.items()
+            if k.lower() not in ("transfer-encoding", "connection")
+        },
     )
 
 
@@ -726,7 +768,11 @@ async def handle_responses_stream(
         try:
             model = chat_request["model"]
             messages = chat_request["messages"]
-            extra = {k: v for k, v in chat_request.items() if k not in ("model", "messages", "stream")}
+            extra = {
+                k: v
+                for k, v in chat_request.items()
+                if k not in ("model", "messages", "stream")
+            }
             # OR-17: inject forwarded headers as extra_headers when present
             if forward_headers:
                 extra["extra_headers"] = forward_headers
@@ -748,15 +794,22 @@ async def handle_responses_stream(
                 response_obj = await response_obj
             async for chunk in response_obj:
                 # Translate Chat Completions → Responses API
-                chunk_dict = cast("dict[str, Any]", chunk.model_dump() if hasattr(chunk, "model_dump") else chunk)
+                chunk_dict = cast(
+                    "dict[str, Any]",
+                    chunk.model_dump() if hasattr(chunk, "model_dump") else chunk,
+                )
                 # OR-12: capture actual model from first chunk that carries it
-                chunk_model = chunk_dict.get("model") if isinstance(chunk_dict, dict) else None
+                chunk_model = (
+                    chunk_dict.get("model") if isinstance(chunk_dict, dict) else None
+                )
                 if chunk_model and chunk_model != actual_model:
                     actual_model = chunk_model
                 # OR-19: capture generation_id from chunk if present
                 gen_id = None
                 if isinstance(chunk_dict, dict):
-                    gen_id = chunk_dict.get("openrouter-generation-id") or chunk_dict.get("x-generation-id")
+                    gen_id = chunk_dict.get(
+                        "openrouter-generation-id"
+                    ) or chunk_dict.get("x-generation-id")
                 if gen_id:
                     _append_generation_id(request_id, str(gen_id))
                 responses_event = _chat_completions_to_responses(chunk_dict)
@@ -812,7 +865,11 @@ async def handle_responses_websocket(websocket: WebSocket) -> None:
         # GW-12: extract _models for fallback chain; remove before passing to router
         ws_models: list[str] = chat_request.pop("_models", [])
 
-        extra = {k: v for k, v in chat_request.items() if k not in ("model", "messages", "stream")}
+        extra = {
+            k: v
+            for k, v in chat_request.items()
+            if k not in ("model", "messages", "stream")
+        }
 
         # GW-12: select router — dynamic fallback router when multiple models specified
         if len(ws_models) > 1:
@@ -830,11 +887,16 @@ async def handle_responses_websocket(websocket: WebSocket) -> None:
         )
         response_stream: AsyncIterable[Any]
         if inspect.isawaitable(raw_response_stream):
-            response_stream = cast("AsyncIterable[Any]", await cast("Awaitable[Any]", raw_response_stream))
+            response_stream = cast(
+                "AsyncIterable[Any]", await cast("Awaitable[Any]", raw_response_stream)
+            )
         else:
             response_stream = cast("AsyncIterable[Any]", raw_response_stream)
         async for chunk in response_stream:
-            chunk_dict = cast("dict[str, Any]", chunk.model_dump() if hasattr(chunk, "model_dump") else chunk)
+            chunk_dict = cast(
+                "dict[str, Any]",
+                chunk.model_dump() if hasattr(chunk, "model_dump") else chunk,
+            )
             responses_event = _chat_completions_to_responses(chunk_dict)
             if responses_event:
                 await websocket.send_json(responses_event)

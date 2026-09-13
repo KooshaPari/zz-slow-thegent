@@ -23,7 +23,11 @@ from thegent.protocols.turn_submit_boundaries import (
 def test_wl10700_queue_priority_is_separated_from_execution_window() -> None:
     # @trace WL-10700
     phase = build_queue_priority_phase("critical", ["w-10700-a", "w-10700-b"], 8)
-    assert resolve_queue_execution_target(phase) == ("critical", ["w-10700-a", "w-10700-b"], 8)
+    assert resolve_queue_execution_target(phase) == (
+        "critical",
+        ["w-10700-a", "w-10700-b"],
+        8,
+    )
 
 
 def test_wl10701_observability_payload_is_separated_from_payload_format() -> None:
@@ -48,7 +52,11 @@ def test_wl10703_session_state_update_is_bound_to_persistence_revision() -> None
     # @trace WL-10703
     changes = {"step": "validate", "status": "ready"}
     phase = build_session_state_update_phase("session-10703", changes, 33)
-    assert resolve_session_persistence_plan_target(phase) == ("session-10703", changes, 33)
+    assert resolve_session_persistence_plan_target(phase) == (
+        "session-10703",
+        changes,
+        33,
+    )
 
 
 def test_wl10704_retry_loop_and_terminal_outcome_are_resolved_together() -> None:

@@ -78,6 +78,7 @@ class WatcherDaemon:
         for path_str in self.watch_paths:
             try:
                 from pathlib import Path
+
                 path = Path(path_str)
                 if path.exists():
                     mtime = path.stat().st_mtime

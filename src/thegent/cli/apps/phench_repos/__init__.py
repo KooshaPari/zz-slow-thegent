@@ -1,4 +1,5 @@
 """Stub module for phench_repos CLI commands."""
+
 from __future__ import annotations
 
 from collections.abc import Callable

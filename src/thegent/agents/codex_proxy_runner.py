@@ -76,7 +76,9 @@ class CodexProxyRunner(AgentRunner):
         self._settings = settings or ThegentSettings()
         self._model = model or _PROXY_MODEL[agent_name]
         self._use_litellm_router = (
-            use_litellm_router if use_litellm_router is not None else self._settings.use_litellm_router
+            use_litellm_router
+            if use_litellm_router is not None
+            else self._settings.use_litellm_router
         )
         self.codex_home = codex_home
         self.memory_limit_mb = memory_limit_mb
@@ -143,7 +145,13 @@ class CodexProxyRunner(AgentRunner):
             lightweight_config.update(config)
 
         codex_cmd = _resolve_codex()
-        cmd = [codex_cmd, "exec", "-", "--skip-git-repo-check", "--dangerously-bypass-approvals-and-sandbox"]
+        cmd = [
+            codex_cmd,
+            "exec",
+            "-",
+            "--skip-git-repo-check",
+            "--dangerously-bypass-approvals-and-sandbox",
+        ]
 
         # Add lightweight config flags
         cmd.extend(_build_config_flags(lightweight_config))
@@ -177,7 +185,9 @@ class CodexProxyRunner(AgentRunner):
             return RunResult(
                 exit_code=1,
                 stdout="",
-                stderr=("codex CLI not found. Install: npm i -g @openai/codex\nOr add codex to PATH."),
+                stderr=(
+                    "codex CLI not found. Install: npm i -g @openai/codex\nOr add codex to PATH."
+                ),
                 timed_out=False,
             )
         except subprocess.TimeoutExpired:
@@ -237,7 +247,16 @@ class CodexProxyRunner(AgentRunner):
         # Route via LiteLLM Router if enabled and not zen
         if self._use_litellm_router and self.agent_name != "zen":
             result = self._run_via_litellm_router(
-                prompt, cwd, mode, timeout, model, use_stream, live_output, on_stdout, on_stderr, env=env
+                prompt,
+                cwd,
+                mode,
+                timeout,
+                model,
+                use_stream,
+                live_output,
+                on_stdout,
+                on_stderr,
+                env=env,
             )
             # WL-116: Add audio_transcript to result if audio was processed
             if audio_transcript:
@@ -276,7 +295,9 @@ class CodexProxyRunner(AgentRunner):
                 full_env["CODEX_CONFIG_DIR"] = str(temp_dir)
 
             if self.agent_name == "zen":
-                zen_base_url = getattr(self._settings, "zen_base_url", "") or os.environ.get("THGENT_ZEN_BASE_URL", "")
+                zen_base_url = getattr(
+                    self._settings, "zen_base_url", ""
+                ) or os.environ.get("THGENT_ZEN_BASE_URL", "")
                 base_url = (str(zen_base_url) or "https://api.opencode.ai").rstrip("/")
                 api_key_env = (
                     getattr(self._settings, "zen_api_key", "")
@@ -357,7 +378,9 @@ class CodexProxyRunner(AgentRunner):
                 _inner_result = RunResult(
                     exit_code=1,
                     stdout="",
-                    stderr=("codex CLI not found. Install: npm i -g @openai/codex\nOr add codex to PATH."),
+                    stderr=(
+                        "codex CLI not found. Install: npm i -g @openai/codex\nOr add codex to PATH."
+                    ),
                     timed_out=False,
                 )
             except subprocess.TimeoutExpired:
@@ -404,7 +427,9 @@ class CodexProxyRunner(AgentRunner):
                 try:
                     shutil.rmtree(isolated_home)
                 except OSError as e:
-                    logger.warning(f"Failed to clean up isolated home {isolated_home}: {e}")
+                    logger.warning(
+                        f"Failed to clean up isolated home {isolated_home}: {e}"
+                    )
 
             # Clean up temp config directory (Improvement 4)
             if temp_dir:
@@ -436,7 +461,9 @@ class CodexProxyRunner(AgentRunner):
             # which is what LiteLLM model_list uses for model_name.
             model_to_use = model
 
-            result = router.route(prompt, model=model_to_use, stream=use_stream, timeout=timeout)
+            result = router.route(
+                prompt, model=model_to_use, stream=use_stream, timeout=timeout
+            )
 
             if not result.success:
                 return RunResult(
@@ -536,14 +563,20 @@ class CodexProxyRunner(AgentRunner):
             RunResult from execution
         """
         # Determine provider and model from metadata
-        provider: str = ((metadata.resolved_provider if metadata else None) or self.agent_name) or ""
-        model: str = ((metadata.resolved_model_alias if metadata else None) or self._model) or ""
+        provider: str = (
+            (metadata.resolved_provider if metadata else None) or self.agent_name
+        ) or ""
+        model: str = (
+            (metadata.resolved_model_alias if metadata else None) or self._model
+        ) or ""
 
         # Determine execution path
         exec_path = get_execution_path(provider)
 
         if exec_path == ExecutionPath.NATIVE_CLI:
-            return self._execute_native_cli(prompt, cwd, mode, timeout, model, run_id=run_id, session_id=session_id)
+            return self._execute_native_cli(
+                prompt, cwd, mode, timeout, model, run_id=run_id, session_id=session_id
+            )
         if exec_path == ExecutionPath.LITELLM_API:
             return self._execute_litellm_api(
                 prompt,
@@ -579,7 +612,15 @@ class CodexProxyRunner(AgentRunner):
     ) -> RunResult:
         """Execute via native codex CLI (for codex provider)."""
         # Current implementation uses codex CLI already
-        return self.run(prompt, cwd, mode, timeout, agent_model=model, run_id=run_id, session_id=session_id)
+        return self.run(
+            prompt,
+            cwd,
+            mode,
+            timeout,
+            agent_model=model,
+            run_id=run_id,
+            session_id=session_id,
+        )
 
     def _execute_litellm_api(
         self,
@@ -630,7 +671,9 @@ class CodexProxyRunner(AgentRunner):
         api_key = os.environ.get(api_key_env)
 
         if not api_key:
-            logger.error(f"API key not found for provider {provider} (env: {api_key_env})")
+            logger.error(
+                f"API key not found for provider {provider} (env: {api_key_env})"
+            )
             return RunResult(
                 exit_code=1,
                 stdout="",
@@ -662,7 +705,9 @@ class CodexProxyRunner(AgentRunner):
             try:
                 cb.call(lambda: None)  # This will raise if circuit is open
             except CircuitOpenError:
-                logger.warning(f"Circuit breaker OPEN for provider {provider}, failing fast")
+                logger.warning(
+                    f"Circuit breaker OPEN for provider {provider}, failing fast"
+                )
                 raise
 
             try:
@@ -677,7 +722,9 @@ class CodexProxyRunner(AgentRunner):
                 choices = getattr(response, "choices", None)
                 choice = choices[0] if choices else None
                 message_or_delta = (
-                    (getattr(choice, "message", None) or getattr(choice, "delta", None)) if choice is not None else None
+                    (getattr(choice, "message", None) or getattr(choice, "delta", None))
+                    if choice is not None
+                    else None
                 )
                 content = getattr(message_or_delta, "content", None)
 
@@ -688,13 +735,19 @@ class CodexProxyRunner(AgentRunner):
 
             except Exception as e:
                 error_msg = str(e)
-                is_timeout = "timeout" in error_msg.lower() or "timed out" in error_msg.lower()
+                is_timeout = (
+                    "timeout" in error_msg.lower() or "timed out" in error_msg.lower()
+                )
 
                 # Record failure for circuit breaker
                 record_deployment_failure(provider, e)
 
                 # Check for rate limit - could have Retry-After header
-                if is_timeout or "429" in error_msg or "rate limit" in error_msg.lower():
+                if (
+                    is_timeout
+                    or "429" in error_msg
+                    or "rate limit" in error_msg.lower()
+                ):
                     logger.warning(f"Rate limit or timeout for {provider}: {error_msg}")
 
                 raise
@@ -745,7 +798,9 @@ class CodexProxyRunner(AgentRunner):
             logger.error(f"LiteLLM API call failed after retries: {error_msg}")
 
             # Check for timeout-related errors
-            is_timeout = "timeout" in error_msg.lower() or "timed out" in error_msg.lower()
+            is_timeout = (
+                "timeout" in error_msg.lower() or "timed out" in error_msg.lower()
+            )
 
             # Check if circuit breaker is now open
             if cb.state == "open":
@@ -772,15 +827,28 @@ class CodexProxyRunner(AgentRunner):
     ) -> tuple[list[dict[str, str]], ContextCompactionResult]:
         """Build Litellm messages and compact optional skill context when needed."""
         turns: list[dict[str, str]] = [
-            {"role": "system", "content": "You are running inside the thegent codex proxy runner."},
+            {
+                "role": "system",
+                "content": "You are running inside the thegent codex proxy runner.",
+            },
         ]
 
         skill_suffix = self.get_skill_prompt_suffix().strip()
         if skill_suffix:
             turns.append({"role": "system", "content": skill_suffix})
 
-        turns.append({"role": "system", "content": f"Execution agent={self.agent_name} model={model}"})
-        turns.append({"role": "system", "content": f"Execution mode={mode} cwd={cwd or Path.cwd()}."})
+        turns.append(
+            {
+                "role": "system",
+                "content": f"Execution agent={self.agent_name} model={model}",
+            }
+        )
+        turns.append(
+            {
+                "role": "system",
+                "content": f"Execution mode={mode} cwd={cwd or Path.cwd()}.",
+            }
+        )
         turns.append({"role": "user", "content": prompt})
 
         compactor = ContextCompactor()

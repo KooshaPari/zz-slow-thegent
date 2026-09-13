@@ -31,5 +31,7 @@ class TestSysSetupProjectScaffoldProfiles:
 
     def test_sys_setup_project_scaffold_profiles_help_exits_zero(self) -> None:
         """thegent sys setup project scaffold-profiles --help exits with code 0."""
-        result = runner.invoke(app, ["sys", "setup", "project", "scaffold-profiles", "--help"])
+        result = runner.invoke(
+            app, ["sys", "setup", "project", "scaffold-profiles", "--help"]
+        )
         assert result.exit_code == 0

@@ -335,7 +335,9 @@ class TestComplexScenarios:
 
     def test_full_trace_session(self, tmp_path):
         """Test a complete trace session with multiple record types."""
-        trace_file = TraceFile(str(tmp_path / "full_session.jsonl.gz"), compression="gzip")
+        trace_file = TraceFile(
+            str(tmp_path / "full_session.jsonl.gz"), compression="gzip"
+        )
 
         # Session start
         session = SessionRecord(

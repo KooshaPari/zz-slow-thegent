@@ -2,8 +2,8 @@
 
 The canonical implementation lives at
 ``thegent.governance.config_provider`` (and ``thegent.governance.config_provider_cp``).
-This module re-exports the public surface so older imports — e.g.
-``from thegent.config_provider import get_config_provider`` — continue to work
+This module re-exports the public surface so older imports -- e.g.
+``from thegent.config_provider import get_config_provider`` -- continue to work
 while pointing at the canonical, fully-tested implementation.
 
 The previous stub here was incomplete (missing ``import os``, lacked
@@ -17,14 +17,44 @@ satisfies.
 
 from __future__ import annotations
 
-from thegent.governance.config_provider import (
-    ConfigProvider,
-    EnvConfigProvider,
-    _attach_provider_metadata,
-    get_config_provider,
-    get_last_provider_metadata,
-)
-from thegent.governance.config_provider_cp import ControlPlaneConfigProvider
+import importlib
+from typing import Any
+
+_LAZY_IMPORTS: dict[str, tuple[str, str]] = {
+    "ConfigProvider": ("thegent.governance.config_provider", "ConfigProvider"),
+    "EnvConfigProvider": ("thegent.governance.config_provider", "EnvConfigProvider"),
+    "_attach_provider_metadata": (
+        "thegent.governance.config_provider",
+        "_attach_provider_metadata",
+    ),
+    "get_config_provider": (
+        "thegent.governance.config_provider",
+        "get_config_provider",
+    ),
+    "get_last_provider_metadata": (
+        "thegent.governance.config_provider",
+        "get_last_provider_metadata",
+    ),
+    "ControlPlaneConfigProvider": (
+        "thegent.governance.config_provider_cp",
+        "ControlPlaneConfigProvider",
+    ),
+}
+
+
+def __getattr__(name: str) -> Any:
+    if name in _LAZY_IMPORTS:
+        module_path, attr = _LAZY_IMPORTS[name]
+        mod = importlib.import_module(module_path)
+        val = getattr(mod, attr)
+        globals()[name] = val
+        return val
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+def __dir__() -> list[str]:
+    return list(_LAZY_IMPORTS.keys())
+
 
 __all__ = [
     "ConfigProvider",

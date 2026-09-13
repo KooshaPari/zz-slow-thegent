@@ -52,12 +52,16 @@ class TestIdeaSeedDataclass:
         assert set(d.keys()) == {"file", "line", "pattern_type", "content", "context"}
 
     def test_to_dict_file_is_string(self, tmp_path: Path) -> None:
-        seed = IdeaSeed(file=tmp_path / "x.py", line=1, pattern_type="IDEA", content="x")
+        seed = IdeaSeed(
+            file=tmp_path / "x.py", line=1, pattern_type="IDEA", content="x"
+        )
         d = seed.to_dict()
         assert isinstance(d["file"], str)
 
     def test_context_defaults_to_empty_string(self, tmp_path: Path) -> None:
-        seed = IdeaSeed(file=tmp_path / "x.py", line=1, pattern_type="IDEA", content="y")
+        seed = IdeaSeed(
+            file=tmp_path / "x.py", line=1, pattern_type="IDEA", content="y"
+        )
         assert seed.context == ""
 
 
@@ -270,8 +274,15 @@ class TestFilterByType:
 class TestToWorkStreamItems:
     """FR-SEEDS-018: to_work_stream_items returns valid WBS-format rows."""
 
-    def _make_seed(self, tmp_path: Path, ptype: str = "TODO", content: str = "do it") -> IdeaSeed:
-        return IdeaSeed(file=(tmp_path / "a.py").resolve(), line=1, pattern_type=ptype, content=content)
+    def _make_seed(
+        self, tmp_path: Path, ptype: str = "TODO", content: str = "do it"
+    ) -> IdeaSeed:
+        return IdeaSeed(
+            file=(tmp_path / "a.py").resolve(),
+            line=1,
+            pattern_type=ptype,
+            content=content,
+        )
 
     def test_returns_list_of_dicts(self, tmp_path: Path) -> None:
         # @trace FR-SEEDS-018
@@ -316,14 +327,18 @@ class TestExportMarkdown:
     def test_creates_file(self, tmp_path: Path) -> None:
         # @trace FR-SEEDS-019
         scanner = IdeaSeedScanner()
-        seed = IdeaSeed(file=tmp_path / "a.py", line=1, pattern_type="TODO", content="do it")
+        seed = IdeaSeed(
+            file=tmp_path / "a.py", line=1, pattern_type="TODO", content="do it"
+        )
         out = tmp_path / "out" / "seeds.md"
         scanner.export_markdown([seed], out)
         assert out.exists()
 
     def test_markdown_contains_pattern_type_heading(self, tmp_path: Path) -> None:
         scanner = IdeaSeedScanner()
-        seed = IdeaSeed(file=tmp_path / "a.py", line=5, pattern_type="IDEA", content="streaming")
+        seed = IdeaSeed(
+            file=tmp_path / "a.py", line=5, pattern_type="IDEA", content="streaming"
+        )
         out = tmp_path / "seeds.md"
         scanner.export_markdown([seed], out)
         content = out.read_text()
@@ -331,7 +346,12 @@ class TestExportMarkdown:
 
     def test_markdown_contains_seed_content(self, tmp_path: Path) -> None:
         scanner = IdeaSeedScanner()
-        seed = IdeaSeed(file=tmp_path / "a.py", line=5, pattern_type="IDEA", content="unique-xyz-content")
+        seed = IdeaSeed(
+            file=tmp_path / "a.py",
+            line=5,
+            pattern_type="IDEA",
+            content="unique-xyz-content",
+        )
         out = tmp_path / "seeds.md"
         scanner.export_markdown([seed], out)
         assert "unique-xyz-content" in out.read_text()
@@ -339,8 +359,12 @@ class TestExportMarkdown:
     def test_markdown_groups_by_type(self, tmp_path: Path) -> None:
         scanner = IdeaSeedScanner()
         seeds = [
-            IdeaSeed(file=tmp_path / "a.py", line=1, pattern_type="TODO", content="aaa"),
-            IdeaSeed(file=tmp_path / "a.py", line=2, pattern_type="IDEA", content="bbb"),
+            IdeaSeed(
+                file=tmp_path / "a.py", line=1, pattern_type="TODO", content="aaa"
+            ),
+            IdeaSeed(
+                file=tmp_path / "a.py", line=2, pattern_type="IDEA", content="bbb"
+            ),
         ]
         out = tmp_path / "seeds.md"
         scanner.export_markdown(seeds, out)
@@ -357,7 +381,9 @@ class TestExportMarkdown:
 
     def test_export_creates_parent_dirs(self, tmp_path: Path) -> None:
         scanner = IdeaSeedScanner()
-        seed = IdeaSeed(file=tmp_path / "a.py", line=1, pattern_type="TODO", content="x")
+        seed = IdeaSeed(
+            file=tmp_path / "a.py", line=1, pattern_type="TODO", content="x"
+        )
         out = tmp_path / "deep" / "nested" / "seeds.md"
         scanner.export_markdown([seed], out)
         assert out.exists()

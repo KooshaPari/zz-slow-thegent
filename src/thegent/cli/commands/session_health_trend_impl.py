@@ -114,7 +114,9 @@ def session_contract_health_trend_impl(
     latest_ratio = (latest or {}).get("blocked_ratio", 0.0) or 0.0
     oldest_ratio = (oldest or {}).get("blocked_ratio", 0.0) or 0.0
     blocked_ratio_delta = latest_ratio - oldest_ratio
-    blocked_count_delta = ((latest or {}).get("blocked_count", 0) or 0) - ((oldest or {}).get("blocked_count", 0) or 0)
+    blocked_count_delta = ((latest or {}).get("blocked_count", 0) or 0) - (
+        (oldest or {}).get("blocked_count", 0) or 0
+    )
 
     scope_key: dict[str, Any] = {
         "payload_type": payload_type,
@@ -134,7 +136,9 @@ def session_contract_health_trend_impl(
         "payload_type": "session_contract_health_trend",
         "trend_payload_type": payload_type,
         "scope_key": scope_key,
-        "scope_key_json": _orjson.dumps(scope_key, option=_orjson.OPT_SORT_KEYS).decode(),
+        "scope_key_json": _orjson.dumps(
+            scope_key, option=_orjson.OPT_SORT_KEYS
+        ).decode(),
         "scope_payload_type": payload_type,
         "scope_owner": owner,
         "scope_all": all,
@@ -165,8 +169,12 @@ def session_contract_health_trend_impl(
         "latest_blocked_ratio": latest_ratio,
         "latest_blocked_count": (latest or {}).get("blocked_count", 0) or 0,
         "latest_issue_types_count": len((latest or {}).get("issue_types", []) or []),
-        "latest_issue_types_csv": ", ".join((latest or {}).get("issue_types", []) or []),
-        "latest_issue_types_json": _orjson.dumps((latest or {}).get("issue_types", []) or []).decode(),
+        "latest_issue_types_csv": ", ".join(
+            (latest or {}).get("issue_types", []) or []
+        ),
+        "latest_issue_types_json": _orjson.dumps(
+            (latest or {}).get("issue_types", []) or []
+        ).decode(),
         "latest_issue_types_hash": "empty",
         "oldest": oldest,
         "delta_summary": {
@@ -174,7 +182,10 @@ def session_contract_health_trend_impl(
             "blocked_count_delta": blocked_count_delta,
         },
         "delta_summary_json": _orjson.dumps(
-            {"blocked_ratio_delta": blocked_ratio_delta, "blocked_count_delta": blocked_count_delta}
+            {
+                "blocked_ratio_delta": blocked_ratio_delta,
+                "blocked_count_delta": blocked_count_delta,
+            }
         ).decode(),
         "blocked_ratio_delta": blocked_ratio_delta,
         "blocked_count_delta": blocked_count_delta,

@@ -21,7 +21,9 @@ def _resolve_shell_type() -> ShellType:
     return get_preferred_shell(performance=True)
 
 
-def _build_hook_command(shell_exe: str, shell_type: ShellType, hook_path: Path) -> list[str]:
+def _build_hook_command(
+    shell_exe: str, shell_type: ShellType, hook_path: Path
+) -> list[str]:
     """Build hook execution command for the selected shell."""
     if shell_type in [ShellType.PWSH, ShellType.POWERSHELL]:
         return [shell_exe, "-NoProfile", "-NonInteractive", "-File", str(hook_path)]
@@ -37,7 +39,9 @@ def _normalize_stream_text(stream: str | bytes | None) -> str:
     return stream
 
 
-def run_hook(hook_path: Path, input_data: str | None = None, timeout: int = 60) -> subprocess.CompletedProcess:
+def run_hook(
+    hook_path: Path, input_data: str | None = None, timeout: int = 60
+) -> subprocess.CompletedProcess:
     """Run a hook script using the preferred shell."""
     # 1. Determine shell to use
     shell_type = _resolve_shell_type()
@@ -48,7 +52,14 @@ def run_hook(hook_path: Path, input_data: str | None = None, timeout: int = 60) 
 
     # 4. Execute
     try:
-        result = shim_run(cmd, input=input_data, capture_output=True, text=True, timeout=timeout, check=False)
+        result = shim_run(
+            cmd,
+            input=input_data,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            check=False,
+        )
         return result
     except subprocess.TimeoutExpired as e:
         return subprocess.CompletedProcess(
@@ -58,7 +69,9 @@ def run_hook(hook_path: Path, input_data: str | None = None, timeout: int = 60) 
             stderr=f"Hook timed out after {timeout}s\n{_normalize_stream_text(e.stderr)}",
         )
     except Exception as e:
-        return subprocess.CompletedProcess(args=cmd, returncode=1, stdout="", stderr=f"Failed to run hook: {e}")
+        return subprocess.CompletedProcess(
+            args=cmd, returncode=1, stdout="", stderr=f"Failed to run hook: {e}"
+        )
 
 
 def main():

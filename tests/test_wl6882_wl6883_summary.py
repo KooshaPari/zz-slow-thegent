@@ -50,14 +50,18 @@ def test_wl6882_get_git_commits_git_command_failure_reports_error(
     assert result.error["returncode"] == 128
 
 
-def test_wl6882_get_git_commits_empty_range_reports_empty(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_wl6882_get_git_commits_empty_range_reports_empty(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     (tmp_path / ".git").mkdir()
     start, end = _time_range()
 
     monkeypatch.setattr(
         summary.subprocess,
         "run",
-        lambda *_args, **_kwargs: subprocess.CompletedProcess(["git", "log"], 0, stdout="", stderr=""),
+        lambda *_args, **_kwargs: subprocess.CompletedProcess(
+            ["git", "log"], 0, stdout="", stderr=""
+        ),
     )
 
     result = summary.get_git_commits(tmp_path, start, end)
@@ -67,12 +71,18 @@ def test_wl6882_get_git_commits_empty_range_reports_empty(monkeypatch: pytest.Mo
     assert result.error is None
 
 
-def test_wl6883_read_log_file_tracks_mixed_valid_and_malformed_lines(tmp_path: Path) -> None:
+def test_wl6883_read_log_file_tracks_mixed_valid_and_malformed_lines(
+    tmp_path: Path,
+) -> None:
     start = datetime(2026, 1, 1, tzinfo=UTC)
     end = datetime(2026, 1, 31, tzinfo=UTC)
     path = tmp_path / "chat.jsonl"
 
-    valid = {"type": "user", "timestamp": "2026-01-10T12:00:00+00:00", "message": {"content": "ok"}}
+    valid = {
+        "type": "user",
+        "timestamp": "2026-01-10T12:00:00+00:00",
+        "message": {"content": "ok"},
+    }
     path.write_text(
         "\n".join(
             [

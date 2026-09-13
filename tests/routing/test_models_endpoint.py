@@ -29,13 +29,33 @@ from thegent.cliproxy_adapter import _compute_models_etag, _transform_models_res
 # ---------------------------------------------------------------------------
 
 SAMPLE_MODELS_WITH_DATA_KEY = [
-    {"id": "gpt-5.3-codex-spark", "object": "model", "created": 1770912000, "owned_by": "openai"},
-    {"id": "gpt-5.3-codex", "object": "model", "created": 1770307200, "owned_by": "openai"},
-    {"id": "claude-haiku-4.5", "object": "model", "created": 1732752000, "owned_by": "anthropic"},
+    {
+        "id": "gpt-5.3-codex-spark",
+        "object": "model",
+        "created": 1770912000,
+        "owned_by": "openai",
+    },
+    {
+        "id": "gpt-5.3-codex",
+        "object": "model",
+        "created": 1770307200,
+        "owned_by": "openai",
+    },
+    {
+        "id": "claude-haiku-4.5",
+        "object": "model",
+        "created": 1732752000,
+        "owned_by": "anthropic",
+    },
 ]
 
 SAMPLE_MODELS_WITH_MODELS_KEY = [
-    {"id": "gemini-3-flash", "object": "model", "created": 1771580291, "owned_by": "antigravity"},
+    {
+        "id": "gemini-3-flash",
+        "object": "model",
+        "created": 1771580291,
+        "owned_by": "antigravity",
+    },
     {"id": "gpt-4o", "object": "model", "created": 1771574764, "owned_by": "zen"},
 ]
 
@@ -79,7 +99,9 @@ class TestComputeModelsEtag:
 
     def test_matches_manual_sha256(self) -> None:
         models = [{"id": "gpt-5.3-codex"}, {"id": "claude-haiku-4.5"}]
-        expected = hashlib.sha256(",".join(sorted(["gpt-5.3-codex", "claude-haiku-4.5"])).encode()).hexdigest()
+        expected = hashlib.sha256(
+            ",".join(sorted(["gpt-5.3-codex", "claude-haiku-4.5"])).encode()
+        ).hexdigest()
         assert _compute_models_etag(models) == expected
 
     def test_skips_non_dict_entries(self) -> None:
@@ -109,8 +131,12 @@ class TestTransformModelsResponseFormat:
         assert result is not None
         body, _ = result
         parsed = json.loads(body)
-        assert "models" in parsed, "Response must contain 'models' key for Codex 0.104.0"
-        assert "data" not in parsed, "'data' key must NOT be present; Codex 0.104.0 uses 'models'"
+        assert "models" in parsed, (
+            "Response must contain 'models' key for Codex 0.104.0"
+        )
+        assert "data" not in parsed, (
+            "'data' key must NOT be present; Codex 0.104.0 uses 'models'"
+        )
 
     def test_input_with_models_key_is_preserved(self) -> None:
         """CLIProxy native format uses 'models' key; adapter preserves it."""
@@ -218,7 +244,14 @@ class TestTransformModelsResponseCodexSchema:
 
     def test_all_required_codex_fields_present(self) -> None:
         """Every model must have the full Codex metadata schema."""
-        models = [{"id": "gpt-5.3-codex-spark", "object": "model", "created": 1770912000, "owned_by": "openai"}]
+        models = [
+            {
+                "id": "gpt-5.3-codex-spark",
+                "object": "model",
+                "created": 1770912000,
+                "owned_by": "openai",
+            }
+        ]
         content = _make_cliproxy_response(models)
         result = _transform_models_response(content)
         assert result is not None
@@ -230,7 +263,14 @@ class TestTransformModelsResponseCodexSchema:
 
     def test_enriches_known_model_with_context_window(self) -> None:
         """Known models (in model_metadata.py) get context_window added."""
-        models = [{"id": "gpt-5.3-codex-spark", "object": "model", "created": 1770912000, "owned_by": "openai"}]
+        models = [
+            {
+                "id": "gpt-5.3-codex-spark",
+                "object": "model",
+                "created": 1770912000,
+                "owned_by": "openai",
+            }
+        ]
         content = _make_cliproxy_response(models)
         result = _transform_models_response(content)
         assert result is not None
@@ -241,7 +281,14 @@ class TestTransformModelsResponseCodexSchema:
         assert model["context_window"] == 128000
 
     def test_enriches_known_model_with_max_completion_tokens(self) -> None:
-        models = [{"id": "gpt-5.3-codex", "object": "model", "created": 1770307200, "owned_by": "openai"}]
+        models = [
+            {
+                "id": "gpt-5.3-codex",
+                "object": "model",
+                "created": 1770307200,
+                "owned_by": "openai",
+            }
+        ]
         content = _make_cliproxy_response(models)
         result = _transform_models_response(content)
         assert result is not None
@@ -271,7 +318,14 @@ class TestTransformModelsResponseCodexSchema:
 
     def test_unknown_model_gets_slug_and_defaults(self) -> None:
         """Unknown models get slug and all default Codex fields."""
-        models = [{"id": "unknown-future-model-xyz", "object": "model", "created": 1, "owned_by": "unknown"}]
+        models = [
+            {
+                "id": "unknown-future-model-xyz",
+                "object": "model",
+                "created": 1,
+                "owned_by": "unknown",
+            }
+        ]
         content = _make_cliproxy_response(models)
         result = _transform_models_response(content)
         assert result is not None
@@ -284,7 +338,14 @@ class TestTransformModelsResponseCodexSchema:
         assert isinstance(model["supported_reasoning_levels"], list)
 
     def test_known_model_gets_slug(self) -> None:
-        models = [{"id": "claude-haiku-4.5", "object": "model", "created": 1732752000, "owned_by": "anthropic"}]
+        models = [
+            {
+                "id": "claude-haiku-4.5",
+                "object": "model",
+                "created": 1732752000,
+                "owned_by": "anthropic",
+            }
+        ]
         content = _make_cliproxy_response(models)
         result = _transform_models_response(content)
         assert result is not None
@@ -345,7 +406,12 @@ class TestTransformModelsResponseEdgeCases:
         """Models without 'id' are preserved but not enriched."""
         models = [
             {"object": "model", "created": 1, "owned_by": "unknown"},  # no id
-            {"id": "gpt-5.3-codex", "object": "model", "created": 1770307200, "owned_by": "openai"},
+            {
+                "id": "gpt-5.3-codex",
+                "object": "model",
+                "created": 1770307200,
+                "owned_by": "openai",
+            },
         ]
         content = _make_cliproxy_response(models)
         result = _transform_models_response(content)
@@ -356,7 +422,14 @@ class TestTransformModelsResponseEdgeCases:
 
     def test_model_with_slash_id_tries_suffix_lookup(self) -> None:
         """For models like 'z-ai/glm-5', tries suffix lookup 'glm-5'."""
-        models = [{"id": "z-ai/glm-5", "object": "model", "created": 1771574763, "owned_by": "nim"}]
+        models = [
+            {
+                "id": "z-ai/glm-5",
+                "object": "model",
+                "created": 1771574763,
+                "owned_by": "nim",
+            }
+        ]
         content = _make_cliproxy_response(models)
         result = _transform_models_response(content)
         assert result is not None

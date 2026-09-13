@@ -211,6 +211,7 @@ class TestTEECheckerIntegration:
     def test_non_mock_returns_non_attested_on_desktop(self):
         """Non-mock mode on a desktop should return non-attested (no /dev/nsm)."""
         import os
+
         if os.path.exists("/dev/nsm"):
             pytest.skip("Running inside AWS Nitro — attestation expected")
         checker = TEEChecker(mock_mode=False)

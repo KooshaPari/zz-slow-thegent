@@ -66,7 +66,11 @@ class SpecsGenerator:
                     # Quick check for markdown files (limit depth)
                     try:
                         md_count = len(list(item.glob("*.md"))) + len(
-                            list((item / "docs").glob("*.md") if (item / "docs").exists() else [])
+                            list(
+                                (item / "docs").glob("*.md")
+                                if (item / "docs").exists()
+                                else []
+                            )
                         )
                         if md_count > 0:
                             projects.add(item)
@@ -119,8 +123,12 @@ class SpecsGenerator:
         self.cross_analyzer.analyze()
 
         logger.info(f"Found {len(self.cross_analyzer.relationships)} relationships")
-        logger.info(f"Found {len(self.cross_analyzer.unified_features)} shared features")
-        logger.info(f"Created {len(self.cross_analyzer.unified_work_streams)} unified work streams")
+        logger.info(
+            f"Found {len(self.cross_analyzer.unified_features)} shared features"
+        )
+        logger.info(
+            f"Created {len(self.cross_analyzer.unified_work_streams)} unified work streams"
+        )
         logger.info(f"Created {len(self.cross_analyzer.unified_prds)} unified PRDs")
 
     def generate_wbs_for_all(self):
@@ -285,7 +293,9 @@ consolidating features, requirements, and work breakdown structures from all pro
                 }
                 for name, specs in self.project_specs.items()
             },
-            "cross_analysis": self.cross_analyzer.to_dict() if self.cross_analyzer else {},
+            "cross_analysis": self.cross_analyzer.to_dict()
+            if self.cross_analyzer
+            else {},
         }
 
         with open(output_file, "w") as f:
@@ -298,10 +308,18 @@ def main():
     """Main entry point."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Generate specs, WBS, and PRDs for all projects")
-    parser.add_argument("--max-projects", type=int, help="Maximum number of projects to analyze")
-    parser.add_argument("--max-files", type=int, default=200, help="Maximum files per project")
-    parser.add_argument("--base-path", type=str, default="/Users/kooshapari/temp-PRODVERCEL/485/kush")
+    parser = argparse.ArgumentParser(
+        description="Generate specs, WBS, and PRDs for all projects"
+    )
+    parser.add_argument(
+        "--max-projects", type=int, help="Maximum number of projects to analyze"
+    )
+    parser.add_argument(
+        "--max-files", type=int, default=200, help="Maximum files per project"
+    )
+    parser.add_argument(
+        "--base-path", type=str, default="/Users/kooshapari/temp-PRODVERCEL/485/kush"
+    )
 
     args = parser.parse_args()
 
@@ -310,7 +328,9 @@ def main():
     generator = SpecsGenerator(base_path)
 
     # Step 1: Analyze all projects
-    generator.analyze_all_projects(max_projects=args.max_projects, max_files_per_project=args.max_files)
+    generator.analyze_all_projects(
+        max_projects=args.max_projects, max_files_per_project=args.max_files
+    )
 
     if not generator.project_specs:
         logger.error("No projects analyzed. Exiting.")

@@ -19,7 +19,9 @@ logger = logging.getLogger(__name__)
 class Alert:
     """Routing alert."""
 
-    alert_type: str  # "budget_exceeded", "high_latency", "provider_error", "cooldown_triggered"
+    alert_type: (
+        str  # "budget_exceeded", "high_latency", "provider_error", "cooldown_triggered"
+    )
     severity: str  # "warning", "critical", "info"
     message: str
     data: dict[str, Any] = field(default_factory=dict)
@@ -94,7 +96,11 @@ class AlertManager:
             )
             return resp.status_code == 200
         except httpx.HTTPStatusError as e:
-            logger.error("Alert webhook HTTP error: %s %s", e.response.status_code, e.response.reason_phrase)
+            logger.error(
+                "Alert webhook HTTP error: %s %s",
+                e.response.status_code,
+                e.response.reason_phrase,
+            )
             return False
         except httpx.RequestError as e:
             logger.error("Alert webhook HTTP error: %s", e)

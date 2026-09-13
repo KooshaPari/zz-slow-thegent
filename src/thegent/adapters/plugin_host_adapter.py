@@ -228,7 +228,9 @@ class PluginHostAdapter:
             raise ValueError(f"Plugin not found: {plugin_id}")
 
         if plugin.status != PluginStatus.READY:
-            raise ValueError(f"Plugin {plugin_id} is not ready (status: {plugin.status})")
+            raise ValueError(
+                f"Plugin {plugin_id} is not ready (status: {plugin.status})"
+            )
 
         _log.info("Executing plugin %s", plugin_id)
         plugin.status = PluginStatus.RUNNING
@@ -272,7 +274,11 @@ class PluginHostAdapter:
         import shutil
 
         host_path = host_binary_path or self._config.host_binary_path
-        socket = socket_path or self._config.host_socket_path or Path("/tmp/thegent-plugin-host.sock")
+        socket = (
+            socket_path
+            or self._config.host_socket_path
+            or Path("/tmp/thegent-plugin-host.sock")
+        )
 
         if host_path is None:
             # Try to find the binary in PATH

@@ -476,16 +476,16 @@ class TestBoundedCapAuditIntegration:
         assert len(emitted) >= 1, "follower emitted zero lines; appender never drained"
 
         # Leg 2: the exit code propagated.
-        assert exit_codes == [42], (
-            f"expected exit 42 (cap-hit), got {exit_codes!r}"
-        )
+        assert exit_codes == [42], f"expected exit 42 (cap-hit), got {exit_codes!r}"
 
         # Leg 3: the appender file contains at least the cap count.
         # (The bounded follower may not see every event we wrote if the
         # follower's offset advances faster than the appender's flush,
         # but it must see at least one to satisfy the cap-hit exit.)
         file_lines = [
-            line for line in log.read_text(encoding="utf-8").splitlines() if line.strip()
+            line
+            for line in log.read_text(encoding="utf-8").splitlines()
+            if line.strip()
         ]
         assert len(file_lines) >= 1, (
             f"audit appender wrote zero lines; the bounded follow "
@@ -497,7 +497,9 @@ class TestBoundedCapAuditIntegration:
             assert "verdict" in parsed
             assert "rule_id" in parsed
 
-    def test_bounded_run_with_default_exit_code_stays_zero(self, tmp_path: Path) -> None:
+    def test_bounded_run_with_default_exit_code_stays_zero(
+        self, tmp_path: Path
+    ) -> None:
         """End-to-end: cap=2, default exit-code (0) -> exit 0 even when capped."""
         log = tmp_path / "decisions.jsonl"
         appender = _seed_appender(log, n=0, prefix="e2e-default")

@@ -96,7 +96,9 @@ def test_check_result_is_frozen():
 
 def test_check_result_with_score():
     # @trace WL-090
-    r = VetterCheckResult(check_name="llm_judge", passed=False, score=0.45, message="too low")
+    r = VetterCheckResult(
+        check_name="llm_judge", passed=False, score=0.45, message="too low"
+    )
     assert r.score == 0.45
     assert r.message == "too low"
 
@@ -109,7 +111,9 @@ def test_check_result_with_score():
 def test_vetter_result_basic():
     # @trace WL-090
     cr = VetterCheckResult(check_name="schema", passed=True)
-    result = VetterResult(run_id="run-1", verdict=VetterVerdict.APPROVED, check_results=[cr])
+    result = VetterResult(
+        run_id="run-1", verdict=VetterVerdict.APPROVED, check_results=[cr]
+    )
     assert result.run_id == "run-1"
     assert result.verdict == VetterVerdict.APPROVED
     assert len(result.check_results) == 1
@@ -235,7 +239,9 @@ def test_ruff_check_implements_protocol():
 @pytest.mark.asyncio
 async def test_schema_check_passes_valid_json():
     # @trace WL-090
-    check = SchemaCheck(schema={"type": "object", "properties": {"key": {"type": "string"}}})
+    check = SchemaCheck(
+        schema={"type": "object", "properties": {"key": {"type": "string"}}}
+    )
     result = await check.check("run-1", json.dumps({"key": "value"}).decode(), {})
     assert result.passed is True
     assert result.check_name == "schema"
@@ -351,7 +357,9 @@ async def test_llm_judge_check_passes_good_output():
             "critique": "",
         }
     )
-    with patch("litellm.acompletion", new_callable=AsyncMock, return_value=mock_response):
+    with patch(
+        "litellm.acompletion", new_callable=AsyncMock, return_value=mock_response
+    ):
         check = LLMJudgeCheck(pass_threshold=0.75)
         result = await check.check("run-1", "good output", {"task": "write a function"})
     assert result.passed is True
@@ -370,7 +378,9 @@ async def test_llm_judge_check_fails_low_score():
             "critique": "Output is incomplete and incorrect",
         }
     )
-    with patch("litellm.acompletion", new_callable=AsyncMock, return_value=mock_response):
+    with patch(
+        "litellm.acompletion", new_callable=AsyncMock, return_value=mock_response
+    ):
         check = LLMJudgeCheck(pass_threshold=0.75)
         result = await check.check("run-1", "bad output", {"task": "write a function"})
     assert result.passed is False
@@ -393,13 +403,17 @@ async def test_quality_score_check_passes_when_all_thresholds_met():
             "critique": "",
         }
     )
-    with patch("litellm.acompletion", new_callable=AsyncMock, return_value=mock_response):
+    with patch(
+        "litellm.acompletion", new_callable=AsyncMock, return_value=mock_response
+    ):
         check = QualityScoreVetterCheck(
             pass_threshold=0.8,
             min_criterion_score=0.7,
             rubric=["correctness", "completeness", "safety"],
         )
-        result = await check.check("run-qs-1", "good output", {"task": "write safe code"})
+        result = await check.check(
+            "run-qs-1", "good output", {"task": "write safe code"}
+        )
     assert result.passed is True
     assert result.score is not None
     assert result.metadata["judge_model"] == "gpt-4o-mini"
@@ -416,9 +430,13 @@ async def test_quality_score_check_fails_on_aggregate_threshold():
             "critique": "Average quality is too low",
         }
     )
-    with patch("litellm.acompletion", new_callable=AsyncMock, return_value=mock_response):
+    with patch(
+        "litellm.acompletion", new_callable=AsyncMock, return_value=mock_response
+    ):
         check = QualityScoreVetterCheck(pass_threshold=0.75, min_criterion_score=0.5)
-        result = await check.check("run-qs-2", "mediocre output", {"task": "write code"})
+        result = await check.check(
+            "run-qs-2", "mediocre output", {"task": "write code"}
+        )
     assert result.passed is False
     assert "too low" in result.message
 
@@ -434,7 +452,9 @@ async def test_quality_score_check_fails_on_min_criterion_threshold():
             "critique": "Safety score is unacceptable",
         }
     )
-    with patch("litellm.acompletion", new_callable=AsyncMock, return_value=mock_response):
+    with patch(
+        "litellm.acompletion", new_callable=AsyncMock, return_value=mock_response
+    ):
         check = QualityScoreVetterCheck(pass_threshold=0.7, min_criterion_score=0.5)
         result = await check.check("run-qs-3", "unsafe output", {"task": "write code"})
     assert result.passed is False
@@ -446,9 +466,13 @@ async def test_quality_score_check_raises_on_malformed_json():
     # @trace WL-095
     mock_response = MagicMock()
     mock_response.choices[0].message.content = "not-json"
-    with patch("litellm.acompletion", new_callable=AsyncMock, return_value=mock_response):
+    with patch(
+        "litellm.acompletion", new_callable=AsyncMock, return_value=mock_response
+    ):
         check = QualityScoreVetterCheck()
-        with pytest.raises(VetterConfigError, match="judge response was not valid JSON"):
+        with pytest.raises(
+            VetterConfigError, match="judge response was not valid JSON"
+        ):
             await check.check("run-qs-4", "output", {"task": "task"})
 
 
@@ -456,10 +480,16 @@ async def test_quality_score_check_raises_on_malformed_json():
 async def test_quality_score_check_raises_on_invalid_payload_shape():
     # @trace WL-095
     mock_response = MagicMock()
-    mock_response.choices[0].message.content = json.dumps({"scores": {"correctness": 0.8}}).decode()
-    with patch("litellm.acompletion", new_callable=AsyncMock, return_value=mock_response):
+    mock_response.choices[0].message.content = json.dumps(
+        {"scores": {"correctness": 0.8}}
+    ).decode()
+    with patch(
+        "litellm.acompletion", new_callable=AsyncMock, return_value=mock_response
+    ):
         check = QualityScoreVetterCheck()
-        with pytest.raises(VetterConfigError, match="judge response failed schema validation"):
+        with pytest.raises(
+            VetterConfigError, match="judge response failed schema validation"
+        ):
             await check.check("run-qs-4b", "output", {"task": "task"})
 
 
@@ -485,8 +515,13 @@ async def test_quality_score_check_auto_model_uses_capability_index_recommendati
     fake_index.all_agents.return_value = [fake_agent]
 
     with (
-        patch("thegent.agents.capability_index.CapabilityIndex.get", return_value=fake_index),
-        patch("litellm.acompletion", new_callable=AsyncMock, return_value=mock_response),
+        patch(
+            "thegent.agents.capability_index.CapabilityIndex.get",
+            return_value=fake_index,
+        ),
+        patch(
+            "litellm.acompletion", new_callable=AsyncMock, return_value=mock_response
+        ),
     ):
         check = QualityScoreVetterCheck(judge_model="auto")
         result = await check.check("run-qs-5", "output", {"task": "task"})
@@ -502,9 +537,13 @@ async def test_quality_score_check_raises_when_auto_model_has_no_recommendations
     fake_index = MagicMock()
     fake_index.recommend.return_value = []
     fake_index.all_agents.return_value = []
-    with patch("thegent.agents.capability_index.CapabilityIndex.get", return_value=fake_index):
+    with patch(
+        "thegent.agents.capability_index.CapabilityIndex.get", return_value=fake_index
+    ):
         check = QualityScoreVetterCheck(judge_model="auto")
-        with pytest.raises(VetterConfigError, match="found no CapabilityIndex recommendations"):
+        with pytest.raises(
+            VetterConfigError, match="found no CapabilityIndex recommendations"
+        ):
             await check.check("run-qs-6", "output", {"task": "task"})
 
 
@@ -519,9 +558,13 @@ async def test_quality_score_check_raises_when_auto_model_has_no_configured_mode
     fake_index = MagicMock()
     fake_index.recommend.return_value = [fake_rec]
     fake_index.all_agents.return_value = [fake_agent]
-    with patch("thegent.agents.capability_index.CapabilityIndex.get", return_value=fake_index):
+    with patch(
+        "thegent.agents.capability_index.CapabilityIndex.get", return_value=fake_index
+    ):
         check = QualityScoreVetterCheck(judge_model="auto")
-        with pytest.raises(VetterConfigError, match="did not include a configured model"):
+        with pytest.raises(
+            VetterConfigError, match="did not include a configured model"
+        ):
             await check.check("run-qs-7", "output", {"task": "task"})
 
 
@@ -537,7 +580,9 @@ async def test_quality_score_check_prefers_explicit_model_resolver_when_provided
         }
     ).decode()
     resolver = MagicMock(return_value="gpt-4.1-mini")
-    with patch("litellm.acompletion", new_callable=AsyncMock, return_value=mock_response):
+    with patch(
+        "litellm.acompletion", new_callable=AsyncMock, return_value=mock_response
+    ):
         check = QualityScoreVetterCheck(judge_model="auto", model_resolver=resolver)
         result = await check.check("run-qs-8", "output", {"task": "task"})
 
@@ -551,7 +596,9 @@ async def test_quality_score_check_raises_when_auto_model_resolver_returns_empty
     # @trace WL-095
     check = QualityScoreVetterCheck(judge_model="auto")
     check.model_resolver = MagicMock(return_value=" ")
-    with pytest.raises(VetterConfigError, match="model_resolver returned empty model name"):
+    with pytest.raises(
+        VetterConfigError, match="model_resolver returned empty model name"
+    ):
         await check.check("run-qs-9", "output", {"task": "task"})
 
 
@@ -566,7 +613,9 @@ async def test_quality_score_check_builds_deterministic_failure_message_without_
             "critique": "   ",
         }
     ).decode()
-    with patch("litellm.acompletion", new_callable=AsyncMock, return_value=mock_response):
+    with patch(
+        "litellm.acompletion", new_callable=AsyncMock, return_value=mock_response
+    ):
         check = QualityScoreVetterCheck(pass_threshold=0.8, min_criterion_score=3)
         result = await check.check("run-qs-10", "output", {"task": "task"})
 
@@ -653,7 +702,10 @@ async def test_ruff_check_fails_on_violations():
     # @trace WL-090
     diff = "--- a/src/foo.py\n+++ b/src/foo.py\n+import os\n"
     mock_proc = AsyncMock()
-    mock_proc.communicate.return_value = (b"src/foo.py:1:1: F401 'os' imported but unused", None)
+    mock_proc.communicate.return_value = (
+        b"src/foo.py:1:1: F401 'os' imported but unused",
+        None,
+    )
     mock_proc.returncode = 1
     with patch("asyncio.create_subprocess_exec", return_value=mock_proc):
         check = RuffCheck()

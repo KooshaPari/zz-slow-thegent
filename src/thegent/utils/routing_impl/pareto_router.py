@@ -105,7 +105,9 @@ class ParetoRouter:
         frontier = self._pareto_frontier(candidates)
         return self._best_from_frontier(frontier)
 
-    def select_by_strategy(self, strategy: str, candidates: list[RouteCandidate]) -> RouteCandidate:
+    def select_by_strategy(
+        self, strategy: str, candidates: list[RouteCandidate]
+    ) -> RouteCandidate:
         """Applies a strategy slice to the Pareto Front (cost, speed, quality, balanced)."""
         if not candidates:
             raise ValueError("candidates must be non-empty")
@@ -126,7 +128,9 @@ class ParetoRouter:
         # Default to balanced
         return self._best_from_frontier(frontier)
 
-    def get_optimal_providers(self, candidates: list[RouteCandidate]) -> list[RouteCandidate]:
+    def get_optimal_providers(
+        self, candidates: list[RouteCandidate]
+    ) -> list[RouteCandidate]:
         """Returns the non-dominated set (Pareto Front)."""
         return self._pareto_frontier(candidates)
 
@@ -139,14 +143,22 @@ class ParetoRouter:
         """True if *b* dominates *a*: b is at least as good on both axes and strictly better on one."""
         cost_ok = b.cost_per_1k <= a.cost_per_1k
         quality_ok = b.quality_score >= a.quality_score
-        strictly_better = b.cost_per_1k < a.cost_per_1k or b.quality_score > a.quality_score
+        strictly_better = (
+            b.cost_per_1k < a.cost_per_1k or b.quality_score > a.quality_score
+        )
         return cost_ok and quality_ok and strictly_better
 
-    def _pareto_frontier(self, candidates: list[RouteCandidate]) -> list[RouteCandidate]:
+    def _pareto_frontier(
+        self, candidates: list[RouteCandidate]
+    ) -> list[RouteCandidate]:
         """Return non-dominated candidates."""
         frontier: list[RouteCandidate] = []
         for candidate in candidates:
-            if not any(self._is_dominated(candidate, other) for other in candidates if other is not candidate):
+            if not any(
+                self._is_dominated(candidate, other)
+                for other in candidates
+                if other is not candidate
+            ):
                 frontier.append(candidate)
         return frontier
 
@@ -188,7 +200,9 @@ class Offer:
     model_alias: str
     cost_weight: float
     quality: float
-    speed_score: float = 1.0  # Lower = faster; includes conciseness (output_tokens_multiplier)
+    speed_score: float = (
+        1.0  # Lower = faster; includes conciseness (output_tokens_multiplier)
+    )
     route: Route | None = None
     effective_cost: float | None = None  # After shadow pricing
 
@@ -228,7 +242,9 @@ def _roles_config_path() -> Path:
     except Exception:
         pass
     # Fallback: project root relative to this file
-    return Path(__file__).resolve().parents[3] / "config" / "routing" / "roles.schema.yaml"
+    return (
+        Path(__file__).resolve().parents[3] / "config" / "routing" / "roles.schema.yaml"
+    )
 
 
 _ROLES_CACHE: dict[str, RoleConfig] | None = None
@@ -260,7 +276,11 @@ def _load_roles() -> dict[str, RoleConfig]:
             needs_tools = bool(hard.get("needs_tools", False))
             min_ctx = int(hard.get("min_context_tokens", 0))
             bw_raw = cfg.get("benchmark_weights") or {}
-            benchmark_weights = {str(k): float(v) for k, v in bw_raw.items()} if isinstance(bw_raw, dict) else {}
+            benchmark_weights = (
+                {str(k): float(v) for k, v in bw_raw.items()}
+                if isinstance(bw_raw, dict)
+                else {}
+            )
             result[name] = RoleConfig(
                 name=name,
                 min_quality=min_q,
@@ -312,7 +332,9 @@ def _get_shadow_multiplier() -> float:
         # Use daily budget (litellm) or derive from MTD
         budget = getattr(settings, "litellm_cost_budget", None)
         if budget is None or budget <= 0:
-            budget = float(getattr(settings, "cost_budget_mtd", 100.0)) / 30.0  # Daily proxy
+            budget = (
+                float(getattr(settings, "cost_budget_mtd", 100.0)) / 30.0
+            )  # Daily proxy
         if budget <= 0:
             return 1.0
         remaining = tracker.get_budget_remaining()
@@ -364,7 +386,9 @@ def _offers_from_catalog(
                 try:
                     from thegent.models.quality_values import get_model_quality_for_role
 
-                    quality = get_model_quality_for_role(model_alias, rcfg.benchmark_weights)
+                    quality = get_model_quality_for_role(
+                        model_alias, rcfg.benchmark_weights
+                    )
                 except Exception:
                     quality = _get_quality(model_alias)
             else:
@@ -401,7 +425,9 @@ def _is_dominated(a: Offer, b: Offer) -> bool:
     speed_ok = b.speed_score <= a.speed_score
     cost_ok = cost_b <= cost_a
     quality_ok = b.quality >= a.quality
-    strictly_better = b.speed_score < a.speed_score or cost_b < cost_a or b.quality > a.quality
+    strictly_better = (
+        b.speed_score < a.speed_score or cost_b < cost_a or b.quality > a.quality
+    )
     return speed_ok and cost_ok and quality_ok and strictly_better
 
 
@@ -444,7 +470,9 @@ def _lexicographic_select(
         elif axis == "cost":
             best = min((o.effective_cost or o.cost_weight) for o in current)
             threshold = best * (1 + eps.get("cost", 0.10))
-            current = [o for o in current if (o.effective_cost or o.cost_weight) <= threshold]
+            current = [
+                o for o in current if (o.effective_cost or o.cost_weight) <= threshold
+            ]
         elif axis == "speed":
             best = min(o.speed_score for o in current)
             threshold = best * (1 + eps.get("speed", 0.15))
@@ -460,7 +488,9 @@ def _resolve_role_params(
     opt_order: tuple[str, ...],
 ) -> tuple[float, tuple[str, ...], float]:
     """Resolve min_quality, opt_order, output_tokens_multiplier from role + tier."""
-    tier_min = {"simple": 0.5, "moderate": 0.6, "complex": 0.75}.get(complexity_tier, 0.6)
+    tier_min = {"simple": 0.5, "moderate": 0.6, "complex": 0.75}.get(
+        complexity_tier, 0.6
+    )
     effective_min = max(min_quality, tier_min)
     order = opt_order
     mult = 1.0
@@ -515,7 +545,9 @@ def select_offer_with_trace(
     Select offer with full route trace (why offer won). Per Helios spec.
     Uses role from roles.schema.yaml when provided (min_quality, soft_order, output_tokens_multiplier).
     """
-    effective_min, order, output_mult = _resolve_role_params(role, complexity_tier, min_quality, opt_order)
+    effective_min, order, output_mult = _resolve_role_params(
+        role, complexity_tier, min_quality, opt_order
+    )
     shadow = _get_shadow_multiplier()
 
     offers = _offers_from_catalog(

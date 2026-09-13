@@ -63,30 +63,41 @@ class TestReflectionRollbackManager:
         return ws
 
     @pytest.mark.requirement("WL-185")
-    def test_take_snapshot(self, manager: ReflectionRollbackManager, work_stream_file: Path) -> None:
+    def test_take_snapshot(
+        self, manager: ReflectionRollbackManager, work_stream_file: Path
+    ) -> None:
         """Can take a snapshot of work stream content."""
         snapshot = manager.take_snapshot(work_stream_file)
 
         assert snapshot.snapshot_id
         assert snapshot.timestamp
-        assert snapshot.work_stream_content == "# Work Stream\n\n## P0 Items\n\nSome content"
+        assert (
+            snapshot.work_stream_content
+            == "# Work Stream\n\n## P0 Items\n\nSome content"
+        )
         assert len(snapshot.snapshot_id) == 8  # UUID truncated to 8 chars
 
     @pytest.mark.requirement("WL-185")
-    def test_take_snapshot_with_cycle_id(self, manager: ReflectionRollbackManager, work_stream_file: Path) -> None:
+    def test_take_snapshot_with_cycle_id(
+        self, manager: ReflectionRollbackManager, work_stream_file: Path
+    ) -> None:
         """Caller-provided cycle_id is persisted in snapshot metadata."""
         snapshot = manager.take_snapshot(work_stream_file, cycle_id="cycle-xyz")
 
         assert snapshot.cycle_id == "cycle-xyz"
 
     @pytest.mark.requirement("WL-185")
-    def test_take_snapshot_file_not_found(self, manager: ReflectionRollbackManager) -> None:
+    def test_take_snapshot_file_not_found(
+        self, manager: ReflectionRollbackManager
+    ) -> None:
         """take_snapshot raises FileNotFoundError for missing file."""
         with pytest.raises(FileNotFoundError):
             manager.take_snapshot(Path("/nonexistent/WORK_STREAM.md"))
 
     @pytest.mark.requirement("WL-185")
-    def test_take_snapshot_persists_to_disk(self, manager: ReflectionRollbackManager, work_stream_file: Path) -> None:
+    def test_take_snapshot_persists_to_disk(
+        self, manager: ReflectionRollbackManager, work_stream_file: Path
+    ) -> None:
         """Snapshots are persisted to disk."""
         snapshot = manager.take_snapshot(work_stream_file)
         snapshot_file = manager._snapshots_dir / f"{snapshot.snapshot_id}.json"
@@ -100,13 +111,17 @@ class TestReflectionRollbackManager:
         assert result == []
 
     @pytest.mark.requirement("WL-185")
-    def test_list_snapshots_multiple(self, manager: ReflectionRollbackManager, work_stream_file: Path) -> None:
+    def test_list_snapshots_multiple(
+        self, manager: ReflectionRollbackManager, work_stream_file: Path
+    ) -> None:
         """list_snapshots returns all snapshots, sorted by timestamp (newest first)."""
         # Take first snapshot
         snap1 = manager.take_snapshot(work_stream_file)
 
         # Modify and take second snapshot
-        work_stream_file.write_text("# Work Stream\n\nUpdated content", encoding="utf-8")
+        work_stream_file.write_text(
+            "# Work Stream\n\nUpdated content", encoding="utf-8"
+        )
         snap2 = manager.take_snapshot(work_stream_file)
 
         snapshots = manager.list_snapshots()
@@ -116,7 +131,9 @@ class TestReflectionRollbackManager:
         assert snapshots[1].snapshot_id == snap1.snapshot_id
 
     @pytest.mark.requirement("WL-185")
-    def test_rollback_to(self, manager: ReflectionRollbackManager, work_stream_file: Path, tmp_path: Path) -> None:
+    def test_rollback_to(
+        self, manager: ReflectionRollbackManager, work_stream_file: Path, tmp_path: Path
+    ) -> None:
         """Can restore work stream from a snapshot."""
         # Take initial snapshot
         original_content = "# Original content"
@@ -132,7 +149,9 @@ class TestReflectionRollbackManager:
         assert work_stream_file.read_text(encoding="utf-8") == original_content
 
     @pytest.mark.requirement("WL-185")
-    def test_rollback_to_not_found(self, manager: ReflectionRollbackManager, tmp_path: Path) -> None:
+    def test_rollback_to_not_found(
+        self, manager: ReflectionRollbackManager, tmp_path: Path
+    ) -> None:
         """rollback_to raises FileNotFoundError for missing snapshot."""
         ws = tmp_path / "WORK_STREAM.md"
         ws.write_text("content", encoding="utf-8")
@@ -141,7 +160,9 @@ class TestReflectionRollbackManager:
             manager.rollback_to("nonexistent", ws)
 
     @pytest.mark.requirement("WL-185")
-    def test_cleanup_old_snapshots(self, manager: ReflectionRollbackManager, work_stream_file: Path) -> None:
+    def test_cleanup_old_snapshots(
+        self, manager: ReflectionRollbackManager, work_stream_file: Path
+    ) -> None:
         """cleanup_old_snapshots keeps only N most recent."""
         # Create 7 snapshots
         snapshots = []

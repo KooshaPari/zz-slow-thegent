@@ -88,21 +88,29 @@ def evaluate_fallback(
 
     # 1. Plain-text fallback gate.
     if is_fallback and not policy.allow_plain_fallback:
-        violations.append(f"Plain text fallback is disabled by policy (provider={provider})")
+        violations.append(
+            f"Plain text fallback is disabled by policy (provider={provider})"
+        )
 
     # 2. Strict-provider gate.
     if is_fallback and provider in policy.strict_providers:
-        violations.append(f"Provider '{provider}' is on the strict list and may not fall back")
+        violations.append(
+            f"Provider '{provider}' is on the strict list and may not fall back"
+        )
 
     # 3. Confidence threshold.
     if confidence < policy.min_confidence_threshold:
-        violations.append(f"Confidence {confidence:.2f} is below threshold {policy.min_confidence_threshold:.2f}")
+        violations.append(
+            f"Confidence {confidence:.2f} is below threshold {policy.min_confidence_threshold:.2f}"
+        )
 
     # 4. Global fallback-rate budget (only when telemetry stats available).
     if stats is not None:
         rate = float(stats.get("fallback_rate", 0.0) or 0.0)
         if rate > policy.max_fallback_rate:
-            violations.append(f"Global fallback rate {rate:.2f} exceeds budget {policy.max_fallback_rate:.2f}")
+            violations.append(
+                f"Global fallback rate {rate:.2f} exceeds budget {policy.max_fallback_rate:.2f}"
+            )
 
     return violations
 

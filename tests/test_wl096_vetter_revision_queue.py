@@ -53,7 +53,9 @@ def _failing_check(name: str, message: str = "fix this") -> Any:
     """Async VetterCheck mock that always fails. # @trace WL-096"""
     check = MagicMock()
     check.name = name
-    check.check = AsyncMock(return_value=VetterCheckResult(check_name=name, passed=False, message=message))
+    check.check = AsyncMock(
+        return_value=VetterCheckResult(check_name=name, passed=False, message=message)
+    )
     return check
 
 
@@ -61,7 +63,9 @@ def _passing_check(name: str) -> Any:
     """Async VetterCheck mock that always passes. # @trace WL-096"""
     check = MagicMock()
     check.name = name
-    check.check = AsyncMock(return_value=VetterCheckResult(check_name=name, passed=True))
+    check.check = AsyncMock(
+        return_value=VetterCheckResult(check_name=name, passed=True)
+    )
     return check
 
 
@@ -178,7 +182,11 @@ async def test_enqueued_prompt_contains_correct_round_number(tmp_path: Path) -> 
 async def test_enqueued_prompt_contains_failed_check_id(tmp_path: Path) -> None:
     """Enqueued prompt contains the failed check name. # @trace WL-096"""
     queue = _make_queue()
-    orch = _make_orch(tmp_path, {"style_check": _failing_check("style_check", "Too long")}, prompt_queue=queue)
+    orch = _make_orch(
+        tmp_path,
+        {"style_check": _failing_check("style_check", "Too long")},
+        prompt_queue=queue,
+    )
     policy = VetterPolicy(checks=["style_check"], max_revision_rounds=3)
 
     await orch.evaluate(
@@ -200,7 +208,9 @@ async def test_enqueued_prompt_contains_hint_text(tmp_path: Path) -> None:
     """Enqueued prompt contains the revision hint from the check message. # @trace WL-096"""
     queue = _make_queue()
     hint = "Please split into smaller functions"
-    orch = _make_orch(tmp_path, {"style": _failing_check("style", hint)}, prompt_queue=queue)
+    orch = _make_orch(
+        tmp_path, {"style": _failing_check("style", hint)}, prompt_queue=queue
+    )
     policy = VetterPolicy(checks=["style"], max_revision_rounds=3)
 
     await orch.evaluate(
@@ -319,7 +329,9 @@ async def test_enqueue_receives_project_path_from_run_context(tmp_path: Path) ->
         },
     )
 
-    assert queue.enqueue.call_args.kwargs["project_path"] == "/projects/myapp"  # @trace WL-096
+    assert (
+        queue.enqueue.call_args.kwargs["project_path"] == "/projects/myapp"
+    )  # @trace WL-096
 
 
 # ---------------------------------------------------------------------------
@@ -392,7 +404,9 @@ async def test_round_at_max_rejects_with_default_on_fail(tmp_path: Path) -> None
 
 
 @pytest.mark.asyncio
-async def test_repeated_revision_requested_for_same_run_is_guarded_by_tracker_round(tmp_path: Path) -> None:
+async def test_repeated_revision_requested_for_same_run_is_guarded_by_tracker_round(
+    tmp_path: Path,
+) -> None:
     """Second call for same run_id with stale round does not re-request revision. # @trace WL-096"""
     queue = _make_queue()
     orch = _make_orch(tmp_path, {"check": _failing_check("check")}, prompt_queue=queue)
@@ -403,8 +417,12 @@ async def test_repeated_revision_requested_for_same_run_is_guarded_by_tracker_ro
         "vetter_revision_round": 0,
     }
 
-    first = await orch.evaluate(result=MagicMock(), policy=policy, run_context=run_context)
-    second = await orch.evaluate(result=MagicMock(), policy=policy, run_context=run_context)
+    first = await orch.evaluate(
+        result=MagicMock(), policy=policy, run_context=run_context
+    )
+    second = await orch.evaluate(
+        result=MagicMock(), policy=policy, run_context=run_context
+    )
 
     assert first.verdict == VetterVerdict.REVISION_REQUESTED
     assert second.verdict == VetterVerdict.REJECTED
@@ -437,7 +455,9 @@ async def test_round_beyond_max_never_enqueues(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_exhausted_rounds_on_fail_escalate_produces_escalated_verdict(tmp_path: Path) -> None:
+async def test_exhausted_rounds_on_fail_escalate_produces_escalated_verdict(
+    tmp_path: Path,
+) -> None:
     """Exhausted rounds with on_fail='escalate' -> ESCALATED verdict. # @trace WL-096"""
     queue = _make_queue()
     hitl = MagicMock()
@@ -489,7 +509,9 @@ async def test_exhausted_rounds_on_fail_escalate_calls_hitl(tmp_path: Path) -> N
 
 
 @pytest.mark.asyncio
-async def test_exhausted_rounds_on_fail_escalate_does_not_enqueue(tmp_path: Path) -> None:
+async def test_exhausted_rounds_on_fail_escalate_does_not_enqueue(
+    tmp_path: Path,
+) -> None:
     """Exhausted rounds with on_fail='escalate' does NOT call enqueue(). # @trace WL-096"""
     queue = _make_queue()
     hitl = MagicMock()
@@ -515,7 +537,9 @@ async def test_exhausted_rounds_on_fail_escalate_does_not_enqueue(tmp_path: Path
 
 
 @pytest.mark.asyncio
-async def test_exhausted_rounds_escalation_event_written_to_jsonl(tmp_path: Path) -> None:
+async def test_exhausted_rounds_escalation_event_written_to_jsonl(
+    tmp_path: Path,
+) -> None:
     """Exhausted rounds with escalate writes vetter_escalation event to governance_events.jsonl. # @trace WL-096"""
     import json
 
@@ -527,7 +551,12 @@ async def test_exhausted_rounds_escalation_event_written_to_jsonl(tmp_path: Path
         prompt_queue=queue,
         hitl_workflow=hitl,
     )
-    policy = VetterPolicy(checks=["check"], max_revision_rounds=1, on_fail="escalate", escalation_lane="urgent")
+    policy = VetterPolicy(
+        checks=["check"],
+        max_revision_rounds=1,
+        on_fail="escalate",
+        escalation_lane="urgent",
+    )
 
     await orch.evaluate(
         result=MagicMock(output="some diff"),
@@ -539,7 +568,12 @@ async def test_exhausted_rounds_escalation_event_written_to_jsonl(tmp_path: Path
         },
     )
 
-    lines = (tmp_path / "governance_events.jsonl").read_text(encoding="utf-8").strip().splitlines()
+    lines = (
+        (tmp_path / "governance_events.jsonl")
+        .read_text(encoding="utf-8")
+        .strip()
+        .splitlines()
+    )
     event_types = [json.loads(line)["event_type"] for line in lines]
     assert "vetter_escalation" in event_types  # @trace WL-096
 
@@ -756,7 +790,9 @@ async def test_revision_prompt_on_result_contains_check_name(tmp_path: Path) -> 
     """VetterResult.revision_prompt contains the failed check name. # @trace WL-096"""
     queue = _make_queue()
     orch = _make_orch(
-        tmp_path, {"security_check": _failing_check("security_check", "No hardcoded secrets")}, prompt_queue=queue
+        tmp_path,
+        {"security_check": _failing_check("security_check", "No hardcoded secrets")},
+        prompt_queue=queue,
     )
     policy = VetterPolicy(checks=["security_check"], max_revision_rounds=3)
 
@@ -779,7 +815,9 @@ async def test_revision_prompt_on_result_contains_hint(tmp_path: Path) -> None:
     """VetterResult.revision_prompt contains the hint message from the failing check. # @trace WL-096"""
     queue = _make_queue()
     hint = "Use environment variables instead of literals"
-    orch = _make_orch(tmp_path, {"secrets": _failing_check("secrets", hint)}, prompt_queue=queue)
+    orch = _make_orch(
+        tmp_path, {"secrets": _failing_check("secrets", hint)}, prompt_queue=queue
+    )
     policy = VetterPolicy(checks=["secrets"], max_revision_rounds=3)
 
     result = await orch.evaluate(
@@ -802,7 +840,9 @@ async def test_revision_prompt_on_result_contains_hint(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_multiple_failing_checks_all_ids_in_enqueued_prompt(tmp_path: Path) -> None:
+async def test_multiple_failing_checks_all_ids_in_enqueued_prompt(
+    tmp_path: Path,
+) -> None:
     """All failed check IDs appear in the enqueued revision prompt. # @trace WL-096"""
     queue = _make_queue()
     registry = {
@@ -828,7 +868,9 @@ async def test_multiple_failing_checks_all_ids_in_enqueued_prompt(tmp_path: Path
 
 
 @pytest.mark.asyncio
-async def test_multiple_failing_checks_all_hints_in_enqueued_prompt(tmp_path: Path) -> None:
+async def test_multiple_failing_checks_all_hints_in_enqueued_prompt(
+    tmp_path: Path,
+) -> None:
     """All hint messages from failing checks appear in the enqueued revision prompt. # @trace WL-096"""
     queue = _make_queue()
     hint_a = "Fix lint errors"
@@ -887,7 +929,9 @@ async def test_passing_checks_not_in_failed_ids_of_prompt(tmp_path: Path) -> Non
 
 
 @pytest.mark.asyncio
-async def test_enqueue_called_with_project_path_none_when_not_in_context(tmp_path: Path) -> None:
+async def test_enqueue_called_with_project_path_none_when_not_in_context(
+    tmp_path: Path,
+) -> None:
     """project_path kwarg is None when run_context has no project_path key. # @trace WL-096"""
     queue = _make_queue()
     orch = _make_orch(tmp_path, {"check": _failing_check("check")}, prompt_queue=queue)
@@ -947,14 +991,20 @@ async def test_metadata_complete_structure(tmp_path: Path) -> None:
     )
 
     metadata = queue.enqueue.call_args.kwargs["metadata"]
-    assert set(metadata.keys()) >= {"vetter_revision", "original_run_id", "round"}  # @trace WL-096
+    assert set(metadata.keys()) >= {
+        "vetter_revision",
+        "original_run_id",
+        "round",
+    }  # @trace WL-096
     assert metadata["vetter_revision"] is True
     assert metadata["original_run_id"] == "run-wl096-030"
     assert metadata["round"] == 4  # 3 + 1
 
 
 @pytest.mark.asyncio
-async def test_exhausted_revision_path_does_not_requeue_without_new_round(tmp_path: Path) -> None:
+async def test_exhausted_revision_path_does_not_requeue_without_new_round(
+    tmp_path: Path,
+) -> None:
     """Exhausted revision path cannot requeue unless a new round is provided. # @trace WL-096"""
     queue = _make_queue()
     orch = _make_orch(tmp_path, {"check": _failing_check("check")}, prompt_queue=queue)
@@ -965,8 +1015,12 @@ async def test_exhausted_revision_path_does_not_requeue_without_new_round(tmp_pa
         "vetter_revision_round": 1,
     }
 
-    first = await orch.evaluate(result=MagicMock(), policy=policy, run_context=exhausted_context)
-    second = await orch.evaluate(result=MagicMock(), policy=policy, run_context=exhausted_context)
+    first = await orch.evaluate(
+        result=MagicMock(), policy=policy, run_context=exhausted_context
+    )
+    second = await orch.evaluate(
+        result=MagicMock(), policy=policy, run_context=exhausted_context
+    )
 
     assert first.verdict == VetterVerdict.REJECTED
     assert second.verdict == VetterVerdict.REJECTED
@@ -974,7 +1028,9 @@ async def test_exhausted_revision_path_does_not_requeue_without_new_round(tmp_pa
 
 
 @pytest.mark.asyncio
-async def test_revision_round_tracker_stays_monotonic_across_mixed_outcomes(tmp_path: Path) -> None:
+async def test_revision_round_tracker_stays_monotonic_across_mixed_outcomes(
+    tmp_path: Path,
+) -> None:
     """Tracker never regresses for same run_id even when stale rounds are supplied. # @trace WL-096"""
     queue = _make_queue()
     failing = _failing_check("check", "needs revision")

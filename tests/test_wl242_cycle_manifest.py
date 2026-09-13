@@ -37,7 +37,9 @@ class TestCycleManifest:
     def test_cycle_manifest_items_tuple(self) -> None:
         """Test that items are stored as tuple."""
         now = datetime.now(UTC)
-        manifest = CycleManifest(cycle_id="cycle-1", created_at=now, items=("x", "y", "z"))
+        manifest = CycleManifest(
+            cycle_id="cycle-1", created_at=now, items=("x", "y", "z")
+        )
         assert isinstance(manifest.items, tuple)
         assert manifest.items == ("x", "y", "z")
 

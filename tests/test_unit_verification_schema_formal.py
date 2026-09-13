@@ -80,9 +80,13 @@ def test_liveness_impact():
     verifier = SchemaEvolutionVerifier()
 
     # OK evolution
-    report_ok = verifier.verify_tag_evolution(["STATUS", "SUMMARY"], ["STATUS", "SUMMARY", "LOG"])
+    report_ok = verifier.verify_tag_evolution(
+        ["STATUS", "SUMMARY"], ["STATUS", "SUMMARY", "LOG"]
+    )
     assert verifier.check_liveness_impact(report_ok) is True
 
     # Impactful evolution (removing STATUS)
-    report_bad = verifier.verify_tag_evolution(["STATUS", "SUMMARY"], ["SUMMARY", "LOG"])
+    report_bad = verifier.verify_tag_evolution(
+        ["STATUS", "SUMMARY"], ["SUMMARY", "LOG"]
+    )
     assert verifier.check_liveness_impact(report_bad) is False

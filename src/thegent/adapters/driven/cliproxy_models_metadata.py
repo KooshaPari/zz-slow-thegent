@@ -5,6 +5,7 @@ Extracted from cliproxy_adapter.py as part of L1 architecture hardening.
 Covers GW-46 (per-entry enrichment with context_length and supported_parameters)
 and GW-47 (inject missing canonical proxy models).
 """
+
 from __future__ import annotations
 
 

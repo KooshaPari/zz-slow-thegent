@@ -25,11 +25,20 @@ import pytest
 # Helpers
 # ---------------------------------------------------------------------------
 
-_AUTH_MODULE_PATH = Path(__file__).resolve().parents[1] / "src" / "thegent" / "mcp" / "server" / "auth.py"
+_AUTH_MODULE_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "src"
+    / "thegent"
+    / "mcp"
+    / "server"
+    / "auth.py"
+)
 
 
 def _load_auth_module():
-    spec = importlib.util.spec_from_file_location("thegent.mcp._server_auth", _AUTH_MODULE_PATH)
+    spec = importlib.util.spec_from_file_location(
+        "thegent.mcp._server_auth", _AUTH_MODULE_PATH
+    )
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Unable to load auth module from: {_AUTH_MODULE_PATH}")
     module = importlib.util.module_from_spec(spec)

@@ -60,7 +60,9 @@ class PoisonPillDetector:
     single-threaded streams). Use a separate instance per session.
     """
 
-    _recent_chunks: deque[_ChunkRecord] = field(default_factory=lambda: deque(maxlen=200))
+    _recent_chunks: deque[_ChunkRecord] = field(
+        default_factory=lambda: deque(maxlen=200)
+    )
     _tool_use_count: int = field(default=0)
     _governance_log: list[dict[str, object]] = field(default_factory=list)
 
@@ -76,7 +78,9 @@ class PoisonPillDetector:
         self._check_chunk_size(chunk)
         self._check_repeat(chunk)
         # Record after checks
-        self._recent_chunks.append(_ChunkRecord(content=chunk, timestamp=time.monotonic()))
+        self._recent_chunks.append(
+            _ChunkRecord(content=chunk, timestamp=time.monotonic())
+        )
 
     def record_tool_use(self) -> None:
         """Increment the tool-use counter and check against TOOL_USE_LIMIT.
@@ -86,7 +90,9 @@ class PoisonPillDetector:
         """
         self._tool_use_count += 1
         if self._tool_use_count > TOOL_USE_LIMIT:
-            self._emit_event("tool_use_overflow", f"tool_use count={self._tool_use_count}")
+            self._emit_event(
+                "tool_use_overflow", f"tool_use count={self._tool_use_count}"
+            )
             raise PoisonPillError(
                 reason=f"tool_use count {self._tool_use_count} exceeds limit {TOOL_USE_LIMIT}",
                 kind="tool_use_overflow",
@@ -118,7 +124,11 @@ class PoisonPillDetector:
     def _check_repeat(self, chunk: str) -> None:
         now = time.monotonic()
         window_start = now - REPEAT_WINDOW_SEC
-        recent_same = sum(1 for r in self._recent_chunks if r.timestamp >= window_start and r.content == chunk)
+        recent_same = sum(
+            1
+            for r in self._recent_chunks
+            if r.timestamp >= window_start and r.content == chunk
+        )
         if recent_same >= REPEAT_COUNT_LIMIT:
             self._emit_event(
                 "repeat_chunk",

@@ -160,7 +160,10 @@ def run_shell_command(
 
 
 def popen_shell_command(
-    cmd: str | list[str], shell: str | None = None, optimize_startup: bool = True, **kwargs
+    cmd: str | list[str],
+    shell: str | None = None,
+    optimize_startup: bool = True,
+    **kwargs,
 ) -> subprocess.Popen:
     """
     Open shell process using fastest available shell.

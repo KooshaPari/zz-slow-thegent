@@ -89,7 +89,9 @@ class JetBrainsConfig:
 
     def __post_init__(self) -> None:
         if self.ide_type not in _VALID_IDE_TYPES:
-            raise ValueError(f"ide_type must be one of {sorted(_VALID_IDE_TYPES)}, got {self.ide_type!r}")
+            raise ValueError(
+                f"ide_type must be one of {sorted(_VALID_IDE_TYPES)}, got {self.ide_type!r}"
+            )
         self._mcp_config_path = self.config_dir / "mcp.json"
 
     @property
@@ -118,7 +120,9 @@ def _jetbrains_base_dirs() -> list[Path]:
 
     elif system == "Linux":
         # Linux: ~/.config/JetBrains  (XDG) or legacy
-        xdg_config = Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config")))
+        xdg_config = Path(
+            os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))
+        )
         candidates.append(xdg_config / "JetBrains")
 
     elif system == "Windows":

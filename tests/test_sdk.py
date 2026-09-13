@@ -48,7 +48,9 @@ class TestSDKImports:
         import thegent.sdk
 
         for name in thegent.sdk.__all__:
-            assert hasattr(thegent.sdk, name), f"__all__ lists {name!r} but it is not defined"
+            assert hasattr(thegent.sdk, name), (
+                f"__all__ lists {name!r} but it is not defined"
+            )
 
 
 # ---------------------------------------------------------------------------

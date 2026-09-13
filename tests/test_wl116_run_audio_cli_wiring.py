@@ -7,7 +7,9 @@ from pathlib import Path
 from thegent.cli.apps.run import run_agent
 
 
-def test_run_agent_forwards_audio_and_grounding_flags(monkeypatch, tmp_path: Path) -> None:
+def test_run_agent_forwards_audio_and_grounding_flags(
+    monkeypatch, tmp_path: Path
+) -> None:
     transcript = tmp_path / "sample.txt"
     transcript.write_text("speaker says hello", encoding="utf-8")
 

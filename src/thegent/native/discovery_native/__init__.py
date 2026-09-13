@@ -1,4 +1,5 @@
 """Stub module."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -20,7 +21,12 @@ def _fallback_processes() -> dict[str, int]:
     return {"python": 1}
 
 
-__all__ = ["DiscoveryClient", "_fallback_processes", "_fallback_sessions", "_fallback_tools"]
+__all__ = [
+    "DiscoveryClient",
+    "_fallback_processes",
+    "_fallback_sessions",
+    "_fallback_tools",
+]
 
 
 def _fallback_tools() -> dict[str, bool]:

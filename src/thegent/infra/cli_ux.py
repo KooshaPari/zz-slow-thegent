@@ -118,7 +118,9 @@ def display_command_suggestion(command: str, suggestions: list[str]) -> None:
             console.print(f"  • [cyan]{suggestion}[/cyan]")
 
 
-def format_command_help(command: str, description: str, examples: list[str] | None = None) -> str:
+def format_command_help(
+    command: str, description: str, examples: list[str] | None = None
+) -> str:
     """Format command help with examples.
 
     Args:
@@ -161,7 +163,9 @@ def display_command_examples(command: str, examples: list[dict[str, str]]) -> No
         command: Command name
         examples: List of example dicts with 'description' and 'command' keys
     """
-    table = Table(title=f"{command} Examples", show_header=True, header_style="bold cyan")
+    table = Table(
+        title=f"{command} Examples", show_header=True, header_style="bold cyan"
+    )
     table.add_column("Description", style="yellow")
     table.add_column("Command", style="green")
 
@@ -196,7 +200,12 @@ def print_command_header(command: str, description: str) -> None:
         command: Command name
         description: Command description
     """
-    console.print(Panel(f"[bold cyan]{command}[/bold cyan]\n[dim]{description}[/dim]", border_style="cyan"))
+    console.print(
+        Panel(
+            f"[bold cyan]{command}[/bold cyan]\n[dim]{description}[/dim]",
+            border_style="cyan",
+        )
+    )
 
 
 def print_section_header(title: str) -> None:

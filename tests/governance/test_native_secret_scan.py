@@ -315,7 +315,12 @@ def test_scan_secrets_clean_returns_empty() -> None:
 
 
 BINARY_PATH = str(
-    Path(__file__).parent.parent.parent / "hooks" / "hook-dispatcher" / "target" / "release" / "hook-dispatcher"
+    Path(__file__).parent.parent.parent
+    / "hooks"
+    / "hook-dispatcher"
+    / "target"
+    / "release"
+    / "hook-dispatcher"
 )
 
 _binary_available = pytest.mark.skipif(

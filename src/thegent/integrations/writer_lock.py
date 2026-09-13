@@ -96,7 +96,9 @@ class SingleWriterLock:
             flags = os.O_CREAT | os.O_EXCL | os.O_WRONLY
             fd = os.open(self.lock_path, flags, 0o644)
             with os.fdopen(fd, "w", encoding="utf-8") as handle:
-                handle.write(orjson.dumps(lock_data, option=orjson.OPT_INDENT_2).decode("utf-8"))
+                handle.write(
+                    orjson.dumps(lock_data, option=orjson.OPT_INDENT_2).decode("utf-8")
+                )
             logger.debug("Lock acquired by %s at %s", owner_id, self.lock_path)
             return True
         except FileExistsError:

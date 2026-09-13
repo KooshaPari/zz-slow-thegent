@@ -13,6 +13,7 @@ from datetime import UTC, datetime, timedelta
 @dataclass
 class ZKProof:
     """Zero-knowledge proof structure."""
+
     commitment: str
     response: str
     challenge: str

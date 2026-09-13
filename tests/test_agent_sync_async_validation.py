@@ -29,7 +29,9 @@ def _is_proxy_unavailable(result: dict, agent: str) -> bool:
     if agent not in _PROXY_AGENTS:
         return False
     stderr = result.get("stderr", "") or ""
-    return bool(re.search(r"404|502|unknown provider|/v1/responses", stderr, re.IGNORECASE))
+    return bool(
+        re.search(r"404|502|unknown provider|/v1/responses", stderr, re.IGNORECASE)
+    )
 
 
 def _is_cursor_api_unavailable(result: dict, agent: str) -> bool:
@@ -39,7 +41,9 @@ def _is_cursor_api_unavailable(result: dict, agent: str) -> bool:
     if agent != "cursor-api":
         return False
     stderr = result.get("stderr", "") or ""
-    return bool(re.search(r"cursor-api not reachable|not reachable", stderr, re.IGNORECASE))
+    return bool(
+        re.search(r"cursor-api not reachable|not reachable", stderr, re.IGNORECASE)
+    )
 
 
 def _is_service_unavailable(result: dict, agent: str) -> bool:
@@ -98,7 +102,9 @@ class TestAgentSyncAsyncSuccess:
                 f"{result.get('stderr', '')[:200]}"
             )
         if _is_service_unavailable(result, agent):
-            pytest.skip(f"agent {agent} currently unavailable in this environment: {result.get('stderr', '')[:200]}")
+            pytest.skip(
+                f"agent {agent} currently unavailable in this environment: {result.get('stderr', '')[:200]}"
+            )
 
         assert result.get("exit_code") == 0, (
             f"agent={agent} exit_code={result.get('exit_code')} stderr={result.get('stderr', '')[:500]}"
@@ -140,7 +146,9 @@ class TestAgentSyncAsyncSuccess:
                 f"{result.get('stderr', '')[:200]}"
             )
         if _is_service_unavailable(result, agent):
-            pytest.skip(f"agent {agent} currently unavailable in this environment: {result.get('stderr', '')[:200]}")
+            pytest.skip(
+                f"agent {agent} currently unavailable in this environment: {result.get('stderr', '')[:200]}"
+            )
 
         assert result.get("exit_code") == 0, (
             f"agent={agent} exit_code={result.get('exit_code')} stderr={result.get('stderr', '')[:500]}"

@@ -15,7 +15,12 @@ from pathlib import Path
 import orjson as json
 import pytest
 
-MATRIX_V2_PATH = Path(__file__).parent.parent / "contracts" / "runtime" / "runtime-modularization-matrix-v2.json"
+MATRIX_V2_PATH = (
+    Path(__file__).parent.parent
+    / "contracts"
+    / "runtime"
+    / "runtime-modularization-matrix-v2.json"
+)
 
 
 @pytest.fixture(scope="module")
@@ -26,7 +31,9 @@ def matrix_v2() -> dict:
 
 def test_runtime_matrix_v2_file_exists() -> None:
     """The v2 matrix file must exist at the expected path."""
-    assert MATRIX_V2_PATH.exists(), f"Expected runtime-modularization-matrix-v2.json at {MATRIX_V2_PATH}"
+    assert MATRIX_V2_PATH.exists(), (
+        f"Expected runtime-modularization-matrix-v2.json at {MATRIX_V2_PATH}"
+    )
 
 
 def test_runtime_matrix_v2_is_valid_json() -> None:
@@ -44,14 +51,18 @@ def test_runtime_matrix_v2_has_workloads_key(matrix_v2: dict) -> None:
 def test_runtime_matrix_v2_has_at_least_five_entries(matrix_v2: dict) -> None:
     """The v2 matrix must have at least 5 workload entries."""
     workloads = matrix_v2.get("workloads", [])
-    assert len(workloads) >= 5, f"Matrix v2 must have at least 5 entries; got {len(workloads)}"
+    assert len(workloads) >= 5, (
+        f"Matrix v2 must have at least 5 entries; got {len(workloads)}"
+    )
 
 
 def test_runtime_matrix_v2_has_migration_status_field(matrix_v2: dict) -> None:
     """At least one workload entry must have a 'migration_status' field."""
     workloads = matrix_v2.get("workloads", [])
     entries_with_status = [w for w in workloads if "migration_status" in w]
-    assert len(entries_with_status) >= 1, "At least one workload entry must have a 'migration_status' field"
+    assert len(entries_with_status) >= 1, (
+        "At least one workload entry must have a 'migration_status' field"
+    )
 
 
 def test_runtime_matrix_v2_done_entries_have_test_file(matrix_v2: dict) -> None:
@@ -100,4 +111,6 @@ def test_runtime_matrix_v2_wave2_entries_are_present(matrix_v2: dict) -> None:
         "mojo-kernel-smoke",
     }
     for expected_id in expected_ids:
-        assert expected_id in ids, f"Expected workload id '{expected_id}' not found in v2 matrix"
+        assert expected_id in ids, (
+            f"Expected workload id '{expected_id}' not found in v2 matrix"
+        )

@@ -355,7 +355,8 @@ class TestEnvelopeStaticAuditAcrossSweptTrees:
 
         assert not offenders, (
             "Unsafe envelope pattern found in swept trees — must "
-            "route through print_exc / exc_text:\n" + "\n".join(f"{p}:{ln} {s}" for p, ln, s in offenders)
+            "route through print_exc / exc_text:\n"
+            + "\n".join(f"{p}:{ln} {s}" for p, ln, s in offenders)
         )
 
 

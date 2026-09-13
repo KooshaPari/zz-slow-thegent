@@ -150,6 +150,7 @@ def _scan_with_binary(content: str) -> list[dict[str, Any]]:
 
         try:
             import json
+
             data = json.loads(result.stdout.decode())
             return data.get("matches", [])
         except (json.JSONDecodeError, UnicodeDecodeError):
@@ -178,11 +179,13 @@ def _scan_with_python(content: str) -> list[dict[str, Any]]:
         for pattern, secret_type in compiled_patterns:
             match = pattern.search(line)
             if match:
-                matches.append({
-                    "type": secret_type,
-                    "line": line_num,
-                    "context": line[:80],
-                })
+                matches.append(
+                    {
+                        "type": secret_type,
+                        "line": line_num,
+                        "context": line[:80],
+                    }
+                )
 
     return matches
 

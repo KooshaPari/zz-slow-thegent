@@ -37,7 +37,9 @@ def test_python_m_thegent_resolves_to_main_app() -> None:
 
     assert hasattr(entry, "app"), "__main__ must expose `app`"
     assert entry.app is main_app, "__main__.app must be the main Typer app"
-    assert callable(entry.app), "app must be callable (Typer app() is the CLI entrypoint)"
+    assert callable(entry.app), (
+        "app must be callable (Typer app() is the CLI entrypoint)"
+    )
 
 
 def test_main_app_exposes_l3_subcommands() -> None:
@@ -65,14 +67,18 @@ def test_run_help_succeeds() -> None:
     """`thegent run --help` renders the L3 run surface."""
     result = runner.invoke(main_app, ["run", "--help"])
     combined = (result.stdout or "") + (getattr(result, "stderr", "") or "")
-    assert "agent" in combined.lower(), f"run --help missing 'agent' subcommand: {combined[:500]!r}"
+    assert "agent" in combined.lower(), (
+        f"run --help missing 'agent' subcommand: {combined[:500]!r}"
+    )
 
 
 def test_run_impl_signature_has_audio_grounding_explicit() -> None:
     """``run_impl`` exposes audio_files + google_grounding as named params (AUDIO-001)."""
     sig = inspect.signature(run_impl)
     for name in ("audio_files", "google_grounding"):
-        assert name in sig.parameters, f"run_impl missing {name!r} param: {list(sig.parameters)}"
+        assert name in sig.parameters, (
+            f"run_impl missing {name!r} param: {list(sig.parameters)}"
+        )
 
 
 def test_run_impl_forwards_failover_via_kwargs() -> None:
@@ -96,7 +102,9 @@ def test_run_impl_forwards_failover_via_kwargs() -> None:
     finally:
         runners.run_impl_core = original  # type: ignore[assignment]
 
-    assert captured.get("failover") is True, f"failover kwarg not forwarded to run_impl_core; captured={captured!r}"
+    assert captured.get("failover") is True, (
+        f"failover kwarg not forwarded to run_impl_core; captured={captured!r}"
+    )
 
 
 def test_run_execution_core_helpers_accept_failover() -> None:
@@ -146,7 +154,9 @@ def test_main_module_source_is_canonical() -> None:
     # Canonical contract: this file must stay tiny so the entrypoint
     # contract is obvious from a glance. Drift beyond ~15 lines is a
     # structural problem worth flagging.
-    assert len(text.splitlines()) <= 15, f"__main__.py grew beyond canonical size: {len(text.splitlines())} lines"
+    assert len(text.splitlines()) <= 15, (
+        f"__main__.py grew beyond canonical size: {len(text.splitlines())} lines"
+    )
 
 
 def test_sys_path_does_not_shadow_package() -> None:
@@ -158,4 +168,6 @@ def test_sys_path_does_not_shadow_package() -> None:
         f"thegent.__file__ must point to the package __init__: {thegent.__file__}"
     )
     # And __main__ resolves through the same import chain.
-    assert "thegent.__main__" in sys.modules or hasattr(sys.modules.get("thegent.__main__"), "app")
+    assert "thegent.__main__" in sys.modules or hasattr(
+        sys.modules.get("thegent.__main__"), "app"
+    )

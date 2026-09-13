@@ -14,9 +14,13 @@ def test_vscode_readme_quickstart_commands_exist_in_package_scripts() -> None:
 
     assert "## Run Steps" in readme
     command_names = re.findall(r"npm run ([a-zA-Z0-9:_-]+)", readme)
-    assert command_names, "README quickstart must include at least one `npm run <script>` command"
+    assert command_names, (
+        "README quickstart must include at least one `npm run <script>` command"
+    )
     assert "lint" in command_names
     assert "test" in command_names
 
     for command in command_names:
-        assert command in scripts, f"README references `npm run {command}` but package.json lacks scripts.{command}"
+        assert command in scripts, (
+            f"README references `npm run {command}` but package.json lacks scripts.{command}"
+        )

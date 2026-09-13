@@ -66,7 +66,9 @@ class TestGetChecklistItems:
     def test_get_checklist_items_contains_monitoring(self):
         """# @trace WL-200 — checklist includes monitoring step."""
         items = get_checklist_items()
-        monitor_items = [item for item in items if "monitor" in item.lower() or "log" in item.lower()]
+        monitor_items = [
+            item for item in items if "monitor" in item.lower() or "log" in item.lower()
+        ]
         assert len(monitor_items) > 0
 
 
@@ -166,4 +168,6 @@ class TestVerifyPrerequisites:
             "gh_token_present": False,
         }
         missing = verify_prerequisites(config)
-        assert len(missing) >= 3  # At least autosync, token, sync_interval, workflows, policy
+        assert (
+            len(missing) >= 3
+        )  # At least autosync, token, sync_interval, workflows, policy

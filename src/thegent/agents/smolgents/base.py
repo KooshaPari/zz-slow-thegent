@@ -272,7 +272,9 @@ class SmolAgent:
             ValueError: If a tool with the same name already exists.
         """
         if tool.name in self._tools:
-            raise ValueError(f"Tool '{tool.name}' already registered on agent '{self.name}'")
+            raise ValueError(
+                f"Tool '{tool.name}' already registered on agent '{self.name}'"
+            )
         self._tools[tool.name] = tool
 
     @property

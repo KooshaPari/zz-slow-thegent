@@ -58,7 +58,9 @@ def _init_sendfile_diagnostics() -> dict[str, Any]:
 _SEND_FILE_FALLBACK_DIAGNOSTICS.update(_init_sendfile_diagnostics())
 
 
-def _record_sendfile_fallback(exc: BaseException, src: Path, dst: Path, preserve_metadata: bool) -> None:
+def _record_sendfile_fallback(
+    exc: BaseException, src: Path, dst: Path, preserve_metadata: bool
+) -> None:
     reason = _sendfile_fallback_reason(exc)
     _SEND_FILE_FALLBACK_COUNTS[reason] += 1
     _SEND_FILE_FALLBACK_DIAGNOSTICS.update(
@@ -157,7 +159,9 @@ class FastFileOps:
                     return
                 except Exception as exc:
                     # Fallback to shutil if sendfile fails
-                    _record_sendfile_fallback(exc, src_path, dst_path, preserve_metadata=preserve_metadata)
+                    _record_sendfile_fallback(
+                        exc, src_path, dst_path, preserve_metadata=preserve_metadata
+                    )
 
         # Standard copy (works on all platforms, preserves metadata)
         if preserve_metadata:
@@ -166,7 +170,9 @@ class FastFileOps:
             shutil.copy(src_path, dst_path)
 
     @staticmethod
-    def copy_tree(src: Path | str, dst: Path | str, ignore: list[str] | None = None) -> None:
+    def copy_tree(
+        src: Path | str, dst: Path | str, ignore: list[str] | None = None
+    ) -> None:
         """Copy directory tree with optimizations.
 
         Args:
@@ -189,7 +195,12 @@ class FastFileOps:
                 return ignored
             return []
 
-        shutil.copytree(src_path, dst_path, ignore=ignore_func if ignore else None, dirs_exist_ok=True)
+        shutil.copytree(
+            src_path,
+            dst_path,
+            ignore=ignore_func if ignore else None,
+            dirs_exist_ok=True,
+        )
 
     @staticmethod
     def move(src: Path | str, dst: Path | str) -> None:
@@ -284,7 +295,9 @@ def copy_file(src: Path | str, dst: Path | str, preserve_metadata: bool = True) 
     FastFileOps.copy(src, dst, preserve_metadata)
 
 
-def copy_tree(src: Path | str, dst: Path | str, ignore: list[str] | None = None) -> None:
+def copy_tree(
+    src: Path | str, dst: Path | str, ignore: list[str] | None = None
+) -> None:
     """Copy directory tree with optimizations."""
     FastFileOps.copy_tree(src, dst, ignore)
 

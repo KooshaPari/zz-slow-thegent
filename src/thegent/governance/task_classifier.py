@@ -22,7 +22,12 @@ from typing import Any
 
 from thegent.infra.fast_yaml_parser import yaml_load
 
-_SCHEMA_PATH = Path(__file__).resolve().parents[3] / "docs" / "governance" / "TASK_CLASSIFIER_SCHEMA.yaml"
+_SCHEMA_PATH = (
+    Path(__file__).resolve().parents[3]
+    / "docs"
+    / "governance"
+    / "TASK_CLASSIFIER_SCHEMA.yaml"
+)
 
 
 class TaskClassifierError(ValueError):
@@ -121,7 +126,9 @@ def load_schema(*, schema_path: Path | None = None) -> SchemaSpec:
     fields = root.get("fields")
     outputs = root.get("outputs")
     policy_defaults = root.get("policy_defaults")
-    escalation_rules = _as_list(_require(root.get("escalation_rules"), name="escalation_rules"))
+    escalation_rules = _as_list(
+        _require(root.get("escalation_rules"), name="escalation_rules")
+    )
     payload = root
 
     if not isinstance(fields, dict):
@@ -142,7 +149,9 @@ def load_schema(*, schema_path: Path | None = None) -> SchemaSpec:
         "overlap_risk",
     ]:
         if required_key not in fields:
-            raise TaskClassifierError(f"missing required input field definition: {required_key}")
+            raise TaskClassifierError(
+                f"missing required input field definition: {required_key}"
+            )
     if not root.get("name"):
         raise TaskClassifierError("schema field `name` is required")
     if not root.get("version"):
@@ -207,7 +216,9 @@ def _validate_list_or_scalar(
         return
 
 
-def validate_classification_payload(payload: dict[str, Any], schema: SchemaSpec) -> None:
+def validate_classification_payload(
+    payload: dict[str, Any], schema: SchemaSpec
+) -> None:
     if not isinstance(payload, dict):
         raise TaskClassifierError("payload must be a mapping")
 
@@ -218,7 +229,9 @@ def validate_classification_payload(payload: dict[str, Any], schema: SchemaSpec)
             raise TaskClassifierError(f"missing required payload field: {field_name}")
         if value is None:
             continue
-        _validate_list_or_scalar(value=value, definition=field_definition, field_name=field_name)
+        _validate_list_or_scalar(
+            value=value, definition=field_definition, field_name=field_name
+        )
 
 
 def _pick_default_tier_and_workers(task: TaskMetadata) -> tuple[str, int]:
@@ -247,7 +260,9 @@ def _parse_rule_condition(condition: str) -> tuple[str, str, list[str] | int | s
 
     compare_match = re.fullmatch(r"^(\w+)\s*(==|!=|>=|<=|>|<)\s*(.+)$", normalized)
     if not compare_match:
-        raise TaskClassifierError(f"unsupported escalation rule condition: {condition!r}")
+        raise TaskClassifierError(
+            f"unsupported escalation rule condition: {condition!r}"
+        )
     field_name, op, rhs = compare_match.groups()
     rhs_norm = rhs.strip()
     if len(rhs_norm) >= 2 and rhs_norm[0] == rhs_norm[-1] and rhs_norm[0] in {'"', "'"}:
@@ -270,7 +285,9 @@ def _eval_rule_condition(task: TaskMetadata, condition: str) -> bool:
 
     if isinstance(rhs, int):
         if not isinstance(value, int):
-            raise TaskClassifierError(f"condition requires numeric lhs for field: {field_name}")
+            raise TaskClassifierError(
+                f"condition requires numeric lhs for field: {field_name}"
+            )
         if op == "==":
             return value == rhs
         if op == "!=":
@@ -289,7 +306,9 @@ def _eval_rule_condition(task: TaskMetadata, condition: str) -> bool:
         return str(value) == str(rhs)
     if op == "!=":
         return str(value) != str(rhs)
-    raise TaskClassifierError(f"non-numeric condition with operator {op!r} not supported")
+    raise TaskClassifierError(
+        f"non-numeric condition with operator {op!r} not supported"
+    )
 
 
 def _coerce_gate_values(raw_values: object) -> list[str]:
@@ -298,7 +317,9 @@ def _coerce_gate_values(raw_values: object) -> list[str]:
     values: list[str] = []
     for item in raw_values:
         if not isinstance(item, str):
-            raise TaskClassifierError("escalation required_gates entries must be strings")
+            raise TaskClassifierError(
+                "escalation required_gates entries must be strings"
+            )
         gate = item.strip()
         if gate:
             values.append(gate)
@@ -348,7 +369,9 @@ def _apply_escalation_rules(
                 tier = str(value)
             elif key == "worker_count":
                 if not isinstance(value, int):
-                    raise TaskClassifierError("escalation worker_count must be an integer")
+                    raise TaskClassifierError(
+                        "escalation worker_count must be an integer"
+                    )
                 workers = value
             elif key == "worktree_mode":
                 worktree_mode = str(value)
@@ -383,7 +406,9 @@ def _apply_policy_defaults(task: TaskMetadata, schema: SchemaSpec) -> tuple[str,
     return str(worktree_mode), str(commit_mode)
 
 
-def classify(payload: dict[str, Any], *, schema_path: Path | None = None) -> tuple[TaskMetadata, TaskClassification]:
+def classify(
+    payload: dict[str, Any], *, schema_path: Path | None = None
+) -> tuple[TaskMetadata, TaskClassification]:
     schema = load_schema(schema_path=schema_path)
     validate_classification_payload(payload, schema)
 

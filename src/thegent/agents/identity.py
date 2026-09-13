@@ -77,9 +77,13 @@ def sign_actor_payload(actor_id: str, payload: str, signing_key: str) -> str:
     return hashlib.sha256(f"{actor_id}|{payload}|{signing_key}".encode()).hexdigest()
 
 
-def verify_actor_signature(*, actor_id: str, payload: str, signing_key: str, signature: str) -> bool:
+def verify_actor_signature(
+    *, actor_id: str, payload: str, signing_key: str, signature: str
+) -> bool:
     """Verify actor signature using deterministic hash scheme."""
     if not signature.strip():
         return False
-    expected = sign_actor_payload(actor_id=actor_id, payload=payload, signing_key=signing_key)
+    expected = sign_actor_payload(
+        actor_id=actor_id, payload=payload, signing_key=signing_key
+    )
     return signature == expected

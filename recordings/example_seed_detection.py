@@ -46,7 +46,11 @@ async def record_seed_detection_demo() -> None:
                 # Click input field
                 ("click", "input[type='text'][placeholder*='Seed']", None),
                 # Type a seed value
-                ("type", "input[type='text'][placeholder*='Seed']", "example_seed_12345"),
+                (
+                    "type",
+                    "input[type='text'][placeholder*='Seed']",
+                    "example_seed_12345",
+                ),
                 # Wait a moment for validation
                 ("sleep", "1000", None),
                 # Click analyze button
@@ -122,7 +126,9 @@ async def record_health_scoring_demo() -> None:
         )
 
         if result.success:
-            logger.info(f"Flow recording succeeded with {len(result.screenshot_paths)} screenshots")
+            logger.info(
+                f"Flow recording succeeded with {len(result.screenshot_paths)} screenshots"
+            )
             metadata_path = config.output_dir / "health-scoring-metadata.json"
             result.to_json(metadata_path)
         else:

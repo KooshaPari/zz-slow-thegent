@@ -55,7 +55,9 @@ def transcribe_audio_file(path: Path, model: str = "whisper-1") -> str:
         )
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
-        raise RuntimeError("OPENAI_API_KEY is not set. Cannot call Whisper transcription API.")
+        raise RuntimeError(
+            "OPENAI_API_KEY is not set. Cannot call Whisper transcription API."
+        )
     try:
         from openai import OpenAI
     except ImportError as exc:

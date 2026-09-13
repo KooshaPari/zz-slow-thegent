@@ -244,7 +244,9 @@ class TestHashFunction:
         result = hash_data(b"")
         assert len(result) == 64
         # SHA-256 of empty string is a known value
-        assert result == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        assert (
+            result == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        )
 
     def test_hash_large_data(self):
         """Test hashing large data."""

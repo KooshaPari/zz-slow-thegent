@@ -95,7 +95,11 @@ class AgentManifest:
     def create(manifest_path: Path, agent_info: dict[str, Any]) -> None:
         """Create or update agent manifest."""
         manifest_path.parent.mkdir(parents=True, exist_ok=True)
-        data = {"version": "1.0", "timestamp": datetime.now(UTC).isoformat(), **agent_info}
+        data = {
+            "version": "1.0",
+            "timestamp": datetime.now(UTC).isoformat(),
+            **agent_info,
+        }
         with open(manifest_path, "w") as f:
             rendered = yaml_dump(data) or ""
             f.write(rendered)

@@ -46,7 +46,10 @@ def _patch_registry(db_path: Path):
 
 class TestMilestoneCreate:
     def test_create_milestone(self, _patch_registry: ProjectRegistry) -> None:
-        result = runner.invoke(app, ["milestone", "create", "m-reliability", "--label", "Reliability Phase"])
+        result = runner.invoke(
+            app,
+            ["milestone", "create", "m-reliability", "--label", "Reliability Phase"],
+        )
         assert result.exit_code == 0
         assert "m-reliability" in result.output
 
@@ -96,7 +99,9 @@ class TestMilestoneComplete:
 
 class TestSprintCreate:
     def test_create_sprint(self, _patch_registry: ProjectRegistry) -> None:
-        result = runner.invoke(app, ["sprint", "create", "s-2026-W08", "--label", "Sprint Week 8"])
+        result = runner.invoke(
+            app, ["sprint", "create", "s-2026-W08", "--label", "Sprint Week 8"]
+        )
         assert result.exit_code == 0
         assert "s-2026-W08" in result.output
 

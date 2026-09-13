@@ -1,6 +1,5 @@
 """Unit tests for MCP REST endpoints for tray integration."""
 
-
 import pytest
 
 from thegent.mcp_server import http_app

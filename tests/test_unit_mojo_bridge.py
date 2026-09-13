@@ -91,7 +91,9 @@ class TestMojoBridge:
         # Mock is_available to return False (patch on the class since it's a property)
         from unittest.mock import PropertyMock
 
-        with patch.object(type(bridge), "is_available", new_callable=PropertyMock, return_value=False):
+        with patch.object(
+            type(bridge), "is_available", new_callable=PropertyMock, return_value=False
+        ):
             task = MojoTask(
                 task_id="test_001",
                 module="test",
@@ -122,7 +124,11 @@ class TestMojoKernelContract:
 
     def test_provider_score_contract_registered(self):
         contract = MOJO_KERNEL_CONTRACTS[("math", "calculate_provider_score")]
-        assert contract.required_args == ("cost_score", "quality_score", "latency_score")
+        assert contract.required_args == (
+            "cost_score",
+            "quality_score",
+            "latency_score",
+        )
 
     def test_validate_kernel_contract_raises_on_missing_args(self):
         with pytest.raises(ValueError):

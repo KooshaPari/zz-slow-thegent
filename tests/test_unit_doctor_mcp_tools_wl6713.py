@@ -71,7 +71,9 @@ def test_check_mcp_tools_non_dict_payload_has_details() -> None:
 
 
 def test_check_mcp_tools_http_error_status_has_details() -> None:
-    with patch("thegent.doctor.httpx.get", return_value=_StatusResponse(500, "error body")):
+    with patch(
+        "thegent.doctor.httpx.get", return_value=_StatusResponse(500, "error body")
+    ):
         result = _check_mcp_tools()[0]
 
     assert result.status == "warn"

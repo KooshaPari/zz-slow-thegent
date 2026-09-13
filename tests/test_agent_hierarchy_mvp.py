@@ -157,7 +157,10 @@ class TestAgentNode:
 
     def test_has_any_capability_overlap(self):
         node = AgentNode(capabilities={AgentCapability.CODE, AgentCapability.TEST})
-        assert node.has_any_capability({AgentCapability.TEST, AgentCapability.DEPLOY}) is True
+        assert (
+            node.has_any_capability({AgentCapability.TEST, AgentCapability.DEPLOY})
+            is True
+        )
 
     def test_has_any_capability_no_overlap(self):
         node = AgentNode(capabilities={AgentCapability.CODE})
@@ -165,7 +168,9 @@ class TestAgentNode:
 
     def test_to_dict_excludes_smolagent(self):
         mock_agent = MagicMock()
-        node = AgentNode(agent_id="n1", capabilities={AgentCapability.CODE}, smolagent=mock_agent)
+        node = AgentNode(
+            agent_id="n1", capabilities={AgentCapability.CODE}, smolagent=mock_agent
+        )
         d = node.to_dict()
         assert "smolagent" not in d
         assert "CODE" in d["capabilities"]
@@ -204,14 +209,18 @@ class TestSpawnAgent:
     def test_spawn_child_wires_parent_link(self):
         m = AgentHierarchyManager()
         m.spawn_agent({AgentCapability.ORCHESTRATE}, agent_id="root")
-        child = m.spawn_agent({AgentCapability.CODE}, agent_id="child", parent_id="root")
+        child = m.spawn_agent(
+            {AgentCapability.CODE}, agent_id="child", parent_id="root"
+        )
         assert child.parent_id == "root"
         assert "child" in m.get_node("root").children
 
     def test_spawn_raises_on_missing_parent(self):
         m = AgentHierarchyManager()
         with pytest.raises(ValueError, match="not found"):
-            m.spawn_agent({AgentCapability.CODE}, agent_id="orphan", parent_id="nonexistent")
+            m.spawn_agent(
+                {AgentCapability.CODE}, agent_id="orphan", parent_id="nonexistent"
+            )
 
     def test_spawn_raises_on_duplicate_id(self):
         m = AgentHierarchyManager()
@@ -262,7 +271,9 @@ class TestRouteTask:
     def test_route_capability_match_full_match_preferred(self, populated_manager):
         # coder has CODE + TEST; reviewer has REVIEW + SECURITY
         # Asking for CODE+TEST should prefer coder (full match)
-        node = populated_manager.route_task({AgentCapability.CODE, AgentCapability.TEST})
+        node = populated_manager.route_task(
+            {AgentCapability.CODE, AgentCapability.TEST}
+        )
         assert node is not None
         assert node.agent_id == "coder"
 
@@ -273,7 +284,9 @@ class TestRouteTask:
         assert node.agent_id == "coder"
 
     def test_route_excludes_specified_ids(self, populated_manager):
-        node = populated_manager.route_task({AgentCapability.CODE}, exclude_ids={"coder"})
+        node = populated_manager.route_task(
+            {AgentCapability.CODE}, exclude_ids={"coder"}
+        )
         # No other agent has CODE
         assert node is None
 
@@ -312,7 +325,9 @@ class TestExecuteTask:
         assert result.output == "result"
 
     def test_execute_task_failure_from_executor(self):
-        m = AgentHierarchyManager(task_executor=_make_executor(success=False, error="oops"))
+        m = AgentHierarchyManager(
+            task_executor=_make_executor(success=False, error="oops")
+        )
         m.spawn_agent({AgentCapability.CODE}, agent_id="a1")
         result = m.execute_task("a1", "fail me")
         assert result.success is False
@@ -386,7 +401,10 @@ class TestExecuteParallel:
     def test_parallel_preserves_order(self, manager):
         manager.spawn_agent({AgentCapability.CODE}, agent_id="a1")
         task_ids = ["t1", "t2", "t3"]
-        tasks = [{"agent_id": "a1", "task_description": f"task {tid}", "task_id": tid} for tid in task_ids]
+        tasks = [
+            {"agent_id": "a1", "task_description": f"task {tid}", "task_id": tid}
+            for tid in task_ids
+        ]
         results = manager.execute_parallel(tasks)
         result_ids = [r.task_id for r in results]
         assert result_ids == task_ids
@@ -548,7 +566,9 @@ class TestEndToEndFlow:
 
         def executor(node: AgentNode, task: str, ctx: dict) -> TaskResult:
             log.append(f"{node.agent_id}:{task}")
-            return TaskResult(task_id="", agent_id=node.agent_id, success=True, output="done")
+            return TaskResult(
+                task_id="", agent_id=node.agent_id, success=True, output="done"
+            )
 
         m = AgentHierarchyManager(
             routing_strategy=RoutingStrategy.CAPABILITY_MATCH,

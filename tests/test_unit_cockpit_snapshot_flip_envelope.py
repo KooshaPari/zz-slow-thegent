@@ -352,7 +352,9 @@ class TestSotaReplayFlippedField:
 class TestCockpitShimFlippedField:
     """The cockpit shim forwards ``--snapshot-flip*`` to sota and the JSON envelope surfaces it."""
 
-    def test_cockpit_shim_with_flip_all_emits_sota_envelope(self, tmp_path: Path) -> None:
+    def test_cockpit_shim_with_flip_all_emits_sota_envelope(
+        self, tmp_path: Path
+    ) -> None:
         """``cockpit replay --snapshot-flip-all --report-format json`` delegates + carries flipped."""
         runner = CliRunner()
         batch = tmp_path / "batch.json"
@@ -379,7 +381,9 @@ class TestCockpitShimFlippedField:
         envelope = _extract_last_json_object(result.output)
         assert envelope["flipped"] == ["verdict", "override_applied", "cached"]
 
-    def test_cockpit_shim_with_no_flip_emits_empty_flipped(self, tmp_path: Path) -> None:
+    def test_cockpit_shim_with_no_flip_emits_empty_flipped(
+        self, tmp_path: Path
+    ) -> None:
         """``cockpit replay --report-format json`` with no flip yields ``flipped == []``."""
         runner = CliRunner()
         batch = tmp_path / "batch.json"

@@ -179,12 +179,16 @@ class LintingAccelerator:
         try:
             data: Any = json.loads(raw)
         except json.JSONDecodeError as exc:
-            raise ValueError(f"oxlint produced invalid JSON: {exc}\nOutput: {raw[:200]}") from exc
+            raise ValueError(
+                f"oxlint produced invalid JSON: {exc}\nOutput: {raw[:200]}"
+            ) from exc
 
         results: list[LintResult] = []
 
         if not isinstance(data, list):
-            raise ValueError(f"Expected JSON array from oxlint, got {type(data).__name__}")
+            raise ValueError(
+                f"Expected JSON array from oxlint, got {type(data).__name__}"
+            )
 
         for item in data:
             if not isinstance(item, dict):
@@ -291,10 +295,14 @@ class LintingAccelerator:
         try:
             data: Any = json.loads(raw)
         except json.JSONDecodeError as exc:
-            raise ValueError(f"eslint produced invalid JSON: {exc}\nOutput: {raw[:200]}") from exc
+            raise ValueError(
+                f"eslint produced invalid JSON: {exc}\nOutput: {raw[:200]}"
+            ) from exc
 
         if not isinstance(data, list):
-            raise ValueError(f"Expected JSON array from eslint, got {type(data).__name__}")
+            raise ValueError(
+                f"Expected JSON array from eslint, got {type(data).__name__}"
+            )
 
         results: list[LintResult] = []
         for file_obj in data:
@@ -336,7 +344,9 @@ class LintingAccelerator:
             ValueError: If the JSON output from ruff cannot be parsed.
         """
         if not self.is_ruff_available():
-            raise FileNotFoundError("ruff not found on PATH. Install via: pip install ruff  or  uv tool install ruff")
+            raise FileNotFoundError(
+                "ruff not found on PATH. Install via: pip install ruff  or  uv tool install ruff"
+            )
 
         cmd: list[str] = ["ruff", "check", "--output-format", "json"]
         cmd.extend(str(p) for p in paths)
@@ -373,10 +383,14 @@ class LintingAccelerator:
         try:
             data: Any = json.loads(raw)
         except json.JSONDecodeError as exc:
-            raise ValueError(f"ruff produced invalid JSON: {exc}\nOutput: {raw[:200]}") from exc
+            raise ValueError(
+                f"ruff produced invalid JSON: {exc}\nOutput: {raw[:200]}"
+            ) from exc
 
         if not isinstance(data, list):
-            raise ValueError(f"Expected JSON array from ruff, got {type(data).__name__}")
+            raise ValueError(
+                f"Expected JSON array from ruff, got {type(data).__name__}"
+            )
 
         results: list[LintResult] = []
         for item in data:
@@ -443,5 +457,7 @@ class LintingAccelerator:
             _log.info("lint: using eslint (fast=False or oxlint unavailable)")
             return self.run_eslint(paths, config=eslint_config)
 
-        _log.warning("lint: neither oxlint nor eslint available; returning empty results")
+        _log.warning(
+            "lint: neither oxlint nor eslint available; returning empty results"
+        )
         return []

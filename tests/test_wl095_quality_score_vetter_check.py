@@ -31,9 +31,13 @@ from thegent.govern.vetter.models import (
 # ---------------------------------------------------------------------------
 
 
-def _make_litellm_response(scores: dict[str, int], pass_verdict: bool, critique: str = "") -> MagicMock:
+def _make_litellm_response(
+    scores: dict[str, int], pass_verdict: bool, critique: str = ""
+) -> MagicMock:
     """Build a minimal litellm ModelResponse mock with the given judge payload."""
-    payload = json.dumps({"scores": scores, "pass_verdict": pass_verdict, "critique": critique}).decode()
+    payload = json.dumps(
+        {"scores": scores, "pass_verdict": pass_verdict, "critique": critique}
+    ).decode()
     msg = MagicMock()
     msg.content = payload
     choice = MagicMock()
@@ -96,48 +100,64 @@ def test_implements_vetter_check_protocol():
 def test_pass_threshold_below_zero_raises():
     # @trace WL-095
     with pytest.raises(VetterConfigError, match="pass_threshold must be in range"):
-        QualityScoreVetterCheck(judge_model="gpt-4o-mini", rubric=["correctness"], pass_threshold=-0.1)
+        QualityScoreVetterCheck(
+            judge_model="gpt-4o-mini", rubric=["correctness"], pass_threshold=-0.1
+        )
 
 
 def test_pass_threshold_above_one_raises():
     # @trace WL-095
     with pytest.raises(VetterConfigError, match="pass_threshold must be in range"):
-        QualityScoreVetterCheck(judge_model="gpt-4o-mini", rubric=["correctness"], pass_threshold=1.1)
+        QualityScoreVetterCheck(
+            judge_model="gpt-4o-mini", rubric=["correctness"], pass_threshold=1.1
+        )
 
 
 def test_min_criterion_score_zero_raises():
     # @trace WL-095
     with pytest.raises(VetterConfigError, match="min_criterion_score must be in range"):
-        QualityScoreVetterCheck(judge_model="gpt-4o-mini", rubric=["correctness"], min_criterion_score=0)
+        QualityScoreVetterCheck(
+            judge_model="gpt-4o-mini", rubric=["correctness"], min_criterion_score=0
+        )
 
 
 def test_min_criterion_score_six_raises():
     # @trace WL-095
     with pytest.raises(VetterConfigError, match="min_criterion_score must be in range"):
-        QualityScoreVetterCheck(judge_model="gpt-4o-mini", rubric=["correctness"], min_criterion_score=6)
+        QualityScoreVetterCheck(
+            judge_model="gpt-4o-mini", rubric=["correctness"], min_criterion_score=6
+        )
 
 
 def test_empty_rubric_list_raises():
     # @trace WL-095
-    with pytest.raises(VetterConfigError, match="rubric list must contain at least one criterion"):
+    with pytest.raises(
+        VetterConfigError, match="rubric list must contain at least one criterion"
+    ):
         QualityScoreVetterCheck(judge_model="gpt-4o-mini", rubric=[])
 
 
 def test_empty_rubric_dict_raises():
     # @trace WL-095
-    with pytest.raises(VetterConfigError, match="rubric dict must contain at least one criterion"):
+    with pytest.raises(
+        VetterConfigError, match="rubric dict must contain at least one criterion"
+    ):
         QualityScoreVetterCheck(judge_model="gpt-4o-mini", rubric={})
 
 
 def test_rubric_whitespace_only_entries_filtered_list():
     # @trace WL-095
-    with pytest.raises(VetterConfigError, match="rubric list must contain at least one criterion"):
+    with pytest.raises(
+        VetterConfigError, match="rubric list must contain at least one criterion"
+    ):
         QualityScoreVetterCheck(judge_model="gpt-4o-mini", rubric=["  ", ""])
 
 
 def test_rubric_whitespace_only_keys_filtered_dict():
     # @trace WL-095
-    with pytest.raises(VetterConfigError, match="rubric dict must contain at least one criterion"):
+    with pytest.raises(
+        VetterConfigError, match="rubric dict must contain at least one criterion"
+    ):
         QualityScoreVetterCheck(judge_model="gpt-4o-mini", rubric={"  ": "desc"})
 
 
@@ -148,13 +168,17 @@ def test_rubric_whitespace_only_keys_filtered_dict():
 
 def test_rubric_list_normalised_to_dict():
     # @trace WL-095
-    check = QualityScoreVetterCheck(judge_model="gpt-4o-mini", rubric=["correctness", "safety"])
+    check = QualityScoreVetterCheck(
+        judge_model="gpt-4o-mini", rubric=["correctness", "safety"]
+    )
     assert check._rubric_map == {"correctness": "correctness", "safety": "safety"}
 
 
 def test_rubric_list_strips_whitespace_around_keys():
     # @trace WL-095
-    check = QualityScoreVetterCheck(judge_model="gpt-4o-mini", rubric=[" correctness ", " safety "])
+    check = QualityScoreVetterCheck(
+        judge_model="gpt-4o-mini", rubric=[" correctness ", " safety "]
+    )
     assert check._rubric_map == {"correctness": "correctness", "safety": "safety"}
 
 
@@ -162,7 +186,10 @@ def test_rubric_dict_preserved():
     # @trace WL-095
     check = QualityScoreVetterCheck(
         judge_model="gpt-4o-mini",
-        rubric={"correctness": "Is the answer correct?", "safety": "Is the answer safe?"},
+        rubric={
+            "correctness": "Is the answer correct?",
+            "safety": "Is the answer safe?",
+        },
     )
     assert check._rubric_map["correctness"] == "Is the answer correct?"
     assert check._rubric_map["safety"] == "Is the answer safe?"
@@ -188,7 +215,10 @@ def test_rubric_dict_strips_keys_and_descriptions():
 
 def test_rubric_dict_duplicate_keys_after_strip_raises():
     # @trace WL-095
-    with pytest.raises(VetterConfigError, match="duplicate rubric criterion after normalization: correctness"):
+    with pytest.raises(
+        VetterConfigError,
+        match="duplicate rubric criterion after normalization: correctness",
+    ):
         QualityScoreVetterCheck(
             judge_model="gpt-4o-mini",
             rubric={"correctness": "A", " correctness ": "B"},
@@ -197,7 +227,10 @@ def test_rubric_dict_duplicate_keys_after_strip_raises():
 
 def test_rubric_list_duplicate_entries_after_strip_raises():
     # @trace WL-095
-    with pytest.raises(VetterConfigError, match="duplicate rubric criterion after normalization: correctness"):
+    with pytest.raises(
+        VetterConfigError,
+        match="duplicate rubric criterion after normalization: correctness",
+    ):
         QualityScoreVetterCheck(
             judge_model="gpt-4o-mini",
             rubric=["correctness", " correctness "],
@@ -223,7 +256,9 @@ def test_all_scores_high_passes():
         critique="",
     )
     with patch("litellm.acompletion", new=AsyncMock(return_value=mock_resp)):
-        result: VetterCheckResult = _run(check.check("run-1", "agent output", {"task": "some task"}))
+        result: VetterCheckResult = _run(
+            check.check("run-1", "agent output", {"task": "some task"})
+        )
 
     assert result.passed is True
     assert result.message == ""
@@ -252,7 +287,9 @@ def test_passed_result_has_correct_metadata_keys():
 
 def test_judge_model_recorded_in_metadata():
     # @trace WL-095
-    check = QualityScoreVetterCheck(judge_model="claude-3-5-haiku", rubric=["correctness"])
+    check = QualityScoreVetterCheck(
+        judge_model="claude-3-5-haiku", rubric=["correctness"]
+    )
     mock_resp = _make_litellm_response(scores={"correctness": 5}, pass_verdict=True)
     with patch("litellm.acompletion", new=AsyncMock(return_value=mock_resp)):
         result = _run(check.check("run-3", "output", {}))
@@ -358,7 +395,9 @@ def test_failed_result_fallback_message_when_no_critique():
         min_criterion_score=1,
     )
     # aggregate_score = 3/5 = 0.6 < 0.9; no critique
-    mock_resp = _make_litellm_response(scores={"correctness": 3}, pass_verdict=True, critique="")
+    mock_resp = _make_litellm_response(
+        scores={"correctness": 3}, pass_verdict=True, critique=""
+    )
     with patch("litellm.acompletion", new=AsyncMock(return_value=mock_resp)):
         result = _run(check.check("run-8", "output", {}))
 
@@ -392,7 +431,9 @@ def test_score_below_1_raises_config_error():
 
 def test_missing_criterion_score_raises_config_error():
     # @trace WL-095
-    check = QualityScoreVetterCheck(judge_model="gpt-4o-mini", rubric=["correctness", "completeness"])
+    check = QualityScoreVetterCheck(
+        judge_model="gpt-4o-mini", rubric=["correctness", "completeness"]
+    )
     # Only "correctness" returned, "completeness" missing
     mock_resp = _make_litellm_response(scores={"correctness": 4}, pass_verdict=True)
     with patch("litellm.acompletion", new=AsyncMock(return_value=mock_resp)):
@@ -403,7 +444,9 @@ def test_missing_criterion_score_raises_config_error():
 def test_unexpected_criterion_score_raises_config_error():
     # @trace WL-095
     check = QualityScoreVetterCheck(judge_model="gpt-4o-mini", rubric=["correctness"])
-    mock_resp = _make_litellm_response(scores={"correctness": 4, "novelty": 5}, pass_verdict=True)
+    mock_resp = _make_litellm_response(
+        scores={"correctness": 4, "novelty": 5}, pass_verdict=True
+    )
     with patch("litellm.acompletion", new=AsyncMock(return_value=mock_resp)):
         with pytest.raises(VetterConfigError, match=r"unexpected score.*novelty"):
             _run(check.check("run-11b", "output", {}))
@@ -441,7 +484,9 @@ def test_aggregate_score_is_mean_divided_by_five():
         min_criterion_score=1,
     )
     # mean(3,4,5) = 4.0; 4.0/5 = 0.8
-    mock_resp = _make_litellm_response(scores={"a": 3, "b": 4, "c": 5}, pass_verdict=True)
+    mock_resp = _make_litellm_response(
+        scores={"a": 3, "b": 4, "c": 5}, pass_verdict=True
+    )
     with patch("litellm.acompletion", new=AsyncMock(return_value=mock_resp)):
         result = _run(check.check("run-12", "output", {}))
 
@@ -494,9 +539,13 @@ def test_model_resolver_used_when_judge_model_auto():
         captured_args.append(task)
         return "gpt-4o"
 
-    check = QualityScoreVetterCheck(judge_model="auto", rubric=["correctness"], model_resolver=resolver)
+    check = QualityScoreVetterCheck(
+        judge_model="auto", rubric=["correctness"], model_resolver=resolver
+    )
     mock_resp = _make_litellm_response(scores={"correctness": 5}, pass_verdict=True)
-    with patch("litellm.acompletion", new=AsyncMock(return_value=mock_resp)) as mock_call:
+    with patch(
+        "litellm.acompletion", new=AsyncMock(return_value=mock_resp)
+    ) as mock_call:
         _run(check.check("run-15", "output", {}))
         assert mock_call.call_args[1]["model"] == "gpt-4o"
 
@@ -508,8 +557,12 @@ def test_model_resolver_returning_empty_raises():
     def bad_resolver(task: str, ctx: dict[str, Any]) -> str:
         return "   "
 
-    check = QualityScoreVetterCheck(judge_model="auto", rubric=["correctness"], model_resolver=bad_resolver)
-    with pytest.raises(VetterConfigError, match="model_resolver returned empty model name"):
+    check = QualityScoreVetterCheck(
+        judge_model="auto", rubric=["correctness"], model_resolver=bad_resolver
+    )
+    with pytest.raises(
+        VetterConfigError, match="model_resolver returned empty model name"
+    ):
         _run(check.check("run-16", "output", {}))
 
 
@@ -518,8 +571,13 @@ def test_model_resolver_returning_non_string_raises():
     def bad_resolver(task: str, ctx: dict[str, Any]) -> Any:
         return 123
 
-    check = QualityScoreVetterCheck(judge_model="auto", rubric=["correctness"], model_resolver=bad_resolver)
-    with pytest.raises(VetterConfigError, match="model_resolver must return a non-empty string model name"):
+    check = QualityScoreVetterCheck(
+        judge_model="auto", rubric=["correctness"], model_resolver=bad_resolver
+    )
+    with pytest.raises(
+        VetterConfigError,
+        match="model_resolver must return a non-empty string model name",
+    ):
         _run(check.check("run-16b", "output", {}))
 
 
@@ -537,7 +595,9 @@ def test_explicit_judge_model_bypasses_resolver():
         model_resolver=resolver,
     )
     mock_resp = _make_litellm_response(scores={"correctness": 5}, pass_verdict=True)
-    with patch("litellm.acompletion", new=AsyncMock(return_value=mock_resp)) as mock_call:
+    with patch(
+        "litellm.acompletion", new=AsyncMock(return_value=mock_resp)
+    ) as mock_call:
         _run(check.check("run-17", "output", {}))
         assert mock_call.call_args[1]["model"] == "claude-3-opus"
 
@@ -584,9 +644,12 @@ def test_auto_model_uses_capability_index_recommend():
 
     with (
         patch(
-            "thegent.govern.vetter.checks.QualityScoreVetterCheck._resolve_auto_model", return_value="gpt-4o-quality"
+            "thegent.govern.vetter.checks.QualityScoreVetterCheck._resolve_auto_model",
+            return_value="gpt-4o-quality",
         ),
-        patch("litellm.acompletion", new=AsyncMock(return_value=mock_resp)) as mock_call,
+        patch(
+            "litellm.acompletion", new=AsyncMock(return_value=mock_resp)
+        ) as mock_call,
     ):
         result = _run(check.check("run-18", "output", {}))
         assert mock_call.call_args[1]["model"] == "gpt-4o-quality"
@@ -602,11 +665,15 @@ def test_auto_model_no_recommendations_raises():
     mock_index.all_agents.return_value = []
 
     check = QualityScoreVetterCheck(judge_model="auto", rubric=["correctness"])
-    with patch("thegent.govern.vetter.checks.QualityScoreVetterCheck._resolve_auto_model") as mock_auto:
+    with patch(
+        "thegent.govern.vetter.checks.QualityScoreVetterCheck._resolve_auto_model"
+    ) as mock_auto:
         mock_auto.side_effect = VetterConfigError(
             "QualityScoreVetterCheck judge_model='auto' found no CapabilityIndex recommendations for quality scoring"
         )
-        with pytest.raises(VetterConfigError, match="no CapabilityIndex recommendations"):
+        with pytest.raises(
+            VetterConfigError, match="no CapabilityIndex recommendations"
+        ):
             _run(check.check("run-19", "output", {}))
 
 
@@ -620,7 +687,9 @@ def test_auto_model_context_index_empty_recommendations_raise_without_fallback()
     check = QualityScoreVetterCheck(judge_model="auto", rubric=["correctness"])
 
     with patch("litellm.acompletion", new=AsyncMock()) as mock_call:
-        with pytest.raises(VetterConfigError, match="no CapabilityIndex recommendations"):
+        with pytest.raises(
+            VetterConfigError, match="no CapabilityIndex recommendations"
+        ):
             _run(check.check("run-19b", "output", {"capability_index": mock_index}))
     mock_call.assert_not_called()
 
@@ -635,7 +704,9 @@ def test_auto_model_context_index_none_recommendations_raise_without_fallback():
     check = QualityScoreVetterCheck(judge_model="auto", rubric=["correctness"])
 
     with patch("litellm.acompletion", new=AsyncMock()) as mock_call:
-        with pytest.raises(VetterConfigError, match="no CapabilityIndex recommendations"):
+        with pytest.raises(
+            VetterConfigError, match="no CapabilityIndex recommendations"
+        ):
             _run(check.check("run-19c", "output", {"capability_index": mock_index}))
     mock_call.assert_not_called()
 
@@ -744,7 +815,9 @@ def test_temperature_is_zero():
     check = QualityScoreVetterCheck(judge_model="gpt-4o-mini", rubric=["correctness"])
     mock_resp = _make_litellm_response(scores={"correctness": 4}, pass_verdict=True)
 
-    with patch("litellm.acompletion", new=AsyncMock(return_value=mock_resp)) as mock_call:
+    with patch(
+        "litellm.acompletion", new=AsyncMock(return_value=mock_resp)
+    ) as mock_call:
         _run(check.check("run-23", "output", {}))
         assert mock_call.call_args[1]["temperature"] == 0.0
 
@@ -834,7 +907,9 @@ def test_single_criterion_just_below_floor_fails():
 def test_judge_timeout_error_propagates_without_fallback():
     # @trace WL-095
     check = QualityScoreVetterCheck(judge_model="gpt-4o-mini", rubric=["correctness"])
-    with patch("litellm.acompletion", new=AsyncMock(side_effect=TimeoutError("judge timeout"))):
+    with patch(
+        "litellm.acompletion", new=AsyncMock(side_effect=TimeoutError("judge timeout"))
+    ):
         with pytest.raises(asyncio.TimeoutError, match="judge timeout"):
             _run(check.check("run-timeout", "output", {}))
 
@@ -842,7 +917,10 @@ def test_judge_timeout_error_propagates_without_fallback():
 def test_judge_runtime_error_propagates_without_wrapping():
     # @trace WL-095
     check = QualityScoreVetterCheck(judge_model="gpt-4o-mini", rubric=["correctness"])
-    with patch("litellm.acompletion", new=AsyncMock(side_effect=RuntimeError("judge transport failed"))):
+    with patch(
+        "litellm.acompletion",
+        new=AsyncMock(side_effect=RuntimeError("judge transport failed")),
+    ):
         with pytest.raises(RuntimeError, match="judge transport failed"):
             _run(check.check("run-judge-error", "output", {}))
 
@@ -855,7 +933,9 @@ def test_metadata_scores_keys_are_sorted_for_deterministic_audit_contract():
         pass_threshold=0.1,
         min_criterion_score=1,
     )
-    mock_resp = _make_litellm_response(scores={"zeta": 4, "alpha": 5}, pass_verdict=True)
+    mock_resp = _make_litellm_response(
+        scores={"zeta": 4, "alpha": 5}, pass_verdict=True
+    )
 
     with patch("litellm.acompletion", new=AsyncMock(return_value=mock_resp)):
         result = _run(check.check("run-metadata-order", "output", {}))

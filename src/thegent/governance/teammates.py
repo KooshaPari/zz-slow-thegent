@@ -48,7 +48,9 @@ class DelegationRequest:
 class TeammateManager:
     """Manages discovery and delegation for the teammate swarm."""
 
-    def __init__(self, storage_path: Path, hierarchy_manager: AgentHierarchyManager | None = None) -> None:
+    def __init__(
+        self, storage_path: Path, hierarchy_manager: AgentHierarchyManager | None = None
+    ) -> None:
         """
         Initialize teammate manager.
 
@@ -125,17 +127,27 @@ class TeammateManager:
                 # Look for title as name
                 title_match = re.search(r"^#\s+(.+)$", content, re.MULTILINE)
                 name = meta.get("name") or (
-                    title_match.group(1).split()[0].lower() if title_match else md_file.stem.lower()
+                    title_match.group(1).split()[0].lower()
+                    if title_match
+                    else md_file.stem.lower()
                 )
 
                 # Look for "Role: " or "Role :" at start of line
-                role_match = re.search(r"^\s*Role:\s*(.+)$", content, re.MULTILINE | re.IGNORECASE)
-                role = meta.get("role") or (role_match.group(1).strip() if role_match else "specialist")
+                role_match = re.search(
+                    r"^\s*Role:\s*(.+)$", content, re.MULTILINE | re.IGNORECASE
+                )
+                role = meta.get("role") or (
+                    role_match.group(1).strip() if role_match else "specialist"
+                )
 
                 # Heuristic for description
-                desc_match = re.search(r"^\s*Description:\s*(.+)$", content, re.MULTILINE | re.IGNORECASE)
+                desc_match = re.search(
+                    r"^\s*Description:\s*(.+)$", content, re.MULTILINE | re.IGNORECASE
+                )
                 description = meta.get("description") or (
-                    desc_match.group(1).strip() if desc_match else (content[:200].replace("\n", " ").strip() + "...")
+                    desc_match.group(1).strip()
+                    if desc_match
+                    else (content[:200].replace("\n", " ").strip() + "...")
                 )
 
                 # Heuristic teammate check if not already confirmed
@@ -201,7 +213,11 @@ class TeammateManager:
 
         # Ensure parent exists in hierarchy (WP-16001 auto-registration)
         if not self.hierarchy.get_agent(parent_run_id):
-            parent_role = AgentRole.EXECUTIVE if parent_run_id == "CLI-USER" else AgentRole.TEAM_LEAD
+            parent_role = (
+                AgentRole.EXECUTIVE
+                if parent_run_id == "CLI-USER"
+                else AgentRole.TEAM_LEAD
+            )
             self.hierarchy.register_agent(
                 agent_id="human" if parent_run_id == "CLI-USER" else "parent-agent",
                 run_id=parent_run_id,
@@ -232,7 +248,11 @@ class TeammateManager:
 
         # Create delegation request
         request = DelegationRequest(
-            id=req_id, teammate_id=teammate_id, parent_run_id=parent_run_id, prompt=prompt, status="pending"
+            id=req_id,
+            teammate_id=teammate_id,
+            parent_run_id=parent_run_id,
+            prompt=prompt,
+            status="pending",
         )
         self._delegations[req_id] = request
         self._save()
@@ -274,9 +294,14 @@ class TeammateManager:
             bridge = heliosShieldBridge()
             if bridge.is_available():
                 bridge.create_shared_task(
-                    task_id=req_id, description=f"Delegated from {parent_run_id}: {prompt[:50]}..."
+                    task_id=req_id,
+                    description=f"Delegated from {parent_run_id}: {prompt[:50]}...",
                 )
-                bridge.broadcast_intent(agent_id=f"thegent:{parent_run_id}", intent_type="delegate", target=teammate_id)
+                bridge.broadcast_intent(
+                    agent_id=f"thegent:{parent_run_id}",
+                    intent_type="delegate",
+                    target=teammate_id,
+                )
         except ImportError:
             # heliosShield bridge not available, continue without it
             pass
@@ -293,7 +318,11 @@ class TeammateManager:
             return AgentRole.TEAM_LEAD
 
         # Check for executive indicators
-        if "executive" in teammate_id_lower or "orchestrator" in teammate_id_lower or "sitback" in teammate_id_lower:
+        if (
+            "executive" in teammate_id_lower
+            or "orchestrator" in teammate_id_lower
+            or "sitback" in teammate_id_lower
+        ):
             return AgentRole.EXECUTIVE
 
         # Default to specialist
@@ -331,7 +360,9 @@ class TeammateManager:
             lead_id=lead_id,
         )
 
-    def update_status(self, req_id: str, status: str, summary: str | None = None) -> bool:
+    def update_status(
+        self, req_id: str, status: str, summary: str | None = None
+    ) -> bool:
         """Update the status of a delegation."""
         if req_id not in self._delegations:
             return False
@@ -346,8 +377,14 @@ class TeammateManager:
         self._save()
         return True
 
-    def get_delegations(self, parent_run_id: str | None = None) -> list[DelegationRequest]:
+    def get_delegations(
+        self, parent_run_id: str | None = None
+    ) -> list[DelegationRequest]:
         """List all delegations, optionally filtered by parent run."""
         if parent_run_id:
-            return [d for d in self._delegations.values() if d.parent_run_id == parent_run_id]
+            return [
+                d
+                for d in self._delegations.values()
+                if d.parent_run_id == parent_run_id
+            ]
         return list(self._delegations.values())

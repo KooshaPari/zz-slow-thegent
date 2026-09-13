@@ -138,37 +138,54 @@ def test_session_state_path_correct_location(tmp_path: Path) -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_resume_impl_fails_when_state_missing(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resume_impl_fails_when_state_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # @trace WL-110
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path))
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path)
+    )
     result = resume_impl(session_id="nonexistent")
     assert result["exit_code"] == 1
     assert "State contract not found" in result["error"]
     assert "nonexistent" in result["error"]
 
 
-def test_resume_impl_fails_when_no_sessions_exist(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resume_impl_fails_when_no_sessions_exist(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # @trace WL-110
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path))
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path)
+    )
     result = resume_impl()
     assert result["exit_code"] == 1
     assert "No resumable sessions found" in result["error"]
 
 
-def test_resume_impl_error_message_includes_start_hint(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resume_impl_error_message_includes_start_hint(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # @trace WL-110
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path))
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path)
+    )
     result = resume_impl()
     assert "thegent run agent --bg" in result["error"]
 
 
-def test_resume_impl_fails_when_run_id_missing_from_state(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resume_impl_fails_when_run_id_missing_from_state(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # @trace WL-110
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path))
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path)
+    )
     d = tmp_path / "sess-bad"
     d.mkdir()
     (d / "state.json").write_text(
-        json.dumps({"session_id": "sess-bad", "status": "running"}).decode(), encoding="utf-8"
+        json.dumps({"session_id": "sess-bad", "status": "running"}).decode(),
+        encoding="utf-8",
     )
     result = resume_impl(session_id="sess-bad")
     assert result["exit_code"] == 1
@@ -180,12 +197,18 @@ def test_resume_impl_fails_when_run_id_missing_from_state(tmp_path: Path, monkey
 # ---------------------------------------------------------------------------
 
 
-def test_resume_impl_succeeds_with_explicit_session_id(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resume_impl_succeeds_with_explicit_session_id(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # @trace WL-110
     _make_state(tmp_path, "s-explicit", run_id="r-explicit")
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path))
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path)
+    )
     mock_registry = MagicMock()
-    monkeypatch.setattr("thegent.cli.commands.impl.RunRegistry", lambda *a, **kw: mock_registry)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.RunRegistry", lambda *a, **kw: mock_registry
+    )
 
     result = resume_impl(session_id="s-explicit")
 
@@ -195,26 +218,44 @@ def test_resume_impl_succeeds_with_explicit_session_id(tmp_path: Path, monkeypat
     mock_registry.register_resume.assert_called_once_with("r-explicit")
 
 
-def test_resume_impl_sends_prompt_when_provided(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resume_impl_sends_prompt_when_provided(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # @trace WL-110
     _make_state(tmp_path, "s-prompt", run_id="r-prompt")
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path))
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path)
+    )
     mock_registry = MagicMock()
-    monkeypatch.setattr("thegent.cli.commands.impl.RunRegistry", lambda *a, **kw: mock_registry)
-    monkeypatch.setattr("thegent.cli.commands.impl.session_send_impl", lambda *a, **kw: (True, "queued"))
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.RunRegistry", lambda *a, **kw: mock_registry
+    )
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.session_send_impl", lambda *a, **kw: (True, "queued")
+    )
 
     result = resume_impl(session_id="s-prompt", prompt="continue")
 
     assert result["prompt_sent"] is True
 
 
-def test_resume_impl_selects_most_recent_by_updated_at(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resume_impl_selects_most_recent_by_updated_at(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # @trace WL-110
-    _make_state(tmp_path, "s-old", run_id="r-old", updated_at="2026-02-19T00:00:00+00:00")
-    _make_state(tmp_path, "s-new", run_id="r-new", updated_at="2026-02-21T00:00:00+00:00")
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path))
+    _make_state(
+        tmp_path, "s-old", run_id="r-old", updated_at="2026-02-19T00:00:00+00:00"
+    )
+    _make_state(
+        tmp_path, "s-new", run_id="r-new", updated_at="2026-02-21T00:00:00+00:00"
+    )
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path)
+    )
     mock_registry = MagicMock()
-    monkeypatch.setattr("thegent.cli.commands.impl.RunRegistry", lambda *a, **kw: mock_registry)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.RunRegistry", lambda *a, **kw: mock_registry
+    )
 
     result = resume_impl()
 
@@ -228,9 +269,13 @@ def test_resume_impl_tie_breaks_deterministically_when_updated_at_matches(
     # @trace WL-110
     _make_state(tmp_path, "s-a", run_id="r-a", updated_at="2026-02-21T00:00:00+00:00")
     _make_state(tmp_path, "s-b", run_id="r-b", updated_at="2026-02-21T00:00:00+00:00")
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path))
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path)
+    )
     mock_registry = MagicMock()
-    monkeypatch.setattr("thegent.cli.commands.impl.RunRegistry", lambda *a, **kw: mock_registry)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.RunRegistry", lambda *a, **kw: mock_registry
+    )
 
     result = resume_impl()
 
@@ -238,12 +283,18 @@ def test_resume_impl_tie_breaks_deterministically_when_updated_at_matches(
     assert result["run_id"] == "r-b"
 
 
-def test_resume_impl_updates_state_status_on_resume(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_resume_impl_updates_state_status_on_resume(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # @trace WL-110
     sp = _make_state(tmp_path, "s-status", run_id="r-status", status="paused")
-    monkeypatch.setattr("thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path))
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.ThegentSettings", lambda: _mock_settings(tmp_path)
+    )
     mock_registry = MagicMock()
-    monkeypatch.setattr("thegent.cli.commands.impl.RunRegistry", lambda *a, **kw: mock_registry)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.RunRegistry", lambda *a, **kw: mock_registry
+    )
 
     resume_impl(session_id="s-status")
 
@@ -256,19 +307,35 @@ def test_resume_impl_updates_state_status_on_resume(tmp_path: Path, monkeypatch:
 # ---------------------------------------------------------------------------
 
 
-def test_session_list_impl_returns_empty_when_no_sessions(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_session_list_impl_returns_empty_when_no_sessions(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # @trace WL-110
-    monkeypatch.setattr("thegent.cli.commands.session_ops_impl.ThegentSettings", lambda: _mock_settings(tmp_path))
+    monkeypatch.setattr(
+        "thegent.cli.commands.session_ops_impl.ThegentSettings",
+        lambda: _mock_settings(tmp_path),
+    )
     result = session_list_impl()
     assert result == []
 
 
-def test_session_list_impl_returns_sessions(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_session_list_impl_returns_sessions(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # @trace WL-110
-    _make_state(tmp_path, "s-list-1", run_id="r1", updated_at="2026-02-20T00:00:00+00:00")
-    _make_state(tmp_path, "s-list-2", run_id="r2", updated_at="2026-02-21T00:00:00+00:00")
-    monkeypatch.setattr("thegent.cli.commands.session_ops_impl.ThegentSettings", lambda: _mock_settings(tmp_path))
-    monkeypatch.setattr("thegent.cli.commands.impl._default_owner_tag", lambda: "testuser")
+    _make_state(
+        tmp_path, "s-list-1", run_id="r1", updated_at="2026-02-20T00:00:00+00:00"
+    )
+    _make_state(
+        tmp_path, "s-list-2", run_id="r2", updated_at="2026-02-21T00:00:00+00:00"
+    )
+    monkeypatch.setattr(
+        "thegent.cli.commands.session_ops_impl.ThegentSettings",
+        lambda: _mock_settings(tmp_path),
+    )
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl._default_owner_tag", lambda: "testuser"
+    )
 
     result = session_list_impl(all_sessions=True)
     ids = [r["session_id"] for r in result]
@@ -276,11 +343,20 @@ def test_session_list_impl_returns_sessions(tmp_path: Path, monkeypatch: pytest.
     assert "s-list-2" in ids
 
 
-def test_session_list_impl_sorted_newest_first(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_session_list_impl_sorted_newest_first(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # @trace WL-110
-    _make_state(tmp_path, "s-old2", run_id="r-o", updated_at="2026-02-19T00:00:00+00:00")
-    _make_state(tmp_path, "s-new2", run_id="r-n", updated_at="2026-02-21T00:00:00+00:00")
-    monkeypatch.setattr("thegent.cli.commands.session_ops_impl.ThegentSettings", lambda: _mock_settings(tmp_path))
+    _make_state(
+        tmp_path, "s-old2", run_id="r-o", updated_at="2026-02-19T00:00:00+00:00"
+    )
+    _make_state(
+        tmp_path, "s-new2", run_id="r-n", updated_at="2026-02-21T00:00:00+00:00"
+    )
+    monkeypatch.setattr(
+        "thegent.cli.commands.session_ops_impl.ThegentSettings",
+        lambda: _mock_settings(tmp_path),
+    )
     monkeypatch.setattr("thegent.cli.commands.impl._default_owner_tag", lambda: "u")
 
     result = session_list_impl(all_sessions=True)
@@ -288,21 +364,36 @@ def test_session_list_impl_sorted_newest_first(tmp_path: Path, monkeypatch: pyte
     assert result[1]["session_id"] == "s-old2"
 
 
-def test_session_list_impl_respects_limit(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_session_list_impl_respects_limit(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # @trace WL-110
     for i in range(5):
-        _make_state(tmp_path, f"s-lim-{i}", run_id=f"r-{i}", updated_at=f"2026-02-{10 + i:02d}T00:00:00+00:00")
-    monkeypatch.setattr("thegent.cli.commands.session_ops_impl.ThegentSettings", lambda: _mock_settings(tmp_path))
+        _make_state(
+            tmp_path,
+            f"s-lim-{i}",
+            run_id=f"r-{i}",
+            updated_at=f"2026-02-{10 + i:02d}T00:00:00+00:00",
+        )
+    monkeypatch.setattr(
+        "thegent.cli.commands.session_ops_impl.ThegentSettings",
+        lambda: _mock_settings(tmp_path),
+    )
     monkeypatch.setattr("thegent.cli.commands.impl._default_owner_tag", lambda: "u")
 
     result = session_list_impl(all_sessions=True, limit=3)
     assert len(result) == 3
 
 
-def test_session_list_impl_includes_required_fields(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_session_list_impl_includes_required_fields(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # @trace WL-110
     _make_state(tmp_path, "s-fields", run_id="r-f", agent="cursor", model="gpt-4o")
-    monkeypatch.setattr("thegent.cli.commands.session_ops_impl.ThegentSettings", lambda: _mock_settings(tmp_path))
+    monkeypatch.setattr(
+        "thegent.cli.commands.session_ops_impl.ThegentSettings",
+        lambda: _mock_settings(tmp_path),
+    )
     monkeypatch.setattr("thegent.cli.commands.impl._default_owner_tag", lambda: "u")
 
     result = session_list_impl(all_sessions=True)
@@ -316,9 +407,13 @@ def test_session_list_impl_includes_required_fields(tmp_path: Path, monkeypatch:
     assert "run_id" in row
 
 
-def test_session_list_impl_skips_malformed_state_contracts(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_session_list_impl_skips_malformed_state_contracts(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # @trace WL-110
-    _make_state(tmp_path, "s-valid", run_id="r-valid", updated_at="2026-02-21T00:00:00+00:00")
+    _make_state(
+        tmp_path, "s-valid", run_id="r-valid", updated_at="2026-02-21T00:00:00+00:00"
+    )
     bad_dir = tmp_path / "s-bad"
     bad_dir.mkdir(parents=True, exist_ok=True)
     (bad_dir / "state.json").write_text(
@@ -333,7 +428,10 @@ def test_session_list_impl_skips_malformed_state_contracts(tmp_path: Path, monke
         encoding="utf-8",
     )
 
-    monkeypatch.setattr("thegent.cli.commands.session_ops_impl.ThegentSettings", lambda: _mock_settings(tmp_path))
+    monkeypatch.setattr(
+        "thegent.cli.commands.session_ops_impl.ThegentSettings",
+        lambda: _mock_settings(tmp_path),
+    )
     monkeypatch.setattr("thegent.cli.commands.impl._default_owner_tag", lambda: "u")
 
     result = session_list_impl(all_sessions=True)
@@ -381,7 +479,9 @@ def test_cli_session_resume_no_session_id(monkeypatch: pytest.MonkeyPatch) -> No
 # ---------------------------------------------------------------------------
 
 
-def test_cli_session_list_json_output(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_cli_session_list_json_output(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     # @trace WL-110
 
     def _fake_session_list_impl(owner=None, all_sessions=False, limit=50):
@@ -397,7 +497,9 @@ def test_cli_session_list_json_output(tmp_path: Path, monkeypatch: pytest.Monkey
             }
         ]
 
-    monkeypatch.setattr("thegent.cli.commands.impl.session_list_impl", _fake_session_list_impl)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.session_list_impl", _fake_session_list_impl
+    )
 
     result = runner.invoke(app, ["session", "list", "--format", "json"])
     assert result.exit_code == 0
@@ -422,14 +524,18 @@ def test_cli_session_list_rich_output(monkeypatch: pytest.MonkeyPatch) -> None:
             }
         ]
 
-    monkeypatch.setattr("thegent.cli.commands.impl.session_list_impl", _fake_session_list_impl)
+    monkeypatch.setattr(
+        "thegent.cli.commands.impl.session_list_impl", _fake_session_list_impl
+    )
 
     result = runner.invoke(app, ["session", "list"])
     assert result.exit_code == 0
     assert "s-rich" in result.output
 
 
-def test_cli_session_list_empty_shows_no_sessions(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_cli_session_list_empty_shows_no_sessions(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     # @trace WL-110
     monkeypatch.setattr("thegent.cli.commands.impl.session_list_impl", lambda **kw: [])
 
@@ -438,7 +544,9 @@ def test_cli_session_list_empty_shows_no_sessions(monkeypatch: pytest.MonkeyPatc
     assert "No sessions found" in result.output
 
 
-def test_cli_session_list_invalid_format_exits_2(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_cli_session_list_invalid_format_exits_2(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     # @trace WL-110
     monkeypatch.setattr("thegent.cli.commands.impl.session_list_impl", lambda **kw: [])
 
@@ -451,7 +559,9 @@ def test_cli_session_list_invalid_format_exits_2(monkeypatch: pytest.MonkeyPatch
 # ---------------------------------------------------------------------------
 
 
-def test_top_level_resume_shortcut_wires_to_resume_cmd(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_top_level_resume_shortcut_wires_to_resume_cmd(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     # @trace WL-110
     captured: dict = {}
 
@@ -472,7 +582,9 @@ def test_top_level_resume_shortcut_wires_to_resume_cmd(monkeypatch: pytest.Monke
 # ---------------------------------------------------------------------------
 
 
-def test_run_resume_subcommand_wires_to_resume_cmd(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_run_resume_subcommand_wires_to_resume_cmd(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     # @trace WL-110
     captured: dict = {}
 

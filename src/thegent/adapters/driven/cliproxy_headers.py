@@ -4,6 +4,7 @@ Extracted from cliproxy_adapter.py as part of L1 architecture hardening.
 
 GW-20, GW-35, GW-36, GW-43, GW-48, GW-49 namespaces are covered here.
 """
+
 from __future__ import annotations
 
 import contextlib
@@ -98,7 +99,9 @@ def extract_tg_headers(request_headers: dict) -> TgHeaders:
     )
 
 
-def build_cache_response_headers(hit: bool, ttl: float, namespace: str) -> dict[str, str]:
+def build_cache_response_headers(
+    hit: bool, ttl: float, namespace: str
+) -> dict[str, str]:
     """Build x-cache-* response headers for a cache HIT or MISS.
 
     Args:

@@ -34,7 +34,9 @@ def _resolve_agent_for_task(agent_role: str, dimension: str) -> tuple[str, str]:
     from thegent.models.catalog import resolve_route
 
     _ = agent_role or "workhorse"
-    fallback = resolve_route("minimax-m2.5", policy="cheapest") or resolve_route("claude-haiku-4-5", policy="cheapest")
+    fallback = resolve_route("minimax-m2.5", policy="cheapest") or resolve_route(
+        "claude-haiku-4-5", policy="cheapest"
+    )
     if fallback:
         return fallback[0], fallback[1]
     return "interactive_agent", "claude-sonnet-4-5"
@@ -71,7 +73,9 @@ class DeploymentResult(BaseModel):
 class CostControllerProtocol(Protocol):
     """Protocol for cost controller."""
 
-    def record_call(self, dimension: str, agent: str, *, cost_usd: float | None = None) -> None: ...
+    def record_call(
+        self, dimension: str, agent: str, *, cost_usd: float | None = None
+    ) -> None: ...
     def can_spawn(self, estimated_calls: int = 1) -> bool: ...
     def get_tier(self) -> Any: ...
     def calls_remaining(self) -> int: ...

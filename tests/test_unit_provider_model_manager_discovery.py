@@ -26,10 +26,15 @@ def test_discover_models_timeout_returns_status_metadata(tmp_path: Path) -> None
     config_path.write_text("port: 8317\n")
 
     with (
-        patch("thegent.provider_model_manager._ensure_config", return_value=config_path),
+        patch(
+            "thegent.provider_model_manager._ensure_config", return_value=config_path
+        ),
         patch("thegent.provider_model_manager._load_yaml", return_value={}),
         patch("thegent.provider_model_manager._load_json", return_value={}),
-        patch("thegent.provider_model_manager.httpx.get", side_effect=httpx.TimeoutException("timed out")),
+        patch(
+            "thegent.provider_model_manager.httpx.get",
+            side_effect=httpx.TimeoutException("timed out"),
+        ),
     ):
         payload = discover_models(include_status=True)
 
@@ -51,7 +56,9 @@ def test_discover_models_invalid_payload_schema(tmp_path: Path) -> None:
             return []
 
     with (
-        patch("thegent.provider_model_manager._ensure_config", return_value=config_path),
+        patch(
+            "thegent.provider_model_manager._ensure_config", return_value=config_path
+        ),
         patch("thegent.provider_model_manager._load_yaml", return_value={}),
         patch("thegent.provider_model_manager._load_json", return_value={}),
         patch("thegent.provider_model_manager.httpx.get", return_value=FakeResp()),
@@ -66,15 +73,22 @@ def test_discover_models_invalid_payload_schema(tmp_path: Path) -> None:
 
 
 @pytest.mark.unit
-def test_discover_models_connect_error_classifies_transport_failure(tmp_path: Path) -> None:
+def test_discover_models_connect_error_classifies_transport_failure(
+    tmp_path: Path,
+) -> None:
     config_path = tmp_path / "config.yaml"
     config_path.write_text("port: 8317\n")
 
     with (
-        patch("thegent.provider_model_manager._ensure_config", return_value=config_path),
+        patch(
+            "thegent.provider_model_manager._ensure_config", return_value=config_path
+        ),
         patch("thegent.provider_model_manager._load_yaml", return_value={}),
         patch("thegent.provider_model_manager._load_json", return_value={}),
-        patch("thegent.provider_model_manager.httpx.get", side_effect=httpx.ConnectError("connection refused")),
+        patch(
+            "thegent.provider_model_manager.httpx.get",
+            side_effect=httpx.ConnectError("connection refused"),
+        ),
     ):
         payload = discover_models(include_status=True)
 
@@ -96,7 +110,9 @@ def test_discover_models_models_not_list_is_invalid_payload(tmp_path: Path) -> N
             return {"models": "this is not a list"}
 
     with (
-        patch("thegent.provider_model_manager._ensure_config", return_value=config_path),
+        patch(
+            "thegent.provider_model_manager._ensure_config", return_value=config_path
+        ),
         patch("thegent.provider_model_manager._load_yaml", return_value={}),
         patch("thegent.provider_model_manager._load_json", return_value={}),
         patch("thegent.provider_model_manager.httpx.get", return_value=FakeResp()),
@@ -116,16 +132,27 @@ def test_validate_provider_connect_failure_classifies_error(tmp_path: Path) -> N
     config_path.write_text("port: 8317\n")
 
     with (
-        patch("thegent.provider_model_manager._ensure_config", return_value=config_path),
+        patch(
+            "thegent.provider_model_manager._ensure_config", return_value=config_path
+        ),
         patch(
             "thegent.provider_model_manager._load_yaml",
-            return_value={"openai-compatibility": [{"name": "roo", "api-key-entries": [{"api-key": "abc123"}]}]},
+            return_value={
+                "openai-compatibility": [
+                    {"name": "roo", "api-key-entries": [{"api-key": "abc123"}]}
+                ]
+            },
         ),
         patch(
             "thegent.provider_model_manager._load_json",
-            return_value={"roo": {"base_url": "https://cli.example", "model": "roo model"}},
+            return_value={
+                "roo": {"base_url": "https://cli.example", "model": "roo model"}
+            },
         ),
-        patch("thegent.provider_model_manager.httpx.post", side_effect=httpx.ConnectError("refused")),
+        patch(
+            "thegent.provider_model_manager.httpx.post",
+            side_effect=httpx.ConnectError("refused"),
+        ),
     ):
         success, _, details = validate_provider("roo")
 
@@ -140,16 +167,27 @@ def test_validate_provider_timeout_classifies_error(tmp_path: Path) -> None:
     config_path.write_text("port: 8317\n")
 
     with (
-        patch("thegent.provider_model_manager._ensure_config", return_value=config_path),
+        patch(
+            "thegent.provider_model_manager._ensure_config", return_value=config_path
+        ),
         patch(
             "thegent.provider_model_manager._load_yaml",
-            return_value={"openai-compatibility": [{"name": "roo", "api-key-entries": [{"api-key": "abc123"}]}]},
+            return_value={
+                "openai-compatibility": [
+                    {"name": "roo", "api-key-entries": [{"api-key": "abc123"}]}
+                ]
+            },
         ),
         patch(
             "thegent.provider_model_manager._load_json",
-            return_value={"roo": {"base_url": "https://cli.example", "model": "roo model"}},
+            return_value={
+                "roo": {"base_url": "https://cli.example", "model": "roo model"}
+            },
         ),
-        patch("thegent.provider_model_manager.httpx.post", side_effect=httpx.TimeoutException("timed out")),
+        patch(
+            "thegent.provider_model_manager.httpx.post",
+            side_effect=httpx.TimeoutException("timed out"),
+        ),
     ):
         success, _, details = validate_provider("roo")
 
@@ -159,7 +197,9 @@ def test_validate_provider_timeout_classifies_error(tmp_path: Path) -> None:
 
 
 @pytest.mark.unit
-def test_discover_models_keeps_partial_results_and_counts_malformed_rows(tmp_path: Path) -> None:
+def test_discover_models_keeps_partial_results_and_counts_malformed_rows(
+    tmp_path: Path,
+) -> None:
     config_path = tmp_path / "config.yaml"
     config_path.write_text("port: 8317\n")
 
@@ -176,7 +216,9 @@ def test_discover_models_keeps_partial_results_and_counts_malformed_rows(tmp_pat
             }
 
     with (
-        patch("thegent.provider_model_manager._ensure_config", return_value=config_path),
+        patch(
+            "thegent.provider_model_manager._ensure_config", return_value=config_path
+        ),
         patch("thegent.provider_model_manager._load_yaml", return_value={}),
         patch("thegent.provider_model_manager._load_json", return_value={}),
         patch("thegent.provider_model_manager.httpx.get", return_value=FakeResp()),
@@ -204,7 +246,9 @@ def test_discover_models_empty_catalog_is_marked_as_empty(tmp_path: Path) -> Non
             return {"models": []}
 
     with (
-        patch("thegent.provider_model_manager._ensure_config", return_value=config_path),
+        patch(
+            "thegent.provider_model_manager._ensure_config", return_value=config_path
+        ),
         patch("thegent.provider_model_manager._load_yaml", return_value={}),
         patch("thegent.provider_model_manager._load_json", return_value={}),
         patch("thegent.provider_model_manager.httpx.get", return_value=FakeResp()),
@@ -230,7 +274,9 @@ def test_discover_models_default_contract_still_returns_list(tmp_path: Path) -> 
             return {"models": [{"id": "kilo-1", "owned_by": "kilo"}]}
 
     with (
-        patch("thegent.provider_model_manager._ensure_config", return_value=config_path),
+        patch(
+            "thegent.provider_model_manager._ensure_config", return_value=config_path
+        ),
         patch("thegent.provider_model_manager._load_yaml", return_value={}),
         patch("thegent.provider_model_manager._load_json", return_value={}),
         patch("thegent.provider_model_manager.httpx.get", return_value=FakeResp()),

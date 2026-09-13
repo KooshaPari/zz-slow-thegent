@@ -113,7 +113,10 @@ class LegacyParetoRouter:
         """Select (provider, model) using Pareto frontier + lexicographic ordering."""
         # Filter by hard constraints
         feasible = [
-            c for c in self._models if c.cost_per_1k <= max_cost_per_call and c.quality_score >= min_quality_score
+            c
+            for c in self._models
+            if c.cost_per_1k <= max_cost_per_call
+            and c.quality_score >= min_quality_score
         ]
         if not feasible:
             return None
@@ -129,7 +132,9 @@ class LegacyParetoRouter:
             key=lambda c: (
                 c.quality_score,  # Higher quality first
                 -c.cost_per_1k,  # Lower cost next (negated for max)
-                c.quality_score / max(c.cost_per_1k, 0.0001) if c.cost_per_1k > 0 else float("inf"),
+                c.quality_score / max(c.cost_per_1k, 0.0001)
+                if c.cost_per_1k > 0
+                else float("inf"),
             ),
         )
         return (selected.provider, selected.model)
@@ -142,7 +147,10 @@ class LegacyParetoRouter:
             dominated = any(
                 other.cost_per_1k <= c.cost_per_1k
                 and other.quality_score >= c.quality_score
-                and (other.cost_per_1k < c.cost_per_1k or other.quality_score > c.quality_score)
+                and (
+                    other.cost_per_1k < c.cost_per_1k
+                    or other.quality_score > c.quality_score
+                )
                 for other in candidates
                 if other is not c
             )
@@ -155,7 +163,9 @@ class LegacyAuthHandler:
     """Legacy thegent OAuth token lifecycle (minimal for testing)."""
 
     def __init__(self):
-        self.tokens: dict[str, dict] = {}  # provider -> {access_token, refresh_token, expires_at}
+        self.tokens: dict[
+            str, dict
+        ] = {}  # provider -> {access_token, refresh_token, expires_at}
 
     def store_token(self, provider: str, access_token: str, refresh_token: str) -> None:
         """Store OAuth token."""
@@ -181,7 +191,10 @@ class LegacyQuotaTracker:
 
     def check_quota(self, tokens: float, cost: float) -> bool:
         """Check if usage would exceed quota."""
-        return self.used_tokens + tokens <= self.max_tokens and self.used_cost + cost <= self.max_cost
+        return (
+            self.used_tokens + tokens <= self.max_tokens
+            and self.used_cost + cost <= self.max_cost
+        )
 
     def record_usage(self, tokens: float, cost: float) -> None:
         """Record token/cost usage."""
@@ -273,8 +286,12 @@ class TestRoutingParity:
 
             # Verify results
             if case.expected_model_required:
-                assert legacy_result is not None, f"Legacy router failed to select model for {case.name}"
-                assert cliproxy_result is not None, f"CLIProxy failed to select model for {case.name}"
+                assert legacy_result is not None, (
+                    f"Legacy router failed to select model for {case.name}"
+                )
+                assert cliproxy_result is not None, (
+                    f"CLIProxy failed to select model for {case.name}"
+                )
 
                 legacy_provider, legacy_model = legacy_result
                 cliproxy_model_id = cliproxy_result.get("model_id")
@@ -290,7 +307,9 @@ class TestRoutingParity:
 
                 # Verify constraints are satisfied
                 cliproxy_cost = cliproxy_result.get("estimated_cost", 0.0)
-                _ = cliproxy_result.get("estimated_latency_ms", 0)  # Not used in assertions
+                _ = cliproxy_result.get(
+                    "estimated_latency_ms", 0
+                )  # Not used in assertions
                 cliproxy_quality = cliproxy_result.get("quality_score", 0.0)
 
                 assert cliproxy_cost <= case.max_cost_per_call + 0.001, (
@@ -546,7 +565,9 @@ class TestCutoverReadiness:
             "-" * 80,
         ]
         for s in subsystems:
-            table_lines.append(f"{s['name']:<30} {s['python_locs']:<15} {s['go_locs']:<15} {s['status']:<20}")
+            table_lines.append(
+                f"{s['name']:<30} {s['python_locs']:<15} {s['go_locs']:<15} {s['status']:<20}"
+            )
         table_lines.extend(
             [
                 "-" * 80,
@@ -563,11 +584,15 @@ class TestCutoverReadiness:
         all_verified = all("VERIFIED" in s["status"] for s in subsystems)
         if all_verified:
             _log.info("✓ All subsystems MIGRATION-READY for production cutover.")
-            _log.info(f"  - Estimated LOC reduction: {total_python} → {total_go} ({reduction_pct:.1f}% smaller)")
+            _log.info(
+                f"  - Estimated LOC reduction: {total_python} → {total_go} ({reduction_pct:.1f}% smaller)"
+            )
             _log.info("  - Parity tests: PASSING")
             _log.info(f"  - CLIProxy endpoint: RESPONDING at {CLIPROXY_BASE_URL}")
         else:
-            _log.warning("⚠ Some subsystems NOT READY. Run individual subsystem tests for details.")
+            _log.warning(
+                "⚠ Some subsystems NOT READY. Run individual subsystem tests for details."
+            )
 
         assert all_verified, "Not all subsystems are migration-ready"
 

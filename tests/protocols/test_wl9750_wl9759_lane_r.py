@@ -36,7 +36,14 @@ def _submit_turn(session_id: str, *, requires_approval: bool = False) -> str:
         params["requires_approval"] = True
         params["unified_diff"] = "--- a/x\n+++ b/x\n@@\n-old\n+new\n"
     response, _notifications = process_jsonrpc_line_full(
-        json.dumps({"jsonrpc": "2.0", "id": "submit", "method": "turn/submit", "params": params})
+        json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": "submit",
+                "method": "turn/submit",
+                "params": params,
+            }
+        )
     )
     assert response is not None
     return response["result"]["turn"]["id"]
@@ -59,7 +66,9 @@ def test_wl9752_parse_phase_uses_bound_parser_for_valid_turn() -> None:
     session_id = _start_session()
     turn_id = _submit_turn(session_id, requires_approval=True)
     binding = server._bind_turn_cancel_phases("cancel")
-    parsed_turn_id, turn, error = server._parse_turn_cancel_with_binding("req", {"turn_id": turn_id}, binding)
+    parsed_turn_id, turn, error = server._parse_turn_cancel_with_binding(
+        "req", {"turn_id": turn_id}, binding
+    )
     assert error is None
     assert parsed_turn_id == turn_id
     assert turn is not None
@@ -72,7 +81,9 @@ def test_wl9753_success_dispatch_executes_and_projects_response() -> None:
     turn_id = _submit_turn(session_id, requires_approval=True)
     turn = SERVER_STATE.turns[turn_id]
     binding = server._bind_turn_cancel_phases("cancel")
-    response = server._dispatch_turn_cancel_success(True, "req-ok", turn_id, turn, binding)
+    response = server._dispatch_turn_cancel_success(
+        True, "req-ok", turn_id, turn, binding
+    )
     assert response is not None
     assert response["result"]["turn"]["id"] == turn_id
     assert response["result"]["turn"]["status"] == "cancelled"
@@ -80,7 +91,9 @@ def test_wl9753_success_dispatch_executes_and_projects_response() -> None:
 
 def test_wl9754_recovery_dispatch_suppresses_terminal_notification_errors() -> None:
     # @trace WL-9754
-    parse_error = server._error_response("ignored", server.JsonRpcError(-32003, "Turn already terminal"))
+    parse_error = server._error_response(
+        "ignored", server.JsonRpcError(-32003, "Turn already terminal")
+    )
     assert server._dispatch_turn_cancel_recovery(False, parse_error) is None
 
 
@@ -100,7 +113,9 @@ def test_wl9757_parse_phase_preserves_not_found_boundary() -> None:
     # @trace WL-9757
     _reset_state()
     binding = server._bind_turn_cancel_phases("cancel")
-    turn_id, turn, error = server._parse_turn_cancel_with_binding("req", {"turn_id": "turn-404"}, binding)
+    turn_id, turn, error = server._parse_turn_cancel_with_binding(
+        "req", {"turn_id": "turn-404"}, binding
+    )
     assert turn_id is None
     assert turn is None
     assert error is not None
@@ -113,22 +128,32 @@ def test_wl9758_handler_orchestrates_parse_then_dispatch_paths() -> None:
     session_id = _start_session()
     turn_id = _submit_turn(session_id, requires_approval=True)
 
-    success = server._handle_turn_cancel_request("turn/cancel", True, "req-s", {"turn_id": turn_id})
+    success = server._handle_turn_cancel_request(
+        "turn/cancel", True, "req-s", {"turn_id": turn_id}
+    )
     assert success is not None
     assert success["result"]["turn"]["status"] == "cancelled"
 
-    failure = server._handle_turn_cancel_request("turn/cancel", True, "req-f", {"turn_id": "turn-404"})
+    failure = server._handle_turn_cancel_request(
+        "turn/cancel", True, "req-f", {"turn_id": "turn-404"}
+    )
     assert failure is not None
     assert failure["error"]["code"] == -32002
 
 
-def test_wl9759_cache_miss_branch_preserves_no_response_for_terminal_notification() -> None:
+def test_wl9759_cache_miss_branch_preserves_no_response_for_terminal_notification() -> (
+    None
+):
     # @trace WL-9759
     _reset_state()
     session_id = _start_session()
     turn_id = _submit_turn(session_id, requires_approval=True)
 
-    first = server._handle_turn_cancel_request("turn/cancel", True, "req-1", {"turn_id": turn_id})
+    first = server._handle_turn_cancel_request(
+        "turn/cancel", True, "req-1", {"turn_id": turn_id}
+    )
     assert first is not None
-    second = server._handle_turn_cancel_request("turn/cancel", False, "req-2", {"turn_id": turn_id})
+    second = server._handle_turn_cancel_request(
+        "turn/cancel", False, "req-2", {"turn_id": turn_id}
+    )
     assert second is None

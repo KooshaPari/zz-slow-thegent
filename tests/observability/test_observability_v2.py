@@ -47,7 +47,9 @@ def test_mesh_cli_status_handles_missing_agents_dir(tmp_path: Path) -> None:
     assert status["agents"] == []
 
 
-def test_mesh_cli_status_parses_manifests(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_mesh_cli_status_parses_manifests(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     agents_dir = tmp_path / "agents"
     agents_dir.mkdir(parents=True)
     manifest = agents_dir / "agent-123.yaml"

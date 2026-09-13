@@ -35,7 +35,6 @@ class ACPServerUnreachableError(Exception):
     """Raised when the ACP server cannot be reached."""
 
 
-
 # ---------------------------------------------------------------------------
 # Dataclasses
 # ---------------------------------------------------------------------------
@@ -110,7 +109,9 @@ class ACPClient:
     async def _get_client(self) -> httpx.AsyncClient:
         """Get or create the HTTP client."""
         if self._client is None:
-            self._client = httpx.AsyncClient(base_url=self._base_url, timeout=self._timeout)
+            self._client = httpx.AsyncClient(
+                base_url=self._base_url, timeout=self._timeout
+            )
         return self._client
 
     async def close(self) -> None:
@@ -172,14 +173,18 @@ class ACPClient:
             )
 
         except httpx.ConnectError as e:
-            raise ACPServerUnreachableError(f"Cannot connect to {self._base_url}") from e
+            raise ACPServerUnreachableError(
+                f"Cannot connect to {self._base_url}"
+            ) from e
         except httpx.ReadTimeout as e:
             raise ACPServerUnreachableError("Request timed out") from e
         except httpx.RemoteProtocolError as e:
             raise ACPServerUnreachableError(f"Protocol error: {e}") from e
         except httpx.HTTPStatusError as e:
             if _is_retryable(e):
-                raise ACPServerUnreachableError(f"Server error: {e.response.status_code}") from e
+                raise ACPServerUnreachableError(
+                    f"Server error: {e.response.status_code}"
+                ) from e
             raise ACPClientError(e.response.status_code, e.response.text) from e
 
     async def health_check(self) -> bool:

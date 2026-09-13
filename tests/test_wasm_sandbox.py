@@ -8,7 +8,6 @@ These tests verify:
 - Support detection
 """
 
-
 import pytest
 
 from thegent.infra.sandbox import (

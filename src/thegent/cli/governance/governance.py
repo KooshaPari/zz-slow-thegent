@@ -50,7 +50,9 @@ def _resolve_run_record(session_dir: Path, run_id: str) -> dict[str, Any]:
     return merged
 
 
-def _resolve_log_path(session_dir: Path, raw_path: str | None, stream_name: str) -> Path:
+def _resolve_log_path(
+    session_dir: Path, raw_path: str | None, stream_name: str
+) -> Path:
     if not raw_path:
         raise ValueError(f"Run metadata missing {stream_name}_path")
 
@@ -63,7 +65,9 @@ def _resolve_log_path(session_dir: Path, raw_path: str | None, stream_name: str)
 
 
 def _vetter_contract_path(policy: str) -> Path:
-    return Path(__file__).resolve().parents[4] / "contracts" / "vetter" / f"{policy}.json"
+    return (
+        Path(__file__).resolve().parents[4] / "contracts" / "vetter" / f"{policy}.json"
+    )
 
 
 class _SchemaOutputModel(BaseModel):
@@ -121,7 +125,9 @@ def _build_check_registry(policy: VetterPolicy) -> dict[str, Any]:
     if "ruff" in required_names:
         checks["ruff"] = RuffVetterCheck(name="ruff")
     if "schema" in required_names:
-        checks["schema"] = SchemaVetterCheck(schema_model=_SchemaOutputModel, name="schema")
+        checks["schema"] = SchemaVetterCheck(
+            schema_model=_SchemaOutputModel, name="schema"
+        )
     if "quality_score" in required_names:
         checks["quality_score"] = QualityScoreVetterCheck(
             name="quality_score",
@@ -143,9 +149,15 @@ def _resolve_policy_bundle(policy: str) -> tuple[VetterPolicy, dict[str, Any]]:
     raw_policy = json.loads(contract_path.read_text(encoding="utf-8"))
     policy_obj = VetterPolicy.model_validate(raw_policy)
     check_registry = _build_check_registry(policy_obj)
-    missing = [check_name for check_name in policy_obj.checks if check_name not in check_registry]
+    missing = [
+        check_name
+        for check_name in policy_obj.checks
+        if check_name not in check_registry
+    ]
     if missing:
-        raise ValueError(f"Vetter policy references unsupported check(s): {', '.join(sorted(missing))}")
+        raise ValueError(
+            f"Vetter policy references unsupported check(s): {', '.join(sorted(missing))}"
+        )
     return policy_obj, check_registry
 
 
@@ -185,7 +197,9 @@ def escalate_approve_impl(run_id: str) -> bool:
     return queue.resolve(run_id=run_id, resolution="approved")
 
 
-def escalate_list_impl(past_sla_only: bool = False, limit: int = 50) -> list[dict[str, Any]]:
+def escalate_list_impl(
+    past_sla_only: bool = False, limit: int = 50
+) -> list[dict[str, Any]]:
     """WP-3008: List escalation queue items (blocked runs with SLA)."""
     from thegent.execution import EscalationQueue
 
@@ -256,8 +270,12 @@ def govern_vet_impl(
     session_dir = _resolve_session_dir(session)
     run_record = _resolve_run_record(session_dir, run_id)
 
-    stdout_path = _resolve_log_path(session_dir, run_record.get("stdout_path"), "stdout")
-    stderr_path = _resolve_log_path(session_dir, run_record.get("stderr_path"), "stderr")
+    stdout_path = _resolve_log_path(
+        session_dir, run_record.get("stdout_path"), "stdout"
+    )
+    stderr_path = _resolve_log_path(
+        session_dir, run_record.get("stderr_path"), "stderr"
+    )
     stdout_text = stdout_path.read_text(encoding="utf-8")
     stderr_text = stderr_path.read_text(encoding="utf-8")
 
@@ -296,7 +314,9 @@ def govern_vet_impl(
         _,
         VetterOrchestrator,
     ) = _load_vetter_components()
-    orchestrator = VetterOrchestrator(session_dir=session_dir, check_registry=check_registry)
+    orchestrator = VetterOrchestrator(
+        session_dir=session_dir, check_registry=check_registry
+    )
     run_context = {
         "run_id": run_id,
         "session_id": run_record.get("correlation_id", ""),
@@ -316,7 +336,11 @@ def govern_vet_impl(
         run_context["policy_id"] = policy_id
     output_text = f"{stdout_text}\n{stderr_text}" if stderr_text else stdout_text
     result_obj = SimpleNamespace(output=output_text)
-    vetter_result = asyncio.run(orchestrator.evaluate(result=result_obj, policy=policy_config, run_context=run_context))
+    vetter_result = asyncio.run(
+        orchestrator.evaluate(
+            result=result_obj, policy=policy_config, run_context=run_context
+        )
+    )
 
     payload.update(
         {

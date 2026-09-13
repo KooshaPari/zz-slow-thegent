@@ -157,7 +157,12 @@ class TestInputGuardrailsIntegration:
         # @trace FR-MCP-001
         """When THGENT_INPUT_GUARDRAILS_ENABLED=1 and agent not in allowlist, run_impl returns error."""
         with patch.dict(
-            os.environ, {"THGENT_INPUT_GUARDRAILS_ENABLED": "1", "THGENT_AGENT_ALLOWLIST": "gemini,claude"}, clear=False
+            os.environ,
+            {
+                "THGENT_INPUT_GUARDRAILS_ENABLED": "1",
+                "THGENT_AGENT_ALLOWLIST": "gemini,claude",
+            },
+            clear=False,
         ):
             result = run_impl(
                 agent="unknown-agent",
@@ -165,5 +170,8 @@ class TestInputGuardrailsIntegration:
                 cd=tmp_path,
             )
         assert "error" in result
-        assert "guardrail" in result["error"].lower() or "allowlist" in result["error"].lower()
+        assert (
+            "guardrail" in result["error"].lower()
+            or "allowlist" in result["error"].lower()
+        )
         assert result.get("exit_code") == 1

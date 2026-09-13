@@ -159,7 +159,11 @@ def _prune_stale_shadow_and_logs(
 
     try:
         for entry in candidates:
-            if entry.is_file() and entry.name.startswith("quality") and entry.suffix == ".log":
+            if (
+                entry.is_file()
+                and entry.name.startswith("quality")
+                and entry.suffix == ".log"
+            ):
                 mtime = entry.stat().st_mtime
                 if mtime < cutoff_log:
                     log_count += 1

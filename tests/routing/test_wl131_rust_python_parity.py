@@ -43,7 +43,9 @@ def _try_import_rust_parser() -> Any:
         return None
 
 
-PARSER_PARITY_STRICT = os.environ.get("THEGENT_PARSER_PARITY_REQUIRED", "").strip().lower() in {"1", "true", "yes"}
+PARSER_PARITY_STRICT = os.environ.get(
+    "THEGENT_PARSER_PARITY_REQUIRED", ""
+).strip().lower() in {"1", "true", "yes"}
 
 
 def _require_rust_parser(reason: str) -> Any:
@@ -97,14 +99,20 @@ def _python_extract_xml_tags(text: str) -> dict[str, str]:
 def test_python_extract_xml_tags(text: str, expected: dict[str, str]) -> None:
     """Python extract_tags must match documented expected output."""
     result = _python_extract_xml_tags(text)
-    assert result == expected, f"extract_xml_tags mismatch for {text!r}: expected={expected!r}, got={result!r}"
+    assert result == expected, (
+        f"extract_xml_tags mismatch for {text!r}: expected={expected!r}, got={result!r}"
+    )
 
 
 def test_rust_extract_xml_tags_parity_if_available() -> None:
     """When Rust extension available, Python and Rust must agree on all cases."""
-    parser = _require_rust_parser("thegent_parser.extract_xml_tags not available; skipping cross-language parity")
+    parser = _require_rust_parser(
+        "thegent_parser.extract_xml_tags not available; skipping cross-language parity"
+    )
     if not hasattr(parser, "extract_xml_tags"):
-        pytest.skip("thegent_parser.extract_xml_tags not available; skipping cross-language parity")
+        pytest.skip(
+            "thegent_parser.extract_xml_tags not available; skipping cross-language parity"
+        )
 
     for text, _expected in EXTRACT_XML_TAG_CASES:
         py_result = _python_extract_xml_tags(text)
@@ -126,7 +134,11 @@ EXTRA_MODEL_SUFFIX_CASES: list[tuple[str, str, list[str]]] = [
     (":nitro", "", ["nitro"]),  # leading colon — base is empty
     ("model:nitro:floor", "model", ["nitro", "floor"]),  # two known suffixes
     ("model:unknown1:nitro:unknown2", "model", ["nitro"]),  # unknowns filtered
-    ("prefix/model:thinking:online:extended", "prefix/model", ["thinking", "online", "extended"]),
+    (
+        "prefix/model:thinking:online:extended",
+        "prefix/model",
+        ["thinking", "online", "extended"],
+    ),
 ]
 
 
@@ -142,8 +154,12 @@ def _python_parse_model_suffixes(model: str) -> dict[str, Any]:
     }
 
 
-@pytest.mark.parametrize(("model_str", "expected_base", "expected_suffixes"), EXTRA_MODEL_SUFFIX_CASES)
-def test_python_extended_model_suffix_cases(model_str: str, expected_base: str, expected_suffixes: list[str]) -> None:
+@pytest.mark.parametrize(
+    ("model_str", "expected_base", "expected_suffixes"), EXTRA_MODEL_SUFFIX_CASES
+)
+def test_python_extended_model_suffix_cases(
+    model_str: str, expected_base: str, expected_suffixes: list[str]
+) -> None:
     """Python parse_model_suffixes must match expected output for extended cases."""
     result = _python_parse_model_suffixes(model_str)
     assert result["base_model"] == expected_base, (
@@ -152,7 +168,9 @@ def test_python_extended_model_suffix_cases(model_str: str, expected_base: str, 
     assert result["suffixes"] == expected_suffixes, (
         f"suffixes mismatch for {model_str!r}: expected={expected_suffixes!r}, got={result['suffixes']!r}"
     )
-    assert result["raw"] == model_str, f"raw not preserved for {model_str!r}: got={result['raw']!r}"
+    assert result["raw"] == model_str, (
+        f"raw not preserved for {model_str!r}: got={result['raw']!r}"
+    )
 
 
 def test_rust_extended_model_suffix_parity_if_available() -> None:
@@ -166,8 +184,12 @@ def test_rust_extended_model_suffix_parity_if_available() -> None:
             continue  # Rust and Python may differ on degenerate empty input
         py_result = _python_parse_model_suffixes(model_str)
         rust_result = parser.parse_model_suffixes(model_str)
-        assert py_result["base_model"] == rust_result["base_model"], f"base_model mismatch for {model_str!r}"
-        assert py_result["suffixes"] == rust_result["suffixes"], f"suffixes mismatch for {model_str!r}"
+        assert py_result["base_model"] == rust_result["base_model"], (
+            f"base_model mismatch for {model_str!r}"
+        )
+        assert py_result["suffixes"] == rust_result["suffixes"], (
+            f"suffixes mismatch for {model_str!r}"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -273,13 +295,19 @@ def _python_parse_dlq_item(line: str, status: str | None, run_id: str | None) ->
 
 
 @pytest.mark.parametrize(("line", "status", "run_id", "expect_match"), DLQ_CASES)
-def test_python_parse_dlq_item(line: str, status: str | None, run_id: str | None, expect_match: bool) -> None:
+def test_python_parse_dlq_item(
+    line: str, status: str | None, run_id: str | None, expect_match: bool
+) -> None:
     """Python parse_dlq_item must filter correctly on status and run_id."""
     result = _python_parse_dlq_item(line, status, run_id)
     if expect_match:
-        assert result is not None, f"Expected match (status={status!r}, run_id={run_id!r}), got None"
+        assert result is not None, (
+            f"Expected match (status={status!r}, run_id={run_id!r}), got None"
+        )
     else:
-        assert result is None, f"Expected None (status={status!r}, run_id={run_id!r}), got {result!r}"
+        assert result is None, (
+            f"Expected None (status={status!r}, run_id={run_id!r}), got {result!r}"
+        )
 
 
 def test_rust_parse_dlq_item_parity_if_available() -> None:

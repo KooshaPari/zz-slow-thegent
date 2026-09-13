@@ -170,7 +170,9 @@ class TestListNodes:
     @patch("thegent.compute.tailscale.subprocess.run")
     def test_parses_single_peer(self, mock_run: MagicMock, _which: MagicMock) -> None:
         """list_nodes parses a single peer correctly."""
-        status = _make_status_json({"nodekey:aaa": _make_peer("mac-studio", ["100.64.0.1"], "darwin", True)})
+        status = _make_status_json(
+            {"nodekey:aaa": _make_peer("mac-studio", ["100.64.0.1"], "darwin", True)}
+        )
         mock_run.return_value = MagicMock(returncode=0, stdout=status, stderr="")
 
         nodes = TailscaleManager().list_nodes()
@@ -184,13 +186,17 @@ class TestListNodes:
     # @trace FR-COMPUTE-004
     @patch("thegent.compute.tailscale.shutil.which", return_value="/usr/bin/tailscale")
     @patch("thegent.compute.tailscale.subprocess.run")
-    def test_parses_multiple_peers(self, mock_run: MagicMock, _which: MagicMock) -> None:
+    def test_parses_multiple_peers(
+        self, mock_run: MagicMock, _which: MagicMock
+    ) -> None:
         """list_nodes returns all peers."""
         peers = {
             "nodekey:aaa": _make_peer("mac", ["100.64.0.1"], "darwin", True),
             "nodekey:bbb": _make_peer("winpc", ["100.64.0.2"], "windows", False),
         }
-        mock_run.return_value = MagicMock(returncode=0, stdout=_make_status_json(peers), stderr="")
+        mock_run.return_value = MagicMock(
+            returncode=0, stdout=_make_status_json(peers), stderr=""
+        )
 
         nodes = TailscaleManager().list_nodes()
 
@@ -201,9 +207,13 @@ class TestListNodes:
     # @trace FR-COMPUTE-004
     @patch("thegent.compute.tailscale.shutil.which", return_value="/usr/bin/tailscale")
     @patch("thegent.compute.tailscale.subprocess.run")
-    def test_raises_on_nonzero_exit(self, mock_run: MagicMock, _which: MagicMock) -> None:
+    def test_raises_on_nonzero_exit(
+        self, mock_run: MagicMock, _which: MagicMock
+    ) -> None:
         """list_nodes raises TailscaleError when the command exits non-zero."""
-        mock_run.return_value = MagicMock(returncode=1, stdout="", stderr="not connected")
+        mock_run.return_value = MagicMock(
+            returncode=1, stdout="", stderr="not connected"
+        )
 
         with pytest.raises(TailscaleError, match="exited with 1"):
             TailscaleManager().list_nodes()
@@ -221,7 +231,8 @@ class TestListNodes:
     # @trace FR-COMPUTE-004
     @patch("thegent.compute.tailscale.shutil.which", return_value="/usr/bin/tailscale")
     @patch(
-        "thegent.compute.tailscale.subprocess.run", side_effect=subprocess.TimeoutExpired(cmd="tailscale", timeout=10)
+        "thegent.compute.tailscale.subprocess.run",
+        side_effect=subprocess.TimeoutExpired(cmd="tailscale", timeout=10),
     )
     def test_raises_on_timeout(self, _run: MagicMock, _which: MagicMock) -> None:
         """list_nodes raises TailscaleError when subprocess times out."""
@@ -230,7 +241,9 @@ class TestListNodes:
 
     # @trace FR-COMPUTE-004
     @patch("thegent.compute.tailscale.shutil.which", return_value="/usr/bin/tailscale")
-    @patch("thegent.compute.tailscale.subprocess.run", side_effect=OSError("exec failed"))
+    @patch(
+        "thegent.compute.tailscale.subprocess.run", side_effect=OSError("exec failed")
+    )
     def test_raises_on_os_error(self, _run: MagicMock, _which: MagicMock) -> None:
         """list_nodes raises TailscaleError on OSError from subprocess."""
         with pytest.raises(TailscaleError, match="Failed to run tailscale"):
@@ -241,7 +254,9 @@ class TestListNodes:
     @patch("thegent.compute.tailscale.subprocess.run")
     def test_empty_peer_dict(self, mock_run: MagicMock, _which: MagicMock) -> None:
         """list_nodes returns [] when Peer section is empty."""
-        mock_run.return_value = MagicMock(returncode=0, stdout=_make_status_json({}), stderr="")
+        mock_run.return_value = MagicMock(
+            returncode=0, stdout=_make_status_json({}), stderr=""
+        )
         assert TailscaleManager().list_nodes() == []
 
 
@@ -273,7 +288,15 @@ class TestParseStatus:
     def test_peer_missing_hostname_uses_key(self) -> None:
         """Peer with no HostName falls back to the peer key."""
         raw = json.dumps(
-            {"Peer": {"nodekey:fallback": {"TailscaleIPs": ["100.1.2.3"], "OS": "linux", "Online": True}}}
+            {
+                "Peer": {
+                    "nodekey:fallback": {
+                        "TailscaleIPs": ["100.1.2.3"],
+                        "OS": "linux",
+                        "Online": True,
+                    }
+                }
+            }
         ).decode()
         nodes = TailscaleManager._parse_status(raw)
         assert nodes[0].hostname == "nodekey:fallback"
@@ -281,7 +304,14 @@ class TestParseStatus:
     # @trace FR-COMPUTE-005
     def test_peer_no_ips(self) -> None:
         """Peer with no TailscaleIPs gets an empty ip string."""
-        peers = {"nodekey:x": {"HostName": "noip", "TailscaleIPs": [], "OS": "linux", "Online": True}}
+        peers = {
+            "nodekey:x": {
+                "HostName": "noip",
+                "TailscaleIPs": [],
+                "OS": "linux",
+                "Online": True,
+            }
+        }
         nodes = TailscaleManager._parse_status(json.dumps({"Peer": peers}).decode())
         assert nodes[0].ip == ""
 
@@ -301,7 +331,9 @@ class TestParseStatus:
     # @trace FR-COMPUTE-005
     def test_skips_non_dict_peer_entries(self) -> None:
         """Non-dict peer entries are skipped without raising."""
-        raw = json.dumps({"Peer": {"bad": "not-a-dict", "nodekey:good": _make_peer("ok")}}).decode()
+        raw = json.dumps(
+            {"Peer": {"bad": "not-a-dict", "nodekey:good": _make_peer("ok")}}
+        ).decode()
         nodes = TailscaleManager._parse_status(raw)
         assert len(nodes) == 1
         assert nodes[0].hostname == "ok"
@@ -335,7 +367,9 @@ class TestPingNode:
     @patch("thegent.compute.tailscale.subprocess.run")
     def test_ping_failure(self, mock_run: MagicMock, _which: MagicMock) -> None:
         """ping_node returns False on non-zero exit code."""
-        mock_run.return_value = MagicMock(returncode=1, stdout="", stderr="no route to host")
+        mock_run.return_value = MagicMock(
+            returncode=1, stdout="", stderr="no route to host"
+        )
         assert TailscaleManager().ping_node("winpc") is False
 
     # @trace FR-COMPUTE-006
@@ -351,13 +385,17 @@ class TestPingNode:
         "thegent.compute.tailscale.subprocess.run",
         side_effect=subprocess.TimeoutExpired(cmd="tailscale", timeout=10),
     )
-    def test_ping_returns_false_on_timeout(self, _run: MagicMock, _which: MagicMock) -> None:
+    def test_ping_returns_false_on_timeout(
+        self, _run: MagicMock, _which: MagicMock
+    ) -> None:
         """ping_node returns False (not raises) on timeout."""
         assert TailscaleManager().ping_node("slow-host") is False
 
     # @trace FR-COMPUTE-006
     @patch("thegent.compute.tailscale.shutil.which", return_value="/usr/bin/tailscale")
-    @patch("thegent.compute.tailscale.subprocess.run", side_effect=OSError("exec failed"))
+    @patch(
+        "thegent.compute.tailscale.subprocess.run", side_effect=OSError("exec failed")
+    )
     def test_ping_raises_on_os_error(self, _run: MagicMock, _which: MagicMock) -> None:
         """ping_node raises TailscaleError on OSError."""
         with pytest.raises(TailscaleError, match="Failed to run tailscale ping"):
@@ -375,13 +413,17 @@ class TestGetOnlineNodes:
     # @trace FR-COMPUTE-007
     @patch("thegent.compute.tailscale.shutil.which", return_value="/usr/bin/tailscale")
     @patch("thegent.compute.tailscale.subprocess.run")
-    def test_filters_offline_nodes(self, mock_run: MagicMock, _which: MagicMock) -> None:
+    def test_filters_offline_nodes(
+        self, mock_run: MagicMock, _which: MagicMock
+    ) -> None:
         """get_online_nodes returns only online nodes."""
         peers = {
             "nodekey:on": _make_peer("online-mac", online=True),
             "nodekey:off": _make_peer("offline-win", online=False),
         }
-        mock_run.return_value = MagicMock(returncode=0, stdout=_make_status_json(peers), stderr="")
+        mock_run.return_value = MagicMock(
+            returncode=0, stdout=_make_status_json(peers), stderr=""
+        )
 
         online = TailscaleManager().get_online_nodes()
 
@@ -403,7 +445,9 @@ class TestGetOnlineNodes:
             "nodekey:a": _make_peer("node-a", online=False),
             "nodekey:b": _make_peer("node-b", online=False),
         }
-        mock_run.return_value = MagicMock(returncode=0, stdout=_make_status_json(peers), stderr="")
+        mock_run.return_value = MagicMock(
+            returncode=0, stdout=_make_status_json(peers), stderr=""
+        )
         assert TailscaleManager().get_online_nodes() == []
 
     # @trace FR-COMPUTE-007
@@ -415,7 +459,9 @@ class TestGetOnlineNodes:
             "nodekey:a": _make_peer("node-a", online=True),
             "nodekey:b": _make_peer("node-b", online=True),
         }
-        mock_run.return_value = MagicMock(returncode=0, stdout=_make_status_json(peers), stderr="")
+        mock_run.return_value = MagicMock(
+            returncode=0, stdout=_make_status_json(peers), stderr=""
+        )
         online = TailscaleManager().get_online_nodes()
         assert len(online) == 2
 

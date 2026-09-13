@@ -61,7 +61,9 @@ def helpers_module():
 
 
 @pytest.mark.parametrize("phase_name", list(_MID_PHASE_HELPERS))
-def test_run_impl_core_delegates_mid_phases_to_extracted_helpers(phase_name: str, run_impl_core_source: str, helpers_module) -> None:
+def test_run_impl_core_delegates_mid_phases_to_extracted_helpers(
+    phase_name: str, run_impl_core_source: str, helpers_module
+) -> None:
     """``run_impl_core`` must call each mid-phase helper, not inline the body.
 
     WL137 indirection: ``_phase_register_policy_denial`` and
@@ -94,7 +96,9 @@ def test_run_impl_core_delegates_mid_phases_to_extracted_helpers(phase_name: str
     )
 
 
-def test_run_impl_core_has_no_inline_concurrency_block(run_impl_core_source: str) -> None:
+def test_run_impl_core_has_no_inline_concurrency_block(
+    run_impl_core_source: str,
+) -> None:
     """ConcurrencyController instantiation must live in the helper, not the orchestrator.
 
     The pre-extraction body instantiated ``ConcurrencyController(...)`` and
@@ -131,7 +135,9 @@ def test_run_impl_core_has_no_inline_fatigue_freshness_burst_block(
         )
 
 
-def test_run_impl_core_has_no_inline_policy_evaluate_block(run_impl_core_source: str) -> None:
+def test_run_impl_core_has_no_inline_policy_evaluate_block(
+    run_impl_core_source: str,
+) -> None:
     """Policy evaluate + override TTL inline body must be gone from the orchestrator.
 
     The pre-extraction body called ``policy_engine.evaluate(run_meta, registry=registry)``
@@ -147,7 +153,9 @@ def test_run_impl_core_has_no_inline_policy_evaluate_block(run_impl_core_source:
         )
 
 
-def test_run_impl_core_has_no_inline_policy_denial_block(run_impl_core_source: str) -> None:
+def test_run_impl_core_has_no_inline_policy_denial_block(
+    run_impl_core_source: str,
+) -> None:
     """Policy-deny inline body (escalate + register_start + register_end) must be gone."""
     forbidden = [
         'if pol_res == "deny":\n        # WP-3008: Add to escalation queue for SLA tracking',
@@ -159,7 +167,9 @@ def test_run_impl_core_has_no_inline_policy_denial_block(run_impl_core_source: s
         )
 
 
-def test_run_impl_core_has_no_inline_hitl_pause_block(run_impl_core_source: str) -> None:
+def test_run_impl_core_has_no_inline_hitl_pause_block(
+    run_impl_core_source: str,
+) -> None:
     """HITL pause inline body (register_pause + checkpoint + escalate) must be gone."""
     forbidden = [
         'ckpt_registry = CheckpointRegistry(settings.session_dir)\n        ckpt_registry.create_checkpoint(\n            reason=f"HITL Pause: {pol_reason}",',

@@ -53,12 +53,16 @@ def provider(token_file: Path) -> CursorTokenProvider:
 class TestCursorTokenProvider:
     """Tests for CursorTokenProvider."""
 
-    def test_get_token_reads_file(self, provider: CursorTokenProvider, token_file: Path) -> None:
+    def test_get_token_reads_file(
+        self, provider: CursorTokenProvider, token_file: Path
+    ) -> None:
         # @trace FR-CP-002
         token = provider.get_token()
         assert token == "sk-testtoken123"
 
-    def test_get_token_caches_within_ttl(self, provider: CursorTokenProvider, token_file: Path) -> None:
+    def test_get_token_caches_within_ttl(
+        self, provider: CursorTokenProvider, token_file: Path
+    ) -> None:
         # @trace FR-CP-002
         t1 = provider.get_token()
         # Overwrite file; should NOT be re-read because TTL has not expired
@@ -66,7 +70,9 @@ class TestCursorTokenProvider:
         t2 = provider.get_token()
         assert t1 == t2 == "sk-testtoken123"
 
-    def test_get_token_refreshes_after_ttl(self, provider: CursorTokenProvider, token_file: Path) -> None:
+    def test_get_token_refreshes_after_ttl(
+        self, provider: CursorTokenProvider, token_file: Path
+    ) -> None:
         # @trace FR-CP-002
         provider.get_token()
         # Force TTL expiry by rewinding last_read_at
@@ -77,7 +83,9 @@ class TestCursorTokenProvider:
         t2 = provider.get_token()
         assert t2 == "sk-refreshed"
 
-    def test_is_expired_false_just_after_read(self, provider: CursorTokenProvider) -> None:
+    def test_is_expired_false_just_after_read(
+        self, provider: CursorTokenProvider
+    ) -> None:
         # @trace FR-CP-002
         provider.get_token()
         assert not provider.is_expired()
@@ -94,7 +102,9 @@ class TestCursorTokenProvider:
         with pytest.raises(FileNotFoundError, match="Cursor token file not found"):
             p.get_token()
 
-    def test_refresh_from_disk_returns_true_on_change(self, provider: CursorTokenProvider, token_file: Path) -> None:
+    def test_refresh_from_disk_returns_true_on_change(
+        self, provider: CursorTokenProvider, token_file: Path
+    ) -> None:
         # @trace FR-CP-002
         provider.get_token()
         # Force TTL expiry then change file
@@ -117,11 +127,16 @@ class TestCursorTokenProvider:
 
     def test_discover_returns_none_when_no_candidates(self, tmp_path: Path) -> None:
         # @trace FR-CP-002
-        with patch("thegent.utils.routing_impl.cursor_provider._CURSOR_SERVER_TOKEN_CANDIDATES", []):
+        with patch(
+            "thegent.utils.routing_impl.cursor_provider._CURSOR_SERVER_TOKEN_CANDIDATES",
+            [],
+        ):
             result = CursorTokenProvider.discover()
         assert result is None
 
-    def test_discover_returns_provider_for_first_existing_file(self, tmp_path: Path) -> None:
+    def test_discover_returns_provider_for_first_existing_file(
+        self, tmp_path: Path
+    ) -> None:
         # @trace FR-CP-002
         token_path = tmp_path / "cursor-token.txt"
         token_path.write_text("sk-discovered", encoding="utf-8")
@@ -163,7 +178,9 @@ class TestCursorExecutorManager:
         assert manager._active_clients == []
 
     @pytest.mark.asyncio
-    async def test_rebind_executors_noop_when_token_unchanged(self, provider: CursorTokenProvider) -> None:
+    async def test_rebind_executors_noop_when_token_unchanged(
+        self, provider: CursorTokenProvider
+    ) -> None:
         # @trace FR-CP-002
         token = provider.get_token()
         manager = CursorExecutorManager(provider=provider)
@@ -177,7 +194,9 @@ class TestCursorExecutorManager:
         client.aclose.assert_not_awaited()
 
     @pytest.mark.asyncio
-    async def test_rebind_executors_tolerates_client_aclose_error(self, provider: CursorTokenProvider) -> None:
+    async def test_rebind_executors_tolerates_client_aclose_error(
+        self, provider: CursorTokenProvider
+    ) -> None:
         # @trace FR-CP-002
         manager = CursorExecutorManager(provider=provider)
         manager._last_token = "sk-stale"
@@ -190,7 +209,9 @@ class TestCursorExecutorManager:
         count = await manager.rebind_executors()
         assert count == 1
 
-    def test_get_auth_headers_returns_bearer(self, provider: CursorTokenProvider) -> None:
+    def test_get_auth_headers_returns_bearer(
+        self, provider: CursorTokenProvider
+    ) -> None:
         # @trace FR-CP-002
         manager = CursorExecutorManager(provider=provider)
         headers = manager.get_auth_headers()
@@ -272,7 +293,9 @@ class TestBuildCursorRoutingConfig:
             token_file="",
             auth_token="",
         )
-        with pytest.raises(ValueError, match="requires either token_file or auth_token"):
+        with pytest.raises(
+            ValueError, match="requires either token_file or auth_token"
+        ):
             cfg.to_cliproxy_block()
 
     def test_token_file_takes_precedence_over_auth_token(self) -> None:

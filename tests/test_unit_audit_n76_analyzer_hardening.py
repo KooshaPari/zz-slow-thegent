@@ -474,8 +474,12 @@ class TestFRGOVAN015FindingsSortedByPriorityDescending:
         # lint_violations: current=5, target=0 → severity 0.5, priority = 0.5*1.5 = 0.75
         result = _make_result(
             {
-                "test_coverage": _make_scan("test_coverage", current=50.0, target=100.0),
-                "lint_violations": _make_scan("lint_violations", current=5.0, target=0.0),
+                "test_coverage": _make_scan(
+                    "test_coverage", current=50.0, target=100.0
+                ),
+                "lint_violations": _make_scan(
+                    "lint_violations", current=5.0, target=0.0
+                ),
             }
         )
         findings = ha.analyze(result)

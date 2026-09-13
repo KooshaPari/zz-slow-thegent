@@ -41,9 +41,14 @@ def _autopilot_config(**overrides: Any) -> Any:
 
 @pytest.mark.unit
 @pytest.mark.requirement("WL-172")
-def test_autopilot_doctor_reports_missing_core_enablement(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_autopilot_doctor_reports_missing_core_enablement(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     config = _autopilot_config(enabled=False)
-    monkeypatch.setattr("thegent.integrations.workstream_autosync.load_autosync_config_from_env", lambda: config)
+    monkeypatch.setattr(
+        "thegent.integrations.workstream_autosync.load_autosync_config_from_env",
+        lambda: config,
+    )
 
     result = CliRunner().invoke(app, ["autopilot", "doctor", "--format", "json"])
 
@@ -55,7 +60,9 @@ def test_autopilot_doctor_reports_missing_core_enablement(monkeypatch: pytest.Mo
 
 @pytest.mark.unit
 @pytest.mark.requirement("WL-172")
-def test_autopilot_doctor_reports_missing_required_mappings(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_autopilot_doctor_reports_missing_required_mappings(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     mapping_cache = tmp_path / "mapping_cache.json"
     config = _autopilot_config(
         bootstrap_required_fields=["Status", "Priority"],
@@ -66,7 +73,10 @@ def test_autopilot_doctor_reports_missing_required_mappings(monkeypatch: pytest.
         github_project_number=1,
     )
     monkeypatch.setenv("GITHUB_TOKEN", "ghp_test")
-    monkeypatch.setattr("thegent.integrations.workstream_autosync.load_autosync_config_from_env", lambda: config)
+    monkeypatch.setattr(
+        "thegent.integrations.workstream_autosync.load_autosync_config_from_env",
+        lambda: config,
+    )
 
     result = CliRunner().invoke(app, ["autopilot", "doctor", "--format", "json"])
 
@@ -102,7 +112,11 @@ def test_cycle_metrics_emitted_per_sync_cycle(tmp_path: Path) -> None:
     asyncio.run(runner._perform_sync_cycle())
 
     assert cycle_metrics_path.exists()
-    records = [json.loads(line) for line in cycle_metrics_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    records = [
+        json.loads(line)
+        for line in cycle_metrics_path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
     assert len(records) == 1
     assert records[0]["status"] == "success"
     assert records[0]["item_count"] == 1
@@ -146,7 +160,9 @@ def test_single_writer_lock_blocking_marks_cycle_failed(tmp_path: Path) -> None:
 
 @pytest.mark.unit
 @pytest.mark.requirement("WL-169")
-def test_rate_limit_failures_trigger_bounded_backoff_retries(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_rate_limit_failures_trigger_bounded_backoff_retries(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     config = WorkstreamAutosyncConfig(
         enabled=True,
         github_enabled=True,
@@ -168,8 +184,12 @@ def test_rate_limit_failures_trigger_bounded_backoff_retries(monkeypatch: pytest
     async def _fake_sleep(seconds: float) -> None:
         sleep_calls.append(seconds)
 
-    monkeypatch.setattr("thegent.integrations.workstream_autosync.asyncio.sleep", _fake_sleep)
-    item = WorkstreamItem(item_id="WL-102", title="R", status="BACKLOG", priority="P1", area="sync")
+    monkeypatch.setattr(
+        "thegent.integrations.workstream_autosync.asyncio.sleep", _fake_sleep
+    )
+    item = WorkstreamItem(
+        item_id="WL-102", title="R", status="BACKLOG", priority="P1", area="sync"
+    )
 
     asyncio.run(
         runner._sync_in_partitions(
@@ -186,17 +206,25 @@ def test_rate_limit_failures_trigger_bounded_backoff_retries(monkeypatch: pytest
 
 @pytest.mark.unit
 @pytest.mark.requirement("WL-176")
-def test_mcp_up_skips_when_services_already_healthy(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_mcp_up_skips_when_services_already_healthy(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     compose_file = tmp_path / "process-compose.yaml"
     compose_file.write_text("version: '0.5'\n", encoding="utf-8")
-    monkeypatch.setattr("thegent.mcp.manage._process_compose_path", lambda: compose_file)
-    monkeypatch.setattr("thegent.mcp.manage.shutil.which", lambda _: "/usr/local/bin/process-compose")
+    monkeypatch.setattr(
+        "thegent.mcp.manage._process_compose_path", lambda: compose_file
+    )
+    monkeypatch.setattr(
+        "thegent.mcp.manage.shutil.which", lambda _: "/usr/local/bin/process-compose"
+    )
     monkeypatch.setattr("thegent.mcp.manage._services_healthy", lambda _settings: True)
     called = {"ran": False}
 
     def _unexpected_run(*args: Any, **kwargs: Any) -> Any:  # noqa: ANN401
         called["ran"] = True
-        raise AssertionError("run_subprocess_optimized should not be called when services are already healthy")
+        raise AssertionError(
+            "run_subprocess_optimized should not be called when services are already healthy"
+        )
 
     monkeypatch.setattr("thegent.mcp.manage.run_subprocess_optimized", _unexpected_run)
 
@@ -209,11 +237,17 @@ def test_mcp_up_skips_when_services_already_healthy(monkeypatch: pytest.MonkeyPa
 
 @pytest.mark.unit
 @pytest.mark.requirement("WL-176")
-def test_mcp_down_uses_explicit_compose_file(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_mcp_down_uses_explicit_compose_file(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     compose_file = tmp_path / "process-compose.yaml"
     compose_file.write_text("version: '0.5'\n", encoding="utf-8")
-    monkeypatch.setattr("thegent.mcp.manage._process_compose_path", lambda: compose_file)
-    monkeypatch.setattr("thegent.mcp.manage.shutil.which", lambda _: "/usr/local/bin/process-compose")
+    monkeypatch.setattr(
+        "thegent.mcp.manage._process_compose_path", lambda: compose_file
+    )
+    monkeypatch.setattr(
+        "thegent.mcp.manage.shutil.which", lambda _: "/usr/local/bin/process-compose"
+    )
     captured: dict[str, Any] = {}
 
     def _run(args: list[str], **kwargs: Any) -> Any:

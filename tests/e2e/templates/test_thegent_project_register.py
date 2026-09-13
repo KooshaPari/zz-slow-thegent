@@ -18,7 +18,9 @@ runner = CliRunner()
 
 def run_project_register() -> str:
     """Run project init in an isolated temp directory."""
-    with tempfile.TemporaryDirectory(prefix="thegent-project-register-") as project_path:
+    with tempfile.TemporaryDirectory(
+        prefix="thegent-project-register-"
+    ) as project_path:
         project_name = f"thegent-test-project-{Path(project_path).name}"
         result = runner.invoke(
             app,

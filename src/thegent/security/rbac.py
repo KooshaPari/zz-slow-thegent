@@ -8,6 +8,7 @@ from typing import Any
 
 class Role(Enum):
     """User roles for RBAC."""
+
     ADMIN = "admin"
     OPERATOR = "operator"
     AUDITOR = "auditor"
@@ -18,6 +19,7 @@ class Role(Enum):
 
 class Permission(Enum):
     """Permissions for RBAC."""
+
     RUN_AGENT = "run_agent"
     PURGE_DATA = "purge_data"
     VIEW_LOGS = "view_logs"

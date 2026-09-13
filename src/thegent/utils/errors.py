@@ -96,7 +96,9 @@ def safe_execute[T](
         return default
 
 
-def suppress_errors[T](default: T | None = None) -> Callable[[Callable[..., T]], Callable[..., T]]:
+def suppress_errors[T](
+    default: T | None = None,
+) -> Callable[[Callable[..., T]], Callable[..., T]]:
     """Decorator that suppresses errors and returns default.
 
     Args:
@@ -120,7 +122,9 @@ def suppress_errors[T](default: T | None = None) -> Callable[[Callable[..., T]],
     return decorator
 
 
-def wrap_errors(new_exception: type[Exception]) -> Callable[[Callable[..., T]], Callable[..., T]]:
+def wrap_errors(
+    new_exception: type[Exception],
+) -> Callable[[Callable[..., T]], Callable[..., T]]:
     """Decorator that wraps errors in a new exception type.
 
     Args:

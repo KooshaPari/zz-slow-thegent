@@ -8,45 +8,63 @@ import thegent.execution_jsonl_parsers as module
 
 
 @pytest.mark.unit
-def test_parse_checkpoint_by_id_uses_native_when_available(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_parse_checkpoint_by_id_uses_native_when_available(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     class _Native:
         @staticmethod
-        def parse_checkpoint_by_id(line: str, checkpoint_id: str) -> dict[str, str] | None:
+        def parse_checkpoint_by_id(
+            line: str, checkpoint_id: str
+        ) -> dict[str, str] | None:
             assert line == '{"checkpoint_id":"cp-1","status":"ok"}'
             assert checkpoint_id == "cp-1"
             return {"checkpoint_id": "cp-1", "status": "native"}
 
     monkeypatch.setattr(module, "_get_native_parser", lambda: _Native())
-    parsed = module.parse_checkpoint_by_id('{"checkpoint_id":"cp-1","status":"ok"}', "cp-1")
+    parsed = module.parse_checkpoint_by_id(
+        '{"checkpoint_id":"cp-1","status":"ok"}', "cp-1"
+    )
     assert parsed == {"checkpoint_id": "cp-1", "status": "native"}
 
 
 @pytest.mark.unit
-def test_parse_checkpoint_by_id_falls_back_to_python(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_parse_checkpoint_by_id_falls_back_to_python(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(module, "_get_native_parser", lambda: None)
-    parsed = module.parse_checkpoint_by_id('{"checkpoint_id":"cp-2","status":"ok"}', "cp-2")
+    parsed = module.parse_checkpoint_by_id(
+        '{"checkpoint_id":"cp-2","status":"ok"}', "cp-2"
+    )
     assert parsed == {"checkpoint_id": "cp-2", "status": "ok"}
 
 
 @pytest.mark.unit
-def test_parse_dlq_item_uses_native_when_available(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_parse_dlq_item_uses_native_when_available(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     class _Native:
         @staticmethod
-        def parse_dlq_item(line: str, status: str | None, run_id: str | None) -> dict[str, str] | None:
+        def parse_dlq_item(
+            line: str, status: str | None, run_id: str | None
+        ) -> dict[str, str] | None:
             assert line == '{"run_id":"r-1","status":"pending_review"}'
             assert status == "pending_review"
             assert run_id == "r-1"
             return {"run_id": "r-1", "status": "native"}
 
     monkeypatch.setattr(module, "_get_native_parser", lambda: _Native())
-    parsed = module.parse_dlq_item('{"run_id":"r-1","status":"pending_review"}', "pending_review", "r-1")
+    parsed = module.parse_dlq_item(
+        '{"run_id":"r-1","status":"pending_review"}', "pending_review", "r-1"
+    )
     assert parsed == {"run_id": "r-1", "status": "native"}
 
 
 @pytest.mark.unit
 def test_parse_dlq_item_falls_back_to_python(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(module, "_get_native_parser", lambda: None)
-    parsed = module.parse_dlq_item('{"run_id":"r-2","status":"pending_review"}', "pending_review", "r-2")
+    parsed = module.parse_dlq_item(
+        '{"run_id":"r-2","status":"pending_review"}', "pending_review", "r-2"
+    )
     assert parsed == {"run_id": "r-2", "status": "pending_review"}
 
 
@@ -65,7 +83,9 @@ def test_parse_override_unexpired_returns_false_on_invalid_json() -> None:
 
 
 @pytest.mark.unit
-def test_parse_checkpoint_line_uses_native_when_available(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_parse_checkpoint_line_uses_native_when_available(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     class _Native:
         @staticmethod
         def parse_checkpoint_line(line: str) -> dict[str, str] | None:
@@ -78,13 +98,17 @@ def test_parse_checkpoint_line_uses_native_when_available(monkeypatch: pytest.Mo
 
 
 @pytest.mark.unit
-def test_parse_override_unexpired_uses_native_when_available(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_parse_override_unexpired_uses_native_when_available(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     now = datetime.now(UTC)
 
     class _Native:
         @staticmethod
         def parse_override_unexpired(line: str, owner: str, now_iso: str) -> bool:
-            assert line == '{"owner":"ops","expires_at_utc":"2099-01-01T00:00:00+00:00"}'
+            assert (
+                line == '{"owner":"ops","expires_at_utc":"2099-01-01T00:00:00+00:00"}'
+            )
             assert owner == "ops"
             assert now_iso == now.isoformat()
             return True
@@ -99,7 +123,9 @@ def test_parse_override_unexpired_uses_native_when_available(monkeypatch: pytest
 
 
 @pytest.mark.unit
-def test_parse_fatigue_line_uses_native_when_available(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_parse_fatigue_line_uses_native_when_available(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     now = datetime.now(UTC)
 
     class _Native:
@@ -111,12 +137,16 @@ def test_parse_fatigue_line_uses_native_when_available(monkeypatch: pytest.Monke
             return 1
 
     monkeypatch.setattr(module, "_get_native_parser", lambda: _Native())
-    parsed = module.parse_fatigue_line('{"timestamp":"2026-02-21T00:00:00+00:00"}', now=now, window_s=60)
+    parsed = module.parse_fatigue_line(
+        '{"timestamp":"2026-02-21T00:00:00+00:00"}', now=now, window_s=60
+    )
     assert parsed == 1
 
 
 @pytest.mark.unit
-def test_parse_circuit_failure_uses_native_when_available(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_parse_circuit_failure_uses_native_when_available(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     now = datetime.now(UTC)
 
     class _Native:
@@ -148,7 +178,9 @@ def test_parse_circuit_failure_uses_native_when_available(monkeypatch: pytest.Mo
 
 
 @pytest.mark.unit
-def test_native_python_parity_for_jsonl_helpers_if_available(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_native_python_parity_for_jsonl_helpers_if_available(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     thegent_parser = pytest.importorskip("thegent_parser")
     required = (
         "parse_checkpoint_by_id",

@@ -50,4 +50,6 @@ def test_agents_and_claude_forbidden_sections_remain_semantically_aligned() -> N
     for header in SECTION_HEADERS:
         agents_section = _extract_section(agents_text, header)
         claude_section = _extract_section(claude_text, header)
-        assert _normalize_markdown(agents_section) == _normalize_markdown(claude_section), header
+        assert _normalize_markdown(agents_section) == _normalize_markdown(
+            claude_section
+        ), header

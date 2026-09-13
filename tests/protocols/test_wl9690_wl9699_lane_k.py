@@ -52,9 +52,17 @@ def test_wl9691_resolve_turn_cancel_turn_finds_existing_turn() -> None:
     # @trace WL-9691
     _reset_state()
     session_id = _seed_session()
-    turn = {"id": "turn-0001", "session_id": session_id, "input": "ship", "status": "in_progress", "approval_id": None}
+    turn = {
+        "id": "turn-0001",
+        "session_id": session_id,
+        "input": "ship",
+        "status": "in_progress",
+        "approval_id": None,
+    }
     SERVER_STATE.turns[turn["id"]] = turn
-    turn_id, resolved_turn, error = _resolve_turn_cancel_turn("req-9691", {"turn_id": turn["id"]})
+    turn_id, resolved_turn, error = _resolve_turn_cancel_turn(
+        "req-9691", {"turn_id": turn["id"]}
+    )
     assert error is None
     assert turn_id == turn["id"]
     assert resolved_turn is turn
@@ -95,7 +103,12 @@ def test_wl9695_cancel_turn_requested_approval_updates_requested_only() -> None:
     # @trace WL-9695
     _reset_state()
     session_id = _seed_session()
-    turn = {"id": "turn-0001", "session_id": session_id, "status": "in_progress", "approval_id": "approval-0001"}
+    turn = {
+        "id": "turn-0001",
+        "session_id": session_id,
+        "status": "in_progress",
+        "approval_id": "approval-0001",
+    }
     SERVER_STATE.approvals["approval-0001"] = {
         "id": "approval-0001",
         "turn_id": "turn-0001",
@@ -111,7 +124,12 @@ def test_wl9696_execute_turn_cancel_runs_cancel_and_approval_cleanup() -> None:
     # @trace WL-9696
     _reset_state()
     session_id = _seed_session()
-    turn = {"id": "turn-0001", "session_id": session_id, "status": "in_progress", "approval_id": "approval-0001"}
+    turn = {
+        "id": "turn-0001",
+        "session_id": session_id,
+        "status": "in_progress",
+        "approval_id": "approval-0001",
+    }
     SERVER_STATE.approvals["approval-0001"] = {
         "id": "approval-0001",
         "turn_id": "turn-0001",
@@ -155,9 +173,17 @@ def test_wl9699_resolve_turn_cancel_context_uses_split_parse_and_state_checks() 
     # @trace WL-9699
     _reset_state()
     session_id = _seed_session()
-    turn = {"id": "turn-0001", "session_id": session_id, "status": "in_progress", "input": "ship", "approval_id": None}
+    turn = {
+        "id": "turn-0001",
+        "session_id": session_id,
+        "status": "in_progress",
+        "input": "ship",
+        "approval_id": None,
+    }
     SERVER_STATE.turns[turn["id"]] = turn
-    turn_id, resolved_turn, error = _resolve_turn_cancel_context("req-9699", {"turn_id": turn["id"]})
+    turn_id, resolved_turn, error = _resolve_turn_cancel_context(
+        "req-9699", {"turn_id": turn["id"]}
+    )
     assert error is None
     assert turn_id == turn["id"]
     assert resolved_turn is turn

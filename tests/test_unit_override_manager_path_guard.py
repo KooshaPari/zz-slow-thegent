@@ -128,7 +128,9 @@ class TestOverrideManagerApplyGuard:
     ) -> None:
         """``rule/with/slash`` is rejected and no override file is written."""
         with pytest.raises(PolicyOverridePathError):
-            manager.apply_override("rule/with/slash", "reason", "sre", duration_minutes=1)
+            manager.apply_override(
+                "rule/with/slash", "reason", "sre", duration_minutes=1
+            )
         # Defense-in-depth: even if apply_override somehow let it through,
         # ``_save_override`` would re-validate. But since apply_override
         # raises, no file should ever exist on disk.
@@ -142,7 +144,9 @@ class TestOverrideManagerApplyGuard:
     ) -> None:
         """``rule\\backslash`` is rejected (Windows separator)."""
         with pytest.raises(PolicyOverridePathError):
-            manager.apply_override("rule\\backslash", "reason", "sre", duration_minutes=1)
+            manager.apply_override(
+                "rule\\backslash", "reason", "sre", duration_minutes=1
+            )
         assert list((mock_settings.session_dir / "overrides").glob("*.json")) == []
 
     def test_apply_override_rejects_double_dot(
@@ -152,7 +156,9 @@ class TestOverrideManagerApplyGuard:
     ) -> None:
         """A bare ``..`` substring is rejected."""
         with pytest.raises(PolicyOverridePathError):
-            manager.apply_override("rule..with..dots", "reason", "sre", duration_minutes=1)
+            manager.apply_override(
+                "rule..with..dots", "reason", "sre", duration_minutes=1
+            )
         assert list((mock_settings.session_dir / "overrides").glob("*.json")) == []
 
     def test_apply_override_rejects_parent_traversal(
@@ -221,7 +227,9 @@ class TestOverrideManagerApplyGuard:
         gained any files outside ``overrides/``.
         """
         with pytest.raises(PolicyOverridePathError):
-            manager.apply_override("../../etc/passwd", "reason", "sre", duration_minutes=1)
+            manager.apply_override(
+                "../../etc/passwd", "reason", "sre", duration_minutes=1
+            )
         # No files at all under session_dir that didn't exist before.
         for f in mock_settings.session_dir.rglob("*"):
             if f.is_file():
@@ -299,7 +307,9 @@ class TestOverrideManagerCleanupHardening:
 
         count = manager.cleanup_expired()
         assert count == 1
-        assert not (mock_settings.session_dir / "overrides" / "EXPIRED_OK.json").exists()
+        assert not (
+            mock_settings.session_dir / "overrides" / "EXPIRED_OK.json"
+        ).exists()
 
 
 # ---------------------------------------------------------------------------

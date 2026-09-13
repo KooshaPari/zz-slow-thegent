@@ -48,7 +48,9 @@ class TestRemoteToLocalAnnotationStandard:
     def test_annotate_creates_new_entry(self):
         """# @trace WL-238 — annotate() creates a new AnnotationEntry."""
         store = RemoteToLocalAnnotationStandard()
-        entry = store.annotate("item-1", "source-a", {"label": "priority-high", "owner": "alice"})
+        entry = store.annotate(
+            "item-1", "source-a", {"label": "priority-high", "owner": "alice"}
+        )
 
         assert entry.item_id == "item-1"
         assert entry.source == "source-a"
@@ -116,7 +118,11 @@ class TestRemoteToLocalAnnotationStandard:
         store.annotate("item-7", "source-b", {"key1": "old", "key2": "unchanged"})
         entry = store.merge("item-7", {"key1": "new", "key3": "added"})
 
-        assert entry.annotations == {"key1": "new", "key2": "unchanged", "key3": "added"}
+        assert entry.annotations == {
+            "key1": "new",
+            "key2": "unchanged",
+            "key3": "added",
+        }
 
     def test_merge_raises_keyerror_for_missing_item(self):
         """# @trace WL-238 — merge() raises KeyError if item_id does not exist."""

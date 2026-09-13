@@ -53,6 +53,7 @@ class ZmxBackend:
 @dataclass
 class ZmxBackendOptions:
     """Options for Zmx backend."""
+
     socket_path: str | None = None
     timeout: int = 30
     metadata: dict[str, Any] = field(default_factory=dict)

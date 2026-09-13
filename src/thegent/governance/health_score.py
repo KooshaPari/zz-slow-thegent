@@ -107,7 +107,9 @@ class HealthScoreComputer:
         health_targets_path = Path(health_targets_path)
         # FR-GOV-HS-002 — absolute path required.
         if not health_targets_path.is_absolute():
-            raise ValueError(f"health_targets_path must be an absolute path (got {health_targets_path!s})")
+            raise ValueError(
+                f"health_targets_path must be an absolute path (got {health_targets_path!s})"
+            )
         # FR-GOV-HS-004 — JSON corruption guard.
         try:
             with open(health_targets_path) as fh:
@@ -156,7 +158,9 @@ class HealthScoreComputer:
             target = dim_cfg["target"]
             direction = dim_cfg["direction"]
 
-            raw_value = dimension_values.get(dim_name, self._default_raw(target, direction))
+            raw_value = dimension_values.get(
+                dim_name, self._default_raw(target, direction)
+            )
             normalized = self._normalize(raw_value, target, direction)
 
             dimensions[dim_name] = DimensionScore(

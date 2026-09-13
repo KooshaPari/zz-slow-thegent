@@ -225,7 +225,9 @@ class WorkstreamAutosyncConfig:
     actor_signing_key: str = ""
     connector_capabilities: dict[str, list[str]] = field(default_factory=dict)
     required_connector_capabilities: dict[str, list[str]] = field(default_factory=dict)
-    connector_sla_thresholds: dict[str, ConnectorSLAThresholds] = field(default_factory=dict)
+    connector_sla_thresholds: dict[str, ConnectorSLAThresholds] = field(
+        default_factory=dict
+    )
     payload_checksum_enforced: bool = False
     expected_payload_checksum: str = ""
     emergency_stop_enabled: bool = True
@@ -286,11 +288,17 @@ class WorkstreamAutosyncConfig:
 
     @property
     def normalized_scope_statuses(self) -> set[str]:
-        return {status.strip().upper() for status in self.scope_statuses if status.strip()}
+        return {
+            status.strip().upper() for status in self.scope_statuses if status.strip()
+        }
 
     @property
     def normalized_scope_priorities(self) -> set[str]:
-        return {priority.strip().upper() for priority in self.scope_priorities if priority.strip()}
+        return {
+            priority.strip().upper()
+            for priority in self.scope_priorities
+            if priority.strip()
+        }
 
     @property
     def normalized_scope_wl_ranges(self) -> list[tuple[int, int]]:
@@ -316,11 +324,20 @@ class WorkstreamAutosyncConfig:
 
     def matches_scope_filters(self, item: "WorkstreamItem") -> bool:
         """Return whether a work item is included by configured sync scope filters."""
-        if self.normalized_scope_areas and item.area.strip().lower() not in self.normalized_scope_areas:
+        if (
+            self.normalized_scope_areas
+            and item.area.strip().lower() not in self.normalized_scope_areas
+        ):
             return False
-        if self.normalized_scope_statuses and item.status.strip().upper() not in self.normalized_scope_statuses:
+        if (
+            self.normalized_scope_statuses
+            and item.status.strip().upper() not in self.normalized_scope_statuses
+        ):
             return False
-        if self.normalized_scope_priorities and item.priority.strip().upper() not in self.normalized_scope_priorities:
+        if (
+            self.normalized_scope_priorities
+            and item.priority.strip().upper() not in self.normalized_scope_priorities
+        ):
             return False
         wl_ranges = self.normalized_scope_wl_ranges
         if wl_ranges:
@@ -337,13 +354,22 @@ class WorkstreamAutosyncConfig:
         """Check if config has at least one platform enabled."""
         if not self.enabled:
             return False
-        github_valid = bool(self.github_enabled and self.github_owner and self.github_project_number > 0)
-        linear_valid = bool(self.linear_enabled and self.linear_api_key and self.linear_team_key)
+        github_valid = bool(
+            self.github_enabled and self.github_owner and self.github_project_number > 0
+        )
+        linear_valid = bool(
+            self.linear_enabled and self.linear_api_key and self.linear_team_key
+        )
         return github_valid or linear_valid
 
     def should_sync_github(self) -> bool:
         """Check if GitHub sync is enabled and configured."""
-        return self.enabled and self.github_enabled and bool(self.github_owner) and self.github_project_number > 0
+        return (
+            self.enabled
+            and self.github_enabled
+            and bool(self.github_owner)
+            and self.github_project_number > 0
+        )
 
     def should_sync_linear(self) -> bool:
         """Check if Linear sync is enabled and configured."""
@@ -377,7 +403,9 @@ class WorkstreamAutosyncConfig:
             SyncDirection.BIDIRECTIONAL,
         )
 
-    def is_maintenance_active(self, connector: str, at: datetime | None = None, project: str | None = None) -> bool:
+    def is_maintenance_active(
+        self, connector: str, at: datetime | None = None, project: str | None = None
+    ) -> bool:
         """Return whether a connector is currently in planned maintenance."""
         now = at or datetime.now(UTC)
         target = connector.lower()
@@ -513,7 +541,9 @@ class SyncOperation:
             "errors": self.errors,
             "correlation_id": self.correlation_id,
             "started_at": self.started_at.isoformat(),
-            "completed_at": self.completed_at.isoformat() if self.completed_at else None,
+            "completed_at": self.completed_at.isoformat()
+            if self.completed_at
+            else None,
             "duration_seconds": self.duration_seconds,
         }
 
@@ -542,7 +572,9 @@ class SyncCycleManifest:
             "outputs": self.outputs,
             "previous_manifest_hash": self.previous_manifest_hash,
         }
-        digest = hashlib.sha256(json.dumps(payload, option=json.OPT_SORT_KEYS)).hexdigest()
+        digest = hashlib.sha256(
+            json.dumps(payload, option=json.OPT_SORT_KEYS)
+        ).hexdigest()
         return SyncCycleManifest(
             cycle_number=self.cycle_number,
             started_at=self.started_at,
@@ -602,7 +634,9 @@ class SyncFailureQueue:
         """Drop failures older than retention window."""
         now_utc = now or datetime.now(UTC)
         cutoff = now_utc - timedelta(seconds=self.retention_seconds)
-        self._entries = [entry for entry in self._entries if entry.occurred_at >= cutoff]
+        self._entries = [
+            entry for entry in self._entries if entry.occurred_at >= cutoff
+        ]
 
     def snapshot(self) -> list[FailureRecord]:
         """Return all active failure records."""
@@ -659,7 +693,9 @@ class WorkstreamParser:
         return [tag.strip().lower() for tag in raw.split(",") if tag.strip()]
 
     @staticmethod
-    def _parse_checkpoint_partitions(items_count: int, partition_size: int) -> list[WorkstreamPartition]:
+    def _parse_checkpoint_partitions(
+        items_count: int, partition_size: int
+    ) -> list[WorkstreamPartition]:
         """Build deterministic range partitions for large item streams."""
         step = max(1, partition_size)
         partitions = []
@@ -671,7 +707,9 @@ class WorkstreamParser:
         return partitions
 
     @classmethod
-    def split_items(cls, items: list[WorkstreamItem], partition_size: int) -> list[list[WorkstreamItem]]:
+    def split_items(
+        cls, items: list[WorkstreamItem], partition_size: int
+    ) -> list[list[WorkstreamItem]]:
         """Split items into partitions by configured size."""
         partitions: list[list[WorkstreamItem]] = []
         for chunk in cls._parse_checkpoint_partitions(len(items), partition_size):
@@ -735,7 +773,9 @@ class WorkstreamParser:
             tags = cls._parse_tags(tags_match.group(1).strip() if tags_match else None)
 
             sla_match = cls.SLA_PATTERN.search(section)
-            sla_hours = cls._parse_sla_hours(sla_match.group(1).strip() if sla_match else None)
+            sla_hours = cls._parse_sla_hours(
+                sla_match.group(1).strip() if sla_match else None
+            )
 
             item = WorkstreamItem(
                 item_id=item_id,
@@ -767,7 +807,9 @@ class WorkstreamParser:
         by_title: dict[str, list[WorkstreamItem]] = {}
         for item in items:
             by_title.setdefault(item.title.strip(), []).append(item)
-        duplicates = [(title, group) for title, group in by_title.items() if len(group) > 1]
+        duplicates = [
+            (title, group) for title, group in by_title.items() if len(group) > 1
+        ]
         if allow_none:
             return duplicates
         return [(title, group) for title, group in duplicates if title]
@@ -981,9 +1023,13 @@ def load_autosync_config_from_env() -> WorkstreamAutosyncConfig:
             payload = json.loads(value)
             if not isinstance(payload, list):
                 raise ValueError("THGENT_WORKSTREAM_WL_IGNORE_LIST JSON must be a list")
-            candidates = [str(item).strip().upper() for item in payload if str(item).strip()]
+            candidates = [
+                str(item).strip().upper() for item in payload if str(item).strip()
+            ]
         else:
-            candidates = [token.strip().upper() for token in value.split(",") if token.strip()]
+            candidates = [
+                token.strip().upper() for token in value.split(",") if token.strip()
+            ]
         for candidate in candidates:
             if not WL_ID_PATTERN.fullmatch(candidate):
                 raise ValueError(f"Invalid WL ignore ID: {candidate}")
@@ -998,7 +1044,9 @@ def load_autosync_config_from_env() -> WorkstreamAutosyncConfig:
             try:
                 payload = json.loads(candidate_windows)
             except json.JSONDecodeError as exc:
-                logger.warning("Invalid THGENT_AUTOSYNC_MAINTENANCE_WINDOWS JSON: %s", exc)
+                logger.warning(
+                    "Invalid THGENT_AUTOSYNC_MAINTENANCE_WINDOWS JSON: %s", exc
+                )
                 return []
             if not isinstance(payload, list):
                 return []
@@ -1006,7 +1054,9 @@ def load_autosync_config_from_env() -> WorkstreamAutosyncConfig:
                 if not isinstance(item, dict):
                     continue
                 connector = str(item.get("connector", "all")).strip().lower() or "all"
-                project = str(item.get("project", "default")).strip().lower() or "default"
+                project = (
+                    str(item.get("project", "default")).strip().lower() or "default"
+                )
                 start_raw = item.get("start_utc") or item.get("start")
                 end_raw = item.get("end_utc") or item.get("end")
                 reason = str(item.get("reason", "")).strip()
@@ -1016,8 +1066,12 @@ def load_autosync_config_from_env() -> WorkstreamAutosyncConfig:
                     maintenance_windows.append(
                         MaintenanceWindow(
                             connector=connector,
-                            start_utc=datetime.fromisoformat(str(start_raw).replace("Z", "+00:00")),
-                            end_utc=datetime.fromisoformat(str(end_raw).replace("Z", "+00:00")),
+                            start_utc=datetime.fromisoformat(
+                                str(start_raw).replace("Z", "+00:00")
+                            ),
+                            end_utc=datetime.fromisoformat(
+                                str(end_raw).replace("Z", "+00:00")
+                            ),
                             reason=reason,
                             project=project,
                         )
@@ -1033,13 +1087,17 @@ def load_autosync_config_from_env() -> WorkstreamAutosyncConfig:
 
             connector, separator, remainder = raw_entry.partition(":")
             if not separator:
-                logger.debug("Skipping malformed maintenance window token: %s", raw_entry)
+                logger.debug(
+                    "Skipping malformed maintenance window token: %s", raw_entry
+                )
                 continue
 
             def _parse_iso_pair(raw: str) -> tuple[datetime, datetime, str] | None:
                 if not raw:
                     return None
-                iso_pattern = re.compile(r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+\-]\d{2}:\d{2}))")
+                iso_pattern = re.compile(
+                    r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+\-]\d{2}:\d{2}))"
+                )
                 start_match = iso_pattern.match(raw)
                 if not start_match:
                     return None
@@ -1067,7 +1125,9 @@ def load_autosync_config_from_env() -> WorkstreamAutosyncConfig:
 
             parsed_window = _parse_iso_pair(remainder)
             if parsed_window is None:
-                logger.debug("Skipping malformed maintenance window token: %s", raw_entry)
+                logger.debug(
+                    "Skipping malformed maintenance window token: %s", raw_entry
+                )
                 continue
             start_utc, end_utc, remainder = parsed_window
             if ":" in remainder:
@@ -1088,7 +1148,9 @@ def load_autosync_config_from_env() -> WorkstreamAutosyncConfig:
                     )
                 )
             except (TypeError, ValueError):
-                logger.debug("Skipping malformed maintenance window token: %s", raw_entry)
+                logger.debug(
+                    "Skipping malformed maintenance window token: %s", raw_entry
+                )
         return maintenance_windows
 
     def parse_tag_taxonomy(raw: str | None) -> list[str]:
@@ -1146,10 +1208,14 @@ def load_autosync_config_from_env() -> WorkstreamAutosyncConfig:
         normalized: dict[str, list[str]] = {}
         for connector, values in payload.items():
             if isinstance(values, list):
-                normalized[str(connector).strip().lower()] = [str(value).strip().lower() for value in values]
+                normalized[str(connector).strip().lower()] = [
+                    str(value).strip().lower() for value in values
+                ]
         return normalized
 
-    def parse_connector_sla_thresholds(raw: str | None) -> dict[str, ConnectorSLAThresholds]:
+    def parse_connector_sla_thresholds(
+        raw: str | None,
+    ) -> dict[str, ConnectorSLAThresholds]:
         if not raw:
             return {}
         try:
@@ -1180,7 +1246,11 @@ def load_autosync_config_from_env() -> WorkstreamAutosyncConfig:
                     max_failure_rate=max_failure_value,
                 )
             except (TypeError, ValueError):
-                logger.debug("Skipping malformed connector SLA threshold for %s: %s", connector, value)
+                logger.debug(
+                    "Skipping malformed connector SLA threshold for %s: %s",
+                    connector,
+                    value,
+                )
                 continue
         return normalized
 
@@ -1188,14 +1258,18 @@ def load_autosync_config_from_env() -> WorkstreamAutosyncConfig:
     try:
         github_dir = SyncDirection(github_direction)
     except ValueError:
-        logger.warning("Invalid THGENT_GITHUB_DIRECTION: %s, using bidirectional", github_direction)
+        logger.warning(
+            "Invalid THGENT_GITHUB_DIRECTION: %s, using bidirectional", github_direction
+        )
         github_dir = SyncDirection.BIDIRECTIONAL
 
     linear_direction = os.getenv("THGENT_LINEAR_DIRECTION", "bidirectional")
     try:
         linear_dir = SyncDirection(linear_direction)
     except ValueError:
-        logger.warning("Invalid THGENT_LINEAR_DIRECTION: %s, using bidirectional", linear_direction)
+        logger.warning(
+            "Invalid THGENT_LINEAR_DIRECTION: %s, using bidirectional", linear_direction
+        )
         linear_dir = SyncDirection.BIDIRECTIONAL
 
     work_stream_path = os.getenv("THGENT_WORKSTREAM_PATH")
@@ -1204,40 +1278,78 @@ def load_autosync_config_from_env() -> WorkstreamAutosyncConfig:
     cycle_manifest_path = os.getenv("THGENT_WORKSTREAM_AUTOSYNC_CYCLE_MANIFEST_PATH")
     cycle_metrics_path = os.getenv("THGENT_WORKSTREAM_AUTOSYNC_CYCLE_METRICS_PATH")
     change_digest_path = os.getenv("THGENT_WORKSTREAM_AUTOSYNC_CHANGE_DIGEST_PATH")
-    reflection_event_log_path = os.getenv("THGENT_WORKSTREAM_AUTOSYNC_REFLECTION_EVENT_LOG_PATH")
+    reflection_event_log_path = os.getenv(
+        "THGENT_WORKSTREAM_AUTOSYNC_REFLECTION_EVENT_LOG_PATH"
+    )
     failure_queue_path = os.getenv("THGENT_WORKSTREAM_AUTOSYNC_FAILURE_QUEUE_PATH")
-    autosync_prometheus_export_path = os.getenv("THGENT_AUTOSYNC_PROMETHEUS_EXPORT_PATH")
+    autosync_prometheus_export_path = os.getenv(
+        "THGENT_AUTOSYNC_PROMETHEUS_EXPORT_PATH"
+    )
     connector_mapping_cache_path = os.getenv("THGENT_CONNECTOR_MAPPING_CACHE_PATH")
     trend_file_path = os.getenv("THGENT_WORKSTREAM_AUTOSYNC_TREND_PATH")
     writer_lock_path = os.getenv("THGENT_WORKSTREAM_AUTOSYNC_LOCK_PATH")
     emergency_stop_file_path = os.getenv("THGENT_AUTOSYNC_EMERGENCY_STOP_FILE_PATH")
     incident_bundle_path = os.getenv("THGENT_WORKSTREAM_INCIDENT_BUNDLE_PATH")
     bootstrap_mapping_cache_path = os.getenv("THGENT_CONNECTOR_MAPPING_CACHE_PATH")
-    emergency_stop_env_var = os.getenv("THGENT_AUTOSYNC_EMERGENCY_STOP_ENV_VAR", "THGENT_AUTOSYNC_EMERGENCY_STOP")
-    maintenance_windows = parse_json_windows(os.getenv("THGENT_AUTOSYNC_MAINTENANCE_WINDOWS"))
+    emergency_stop_env_var = os.getenv(
+        "THGENT_AUTOSYNC_EMERGENCY_STOP_ENV_VAR", "THGENT_AUTOSYNC_EMERGENCY_STOP"
+    )
+    maintenance_windows = parse_json_windows(
+        os.getenv("THGENT_AUTOSYNC_MAINTENANCE_WINDOWS")
+    )
     allowed_tags = parse_tag_taxonomy(os.getenv("THGENT_WORKSTREAM_TAG_TAXONOMY"))
     wl_ignore_list = parse_wl_ignore_list(os.getenv("THGENT_WORKSTREAM_WL_IGNORE_LIST"))
-    connector_health_states = parse_connector_health_states(os.getenv("THGENT_CONNECTOR_HEALTH_STATES"))
-    connector_capabilities = parse_capability_map(os.getenv("THGENT_CONNECTOR_CAPABILITIES"))
-    required_connector_capabilities = parse_capability_map(os.getenv("THGENT_REQUIRED_CONNECTOR_CAPABILITIES"))
-    connector_sla_thresholds = parse_connector_sla_thresholds(os.getenv("THGENT_AUTOSYNC_CONNECTOR_SLA_THRESHOLDS"))
-    bootstrap_required_fields = parse_bootstrap_mappings(os.getenv("THGENT_BOOTSTRAP_REQUIRED_FIELDS"))
+    connector_health_states = parse_connector_health_states(
+        os.getenv("THGENT_CONNECTOR_HEALTH_STATES")
+    )
+    connector_capabilities = parse_capability_map(
+        os.getenv("THGENT_CONNECTOR_CAPABILITIES")
+    )
+    required_connector_capabilities = parse_capability_map(
+        os.getenv("THGENT_REQUIRED_CONNECTOR_CAPABILITIES")
+    )
+    connector_sla_thresholds = parse_connector_sla_thresholds(
+        os.getenv("THGENT_AUTOSYNC_CONNECTOR_SLA_THRESHOLDS")
+    )
+    bootstrap_required_fields = parse_bootstrap_mappings(
+        os.getenv("THGENT_BOOTSTRAP_REQUIRED_FIELDS")
+    )
     scope_areas = parse_scope_tokens(os.getenv("THGENT_WORKSTREAM_SYNC_SCOPE_AREAS"))
-    scope_statuses = parse_scope_tokens(os.getenv("THGENT_WORKSTREAM_SYNC_SCOPE_STATUSES"), upper=True)
-    scope_priorities = parse_scope_tokens(os.getenv("THGENT_WORKSTREAM_SYNC_SCOPE_PRIORITIES"), upper=True)
-    scope_wl_ranges = parse_scope_tokens(os.getenv("THGENT_WORKSTREAM_SYNC_SCOPE_WL_RANGES"), upper=True)
-    remote_missing_policy_raw = os.getenv("THGENT_WORKSTREAM_REMOTE_MISSING_ITEM_POLICY", "ignore").strip().lower()
+    scope_statuses = parse_scope_tokens(
+        os.getenv("THGENT_WORKSTREAM_SYNC_SCOPE_STATUSES"), upper=True
+    )
+    scope_priorities = parse_scope_tokens(
+        os.getenv("THGENT_WORKSTREAM_SYNC_SCOPE_PRIORITIES"), upper=True
+    )
+    scope_wl_ranges = parse_scope_tokens(
+        os.getenv("THGENT_WORKSTREAM_SYNC_SCOPE_WL_RANGES"), upper=True
+    )
+    remote_missing_policy_raw = (
+        os.getenv("THGENT_WORKSTREAM_REMOTE_MISSING_ITEM_POLICY", "ignore")
+        .strip()
+        .lower()
+    )
     try:
         remote_missing_policy = RemoteMissingItemPolicy(remote_missing_policy_raw)
     except ValueError as exc:
-        raise ValueError(f"Invalid THGENT_WORKSTREAM_REMOTE_MISSING_ITEM_POLICY: {remote_missing_policy_raw}") from exc
+        raise ValueError(
+            f"Invalid THGENT_WORKSTREAM_REMOTE_MISSING_ITEM_POLICY: {remote_missing_policy_raw}"
+        ) from exc
     metadata_last_refreshed_at_raw = os.getenv("THGENT_METADATA_LAST_REFRESHED_AT")
     metadata_last_refreshed_at = None
     if metadata_last_refreshed_at_raw:
-        metadata_last_refreshed_at = datetime.fromisoformat(metadata_last_refreshed_at_raw.replace("Z", "+00:00"))
+        metadata_last_refreshed_at = datetime.fromisoformat(
+            metadata_last_refreshed_at_raw.replace("Z", "+00:00")
+        )
     explicit_enabled = os.getenv("THGENT_WORKSTREAM_AUTOSYNC_ENABLED")
-    repo_previously_opted_in = parse_bool(os.getenv("THGENT_WORKSTREAM_AUTOSYNC_PREVIOUS_OPT_IN"), default=False)
-    migration_phase = os.getenv("THGENT_WORKSTREAM_AUTOSYNC_MIGRATION_PHASE", "phase1-detect").strip().lower()
+    repo_previously_opted_in = parse_bool(
+        os.getenv("THGENT_WORKSTREAM_AUTOSYNC_PREVIOUS_OPT_IN"), default=False
+    )
+    migration_phase = (
+        os.getenv("THGENT_WORKSTREAM_AUTOSYNC_MIGRATION_PHASE", "phase1-detect")
+        .strip()
+        .lower()
+    )
     error_budget_max_consecutive_failures = parse_int(
         os.getenv("THGENT_AUTOSYNC_ERROR_BUDGET_MAX_CONSECUTIVE_FAILURES", "3"),
         default=3,
@@ -1266,7 +1378,9 @@ def load_autosync_config_from_env() -> WorkstreamAutosyncConfig:
         enabled=enabled,
         migration_phase=migration_phase,
         repo_previously_opted_in=repo_previously_opted_in,
-        cycle_interval_seconds=parse_int(os.getenv("THGENT_WORKSTREAM_AUTOSYNC_INTERVAL", "300"), default=300),
+        cycle_interval_seconds=parse_int(
+            os.getenv("THGENT_WORKSTREAM_AUTOSYNC_INTERVAL", "300"), default=300
+        ),
         checkpoint_ttl_seconds=parse_int(
             os.getenv("THGENT_WORKSTREAM_AUTOSYNC_TTL_SECONDS", str(3600)),
             default=3600,
@@ -1277,25 +1391,38 @@ def load_autosync_config_from_env() -> WorkstreamAutosyncConfig:
         ),
         github_enabled=parse_bool(os.getenv("THGENT_GITHUB_ENABLED")),
         github_owner=os.getenv("THGENT_GITHUB_OWNER", ""),
-        github_project_number=parse_int(os.getenv("THGENT_GITHUB_PROJECT_NUMBER", "0"), default=0),
+        github_project_number=parse_int(
+            os.getenv("THGENT_GITHUB_PROJECT_NUMBER", "0"), default=0
+        ),
         github_direction=github_dir,
         github_sandbox_mode=parse_bool(os.getenv("THGENT_GITHUB_SANDBOX_MODE")),
-        github_sandbox_project_number=parse_int(os.getenv("THGENT_GITHUB_SANDBOX_PROJECT_NUMBER", "0"), default=0),
+        github_sandbox_project_number=parse_int(
+            os.getenv("THGENT_GITHUB_SANDBOX_PROJECT_NUMBER", "0"), default=0
+        ),
         linear_enabled=parse_bool(os.getenv("THGENT_LINEAR_ENABLED")),
         linear_api_key=os.getenv("THGENT_LINEAR_API_KEY", ""),
         linear_team_key=os.getenv("THGENT_LINEAR_TEAM_KEY", ""),
         linear_direction=linear_dir,
         work_stream_path=Path(work_stream_path) if work_stream_path else None,
         status_file_path=Path(status_file_path) if status_file_path else None,
-        checkpoint_file_path=Path(checkpoint_file_path) if checkpoint_file_path else None,
+        checkpoint_file_path=Path(checkpoint_file_path)
+        if checkpoint_file_path
+        else None,
         cycle_manifest_path=Path(cycle_manifest_path) if cycle_manifest_path else None,
         cycle_metrics_path=Path(cycle_metrics_path) if cycle_metrics_path else None,
         change_digest_path=Path(change_digest_path) if change_digest_path else None,
-        reflection_event_log_path=(Path(reflection_event_log_path) if reflection_event_log_path else None),
+        reflection_event_log_path=(
+            Path(reflection_event_log_path) if reflection_event_log_path else None
+        ),
         maintenance_windows=maintenance_windows,
-        max_partition_size=parse_int(os.getenv("THGENT_WORKSTREAM_AUTOSYNC_MAX_PARTITION_SIZE", "200"), default=200),
+        max_partition_size=parse_int(
+            os.getenv("THGENT_WORKSTREAM_AUTOSYNC_MAX_PARTITION_SIZE", "200"),
+            default=200,
+        ),
         allowed_tags=allowed_tags,
-        adaptive_interval_enabled=parse_bool(os.getenv("THGENT_WORKSTREAM_ADAPTIVE_INTERVAL_ENABLED")),
+        adaptive_interval_enabled=parse_bool(
+            os.getenv("THGENT_WORKSTREAM_ADAPTIVE_INTERVAL_ENABLED")
+        ),
         adaptive_interval_min_seconds=parse_int(
             os.getenv("THGENT_WORKSTREAM_ADAPTIVE_INTERVAL_MIN_SECONDS", "30"),
             default=30,
@@ -1305,37 +1432,61 @@ def load_autosync_config_from_env() -> WorkstreamAutosyncConfig:
             default=900,
         ),
         connector_health_states=connector_health_states,
-        incident_bundle_path=Path(incident_bundle_path) if incident_bundle_path else None,
-        metadata_ttl_seconds=parse_int(os.getenv("THGENT_METADATA_TTL_SECONDS", "3600"), default=3600),
+        incident_bundle_path=Path(incident_bundle_path)
+        if incident_bundle_path
+        else None,
+        metadata_ttl_seconds=parse_int(
+            os.getenv("THGENT_METADATA_TTL_SECONDS", "3600"), default=3600
+        ),
         metadata_last_refreshed_at=metadata_last_refreshed_at,
         bootstrap_connector=os.getenv("THGENT_BOOTSTRAP_CONNECTOR", "github"),
         bootstrap_required_fields=bootstrap_required_fields,
-        bootstrap_mapping_cache_path=Path(bootstrap_mapping_cache_path) if bootstrap_mapping_cache_path else None,
+        bootstrap_mapping_cache_path=Path(bootstrap_mapping_cache_path)
+        if bootstrap_mapping_cache_path
+        else None,
         project_id=os.getenv("THGENT_WORKSTREAM_PROJECT_ID", "default"),
-        require_actor_identity=parse_bool(os.getenv("THGENT_AUTOSYNC_REQUIRE_ACTOR_IDENTITY")),
+        require_actor_identity=parse_bool(
+            os.getenv("THGENT_AUTOSYNC_REQUIRE_ACTOR_IDENTITY")
+        ),
         actor_id=os.getenv("THGENT_AUTOSYNC_ACTOR_ID", ""),
         actor_signature=os.getenv("THGENT_AUTOSYNC_ACTOR_SIGNATURE", ""),
         actor_signing_key=os.getenv("THGENT_AUTOSYNC_ACTOR_SIGNING_KEY", ""),
         connector_capabilities=connector_capabilities,
         required_connector_capabilities=required_connector_capabilities,
         connector_sla_thresholds=connector_sla_thresholds,
-        payload_checksum_enforced=parse_bool(os.getenv("THGENT_AUTOSYNC_PAYLOAD_CHECKSUM_ENFORCED")),
-        expected_payload_checksum=os.getenv("THGENT_AUTOSYNC_EXPECTED_PAYLOAD_CHECKSUM", ""),
+        payload_checksum_enforced=parse_bool(
+            os.getenv("THGENT_AUTOSYNC_PAYLOAD_CHECKSUM_ENFORCED")
+        ),
+        expected_payload_checksum=os.getenv(
+            "THGENT_AUTOSYNC_EXPECTED_PAYLOAD_CHECKSUM", ""
+        ),
         failure_queue_path=Path(failure_queue_path) if failure_queue_path else None,
-        connector_mapping_cache_path=Path(connector_mapping_cache_path) if connector_mapping_cache_path else None,
+        connector_mapping_cache_path=Path(connector_mapping_cache_path)
+        if connector_mapping_cache_path
+        else None,
         scope_areas=scope_areas,
         scope_statuses=scope_statuses,
         scope_priorities=scope_priorities,
         scope_wl_ranges=scope_wl_ranges,
         remote_missing_item_policy=remote_missing_policy,
         autosync_prometheus_export_path=(
-            Path(autosync_prometheus_export_path) if autosync_prometheus_export_path else None
+            Path(autosync_prometheus_export_path)
+            if autosync_prometheus_export_path
+            else None
         ),
         wl_ignore_list=wl_ignore_list,
-        github_write_timeout_seconds=parse_float(os.getenv("THGENT_GITHUB_WRITE_TIMEOUT_SECONDS"), default=30.0),
-        github_read_timeout_seconds=parse_float(os.getenv("THGENT_GITHUB_READ_TIMEOUT_SECONDS"), default=30.0),
-        linear_write_timeout_seconds=parse_float(os.getenv("THGENT_LINEAR_WRITE_TIMEOUT_SECONDS"), default=30.0),
-        linear_read_timeout_seconds=parse_float(os.getenv("THGENT_LINEAR_READ_TIMEOUT_SECONDS"), default=30.0),
+        github_write_timeout_seconds=parse_float(
+            os.getenv("THGENT_GITHUB_WRITE_TIMEOUT_SECONDS"), default=30.0
+        ),
+        github_read_timeout_seconds=parse_float(
+            os.getenv("THGENT_GITHUB_READ_TIMEOUT_SECONDS"), default=30.0
+        ),
+        linear_write_timeout_seconds=parse_float(
+            os.getenv("THGENT_LINEAR_WRITE_TIMEOUT_SECONDS"), default=30.0
+        ),
+        linear_read_timeout_seconds=parse_float(
+            os.getenv("THGENT_LINEAR_READ_TIMEOUT_SECONDS"), default=30.0
+        ),
         connector_circuit_breaker_failure_threshold=parse_int(
             os.getenv("THGENT_AUTOSYNC_CONNECTOR_BREAKER_FAILURE_THRESHOLD"),
             default=3,
@@ -1349,26 +1500,55 @@ def load_autosync_config_from_env() -> WorkstreamAutosyncConfig:
             default=60.0,
         ),
         failure_queue_retention_seconds=parse_int(
-            os.getenv("THGENT_WORKSTREAM_AUTOSYNC_FAILURE_QUEUE_TTL_SECONDS", str(60 * 60 * 24)),
+            os.getenv(
+                "THGENT_WORKSTREAM_AUTOSYNC_FAILURE_QUEUE_TTL_SECONDS",
+                str(60 * 60 * 24),
+            ),
             default=60 * 60 * 24,
         ),
-        simulation_mode=parse_bool(os.getenv("THGENT_WORKSTREAM_AUTOSYNC_SIMULATION_MODE")),
-        snapshot_retention_count=parse_int(os.getenv("THGENT_WORKSTREAM_AUTOSYNC_SNAPSHOT_RETENTION", "20"), 20),
+        simulation_mode=parse_bool(
+            os.getenv("THGENT_WORKSTREAM_AUTOSYNC_SIMULATION_MODE")
+        ),
+        snapshot_retention_count=parse_int(
+            os.getenv("THGENT_WORKSTREAM_AUTOSYNC_SNAPSHOT_RETENTION", "20"), 20
+        ),
         trend_file_path=Path(trend_file_path) if trend_file_path else None,
-        artifact_encryption_enabled=parse_bool(os.getenv("THGENT_AUTOSYNC_ARTIFACT_ENCRYPTION")),
+        artifact_encryption_enabled=parse_bool(
+            os.getenv("THGENT_AUTOSYNC_ARTIFACT_ENCRYPTION")
+        ),
         artifact_encryption_key=os.getenv("THGENT_AUTOSYNC_ARTIFACT_KEY", ""),
-        strict_tag_validation=parse_bool(os.getenv("THGENT_WORKSTREAM_STRICT_TAG_VALIDATION")),
-        strict_title_validation=parse_bool(os.getenv("THGENT_WORKSTREAM_STRICT_TITLE_VALIDATION")),
-        emergency_stop_enabled=parse_bool(os.getenv("THGENT_AUTOSYNC_EMERGENCY_STOP_ENABLED"), default=True),
-        emergency_stop_file_path=Path(emergency_stop_file_path) if emergency_stop_file_path else None,
+        strict_tag_validation=parse_bool(
+            os.getenv("THGENT_WORKSTREAM_STRICT_TAG_VALIDATION")
+        ),
+        strict_title_validation=parse_bool(
+            os.getenv("THGENT_WORKSTREAM_STRICT_TITLE_VALIDATION")
+        ),
+        emergency_stop_enabled=parse_bool(
+            os.getenv("THGENT_AUTOSYNC_EMERGENCY_STOP_ENABLED"), default=True
+        ),
+        emergency_stop_file_path=Path(emergency_stop_file_path)
+        if emergency_stop_file_path
+        else None,
         emergency_stop_env_var=emergency_stop_env_var,
-        writer_lock_enabled=parse_bool(os.getenv("THGENT_WORKSTREAM_AUTOSYNC_LOCK_ENABLED"), default=True),
+        writer_lock_enabled=parse_bool(
+            os.getenv("THGENT_WORKSTREAM_AUTOSYNC_LOCK_ENABLED"), default=True
+        ),
         writer_lock_path=Path(writer_lock_path) if writer_lock_path else None,
-        rate_limit_max_retries=parse_int(os.getenv("THGENT_AUTOSYNC_RATE_LIMIT_MAX_RETRIES"), default=2),
-        rate_limit_initial_wait=parse_float(os.getenv("THGENT_AUTOSYNC_RATE_LIMIT_INITIAL_WAIT"), default=1.0),
-        rate_limit_max_wait=parse_float(os.getenv("THGENT_AUTOSYNC_RATE_LIMIT_MAX_WAIT"), default=16.0),
-        rate_limit_multiplier=parse_float(os.getenv("THGENT_AUTOSYNC_RATE_LIMIT_MULTIPLIER"), default=2.0),
-        standalone_mode=parse_bool(os.getenv("THGENT_AUTOSYNC_STANDALONE_MODE"), default=True),
+        rate_limit_max_retries=parse_int(
+            os.getenv("THGENT_AUTOSYNC_RATE_LIMIT_MAX_RETRIES"), default=2
+        ),
+        rate_limit_initial_wait=parse_float(
+            os.getenv("THGENT_AUTOSYNC_RATE_LIMIT_INITIAL_WAIT"), default=1.0
+        ),
+        rate_limit_max_wait=parse_float(
+            os.getenv("THGENT_AUTOSYNC_RATE_LIMIT_MAX_WAIT"), default=16.0
+        ),
+        rate_limit_multiplier=parse_float(
+            os.getenv("THGENT_AUTOSYNC_RATE_LIMIT_MULTIPLIER"), default=2.0
+        ),
+        standalone_mode=parse_bool(
+            os.getenv("THGENT_AUTOSYNC_STANDALONE_MODE"), default=True
+        ),
         shadow_mode=parse_bool(os.getenv("THGENT_WORKSTREAM_AUTOSYNC_SHADOW_MODE")),
         error_budget_max_consecutive_failures=error_budget_max_consecutive_failures,
         error_budget_max_failure_rate=error_budget_max_failure_rate,

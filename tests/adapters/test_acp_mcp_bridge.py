@@ -53,10 +53,14 @@ def _make_acp_result(
     Returns:
         Populated :class:`ACPResult`.
     """
-    return ACPResult(success=success, result=result, agent_id=agent_id, elapsed_ms=elapsed_ms)
+    return ACPResult(
+        success=success, result=result, agent_id=agent_id, elapsed_ms=elapsed_ms
+    )
 
 
-def _make_mock_acp_client(result: ACPResult | None = None, side_effect: Exception | None = None) -> AsyncMock:
+def _make_mock_acp_client(
+    result: ACPResult | None = None, side_effect: Exception | None = None
+) -> AsyncMock:
     """Create an AsyncMock ACPClient.
 
     Args:
@@ -152,7 +156,9 @@ class TestACPToolDescriptor:
         """to_dict result can be JSON-serialised without error."""
         import json
 
-        desc = ACPToolDescriptor(name="tool", description="desc", parameters={"p": {"type": "str"}})
+        desc = ACPToolDescriptor(
+            name="tool", description="desc", parameters={"p": {"type": "str"}}
+        )
         json.dumps(desc.to_dict())  # must not raise
 
 
@@ -294,7 +300,9 @@ class TestMcpToolToAcpTask:
     @pytest.mark.asyncio
     async def test_propagates_acp_server_unreachable(self) -> None:
         """ACPServerUnreachableError propagates from mcp_tool_to_acp_task."""
-        client = _make_mock_acp_client(side_effect=ACPServerUnreachableError("no route"))
+        client = _make_mock_acp_client(
+            side_effect=ACPServerUnreachableError("no route")
+        )
         bridge = AcpMcpBridge(acp_client=client)
 
         with pytest.raises(ACPServerUnreachableError):
@@ -346,7 +354,9 @@ class TestAcpAgentToMcpTool:
 
         with patch("thegent.adapters.acp_mcp_bridge.ACPClient") as mock_cls:
             mock_instance = AsyncMock()
-            mock_instance.send_task = AsyncMock(return_value=_make_acp_result(result=expected_result))
+            mock_instance.send_task = AsyncMock(
+                return_value=_make_acp_result(result=expected_result)
+            )
             mock_cls.return_value = mock_instance
 
             client = _make_mock_acp_client()
@@ -384,7 +394,9 @@ class TestAcpAgentToMcpTool:
         """ACPServerUnreachableError propagates unchanged."""
         with patch("thegent.adapters.acp_mcp_bridge.ACPClient") as mock_cls:
             mock_instance = AsyncMock()
-            mock_instance.send_task = AsyncMock(side_effect=ACPServerUnreachableError("no route to host"))
+            mock_instance.send_task = AsyncMock(
+                side_effect=ACPServerUnreachableError("no route to host")
+            )
             mock_cls.return_value = mock_instance
 
             client = _make_mock_acp_client()
@@ -402,7 +414,9 @@ class TestAcpAgentToMcpTool:
         """ACPClientError is re-raised as ACPAgentCallError."""
         with patch("thegent.adapters.acp_mcp_bridge.ACPClient") as mock_cls:
             mock_instance = AsyncMock()
-            mock_instance.send_task = AsyncMock(side_effect=ACPClientError(500, "internal server error"))
+            mock_instance.send_task = AsyncMock(
+                side_effect=ACPClientError(500, "internal server error")
+            )
             mock_cls.return_value = mock_instance
 
             client = _make_mock_acp_client()
@@ -424,7 +438,9 @@ class TestAcpAgentToMcpTool:
         bridge = AcpMcpBridge(acp_client=client)
 
         with pytest.raises(ValueError, match="agent_url"):
-            await bridge.acp_agent_to_mcp_tool(agent_url="", task="any task", payload={})
+            await bridge.acp_agent_to_mcp_tool(
+                agent_url="", task="any task", payload={}
+            )
 
     @pytest.mark.asyncio
     async def test_empty_task_raises_value_error(self) -> None:
@@ -433,7 +449,9 @@ class TestAcpAgentToMcpTool:
         bridge = AcpMcpBridge(acp_client=client)
 
         with pytest.raises(ValueError, match="task"):
-            await bridge.acp_agent_to_mcp_tool(agent_url="http://agent:8080", task="", payload={})
+            await bridge.acp_agent_to_mcp_tool(
+                agent_url="http://agent:8080", task="", payload={}
+            )
 
     @pytest.mark.asyncio
     async def test_payload_forwarded_as_context(self) -> None:

@@ -24,6 +24,8 @@ def list_modes() -> list[str]:
 def suggest_mode(task_type: str) -> str:
     """Suggest an orchestration mode for a given task type."""
     return "default"
+
+
 # Stub implementation - functionality not available
 __all__ = ["MODE_CATALOG", "MultiAgentMode"]
 

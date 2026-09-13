@@ -13,6 +13,7 @@ class AutomationError(Exception):
 @dataclass
 class AutomationResult:
     """Result of an automation operation."""
+
     success: bool
     message: str = ""
     data: dict[str, Any] | None = None

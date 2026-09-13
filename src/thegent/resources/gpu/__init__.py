@@ -1,10 +1,12 @@
 """Stub module."""
+
 from dataclasses import dataclass
 
 
 @dataclass
 class GpuInfo:
     """GPU information."""
+
     name: str = ""
     memory_total: int = 0
     memory_used: int = 0
@@ -26,4 +28,3 @@ __all__ = ["GpuInfo", "GpuMonitor", "GpuMonitorError"]
 
 class GpuMonitorError(Exception):
     """Error in GPU monitoring."""
-

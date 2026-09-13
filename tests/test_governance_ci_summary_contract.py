@@ -92,7 +92,9 @@ def test_governance_selector_jobs_keep_fail_closed_signal_grep_contract(
 
 
 @pytest.mark.unit
-def test_governance_alert_summary_script_renders_markdown_contract(tmp_path: Path) -> None:
+def test_governance_alert_summary_script_renders_markdown_contract(
+    tmp_path: Path,
+) -> None:
     log_file = tmp_path / "selector.log"
     log_file.write_text(
         "\n".join(
@@ -107,7 +109,14 @@ def test_governance_alert_summary_script_renders_markdown_contract(tmp_path: Pat
     )
     script = _repo_root() / "scripts/governance_alert_summary.py"
     proc = subprocess.run(
-        [sys.executable, str(script), "--log", str(log_file), "--title", "Governance Summary Contract"],
+        [
+            sys.executable,
+            str(script),
+            "--log",
+            str(log_file),
+            "--title",
+            "Governance Summary Contract",
+        ],
         cwd=_repo_root(),
         capture_output=True,
         text=True,

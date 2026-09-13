@@ -36,7 +36,9 @@ def _reset_lane_diagnostics() -> None:
     execution.reset_execution_diagnostics()
 
 
-def test_wl6860_control_plane_not_configured_metadata(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6860_control_plane_not_configured_metadata(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.delenv("THGENT_CONTROL_PLANE_URL", raising=False)
 
     provider = config_provider.get_config_provider()
@@ -47,7 +49,9 @@ def test_wl6860_control_plane_not_configured_metadata(monkeypatch: pytest.Monkey
     assert metadata["dependency_missing"] is False
 
 
-def test_wl6860_control_plane_import_failure_records_metadata(monkeypatch: pytest.MonkeyPatch, caplog) -> None:
+def test_wl6860_control_plane_import_failure_records_metadata(
+    monkeypatch: pytest.MonkeyPatch, caplog
+) -> None:
     monkeypatch.setenv("THGENT_CONTROL_PLANE_URL", "https://cp.example")
     real_import = builtins.__import__
 
@@ -82,17 +86,23 @@ def test_wl6860_control_plane_success_metadata(monkeypatch: pytest.MonkeyPatch) 
     assert metadata["degraded"] is False
 
 
-def test_wl6861_detect_platform_reads_proc_version(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6861_detect_platform_reads_proc_version(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(thegent_platform.platform, "system", lambda: "Linux")
     monkeypatch.setattr(thegent_platform.os.path, "exists", lambda _: True)
-    monkeypatch.setattr(builtins, "open", lambda *_args, **_kwargs: io.StringIO("Microsoft WSL"))
+    monkeypatch.setattr(
+        builtins, "open", lambda *_args, **_kwargs: io.StringIO("Microsoft WSL")
+    )
 
     detected = thegent_platform.detect_platform()
 
     assert detected == thegent_platform.Platform.WSL2
 
 
-def test_wl6861_detect_platform_proc_read_failure_uses_env_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6861_detect_platform_proc_read_failure_uses_env_fallback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(thegent_platform.platform, "system", lambda: "Linux")
     monkeypatch.setattr(thegent_platform.os.path, "exists", lambda _: True)
 
@@ -110,7 +120,9 @@ def test_wl6861_detect_platform_proc_read_failure_uses_env_fallback(monkeypatch:
     assert diagnostics["last_proc_version_error_type"] == "OSError"
 
 
-def test_wl6861_detect_platform_proc_read_failure_linux_path(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6861_detect_platform_proc_read_failure_linux_path(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(thegent_platform.platform, "system", lambda: "Linux")
     monkeypatch.setattr(thegent_platform.os.path, "exists", lambda _: True)
     monkeypatch.delenv("WSL_DISTRO_NAME", raising=False)
@@ -126,7 +138,9 @@ def test_wl6861_detect_platform_proc_read_failure_linux_path(monkeypatch: pytest
     assert detected == thegent_platform.Platform.LINUX
 
 
-def test_wl6862_settings_copy_success(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_wl6862_settings_copy_success(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     home = tmp_path / "home"
     global_dir = home / ".claude"
     config_dir = tmp_path / "isolated"
@@ -142,7 +156,9 @@ def test_wl6862_settings_copy_success(monkeypatch: pytest.MonkeyPatch, tmp_path:
     assert (config_dir / "settings.json").exists()
 
 
-def test_wl6862_settings_copy_malformed_source(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_wl6862_settings_copy_malformed_source(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     home = tmp_path / "home"
     global_dir = home / ".claude"
     config_dir = tmp_path / "isolated"
@@ -158,7 +174,9 @@ def test_wl6862_settings_copy_malformed_source(monkeypatch: pytest.MonkeyPatch, 
     assert diagnostics["settings_copy"]["error_type"] == "JSONDecodeError"
 
 
-def test_wl6862_settings_copy_unwritable_target(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_wl6862_settings_copy_unwritable_target(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     home = tmp_path / "home"
     global_dir = home / ".claude"
     config_dir = tmp_path / "isolated"
@@ -183,7 +201,9 @@ def test_wl6862_settings_copy_unwritable_target(monkeypatch: pytest.MonkeyPatch,
     assert diagnostics["settings_copy"]["error_type"] == "PermissionError"
 
 
-def test_wl6863_cleanup_removes_file_target(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_wl6863_cleanup_removes_file_target(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     home = tmp_path / "home"
     global_dir = home / ".claude"
     config_dir = tmp_path / "isolated"
@@ -198,7 +218,9 @@ def test_wl6863_cleanup_removes_file_target(monkeypatch: pytest.MonkeyPatch, tmp
     assert (config_dir / "tooling").is_symlink()
 
 
-def test_wl6863_cleanup_removes_directory_target(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_wl6863_cleanup_removes_directory_target(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     home = tmp_path / "home"
     global_dir = home / ".claude"
     config_dir = tmp_path / "isolated"
@@ -213,7 +235,9 @@ def test_wl6863_cleanup_removes_directory_target(monkeypatch: pytest.MonkeyPatch
     assert (config_dir / "states").is_symlink()
 
 
-def test_wl6863_cleanup_permission_denied_records_diagnostics(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_wl6863_cleanup_permission_denied_records_diagnostics(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     home = tmp_path / "home"
     global_dir = home / ".claude"
     config_dir = tmp_path / "isolated"
@@ -260,7 +284,9 @@ def test_wl6864_transform_malformed_json_records_diagnostics() -> None:
 
 
 def test_wl6864_transform_wrong_shape_records_diagnostics() -> None:
-    transformed = cliproxy_models_transform.transform_models_response(b'{"data": {"id": "m1"}}')
+    transformed = cliproxy_models_transform.transform_models_response(
+        b'{"data": {"id": "m1"}}'
+    )
 
     diagnostics = cliproxy_models_transform.get_transform_models_diagnostics()
     assert transformed is None
@@ -275,7 +301,9 @@ def _patch_ps_impl(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_wl6865_optional_module_present(monkeypatch: pytest.MonkeyPatch) -> None:
     _patch_ps_impl(monkeypatch)
-    controller = ConcurrencyController(Path("/tmp"), max_concurrency=3, use_load_based=True)
+    controller = ConcurrencyController(
+        Path("/tmp"), max_concurrency=3, use_load_based=True
+    )
 
     admitted = controller.acquire(run_id="r1", owner="owner")
 
@@ -284,7 +312,9 @@ def test_wl6865_optional_module_present(monkeypatch: pytest.MonkeyPatch) -> None
     assert diagnostics["optional_gate_import_failures"] == 0
 
 
-def test_wl6865_optional_module_missing_logs_once(monkeypatch: pytest.MonkeyPatch, caplog) -> None:
+def test_wl6865_optional_module_missing_logs_once(
+    monkeypatch: pytest.MonkeyPatch, caplog
+) -> None:
     _patch_ps_impl(monkeypatch)
     real_import = builtins.__import__
 
@@ -294,7 +324,9 @@ def test_wl6865_optional_module_missing_logs_once(monkeypatch: pytest.MonkeyPatc
         return real_import(name, globals, locals, fromlist, level)
 
     monkeypatch.setattr(builtins, "__import__", _fake_import)
-    controller = ConcurrencyController(Path("/tmp"), max_concurrency=3, use_load_based=True)
+    controller = ConcurrencyController(
+        Path("/tmp"), max_concurrency=3, use_load_based=True
+    )
 
     controller.acquire(run_id="r1", owner="owner")
     controller.acquire(run_id="r2", owner="owner")
@@ -315,16 +347,22 @@ def test_wl6866_release_unregister_success(monkeypatch: pytest.MonkeyPatch) -> N
     import thegent.orchestration.resource.load_based_limits as limits
 
     monkeypatch.setattr(limits, "get_deadline_monitor", lambda: _Monitor())
-    controller = ConcurrencyController(Path("/tmp"), max_concurrency=3, use_load_based=False)
+    controller = ConcurrencyController(
+        Path("/tmp"), max_concurrency=3, use_load_based=False
+    )
 
     controller.release(owner="owner", run_id="run-1", elapsed_ms=1.0)
 
     assert called["count"] == 1
 
 
-def test_wl6866_release_import_failure_records_diagnostics(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6866_release_import_failure_records_diagnostics(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     _patch_ps_impl(monkeypatch)
-    controller = ConcurrencyController(Path("/tmp"), max_concurrency=3, use_load_based=False)
+    controller = ConcurrencyController(
+        Path("/tmp"), max_concurrency=3, use_load_based=False
+    )
     real_import = builtins.__import__
 
     def _fake_import(name, globals=None, locals=None, fromlist=(), level=0):  # type: ignore[no-untyped-def]
@@ -340,7 +378,9 @@ def test_wl6866_release_import_failure_records_diagnostics(monkeypatch: pytest.M
     assert diagnostics["import_failures"] == 1
 
 
-def test_wl6866_release_runtime_failure_records_diagnostics(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wl6866_release_runtime_failure_records_diagnostics(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     _patch_ps_impl(monkeypatch)
 
     class _BrokenMonitor:
@@ -350,7 +390,9 @@ def test_wl6866_release_runtime_failure_records_diagnostics(monkeypatch: pytest.
     import thegent.orchestration.resource.load_based_limits as limits
 
     monkeypatch.setattr(limits, "get_deadline_monitor", lambda: _BrokenMonitor())
-    controller = ConcurrencyController(Path("/tmp"), max_concurrency=3, use_load_based=False)
+    controller = ConcurrencyController(
+        Path("/tmp"), max_concurrency=3, use_load_based=False
+    )
 
     controller.release(owner="owner", run_id="run-1", elapsed_ms=1.0)
 
@@ -366,8 +408,14 @@ def test_wl6867_handoff_high_confidence_confirmation(tmp_path: Path) -> None:
     ok = manager.confirm_handoff(snapshot_id, incoming_owner="bob", confidence=0.95)
 
     assert ok is True
-    lines = [json.loads(line) for line in manager.path.read_text(encoding="utf-8").splitlines() if line.strip()]
-    confirmed = [line for line in lines if line.get("event_type") == "handoff_confirmed"]
+    lines = [
+        json.loads(line)
+        for line in manager.path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    confirmed = [
+        line for line in lines if line.get("event_type") == "handoff_confirmed"
+    ]
     assert confirmed[-1]["confidence_state"] == "high"
 
 
@@ -378,8 +426,14 @@ def test_wl6867_handoff_low_confidence_logs_escalation(tmp_path: Path) -> None:
     ok = manager.confirm_handoff(snapshot_id, incoming_owner="bob", confidence=0.5)
 
     assert ok is True
-    lines = [json.loads(line) for line in manager.path.read_text(encoding="utf-8").splitlines() if line.strip()]
-    assert any(line.get("event_type") == "handoff_low_confidence_escalation" for line in lines)
+    lines = [
+        json.loads(line)
+        for line in manager.path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    assert any(
+        line.get("event_type") == "handoff_low_confidence_escalation" for line in lines
+    )
 
 
 def test_wl6867_invalid_snapshot_handling(tmp_path: Path) -> None:
@@ -388,7 +442,11 @@ def test_wl6867_invalid_snapshot_handling(tmp_path: Path) -> None:
     ok = manager.confirm_handoff("snap_missing", incoming_owner="bob", confidence=0.9)
 
     assert ok is False
-    lines = [json.loads(line) for line in manager.path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    lines = [
+        json.loads(line)
+        for line in manager.path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
     assert lines[-1]["event_type"] == "handoff_invalid_snapshot"
 
 
@@ -432,7 +490,9 @@ def test_wl6869_get_last_hash_empty_registry_status(tmp_path: Path) -> None:
 
 def test_wl6869_get_last_hash_valid_hash_status(tmp_path: Path) -> None:
     reg = RunRegistry(tmp_path)
-    reg.register_start(RunMeta(run_id="run-1", agent="codex", prompt="p", cwd="/tmp", owner="u"))
+    reg.register_start(
+        RunMeta(run_id="run-1", agent="codex", prompt="p", cwd="/tmp", owner="u")
+    )
 
     value = reg._get_last_hash()
 
@@ -450,7 +510,9 @@ def test_wl6869_get_last_hash_malformed_record_status(tmp_path: Path) -> None:
     assert reg.get_last_hash_status()["status"] == "malformed_record"
 
 
-def test_wl6869_get_last_hash_io_failure_status(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_wl6869_get_last_hash_io_failure_status(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     reg = RunRegistry(tmp_path)
     reg.registry_path.write_text("{}\n", encoding="utf-8")
     original_open = Path.open

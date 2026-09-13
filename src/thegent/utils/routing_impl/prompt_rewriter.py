@@ -26,7 +26,9 @@ class RewriteRule:
 
     name: str  # e.g. "anthropic_xml_tools"
     providers: list[str]  # e.g. ["anthropic"] — match if provider in list (empty = all)
-    models: list[str]  # e.g. ["claude-opus-4-6"] — match if model startswith any (empty = all)
+    models: list[
+        str
+    ]  # e.g. ["claude-opus-4-6"] — match if model startswith any (empty = all)
     transform: str  # name of transform to apply (see _TRANSFORMS dict)
     priority: int = 0  # higher = applied first
 
@@ -150,7 +152,9 @@ def _rule_matches(rule: RewriteRule, provider: str, model: str) -> bool:
     """
     if rule.providers and provider not in rule.providers:
         return False
-    return not (rule.models and not any(model.startswith(prefix) for prefix in rule.models))
+    return not (
+        rule.models and not any(model.startswith(prefix) for prefix in rule.models)
+    )
 
 
 def rewrite_prompt(

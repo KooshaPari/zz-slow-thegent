@@ -16,7 +16,9 @@ if TYPE_CHECKING:
 _CONTEXT_RATIO_CONSISTENCY_TOLERANCE = 1e-3
 
 
-def normalize_image_paths(image_paths: list[str] | None, *, supported_image_suffixes: set[str]) -> list[str]:
+def normalize_image_paths(
+    image_paths: list[str] | None, *, supported_image_suffixes: set[str]
+) -> list[str]:
     """Validate and normalize WL-114 image inputs."""
     if not image_paths:
         return []
@@ -39,7 +41,9 @@ def normalize_image_paths(image_paths: list[str] | None, *, supported_image_suff
             suffix = Path(parsed.path).suffix.lower()
             if suffix not in supported_image_suffixes:
                 allowed = ", ".join(sorted(supported_image_suffixes))
-                raise ValueError(f"Image URL must end with a supported extension ({allowed}): {candidate}")
+                raise ValueError(
+                    f"Image URL must end with a supported extension ({allowed}): {candidate}"
+                )
             if candidate in seen:
                 continue
             seen.add(candidate)
@@ -50,7 +54,9 @@ def normalize_image_paths(image_paths: list[str] | None, *, supported_image_suff
         suffix = path.suffix.lower()
         if suffix not in supported_image_suffixes:
             allowed = ", ".join(sorted(supported_image_suffixes))
-            raise ValueError(f"Image file must use a supported extension ({allowed}): {candidate}")
+            raise ValueError(
+                f"Image file must use a supported extension ({allowed}): {candidate}"
+            )
         if not path.exists():
             raise ValueError(f"Image file does not exist: {candidate}")
         if not path.is_file():
@@ -117,7 +123,10 @@ def build_context_usage_payload(
         with contextlib.suppress(TypeError, ValueError):
             candidate_ratio = float(ratio)
             if math.isfinite(candidate_ratio) and 0.0 <= candidate_ratio <= 1.0:
-                if abs(candidate_ratio - computed_ratio) <= _CONTEXT_RATIO_CONSISTENCY_TOLERANCE:
+                if (
+                    abs(candidate_ratio - computed_ratio)
+                    <= _CONTEXT_RATIO_CONSISTENCY_TOLERANCE
+                ):
                     ratio_for_output = candidate_ratio
     display, css_class = compute_context_usage_display(used, max_tokens)
     return {
@@ -141,13 +150,17 @@ def resolve_grounding_sources_for_output(
     )
 
     if result_grounding_sources:
-        structured_sources = extract_grounding_sources_from_payload({"sources": result_grounding_sources})
+        structured_sources = extract_grounding_sources_from_payload(
+            {"sources": result_grounding_sources}
+        )
         if structured_sources:
             return structured_sources
 
     if stdout.strip().startswith(("{", "[")):
         with contextlib.suppress(json.JSONDecodeError):
-            structured_sources = extract_grounding_sources_from_payload(json.loads(stdout))
+            structured_sources = extract_grounding_sources_from_payload(
+                json.loads(stdout)
+            )
             if structured_sources:
                 return structured_sources
 
@@ -203,7 +216,9 @@ def validate_image_capability(
     if model is None:
         return
     if not model_supports_vision_impl(model):
-        raise ValueError(f"Model '{model}' does not advertise vision capability required by --image.")
+        raise ValueError(
+            f"Model '{model}' does not advertise vision capability required by --image."
+        )
 
 
 __all__ = [

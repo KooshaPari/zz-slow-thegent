@@ -406,7 +406,9 @@ def _render_summary(exp: DecisionExplanation, *, width: int) -> str:
     the column-padding contract is shared with DETAILED and DEEPDIVE.
     """
     lines = _header_lines(exp, width=width)
-    lines.extend(_core_attribute_lines(exp, label_width=0, align=False, include_source=False))
+    lines.extend(
+        _core_attribute_lines(exp, label_width=0, align=False, include_source=False)
+    )
     lines.extend(_actions_lines(exp))
     return "\n".join(lines)
 
@@ -482,7 +484,10 @@ _EXCEPTION_HINTS: list[tuple[type[Exception], str]] = [
     (TimeoutError, "timeout — increase the timeout or check network latency"),
     (PermissionError, "permission denied — check file/process permissions"),
     (ConnectionError, "connection failed — verify endpoint availability"),
-    (ConnectionRefusedError, "connection refused — ensure the target service is running"),
+    (
+        ConnectionRefusedError,
+        "connection refused — ensure the target service is running",
+    ),
     (FileNotFoundError, "file not found — verify the path exists"),
     (ValueError, "validation error — check input format and constraints"),
     (KeyError, "missing key — verify the expected data structure"),

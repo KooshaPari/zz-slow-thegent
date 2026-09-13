@@ -28,7 +28,16 @@ def test_install_script_creates_extended_harness_symlinks(tmp_path: Path) -> Non
     )
     assert result.returncode == 0, result.stderr
 
-    for name in ("dex", "clode", "roid", "fanta", "antigma", "cline", "roocode", "opencode"):
+    for name in (
+        "dex",
+        "clode",
+        "roid",
+        "fanta",
+        "antigma",
+        "cline",
+        "roocode",
+        "opencode",
+    ):
         link = tmp_path / name
         assert link.is_symlink(), f"{name} should be a symlink"
         assert link.resolve() == shim.resolve()

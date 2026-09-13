@@ -163,7 +163,9 @@ class TestResolveSessionStatus:
     def test_exited_with_exit_code_in_payload(self, tmp_path) -> None:
         # @trace FR-CLI-115
         rc_path = tmp_path / "sess.rc"
-        result = cli_impl._resolve_session_status({"exit_code": 0}, rc_path, running=False)
+        result = cli_impl._resolve_session_status(
+            {"exit_code": 0}, rc_path, running=False
+        )
         assert result == "exited:0"
 
     def test_exited_with_rc_file(self, tmp_path) -> None:
@@ -244,7 +246,9 @@ class TestResolveAgentModel:
     def test_unknown_agent_returns_none(self) -> None:
         # @trace FR-CLI-126
         settings = MagicMock()
-        result = cli_impl._resolve_agent_model("unknown-agent-xyz", None, "write", settings)
+        result = cli_impl._resolve_agent_model(
+            "unknown-agent-xyz", None, "write", settings
+        )
         assert result is None
 
     def test_minimax_hardcoded(self) -> None:
@@ -593,9 +597,15 @@ class TestWaitImpl:
 
         with (
             patch("thegent.cli.commands.impl.ThegentSettings", return_value=settings),
-            patch("thegent.cli.commands.impl._is_pid_running", side_effect=_fake_pid_running),
+            patch(
+                "thegent.cli.commands.impl._is_pid_running",
+                side_effect=_fake_pid_running,
+            ),
             patch("thegent.cli.commands.impl.time.sleep"),
-            patch("thegent.cli.commands.impl.time.time", side_effect=[0.0, 0.0, 0.5, 1.0, 1.5, 2.0]),
+            patch(
+                "thegent.cli.commands.impl.time.time",
+                side_effect=[0.0, 0.0, 0.5, 1.0, 1.5, 2.0],
+            ),
         ):
             result = cli_impl.wait_impl("sess-wt", timeout=1)
         assert result["timed_out"] is True
@@ -646,7 +656,9 @@ class TestLogsImpl:
         meta_path = tmp_path / "sess-tail.json"
         meta_path.write_text("{}", encoding="utf-8")
         stdout_path = tmp_path / "sess-tail.stdout.log"
-        stdout_path.write_text("\n".join(f"line{i}" for i in range(100)), encoding="utf-8")
+        stdout_path.write_text(
+            "\n".join(f"line{i}" for i in range(100)), encoding="utf-8"
+        )
         with patch("thegent.cli.commands.impl.ThegentSettings", return_value=settings):
             result = cli_impl.logs_impl("sess-tail", tail=5)
         lines = result.strip().splitlines()
@@ -695,7 +707,10 @@ class TestPsImpl:
         )
         with (
             patch("thegent.cli.commands.impl.ThegentSettings", return_value=settings),
-            patch("thegent.cli.commands.impl._default_owner_tag", return_value="alice:proj"),
+            patch(
+                "thegent.cli.commands.impl._default_owner_tag",
+                return_value="alice:proj",
+            ),
             patch("thegent.cli.commands.impl._is_pid_running", return_value=False),
         ):
             rows = cli_impl.ps_impl()
@@ -886,7 +901,10 @@ class TestInspectImpl:
         (scope_dir / "s1.stdout.log").write_text("hi\n", encoding="utf-8")
         with (
             patch("thegent.cli.commands.impl.ThegentSettings", return_value=settings),
-            patch("thegent.cli.commands.impl._default_owner_tag", return_value="alice:proj"),
+            patch(
+                "thegent.cli.commands.impl._default_owner_tag",
+                return_value="alice:proj",
+            ),
             patch("thegent.cli.commands.impl._is_pid_running", return_value=False),
         ):
             results = cli_impl.inspect_impl([], owner="alice:proj")
@@ -1043,7 +1061,9 @@ class TestBuildContinuationPrompt:
         meta_path.write_text("{}", encoding="utf-8")
         stdout_path = tmp_path / "prev.stdout.log"
         stdout_path.write_text("previous output here", encoding="utf-8")
-        result = cli_impl._build_continuation_prompt(settings, "prev", "continue this", include_stderr=False)
+        result = cli_impl._build_continuation_prompt(
+            settings, "prev", "continue this", include_stderr=False
+        )
         assert "previous output here" in result
         assert "continue this" in result
         assert "Continuing from prior session" in result
@@ -1102,7 +1122,9 @@ class TestBgImpl:
     @patch("thegent.cli.commands.impl.ThegentSettings")
     @patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a)
     @patch("thegent.cli.commands.impl._resolve_cwd")
-    @patch("thegent.cli.commands.impl._default_owner_tag", return_value="user:proj:1234")
+    @patch(
+        "thegent.cli.commands.impl._default_owner_tag", return_value="user:proj:1234"
+    )
     @patch("thegent.contracts.migration.MigrationController")
     def test_bg_basic(
         self,
@@ -1134,7 +1156,10 @@ class TestBgImpl:
         mock_popen.return_value = mock_proc
 
         migrator_mock = MagicMock()
-        migrator_mock.evaluate_version.return_value = {"allowed": True, "status": "active"}
+        migrator_mock.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "active",
+        }
         mock_migration_cls.return_value = migrator_mock
 
         result = cli_impl.bg_impl(
@@ -1189,7 +1214,10 @@ class TestBgImpl:
         mock_popen.return_value = mock_proc
 
         migrator_mock = MagicMock()
-        migrator_mock.evaluate_version.return_value = {"allowed": True, "status": "active"}
+        migrator_mock.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "active",
+        }
         mock_migration_cls.return_value = migrator_mock
 
         result = cli_impl.bg_impl(
@@ -1207,14 +1235,19 @@ class TestBgImpl:
     @patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a)
     @patch("thegent.cli.commands.impl._resolve_cwd", return_value=None)
     @patch("thegent.contracts.migration.MigrationController")
-    def test_bg_ambiguous_cwd(self, mock_migration_cls, mock_cwd, mock_resolve, mock_settings_cls, tmp_path) -> None:
+    def test_bg_ambiguous_cwd(
+        self, mock_migration_cls, mock_cwd, mock_resolve, mock_settings_cls, tmp_path
+    ) -> None:
         # @trace FR-CLI-129
         settings = MagicMock()
         settings.default_timeout_claude = 300
         mock_settings_cls.return_value = settings
 
         migrator_mock = MagicMock()
-        migrator_mock.evaluate_version.return_value = {"allowed": True, "status": "active"}
+        migrator_mock.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "active",
+        }
         mock_migration_cls.return_value = migrator_mock
 
         result = cli_impl.bg_impl(
@@ -1231,7 +1264,9 @@ class TestBgImpl:
     @patch("thegent.cli.commands.impl.ThegentSettings")
     @patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a)
     @patch("thegent.contracts.migration.MigrationController")
-    def test_bg_contract_version_rejected(self, mock_migration_cls, mock_resolve, mock_settings_cls, tmp_path) -> None:
+    def test_bg_contract_version_rejected(
+        self, mock_migration_cls, mock_resolve, mock_settings_cls, tmp_path
+    ) -> None:
         # @trace FR-CLI-130
         settings = MagicMock()
         settings.default_timeout_claude = 300
@@ -1255,7 +1290,10 @@ class TestBgImpl:
             contract_version="0.0.1",
         )
         assert "error" in result
-        assert "rejected" in result["error"].lower() or "Version too old" in result["error"]
+        assert (
+            "rejected" in result["error"].lower()
+            or "Version too old" in result["error"]
+        )
 
     @patch("thegent.cli.commands.impl.subprocess.Popen")
     @patch("thegent.cli.commands.impl.RunRegistry")
@@ -1263,7 +1301,10 @@ class TestBgImpl:
     @patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a)
     @patch("thegent.cli.commands.impl._resolve_cwd")
     @patch("thegent.cli.commands.impl._default_owner_tag", return_value="u:p:1")
-    @patch("thegent.cli.commands.impl._build_continuation_prompt", return_value="continued prompt")
+    @patch(
+        "thegent.cli.commands.impl._build_continuation_prompt",
+        return_value="continued prompt",
+    )
     @patch("thegent.contracts.migration.MigrationController")
     def test_bg_with_continuation(
         self,
@@ -1296,7 +1337,10 @@ class TestBgImpl:
         mock_popen.return_value = mock_proc
 
         migrator_mock = MagicMock()
-        migrator_mock.evaluate_version.return_value = {"allowed": True, "status": "active"}
+        migrator_mock.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "active",
+        }
         mock_migration_cls.return_value = migrator_mock
 
         result = cli_impl.bg_impl(
@@ -1374,7 +1418,10 @@ class TestRunImpl:
         mock_fsm.state = fsm_state
 
         migrator_mock = MagicMock()
-        migrator_mock.evaluate_version.return_value = {"allowed": True, "status": "active"}
+        migrator_mock.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "active",
+        }
 
         mock_trust = MagicMock()
         mock_trust.get_last_environment.return_value = "development"
@@ -1384,20 +1431,33 @@ class TestRunImpl:
             patch("thegent.cli.commands.impl.ThegentSettings", return_value=settings),
             patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a),
             patch("thegent.cli.commands.impl._resolve_cwd", return_value=cwd),
-            patch("thegent.cli.commands.impl._default_owner_tag", return_value="user:proj"),
+            patch(
+                "thegent.cli.commands.impl._default_owner_tag", return_value="user:proj"
+            ),
             patch("thegent.cli.commands.impl.RunRegistry", return_value=mock_registry),
             patch("thegent.cli.commands.impl.get_fallback_agents", return_value=[]),
-            patch("thegent.cli.commands.impl.extract_condensed", return_value="condensed"),
+            patch(
+                "thegent.cli.commands.impl.extract_condensed", return_value="condensed"
+            ),
             patch("thegent.cli.commands.impl.is_usage_limit", return_value=False),
-            patch("thegent.contracts.migration.MigrationController", return_value=migrator_mock),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=migrator_mock,
+            ),
             patch("thegent.execution.Auditor", return_value=mock_auditor),
             patch("thegent.execution.PolicyEngine", return_value=mock_pe),
             patch("thegent.execution.CircuitBreakerRegistry"),
             patch("thegent.execution.TrustBoundaryValidator", return_value=mock_trust),
             patch("thegent.execution.OverrideRegistry", return_value=mock_override_reg),
-            patch("thegent.agents.state_machine.FallbackStateMachine", return_value=mock_fsm),
+            patch(
+                "thegent.agents.state_machine.FallbackStateMachine",
+                return_value=mock_fsm,
+            ),
             patch("thegent.contracts.telemetry.ContractTelemetry"),
-            patch("thegent.contracts.telemetry.rank_providers_by_parser_quality", side_effect=lambda a, t, limit: a),
+            patch(
+                "thegent.contracts.telemetry.rank_providers_by_parser_quality",
+                side_effect=lambda a, t, limit: a,
+            ),
             patch("thegent.contracts.policy.FallbackPolicy"),
         ):
             return cli_impl.run_impl(
@@ -1454,13 +1514,19 @@ class TestRunImpl:
         settings.default_timeout_claude = 300
 
         migrator_mock = MagicMock()
-        migrator_mock.evaluate_version.return_value = {"allowed": True, "status": "active"}
+        migrator_mock.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "active",
+        }
 
         with (
             patch("thegent.cli.commands.impl.ThegentSettings", return_value=settings),
             patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a),
             patch("thegent.cli.commands.impl._resolve_cwd", return_value=None),
-            patch("thegent.contracts.migration.MigrationController", return_value=migrator_mock),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=migrator_mock,
+            ),
         ):
             result = cli_impl.run_impl(agent="claude", prompt="task")
         assert "error" in result
@@ -1499,7 +1565,10 @@ class TestRunImpl:
         mock_fsm.state = fsm_state
 
         migrator_mock = MagicMock()
-        migrator_mock.evaluate_version.return_value = {"allowed": True, "status": "active"}
+        migrator_mock.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "active",
+        }
 
         mock_auditor = MagicMock()
         mock_auditor.sign_run.return_value = "sig"
@@ -1517,9 +1586,14 @@ class TestRunImpl:
             patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a),
             patch("thegent.cli.commands.impl.RunRegistry"),
             patch("thegent.cli.commands.impl.get_fallback_agents", return_value=[]),
-            patch("thegent.cli.commands.impl.extract_condensed", return_value="condensed"),
+            patch(
+                "thegent.cli.commands.impl.extract_condensed", return_value="condensed"
+            ),
             patch("thegent.cli.commands.impl.is_usage_limit", return_value=False),
-            patch("thegent.contracts.migration.MigrationController", return_value=migrator_mock),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=migrator_mock,
+            ),
             patch("thegent.models.normalize_model_id", return_value="gpt-4"),
             patch("thegent.models.catalog.resolve_route", return_value=mock_route),
             patch("thegent.execution.Auditor", return_value=mock_auditor),
@@ -1527,9 +1601,15 @@ class TestRunImpl:
             patch("thegent.execution.CircuitBreakerRegistry"),
             patch("thegent.execution.TrustBoundaryValidator", return_value=mock_trust),
             patch("thegent.execution.OverrideRegistry"),
-            patch("thegent.agents.state_machine.FallbackStateMachine", return_value=mock_fsm),
+            patch(
+                "thegent.agents.state_machine.FallbackStateMachine",
+                return_value=mock_fsm,
+            ),
             patch("thegent.contracts.telemetry.ContractTelemetry"),
-            patch("thegent.contracts.telemetry.rank_providers_by_parser_quality", side_effect=lambda a, t, limit: a),
+            patch(
+                "thegent.contracts.telemetry.rank_providers_by_parser_quality",
+                side_effect=lambda a, t, limit: a,
+            ),
             patch("thegent.contracts.policy.FallbackPolicy"),
         ):
             result = cli_impl.run_impl(
@@ -1560,7 +1640,10 @@ class TestRunImpl:
         with (
             patch("thegent.cli.commands.impl.ThegentSettings", return_value=settings),
             patch("thegent.cli.commands.impl.resolve_agent", side_effect=lambda a: a),
-            patch("thegent.contracts.migration.MigrationController", return_value=migrator_mock),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=migrator_mock,
+            ),
             patch("thegent.execution.TrustBoundaryValidator", return_value=mock_trust),
         ):
             result = cli_impl.run_impl(
@@ -1569,7 +1652,9 @@ class TestRunImpl:
                 contract_version="0.0.1",
             )
         assert result["exit_code"] == 1
-        assert "rejected" in result.get("error", "").lower() or "Unsupported" in result.get("error", "")
+        assert "rejected" in result.get(
+            "error", ""
+        ).lower() or "Unsupported" in result.get("error", "")
 
     def test_run_include_contract_flag(self, tmp_path) -> None:
         # @trace FR-CLI-139
@@ -1641,7 +1726,9 @@ class TestLoadPriorSessionOutput:
         stdout_path.write_text("stdout content", encoding="utf-8")
         stderr_path = tmp_path / "prev2.stderr.log"
         stderr_path.write_text("stderr content", encoding="utf-8")
-        result = cli_impl._load_prior_session_output(settings, "prev2", include_stderr=True)
+        result = cli_impl._load_prior_session_output(
+            settings, "prev2", include_stderr=True
+        )
         assert "stdout content" in result
         assert "stderr" in result.lower()
 

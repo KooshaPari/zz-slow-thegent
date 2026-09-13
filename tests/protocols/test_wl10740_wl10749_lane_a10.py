@@ -68,7 +68,9 @@ def test_wl10741_session_lifecycle_preserves_persistence_revision_contract() -> 
 
 def test_wl10742_cli_command_parse_and_handler_split_remains_stable() -> None:
     # @trace WL-10742
-    parse_phase = build_cli_command_parse_phase("run queue sync", ["run", "queue", "sync"], "run_handler")
+    parse_phase = build_cli_command_parse_phase(
+        "run queue sync", ["run", "queue", "sync"], "run_handler"
+    )
     assert resolve_cli_handler_selection_target(parse_phase) == (
         "run queue sync",
         ["run", "queue", "sync"],
@@ -83,11 +85,20 @@ def test_wl10742_cli_command_parse_and_handler_split_remains_stable() -> None:
 
 def test_wl10743_orchestration_parse_target_preserves_execution_inputs() -> None:
     # @trace WL-10743
-    parse_phase = build_parse_phase("session-10743", "route plan", request_id="req-10743", request_has_id=True)
-    assert resolve_parse_target(parse_phase) == ("session-10743", "route plan", "req-10743", True)
+    parse_phase = build_parse_phase(
+        "session-10743", "route plan", request_id="req-10743", request_has_id=True
+    )
+    assert resolve_parse_target(parse_phase) == (
+        "session-10743",
+        "route plan",
+        "req-10743",
+        True,
+    )
 
     with pytest.raises(ValueError, match="invalid session_id"):
-        resolve_parse_target(build_parse_phase("", "route plan", request_id=None, request_has_id=False))
+        resolve_parse_target(
+            build_parse_phase("", "route plan", request_id=None, request_has_id=False)
+        )
 
 
 def test_wl10744_queue_scheduling_contract_keeps_intake_inputs_and_window() -> None:
@@ -96,7 +107,9 @@ def test_wl10744_queue_scheduling_contract_keeps_intake_inputs_and_window() -> N
     assert resolve_session_persistence_target(phase) == (["turn-1", "turn-2"], 77, 5)
 
     with pytest.raises(ValueError, match="invalid batch_size"):
-        resolve_session_persistence_target(build_queue_scheduling_phase(["turn-1"], 77, 0))
+        resolve_session_persistence_target(
+            build_queue_scheduling_phase(["turn-1"], 77, 0)
+        )
 
 
 def test_wl10745_observability_phase_retains_event_payload_and_encoding() -> None:
@@ -109,12 +122,16 @@ def test_wl10745_observability_phase_retains_event_payload_and_encoding() -> Non
     )
 
     with pytest.raises(ValueError, match="invalid serialization_format"):
-        resolve_observability_serialization_target(build_observability_event_phase("queue.flush", {"count": 10}, ""))
+        resolve_observability_serialization_target(
+            build_observability_event_phase("queue.flush", {"count": 10}, "")
+        )
 
 
 def test_wl10746_provider_selection_path_accepts_scores_and_selected_provider() -> None:
     # @trace WL-10746
-    phase = build_provider_rule_evaluation_phase({"provider-a": 10, "provider-b": 8}, "fallback-first", "provider-a")
+    phase = build_provider_rule_evaluation_phase(
+        {"provider-a": 10, "provider-b": 8}, "fallback-first", "provider-a"
+    )
     assert resolve_provider_final_selection_target(phase) == (
         {"provider-a": 10, "provider-b": 8},
         "fallback-first",
@@ -123,13 +140,17 @@ def test_wl10746_provider_selection_path_accepts_scores_and_selected_provider() 
 
     with pytest.raises(ValueError, match="selected provider missing score"):
         resolve_provider_final_selection_target(
-            build_provider_rule_evaluation_phase({"provider-a": 10}, "fallback-first", "provider-b")
+            build_provider_rule_evaluation_phase(
+                {"provider-a": 10}, "fallback-first", "provider-b"
+            )
         )
 
 
 def test_wl10747_policy_enforcement_plan_requires_rules_and_action() -> None:
     # @trace WL-10747
-    phase = build_policy_match_phase("policy-10747", ["allow:admin", "allow:user"], "block-none")
+    phase = build_policy_match_phase(
+        "policy-10747", ["allow:admin", "allow:user"], "block-none"
+    )
     assert resolve_policy_enforcement_plan_target(phase) == (
         "policy-10747",
         ["allow:admin", "allow:user"],
@@ -137,7 +158,9 @@ def test_wl10747_policy_enforcement_plan_requires_rules_and_action() -> None:
     )
 
     with pytest.raises(ValueError, match="invalid matched_rules"):
-        resolve_policy_enforcement_plan_target(build_policy_match_phase("policy-10747", [], "block-none"))
+        resolve_policy_enforcement_plan_target(
+            build_policy_match_phase("policy-10747", [], "block-none")
+        )
 
 
 def test_wl10748_sync_plan_keeps_scan_and_commit_metadata_separate() -> None:

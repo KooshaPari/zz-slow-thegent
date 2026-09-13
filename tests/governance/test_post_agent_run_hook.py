@@ -12,7 +12,9 @@ from thegent.agents.base import RunResult
 from thegent.governance.post_agent_run_hook import _dispatch_post_agent_run_hook
 
 
-def test_dispatch_post_agent_run_hook_sends_expected_payload_and_env(tmp_path: Path) -> None:
+def test_dispatch_post_agent_run_hook_sends_expected_payload_and_env(
+    tmp_path: Path,
+) -> None:
     """Dispatch uses hook-dispatcher postagentrun with JSON stdin and required env vars."""
     with patch("thegent.governance.post_agent_run_hook.subprocess.run") as mock_run:
         mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
@@ -43,7 +45,9 @@ def test_dispatch_post_agent_run_hook_sends_expected_payload_and_env(tmp_path: P
 def test_dispatch_post_agent_run_hook_raises_on_non_zero_exit() -> None:
     """Dispatcher non-zero exit fails fast with RuntimeError."""
     with patch("thegent.governance.post_agent_run_hook.subprocess.run") as mock_run:
-        mock_run.return_value = MagicMock(returncode=7, stdout="", stderr="dispatcher failed")
+        mock_run.return_value = MagicMock(
+            returncode=7, stdout="", stderr="dispatcher failed"
+        )
         with pytest.raises(RuntimeError, match="hook-dispatcher postagentrun failed"):
             _dispatch_post_agent_run_hook(
                 result={"status": "failed"},

@@ -1,11 +1,17 @@
 """Sitback module for background processing."""
+
 from __future__ import annotations
 
 from typing import Any
 
 from .watchdog import Watchdog
 
-__all__ = ["Watchdog", "probe_harness_status", "get_harness_info", "_probe_harness_status"]
+__all__ = [
+    "Watchdog",
+    "probe_harness_status",
+    "get_harness_info",
+    "_probe_harness_status",
+]
 
 
 def _probe_harness_status() -> dict[str, Any]:

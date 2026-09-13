@@ -1,4 +1,5 @@
 """Core worker pool implementation."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -53,7 +54,11 @@ class AgentTask:
         self.payload = payload
 
     def to_dict(self) -> dict[str, Any]:
-        return {"task_id": self.task_id, "agent_id": self.agent_id, "payload": self.payload}
+        return {
+            "task_id": self.task_id,
+            "agent_id": self.agent_id,
+            "payload": self.payload,
+        }
 
 
 class AgentResult:
@@ -72,7 +77,14 @@ class AgentResult:
         }
 
 
-__all__ = ["Worker", "WorkerPool", "AgentResult", "AgentTask", "PersistentWorkerPool", "get_worker_pool"]
+__all__ = [
+    "Worker",
+    "WorkerPool",
+    "AgentResult",
+    "AgentTask",
+    "PersistentWorkerPool",
+    "get_worker_pool",
+]
 
 
 def get_worker_pool() -> WorkerPool:

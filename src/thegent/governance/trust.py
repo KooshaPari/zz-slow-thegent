@@ -55,7 +55,9 @@ class TrustBoundaryChecker:
         # Note: TTLCache is thread-safe for reads; the lock-free pattern is
         # acceptable here because concurrent writes to a dict in CPython are
         # safe under the GIL, and stale reads only produce redundant evaluations.
-        self._cache: TTLCache[str, dict[str, Any]] = TTLCache(maxsize=1000, ttl=cache_ttl_sec)
+        self._cache: TTLCache[str, dict[str, Any]] = TTLCache(
+            maxsize=1000, ttl=cache_ttl_sec
+        )
 
     def get_agent_trust(self, agent_name: str) -> TrustLevel:
         """Return trust level for an agent."""
@@ -92,7 +94,14 @@ class TrustBoundaryChecker:
         }
 
         # Sensitive keywords that require INTERNAL+ trust
-        sensitive_keywords = ["password", "secret", "private_key", "token", "credential", "api_key"]
+        sensitive_keywords = [
+            "password",
+            "secret",
+            "private_key",
+            "token",
+            "credential",
+            "api_key",
+        ]
 
         agent_level = self.get_agent_trust(target_agent)
 
@@ -100,7 +109,9 @@ class TrustBoundaryChecker:
 
         if found_sensitive and agent_level < TrustLevel.INTERNAL:
             result["allowed"] = False
-            result["reason"] = f"Sensitive data ({found_sensitive[0]}) cannot be sent to EXTERNAL agent {target_agent}"
+            result["reason"] = (
+                f"Sensitive data ({found_sensitive[0]}) cannot be sent to EXTERNAL agent {target_agent}"
+            )
             result["risk_score"] = 10
             _log.warning("Trust boundary violation: %s", result["reason"])
 

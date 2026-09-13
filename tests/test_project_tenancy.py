@@ -111,7 +111,9 @@ class TestTenancyProjectModel:
 class TestProjectTenancyRegistry:
     """Tests for ProjectTenancy registry read/write/lookup."""
 
-    def test_init_project_creates_record(self, tenancy, tmp_project: Path, tmp_registry: Path) -> None:
+    def test_init_project_creates_record(
+        self, tenancy, tmp_project: Path, tmp_registry: Path
+    ) -> None:
         record = tenancy.init_project(
             name="alpha",
             tenant_id="alpha",
@@ -123,7 +125,9 @@ class TestProjectTenancyRegistry:
         assert record.path == str(tmp_project)
         assert tmp_registry.exists()
 
-    def test_init_project_persists(self, tenancy, tmp_project: Path, tmp_registry: Path) -> None:
+    def test_init_project_persists(
+        self, tenancy, tmp_project: Path, tmp_registry: Path
+    ) -> None:
         from thegent.infra.project_tenancy import ProjectTenancy
 
         tenancy.init_project(
@@ -195,7 +199,9 @@ class TestProjectTenancyRegistry:
         with pytest.raises(ValueError, match="At least one selector"):
             tenancy.get_project()
 
-    def test_duplicate_name_and_tenant_raises(self, tenancy, tmp_project: Path, tmp_path: Path) -> None:
+    def test_duplicate_name_and_tenant_raises(
+        self, tenancy, tmp_project: Path, tmp_path: Path
+    ) -> None:
         tenancy.init_project(
             name="dup",
             tenant_id="dup",
@@ -227,7 +233,9 @@ class TestProjectTenancyRegistry:
                 template="none",
             )
 
-    def test_sync_project_updates_template_metadata(self, tenancy, tmp_project: Path) -> None:
+    def test_sync_project_updates_template_metadata(
+        self, tenancy, tmp_project: Path
+    ) -> None:
         tenancy.init_project(
             name="sync-me",
             tenant_id="sync-me",
@@ -279,7 +287,9 @@ class TestSpawnTemplateAgdd:
         (sub / "WORK_STREAM.md").write_text("# WORK_STREAM\n", encoding="utf-8")
         return tmpl
 
-    def test_spawn_installs_new_files(self, tenancy, tmp_project: Path, tmp_path: Path, monkeypatch) -> None:
+    def test_spawn_installs_new_files(
+        self, tenancy, tmp_project: Path, tmp_path: Path, monkeypatch
+    ) -> None:
         template_root = self._mock_template_root(tmp_path)
         monkeypatch.setattr(tenancy, "_template_root", lambda: template_root)
 
@@ -292,7 +302,9 @@ class TestSpawnTemplateAgdd:
         result = tenancy.spawn_template_agdd(tmp_project, mode="smart")
         assert "AGENTS.md" in result.installed or "AGENTS.md" in result.unchanged
 
-    def test_spawn_skip_mode_reports_conflicts(self, tenancy, tmp_project: Path, tmp_path: Path, monkeypatch) -> None:
+    def test_spawn_skip_mode_reports_conflicts(
+        self, tenancy, tmp_project: Path, tmp_path: Path, monkeypatch
+    ) -> None:
         template_root = self._mock_template_root(tmp_path)
         monkeypatch.setattr(tenancy, "_template_root", lambda: template_root)
 
@@ -309,7 +321,9 @@ class TestSpawnTemplateAgdd:
         result = tenancy.spawn_template_agdd(tmp_project, mode="skip")
         assert "AGENTS.md" in result.conflicts
 
-    def test_spawn_overwrite_mode_replaces_files(self, tenancy, tmp_project: Path, tmp_path: Path, monkeypatch) -> None:
+    def test_spawn_overwrite_mode_replaces_files(
+        self, tenancy, tmp_project: Path, tmp_path: Path, monkeypatch
+    ) -> None:
         template_root = self._mock_template_root(tmp_path)
         monkeypatch.setattr(tenancy, "_template_root", lambda: template_root)
 
@@ -344,7 +358,9 @@ class TestSpawnTemplateAgdd:
 class TestRunInstallProject:
     """Tests for the install.run_install_project function."""
 
-    def test_install_creates_thegent_assets(self, tenancy, tmp_project: Path, tmp_registry: Path) -> None:
+    def test_install_creates_thegent_assets(
+        self, tenancy, tmp_project: Path, tmp_registry: Path
+    ) -> None:
         from thegent.install import run_install_project
 
         tenancy.init_project(
@@ -368,7 +384,9 @@ class TestRunInstallProject:
         assert (tmp_project / ".thegent" / "templates.lock").exists()
         assert result["errors"] == []
 
-    def test_install_config_yaml_contents(self, tenancy, tmp_project: Path, tmp_registry: Path) -> None:
+    def test_install_config_yaml_contents(
+        self, tenancy, tmp_project: Path, tmp_registry: Path
+    ) -> None:
         from thegent.install import run_install_project
 
         tenancy.init_project(
@@ -383,11 +401,15 @@ class TestRunInstallProject:
             mode="smart",
             registry_path=tmp_registry,
         )
-        config_text = (tmp_project / ".thegent" / "config.yaml").read_text(encoding="utf-8")
+        config_text = (tmp_project / ".thegent" / "config.yaml").read_text(
+            encoding="utf-8"
+        )
         assert "tenant_id: cfg-tenant" in config_text
         assert "project_name: cfg-test" in config_text
 
-    def test_install_ownership_json_contents(self, tenancy, tmp_project: Path, tmp_registry: Path) -> None:
+    def test_install_ownership_json_contents(
+        self, tenancy, tmp_project: Path, tmp_registry: Path
+    ) -> None:
         from thegent.install import run_install_project
 
         tenancy.init_project(
@@ -402,10 +424,14 @@ class TestRunInstallProject:
             mode="smart",
             registry_path=tmp_registry,
         )
-        data = json.loads((tmp_project / ".thegent" / "ownership.json").read_text(encoding="utf-8"))
+        data = json.loads(
+            (tmp_project / ".thegent" / "ownership.json").read_text(encoding="utf-8")
+        )
         assert data["tenant_id"] == "own-tenant"
 
-    def test_install_skip_mode_does_not_overwrite(self, tenancy, tmp_project: Path, tmp_registry: Path) -> None:
+    def test_install_skip_mode_does_not_overwrite(
+        self, tenancy, tmp_project: Path, tmp_registry: Path
+    ) -> None:
         from thegent.install import run_install_project
 
         tenancy.init_project(
@@ -429,7 +455,9 @@ class TestRunInstallProject:
         assert "# SENTINEL" in cfg.read_text(encoding="utf-8")
         assert ".thegent/config.yaml" in result["skipped"]
 
-    def test_install_overwrite_mode_replaces(self, tenancy, tmp_project: Path, tmp_registry: Path) -> None:
+    def test_install_overwrite_mode_replaces(
+        self, tenancy, tmp_project: Path, tmp_registry: Path
+    ) -> None:
         from thegent.install import run_install_project
 
         tenancy.init_project(
@@ -453,7 +481,9 @@ class TestRunInstallProject:
         assert "# OLD" not in content
         assert "tenant_id: ow-install" in content
 
-    def test_install_dry_run_writes_nothing(self, tenancy, tmp_project: Path, tmp_registry: Path) -> None:
+    def test_install_dry_run_writes_nothing(
+        self, tenancy, tmp_project: Path, tmp_registry: Path
+    ) -> None:
         from thegent.install import run_install_project
 
         tenancy.init_project(
@@ -472,7 +502,9 @@ class TestRunInstallProject:
         assert not (tmp_project / ".thegent" / "config.yaml").exists()
         assert any("dry-run" in s for s in result["installed"])
 
-    def test_install_invalid_mode_raises(self, tenancy, tmp_project: Path, tmp_registry: Path) -> None:
+    def test_install_invalid_mode_raises(
+        self, tenancy, tmp_project: Path, tmp_registry: Path
+    ) -> None:
         from thegent.install import run_install_project
 
         tenancy.init_project(
@@ -499,7 +531,9 @@ class TestRunInstallProject:
                 registry_path=isolated_reg,
             )
 
-    def test_install_cwd_fallback(self, tenancy, tmp_project: Path, tmp_registry: Path, monkeypatch) -> None:
+    def test_install_cwd_fallback(
+        self, tenancy, tmp_project: Path, tmp_registry: Path, monkeypatch
+    ) -> None:
         from thegent.install import run_install_project
 
         tenancy.init_project(
@@ -517,7 +551,9 @@ class TestRunInstallProject:
         )
         assert result["project_name"] == "cwd-test"
 
-    def test_install_selector_by_path(self, tenancy, tmp_project: Path, tmp_registry: Path) -> None:
+    def test_install_selector_by_path(
+        self, tenancy, tmp_project: Path, tmp_registry: Path
+    ) -> None:
         from thegent.install import run_install_project
 
         tenancy.init_project(
@@ -587,22 +623,37 @@ class TestSetupProjectInitCli:
         self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch
     ) -> None:
         _patch_tenancy(monkeypatch, tmp_path / "reg.json")
-        result = cli_runner.invoke(project_cli, ["init", "--name", "myproject", "--path", "/no/such/path/xyzzy"])
+        result = cli_runner.invoke(
+            project_cli,
+            ["init", "--name", "myproject", "--path", "/no/such/path/xyzzy"],
+        )
         assert result.exit_code != 0
 
-    def test_init_creates_project(self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch) -> None:
+    def test_init_creates_project(
+        self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch
+    ) -> None:
         proj = tmp_path / "test-proj"
         proj.mkdir()
         _patch_tenancy(monkeypatch, tmp_path / "reg.json")
 
         result = cli_runner.invoke(
             project_cli,
-            ["init", "--name", "test-proj", "--path", str(proj), "--tenant", "test-proj"],
+            [
+                "init",
+                "--name",
+                "test-proj",
+                "--path",
+                str(proj),
+                "--tenant",
+                "test-proj",
+            ],
         )
         assert result.exit_code == 0, result.output
         assert "test-proj" in result.output
 
-    def test_init_json_output(self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch) -> None:
+    def test_init_json_output(
+        self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch
+    ) -> None:
         proj = tmp_path / "json-proj"
         proj.mkdir()
         _patch_tenancy(monkeypatch, tmp_path / "reg.json")
@@ -621,14 +672,20 @@ class TestSetupProjectInitCli:
 class TestSetupProjectScaffoldCli:
     """CLI tests for `thegent sys setup project scaffold`."""
 
-    def test_scaffold_invalid_profile_exits_nonzero(self, cli_runner: CliRunner, project_cli, tmp_path: Path) -> None:
+    def test_scaffold_invalid_profile_exits_nonzero(
+        self, cli_runner: CliRunner, project_cli, tmp_path: Path
+    ) -> None:
         dest = tmp_path / "scaffold-invalid"
-        result = cli_runner.invoke(project_cli, ["scaffold", str(dest), "--profile", "invalid"])
+        result = cli_runner.invoke(
+            project_cli, ["scaffold", str(dest), "--profile", "invalid"]
+        )
         assert result.exit_code != 0
         assert "Unknown scaffold profile" in result.output
         assert "service_api" in result.output
 
-    def test_scaffold_rejects_nonempty_destination(self, cli_runner: CliRunner, project_cli, tmp_path: Path) -> None:
+    def test_scaffold_rejects_nonempty_destination(
+        self, cli_runner: CliRunner, project_cli, tmp_path: Path
+    ) -> None:
         dest = tmp_path / "scaffold-nonempty"
         dest.mkdir()
         (dest / "existing.txt").write_text("x", encoding="utf-8")
@@ -657,7 +714,9 @@ class TestSetupProjectScaffoldCli:
         monkeypatch.setattr("thegent.cli.apps.project.subprocess.run", _fake_run)
 
         dest = tmp_path / "scaffold-service-api"
-        result = cli_runner.invoke(project_cli, ["scaffold", str(dest), "--profile", "service_api"])
+        result = cli_runner.invoke(
+            project_cli, ["scaffold", str(dest), "--profile", "service_api"]
+        )
         assert result.exit_code == 0, result.output
         assert captured["project_type"] == "service_api"
         assert captured["interfaces"] == ["http_api", "docs"]
@@ -678,7 +737,8 @@ class TestSetupProjectScaffoldCli:
 
         dest = tmp_path / "scaffold-dry-run"
         result = cli_runner.invoke(
-            project_cli, ["scaffold", str(dest), "--profile", "service_api", "--dry-run", "--json"]
+            project_cli,
+            ["scaffold", str(dest), "--profile", "service_api", "--dry-run", "--json"],
         )
         assert result.exit_code == 0, result.output
         payload = json.loads(result.output)
@@ -737,7 +797,16 @@ class TestSetupProjectScaffoldCli:
         dest = tmp_path / "scaffold-register"
         result = cli_runner.invoke(
             project_cli,
-            ["scaffold", str(dest), "--profile", "service_api", "--name", "svc", "--register", "--json"],
+            [
+                "scaffold",
+                str(dest),
+                "--profile",
+                "service_api",
+                "--name",
+                "svc",
+                "--register",
+                "--json",
+            ],
         )
         assert result.exit_code == 0, result.output
         payload = json.loads(result.output)
@@ -822,7 +891,9 @@ class TestSetupProjectScaffoldCli:
         self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch
     ) -> None:
         def _should_not_install(*args, **kwargs) -> None:  # type: ignore[no-untyped-def]
-            raise AssertionError("run_install_project must not be called during dry-run")
+            raise AssertionError(
+                "run_install_project must not be called during dry-run"
+            )
 
         monkeypatch.setattr("thegent.install.run_install_project", _should_not_install)
 
@@ -878,13 +949,17 @@ class TestSetupProjectScaffoldCli:
         assert result.exit_code != 0
         assert "runtime install failed" in result.output
 
-    def test_scaffold_profiles_text_output(self, cli_runner: CliRunner, project_cli) -> None:
+    def test_scaffold_profiles_text_output(
+        self, cli_runner: CliRunner, project_cli
+    ) -> None:
         result = cli_runner.invoke(project_cli, ["scaffold-profiles"])
         assert result.exit_code == 0
         assert "service_api" in result.output
         assert "library_sdk" in result.output
 
-    def test_scaffold_profiles_json_output(self, cli_runner: CliRunner, project_cli) -> None:
+    def test_scaffold_profiles_json_output(
+        self, cli_runner: CliRunner, project_cli
+    ) -> None:
         result = cli_runner.invoke(project_cli, ["scaffold-profiles", "--json"])
         assert result.exit_code == 0
         payload = json.loads(result.output)
@@ -896,26 +971,40 @@ class TestSetupProjectScaffoldCli:
 class TestSetupProjectListCli:
     """CLI tests for `thegent sys setup project list`."""
 
-    def test_list_empty(self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch) -> None:
+    def test_list_empty(
+        self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch
+    ) -> None:
         _patch_tenancy(monkeypatch, tmp_path / "reg.json")
         result = cli_runner.invoke(project_cli, ["list"])
         assert result.exit_code == 0
         assert "No projects" in result.output
 
-    def test_list_shows_projects(self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch) -> None:
+    def test_list_shows_projects(
+        self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch
+    ) -> None:
         proj = tmp_path / "listed-proj"
         proj.mkdir()
         _patch_tenancy(monkeypatch, tmp_path / "reg.json")
 
         cli_runner.invoke(
             project_cli,
-            ["init", "--name", "listed-proj", "--path", str(proj), "--tenant", "listed-proj"],
+            [
+                "init",
+                "--name",
+                "listed-proj",
+                "--path",
+                str(proj),
+                "--tenant",
+                "listed-proj",
+            ],
         )
         result = cli_runner.invoke(project_cli, ["list"])
         assert result.exit_code == 0
         assert "listed-proj" in result.output
 
-    def test_list_json_output(self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch) -> None:
+    def test_list_json_output(
+        self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch
+    ) -> None:
         proj = tmp_path / "jlist"
         proj.mkdir()
         _patch_tenancy(monkeypatch, tmp_path / "reg.json")
@@ -942,20 +1031,32 @@ class TestSetupProjectShowCli:
         result = cli_runner.invoke(project_cli, ["show", "nonexistent"])
         assert result.exit_code != 0
 
-    def test_show_found(self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch) -> None:
+    def test_show_found(
+        self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch
+    ) -> None:
         proj = tmp_path / "show-proj"
         proj.mkdir()
         _patch_tenancy(monkeypatch, tmp_path / "reg.json")
 
         cli_runner.invoke(
             project_cli,
-            ["init", "--name", "show-proj", "--path", str(proj), "--tenant", "show-proj"],
+            [
+                "init",
+                "--name",
+                "show-proj",
+                "--path",
+                str(proj),
+                "--tenant",
+                "show-proj",
+            ],
         )
         result = cli_runner.invoke(project_cli, ["show", "show-proj"])
         assert result.exit_code == 0
         assert "show-proj" in result.output
 
-    def test_show_json(self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch) -> None:
+    def test_show_json(
+        self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch
+    ) -> None:
         proj = tmp_path / "sjson"
         proj.mkdir()
         _patch_tenancy(monkeypatch, tmp_path / "reg.json")
@@ -975,7 +1076,9 @@ class TestSetupProjectShowCli:
 class TestSetupProjectDoctorCli:
     """CLI tests for `thegent sys setup project doctor`."""
 
-    def test_doctor_pass_after_fix(self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch) -> None:
+    def test_doctor_pass_after_fix(
+        self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch
+    ) -> None:
         proj = tmp_path / "dr-proj"
         proj.mkdir()
         _patch_tenancy(monkeypatch, tmp_path / "reg.json")
@@ -990,7 +1093,9 @@ class TestSetupProjectDoctorCli:
         assert (proj / ".thegent" / "ownership.json").exists()
         assert (proj / ".thegent" / "templates.lock").exists()
 
-    def test_doctor_json_output(self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch) -> None:
+    def test_doctor_json_output(
+        self, cli_runner: CliRunner, project_cli, tmp_path: Path, monkeypatch
+    ) -> None:
         proj = tmp_path / "dr-json"
         proj.mkdir()
         _patch_tenancy(monkeypatch, tmp_path / "reg.json")
@@ -999,7 +1104,9 @@ class TestSetupProjectDoctorCli:
             project_cli,
             ["init", "--name", "dr-json", "--path", str(proj), "--tenant", "dr-json"],
         )
-        result = cli_runner.invoke(project_cli, ["doctor", "dr-json", "--json", "--fix"])
+        result = cli_runner.invoke(
+            project_cli, ["doctor", "dr-json", "--json", "--fix"]
+        )
         payload = json.loads(result.output)
         assert isinstance(payload, list)
         assert payload[0]["project"] == "dr-json"
@@ -1073,7 +1180,12 @@ class TestSetupProjectMigrateCli:
         proj = tmp_path / "existing-project"
         proj.mkdir()
         fresh = _patch_tenancy(monkeypatch, tmp_path / "reg.json")
-        record = fresh.init_project(name="existing-project", tenant_id="existing-project", path=proj, template="ag-dd")
+        record = fresh.init_project(
+            name="existing-project",
+            tenant_id="existing-project",
+            path=proj,
+            template="ag-dd",
+        )
         (proj / ".thegent").mkdir(exist_ok=True)
         (proj / ".thegent" / "templates.lock").write_text("{", encoding="utf-8")
 
@@ -1125,7 +1237,8 @@ class TestSetupProjectMigrateCli:
         thegent_dir = proj / ".thegent"
         thegent_dir.mkdir()
         (thegent_dir / "templates.lock").write_text(
-            json.dumps({"template": "ag-dd", "version": "1.1.0"}).decode(), encoding="utf-8"
+            json.dumps({"template": "ag-dd", "version": "1.1.0"}).decode(),
+            encoding="utf-8",
         )
 
         calls: dict[str, object] = {}
@@ -1179,10 +1292,13 @@ class TestSetupProjectMigrateCli:
         thegent_dir = proj / ".thegent"
         thegent_dir.mkdir()
         (thegent_dir / "templates.lock").write_text(
-            json.dumps({"template": "ag-dd", "version": "1.2.0"}).decode(), encoding="utf-8"
+            json.dumps({"template": "ag-dd", "version": "1.2.0"}).decode(),
+            encoding="utf-8",
         )
 
-        result = cli_runner.invoke(project_cli, ["migrate", str(proj), "--dry-run", "--json"])
+        result = cli_runner.invoke(
+            project_cli, ["migrate", str(proj), "--dry-run", "--json"]
+        )
         assert result.exit_code == 0, result.output
         payload = json.loads(result.output)
         assert payload["registration"]["status"] == "already_registered"
@@ -1216,7 +1332,9 @@ class TestInstallProjectCli:
         assert result.exit_code == 0, result.output
         assert (proj / ".thegent" / "config.yaml").exists()
 
-    def test_install_project_dry_run(self, cli_runner: CliRunner, install_cli, tmp_path: Path, monkeypatch) -> None:
+    def test_install_project_dry_run(
+        self, cli_runner: CliRunner, install_cli, tmp_path: Path, monkeypatch
+    ) -> None:
         proj = tmp_path / "dry-iproj"
         proj.mkdir()
         fresh = _patch_tenancy(monkeypatch, tmp_path / "reg.json")
@@ -1236,10 +1354,14 @@ class TestInstallProjectCli:
     def test_install_project_invalid_mode_exits_nonzero(
         self, cli_runner: CliRunner, install_cli, tmp_path: Path
     ) -> None:
-        result = cli_runner.invoke(install_cli, ["--project", "any", "--mode", "invalid-mode"])
+        result = cli_runner.invoke(
+            install_cli, ["--project", "any", "--mode", "invalid-mode"]
+        )
         assert result.exit_code != 0
 
-    def test_install_project_json_output(self, cli_runner: CliRunner, install_cli, tmp_path: Path, monkeypatch) -> None:
+    def test_install_project_json_output(
+        self, cli_runner: CliRunner, install_cli, tmp_path: Path, monkeypatch
+    ) -> None:
         proj = tmp_path / "json-iproj"
         proj.mkdir()
         fresh = _patch_tenancy(monkeypatch, tmp_path / "reg.json")

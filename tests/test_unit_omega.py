@@ -19,7 +19,11 @@ class TestOmegaLoop:
             {"id": "a1", "payload": "task 1", "depends_on": []},
             {"id": "a2", "payload": "task 2", "depends_on": ["a1"]},
             {"id": "a1", "payload": "task 1", "depends_on": []},  # Redundant ID
-            {"id": "a3", "payload": "task 2", "depends_on": ["a1"]},  # Redundant payload
+            {
+                "id": "a3",
+                "payload": "task 2",
+                "depends_on": ["a1"],
+            },  # Redundant payload
         ]
 
         result = loop.minimize_entropy("cycle-1", proposed_plan)
@@ -38,7 +42,10 @@ class TestOmegaLoop:
         plan1 = [{"id": "a1", "depends_on": ["d1"]}]
         entropy1 = loop.calculate_entropy(plan1)
 
-        plan2 = [{"id": "a1", "depends_on": ["d1"]}, {"id": "a2", "depends_on": ["d1", "d2"]}]
+        plan2 = [
+            {"id": "a1", "depends_on": ["d1"]},
+            {"id": "a2", "depends_on": ["d1", "d2"]},
+        ]
         entropy2 = loop.calculate_entropy(plan2)
 
         # More actions/dependencies should generally change entropy

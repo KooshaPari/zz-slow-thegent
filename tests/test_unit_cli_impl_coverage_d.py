@@ -79,7 +79,9 @@ class TestResolveCwdExceptionFallback:
 @pytest.mark.unit
 class TestSessionScopeDirsFallbackExists:
     # @trace FR-CLI-501
-    def test_fallback_returned_when_no_glob_match_but_dir_exists(self, tmp_path) -> None:
+    def test_fallback_returned_when_no_glob_match_but_dir_exists(
+        self, tmp_path
+    ) -> None:
         from thegent.cli.commands.impl import _session_scope_dirs
 
         owner_dir = tmp_path / "user_proj"
@@ -186,7 +188,15 @@ class TestValidateDagTaskIdAndDepId:
         doc = DagDocument(
             frontmatter={},
             table_headers=["id", "agent", "prompt", "depends_on", "status"],
-            tasks=[{"id": "!!!bad", "agent": "claude", "prompt": "x", "depends_on": "", "status": "pending"}],
+            tasks=[
+                {
+                    "id": "!!!bad",
+                    "agent": "claude",
+                    "prompt": "x",
+                    "depends_on": "",
+                    "status": "pending",
+                }
+            ],
             before_table="",
             after_table="",
         )
@@ -203,7 +213,13 @@ class TestValidateDagTaskIdAndDepId:
             frontmatter={},
             table_headers=["id", "agent", "prompt", "depends_on", "status"],
             tasks=[
-                {"id": "T1", "agent": "claude", "prompt": "x", "depends_on": "!!!bad-dep", "status": "pending"},
+                {
+                    "id": "T1",
+                    "agent": "claude",
+                    "prompt": "x",
+                    "depends_on": "!!!bad-dep",
+                    "status": "pending",
+                },
             ],
             before_table="",
             after_table="",
@@ -248,7 +264,9 @@ class TestLoadObserveSummarySnapshotsOSError:
         log_path = tmp_path / "health-snapshots.jsonl"
         log_path.write_text("some content", encoding="utf-8")
         # Make the file unreadable to trigger OSError
-        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
+        with patch(
+            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
+        ):
             with patch.object(Path, "read_text", side_effect=OSError("boom")):
                 result = _load_observe_summary_snapshots("sig", "key", 10)
         assert result == []
@@ -266,7 +284,9 @@ class TestCompactHealthSnapshotLogOSError:
         log_path = tmp_path / "health-snapshots.jsonl"
         log_path.write_text("x\n" * 10000, encoding="utf-8")
 
-        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
+        with patch(
+            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
+        ):
             with patch.object(Path, "read_text", side_effect=OSError("no read")):
                 # Should not raise
                 _compact_health_snapshot_log()
@@ -278,8 +298,12 @@ class TestCompactHealthSnapshotLogOSError:
         log_path = tmp_path / "health-snapshots.jsonl"
         log_path.write_text("x\n" * 10000, encoding="utf-8")
 
-        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
-            with patch("thegent.cli.commands.impl._health_snapshot_max_lines", return_value=5):
+        with patch(
+            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
+        ):
+            with patch(
+                "thegent.cli.commands.impl._health_snapshot_max_lines", return_value=5
+            ):
                 with patch.object(Path, "write_text", side_effect=OSError("no write")):
                     _compact_health_snapshot_log()
 
@@ -295,7 +319,9 @@ class TestLoadPreviousHealthSnapshotEdges:
 
         log_path = tmp_path / "health-snapshots.jsonl"
         log_path.write_text("content", encoding="utf-8")
-        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
+        with patch(
+            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
+        ):
             with patch.object(Path, "read_text", side_effect=OSError("boom")):
                 result = _load_previous_health_snapshot({"key": "val"})
         assert result is None
@@ -306,10 +332,16 @@ class TestLoadPreviousHealthSnapshotEdges:
 
         log_path = tmp_path / "health-snapshots.jsonl"
         content = (
-            "\n\nnot-json\n" + json.dumps({"record_type": "health_snapshot", "scope_key": {"k": "v"}}).decode() + "\n"
+            "\n\nnot-json\n"
+            + json.dumps(
+                {"record_type": "health_snapshot", "scope_key": {"k": "v"}}
+            ).decode()
+            + "\n"
         )
         log_path.write_text(content, encoding="utf-8")
-        with patch("thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path):
+        with patch(
+            "thegent.cli.commands.impl._health_snapshot_log_path", return_value=log_path
+        ):
             result = _load_previous_health_snapshot({"k": "v"})
         assert result is not None
         assert result["scope_key"] == {"k": "v"}
@@ -367,7 +399,9 @@ class TestSweepImpl:
         mock_queue.list_pending.return_value = []
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
         ):
             result = sweep_impl()
@@ -399,7 +433,9 @@ class TestSweepImpl:
         mock_queue.list_pending.return_value = []
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
         ):
             result = sweep_impl()
@@ -427,10 +463,15 @@ class TestSweepImpl:
         mock_registry.registry_path = tmp_path / "registry.jsonl"
 
         mock_auditor = MagicMock()
-        mock_auditor.verify_registry.return_value = {"status": "failed", "errors": ["bad"]}
+        mock_auditor.verify_registry.return_value = {
+            "status": "failed",
+            "errors": ["bad"],
+        }
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
             patch("thegent.execution.RunRegistry", return_value=mock_registry),
             patch("thegent.execution.Auditor", return_value=mock_auditor),
@@ -458,7 +499,9 @@ class TestSweepImpl:
 
         env = {"THGENT_ESCALATION_SLA_BREACH_ALERT": "true"}
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
             patch.dict(os.environ, env),
         ):
@@ -650,7 +693,11 @@ class TestListSessionContractsImpl:
                 "pid": 1,
                 "status": "running",
                 "started_at_utc": "2025-01-01T00:00:00+00:00",
-                "route_request": {"requested_model": "m1", "policy": "prefer_direct", "resolved_model_alias": "opus"},
+                "route_request": {
+                    "requested_model": "m1",
+                    "policy": "prefer_direct",
+                    "resolved_model_alias": "opus",
+                },
                 "route_contract": {
                     "provider": "claude",
                     "model_alias": "haiku",
@@ -676,7 +723,11 @@ class TestListSessionContractsImpl:
                 "pid": 1,
                 "status": "running",
                 "started_at_utc": "2025-01-01T00:00:00+00:00",
-                "route_request": {"requested_model": "m1", "policy": "prefer_direct", "resolved_agent": "gemini"},
+                "route_request": {
+                    "requested_model": "m1",
+                    "policy": "prefer_direct",
+                    "resolved_agent": "gemini",
+                },
                 "route_contract": {
                     "provider": "claude",
                     "model_alias": "haiku",
@@ -857,7 +908,9 @@ class TestSessionContractAuditImpl:
 class TestSessionContractHealthReportImplEdges:
     # @trace FR-CLI-534
     @patch("thegent.cli.commands.impl._append_health_snapshot")
-    @patch("thegent.cli.commands.impl._load_previous_health_snapshot", return_value=None)
+    @patch(
+        "thegent.cli.commands.impl._load_previous_health_snapshot", return_value=None
+    )
     @patch("thegent.cli.commands.impl.session_contract_audit_impl")
     def test_no_issues_remediation(self, mock_audit, mock_prev, mock_append) -> None:
         from thegent.cli.commands.impl import session_contract_health_report_impl
@@ -887,9 +940,13 @@ class TestSessionContractHealthReportImplEdges:
 
     # @trace FR-CLI-535
     @patch("thegent.cli.commands.impl._append_health_snapshot")
-    @patch("thegent.cli.commands.impl._load_previous_health_snapshot", return_value=None)
+    @patch(
+        "thegent.cli.commands.impl._load_previous_health_snapshot", return_value=None
+    )
     @patch("thegent.cli.commands.impl.session_contract_audit_impl")
-    def test_max_blocked_none_defaults_to_25(self, mock_audit, mock_prev, mock_append) -> None:
+    def test_max_blocked_none_defaults_to_25(
+        self, mock_audit, mock_prev, mock_append
+    ) -> None:
         from thegent.cli.commands.impl import session_contract_health_report_impl
 
         mock_audit.return_value = {
@@ -909,9 +966,13 @@ class TestSessionContractHealthReportImplEdges:
 
     # @trace FR-CLI-536
     @patch("thegent.cli.commands.impl._append_health_snapshot")
-    @patch("thegent.cli.commands.impl._load_previous_health_snapshot", return_value=None)
+    @patch(
+        "thegent.cli.commands.impl._load_previous_health_snapshot", return_value=None
+    )
     @patch("thegent.cli.commands.impl.session_contract_audit_impl")
-    def test_max_blocked_negative_clamped_to_zero(self, mock_audit, mock_prev, mock_append) -> None:
+    def test_max_blocked_negative_clamped_to_zero(
+        self, mock_audit, mock_prev, mock_append
+    ) -> None:
         from thegent.cli.commands.impl import session_contract_health_report_impl
 
         mock_audit.return_value = {
@@ -948,7 +1009,9 @@ class TestSessionContractHealthGateBaselineRegression:
     @patch("thegent.cli.commands.impl._append_health_snapshot")
     @patch("thegent.cli.commands.impl._load_previous_health_snapshot")
     @patch("thegent.cli.commands.impl.session_contract_audit_impl")
-    def test_baseline_regression_detected(self, mock_audit, mock_prev, mock_append) -> None:
+    def test_baseline_regression_detected(
+        self, mock_audit, mock_prev, mock_append
+    ) -> None:
         from thegent.cli.commands.impl import session_contract_health_gate_impl
 
         mock_audit.return_value = {
@@ -1013,7 +1076,9 @@ class TestSessionContractHealthTrendImplSnapshotParsing:
     # @trace FR-CLI-539
     @patch("thegent.cli.commands.impl._health_snapshot_max_lines", return_value=5000)
     @patch("thegent.cli.commands.impl._health_snapshot_log_path")
-    def test_multiple_snapshots_with_timestamps(self, mock_path, mock_max, tmp_path) -> None:
+    def test_multiple_snapshots_with_timestamps(
+        self, mock_path, mock_max, tmp_path
+    ) -> None:
         from thegent.cli.commands.impl import session_contract_health_trend_impl
 
         scope_key = {
@@ -1048,7 +1113,9 @@ class TestSessionContractHealthTrendImplSnapshotParsing:
     # @trace FR-CLI-540
     @patch("thegent.cli.commands.impl._health_snapshot_max_lines", return_value=5000)
     @patch("thegent.cli.commands.impl._health_snapshot_log_path")
-    def test_empty_line_and_bad_json_in_snapshots(self, mock_path, mock_max, tmp_path) -> None:
+    def test_empty_line_and_bad_json_in_snapshots(
+        self, mock_path, mock_max, tmp_path
+    ) -> None:
         from thegent.cli.commands.impl import session_contract_health_trend_impl
 
         log_path = tmp_path / "health-snapshots.jsonl"
@@ -1061,7 +1128,9 @@ class TestSessionContractHealthTrendImplSnapshotParsing:
     # @trace FR-CLI-541
     @patch("thegent.cli.commands.impl._health_snapshot_max_lines", return_value=5000)
     @patch("thegent.cli.commands.impl._health_snapshot_log_path")
-    def test_snapshot_with_invalid_timestamp(self, mock_path, mock_max, tmp_path) -> None:
+    def test_snapshot_with_invalid_timestamp(
+        self, mock_path, mock_max, tmp_path
+    ) -> None:
         from thegent.cli.commands.impl import session_contract_health_trend_impl
 
         scope_key = {
@@ -1081,7 +1150,9 @@ class TestSessionContractHealthTrendImplSnapshotParsing:
             "blocked_count": 1,
         }
         log_path = tmp_path / "health-snapshots.jsonl"
-        log_path.write_text(json.dumps(rec, sort_keys=True).decode() + "\n", encoding="utf-8")
+        log_path.write_text(
+            json.dumps(rec, sort_keys=True).decode() + "\n", encoding="utf-8"
+        )
         mock_path.return_value = log_path
 
         result = session_contract_health_trend_impl(limit=5)
@@ -1091,7 +1162,9 @@ class TestSessionContractHealthTrendImplSnapshotParsing:
     # @trace FR-CLI-542
     @patch("thegent.cli.commands.impl._health_snapshot_max_lines", return_value=5000)
     @patch("thegent.cli.commands.impl._health_snapshot_log_path")
-    def test_non_matching_record_type_skipped(self, mock_path, mock_max, tmp_path) -> None:
+    def test_non_matching_record_type_skipped(
+        self, mock_path, mock_max, tmp_path
+    ) -> None:
         from thegent.cli.commands.impl import session_contract_health_trend_impl
 
         rec = {
@@ -1099,7 +1172,9 @@ class TestSessionContractHealthTrendImplSnapshotParsing:
             "captured_at_utc": datetime.now(UTC).isoformat(),
         }
         log_path = tmp_path / "health-snapshots.jsonl"
-        log_path.write_text(json.dumps(rec, sort_keys=True).decode() + "\n", encoding="utf-8")
+        log_path.write_text(
+            json.dumps(rec, sort_keys=True).decode() + "\n", encoding="utf-8"
+        )
         mock_path.return_value = log_path
 
         result = session_contract_health_trend_impl(limit=5)
@@ -1108,7 +1183,9 @@ class TestSessionContractHealthTrendImplSnapshotParsing:
     # @trace FR-CLI-543
     @patch("thegent.cli.commands.impl._health_snapshot_max_lines", return_value=5000)
     @patch("thegent.cli.commands.impl._health_snapshot_log_path")
-    def test_non_matching_scope_key_skipped(self, mock_path, mock_max, tmp_path) -> None:
+    def test_non_matching_scope_key_skipped(
+        self, mock_path, mock_max, tmp_path
+    ) -> None:
         from thegent.cli.commands.impl import session_contract_health_trend_impl
 
         rec = {
@@ -1117,7 +1194,9 @@ class TestSessionContractHealthTrendImplSnapshotParsing:
             "captured_at_utc": datetime.now(UTC).isoformat(),
         }
         log_path = tmp_path / "health-snapshots.jsonl"
-        log_path.write_text(json.dumps(rec, sort_keys=True).decode() + "\n", encoding="utf-8")
+        log_path.write_text(
+            json.dumps(rec, sort_keys=True).decode() + "\n", encoding="utf-8"
+        )
         mock_path.return_value = log_path
 
         result = session_contract_health_trend_impl(limit=5)
@@ -1132,7 +1211,9 @@ class TestStatusImplResolveExitCode:
     # @trace FR-CLI-544
     @patch("thegent.cli.commands.impl.ThegentSettings")
     @patch("thegent.cli.commands.impl._is_pid_running", return_value=False)
-    def test_exit_code_from_int_in_meta(self, mock_pid, mock_settings_cls, tmp_path) -> None:
+    def test_exit_code_from_int_in_meta(
+        self, mock_pid, mock_settings_cls, tmp_path
+    ) -> None:
         """exit_code as int in meta is returned directly (line 3159-3160)."""
         from thegent.cli.commands.impl import status_impl
 
@@ -1144,14 +1225,18 @@ class TestStatusImplResolveExitCode:
         meta_path = tmp_path / "sess1.json"
         meta_path.write_text(json.dumps(meta).decode(), encoding="utf-8")
 
-        with patch("thegent.cli.commands.impl._find_session_meta", return_value=meta_path):
+        with patch(
+            "thegent.cli.commands.impl._find_session_meta", return_value=meta_path
+        ):
             result = status_impl(session_id="sess1")
         assert result["exit_code"] == 42
 
     # @trace FR-CLI-545
     @patch("thegent.cli.commands.impl.ThegentSettings")
     @patch("thegent.cli.commands.impl._is_pid_running", return_value=False)
-    def test_exit_code_from_rc_file(self, mock_pid, mock_settings_cls, tmp_path) -> None:
+    def test_exit_code_from_rc_file(
+        self, mock_pid, mock_settings_cls, tmp_path
+    ) -> None:
         """When exit_code not in meta, read from rc file (line 3166-3170)."""
         from thegent.cli.commands.impl import status_impl
 
@@ -1166,7 +1251,9 @@ class TestStatusImplResolveExitCode:
         rc_path.write_text("7\n", encoding="utf-8")
 
         with (
-            patch("thegent.cli.commands.impl._find_session_meta", return_value=meta_path),
+            patch(
+                "thegent.cli.commands.impl._find_session_meta", return_value=meta_path
+            ),
             patch(
                 "thegent.cli.commands.impl._session_paths",
                 return_value={
@@ -1183,7 +1270,9 @@ class TestStatusImplResolveExitCode:
     # @trace FR-CLI-545b
     @patch("thegent.cli.commands.impl.ThegentSettings")
     @patch("thegent.cli.commands.impl._is_pid_running", return_value=False)
-    def test_exit_code_from_numeric_string(self, mock_pid, mock_settings_cls, tmp_path) -> None:
+    def test_exit_code_from_numeric_string(
+        self, mock_pid, mock_settings_cls, tmp_path
+    ) -> None:
         """exit_code as numeric string in meta is parsed (line 3161-3163)."""
         from thegent.cli.commands.impl import status_impl
 
@@ -1195,14 +1284,18 @@ class TestStatusImplResolveExitCode:
         meta_path = tmp_path / "sess1b.json"
         meta_path.write_text(json.dumps(meta).decode(), encoding="utf-8")
 
-        with patch("thegent.cli.commands.impl._find_session_meta", return_value=meta_path):
+        with patch(
+            "thegent.cli.commands.impl._find_session_meta", return_value=meta_path
+        ):
             result = status_impl(session_id="sess1b")
         assert result["exit_code"] == 99
 
     # @trace FR-CLI-546
     @patch("thegent.cli.commands.impl.ThegentSettings")
     @patch("thegent.cli.commands.impl._is_pid_running", return_value=False)
-    def test_exit_code_no_rc_file_returns_none(self, mock_pid, mock_settings_cls, tmp_path) -> None:
+    def test_exit_code_no_rc_file_returns_none(
+        self, mock_pid, mock_settings_cls, tmp_path
+    ) -> None:
         """When no exit_code in meta and no rc file, exit_code is None (line 3172)."""
         from thegent.cli.commands.impl import status_impl
 
@@ -1215,7 +1308,9 @@ class TestStatusImplResolveExitCode:
         meta_path.write_text(json.dumps(meta).decode(), encoding="utf-8")
 
         with (
-            patch("thegent.cli.commands.impl._find_session_meta", return_value=meta_path),
+            patch(
+                "thegent.cli.commands.impl._find_session_meta", return_value=meta_path
+            ),
             patch(
                 "thegent.cli.commands.impl._session_paths",
                 return_value={
@@ -1232,7 +1327,9 @@ class TestStatusImplResolveExitCode:
     # @trace FR-CLI-546b
     @patch("thegent.cli.commands.impl.ThegentSettings")
     @patch("thegent.cli.commands.impl._is_pid_running", return_value=False)
-    def test_exit_code_rc_file_oserror(self, mock_pid, mock_settings_cls, tmp_path) -> None:
+    def test_exit_code_rc_file_oserror(
+        self, mock_pid, mock_settings_cls, tmp_path
+    ) -> None:
         """When rc_path.exists() but read fails, return None (line 3170-3171)."""
         from thegent.cli.commands.impl import status_impl
 
@@ -1247,7 +1344,9 @@ class TestStatusImplResolveExitCode:
         rc_path.write_text("bad\n", encoding="utf-8")  # non-numeric -> ValueError
 
         with (
-            patch("thegent.cli.commands.impl._find_session_meta", return_value=meta_path),
+            patch(
+                "thegent.cli.commands.impl._find_session_meta", return_value=meta_path
+            ),
             patch(
                 "thegent.cli.commands.impl._session_paths",
                 return_value={
@@ -1264,7 +1363,9 @@ class TestStatusImplResolveExitCode:
     # @trace FR-CLI-547
     @patch("thegent.cli.commands.impl.ThegentSettings")
     @patch("thegent.cli.commands.impl._is_pid_running", return_value=True)
-    def test_running_exit_code_is_none(self, mock_pid, mock_settings_cls, tmp_path) -> None:
+    def test_running_exit_code_is_none(
+        self, mock_pid, mock_settings_cls, tmp_path
+    ) -> None:
         """When session is running, exit_code is None (line 3156-3157)."""
         from thegent.cli.commands.impl import status_impl
 
@@ -1277,7 +1378,9 @@ class TestStatusImplResolveExitCode:
         meta_path.write_text(json.dumps(meta).decode(), encoding="utf-8")
 
         with (
-            patch("thegent.cli.commands.impl._find_session_meta", return_value=meta_path),
+            patch(
+                "thegent.cli.commands.impl._find_session_meta", return_value=meta_path
+            ),
             patch(
                 "thegent.cli.commands.impl._session_paths",
                 return_value={
@@ -1299,7 +1402,9 @@ class TestStatusImplResolveExitCode:
 @pytest.mark.unit
 class TestInspectImplLogError:
     # @trace FR-CLI-548
-    @patch("thegent.cli.commands.impl.logs_impl", side_effect=Exception("log read failed"))
+    @patch(
+        "thegent.cli.commands.impl.logs_impl", side_effect=Exception("log read failed")
+    )
     @patch("thegent.cli.commands.impl.status_impl", return_value={"status": "running"})
     @patch("thegent.cli.commands.impl.ps_impl")
     def test_log_error_captured(self, mock_ps, mock_status, mock_logs) -> None:
@@ -1316,11 +1421,18 @@ class TestInspectImplLogError:
 @pytest.mark.unit
 class TestListDroidsImpl:
     # @trace FR-CLI-549
-    @patch("thegent.cli.commands.impl.list_droid_names", return_value=["droid1", "droid2"])
-    @patch("thegent.cli.commands.impl._resolve_droids_dir", return_value=Path("/fake/droids"))
+    @patch(
+        "thegent.cli.commands.impl.list_droid_names", return_value=["droid1", "droid2"]
+    )
+    @patch(
+        "thegent.cli.commands.impl._resolve_droids_dir",
+        return_value=Path("/fake/droids"),
+    )
     @patch("thegent.cli.commands.impl._resolve_cwd", return_value=Path("/fake/cwd"))
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_lists_droids_sorted(self, mock_settings_cls, mock_cwd, mock_droids_dir, mock_list) -> None:
+    def test_lists_droids_sorted(
+        self, mock_settings_cls, mock_cwd, mock_droids_dir, mock_list
+    ) -> None:
         from thegent.cli.commands.impl import list_droids_impl
 
         result = list_droids_impl()
@@ -1342,7 +1454,9 @@ class TestListModelsImpl:
 
         with patch("thegent.models.ModelCatalog", mock_catalog):
             # We need to mock the import inside the function
-            with patch.dict("sys.modules", {"thegent.models": MagicMock(ModelCatalog=mock_catalog)}):
+            with patch.dict(
+                "sys.modules", {"thegent.models": MagicMock(ModelCatalog=mock_catalog)}
+            ):
                 list_models_impl(include_contract=True)
 
     # @trace FR-CLI-551
@@ -1394,7 +1508,9 @@ class TestListModelsImpl:
         with patch.dict(
             "sys.modules",
             {
-                "thegent.models.scrapers": MagicMock(get_scraped_catalog=MagicMock(return_value=mock_scraped)),
+                "thegent.models.scrapers": MagicMock(
+                    get_scraped_catalog=MagicMock(return_value=mock_scraped)
+                ),
             },
         ):
             result = list_models_impl(use_scraped=True, provider="claude")
@@ -1418,7 +1534,9 @@ class TestListModelsImpl:
             "sys.modules",
             {
                 "thegent.models.scrapers": MagicMock(
-                    get_scraped_catalog=MagicMock(side_effect=RuntimeError("scrape fail"))
+                    get_scraped_catalog=MagicMock(
+                        side_effect=RuntimeError("scrape fail")
+                    )
                 ),
             },
         ):
@@ -1485,7 +1603,9 @@ class TestObserveSummaryImplInternals:
     @patch("thegent.cli.commands.impl._append_observe_summary_snapshot")
     @patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[])
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_observe_summary_with_z_suffix_datetime(self, mock_settings_cls, mock_load, mock_append) -> None:
+    def test_observe_summary_with_z_suffix_datetime(
+        self, mock_settings_cls, mock_load, mock_append
+    ) -> None:
         from thegent.cli.commands.impl import observe_summary_impl
 
         mock_settings = MagicMock()
@@ -1515,7 +1635,9 @@ class TestObserveSummaryImplInternals:
         ]
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
         ):
             result = observe_summary_impl(trend_samples=0)
@@ -1527,7 +1649,9 @@ class TestObserveSummaryImplInternals:
     @patch("thegent.cli.commands.impl._append_observe_summary_snapshot")
     @patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[])
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_observe_summary_no_escalate_by(self, mock_settings_cls, mock_load, mock_append) -> None:
+    def test_observe_summary_no_escalate_by(
+        self, mock_settings_cls, mock_load, mock_append
+    ) -> None:
         from thegent.cli.commands.impl import observe_summary_impl
 
         mock_settings = MagicMock()
@@ -1556,7 +1680,9 @@ class TestObserveSummaryImplInternals:
         ]
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
         ):
             result = observe_summary_impl(trend_samples=0)
@@ -1569,7 +1695,9 @@ class TestObserveSummaryImplInternals:
     @patch("thegent.cli.commands.impl._append_observe_summary_snapshot")
     @patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[])
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_observe_summary_invalid_trend_samples(self, mock_settings_cls, mock_load, mock_append) -> None:
+    def test_observe_summary_invalid_trend_samples(
+        self, mock_settings_cls, mock_load, mock_append
+    ) -> None:
         from thegent.cli.commands.impl import observe_summary_impl
 
         mock_settings = MagicMock()
@@ -1585,7 +1713,9 @@ class TestObserveSummaryImplInternals:
         mock_queue.list_pending.return_value = []
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
         ):
             result = observe_summary_impl(trend_samples="not-a-number")
@@ -1597,7 +1727,9 @@ class TestObserveSummaryImplInternals:
     @patch("thegent.cli.commands.impl._append_observe_summary_snapshot")
     @patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[])
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_observe_summary_negative_trend_samples(self, mock_settings_cls, mock_load, mock_append) -> None:
+    def test_observe_summary_negative_trend_samples(
+        self, mock_settings_cls, mock_load, mock_append
+    ) -> None:
         from thegent.cli.commands.impl import observe_summary_impl
 
         mock_settings = MagicMock()
@@ -1613,7 +1745,9 @@ class TestObserveSummaryImplInternals:
         mock_queue.list_pending.return_value = []
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
         ):
             result = observe_summary_impl(trend_samples=-5)
@@ -1623,7 +1757,9 @@ class TestObserveSummaryImplInternals:
     # @trace FR-EXEC-510
     @patch("thegent.cli.commands.impl._append_observe_summary_snapshot")
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_observe_summary_with_trend_snapshots(self, mock_settings_cls, mock_append) -> None:
+    def test_observe_summary_with_trend_snapshots(
+        self, mock_settings_cls, mock_append
+    ) -> None:
         from thegent.cli.commands.impl import observe_summary_impl
 
         mock_settings = MagicMock()
@@ -1646,9 +1782,14 @@ class TestObserveSummaryImplInternals:
         ]
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=trend_records),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=trend_records,
+            ),
         ):
             result = observe_summary_impl(trend_samples=5)
 
@@ -1657,7 +1798,9 @@ class TestObserveSummaryImplInternals:
     # @trace FR-EXEC-511
     @patch("thegent.cli.commands.impl._append_observe_summary_snapshot")
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_observe_summary_with_baseline_snapshot(self, mock_settings_cls, mock_append) -> None:
+    def test_observe_summary_with_baseline_snapshot(
+        self, mock_settings_cls, mock_append
+    ) -> None:
         from thegent.cli.commands.impl import observe_summary_impl
 
         mock_settings = MagicMock()
@@ -1699,9 +1842,14 @@ class TestObserveSummaryImplInternals:
         ]
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=trend_records),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=trend_records,
+            ),
         ):
             result = observe_summary_impl(trend_samples=5)
 
@@ -1710,7 +1858,9 @@ class TestObserveSummaryImplInternals:
     # @trace FR-EXEC-512
     @patch("thegent.cli.commands.impl._append_observe_summary_snapshot")
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_observe_summary_parse_utc_invalid_no_z(self, mock_settings_cls, mock_append) -> None:
+    def test_observe_summary_parse_utc_invalid_no_z(
+        self, mock_settings_cls, mock_append
+    ) -> None:
         """Test _parse_utc branch where value doesn't end with Z and is invalid."""
         from thegent.cli.commands.impl import observe_summary_impl
 
@@ -1740,9 +1890,14 @@ class TestObserveSummaryImplInternals:
         ]
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[]),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=[],
+            ),
         ):
             result = observe_summary_impl(trend_samples=0)
 
@@ -1754,7 +1909,9 @@ class TestObserveSummaryImplInternals:
     # @trace FR-EXEC-513
     @patch("thegent.cli.commands.impl._append_observe_summary_snapshot")
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_observe_summary_parse_utc_naive_datetime(self, mock_settings_cls, mock_append) -> None:
+    def test_observe_summary_parse_utc_naive_datetime(
+        self, mock_settings_cls, mock_append
+    ) -> None:
         """Test _parse_utc branch where datetime is naive (no timezone)."""
         from thegent.cli.commands.impl import observe_summary_impl
 
@@ -1785,9 +1942,14 @@ class TestObserveSummaryImplInternals:
         ]
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[]),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=[],
+            ),
         ):
             result = observe_summary_impl(trend_samples=0)
 
@@ -1799,7 +1961,9 @@ class TestObserveSummaryImplInternals:
     # @trace FR-EXEC-514
     @patch("thegent.cli.commands.impl._append_observe_summary_snapshot")
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_observe_summary_parse_utc_z_suffix_valid(self, mock_settings_cls, mock_append) -> None:
+    def test_observe_summary_parse_utc_z_suffix_valid(
+        self, mock_settings_cls, mock_append
+    ) -> None:
         """Test _parse_utc branch where Z-suffix valid datetime is parsed via fallback."""
         from thegent.cli.commands.impl import observe_summary_impl
 
@@ -1829,9 +1993,14 @@ class TestObserveSummaryImplInternals:
         ]
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[]),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=[],
+            ),
         ):
             result = observe_summary_impl(trend_samples=0)
 
@@ -1847,7 +2016,9 @@ class TestObserveSummaryTrendTimestamps:
     # @trace FR-EXEC-515
     @patch("thegent.cli.commands.impl._append_observe_summary_snapshot")
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_trend_with_multiple_timestamps_calculates_intervals(self, mock_settings_cls, mock_append) -> None:
+    def test_trend_with_multiple_timestamps_calculates_intervals(
+        self, mock_settings_cls, mock_append
+    ) -> None:
         from thegent.cli.commands.impl import observe_summary_impl
 
         mock_settings = MagicMock()
@@ -1870,9 +2041,14 @@ class TestObserveSummaryTrendTimestamps:
         ]
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=trend_records),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=trend_records,
+            ),
         ):
             result = observe_summary_impl(trend_samples=5)
 
@@ -1885,7 +2061,9 @@ class TestObserveSummaryTrendTimestamps:
     # @trace FR-EXEC-516
     @patch("thegent.cli.commands.impl._append_observe_summary_snapshot")
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_trend_with_invalid_timestamp_skipped(self, mock_settings_cls, mock_append) -> None:
+    def test_trend_with_invalid_timestamp_skipped(
+        self, mock_settings_cls, mock_append
+    ) -> None:
         from thegent.cli.commands.impl import observe_summary_impl
 
         mock_settings = MagicMock()
@@ -1906,9 +2084,14 @@ class TestObserveSummaryTrendTimestamps:
         ]
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=trend_records),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=trend_records,
+            ),
         ):
             result = observe_summary_impl(trend_samples=5)
 
@@ -1958,9 +2141,14 @@ class TestObserveSummaryTrendTimestamps:
         }
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[baseline]),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=[baseline],
+            ),
         ):
             result = observe_summary_impl(trend_samples=5)
 
@@ -1973,7 +2161,9 @@ class TestObserveSummaryTrendTimestamps:
     # @trace FR-EXEC-518
     @patch("thegent.cli.commands.impl._append_observe_summary_snapshot")
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_observe_summary_delta_none_when_value_is_none(self, mock_settings_cls, mock_append) -> None:
+    def test_observe_summary_delta_none_when_value_is_none(
+        self, mock_settings_cls, mock_append
+    ) -> None:
         """Test _delta returns None when current or baseline is None."""
         from thegent.cli.commands.impl import observe_summary_impl
 
@@ -1997,9 +2187,14 @@ class TestObserveSummaryTrendTimestamps:
         }
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[baseline]),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=[baseline],
+            ),
         ):
             observe_summary_impl(trend_samples=5)
 
@@ -2014,7 +2209,9 @@ class TestPsImplMetaReadException:
     # @trace FR-CLI-558
     @patch("thegent.cli.commands.impl._is_pid_running", return_value=False)
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_invalid_meta_json_skipped(self, mock_settings_cls, mock_pid, tmp_path) -> None:
+    def test_invalid_meta_json_skipped(
+        self, mock_settings_cls, mock_pid, tmp_path
+    ) -> None:
         from thegent.cli.commands.impl import ps_impl
 
         mock_settings = MagicMock()
@@ -2028,8 +2225,14 @@ class TestPsImplMetaReadException:
         bad_meta.write_text("NOT JSON", encoding="utf-8")
 
         with (
-            patch("thegent.cli.commands.impl._default_owner_tag", return_value="test_owner"),
-            patch("thegent.cli.commands.impl._session_scope_dirs", return_value=[owner_dir]),
+            patch(
+                "thegent.cli.commands.impl._default_owner_tag",
+                return_value="test_owner",
+            ),
+            patch(
+                "thegent.cli.commands.impl._session_scope_dirs",
+                return_value=[owner_dir],
+            ),
         ):
             result = ps_impl(all=True)
         # Should not crash, bad meta is skipped
@@ -2085,14 +2288,21 @@ class TestBgImplEdges:
         }
 
         mock_migrator = MagicMock()
-        mock_migrator.evaluate_version.return_value = {"allowed": True, "status": "current", "reason": "ok"}
+        mock_migrator.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "current",
+            "reason": "ok",
+        }
 
         mock_proc = MagicMock()
         mock_proc.pid = 42
 
         env = {"THGENT_SANDBOX_ENV_FILTER": "true"}
         with (
-            patch("thegent.contracts.migration.MigrationController", return_value=mock_migrator),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=mock_migrator,
+            ),
             patch.dict(os.environ, env),
             patch("subprocess.Popen", return_value=mock_proc),
             patch("thegent.cli.commands.impl._save_session_meta"),
@@ -2157,15 +2367,29 @@ class TestBgImplEdges:
         }
 
         mock_migrator = MagicMock()
-        mock_migrator.evaluate_version.return_value = {"allowed": True, "status": "current", "reason": "ok"}
+        mock_migrator.evaluate_version.return_value = {
+            "allowed": True,
+            "status": "current",
+            "reason": "ok",
+        }
 
         with (
-            patch("thegent.contracts.migration.MigrationController", return_value=mock_migrator),
+            patch(
+                "thegent.contracts.migration.MigrationController",
+                return_value=mock_migrator,
+            ),
             patch("subprocess.Popen", side_effect=OSError("spawn failed")),
             patch("thegent.cli.commands.impl._save_session_meta"),
             pytest.raises(OSError, match="spawn failed"),
         ):
-            bg_impl(prompt="test", agent="claude", cd=Path("/tmp/cwd"), mode="write", timeout=30, full=True)
+            bg_impl(
+                prompt="test",
+                agent="claude",
+                cd=Path("/tmp/cwd"),
+                mode="write",
+                timeout=30,
+                full=True,
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -2207,7 +2431,9 @@ class TestListModelsImplContractView:
             "sys.modules",
             {
                 "thegent.models": MagicMock(ModelCatalog=mock_catalog),
-                "thegent.models.scrapers": MagicMock(get_scraped_catalog=mock_get_scraped),
+                "thegent.models.scrapers": MagicMock(
+                    get_scraped_catalog=mock_get_scraped
+                ),
             },
         ):
             list_models_impl(by_model=True, refresh=True)
@@ -2232,7 +2458,9 @@ class TestListModelsImplScrapedRefresh:
         with patch.dict(
             "sys.modules",
             {
-                "thegent.models.scrapers": MagicMock(get_scraped_catalog=MagicMock(return_value=mock_scraped)),
+                "thegent.models.scrapers": MagicMock(
+                    get_scraped_catalog=MagicMock(return_value=mock_scraped)
+                ),
             },
         ):
             result = list_models_impl(use_scraped=True, provider="claude", refresh=True)
@@ -2246,9 +2474,13 @@ class TestListModelsImplScrapedRefresh:
 class TestSessionContractHealthGateImplPaths:
     # @trace FR-CLI-564
     @patch("thegent.cli.commands.impl._append_health_snapshot")
-    @patch("thegent.cli.commands.impl._load_previous_health_snapshot", return_value=None)
+    @patch(
+        "thegent.cli.commands.impl._load_previous_health_snapshot", return_value=None
+    )
     @patch("thegent.cli.commands.impl.session_contract_audit_impl")
-    def test_gate_passes_when_all_healthy(self, mock_audit, mock_prev, mock_append) -> None:
+    def test_gate_passes_when_all_healthy(
+        self, mock_audit, mock_prev, mock_append
+    ) -> None:
         from thegent.cli.commands.impl import session_contract_health_gate_impl
 
         mock_audit.return_value = {
@@ -2280,7 +2512,9 @@ class TestSessionContractHealthGateImplPaths:
     @patch("thegent.cli.commands.impl._append_health_snapshot")
     @patch("thegent.cli.commands.impl._load_previous_health_snapshot")
     @patch("thegent.cli.commands.impl.session_contract_audit_impl")
-    def test_gate_no_worse_baseline_with_no_previous(self, mock_audit, mock_prev, mock_append) -> None:
+    def test_gate_no_worse_baseline_with_no_previous(
+        self, mock_audit, mock_prev, mock_append
+    ) -> None:
         from thegent.cli.commands.impl import session_contract_health_gate_impl
 
         mock_audit.return_value = {
@@ -2320,7 +2554,9 @@ class TestObserveSummaryDeltaEdgeCases:
     # @trace FR-EXEC-519
     @patch("thegent.cli.commands.impl._append_observe_summary_snapshot")
     @patch("thegent.cli.commands.impl.ThegentSettings")
-    def test_delta_with_non_numeric_returns_none(self, mock_settings_cls, mock_append) -> None:
+    def test_delta_with_non_numeric_returns_none(
+        self, mock_settings_cls, mock_append
+    ) -> None:
         """Test _delta when float conversion fails (line 1574-1577)."""
         from thegent.cli.commands.impl import observe_summary_impl
 
@@ -2344,9 +2580,14 @@ class TestObserveSummaryDeltaEdgeCases:
         }
 
         with (
-            patch("thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct),
+            patch(
+                "thegent.contracts.telemetry.ContractTelemetry", return_value=mock_ct
+            ),
             patch("thegent.execution.EscalationQueue", return_value=mock_queue),
-            patch("thegent.cli.commands.impl._load_observe_summary_snapshots", return_value=[baseline]),
+            patch(
+                "thegent.cli.commands.impl._load_observe_summary_snapshots",
+                return_value=[baseline],
+            ),
         ):
             observe_summary_impl(trend_samples=5)
 
@@ -2384,7 +2625,9 @@ class TestInspectImplOwnerLookup:
     # @trace FR-CLI-567
     @patch("thegent.cli.commands.impl.logs_impl", return_value="log text")
     @patch("thegent.cli.commands.impl.status_impl", return_value={"status": "running"})
-    @patch("thegent.cli.commands.impl.ps_impl", return_value=[{"id": "s1"}, {"id": "s2"}])
+    @patch(
+        "thegent.cli.commands.impl.ps_impl", return_value=[{"id": "s1"}, {"id": "s2"}]
+    )
     def test_owner_based_lookup(self, mock_ps, mock_status, mock_logs) -> None:
         from thegent.cli.commands.impl import inspect_impl
 
@@ -2463,7 +2706,9 @@ class TestSessionContractHealthTrendEmptyTimestamp:
             "blocked_count": 1,
         }
         log_path = tmp_path / "health-snapshots.jsonl"
-        log_path.write_text(json.dumps(rec, sort_keys=True).decode() + "\n", encoding="utf-8")
+        log_path.write_text(
+            json.dumps(rec, sort_keys=True).decode() + "\n", encoding="utf-8"
+        )
         mock_path.return_value = log_path
 
         result = session_contract_health_trend_impl(limit=5)

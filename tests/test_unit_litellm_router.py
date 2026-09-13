@@ -15,7 +15,9 @@ class TestLiteLLMRouterBuilder:
     def test_build_model_list_excludes_native_cli(self):
         """Native CLI providers are excluded from LiteLLM model list."""
         model_list = build_litellm_model_list()
-        providers_in_list = {cfg.get("model_name", "").split("/")[0] for cfg in model_list}
+        providers_in_list = {
+            cfg.get("model_name", "").split("/")[0] for cfg in model_list
+        }
         # Should not contain codex or claude
         assert "codex" not in providers_in_list
         assert "claude" not in providers_in_list

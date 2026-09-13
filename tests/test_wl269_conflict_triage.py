@@ -120,7 +120,9 @@ class TestConflictTriageEngine:
 
     def test_conflict_triage_rule_dataclass(self):
         """# @trace WL-269 — ConflictTriageRule is properly structured."""
-        rule = ConflictTriageRule(field_name="test_field", category=TriageCategory.AUTO_RESOLVE)
+        rule = ConflictTriageRule(
+            field_name="test_field", category=TriageCategory.AUTO_RESOLVE
+        )
 
         assert rule.field_name == "test_field"
         assert rule.category == TriageCategory.AUTO_RESOLVE

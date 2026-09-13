@@ -79,7 +79,9 @@ def safe_read_file(path: str | Path, encoding: str = "utf-8") -> str | None:
         return None
 
 
-def safe_read_file_with_version(path: str | Path, encoding: str = "utf-8") -> tuple[str | None, str | None]:
+def safe_read_file_with_version(
+    path: str | Path, encoding: str = "utf-8"
+) -> tuple[str | None, str | None]:
     """Safely read a file and return its content and OCC version (hash).
 
     Args:
@@ -104,7 +106,9 @@ def safe_read_file_with_version(path: str | Path, encoding: str = "utf-8") -> tu
         return None, None
 
 
-def read_file_chunk(path: str | Path, offset: int = 0, limit: int | None = None, encoding: str = "utf-8") -> str | None:
+def read_file_chunk(
+    path: str | Path, offset: int = 0, limit: int | None = None, encoding: str = "utf-8"
+) -> str | None:
     """Read a chunk of a file with offset and limit.
 
     Args:
@@ -123,12 +127,17 @@ def read_file_chunk(path: str | Path, offset: int = 0, limit: int | None = None,
             data = f.read(limit) if limit is not None else f.read()
         return data.decode(encoding, errors="replace")
     except Exception as e:
-        logger.error(f"Error reading file chunk {path} (offset={offset}, limit={limit}): {e}")
+        logger.error(
+            f"Error reading file chunk {path} (offset={offset}, limit={limit}): {e}"
+        )
         return None
 
 
 def read_file_lines(
-    path: str | Path, start_line: int = 0, num_lines: int | None = None, encoding: str = "utf-8"
+    path: str | Path,
+    start_line: int = 0,
+    num_lines: int | None = None,
+    encoding: str = "utf-8",
 ) -> list[str] | None:
     """Read specific lines from a file efficiently without loading the whole file into memory.
 
@@ -147,10 +156,14 @@ def read_file_lines(
         path = normalize_path(path)
         with open(path, encoding=encoding) as f:
             # Skip lines efficiently
-            lines_it = itertools.islice(f, start_line, start_line + num_lines if num_lines is not None else None)
+            lines_it = itertools.islice(
+                f, start_line, start_line + num_lines if num_lines is not None else None
+            )
             return list(lines_it)
     except Exception as e:
-        logger.error(f"Error reading file lines {path} (start={start_line}, num={num_lines}): {e}")
+        logger.error(
+            f"Error reading file lines {path} (start={start_line}, num={num_lines}): {e}"
+        )
         return None
 
 
@@ -184,7 +197,9 @@ def read_file_optimized(
             return None
 
         if max_lines is not None:
-            lines = read_file_lines(path, start_line=0, num_lines=max_lines, encoding=encoding)
+            lines = read_file_lines(
+                path, start_line=0, num_lines=max_lines, encoding=encoding
+            )
             return "".join(lines) if lines is not None else None
 
         file_size = path.stat().st_size
@@ -194,16 +209,22 @@ def read_file_optimized(
         if actual_limit is None:
             max_bytes = max_size_mb * 1024 * 1024
             if file_size > max_bytes:
-                logger.warning(f"File {path} is large ({file_size} bytes). Truncating to {max_bytes} bytes.")
+                logger.warning(
+                    f"File {path} is large ({file_size} bytes). Truncating to {max_bytes} bytes."
+                )
                 actual_limit = max_bytes
 
-        return read_file_chunk(path, offset=offset, limit=actual_limit, encoding=encoding)
+        return read_file_chunk(
+            path, offset=offset, limit=actual_limit, encoding=encoding
+        )
     except Exception as e:
         logger.error(f"Error reading optimized file {path}: {e}")
         return None
 
 
-def read_file_tail(path: str | Path, num_lines: int = 10, encoding: str = "utf-8") -> list[str] | None:
+def read_file_tail(
+    path: str | Path, num_lines: int = 10, encoding: str = "utf-8"
+) -> list[str] | None:
     """Read the last N lines from a file efficiently.
 
     Args:
@@ -261,7 +282,10 @@ def read_file_tail(path: str | Path, num_lines: int = 10, encoding: str = "utf-8
 
 
 def safe_write_file(
-    path: str | Path, content: str, expected_version: str | None = None, encoding: str = "utf-8"
+    path: str | Path,
+    content: str,
+    expected_version: str | None = None,
+    encoding: str = "utf-8",
 ) -> bool:
     """Safely write a file with error handling and optional OCC version check.
 
@@ -285,10 +309,14 @@ def safe_write_file(
             else:
                 # Hash the decoded text bytes so OCC is stable across LF/CRLF differences.
                 current_text = path.read_text(encoding=encoding)
-                current_version = hashlib.sha256(current_text.encode(encoding)).hexdigest()
+                current_version = hashlib.sha256(
+                    current_text.encode(encoding)
+                ).hexdigest()
 
             if current_version != expected_version:
-                logger.error(f"OCC violation for {path}: expected {expected_version}, got {current_version}")
+                logger.error(
+                    f"OCC violation for {path}: expected {expected_version}, got {current_version}"
+                )
                 return False
 
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -326,4 +354,6 @@ def find_project_root(start: str | Path | None = None) -> Path:
     for directory in [current, *current.parents]:
         if (directory / "pyproject.toml").exists():
             return directory
-    raise FileNotFoundError(f"No pyproject.toml found in {current} or any parent directory")
+    raise FileNotFoundError(
+        f"No pyproject.toml found in {current} or any parent directory"
+    )

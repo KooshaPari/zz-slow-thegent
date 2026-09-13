@@ -30,43 +30,68 @@ def _start_session() -> str:
     return response["result"]["session"]["id"]
 
 
-def test_wl10960_extract_turn_submit_response_request_id_accepts_request_has_id_false_without_id() -> None:
+def test_wl10960_extract_turn_submit_response_request_id_accepts_request_has_id_false_without_id() -> (
+    None
+):
     # @trace WL-10960
-    assert server._extract_turn_submit_response_request_id({}, request_has_id=False) is None
+    assert (
+        server._extract_turn_submit_response_request_id({}, request_has_id=False)
+        is None
+    )
 
 
-def test_wl10961_extract_turn_submit_response_request_id_accepts_floats_when_request_has_id_is_true() -> None:
+def test_wl10961_extract_turn_submit_response_request_id_accepts_floats_when_request_has_id_is_true() -> (
+    None
+):
     # @trace WL-10961
-    assert server._extract_turn_submit_response_request_id({"request_id": 10.5}, request_has_id=True) == 10.5
+    assert (
+        server._extract_turn_submit_response_request_id(
+            {"request_id": 10.5}, request_has_id=True
+        )
+        == 10.5
+    )
 
 
 def test_wl10962_extract_turn_submit_response_request_id_rejects_boolean_id() -> None:
     # @trace WL-10962
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
-        server._extract_turn_submit_response_request_id({"request_id": True}, request_has_id=True)
+        server._extract_turn_submit_response_request_id(
+            {"request_id": True}, request_has_id=True
+        )
 
 
 def test_wl10963_resolve_turn_submit_response_target_rejects_invalid_shape() -> None:
     # @trace WL-10963
     with pytest.raises(ValueError, match="Turn submit response target unresolved"):
         server._resolve_turn_submit_response_target(
-            {"request_has_id": True, "request_id": "req", "turn": {"id": "t"}, "approval_payload": 1}
+            {
+                "request_has_id": True,
+                "request_id": "req",
+                "turn": {"id": "t"},
+                "approval_payload": 1,
+            }
         )
 
 
-def test_wl10964_build_turn_submit_response_resolution_phase_uses_structured_return() -> None:
+def test_wl10964_build_turn_submit_response_resolution_phase_uses_structured_return() -> (
+    None
+):
     # @trace WL-10964
     phase = server._build_turn_submit_response_phase(
         True, "req", {"id": "turn-1"}, {"id": "approval-1", "status": "requested"}
     )
-    request_has_id, request_id, turn, approval = server._build_turn_submit_response_resolution_phase(phase)
+    request_has_id, request_id, turn, approval = (
+        server._build_turn_submit_response_resolution_phase(phase)
+    )
     assert request_has_id is True
     assert request_id == "req"
     assert turn == {"id": "turn-1"}
     assert approval == {"id": "approval-1", "status": "requested"}
 
 
-def test_wl10965_turn_submit_notification_with_approval_keeps_approval_and_suppresses_response() -> None:
+def test_wl10965_turn_submit_notification_with_approval_keeps_approval_and_suppresses_response() -> (
+    None
+):
     # @trace WL-10965
     _reset_state()
     session_id = _start_session()
@@ -160,7 +185,9 @@ def test_wl10968_turn_submit_without_approval_returns_completed_turn() -> None:
     assert "approval" not in response["result"]
 
 
-def test_wl10969_build_turn_submit_success_response_preserves_result_shape_without_mutation() -> None:
+def test_wl10969_build_turn_submit_success_response_preserves_result_shape_without_mutation() -> (
+    None
+):
     # @trace WL-10969
     turn = {
         "id": "turn-1",

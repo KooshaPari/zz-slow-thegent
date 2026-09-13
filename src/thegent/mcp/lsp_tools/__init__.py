@@ -1,4 +1,5 @@
 """Stub module."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -8,6 +9,7 @@ from typing import Any
 @dataclass
 class SymbolInfo:
     """LSP symbol information."""
+
     name: str = ""
     kind: int = 0
     location: dict = field(default_factory=dict)
@@ -17,13 +19,21 @@ class SymbolInfo:
 @dataclass
 class Diagnostic:
     """LSP diagnostic."""
+
     message: str
     severity: int = 1
     range_start: int = 0
     range_end: int = 0
 
 
-__all__ = ["Diagnostic", "HoverInfo", "LspToolAdapter", "lsp_diagnostics", "lsp_diagnostics_impl", "SymbolInfo"]
+__all__ = [
+    "Diagnostic",
+    "HoverInfo",
+    "LspToolAdapter",
+    "lsp_diagnostics",
+    "lsp_diagnostics_impl",
+    "SymbolInfo",
+]
 
 
 def lsp_diagnostics_impl(uri: str, options: dict | None = None) -> list[Diagnostic]:
@@ -61,6 +71,7 @@ class LspToolAdapter:
 @dataclass
 class HoverInfo:
     """LSP hover information."""
+
     content: str = ""
     format: str = "plaintext"
 
@@ -124,11 +135,14 @@ def _validate_existing_file(uri: str) -> bool:
         True if the file exists and is accessible.
     """
     import os
+
     path = uri[7:] if uri.startswith("file://") else uri
     return os.path.exists(path)
 
 
-def lsp_symbol_lookup_impl(symbol_name: str, uri: str | None = None) -> list[SymbolInfo]:
+def lsp_symbol_lookup_impl(
+    symbol_name: str, uri: str | None = None
+) -> list[SymbolInfo]:
     """Implementation for LSP symbol lookup.
 
     Args:

@@ -41,7 +41,9 @@ class UsageSnapshot:
 class CostController:
     """Manages daily agent call budgets and tier enforcement (FR-GOV-002)."""
 
-    def __init__(self, session_dir: Path, health_targets_path: Path | None = None) -> None:
+    def __init__(
+        self, session_dir: Path, health_targets_path: Path | None = None
+    ) -> None:
         self.session_dir = session_dir
         self._calls_used = 0
         self._per_dimension: dict[str, int] = {}
@@ -55,7 +57,9 @@ class CostController:
             self._calls_limit = budget.get("daily_agent_calls", 20)
             self._tiers = budget.get("tiers", {})
 
-    def record_call(self, dimension: str, agent: str, *, cost_usd: float | None = None) -> None:
+    def record_call(
+        self, dimension: str, agent: str, *, cost_usd: float | None = None
+    ) -> None:
         """Record a single agent call."""
         self._calls_used += 1
         self._per_dimension[dimension] = self._per_dimension.get(dimension, 0) + 1

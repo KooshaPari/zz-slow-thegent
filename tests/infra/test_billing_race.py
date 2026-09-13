@@ -43,7 +43,9 @@ class TestBillingRaceConcurrentRecordUsage:
     """Concurrent record_usage must not corrupt or lose updates."""
 
     @pytest.mark.requirement("FR-ORCH-002")
-    def test_concurrent_record_usage_no_lost_updates(self, billing_manager: TeamBillingManager) -> None:
+    def test_concurrent_record_usage_no_lost_updates(
+        self, billing_manager: TeamBillingManager
+    ) -> None:
         """50 concurrent run-recording threads must result in exactly 50 used_runs."""
         n_threads = 50
         errors: list[Exception] = []
@@ -68,10 +70,14 @@ class TestBillingRaceConcurrentRecordUsage:
 
         data = json.loads(billing_manager.quotas_path.read_text(encoding="utf-8"))
         used = data["team1"]["used_runs"]
-        assert used == n_threads, f"RACE: expected {n_threads} used_runs, got {used} (lost {n_threads - used} updates)"
+        assert used == n_threads, (
+            f"RACE: expected {n_threads} used_runs, got {used} (lost {n_threads - used} updates)"
+        )
 
     @pytest.mark.requirement("FR-ORCH-002")
-    def test_concurrent_token_and_usd_no_lost_updates(self, billing_manager: TeamBillingManager) -> None:
+    def test_concurrent_token_and_usd_no_lost_updates(
+        self, billing_manager: TeamBillingManager
+    ) -> None:
         """Concurrent token + USD updates must not corrupt each other."""
         n_threads = 30
         errors: list[Exception] = []
@@ -94,9 +100,9 @@ class TestBillingRaceConcurrentRecordUsage:
                 with lock:
                     errors.append(exc)
 
-        threads = [threading.Thread(target=record_tokens, args=(i,)) for i in range(n_threads)] + [
-            threading.Thread(target=record_usd, args=(i,)) for i in range(n_threads)
-        ]
+        threads = [
+            threading.Thread(target=record_tokens, args=(i,)) for i in range(n_threads)
+        ] + [threading.Thread(target=record_usd, args=(i,)) for i in range(n_threads)]
         for t in threads:
             t.start()
         for t in threads:

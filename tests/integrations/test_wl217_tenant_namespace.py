@@ -64,7 +64,9 @@ class TestTenantNamespaceResolver:
         assert result == "api-key"
 
     @pytest.mark.requirement("WL-217")
-    def test_strip_namespace_wrong_tenant(self, resolver: TenantNamespaceResolver) -> None:
+    def test_strip_namespace_wrong_tenant(
+        self, resolver: TenantNamespaceResolver
+    ) -> None:
         """Raises ValueError when stripping key from wrong tenant."""
         namespaced = "other-tenant:api-key"
 
@@ -83,7 +85,9 @@ class TestTenantNamespaceResolver:
         assert resolver.is_owned("tenant-123:api-key") is True
 
     @pytest.mark.requirement("WL-217")
-    def test_is_owned_false_wrong_tenant(self, resolver: TenantNamespaceResolver) -> None:
+    def test_is_owned_false_wrong_tenant(
+        self, resolver: TenantNamespaceResolver
+    ) -> None:
         """is_owned returns False for keys from other tenants."""
         assert resolver.is_owned("other-tenant:api-key") is False
 
@@ -100,7 +104,9 @@ class TestTenantNamespaceResolver:
         assert result == {}
 
     @pytest.mark.requirement("WL-217")
-    def test_namespace_dict_multiple_keys(self, resolver: TenantNamespaceResolver) -> None:
+    def test_namespace_dict_multiple_keys(
+        self, resolver: TenantNamespaceResolver
+    ) -> None:
         """namespace_dict namespaces all keys in dictionary."""
         data = {"key1": "value1", "key2": "value2"}
         result = resolver.namespace_dict(data)
@@ -116,7 +122,9 @@ class TestTenantNamespaceResolver:
         assert result == {"key1": "value1", "key2": "value2"}
 
     @pytest.mark.requirement("WL-217")
-    def test_strip_dict_mixed_tenants_raises(self, resolver: TenantNamespaceResolver) -> None:
+    def test_strip_dict_mixed_tenants_raises(
+        self, resolver: TenantNamespaceResolver
+    ) -> None:
         """strip_dict raises ValueError if any key doesn't belong to tenant."""
         data = {"tenant-123:key1": "value1", "other-tenant:key2": "value2"}
 

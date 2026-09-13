@@ -113,13 +113,19 @@ def server_resolve_cwd_elicitation(
     Returns ``(Path, None)`` when accepted, ``(None, 'declined')`` when
     declined, ``(None, 'cancelled')`` when cancelled.
     """
-    if accepted_elicitation_type is not None and isinstance(response, accepted_elicitation_type):
+    if accepted_elicitation_type is not None and isinstance(
+        response, accepted_elicitation_type
+    ):
         data = getattr(response, "data", None)
         if data is not None:
             return Path(data), None
-    if declined_elicitation_type is not None and isinstance(response, declined_elicitation_type):
+    if declined_elicitation_type is not None and isinstance(
+        response, declined_elicitation_type
+    ):
         return None, "declined"
-    if cancelled_elicitation_type is not None and isinstance(response, cancelled_elicitation_type):
+    if cancelled_elicitation_type is not None and isinstance(
+        response, cancelled_elicitation_type
+    ):
         return None, "cancelled"
     return None, None
 
@@ -138,13 +144,19 @@ def server_resolve_owner_elicitation(
     declined, ``(None, 'cancelled')`` when cancelled.  Falls back to
     ``default_owner_tag`` when the response type doesn't match.
     """
-    if accepted_elicitation_type is not None and isinstance(response, accepted_elicitation_type):
+    if accepted_elicitation_type is not None and isinstance(
+        response, accepted_elicitation_type
+    ):
         data = getattr(response, "data", None)
         if data is not None:
             return data, None
-    if declined_elicitation_type is not None and isinstance(response, declined_elicitation_type):
+    if declined_elicitation_type is not None and isinstance(
+        response, declined_elicitation_type
+    ):
         return None, "declined"
-    if cancelled_elicitation_type is not None and isinstance(response, cancelled_elicitation_type):
+    if cancelled_elicitation_type is not None and isinstance(
+        response, cancelled_elicitation_type
+    ):
         return None, "cancelled"
     return default_owner_tag or None, None
 

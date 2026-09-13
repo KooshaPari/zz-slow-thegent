@@ -257,13 +257,17 @@ class SerializableMixin:  # noqa: PLW1641
                     break
 
         # Handle Path
-        if target_type is Path or (isinstance(target_type, type) and issubclass(target_type, Path)):
+        if target_type is Path or (
+            isinstance(target_type, type) and issubclass(target_type, Path)
+        ):
             if isinstance(val, str):
                 return Path(val)
             return val
 
         # Handle datetime
-        if target_type is datetime or (isinstance(target_type, type) and issubclass(target_type, datetime)):
+        if target_type is datetime or (
+            isinstance(target_type, type) and issubclass(target_type, datetime)
+        ):
             if isinstance(val, str):
                 # Handle ISO format with or without timezone
                 try:
@@ -388,7 +392,9 @@ class SerializableMixin:  # noqa: PLW1641
             diff = p1.diff(p2)  # {"age": (30, 35)}
         """
         if not isinstance(other, type(self)):
-            raise TypeError(f"Cannot diff {type(self).__name__} with {type(other).__name__}")
+            raise TypeError(
+                f"Cannot diff {type(self).__name__} with {type(other).__name__}"
+            )
 
         self_dict = self.to_dict()
         other_dict = other.to_dict()
@@ -425,7 +431,9 @@ class SerializableMixin:  # noqa: PLW1641
         data.update(overrides)
         return type(self).from_dict(data)
 
-    def merge(self, other: SerializableMixin, *, overwrite: bool = True) -> SerializableMixin:
+    def merge(
+        self, other: SerializableMixin, *, overwrite: bool = True
+    ) -> SerializableMixin:
         """Merge fields from another instance into a new instance.
 
         Args:
@@ -443,7 +451,9 @@ class SerializableMixin:  # noqa: PLW1641
             merged = p1.merge(p2, overwrite=False)  # Person(name="Alice", age=30, city="NYC")
         """
         if not isinstance(other, type(self)):
-            raise TypeError(f"Cannot merge {type(self).__name__} with {type(other).__name__}")
+            raise TypeError(
+                f"Cannot merge {type(self).__name__} with {type(other).__name__}"
+            )
 
         self_dict = self.to_dict()
         other_dict = other.to_dict()
@@ -487,7 +497,9 @@ class SerializableMixin:  # noqa: PLW1641
         """
         import json
 
-        return json.dumps(self.to_dict(), indent=indent, sort_keys=sort_keys, default=str)
+        return json.dumps(
+            self.to_dict(), indent=indent, sort_keys=sort_keys, default=str
+        )
 
     @classmethod
     def from_json(cls, json_str: str) -> SerializableMixin:
@@ -667,7 +679,9 @@ class SingletonMixin:
 # ---------------------------------------------------------------------------
 
 
-def load_env_config(prefix: str, defaults: dict[str, Any] | None = None) -> dict[str, Any]:
+def load_env_config(
+    prefix: str, defaults: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """Load configuration from environment variables with prefix.
 
     Args:
@@ -698,7 +712,9 @@ def load_env_config(prefix: str, defaults: dict[str, Any] | None = None) -> dict
     return config
 
 
-def load_file_config(path: Path | str, defaults: dict[str, Any] | None = None) -> dict[str, Any]:
+def load_file_config(
+    path: Path | str, defaults: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """Load configuration from JSON or YAML file.
 
     Args:

@@ -16,7 +16,10 @@ class TestCrewHarness:
         # Setup mock runner
         mock_runner = MagicMock()
         mock_runner.run.return_value = RunResult(
-            exit_code=0, stdout="Task completed successfully", stderr="", timed_out=False
+            exit_code=0,
+            stdout="Task completed successfully",
+            stderr="",
+            timed_out=False,
         )
         mock_runner_class.return_value = mock_runner
 
@@ -24,7 +27,9 @@ class TestCrewHarness:
         executor = create_agent_executor(mode="write", timeout=100)
 
         # Run executor
-        result = executor(agent_id="codex", prompt="Test prompt", context={"task_id": "task1"})
+        result = executor(
+            agent_id="codex", prompt="Test prompt", context={"task_id": "task1"}
+        )
 
         # Verify results
         assert isinstance(result, ExecutionResult)
@@ -49,14 +54,18 @@ class TestCrewHarness:
         """Test failed agent execution via harness."""
         # Setup mock runner
         mock_runner = MagicMock()
-        mock_runner.run.return_value = RunResult(exit_code=1, stdout="", stderr="Error occurred", timed_out=False)
+        mock_runner.run.return_value = RunResult(
+            exit_code=1, stdout="", stderr="Error occurred", timed_out=False
+        )
         mock_runner_class.return_value = mock_runner
 
         # Create executor
         executor = create_agent_executor()
 
         # Run executor
-        result = executor(agent_id="claude", prompt="Test prompt", context={"task_id": "task2"})
+        result = executor(
+            agent_id="claude", prompt="Test prompt", context={"task_id": "task2"}
+        )
 
         # Verify results
         assert result.success is False
@@ -68,14 +77,18 @@ class TestCrewHarness:
         """Test timed out agent execution via harness."""
         # Setup mock runner
         mock_runner = MagicMock()
-        mock_runner.run.return_value = RunResult(exit_code=124, stdout="", stderr="Timed out", timed_out=True)
+        mock_runner.run.return_value = RunResult(
+            exit_code=124, stdout="", stderr="Timed out", timed_out=True
+        )
         mock_runner_class.return_value = mock_runner
 
         # Create executor
         executor = create_agent_executor()
 
         # Run executor
-        result = executor(agent_id="cursor", prompt="Test prompt", context={"task_id": "task3"})
+        result = executor(
+            agent_id="cursor", prompt="Test prompt", context={"task_id": "task3"}
+        )
 
         # Verify results
         assert result.success is False

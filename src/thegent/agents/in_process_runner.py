@@ -48,7 +48,11 @@ class InProcessAgentRunner:
         **kwargs: Any,
     ) -> dict[str, Any]:
         """Run the agent with isolated cwd."""
-        _log.info("MTSP-02: Running agent %s in-process with isolated cwd: %s", self.agent_name, cd)
+        _log.info(
+            "MTSP-02: Running agent %s in-process with isolated cwd: %s",
+            self.agent_name,
+            cd,
+        )
 
         # Ensure directory exists
         cd.mkdir(parents=True, exist_ok=True)
@@ -59,7 +63,9 @@ class InProcessAgentRunner:
                 forward_kwargs["run_id"] = run_id
             if session_id is not None:
                 forward_kwargs["session_id"] = session_id
-            result = self.base_runner.run(prompt=prompt, cd=cd, mode=mode, timeout=timeout, **forward_kwargs)
+            result = self.base_runner.run(
+                prompt=prompt, cd=cd, mode=mode, timeout=timeout, **forward_kwargs
+            )
             if run_id is not None or session_id is not None:
                 dispatch_post_agent_run_hook(
                     result=result,

@@ -132,7 +132,9 @@ def test_sub_agent_result_defaults():
     """WL-080: SubAgentResult stores all expected fields."""
     # @trace WL-080
     task = SubAgentTask(prompt="test")
-    result = SubAgentResult(task=task, output="ok", mode=DispatchMode.LOCAL, success=True)
+    result = SubAgentResult(
+        task=task, output="ok", mode=DispatchMode.LOCAL, success=True
+    )
     assert result.output == "ok"
     assert result.mode is DispatchMode.LOCAL
     assert result.success is True
@@ -388,7 +390,9 @@ async def test_dispatch_local_runner_failure_raises_dispatch_error():
     mock_runner = MagicMock()
     mock_runner.run.side_effect = RuntimeError("runner crashed")
 
-    with patch("thegent.agents.sub_agent_dispatcher.get_runner", return_value=mock_runner):
+    with patch(
+        "thegent.agents.sub_agent_dispatcher.get_runner", return_value=mock_runner
+    ):
         with pytest.raises(DispatchError, match="runner crashed"):
             await dispatcher.dispatch(task)
 
@@ -505,11 +509,14 @@ async def test_dispatch_flash_runner_exception_raises_dispatch_error():
 
     task = SubAgentTask(prompt="crash", agent_hint="quick")
 
-    with patch(
-        "thegent.agents.sub_agent_dispatcher.FlashAgent.run",
-        new_callable=AsyncMock,
-        side_effect=RuntimeError("internal flash error"),
-    ), pytest.raises(DispatchError, match="internal flash error"):
+    with (
+        patch(
+            "thegent.agents.sub_agent_dispatcher.FlashAgent.run",
+            new_callable=AsyncMock,
+            side_effect=RuntimeError("internal flash error"),
+        ),
+        pytest.raises(DispatchError, match="internal flash error"),
+    ):
         await dispatcher.dispatch(task)
 
 
@@ -526,7 +533,9 @@ async def test_dispatch_many_returns_results_in_order():
     dispatcher = SubAgentDispatcher(capability_index=index)
 
     tasks = [SubAgentTask(prompt=f"task {i}") for i in range(3)]
-    flash_results = [_make_flash_result(output=f"output {i}", success=True) for i in range(3)]
+    flash_results = [
+        _make_flash_result(output=f"output {i}", success=True) for i in range(3)
+    ]
 
     call_count = 0
 
@@ -536,7 +545,9 @@ async def test_dispatch_many_returns_results_in_order():
         call_count += 1
         return out
 
-    with patch("thegent.agents.sub_agent_dispatcher.FlashAgent.run", side_effect=_flash_run):
+    with patch(
+        "thegent.agents.sub_agent_dispatcher.FlashAgent.run", side_effect=_flash_run
+    ):
         results = await dispatcher.dispatch_many(tasks)
 
     assert len(results) == 3
@@ -579,7 +590,10 @@ async def test_dispatch_many_parallel_execution():
             call_idx += 1
             return await fn(config)
 
-        with patch("thegent.agents.sub_agent_dispatcher.FlashAgent.run", side_effect=_patched_run):
+        with patch(
+            "thegent.agents.sub_agent_dispatcher.FlashAgent.run",
+            side_effect=_patched_run,
+        ):
             gather_coro = dispatcher.dispatch_many(tasks)
             gather_task = asyncio.create_task(gather_coro)
             # Give a tick for coroutines to start

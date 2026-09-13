@@ -1,4 +1,5 @@
 """Async logging utilities."""
+
 import logging
 from dataclasses import dataclass
 from typing import Any
@@ -7,6 +8,7 @@ from typing import Any
 @dataclass
 class ObservabilityEvent:
     """An observability event."""
+
     name: str
     timestamp: float
     data: dict[str, Any] | None = None
@@ -52,14 +54,24 @@ class AsyncObservabilityLogger(AsyncLogger):
         await self.info(f"[EVENT] {event}", extra=kwargs)
 
 
-__all__ = ["AsyncLogger", "AsyncObservabilityLogger", "ObservabilityEvent", "get_logger", "_default_log_handler", "get_obs_logger", "reset_obs_logger"]
+__all__ = [
+    "AsyncLogger",
+    "AsyncObservabilityLogger",
+    "ObservabilityEvent",
+    "get_logger",
+    "_default_log_handler",
+    "get_obs_logger",
+    "reset_obs_logger",
+]
 
 
 async def reset_obs_logger() -> None:
     """Reset the observability logger state."""
 
 
-async def get_obs_logger(name: str = "thegent-observability") -> AsyncObservabilityLogger:
+async def get_obs_logger(
+    name: str = "thegent-observability",
+) -> AsyncObservabilityLogger:
     """Get an observability logger instance.
 
     Args:

@@ -116,8 +116,12 @@ class TestGetStats:
 
     def test_returns_stats_for_all_interfaces(self, monitor: NetworkMonitor) -> None:
         fake_counters = {
-            "eth0": _make_counter(bytes_sent=100, bytes_recv=200, packets_sent=1, packets_recv=2),
-            "lo": _make_counter(bytes_sent=0, bytes_recv=0, packets_sent=0, packets_recv=0),
+            "eth0": _make_counter(
+                bytes_sent=100, bytes_recv=200, packets_sent=1, packets_recv=2
+            ),
+            "lo": _make_counter(
+                bytes_sent=0, bytes_recv=0, packets_sent=0, packets_recv=0
+            ),
         }
         with (
             patch("thegent.resources.network._PSUTIL_AVAILABLE", True),
@@ -130,7 +134,9 @@ class TestGetStats:
         ifaces = {s.interface for s in result}
         assert ifaces == {"eth0", "lo"}
 
-    def test_returns_single_interface_when_specified(self, monitor: NetworkMonitor) -> None:
+    def test_returns_single_interface_when_specified(
+        self, monitor: NetworkMonitor
+    ) -> None:
         fake_counters = {
             "eth0": _make_counter(bytes_sent=500, bytes_recv=600),
             "lo": _make_counter(bytes_sent=10, bytes_recv=20),
@@ -158,7 +164,9 @@ class TestGetStats:
 
         assert result == []
 
-    def test_returns_empty_when_psutil_unavailable(self, monitor: NetworkMonitor) -> None:
+    def test_returns_empty_when_psutil_unavailable(
+        self, monitor: NetworkMonitor
+    ) -> None:
         with patch("thegent.resources.network._PSUTIL_AVAILABLE", False):
             result = monitor.get_stats()
         assert result == []
@@ -280,7 +288,9 @@ class TestSampleBandwidth:
         assert s.send_bps == pytest.approx(1000.0, rel=0.01)
         assert s.recv_bps == pytest.approx(2000.0, rel=0.01)
 
-    def test_returns_empty_when_psutil_unavailable(self, monitor: NetworkMonitor) -> None:
+    def test_returns_empty_when_psutil_unavailable(
+        self, monitor: NetworkMonitor
+    ) -> None:
         with patch("thegent.resources.network._PSUTIL_AVAILABLE", False):
             result = monitor.sample_bandwidth()
         assert result == []
@@ -326,7 +336,9 @@ class TestSampleBandwidth:
         assert by_iface["eth0"].send_bps == pytest.approx(3000.0, rel=0.01)
         assert by_iface["lo"].recv_bps == pytest.approx(200.0, rel=0.01)
 
-    def test_interface_disappears_between_samples(self, monitor: NetworkMonitor) -> None:
+    def test_interface_disappears_between_samples(
+        self, monitor: NetworkMonitor
+    ) -> None:
         """Interface present in before but absent in after is silently skipped."""
         before = {
             "eth0": {"bytes_sent": 0, "bytes_recv": 0},
@@ -362,7 +374,9 @@ class TestGetTotalBandwidth:
         sample_a = BandwidthSample(interface="eth0", send_bps=1000.0, recv_bps=2000.0)
         sample_b = BandwidthSample(interface="lo", send_bps=100.0, recv_bps=200.0)
 
-        with patch.object(monitor, "sample_bandwidth", return_value=[sample_a, sample_b]):
+        with patch.object(
+            monitor, "sample_bandwidth", return_value=[sample_a, sample_b]
+        ):
             send, recv = monitor.get_total_bandwidth()
 
         assert send == pytest.approx(1100.0)
@@ -382,7 +396,9 @@ class TestGetTotalBandwidth:
         assert send == pytest.approx(512.0)
         assert recv == pytest.approx(1024.0)
 
-    def test_returns_zeros_when_psutil_unavailable(self, monitor: NetworkMonitor) -> None:
+    def test_returns_zeros_when_psutil_unavailable(
+        self, monitor: NetworkMonitor
+    ) -> None:
         with patch("thegent.resources.network._PSUTIL_AVAILABLE", False):
             send, recv = monitor.get_total_bandwidth()
         assert send == 0.0
@@ -418,7 +434,9 @@ class TestListInterfaces:
 
         assert set(ifaces) == {"eth0", "lo", "wlan0"}
 
-    def test_returns_empty_when_psutil_unavailable(self, monitor: NetworkMonitor) -> None:
+    def test_returns_empty_when_psutil_unavailable(
+        self, monitor: NetworkMonitor
+    ) -> None:
         with patch("thegent.resources.network._PSUTIL_AVAILABLE", False):
             assert monitor.list_interfaces() == []
 
@@ -448,7 +466,9 @@ class TestListInterfaces:
             result = monitor.list_interfaces()
         assert isinstance(result, list)
 
-    def test_include_diagnostics_distinguishes_empty_from_error(self, monitor: NetworkMonitor) -> None:
+    def test_include_diagnostics_distinguishes_empty_from_error(
+        self, monitor: NetworkMonitor
+    ) -> None:
         with (
             patch("thegent.resources.network._PSUTIL_AVAILABLE", True),
             patch("thegent.resources.network._psutil") as mock_psutil,
@@ -464,7 +484,9 @@ class TestListInterfaces:
         assert payload_error["status"] == "error"
         assert payload_error["error"]["type"] == "OSError"
 
-    def test_include_diagnostics_reports_psutil_unavailable(self, monitor: NetworkMonitor) -> None:
+    def test_include_diagnostics_reports_psutil_unavailable(
+        self, monitor: NetworkMonitor
+    ) -> None:
         with patch("thegent.resources.network._PSUTIL_AVAILABLE", False):
             payload = monitor.list_interfaces(include_diagnostics=True)
 
