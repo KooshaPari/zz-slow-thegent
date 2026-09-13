@@ -15,6 +15,7 @@ FastMCP uses pluggable storage backends for caching and OAuth state. Default: in
 
 ```python
 from key_value.aio.stores.memory import MemoryStore
+
 cache_store = MemoryStore()
 ```
 
@@ -28,18 +29,15 @@ cache_store = MemoryStore()
 from key_value.aio.stores.disk import DiskStore
 from fastmcp.server.middleware.caching import ResponseCachingMiddleware
 
-middleware = ResponseCachingMiddleware(
-    cache_storage=DiskStore(directory="/var/cache/fastmcp")
-)
+middleware = ResponseCachingMiddleware(cache_storage=DiskStore(directory="/var/cache/fastmcp"))
 ```
 
 For OAuth:
 
 ```python
 from fastmcp.server.auth.providers.github import GitHubProvider
-auth = GitHubProvider(
-    client_storage=DiskStore(directory="/var/lib/fastmcp/oauth")
-)
+
+auth = GitHubProvider(client_storage=DiskStore(directory="/var/lib/fastmcp/oauth"))
 ```
 
 - Single-server production
@@ -52,9 +50,7 @@ auth = GitHubProvider(
 from key_value.aio.stores.redis import RedisStore
 # Requires: pip install 'py-key-value-aio[redis]'
 
-middleware = ResponseCachingMiddleware(
-    cache_storage=RedisStore(host="redis.example.com", port=6379)
-)
+middleware = ResponseCachingMiddleware(cache_storage=RedisStore(host="redis.example.com", port=6379))
 
 # With auth
 RedisStore(host="redis.example.com", port=6379, password="your-redis-password")
@@ -63,9 +59,7 @@ RedisStore(host="redis.example.com", port=6379, password="your-redis-password")
 For OAuth:
 
 ```python
-auth = GitHubProvider(
-    client_storage=RedisStore(host="redis.example.com", port=6379)
-)
+auth = GitHubProvider(client_storage=RedisStore(host="redis.example.com", port=6379))
 ```
 
 - Distributed production
@@ -82,8 +76,7 @@ from cryptography.fernet import Fernet
 
 auth = GitHubProvider(
     client_storage=FernetEncryptionWrapper(
-        key_value=RedisStore(host="redis.example.com", port=6379),
-        fernet=Fernet(os.environ["STORAGE_ENCRYPTION_KEY"])
+        key_value=RedisStore(host="redis.example.com", port=6379), fernet=Fernet(os.environ["STORAGE_ENCRYPTION_KEY"])
     )
 )
 ```
@@ -97,10 +90,7 @@ auth = GitHubProvider(
 from key_value.aio.wrappers.prefix_collections import PrefixCollectionsWrapper
 
 base_store = RedisStore(host="redis.example.com")
-namespaced_store = PrefixCollectionsWrapper(
-    key_value=base_store,
-    prefix="my-server"
-)
+namespaced_store = PrefixCollectionsWrapper(key_value=base_store, prefix="my-server")
 middleware = ResponseCachingMiddleware(cache_storage=namespaced_store)
 ```
 
@@ -181,9 +171,11 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 from typing import Optional
 
+
 @dataclass
 class SessionEvent:
     """Schema for session lifecycle events."""
+
     event_type: str  # "started", "progress", "completed", "failed"
     session_id: str
     timestamp: datetime
@@ -192,10 +184,7 @@ class SessionEvent:
     metadata: Optional[dict] = None
 
     def to_dict(self) -> dict:
-        return {
-            **asdict(self),
-            "timestamp": self.timestamp.isoformat()
-        }
+        return {**asdict(self), "timestamp": self.timestamp.isoformat()}
 
     @classmethod
     def from_dict(cls, data: dict) -> "SessionEvent":
@@ -205,8 +194,9 @@ class SessionEvent:
             timestamp=datetime.fromisoformat(data["timestamp"]),
             agent_name=data["agent_name"],
             data=data["data"],
-            metadata=data.get("metadata")
+            metadata=data.get("metadata"),
         )
+
 
 # Event types
 SESSION_STARTED = "started"
@@ -221,6 +211,7 @@ SESSION_FAILED = "failed"
 
 ```python
 from typing import AsyncIterator
+
 
 class EventQueryBuilder:
     """Build complex queries for EventStore."""
@@ -245,9 +236,7 @@ class EventQueryBuilder:
         return self
 
     def filter_by_timerange(
-        self,
-        start: Optional[datetime] = None,
-        end: Optional[datetime] = None
+        self, start: Optional[datetime] = None, end: Optional[datetime] = None
     ) -> "EventQueryBuilder":
         if start:
             self.filters["start_time"] = start
@@ -266,15 +255,18 @@ class EventQueryBuilder:
         events = sorted(events, key=lambda e: getattr(e, self.order_by))
         if self.order_dir == "desc":
             events = list(reversed(events))
-        return events[:self.limit_count]
+        return events[: self.limit_count]
+
 
 # Usage
-events = await EventQueryBuilder(event_store) \
-    .filter_by_agent("prod-agent") \
-    .filter_by_type(SESSION_COMPLETED) \
-    .filter_by_timerange(start=datetime.now() - timedelta(hours=1)) \
-    .limit(50) \
+events = (
+    await EventQueryBuilder(event_store)
+    .filter_by_agent("prod-agent")
+    .filter_by_type(SESSION_COMPLETED)
+    .filter_by_timerange(start=datetime.now() - timedelta(hours=1))
+    .limit(50)
     .execute()
+)
 ```
 
 ### 5. Storage Optimization Patterns
@@ -288,14 +280,14 @@ from key_value.aio.stores.redis import RedisStore
 event_store = EventStore(
     storage=RedisStore(url="redis://localhost"),
     max_events_per_stream=100,
-    ttl=300  # 5 minutes for ephemeral events
+    ttl=300,  # 5 minutes for ephemeral events
 )
 
 # Separate store for audit events with longer retention
 audit_store = EventStore(
     storage=RedisStore(url="redis://localhost", db=1),
     max_events_per_stream=1000,
-    ttl=86400  # 24 hours for audit
+    ttl=86400,  # 24 hours for audit
 )
 ```
 
@@ -313,15 +305,13 @@ audit_store = EventStore(
 ```python
 import hashlib
 
+
 class ShardedEventStore:
     """Sharded EventStore for horizontal scaling."""
 
     def __init__(self, shard_count: int = 4):
         self.shard_count = shard_count
-        self.stores = [
-            EventStore(storage=RedisStore(url=f"redis://shard-{i}"))
-            for i in range(shard_count)
-        ]
+        self.stores = [EventStore(storage=RedisStore(url=f"redis://shard-{i}")) for i in range(shard_count)]
 
     def _get_shard(self, session_id: str) -> int:
         """Determine shard for session."""

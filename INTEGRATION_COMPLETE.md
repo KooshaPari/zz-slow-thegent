@@ -19,6 +19,7 @@
 **Integration:** Add to main CLI by importing and registering:
 ```python
 from thegent.cli_document_queue import doc_queue_app
+
 app.add_typer(doc_queue_app)
 ```
 
@@ -37,6 +38,7 @@ app.add_typer(doc_queue_app)
 **Usage:**
 ```python
 from thegent.mcp.server_config import create_mcp_server_instance
+
 server = create_mcp_server_instance()
 ```
 
@@ -110,9 +112,12 @@ thegent doc-queue process path/to/file.md --analyze
 
 ```python
 from thegent.agents.document import (
-    MarkdownScanner, ScanConfig, QueueManager,
-    DocumentProcessor, ProcessingPipeline,
-    DocumentAnalyzer
+    MarkdownScanner,
+    ScanConfig,
+    QueueManager,
+    DocumentProcessor,
+    ProcessingPipeline,
+    DocumentAnalyzer,
 )
 
 # Scan

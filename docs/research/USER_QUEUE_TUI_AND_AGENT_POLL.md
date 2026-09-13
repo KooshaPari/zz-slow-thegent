@@ -330,6 +330,7 @@ def claim_batch(agent_id, batch_size=5):
             break
     return batch
 
+
 # Usage in agent:
 batch = claim_batch(agent_id, batch_size=3)
 for item in batch:

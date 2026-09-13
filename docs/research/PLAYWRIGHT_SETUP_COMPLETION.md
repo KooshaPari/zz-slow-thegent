@@ -255,6 +255,7 @@ import asyncio
 from pathlib import Path
 from thegent.doc_tools import PlaywrightRecorder, RecordingConfig
 
+
 async def record_demo():
     config = RecordingConfig(output_dir=Path("docs/recordings/outputs"))
     async with PlaywrightRecorder(config) as recorder:
@@ -268,6 +269,7 @@ async def record_demo():
             ],
         )
         result.to_json(Path("recording-metadata.json"))
+
 
 asyncio.run(record_demo())
 ```

@@ -167,7 +167,8 @@ for attempt in range(3):
     except Exception:
         if attempt == 2:
             raise
-        time.sleep(2 ** attempt)
+        time.sleep(2**attempt)
+
 
 # After
 @retry(stop=stop_after_attempt(3), wait=wait_exponential())

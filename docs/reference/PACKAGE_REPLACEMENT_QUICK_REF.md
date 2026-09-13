@@ -67,11 +67,13 @@
 ```python
 # Before
 import urllib.request
+
 with urllib.request.urlopen(req) as resp:
     data = resp.read()
 
 # After
 import httpx
+
 resp = httpx.get(url)
 data = resp.content
 ```
@@ -86,10 +88,11 @@ for attempt in range(3):
     except Exception:
         if attempt == 2:
             raise
-        time.sleep(2 ** attempt)
+        time.sleep(2**attempt)
 
 # After
 from tenacity import retry, stop_after_attempt, wait_exponential
+
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential())
 def do_work():
@@ -106,6 +109,7 @@ if key in cache and time.time() - timestamps[key] < ttl:
 
 # After
 from cachetools import TTLCache
+
 cache = TTLCache(maxsize=1000, ttl=3600)
 return cache.get(key)
 ```

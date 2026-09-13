@@ -143,10 +143,7 @@ def select_provider(providers: list[Provider], model: str) -> Provider:
     Probability = weight / sum(all_weights)
     """
     # Filter by model support and uptime
-    eligible = [
-        p for p in providers
-        if p.supports_model(model) and p.uptime_30s > 0.95
-    ]
+    eligible = [p for p in providers if p.supports_model(model) and p.uptime_30s > 0.95]
 
     if not eligible:
         # Fallback to all providers
@@ -156,7 +153,7 @@ def select_provider(providers: list[Provider], model: str) -> Provider:
     weights = []
     for p in eligible:
         price = p.get_price(model)
-        weight = 1 / (price ** 2)
+        weight = 1 / (price**2)
         weights.append((p, weight))
 
     # Weighted random selection
@@ -197,9 +194,7 @@ class PerformanceThresholdRouter:
 
     def get_provider_metrics(self, provider: str, model: str) -> dict:
         """Get percentile metrics for provider/model."""
-        recent_requests = self.get_recent_requests(
-            provider, model, window=self.metrics_window
-        )
+        recent_requests = self.get_recent_requests(provider, model, window=self.metrics_window)
 
         latencies = [r.latency for r in recent_requests]
         throughputs = [r.throughput for r in recent_requests]
@@ -216,7 +211,7 @@ class PerformanceThresholdRouter:
                 "p75": np.percentile(throughputs, 75),
                 "p90": np.percentile(throughputs, 90),
                 "p99": np.percentile(throughputs, 99),
-            }
+            },
         }
 
     def filter_by_thresholds(
@@ -270,15 +265,15 @@ class ProviderPreferences:
     def __init__(
         self,
         order: list[str] | None = None,  # Try providers in order
-        allow_fallbacks: bool = True,     # Allow backup providers
-        require_parameters: bool = False, # Only providers supporting all params
-        data_collection: str = "allow",   # "allow" | "deny"
-        zdr: bool = False,                # Zero Data Retention only
+        allow_fallbacks: bool = True,  # Allow backup providers
+        require_parameters: bool = False,  # Only providers supporting all params
+        data_collection: str = "allow",  # "allow" | "deny"
+        zdr: bool = False,  # Zero Data Retention only
         enforce_distillable_text: bool = False,  # Only distillable models
-        only: list[str] | None = None,    # Only these providers
+        only: list[str] | None = None,  # Only these providers
         ignore: list[str] | None = None,  # Skip these providers
         quantizations: list[str] | None = None,  # Filter by quantization
-        sort: str | dict | None = None,    # Sort by price/latency/throughput
+        sort: str | dict | None = None,  # Sort by price/latency/throughput
         preferred_min_throughput: dict | None = None,
         preferred_max_latency: dict | None = None,
         max_price: dict | None = None,
@@ -319,24 +314,15 @@ class ProviderPreferences:
 
         # Apply quantization filter
         if self.quantizations:
-            filtered = [
-                p for p in filtered
-                if any(q in p.quantizations for q in self.quantizations)
-            ]
+            filtered = [p for p in filtered if any(q in p.quantizations for q in self.quantizations)]
 
         # Apply parameter support filter
         if self.require_parameters:
-            filtered = [
-                p for p in filtered
-                if p.supports_all_parameters(self.required_params)
-            ]
+            filtered = [p for p in filtered if p.supports_all_parameters(self.required_params)]
 
         # Apply price filter
         if self.max_price:
-            filtered = [
-                p for p in filtered
-                if p.get_price() <= self.max_price
-            ]
+            filtered = [p for p in filtered if p.get_price() <= self.max_price]
 
         return filtered
 ```
@@ -413,10 +399,12 @@ class MiddleOutCompressor:
             target_tokens = tokens - (tokens_to_remove - removed)
             truncated_content = self.truncate_to_tokens(content, target_tokens)
 
-            compressed.append({
-                **msg,
-                "content": truncated_content,
-            })
+            compressed.append(
+                {
+                    **msg,
+                    "content": truncated_content,
+                }
+            )
             removed += tokens - target_tokens
 
         return compressed
@@ -463,18 +451,11 @@ class ContextWindowOptimizer:
         # Find models with at least 50% of required tokens
         min_context = required_tokens // 2
 
-        eligible_models = [
-            m for m in model_preferences
-            if self.get_context_window(m) >= min_context
-        ]
+        eligible_models = [m for m in model_preferences if self.get_context_window(m) >= min_context]
 
         if not eligible_models:
             # Fallback to largest context window
-            eligible_models = sorted(
-                model_preferences,
-                key=lambda m: self.get_context_window(m),
-                reverse=True
-            )
+            eligible_models = sorted(model_preferences, key=lambda m: self.get_context_window(m), reverse=True)
             model = eligible_models[0]
             # Compress to fit
             compressor = MiddleOutCompressor()
@@ -562,16 +543,16 @@ class StructuredOutputValidator:
         - Unclosed brackets
         """
         # Remove trailing commas
-        json_str = re.sub(r',(\s*[}\]])', r'\1', json_str)
+        json_str = re.sub(r",(\s*[}\]])", r"\1", json_str)
 
         # Fix unclosed brackets
-        open_brackets = json_str.count('{') - json_str.count('}')
-        open_square = json_str.count('[') - json_str.count(']')
+        open_brackets = json_str.count("{") - json_str.count("}")
+        open_square = json_str.count("[") - json_str.count("]")
 
         if open_brackets > 0:
-            json_str += '}' * open_brackets
+            json_str += "}" * open_brackets
         if open_square > 0:
-            json_str += ']' * open_square
+            json_str += "]" * open_square
 
         # Try parsing
         try:
@@ -642,9 +623,7 @@ class CrossProviderCache:
         """Generate cache key from messages."""
         # Use first N messages (typically system + initial user message)
         cacheable_messages = messages[:2]  # System + first user message
-        return hashlib.sha256(
-            json.dumps(cacheable_messages, sort_keys=True).encode()
-        ).hexdigest()
+        return hashlib.sha256(json.dumps(cacheable_messages, sort_keys=True).encode()).hexdigest()
 
     def get_cached_response(
         self,
@@ -722,22 +701,22 @@ class ProviderCacheManager:
             # Opus 4.5, Haiku 4.5: 4096 tokens
             "read_multiplier": 0.20,  # 20% of input price
             "write_cost_5min": 1.25,  # 1.25x input price
-            "write_cost_1h": 2.0,     # 2x input price
-            "auto_enable": False,     # Requires cache_control breakpoints
+            "write_cost_1h": 2.0,  # 2x input price
+            "auto_enable": False,  # Requires cache_control breakpoints
             "max_breakpoints": 4,
         },
         "deepseek": {
             "min_tokens": 0,
             "read_multiplier": 0.20,  # 20% of input price
-            "write_cost": 1.0,        # Same as input price
+            "write_cost": 1.0,  # Same as input price
             "auto_enable": True,
         },
         "google": {
             "min_tokens": 4096,  # Gemini 2.5 Pro/Flash
             "read_multiplier": 0.20,  # 20% of input price
-            "write_cost": 0,     # No write cost
+            "write_cost": 0,  # No write cost
             "auto_enable": True,  # Implicit caching
-            "ttl_avg": 180,      # 3-5 minutes average
+            "ttl_avg": 180,  # 3-5 minutes average
         },
     }
 
@@ -879,8 +858,8 @@ class GuardrailSystem:
         self.guardrails = {
             "account": None,
             "organizations": {},  # org_id -> Guardrail
-            "members": {},        # member_id -> Guardrail
-            "api_keys": {},       # key_id -> Guardrail
+            "members": {},  # member_id -> Guardrail
+            "api_keys": {},  # key_id -> Guardrail
         }
 
     def check_request(
@@ -1103,6 +1082,7 @@ router = Router(
 from litellm.integrations.custom_logger import CustomLogger
 import logging
 
+
 class ProductionLogger(CustomLogger):
     """
     Production-ready logger with comprehensive tracking.
@@ -1158,15 +1138,17 @@ class ProductionLogger(CustomLogger):
         )
 
         # Send to observability platform (async)
-        self._send_to_observability({
-            "event": "success",
-            "model": model,
-            "provider": provider,
-            "cost": response_cost,
-            "tokens": total_tokens,
-            "latency": latency,
-            "timestamp": end_time,
-        })
+        self._send_to_observability(
+            {
+                "event": "success",
+                "model": model,
+                "provider": provider,
+                "cost": response_cost,
+                "tokens": total_tokens,
+                "latency": latency,
+                "timestamp": end_time,
+            }
+        )
 
     def log_failure_event(
         self,
@@ -1184,23 +1166,24 @@ class ProductionLogger(CustomLogger):
         error = str(response_obj) if response_obj else "unknown error"
 
         # Log
-        self.logger.error(
-            f"Failure: model={model}, error={error}"
-        )
+        self.logger.error(f"Failure: model={model}, error={error}")
 
         # Send to observability platform (async)
-        self._send_to_observability({
-            "event": "failure",
-            "model": model,
-            "error": error,
-            "timestamp": end_time,
-        })
+        self._send_to_observability(
+            {
+                "event": "failure",
+                "model": model,
+                "error": error,
+                "timestamp": end_time,
+            }
+        )
 
     def _send_to_observability(self, data: dict):
         """Send metrics to observability platform."""
         # In production, send to Langfuse, Datadog, etc.
         # For now, just log
         pass
+
 
 # Register logger
 litellm.callbacks = [ProductionLogger()]
@@ -1241,7 +1224,6 @@ class PortkeyGuardrails:
             "action": "block",
             "patterns": ["spam", "phishing"],
         },
-
         # Output guardrails
         "output.contains": {
             "type": "contains_check",
@@ -1406,6 +1388,7 @@ class SemanticCache:
 ```python
 from semantic_router import Route, RouteLayer
 from semantic_router.encoders import CohereEncoder, OpenAIEncoder
+
 
 class IntentRouter:
     """
@@ -1578,8 +1561,16 @@ class ComplexityEstimator:
 
         # Reasoning steps (heuristic)
         reasoning_indicators = [
-            "because", "therefore", "analyze", "compare", "evaluate",
-            "design", "architect", "optimize", "debug", "refactor",
+            "because",
+            "therefore",
+            "analyze",
+            "compare",
+            "evaluate",
+            "design",
+            "architect",
+            "optimize",
+            "debug",
+            "refactor",
         ]
         reasoning_count = sum(1 for word in reasoning_indicators if word in prompt.lower())
         factors["reasoning"] = min(reasoning_count / 5, 1.0)
@@ -1636,12 +1627,12 @@ class CascadeRouter:
 
     def __init__(self):
         self.model_chain = [
-            "gpt-3.5-turbo",      # $0.50/M
-            "gpt-4o-mini",        # $0.15/M
-            "claude-haiku-4.5",   # $0.80/M
-            "gpt-4o",             # $2.50/M
+            "gpt-3.5-turbo",  # $0.50/M
+            "gpt-4o-mini",  # $0.15/M
+            "claude-haiku-4.5",  # $0.80/M
+            "gpt-4o",  # $2.50/M
             "claude-sonnet-4.5",  # $3.00/M
-            "claude-opus-4.6",    # $15.00/M
+            "claude-opus-4.6",  # $15.00/M
         ]
         self.quality_threshold = 0.7
         self.quality_estimator = QualityEstimator()
@@ -1843,10 +1834,8 @@ class ThroughputOptimizer:
         results = []
 
         for i in range(0, len(requests), max_parallel):
-            batch = requests[i:i + max_parallel]
-            batch_results = await asyncio.gather(*[
-                self.process_request(req) for req in batch
-            ])
+            batch = requests[i : i + max_parallel]
+            batch_results = await asyncio.gather(*[self.process_request(req) for req in batch])
             results.extend(batch_results)
 
         return results
@@ -1894,9 +1883,7 @@ class CostOptimizer:
             return {"cached": True, "response": cached_response}
 
         # 2. Optimize prompt
-        optimized["messages"] = self.prompt_optimizer.optimize(
-            request["messages"]
-        )
+        optimized["messages"] = self.prompt_optimizer.optimize(request["messages"])
 
         # 3. Select model (tiered routing)
         optimized["model"] = self.model_selector.select(
@@ -1976,11 +1963,13 @@ class SecurityFramework:
         encrypted_request = self.encryption.encrypt(secured_request)
 
         # 4. Audit log
-        self.audit_logger.log({
-            "api_key": api_key[:10] + "...",
-            "request_hash": hashlib.sha256(json.dumps(encrypted_request).encode()).hexdigest(),
-            "timestamp": time.time(),
-        })
+        self.audit_logger.log(
+            {
+                "api_key": api_key[:10] + "...",
+                "request_hash": hashlib.sha256(json.dumps(encrypted_request).encode()).hexdigest(),
+                "timestamp": time.time(),
+            }
+        )
 
         # 5. Compliance check
         compliance_status = self.compliance_checker.check(encrypted_request)

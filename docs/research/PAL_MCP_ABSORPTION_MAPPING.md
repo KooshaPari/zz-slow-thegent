@@ -38,10 +38,12 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass
 from pathlib import Path
 
+
 class StanceType(str, Enum):
     SUPPORTIVE = "supportive"
     CRITICAL = "critical"
     NEUTRAL = "neutral"
+
 
 class ThinkingDepth(int, Enum):
     MINIMAL = 128
@@ -49,9 +51,11 @@ class ThinkingDepth(int, Enum):
     MEDIUM = 8192
     HEAVY = 32768
 
+
 @dataclass
 class ConsensusRequest:
     """Multi-model debate request"""
+
     decision_topic: str
     stances: Dict[str, StanceType]  # model_name → stance
     thinking_depth: ThinkingDepth = ThinkingDepth.MEDIUM
@@ -59,9 +63,11 @@ class ConsensusRequest:
     focus_areas: List[str] = None  # e.g., ["security", "performance"]
     max_tokens_per_response: int = 2000
 
+
 @dataclass
 class ConsensusResult:
     """Multi-model debate result"""
+
     model_responses: Dict[str, str]  # model_name → response
     synthesis: str  # Combined recommendation
     confidence: float  # 0.0-1.0 agreement level
@@ -75,14 +81,17 @@ class ConsensusResult:
 
 from enum import Enum
 
+
 class IsolationMode(str, Enum):
     FRESH_CONTEXT = "fresh_context"
     WORKTREE = "worktree"
     DOCKER = "docker"
 
+
 @dataclass
 class SubagentSpawnRequest:
     """CLI subagent isolation request"""
+
     tool_name: str
     persona: str  # e.g., "code_reviewer", "security_auditor"
     context_budget: int  # Max tokens for isolated context
@@ -90,9 +99,11 @@ class SubagentSpawnRequest:
     isolation_mode: IsolationMode = IsolationMode.FRESH_CONTEXT
     output_format: str = "json"  # or "text", "markdown"
 
+
 @dataclass
 class SubagentResult:
     """Subagent execution result"""
+
     tool_name: str
     persona: str
     result: str
@@ -107,18 +118,22 @@ class SubagentResult:
 ```python
 # src/domain/models/context.py
 
+
 @dataclass
 class ContextRevivalTrigger:
     """Detect & trigger cross-session continuity"""
+
     session_id: str
     prior_session_id: str
     detected_context_reset: bool
     tokens_in_history: int
     preferred_summarizer_model: str = "gemini-2.0"  # 1M context
 
+
 @dataclass
 class ContextSummary:
     """Revival summary returned to current session"""
+
     summary_text: str
     key_decisions: List[str]
     implementation_status: str
@@ -137,6 +152,7 @@ class ContextSummary:
 
 from domain.models.orchestration import ConsensusRequest, ConsensusResult
 from infrastructure.orchestration.consensus_engine import ConsensusEngine
+
 
 class ConsensusUseCase:
     def __init__(self, engine: ConsensusEngine, provider_registry: ProviderRegistry):
@@ -173,6 +189,7 @@ class ConsensusUseCase:
 from domain.models.orchestration import SubagentSpawnRequest, SubagentResult
 from infrastructure.orchestration.subagent_spawner import SubagentSpawner
 
+
 class SubagentOrchestratorUseCase:
     def __init__(self, spawner: SubagentSpawner):
         self.spawner = spawner
@@ -189,9 +206,7 @@ class SubagentOrchestratorUseCase:
         """
         pass
 
-    async def spawn_multiple(
-        self, requests: List[SubagentSpawnRequest]
-    ) -> List[SubagentResult]:
+    async def spawn_multiple(self, requests: List[SubagentSpawnRequest]) -> List[SubagentResult]:
         """Spawn multiple subagents in parallel (max 3 concurrent)"""
         pass
 
@@ -207,6 +222,7 @@ class SubagentOrchestratorUseCase:
 
 from domain.models.context import ContextRevivalTrigger, ContextSummary
 from infrastructure.context.revival_handler import ContextRevivalHandler
+
 
 class ContextRevivalUseCase:
     def __init__(self, handler: ContextRevivalHandler):
@@ -227,15 +243,11 @@ class ContextRevivalUseCase:
         """Model inference: Has context window reset?"""
         pass
 
-    async def synthesize_history(
-        self, prior_conversation: List[Dict]
-    ) -> ContextSummary:
+    async def synthesize_history(self, prior_conversation: List[Dict]) -> ContextSummary:
         """Use Gemini (1M context) to summarize full conversation"""
         pass
 
-    async def store_conversation(
-        self, session_id: str, messages: List[Dict]
-    ) -> None:
+    async def store_conversation(self, session_id: str, messages: List[Dict]) -> None:
         """Store conversation in Redis for future revival"""
         pass
 ```
@@ -253,24 +265,21 @@ from typing import Dict, List, Optional
 from domain.models.orchestration import ConsensusRequest, StanceType, ThinkingDepth
 from infrastructure.providers.base_provider import BaseProvider
 
+
 class ConsensusEngine:
     """Multi-model debate orchestrator"""
 
     def __init__(self, provider_registry: ProviderRegistry):
         self.providers = provider_registry
 
-    async def orchestrate_debate(
-        self, request: ConsensusRequest
-    ) -> Dict[str, str]:
+    async def orchestrate_debate(self, request: ConsensusRequest) -> Dict[str, str]:
         """
         Route each model with its assigned stance.
         Returns dict of model_name → response.
         """
         tasks = []
         for model_name, stance in request.stances.items():
-            prompt = self._build_stance_prompt(
-                request.decision_topic, stance, request.focus_areas
-            )
+            prompt = self._build_stance_prompt(request.decision_topic, stance, request.focus_areas)
             task = self.providers.invoke(
                 model_name,
                 prompt,
@@ -282,9 +291,7 @@ class ConsensusEngine:
         responses = await asyncio.gather(*tasks)
         return dict(zip(request.stances.keys(), responses))
 
-    def _build_stance_prompt(
-        self, topic: str, stance: StanceType, focus_areas: Optional[List[str]]
-    ) -> str:
+    def _build_stance_prompt(self, topic: str, stance: StanceType, focus_areas: Optional[List[str]]) -> str:
         """Build prompt with stance instructions"""
         template = """You are participating in a structured debate.
 
@@ -326,6 +333,7 @@ from domain.models.orchestration import (
     SubagentResult,
     IsolationMode,
 )
+
 
 class SubagentSpawner:
     """Launch isolated CLI subagents"""
@@ -422,6 +430,7 @@ from domain.models.context import ContextRevivalTrigger, ContextSummary
 from infrastructure.storage.redis_client import RedisClient
 from infrastructure.providers.base_provider import BaseProvider
 
+
 class ContextRevivalHandler:
     """Cross-session context continuity via history synthesis"""
 
@@ -429,9 +438,7 @@ class ContextRevivalHandler:
         self.redis = redis
         self.providers = providers
 
-    async def detect_reset(
-        self, session_id: str, current_token_count: int
-    ) -> bool:
+    async def detect_reset(self, session_id: str, current_token_count: int) -> bool:
         """
         Detect context reset by comparing current vs prior token counts.
 
@@ -443,13 +450,13 @@ class ContextRevivalHandler:
         prior_tokens = await self.redis.get(prior_key) or 0
         return current_token_count < int(prior_tokens) / 2
 
-    async def store_conversation(
-        self, session_id: str, messages: List[Dict]
-    ) -> None:
+    async def store_conversation(self, session_id: str, messages: List[Dict]) -> None:
         """Store conversation in Redis for retrieval after reset"""
         key = f"session:{session_id}:conversation_history"
         await self.redis.set(
-            key, json.dumps(messages), ex=86400 * 7  # 7 day TTL
+            key,
+            json.dumps(messages),
+            ex=86400 * 7,  # 7 day TTL
         )
 
     async def retrieve_conversation(self, session_id: str) -> Optional[List[Dict]]:
@@ -458,14 +465,10 @@ class ContextRevivalHandler:
         data = await self.redis.get(key)
         return json.loads(data) if data else None
 
-    async def trigger_revival(
-        self, trigger: ContextRevivalTrigger
-    ) -> ContextSummary:
+    async def trigger_revival(self, trigger: ContextRevivalTrigger) -> ContextSummary:
         """Detect reset & synthesize prior context via summarizer model"""
         # 1. Retrieve conversation history
-        prior_conversation = await self.retrieve_conversation(
-            trigger.prior_session_id
-        )
+        prior_conversation = await self.retrieve_conversation(trigger.prior_session_id)
         if not prior_conversation:
             return ContextSummary(
                 summary_text="No prior conversation found.",
@@ -485,16 +488,12 @@ class ContextRevivalHandler:
 
         # 3. Parse response into structured summary
         summary = self._parse_summary(response)
-        await self.store_conversation(
-            trigger.session_id, prior_conversation
-        )  # Update current session
+        await self.store_conversation(trigger.session_id, prior_conversation)  # Update current session
         return summary
 
     def _build_summary_prompt(self, conversation: List[Dict]) -> str:
         """Build prompt for Gemini to summarize conversation"""
-        conv_text = "\n".join(
-            [f"{msg['role']}: {msg['content'][:500]}" for msg in conversation]
-        )
+        conv_text = "\n".join([f"{msg['role']}: {msg['content'][:500]}" for msg in conversation])
         return f"""You are a context revival assistant. A developer's session was interrupted.
 
 Here is the full prior conversation history:
@@ -543,6 +542,7 @@ Format as JSON:
 from infrastructure.providers.base_provider import BaseProvider
 from openai import AsyncOpenAI  # Grok uses OpenAI-compatible API
 
+
 class GrokProvider(BaseProvider):
     """X.AI Grok model provider"""
 
@@ -553,13 +553,7 @@ class GrokProvider(BaseProvider):
         )
         self.model_name = "grok-2"
 
-    async def invoke(
-        self,
-        prompt: str,
-        max_tokens: int = 2000,
-        thinking_budget: int = 0,
-        **kwargs
-    ) -> str:
+    async def invoke(self, prompt: str, max_tokens: int = 2000, thinking_budget: int = 0, **kwargs) -> str:
         """Invoke Grok model"""
         response = await self.client.chat.completions.create(
             model=self.model_name,
@@ -588,11 +582,13 @@ class GrokProvider(BaseProvider):
 from typing import Dict
 from enum import Enum
 
+
 class TaskType(str, Enum):
     REASONING = "reasoning"
     CODING = "coding"
     FORMATTING = "formatting"
     CREATIVE = "creative"
+
 
 class ProviderAutoSelector:
     """Auto-select best model for task based on capabilities"""
@@ -650,6 +646,7 @@ from mcp.server import Server
 from mcp.types import Tool, TextContent
 from application.orchestration.consensus_use_case import ConsensusUseCase
 
+
 def register_consensus_tool(server: Server, use_case: ConsensusUseCase):
     """Register consensus MCP tool"""
 
@@ -668,10 +665,7 @@ def register_consensus_tool(server: Server, use_case: ConsensusUseCase):
             focus_areas=focus_areas.split(",") if focus_areas else [],
         )
         result = await use_case.execute(request)
-        return TextContent(
-            type="text",
-            text=f"Debate Results:\n{json.dumps(result, indent=2)}"
-        )
+        return TextContent(type="text", text=f"Debate Results:\n{json.dumps(result, indent=2)}")
 
     server.register_tool(
         Tool(
@@ -699,7 +693,9 @@ def register_consensus_tool(server: Server, use_case: ConsensusUseCase):
         )
     )
 
+
 # src/thegent/mcp/mcp_clink_tool.py
+
 
 def register_clink_tool(server: Server, use_case: SubagentOrchestratorUseCase):
     """Register clink (CLI subagent) MCP tool"""
@@ -719,10 +715,7 @@ def register_clink_tool(server: Server, use_case: SubagentOrchestratorUseCase):
             timeout_seconds=timeout_seconds,
         )
         result = await use_case.spawn_and_track(request)
-        return TextContent(
-            type="text",
-            text=f"Subagent Result:\n{json.dumps(result.dict(), indent=2)}"
-        )
+        return TextContent(type="text", text=f"Subagent Result:\n{json.dumps(result.dict(), indent=2)}")
 
     server.register_tool(
         Tool(

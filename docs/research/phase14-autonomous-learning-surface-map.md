@@ -40,6 +40,7 @@ This document maps the architectural surfaces affected by the introduction of ad
 from dataclasses import dataclass
 from typing import Literal
 
+
 @dataclass
 class ObjectiveProfile:
     latency_weight: float = 0.3
@@ -48,11 +49,7 @@ class ObjectiveProfile:
 
     def score(self, latency: float, quality: float, cost: float) -> float:
         """Calculate weighted score for model selection."""
-        return (
-            self.latency_weight * (1.0 / latency) +
-            self.quality_weight * quality +
-            self.spend_weight * (1.0 / cost)
-        )
+        return self.latency_weight * (1.0 / latency) + self.quality_weight * quality + self.spend_weight * (1.0 / cost)
 ```
 
 ### 4.2 Learning Registry Implementation
@@ -62,11 +59,13 @@ class ObjectiveProfile:
 from dataclasses import dataclass
 from enum import Enum
 
+
 class ModelStatus(Enum):
     BASELINE = "baseline"
     CANARY = "canary"
     PROMOTED = "promoted"
     DEPRECATED = "deprecated"
+
 
 @dataclass
 class CandidateModel:
@@ -74,6 +73,7 @@ class CandidateModel:
     status: ModelStatus
     success_rate: float
     cost_delta: float  # Relative to baseline
+
 
 class LearningRegistry:
     """Tracks canary model performance and promotion."""
@@ -92,6 +92,7 @@ class LearningRegistry:
 ```python
 # Integration with src/thegent/governance/costs.py
 from thegent.governance.slo import SLORegulator
+
 
 class CostSensing:
     """Provides cost-based feedback loops."""
@@ -114,16 +115,14 @@ class CostSensing:
 # Integration with src/thegent/governance/hitl.py
 from thegent.governance.hitl import HITLManager
 
+
 class LearningHITL:
     """Mandatory review for autonomous model promotions."""
 
     def request_promotion(self, model_id: str) -> bool:
         """Request promotion approval (WP-14003)."""
         hitl = HITLManager()
-        return hitl.require_approval(
-            action="model_promotion",
-            context={"model_id": model_id}
-        )
+        return hitl.require_approval(action="model_promotion", context={"model_id": model_id})
 ```
 
 ## 5. Acceptance Criteria Status

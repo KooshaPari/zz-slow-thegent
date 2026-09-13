@@ -55,6 +55,7 @@
 ```python
 from fastmcp.dependencies import CurrentContext
 
+
 @mcp.tool()
 async def configure_agent(ctx: Context = CurrentContext()) -> str:
     # Single value
@@ -101,15 +102,14 @@ selected = result.data  # ["email", "slack"] etc.
 ```python
 from pydantic import BaseModel
 
+
 class AgentConfig(BaseModel):
     name: str
     timeout_secs: int
     retry_count: int
 
-result = await ctx.elicit(
-    "Configure the agent",
-    response_type=AgentConfig
-)
+
+result = await ctx.elicit("Configure the agent", response_type=AgentConfig)
 if isinstance(result, AcceptedElicitation):
     config: AgentConfig = result.data
     await spawn_agent(config)
@@ -192,7 +192,7 @@ await ctx.info(
         "agent_id": agent.id,
         "agent_name": agent.name,
         "config": agent.config.dict(),
-    }
+    },
 )
 ```
 
@@ -365,15 +365,21 @@ main = FastMCP("MainServer")
 
 # Sub-provider for agents
 agents_server = FastMCP("AgentServer")
+
+
 @agents_server.tool()
 async def execute() -> str:
     return "exec result"
 
+
 # Sub-provider for models
 models_server = FastMCP("ModelsServer")
+
+
 @models_server.tool()
 async def list_models() -> list[str]:
     return ["gpt-4", "claude"]
+
 
 # Mount with namespaces
 main.add_provider(FastMCPProvider(agents_server).add_transform(Namespace("agents")))
@@ -395,27 +401,31 @@ from fastmcp.server.transforms import ToolTransform
 
 server = FastMCP("Server")
 
+
 @server.tool()
 async def thegent_run(agents: list[str]) -> dict:
     """Original description"""
     ...
 
+
 # Override schema
-transform = ToolTransform({
-    "thegent_run": {
-        "description": "Execute agents in parallel with timeout=600s",
-        "input_schema": {
-            "properties": {
-                "agents": {
-                    "type": "array",
-                    "items": {"type": "string"},
-                    "minItems": 1,
-                    "maxItems": 10,
+transform = ToolTransform(
+    {
+        "thegent_run": {
+            "description": "Execute agents in parallel with timeout=600s",
+            "input_schema": {
+                "properties": {
+                    "agents": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "minItems": 1,
+                        "maxItems": 10,
+                    }
                 }
-            }
+            },
         }
     }
-})
+)
 server.add_transform(transform)
 ```
 
@@ -432,10 +442,12 @@ from fastmcp.server.transforms import ResourcesAsTools
 
 mcp = FastMCP("ThegentServer")
 
+
 @mcp.resource()
 async def thegent_session_logs(session_id: str) -> str:
     """Retrieve session execution logs"""
     return fetch_logs(session_id)
+
 
 # Add transform to expose as tools
 mcp.add_transform(ResourcesAsTools(mcp))
@@ -458,10 +470,12 @@ from fastmcp.server.transforms import PromptsAsTools
 
 mcp = FastMCP("ThegentServer")
 
+
 @mcp.prompt()
 async def thegent_run_agent(agent_name: str, instructions: str) -> str:
     """Prompt template for running an agent"""
     return f"Run agent {agent_name} with:\n{instructions}"
+
 
 mcp.add_transform(PromptsAsTools(mcp))
 
@@ -551,13 +565,14 @@ from key_value.aio.stores.disk import DiskStore
 cache_store = DiskStore(directory="/var/cache/thegent")
 event_store = EventStore(storage=DiskStore(directory="/var/lib/thegent/events"))
 
-mcp.add_middleware(ResponseCachingMiddleware(
-    cache_storage=cache_store,
-    call_tool_settings=CallToolSettings(
-        included_tools=["thegent_ps", "thegent_list_agents", "thegent_list_droids", "thegent_list_models"],
-        ttl=30
+mcp.add_middleware(
+    ResponseCachingMiddleware(
+        cache_storage=cache_store,
+        call_tool_settings=CallToolSettings(
+            included_tools=["thegent_ps", "thegent_list_agents", "thegent_list_droids", "thegent_list_models"], ttl=30
+        ),
     )
-))
+)
 
 app = mcp.http_app(
     event_store=event_store,
@@ -588,13 +603,14 @@ redis_url = os.environ.get("REDIS_URL", "redis://localhost:6379")
 cache_store = RedisStore(url=redis_url)
 event_store = EventStore(storage=RedisStore(url=redis_url))
 
-mcp.add_middleware(ResponseCachingMiddleware(
-    cache_storage=cache_store,
-    call_tool_settings=CallToolSettings(
-        included_tools=["thegent_ps", "thegent_list_agents", "thegent_list_droids", "thegent_list_models"],
-        ttl=30
+mcp.add_middleware(
+    ResponseCachingMiddleware(
+        cache_storage=cache_store,
+        call_tool_settings=CallToolSettings(
+            included_tools=["thegent_ps", "thegent_list_agents", "thegent_list_droids", "thegent_list_models"], ttl=30
+        ),
     )
-))
+)
 
 app = mcp.http_app(
     event_store=event_store,
@@ -625,7 +641,7 @@ from fastmcp.server.event_store import EventStore
 event_store = EventStore(
     storage=RedisStore(url="redis://localhost"),
     max_events_per_stream=200,
-    ttl=3600  # seconds
+    ttl=3600,  # seconds
 )
 
 app = mcp.http_app(
@@ -647,12 +663,11 @@ app = mcp.http_app(
 from key_value.aio.wrappers.prefix_collections import PrefixCollectionsWrapper
 from key_value.aio.stores.redis import RedisStore
 
+
 def get_tenant_cache(tenant_id: str):
     base_store = RedisStore(url="redis://localhost")
-    return PrefixCollectionsWrapper(
-        key_value=base_store,
-        prefix=f"tenant:{tenant_id}"
-    )
+    return PrefixCollectionsWrapper(key_value=base_store, prefix=f"tenant:{tenant_id}")
+
 
 # Per-request
 tenant_cache = get_tenant_cache(request.tenant_id)
@@ -720,9 +735,7 @@ except Exception as e:
 ```python
 @mcp.tool()
 async def thegent_analyze_output(output: str, ctx: Context = CurrentContext()) -> str:
-    result = await ctx.sample(
-        f"Analyze this output for errors:\n\n{output}"
-    )
+    result = await ctx.sample(f"Analyze this output for errors:\n\n{output}")
     return result.text or ""
 ```
 
@@ -737,20 +750,19 @@ async def thegent_analyze_output(output: str, ctx: Context = CurrentContext()) -
 ```python
 from pydantic import BaseModel
 
+
 class ExecutionSummary(BaseModel):
     status: str  # "success", "partial", "failed"
     agent_count: int
     errors: list[str]
     recommendations: str
 
+
 @mcp.tool()
 async def thegent_summarize_run(session_id: str, ctx: Context = CurrentContext()) -> ExecutionSummary:
     logs = await fetch_session_logs(session_id)
 
-    result = await ctx.sample(
-        f"Summarize this thegent run:\n{logs}",
-        result_type=ExecutionSummary
-    )
+    result = await ctx.sample(f"Summarize this thegent run:\n{logs}", result_type=ExecutionSummary)
 
     # result.result is ExecutionSummary (validated)
     return result.result
@@ -769,10 +781,7 @@ from fastmcp.client.sampling.handlers.openai import OpenAISamplingHandler
 
 mcp = FastMCP(
     name="ThegentServer",
-    sampling_handler=OpenAISamplingHandler(
-        api_key=os.environ["OPENAI_API_KEY"],
-        default_model="gpt-4o-mini"
-    ),
+    sampling_handler=OpenAISamplingHandler(api_key=os.environ["OPENAI_API_KEY"], default_model="gpt-4o-mini"),
     sampling_handler_behavior="fallback",  # Use only when client doesn't support
 )
 ```
@@ -805,6 +814,7 @@ async def thegent_suggest_prompt(raw_prompt: str, ctx: Context = CurrentContext(
 **Implementation:**
 ```python
 from fastmcp.telemetry import get_tracer
+
 
 @mcp.tool()
 async def thegent_run(agents: list[str], ctx: Context = CurrentContext()) -> dict:
@@ -912,12 +922,10 @@ class ConfigUpdate(BaseModel):
     timeout_secs: int
     log_level: str
 
+
 @mcp.tool()
 async def suggest_config(current_config: dict, ctx: Context = CurrentContext()) -> ConfigUpdate:
-    result = await ctx.sample(
-        f"Suggest improvements to this config:\n{current_config}",
-        result_type=ConfigUpdate
-    )
+    result = await ctx.sample(f"Suggest improvements to this config:\n{current_config}", result_type=ConfigUpdate)
     return result.result
 ```
 
@@ -949,12 +957,12 @@ async def suggest_config(current_config: dict, ctx: Context = CurrentContext()) 
 **Implementation:**
 ```python
 # Order: outermost first (executed first)
-mcp.add_middleware(ErrorHandlingMiddleware())      # 1st (outermost)
-mcp.add_middleware(RateLimitingMiddleware(...))    # 2nd
-mcp.add_middleware(TimingMiddleware())             # 3rd
-mcp.add_middleware(ResponseCachingMiddleware(...)) # 4th
-mcp.add_middleware(ResponseLimitingMiddleware(...)) # 5th
-mcp.add_middleware(LoggingMiddleware())            # 6th (innermost)
+mcp.add_middleware(ErrorHandlingMiddleware())  # 1st (outermost)
+mcp.add_middleware(RateLimitingMiddleware(...))  # 2nd
+mcp.add_middleware(TimingMiddleware())  # 3rd
+mcp.add_middleware(ResponseCachingMiddleware(...))  # 4th
+mcp.add_middleware(ResponseLimitingMiddleware(...))  # 5th
+mcp.add_middleware(LoggingMiddleware())  # 6th (innermost)
 ```
 
 **Recommended order for thegent:**
@@ -985,19 +993,21 @@ from key_value.aio.stores.redis import RedisStore
 
 cache_store = RedisStore(url="redis://localhost")
 
-mcp.add_middleware(ResponseCachingMiddleware(
-    cache_storage=cache_store,
-    list_tools_settings=ListToolsSettings(ttl=30),
-    call_tool_settings=CallToolSettings(
-        included_tools=[
-            "thegent_ps",
-            "thegent_list_agents",
-            "thegent_list_droids",
-            "thegent_list_models",
-        ],
-        ttl=30
-    ),
-))
+mcp.add_middleware(
+    ResponseCachingMiddleware(
+        cache_storage=cache_store,
+        list_tools_settings=ListToolsSettings(ttl=30),
+        call_tool_settings=CallToolSettings(
+            included_tools=[
+                "thegent_ps",
+                "thegent_list_agents",
+                "thegent_list_droids",
+                "thegent_list_models",
+            ],
+            ttl=30,
+        ),
+    )
+)
 ```
 
 **Use cases for thegent:**
@@ -1011,10 +1021,12 @@ mcp.add_middleware(ResponseCachingMiddleware(
 ```python
 from fastmcp.server.middleware.rate_limiting import RateLimitingMiddleware
 
-mcp.add_middleware(RateLimitingMiddleware(
-    max_requests_per_second=10.0,
-    burst_capacity=20,
-))
+mcp.add_middleware(
+    RateLimitingMiddleware(
+        max_requests_per_second=10.0,
+        burst_capacity=20,
+    )
+)
 ```
 
 **Use cases:**
@@ -1036,10 +1048,7 @@ from fastmcp.server.middleware.response_limiting import ResponseLimitingMiddlewa
 mcp.add_middleware(ResponseLimitingMiddleware(max_size=500_000))
 
 # Or limit specific tools
-mcp.add_middleware(ResponseLimitingMiddleware(
-    max_size=500_000,
-    tools=["thegent_logs", "thegent_run"]
-))
+mcp.add_middleware(ResponseLimitingMiddleware(max_size=500_000, tools=["thegent_logs", "thegent_run"]))
 ```
 
 **Use cases:**
@@ -1053,6 +1062,7 @@ mcp.add_middleware(ResponseLimitingMiddleware(
 ```python
 from fastmcp.server.middleware import Middleware, MiddlewareContext
 
+
 class AuditMiddleware(Middleware):
     async def on_call_tool(self, context: MiddlewareContext, call_next):
         tool_name = context.message.name
@@ -1060,17 +1070,19 @@ class AuditMiddleware(Middleware):
 
         if tool_name == "thegent_run":
             import json
+
             await ctx.info(
                 f"Audit: thegent_run invoked",
                 extra={
                     "tool": tool_name,
                     "agents": args.get("agents", []),
                     "timestamp": datetime.utcnow().isoformat(),
-                }
+                },
             )
 
         result = await call_next(context)
         return result
+
 
 mcp.add_middleware(AuditMiddleware())
 ```
@@ -1084,7 +1096,7 @@ mcp.add_middleware(AuditMiddleware())
 
 **Pattern 1: Conditional Caching**
 ```python
-call_tool_settings=CallToolSettings(
+call_tool_settings = CallToolSettings(
     included_tools=[
         "thegent_ps",  # List, rarely changes
         "thegent_list_agents",  # Expensive query
@@ -1092,7 +1104,7 @@ call_tool_settings=CallToolSettings(
     excluded_tools=[
         "thegent_run",  # Stateful, never cache
     ],
-    ttl=30
+    ttl=30,
 )
 ```
 
@@ -1102,10 +1114,13 @@ def get_client_id(context):
     # Extract user/tenant from auth context
     return context.fastmcp_context.client_id if context.fastmcp_context else "anonymous"
 
-mcp.add_middleware(RateLimitingMiddleware(
-    max_requests_per_second=10,
-    client_id_func=get_client_id,
-))
+
+mcp.add_middleware(
+    RateLimitingMiddleware(
+        max_requests_per_second=10,
+        client_id_func=get_client_id,
+    )
+)
 ```
 
 ### Design Decisions
@@ -1142,11 +1157,7 @@ from key_value.aio.stores.redis import RedisStore
 mcp = FastMCP("ThegentServer")
 
 # Configure EventStore for resumability
-event_store = EventStore(
-    storage=RedisStore(url="redis://localhost"),
-    max_events_per_stream=200,
-    ttl=3600
-)
+event_store = EventStore(storage=RedisStore(url="redis://localhost"), max_events_per_stream=200, ttl=3600)
 
 # Create HTTP app
 app = mcp.http_app(
@@ -1257,6 +1268,8 @@ app = mcp.http_app(
 **Pattern 2: Checkpoint-based Stream Closing**
 ```python
 STREAM_CLOSE_INTERVAL = 30  # iterations
+
+
 @mcp.tool()
 async def thegent_run(agents: list[str], ctx: Context = CurrentContext()) -> dict:
     for i, agent in enumerate(agents):
@@ -1305,32 +1318,28 @@ event_store = EventStore(storage=RedisStore(url=redis_url))
 # Create server with sampling fallback
 mcp = FastMCP(
     name="ThegentServer",
-    sampling_handler=OpenAISamplingHandler(
-        api_key=os.environ.get("OPENAI_API_KEY"),
-        default_model="gpt-4o-mini"
-    ),
+    sampling_handler=OpenAISamplingHandler(api_key=os.environ.get("OPENAI_API_KEY"), default_model="gpt-4o-mini"),
     sampling_handler_behavior="fallback",
 )
 
 # Middleware pipeline (outermost first)
 mcp.add_middleware(ErrorHandlingMiddleware())
-mcp.add_middleware(RateLimitingMiddleware(
-    max_requests_per_second=10.0,
-    burst_capacity=20
-))
+mcp.add_middleware(RateLimitingMiddleware(max_requests_per_second=10.0, burst_capacity=20))
 mcp.add_middleware(TimingMiddleware())
-mcp.add_middleware(ResponseCachingMiddleware(
-    cache_storage=cache_store,
-    call_tool_settings=CallToolSettings(
-        included_tools=[
-            "thegent_ps",
-            "thegent_list_agents",
-            "thegent_list_droids",
-            "thegent_list_models",
-        ],
-        ttl=30
-    ),
-))
+mcp.add_middleware(
+    ResponseCachingMiddleware(
+        cache_storage=cache_store,
+        call_tool_settings=CallToolSettings(
+            included_tools=[
+                "thegent_ps",
+                "thegent_list_agents",
+                "thegent_list_droids",
+                "thegent_list_models",
+            ],
+            ttl=30,
+        ),
+    )
+)
 mcp.add_middleware(ResponseLimitingMiddleware(max_size=500_000))
 mcp.add_middleware(LoggingMiddleware())
 
@@ -1375,10 +1384,7 @@ app = mcp.http_app(
 **Pattern 1: Elicitation with Timeout**
 ```python
 try:
-    result = await asyncio.wait_for(
-        ctx.elicit("Confirm?", response_type=bool),
-        timeout=30.0
-    )
+    result = await asyncio.wait_for(ctx.elicit("Confirm?", response_type=bool), timeout=30.0)
 except asyncio.TimeoutError:
     await ctx.warning("No response, using default")
     result = False
@@ -1463,22 +1469,16 @@ auth_provider = GitHubProvider(
     client_secret=os.environ["GITHUB_CLIENT_SECRET"],
     redirect_uri=os.environ["GITHUB_REDIRECT_URI"],
     client_storage=FernetEncryptionWrapper(
-        key_value=RedisStore(url=os.environ["REDIS_URL"]),
-        fernet=Fernet(os.environ["STORAGE_ENCRYPTION_KEY"])
-    )
+        key_value=RedisStore(url=os.environ["REDIS_URL"]), fernet=Fernet(os.environ["STORAGE_ENCRYPTION_KEY"])
+    ),
 )
 
 # Bearer token validation for service-to-service
 token_validator = BearerTokenValidator(
-    token_header="Authorization",
-    token_prefix="Bearer",
-    validate_token=lambda token: token in valid_tokens
+    token_header="Authorization", token_prefix="Bearer", validate_token=lambda token: token in valid_tokens
 )
 
-mcp.add_middleware(AuthMiddleware(
-    auth_provider=auth_provider,
-    token_validator=token_validator
-))
+mcp.add_middleware(AuthMiddleware(auth_provider=auth_provider, token_validator=token_validator))
 ```
 
 **Cross-reference:** See `FASTMCP_SPEC_DEEP_DIVE.md` Section 13 for OAuth adoption checklist. See `hooks/security-pipeline.sh` for security enforcement patterns.
@@ -1488,18 +1488,22 @@ mcp.add_middleware(AuthMiddleware(
 ```python
 from fastmcp.server.auth import TenantAwareAuth
 
+
 def extract_tenant(context):
     """Extract tenant ID from request context."""
     token = context.request.headers.get("X-Tenant-ID")
     return token if token else "default"
 
-mcp.add_middleware(TenantAwareAuth(
-    tenant_extractor=extract_tenant,
-    tenant_scopes={
-        "tenant-a": {"tools": ["read"], "resources": ["sessions"]},
-        "tenant-b": {"tools": ["read", "write"], "resources": ["all"]},
-    }
-))
+
+mcp.add_middleware(
+    TenantAwareAuth(
+        tenant_extractor=extract_tenant,
+        tenant_scopes={
+            "tenant-a": {"tools": ["read"], "resources": ["sessions"]},
+            "tenant-b": {"tools": ["read", "write"], "resources": ["all"]},
+        },
+    )
+)
 ```
 
 **Use cases:**
@@ -1516,6 +1520,7 @@ import pytest
 from fastmcp import FastMCP
 from fastmcp.server.dependencies import Depends
 
+
 @pytest.fixture
 def mcp_server():
     """Create test server with tools."""
@@ -1526,6 +1531,7 @@ def mcp_server():
         return value * 2
 
     return mcp
+
 
 @pytest.mark.asyncio
 async def test_tool_execution(mcp_server):
@@ -1542,15 +1548,13 @@ async def test_tool_execution(mcp_server):
 import asyncio
 from fastmcp import Client
 
+
 @pytest.mark.asyncio
 async def test_elicitation_flow():
     """Test elicitation via MCP client."""
     async with Client(mcp) as client:
         # Mock elicitation response
-        result = await client.call_tool(
-            "thegent_run",
-            {"agents": ["test-agent"]}
-        )
+        result = await client.call_tool("thegent_run", {"agents": ["test-agent"]})
         assert result.content[0].text == "expected output"
 ```
 
@@ -1567,19 +1571,11 @@ async def test_elicitation_flow():
 from httpx import AsyncClient, Limits, Timeout
 
 http_client = AsyncClient(
-    limits=Limits(
-        max_keepalive_connections=20,
-        max_connections=100,
-        keepalive_expiry=30.0
-    ),
-    timeout=Timeout(10.0)
+    limits=Limits(max_keepalive_connections=20, max_connections=100, keepalive_expiry=30.0), timeout=Timeout(10.0)
 )
 
 # Use with HTTP transport
-app = mcp.http_app(
-    transport="streamable-http",
-    http_client=http_client
-)
+app = mcp.http_app(transport="streamable-http", http_client=http_client)
 ```
 
 **Cross-reference:** See `docs/reference/PERFORMANCE_OPTIMIZATION.md` for runtime optimization patterns.
@@ -1589,19 +1585,14 @@ app = mcp.http_app(
 ```python
 from fastmcp.server.tools import ToolBatch
 
-async def batched_agent_execution(
-    agents: list[str],
-    batch_size: int = 5
-) -> list[dict]:
+
+async def batched_agent_execution(agents: list[str], batch_size: int = 5) -> list[dict]:
     """Execute agents in batches to control concurrency."""
     results = []
 
     for i in range(0, len(agents), batch_size):
-        batch = agents[i:i + batch_size]
-        batch_results = await asyncio.gather(
-            *[execute_agent(a) for a in batch],
-            return_exceptions=True
-        )
+        batch = agents[i : i + batch_size]
+        batch_results = await asyncio.gather(*[execute_agent(a) for a in batch], return_exceptions=True)
         results.extend(batch_results)
 
     return results

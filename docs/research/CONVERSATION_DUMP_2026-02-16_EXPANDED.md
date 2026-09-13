@@ -50,6 +50,7 @@
 ```python
 # thegent/src/thegent/install.py
 
+
 def _install_agent_accelerators(self):
     """Install shims for agent binaries (codex, copilot)"""
     agents = ["codex", "copilot"]
@@ -57,11 +58,7 @@ def _install_agent_accelerators(self):
         shim_path = self.shim_dir / agent
         if not shim_path.exists():
             # Create shim that execs real binary directly
-            shim_path.write_text(
-                f'#!/usr/bin/env sh\n'
-                f'set -e\n'
-                f'exec "$(command -v {agent})" "$@"\n'
-            )
+            shim_path.write_text(f'#!/usr/bin/env sh\nset -e\nexec "$(command -v {agent})" "$@"\n')
             shim_path.chmod(0o755)
 ```
 
@@ -296,6 +293,7 @@ thegent run --remote windows-pc "process-compose up" gemini
 ```python
 # thegent/src/thegent/compute/offload.py
 
+
 class ComputeOffloader:
     def __init__(self):
         self.remote_hosts = {
@@ -484,6 +482,7 @@ from pathlib import Path
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+
 class IdeaDetector:
     def __init__(self):
         self.sources = [
@@ -499,11 +498,13 @@ class IdeaDetector:
         if "$idea" in text or "$idea " in text:
             # Extract idea prompt
             idea_text = self._extract_idea(text)
-            ideas.append(Idea(
-                text=idea_text,
-                source="detected",
-                timestamp=datetime.now(),
-            ))
+            ideas.append(
+                Idea(
+                    text=idea_text,
+                    source="detected",
+                    timestamp=datetime.now(),
+                )
+            )
         return ideas
 
     def watch_sessions(self):
@@ -520,6 +521,7 @@ class IdeaDetector:
 ```python
 # thegent/src/thegent/ideas/parsers.py
 
+
 class ClaudeCodeParser:
     def parse_session(self, session_file: Path) -> list[Message]:
         """Parse Claude Code session file"""
@@ -531,12 +533,15 @@ class ClaudeCodeParser:
             if msg["role"] == "user":
                 content = msg["content"]
                 if "$idea" in content:
-                    messages.append(Message(
-                        role="user",
-                        content=content,
-                        timestamp=msg["timestamp"],
-                    ))
+                    messages.append(
+                        Message(
+                            role="user",
+                            content=content,
+                            timestamp=msg["timestamp"],
+                        )
+                    )
         return messages
+
 
 class CodexParser:
     def parse_session(self, session_file: Path) -> list[Message]:
@@ -547,12 +552,15 @@ class CodexParser:
         messages = []
         for msg in data.get("messages", []):
             if msg["type"] == "user" and "$idea" in msg["text"]:
-                messages.append(Message(
-                    role="user",
-                    content=msg["text"],
-                    timestamp=msg["timestamp"],
-                ))
+                messages.append(
+                    Message(
+                        role="user",
+                        content=msg["text"],
+                        timestamp=msg["timestamp"],
+                    )
+                )
         return messages
+
 
 class CursorParser:
     def parse_session(self, db_path: Path) -> list[Message]:
@@ -568,11 +576,13 @@ class CursorParser:
 
         messages = []
         for row in cursor.fetchall():
-            messages.append(Message(
-                role="user",
-                content=row[0],
-                timestamp=row[1],
-            ))
+            messages.append(
+                Message(
+                    role="user",
+                    content=row[0],
+                    timestamp=row[1],
+                )
+            )
 
         return messages
 ```
@@ -581,6 +591,7 @@ class CursorParser:
 
 ```python
 # thegent/src/thegent/ideas/storage.py
+
 
 class IdeaStorage:
     def __init__(self):
@@ -615,6 +626,7 @@ project: {idea.project}
 
 ```python
 # thegent/src/thegent/ideas/monitor.py
+
 
 class SessionMonitor:
     def __init__(self):

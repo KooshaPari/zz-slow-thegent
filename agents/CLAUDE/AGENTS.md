@@ -555,6 +555,7 @@ The name of a test file should answer: **"What component/concern does this test?
 # ✅ GOOD: One file, fixture parametrization determines variant
 # tests/unit/tools/test_entity.py
 
+
 @pytest.fixture(params=["unit", "integration", "e2e"])
 def mcp_client(request):
     """Parametrized client fixture.
@@ -569,11 +570,12 @@ def mcp_client(request):
     if request.param == "unit":
         return InMemoryMcpClient()  # Fast, deterministic
     elif request.param == "integration":
-        return HttpMcpClient(...)   # Live database
+        return HttpMcpClient(...)  # Live database
     elif request.param == "e2e":
         return DeploymentMcpClient(...)  # Production setup
 
     return get_client(request.param)
+
 
 async def test_entity_creation(mcp_client):
     """Test entity creation across all variants.
@@ -598,6 +600,7 @@ async def test_entity_creation(mcp_client):
 ```python
 # ✅ GOOD: Markers for categorizing tests within one file
 
+
 @pytest.mark.asyncio
 @pytest.mark.performance
 async def test_entity_creation_performance(mcp_client):
@@ -608,6 +611,7 @@ async def test_entity_creation_performance(mcp_client):
     """
     ...
 
+
 @pytest.mark.asyncio
 @pytest.mark.smoke
 async def test_entity_basic_creation(mcp_client):
@@ -616,6 +620,7 @@ async def test_entity_basic_creation(mcp_client):
     Run with: pytest -m smoke  # <1 second
     """
     ...
+
 
 @pytest.mark.asyncio
 @pytest.mark.integration
@@ -626,6 +631,7 @@ async def test_entity_with_real_database(mcp_client):
     Skip in CI with: pytest -m "not integration"
     """
     ...
+
 
 @pytest.mark.asyncio
 @pytest.mark.slow
@@ -661,12 +667,13 @@ pytest -m "not slow"  # Fast feedback
 ```python
 # ❌ BAD: Three files with redundant test code
 # tests/unit/tools/test_entity.py
-async def test_entity_creation(mcp_client_inmemory):
-    ...
+async def test_entity_creation(mcp_client_inmemory): ...
+
 
 # tests/integration/tools/test_entity.py
 async def test_entity_creation(mcp_client_http):  # Same test name!
     ...
+
 
 # tests/e2e/tools/test_entity.py
 async def test_entity_creation(mcp_client_e2e):  # Same test name again!
@@ -1230,19 +1237,17 @@ find . -name "*.md" -type f | sed 's|/[^/]*$||' | sort | uniq -c | sort -rn
 # Standard endpoint structure
 @router.post("/v1/<resource>")
 async def create_resource(
-    request: CreateResourceRequest,
-    service: ResourceService = Depends(get_service)
+    request: CreateResourceRequest, service: ResourceService = Depends(get_service)
 ) -> ResourceResponse:
     """Create a new resource."""
     result = await service.create(request)
     return ResourceResponse.from_model(result)
 
+
 # With authentication
 @router.get("/v1/<resource>/{id}")
 async def get_resource(
-    id: str,
-    user: User = Depends(get_current_user),
-    service: ResourceService = Depends(get_service)
+    id: str, user: User = Depends(get_current_user), service: ResourceService = Depends(get_service)
 ) -> ResourceResponse:
     """Get a resource by ID."""
     result = await service.get(id, user_id=user.id)
@@ -1250,11 +1255,11 @@ async def get_resource(
         raise HTTPException(status_code=404, detail="Resource not found")
     return ResourceResponse.from_model(result)
 
+
 # OpenAI-compatible endpoint
 @router.post("/v1/chat/completions")
 async def chat_completions(
-    request: ChatCompletionRequest,
-    claude_client: ClaudeClient = Depends(get_claude_client)
+    request: ChatCompletionRequest, claude_client: ClaudeClient = Depends(get_claude_client)
 ) -> ChatCompletionResponse:
     """OpenAI-compatible chat completions endpoint."""
     # Convert OpenAI format to Claude format
@@ -1308,9 +1313,7 @@ class ResourceRepository:
     async def save(self, resource: Resource) -> Resource:
         """Save a resource."""
         # Never bypass this layer for DB access
-        result = await self.db.table("resources").insert(
-            resource.model_dump()
-        ).execute()
+        result = await self.db.table("resources").insert(resource.model_dump()).execute()
         return Resource.model_validate(result.data[0])
 
     async def get(self, id: str) -> Resource | None:
@@ -1322,9 +1325,7 @@ class ResourceRepository:
 
     async def list(self, user_id: str, limit: int = 100) -> list[Resource]:
         """List resources for a user."""
-        result = await self.db.table("resources").select("*").eq(
-            "user_id", user_id
-        ).limit(limit).execute()
+        result = await self.db.table("resources").select("*").eq("user_id", user_id).limit(limit).execute()
         return [Resource.model_validate(r) for r in result.data]
 ```
 
@@ -1333,6 +1334,7 @@ class ResourceRepository:
 ```python
 from pydantic_settings import BaseSettings
 from pydantic import Field
+
 
 class Settings(BaseSettings):
     """Application settings."""
@@ -1359,6 +1361,7 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
 
+
 # Usage
 settings = Settings()
 ```
@@ -1370,12 +1373,9 @@ from fastmcp import FastMCP
 
 mcp = FastMCP("my-server")
 
+
 @mcp.tool
-async def my_tool(
-    param: str,
-    optional_param: int = 10,
-    context: Context = None
-) -> dict:
+async def my_tool(param: str, optional_param: int = 10, context: Context = None) -> dict:
     """Tool description for Claude.
 
     Args:
@@ -1397,24 +1397,14 @@ async def my_tool(
     result = await perform_operation(param, optional_param, user_id)
 
     # Return structured result
-    return {
-        "success": True,
-        "data": result,
-        "metadata": {
-            "param": param,
-            "optional_param": optional_param
-        }
-    }
+    return {"success": True, "data": result, "metadata": {"param": param, "optional_param": optional_param}}
 ```
 
 ### MCP Configuration Management
 
 ```python
 # In services/mcp_registry.py
-async def register_mcp_server(
-    org_id: str,
-    config: MCPServerConfig
-) -> MCPServer:
+async def register_mcp_server(org_id: str, config: MCPServerConfig) -> MCPServer:
     """Register new MCP server configuration."""
     # Validate config
     validate_mcp_config(config)
@@ -1433,11 +1423,7 @@ async def register_mcp_server(
 
 ```python
 # In services/prompts.py
-async def build_prompt_stack(
-    org_id: str,
-    user_id: str | None = None,
-    workflow_id: str | None = None
-) -> list[Message]:
+async def build_prompt_stack(org_id: str, user_id: str | None = None, workflow_id: str | None = None) -> list[Message]:
     """Build layered prompt stack."""
     messages = []
 
@@ -1473,34 +1459,45 @@ from pydantic import BaseModel
 
 T = TypeVar("T")
 
+
 class Result(BaseModel, Generic[T]):
     """Generic result wrapper."""
+
     success: bool
     data: T | None = None
     error: str | None = None
     error_code: str | None = None
 
+
 class AppError(Exception):
     """Base application error."""
+
     def __init__(self, message: str, code: str = "UNKNOWN_ERROR"):
         self.message = message
         self.code = code
         super().__init__(message)
 
+
 class NotFoundError(AppError):
     """Resource not found error."""
+
     def __init__(self, resource: str, id: str):
         super().__init__(f"{resource} with id {id} not found", "NOT_FOUND")
 
+
 class ValidationError(AppError):
     """Validation error."""
+
     def __init__(self, message: str):
         super().__init__(message, "VALIDATION_ERROR")
 
+
 class PermissionError(AppError):
     """Permission denied error."""
+
     def __init__(self, message: str = "Permission denied"):
         super().__init__(message, "PERMISSION_DENIED")
+
 
 # Error handler middleware
 @app.exception_handler(AppError)
@@ -1512,11 +1509,7 @@ async def app_error_handler(request: Request, exc: AppError):
     }
     return JSONResponse(
         status_code=status_codes.get(exc.code, 500),
-        content={
-            "success": False,
-            "error": exc.message,
-            "error_code": exc.code
-        }
+        content={"success": False, "error": exc.message, "error_code": exc.code},
     )
 ```
 
@@ -1528,8 +1521,10 @@ from functools import wraps
 
 logger = structlog.get_logger()
 
+
 def log_operation(operation_name: str):
     """Decorator for logging operations."""
+
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
@@ -1542,13 +1537,15 @@ def log_operation(operation_name: str):
             except Exception as e:
                 log.error("operation_failed", error=str(e), error_type=type(e).__name__)
                 raise
+
         return wrapper
+
     return decorator
+
 
 # Usage
 @log_operation("create_entity")
-async def create_entity(data: EntityCreate) -> Entity:
-    ...
+async def create_entity(data: EntityCreate) -> Entity: ...
 ```
 
 ---
@@ -1589,6 +1586,7 @@ rg -i "api[_-]?key|secret|password|token|bearer" src/ config/ tests/
 import os
 from pydantic_settings import BaseSettings
 
+
 class Settings(BaseSettings):
     api_key: str = Field(..., env="API_KEY")
     database_url: str = Field(..., env="DATABASE_URL")
@@ -1596,14 +1594,17 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"  # .env is gitignored
 
+
 # Good: Use secret manager for production
 from google.cloud import secretmanager
+
 
 def get_secret(secret_id: str) -> str:
     client = secretmanager.SecretManagerServiceClient()
     name = f"projects/{project_id}/secrets/{secret_id}/versions/latest"
     response = client.access_secret_version(request={"name": name})
     return response.payload.data.decode("UTF-8")
+
 
 # Bad: Hardcoded secrets
 API_KEY = "sk-1234567890"  # ❌ Never do this
@@ -1615,17 +1616,15 @@ API_KEY = "sk-1234567890"  # ❌ Never do this
 # JWT validation
 from jose import jwt, JWTError
 
+
 async def validate_token(token: str) -> dict:
     """Validate JWT token."""
     try:
-        payload = jwt.decode(
-            token,
-            settings.jwt_secret,
-            algorithms=[settings.jwt_algorithm]
-        )
+        payload = jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
         return payload
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
+
 
 # API key validation
 async def validate_api_key(api_key: str) -> bool:
@@ -1633,10 +1632,9 @@ async def validate_api_key(api_key: str) -> bool:
     # Use constant-time comparison to prevent timing attacks
     return secrets.compare_digest(api_key, settings.api_key)
 
+
 # Dependency for protected routes
-async def get_current_user(
-    authorization: str = Header(None)
-) -> User:
+async def get_current_user(authorization: str = Header(None)) -> User:
     """Get current authenticated user."""
     if not authorization:
         raise HTTPException(status_code=401, detail="Missing authorization")
@@ -1674,6 +1672,7 @@ async def chat_completions(request: Request, ...):
 ```python
 from pydantic import BaseModel, Field, validator
 import re
+
 
 class UserCreate(BaseModel):
     """User creation model with validation."""
@@ -1946,16 +1945,19 @@ find . -type d -name __pycache__ -exec rm -rf {} +
 ```python
 # Add temporary debugging
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 # In function
 logger.debug(f"Variable state: {variable}")
 
+
 # Use breakpoint for interactive debugging
 def problematic_function():
     breakpoint()  # Drops into pdb
     ...
+
 
 # Profile slow code
 import cProfile
@@ -1966,7 +1968,7 @@ profiler.enable()
 # ... code to profile ...
 profiler.disable()
 stats = pstats.Stats(profiler)
-stats.sort_stats('cumulative')
+stats.sort_stats("cumulative")
 stats.print_stats(10)
 ```
 
@@ -1996,6 +1998,7 @@ stats.print_stats(10)
 import time
 from functools import wraps
 
+
 def timed(func):
     @wraps(func)
     async def wrapper(*args, **kwargs):
@@ -2004,11 +2007,12 @@ def timed(func):
         duration = time.perf_counter() - start
         logger.info(f"{func.__name__} took {duration:.3f}s")
         return result
+
     return wrapper
 
+
 @timed
-async def slow_operation():
-    ...
+async def slow_operation(): ...
 ```
 
 ### Caching Patterns
@@ -2018,13 +2022,15 @@ from functools import lru_cache
 from cachetools import TTLCache
 import asyncio
 
+
 # Simple LRU cache for sync functions
 @lru_cache(maxsize=100)
-def get_config(key: str) -> str:
-    ...
+def get_config(key: str) -> str: ...
+
 
 # TTL cache for async functions
 cache = TTLCache(maxsize=1000, ttl=300)  # 5 minute TTL
+
 
 async def get_cached_data(key: str) -> dict:
     if key in cache:
@@ -2044,21 +2050,20 @@ async def get_cached_data(key: str) -> dict:
 ```python
 from fastmcp import FastMCP
 
-mcp = FastMCP(
-    name="my-mcp-server",
-    version="1.0.0",
-    description="My MCP Server"
-)
+mcp = FastMCP(name="my-mcp-server", version="1.0.0", description="My MCP Server")
+
 
 @mcp.tool
 async def my_tool(param: str) -> dict:
     """Tool description."""
     return {"result": param}
 
+
 @mcp.resource("resource://{id}")
 async def get_resource(id: str) -> str:
     """Get resource by ID."""
     return f"Resource {id}"
+
 
 @mcp.prompt
 async def my_prompt(context: str) -> str:
@@ -2073,11 +2078,9 @@ from fastmcp import FastMCP, Context
 
 mcp = FastMCP("authenticated-server")
 
+
 @mcp.tool
-async def protected_tool(
-    param: str,
-    context: Context
-) -> dict:
+async def protected_tool(param: str, context: Context) -> dict:
     """Protected tool requiring authentication."""
     # Get user from context
     user = context.user
@@ -2095,34 +2098,23 @@ async def protected_tool(
 
 ```python
 @mcp.tool
-async def create_entity(
-    name: str,
-    description: str,
-    context: Context
-) -> dict:
+async def create_entity(name: str, description: str, context: Context) -> dict:
     """Create a new entity."""
     # Get user context
     user_id = context.user.id
     workspace_id = context.workspace_id
 
     # Create entity via service
-    entity = await entity_service.create(
-        name=name,
-        description=description,
-        user_id=user_id,
-        workspace_id=workspace_id
-    )
+    entity = await entity_service.create(name=name, description=description, user_id=user_id, workspace_id=workspace_id)
 
-    return {
-        "success": True,
-        "entity": entity.model_dump()
-    }
+    return {"success": True, "entity": entity.model_dump()}
 ```
 
 ### MCP Error Handling
 
 ```python
 from fastmcp import FastMCP, MCPError
+
 
 @mcp.tool
 async def risky_tool(param: str) -> dict:
@@ -2158,17 +2150,12 @@ def select_model(task_type: str, context_size: int) -> str:
     else:
         return "claude-sonnet-4"  # Default
 
+
 # Explicit model selection
-async def analyze_with_model(
-    content: str,
-    model: str = "auto"
-) -> dict:
+async def analyze_with_model(content: str, model: str = "auto") -> dict:
     """Analyze content with specified model."""
     if model == "auto":
-        model = select_model(
-            task_type="analysis",
-            context_size=len(content)
-        )
+        model = select_model(task_type="analysis", context_size=len(content))
 
     return await call_model(model, content)
 ```
@@ -2176,24 +2163,14 @@ async def analyze_with_model(
 ### Consensus Pattern
 
 ```python
-async def get_consensus(
-    prompt: str,
-    models: list[str] = ["claude-sonnet-4", "gemini-2.5-pro"]
-) -> dict:
+async def get_consensus(prompt: str, models: list[str] = ["claude-sonnet-4", "gemini-2.5-pro"]) -> dict:
     """Get consensus from multiple models."""
-    responses = await asyncio.gather(*[
-        call_model(model, prompt)
-        for model in models
-    ])
+    responses = await asyncio.gather(*[call_model(model, prompt) for model in models])
 
     # Synthesize responses
     consensus = synthesize_responses(responses)
 
-    return {
-        "consensus": consensus,
-        "individual_responses": responses,
-        "models_used": models
-    }
+    return {"consensus": consensus, "individual_responses": responses, "models_used": models}
 ```
 
 ### Context Management
@@ -2227,16 +2204,10 @@ class ConversationContext:
 
 ```python
 # Code review workflow
-async def code_review_workflow(
-    files: list[str],
-    models: list[str] = ["claude-sonnet-4", "gemini-2.5-pro"]
-) -> dict:
+async def code_review_workflow(files: list[str], models: list[str] = ["claude-sonnet-4", "gemini-2.5-pro"]) -> dict:
     """Multi-model code review workflow."""
     # Step 1: Parallel analysis
-    analyses = await asyncio.gather(*[
-        analyze_code(files, model)
-        for model in models
-    ])
+    analyses = await asyncio.gather(*[analyze_code(files, model) for model in models])
 
     # Step 2: Synthesize findings
     synthesis = await synthesize_findings(analyses)
@@ -2247,29 +2218,18 @@ async def code_review_workflow(
     # Step 4: Generate action plan
     plan = await generate_action_plan(prioritized)
 
-    return {
-        "analyses": analyses,
-        "synthesis": synthesis,
-        "prioritized_issues": prioritized,
-        "action_plan": plan
-    }
+    return {"analyses": analyses, "synthesis": synthesis, "prioritized_issues": prioritized, "action_plan": plan}
+
 
 # Debugging workflow
-async def debug_workflow(
-    error: str,
-    context: str
-) -> dict:
+async def debug_workflow(error: str, context: str) -> dict:
     """Multi-model debugging workflow."""
     # Use different models for different aspects
     root_cause = await call_model("o3", f"Analyze root cause: {error}\n{context}")
     patterns = await call_model("gemini-flash", f"Check common patterns: {error}")
     solution = await call_model("claude-sonnet-4", f"Propose solution: {error}\n{root_cause}")
 
-    return {
-        "root_cause": root_cause,
-        "patterns": patterns,
-        "solution": solution
-    }
+    return {"root_cause": root_cause, "patterns": patterns, "solution": solution}
 ```
 
 ---
@@ -2366,6 +2326,7 @@ from supabase import create_client, Client
 from typing import Optional
 import os
 
+
 class SupabaseAdapter:
     """Adapter for Supabase database operations."""
 
@@ -2386,13 +2347,7 @@ class SupabaseAdapter:
         result = self.client.table(table).select("*").eq("id", id).execute()
         return result.data[0] if result.data else None
 
-    async def list_all(
-        self,
-        table: str,
-        filters: dict = None,
-        limit: int = 100,
-        offset: int = 0
-    ) -> list[dict]:
+    async def list_all(self, table: str, filters: dict = None, limit: int = 100, offset: int = 0) -> list[dict]:
         """List records with optional filters."""
         query = self.client.table(table).select("*")
 
@@ -2525,6 +2480,7 @@ class QueryBuilder:
         result = query.execute()
         return result.count
 
+
 # Usage
 async def get_user_entities(user_id: str) -> list[dict]:
     return await (
@@ -2542,6 +2498,7 @@ async def get_user_entities(user_id: str) -> list[dict]:
 
 ```python
 from contextlib import asynccontextmanager
+
 
 class TransactionManager:
     """Manage database transactions."""
@@ -2571,11 +2528,9 @@ class TransactionManager:
         finally:
             self._operations.clear()
 
+
 # Usage
-async def create_entity_with_relationships(
-    entity_data: dict,
-    relationships: list[dict]
-) -> dict:
+async def create_entity_with_relationships(entity_data: dict, relationships: list[dict]) -> dict:
     tx = TransactionManager(adapter)
 
     async with tx.transaction():
@@ -2662,22 +2617,28 @@ from uuid import UUID
 
 router = APIRouter(prefix="/v1/entities", tags=["entities"])
 
+
 # Request/Response Models
 class EntityCreate(BaseModel):
     """Create entity request."""
+
     name: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = Field(None, max_length=2000)
     entity_type: str = Field("generic", pattern="^[a-z_]+$")
     metadata: dict = Field(default_factory=dict)
 
+
 class EntityUpdate(BaseModel):
     """Update entity request."""
+
     name: Optional[str] = Field(None, min_length=1, max_length=255)
     description: Optional[str] = Field(None, max_length=2000)
     metadata: Optional[dict] = None
 
+
 class EntityResponse(BaseModel):
     """Entity response."""
+
     id: UUID
     workspace_id: UUID
     name: str
@@ -2687,13 +2648,16 @@ class EntityResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+
 class EntityListResponse(BaseModel):
     """Paginated entity list response."""
+
     items: list[EntityResponse]
     total: int
     page: int
     page_size: int
     has_more: bool
+
 
 # Endpoints
 @router.post("", response_model=EntityResponse, status_code=201)
@@ -2701,27 +2665,25 @@ async def create_entity(
     data: EntityCreate,
     workspace_id: UUID = Query(..., description="Workspace ID"),
     user: User = Depends(get_current_user),
-    service: EntityService = Depends(get_entity_service)
+    service: EntityService = Depends(get_entity_service),
 ) -> EntityResponse:
     """Create a new entity."""
-    entity = await service.create(
-        workspace_id=workspace_id,
-        user_id=user.id,
-        data=data
-    )
+    entity = await service.create(workspace_id=workspace_id, user_id=user.id, data=data)
     return EntityResponse.model_validate(entity)
+
 
 @router.get("/{entity_id}", response_model=EntityResponse)
 async def get_entity(
     entity_id: UUID = Path(..., description="Entity ID"),
     user: User = Depends(get_current_user),
-    service: EntityService = Depends(get_entity_service)
+    service: EntityService = Depends(get_entity_service),
 ) -> EntityResponse:
     """Get an entity by ID."""
     entity = await service.get(entity_id, user_id=user.id)
     if not entity:
         raise HTTPException(status_code=404, detail="Entity not found")
     return EntityResponse.model_validate(entity)
+
 
 @router.get("", response_model=EntityListResponse)
 async def list_entities(
@@ -2731,7 +2693,7 @@ async def list_entities(
     page: int = Query(1, ge=1, description="Page number"),
     page_size: int = Query(20, ge=1, le=100, description="Items per page"),
     user: User = Depends(get_current_user),
-    service: EntityService = Depends(get_entity_service)
+    service: EntityService = Depends(get_entity_service),
 ) -> EntityListResponse:
     """List entities with pagination and filters."""
     result = await service.list(
@@ -2740,38 +2702,36 @@ async def list_entities(
         entity_type=entity_type,
         search=search,
         page=page,
-        page_size=page_size
+        page_size=page_size,
     )
     return EntityListResponse(
         items=[EntityResponse.model_validate(e) for e in result.items],
         total=result.total,
         page=page,
         page_size=page_size,
-        has_more=result.total > page * page_size
+        has_more=result.total > page * page_size,
     )
+
 
 @router.patch("/{entity_id}", response_model=EntityResponse)
 async def update_entity(
     entity_id: UUID = Path(..., description="Entity ID"),
     data: EntityUpdate = ...,
     user: User = Depends(get_current_user),
-    service: EntityService = Depends(get_entity_service)
+    service: EntityService = Depends(get_entity_service),
 ) -> EntityResponse:
     """Update an entity."""
-    entity = await service.update(
-        entity_id=entity_id,
-        user_id=user.id,
-        data=data
-    )
+    entity = await service.update(entity_id=entity_id, user_id=user.id, data=data)
     if not entity:
         raise HTTPException(status_code=404, detail="Entity not found")
     return EntityResponse.model_validate(entity)
+
 
 @router.delete("/{entity_id}", status_code=204)
 async def delete_entity(
     entity_id: UUID = Path(..., description="Entity ID"),
     user: User = Depends(get_current_user),
-    service: EntityService = Depends(get_entity_service)
+    service: EntityService = Depends(get_entity_service),
 ) -> None:
     """Delete an entity (soft delete)."""
     success = await service.delete(entity_id=entity_id, user_id=user.id)
@@ -2787,16 +2747,20 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import Optional, Any
 
+
 class ErrorResponse(BaseModel):
     """Standard error response."""
+
     success: bool = False
     error: str
     error_code: str
     details: Optional[dict[str, Any]] = None
     request_id: Optional[str] = None
 
+
 class ErrorCodes:
     """Standard error codes."""
+
     VALIDATION_ERROR = "VALIDATION_ERROR"
     NOT_FOUND = "NOT_FOUND"
     PERMISSION_DENIED = "PERMISSION_DENIED"
@@ -2807,39 +2771,37 @@ class ErrorCodes:
     RESOURCE_CONFLICT = "RESOURCE_CONFLICT"
     SERVICE_UNAVAILABLE = "SERVICE_UNAVAILABLE"
 
+
 # Error handlers
 @app.exception_handler(ValidationError)
 async def validation_error_handler(request: Request, exc: ValidationError):
     return JSONResponse(
         status_code=400,
         content=ErrorResponse(
-            error=str(exc),
-            error_code=ErrorCodes.VALIDATION_ERROR,
-            request_id=request.state.request_id
-        ).model_dump()
+            error=str(exc), error_code=ErrorCodes.VALIDATION_ERROR, request_id=request.state.request_id
+        ).model_dump(),
     )
+
 
 @app.exception_handler(NotFoundError)
 async def not_found_handler(request: Request, exc: NotFoundError):
     return JSONResponse(
         status_code=404,
         content=ErrorResponse(
-            error=str(exc),
-            error_code=ErrorCodes.NOT_FOUND,
-            request_id=request.state.request_id
-        ).model_dump()
+            error=str(exc), error_code=ErrorCodes.NOT_FOUND, request_id=request.state.request_id
+        ).model_dump(),
     )
+
 
 @app.exception_handler(PermissionDeniedError)
 async def permission_denied_handler(request: Request, exc: PermissionDeniedError):
     return JSONResponse(
         status_code=403,
         content=ErrorResponse(
-            error=str(exc),
-            error_code=ErrorCodes.PERMISSION_DENIED,
-            request_id=request.state.request_id
-        ).model_dump()
+            error=str(exc), error_code=ErrorCodes.PERMISSION_DENIED, request_id=request.state.request_id
+        ).model_dump(),
     )
+
 
 @app.exception_handler(RateLimitError)
 async def rate_limit_handler(request: Request, exc: RateLimitError):
@@ -2849,9 +2811,9 @@ async def rate_limit_handler(request: Request, exc: RateLimitError):
             error="Rate limit exceeded",
             error_code=ErrorCodes.RATE_LIMITED,
             details={"retry_after": exc.retry_after},
-            request_id=request.state.request_id
+            request_id=request.state.request_id,
         ).model_dump(),
-        headers={"Retry-After": str(exc.retry_after)}
+        headers={"Retry-After": str(exc.retry_after)},
     )
 ```
 
@@ -2864,9 +2826,11 @@ from dataclasses import dataclass
 
 T = TypeVar("T")
 
+
 @dataclass
 class PaginationParams:
     """Pagination parameters."""
+
     page: int = 1
     page_size: int = 20
     sort_by: Optional[str] = None
@@ -2880,8 +2844,10 @@ class PaginationParams:
     def limit(self) -> int:
         return self.page_size
 
+
 class PaginatedResponse(BaseModel, Generic[T]):
     """Generic paginated response."""
+
     items: list[T]
     total: int
     page: int
@@ -2891,12 +2857,7 @@ class PaginatedResponse(BaseModel, Generic[T]):
     has_prev: bool
 
     @classmethod
-    def create(
-        cls,
-        items: list[T],
-        total: int,
-        params: PaginationParams
-    ) -> "PaginatedResponse[T]":
+    def create(cls, items: list[T], total: int, params: PaginationParams) -> "PaginatedResponse[T]":
         total_pages = (total + params.page_size - 1) // params.page_size
         return cls(
             items=items,
@@ -2905,34 +2866,27 @@ class PaginatedResponse(BaseModel, Generic[T]):
             page_size=params.page_size,
             total_pages=total_pages,
             has_next=params.page < total_pages,
-            has_prev=params.page > 1
+            has_prev=params.page > 1,
         )
+
 
 # Dependency for pagination
 def get_pagination_params(
     page: int = Query(1, ge=1, description="Page number"),
     page_size: int = Query(20, ge=1, le=100, description="Items per page"),
     sort_by: Optional[str] = Query(None, description="Sort field"),
-    sort_order: str = Query("asc", pattern="^(asc|desc)$", description="Sort order")
+    sort_order: str = Query("asc", pattern="^(asc|desc)$", description="Sort order"),
 ) -> PaginationParams:
-    return PaginationParams(
-        page=page,
-        page_size=page_size,
-        sort_by=sort_by,
-        sort_order=sort_order
-    )
+    return PaginationParams(page=page, page_size=page_size, sort_by=sort_by, sort_order=sort_order)
+
 
 # Usage in endpoint
 @router.get("", response_model=PaginatedResponse[EntityResponse])
 async def list_entities(
-    pagination: PaginationParams = Depends(get_pagination_params),
-    service: EntityService = Depends(get_entity_service)
+    pagination: PaginationParams = Depends(get_pagination_params), service: EntityService = Depends(get_entity_service)
 ):
     items, total = await service.list_paginated(
-        offset=pagination.offset,
-        limit=pagination.limit,
-        sort_by=pagination.sort_by,
-        sort_order=pagination.sort_order
+        offset=pagination.offset, limit=pagination.limit, sort_by=pagination.sort_by, sort_order=pagination.sort_order
     )
     return PaginatedResponse.create(items, total, pagination)
 ```
@@ -2944,8 +2898,10 @@ from pydantic import BaseModel
 from typing import Optional, Any
 from enum import Enum
 
+
 class FilterOperator(str, Enum):
     """Filter operators."""
+
     EQ = "eq"
     NE = "ne"
     GT = "gt"
@@ -2957,16 +2913,21 @@ class FilterOperator(str, Enum):
     IS_NULL = "is_null"
     IS_NOT_NULL = "is_not_null"
 
+
 class Filter(BaseModel):
     """Single filter condition."""
+
     field: str
     operator: FilterOperator
     value: Any
 
+
 class FilterSet(BaseModel):
     """Collection of filters."""
+
     filters: list[Filter] = []
     logic: str = "and"  # "and" or "or"
+
 
 def parse_filters(filter_string: Optional[str]) -> FilterSet:
     """Parse filter string into FilterSet.
@@ -2980,12 +2941,9 @@ def parse_filters(filter_string: Optional[str]) -> FilterSet:
     filters = []
     for part in filter_string.split(","):
         field, op, value = part.split(":", 2)
-        filters.append(Filter(
-            field=field,
-            operator=FilterOperator(op),
-            value=value
-        ))
+        filters.append(Filter(field=field, operator=FilterOperator(op), value=value))
     return FilterSet(filters=filters)
+
 
 def apply_filters(query, filters: FilterSet):
     """Apply filters to query builder."""
@@ -3023,6 +2981,7 @@ def apply_filters(query, filters: FilterSet):
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
+
 @asynccontextmanager
 async def db_session() -> AsyncGenerator[Database, None]:
     """Provide database session with cleanup."""
@@ -3032,11 +2991,13 @@ async def db_session() -> AsyncGenerator[Database, None]:
     finally:
         await session.disconnect()
 
+
 @asynccontextmanager
 async def http_client() -> AsyncGenerator[httpx.AsyncClient, None]:
     """Provide HTTP client with cleanup."""
     async with httpx.AsyncClient(timeout=30.0) as client:
         yield client
+
 
 # Usage
 async def fetch_and_store(url: str):
@@ -3050,16 +3011,12 @@ async def fetch_and_store(url: str):
 ```python
 from typing import AsyncIterator
 
-async def stream_large_dataset(
-    query: str,
-    batch_size: int = 100
-) -> AsyncIterator[dict]:
+
+async def stream_large_dataset(query: str, batch_size: int = 100) -> AsyncIterator[dict]:
     """Stream large dataset in batches."""
     offset = 0
     while True:
-        batch = await db.fetch_all(
-            f"{query} LIMIT {batch_size} OFFSET {offset}"
-        )
+        batch = await db.fetch_all(f"{query} LIMIT {batch_size} OFFSET {offset}")
         if not batch:
             break
 
@@ -3067,6 +3024,7 @@ async def stream_large_dataset(
             yield dict(record)
 
         offset += batch_size
+
 
 # Usage
 async def process_all_entities():
@@ -3082,10 +3040,8 @@ from typing import TypeVar, Callable, Awaitable
 
 T = TypeVar("T")
 
-async def gather_with_limit(
-    tasks: list[Callable[[], Awaitable[T]]],
-    limit: int = 10
-) -> list[T]:
+
+async def gather_with_limit(tasks: list[Callable[[], Awaitable[T]]], limit: int = 10) -> list[T]:
     """Execute tasks concurrently with concurrency limit."""
     semaphore = asyncio.Semaphore(limit)
 
@@ -3095,16 +3051,11 @@ async def gather_with_limit(
 
     return await asyncio.gather(*[limited_task(t) for t in tasks])
 
-async def map_async(
-    func: Callable[[T], Awaitable[any]],
-    items: list[T],
-    concurrency: int = 10
-) -> list[any]:
+
+async def map_async(func: Callable[[T], Awaitable[any]], items: list[T], concurrency: int = 10) -> list[any]:
     """Map function over items with concurrency limit."""
-    return await gather_with_limit(
-        [lambda i=i: func(i) for i in items],
-        limit=concurrency
-    )
+    return await gather_with_limit([lambda i=i: func(i) for i in items], limit=concurrency)
+
 
 # Usage
 async def enrich_entities(entities: list[Entity]) -> list[Entity]:
@@ -3122,13 +3073,15 @@ import asyncio
 from functools import wraps
 from typing import Type
 
+
 def retry_async(
     max_retries: int = 3,
     delay: float = 1.0,
     backoff: float = 2.0,
-    exceptions: tuple[Type[Exception], ...] = (Exception,)
+    exceptions: tuple[Type[Exception], ...] = (Exception,),
 ):
     """Decorator for async retry with exponential backoff."""
+
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
@@ -3147,7 +3100,9 @@ def retry_async(
             raise last_exception
 
         return wrapper
+
     return decorator
+
 
 # Usage
 @retry_async(max_retries=3, delay=1.0, exceptions=(httpx.RequestError,))
@@ -3164,20 +3119,22 @@ async def fetch_external_api(url: str) -> dict:
 import asyncio
 from functools import wraps
 
+
 def timeout_async(seconds: float):
     """Decorator for async timeout."""
+
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
             try:
-                return await asyncio.wait_for(
-                    func(*args, **kwargs),
-                    timeout=seconds
-                )
+                return await asyncio.wait_for(func(*args, **kwargs), timeout=seconds)
             except asyncio.TimeoutError:
                 raise TimeoutError(f"{func.__name__} timed out after {seconds}s")
+
         return wrapper
+
     return decorator
+
 
 # Usage
 @timeout_async(30.0)
@@ -3196,6 +3153,7 @@ from typing import Protocol
 from abc import abstractmethod
 import numpy as np
 
+
 class EmbeddingProvider(Protocol):
     """Protocol for embedding providers."""
 
@@ -3209,6 +3167,7 @@ class EmbeddingProvider(Protocol):
         """Generate embeddings for multiple texts."""
         ...
 
+
 class OpenAIEmbeddingProvider:
     """OpenAI embedding provider."""
 
@@ -3221,7 +3180,7 @@ class OpenAIEmbeddingProvider:
             response = await client.post(
                 "https://api.openai.com/v1/embeddings",
                 headers={"Authorization": f"Bearer {self.api_key}"},
-                json={"input": text, "model": self.model}
+                json={"input": text, "model": self.model},
             )
             return response.json()["data"][0]["embedding"]
 
@@ -3230,18 +3189,15 @@ class OpenAIEmbeddingProvider:
             response = await client.post(
                 "https://api.openai.com/v1/embeddings",
                 headers={"Authorization": f"Bearer {self.api_key}"},
-                json={"input": texts, "model": self.model}
+                json={"input": texts, "model": self.model},
             )
             return [d["embedding"] for d in response.json()["data"]]
+
 
 class EmbeddingService:
     """Service for managing embeddings."""
 
-    def __init__(
-        self,
-        provider: EmbeddingProvider,
-        cache: Optional[EmbeddingCache] = None
-    ):
+    def __init__(self, provider: EmbeddingProvider, cache: Optional[EmbeddingCache] = None):
         self.provider = provider
         self.cache = cache
 
@@ -3260,23 +3216,24 @@ class EmbeddingService:
         return embedding
 
     async def similarity_search(
-        self,
-        query: str,
-        collection: str,
-        limit: int = 10,
-        threshold: float = 0.7
+        self, query: str, collection: str, limit: int = 10, threshold: float = 0.7
     ) -> list[dict]:
         """Search for similar items."""
         query_embedding = await self.get_embedding(query)
 
         # Use pgvector for similarity search
-        results = await db.fetch_all(f"""
+        results = await db.fetch_all(
+            f"""
             SELECT *, 1 - (embedding <=> $1::vector) as similarity
             FROM {collection}
             WHERE 1 - (embedding <=> $1::vector) > $2
             ORDER BY embedding <=> $1::vector
             LIMIT $3
-        """, query_embedding, threshold, limit)
+        """,
+            query_embedding,
+            threshold,
+            limit,
+        )
 
         return [dict(r) for r in results]
 ```
@@ -3291,12 +3248,7 @@ class VectorStore:
         self.adapter = adapter
         self.embedding_service = embedding_service
 
-    async def add_document(
-        self,
-        collection: str,
-        document: dict,
-        text_field: str = "content"
-    ) -> dict:
+    async def add_document(self, collection: str, document: dict, text_field: str = "content") -> dict:
         """Add document with embedding."""
         text = document.get(text_field, "")
         embedding = await self.embedding_service.get_embedding(text)
@@ -3304,12 +3256,7 @@ class VectorStore:
         document["embedding"] = embedding
         return await self.adapter.create(collection, document)
 
-    async def add_documents(
-        self,
-        collection: str,
-        documents: list[dict],
-        text_field: str = "content"
-    ) -> list[dict]:
+    async def add_documents(self, collection: str, documents: list[dict], text_field: str = "content") -> list[dict]:
         """Add multiple documents with embeddings."""
         texts = [d.get(text_field, "") for d in documents]
         embeddings = await self.embedding_service.provider.embed_batch(texts)
@@ -3323,13 +3270,7 @@ class VectorStore:
             results.append(result)
         return results
 
-    async def search(
-        self,
-        collection: str,
-        query: str,
-        limit: int = 10,
-        filters: dict = None
-    ) -> list[dict]:
+    async def search(self, collection: str, query: str, limit: int = 10, filters: dict = None) -> list[dict]:
         """Semantic search."""
         query_embedding = await self.embedding_service.get_embedding(query)
 
@@ -3349,48 +3290,35 @@ class VectorStore:
         sql += f" ORDER BY embedding <=> $1::vector LIMIT ${len(params) + 1}"
         params.append(limit)
 
-        results = await self.adapter.client.rpc("vector_search", {
-            "query_embedding": query_embedding,
-            "match_count": limit
-        }).execute()
+        results = await self.adapter.client.rpc(
+            "vector_search", {"query_embedding": query_embedding, "match_count": limit}
+        ).execute()
 
         return results.data
 
     async def hybrid_search(
-        self,
-        collection: str,
-        query: str,
-        limit: int = 10,
-        keyword_weight: float = 0.3,
-        semantic_weight: float = 0.7
+        self, collection: str, query: str, limit: int = 10, keyword_weight: float = 0.3, semantic_weight: float = 0.7
     ) -> list[dict]:
         """Hybrid search combining keyword and semantic."""
         # Semantic search
         semantic_results = await self.search(collection, query, limit * 2)
 
         # Full-text search
-        keyword_results = await self.adapter.client.table(collection).select("*").textSearch(
-            "content",
-            query,
-            type="websearch"
-        ).limit(limit * 2).execute()
+        keyword_results = (
+            await self.adapter.client.table(collection)
+            .select("*")
+            .textSearch("content", query, type="websearch")
+            .limit(limit * 2)
+            .execute()
+        )
 
         # Combine and re-rank
-        combined = self._combine_results(
-            semantic_results,
-            keyword_results.data,
-            keyword_weight,
-            semantic_weight
-        )
+        combined = self._combine_results(semantic_results, keyword_results.data, keyword_weight, semantic_weight)
 
         return combined[:limit]
 
     def _combine_results(
-        self,
-        semantic: list[dict],
-        keyword: list[dict],
-        kw_weight: float,
-        sem_weight: float
+        self, semantic: list[dict], keyword: list[dict], kw_weight: float, sem_weight: float
     ) -> list[dict]:
         """Combine and rank results."""
         scores = {}
@@ -3419,6 +3347,7 @@ from dataclasses import dataclass
 from typing import Callable, Awaitable, Any, Optional
 from enum import Enum
 
+
 class StepStatus(str, Enum):
     PENDING = "pending"
     RUNNING = "running"
@@ -3426,9 +3355,11 @@ class StepStatus(str, Enum):
     FAILED = "failed"
     SKIPPED = "skipped"
 
+
 @dataclass
 class WorkflowStep:
     """Single step in a workflow."""
+
     name: str
     handler: Callable[..., Awaitable[Any]]
     depends_on: list[str] = None
@@ -3436,14 +3367,17 @@ class WorkflowStep:
     timeout: float = 300.0
     condition: Optional[Callable[[dict], bool]] = None
 
+
 @dataclass
 class WorkflowResult:
     """Result of workflow execution."""
+
     success: bool
     steps: dict[str, StepStatus]
     outputs: dict[str, Any]
     errors: dict[str, str]
     duration: float
+
 
 class Workflow:
     """Workflow orchestrator."""
@@ -3458,9 +3392,10 @@ class Workflow:
         depends_on: list[str] = None,
         retry_count: int = 3,
         timeout: float = 300.0,
-        condition: Optional[Callable[[dict], bool]] = None
+        condition: Optional[Callable[[dict], bool]] = None,
     ):
         """Decorator to register workflow step."""
+
         def decorator(func: Callable[..., Awaitable[Any]]):
             self.steps[name] = WorkflowStep(
                 name=name,
@@ -3468,14 +3403,16 @@ class Workflow:
                 depends_on=depends_on or [],
                 retry_count=retry_count,
                 timeout=timeout,
-                condition=condition
+                condition=condition,
             )
             return func
+
         return decorator
 
     async def execute(self, context: dict = None) -> WorkflowResult:
         """Execute the workflow."""
         import time
+
         start_time = time.time()
 
         context = context or {}
@@ -3490,10 +3427,7 @@ class Workflow:
             step = self.steps[step_name]
 
             # Check dependencies
-            deps_completed = all(
-                statuses[dep] == StepStatus.COMPLETED
-                for dep in step.depends_on
-            )
+            deps_completed = all(statuses[dep] == StepStatus.COMPLETED for dep in step.depends_on)
             if not deps_completed:
                 statuses[step_name] = StepStatus.SKIPPED
                 continue
@@ -3506,10 +3440,7 @@ class Workflow:
             # Execute step
             statuses[step_name] = StepStatus.RUNNING
             try:
-                result = await asyncio.wait_for(
-                    self._execute_with_retry(step, context, outputs),
-                    timeout=step.timeout
-                )
+                result = await asyncio.wait_for(self._execute_with_retry(step, context, outputs), timeout=step.timeout)
                 outputs[step_name] = result
                 statuses[step_name] = StepStatus.COMPLETED
             except Exception as e:
@@ -3519,20 +3450,9 @@ class Workflow:
         duration = time.time() - start_time
         success = all(s in (StepStatus.COMPLETED, StepStatus.SKIPPED) for s in statuses.values())
 
-        return WorkflowResult(
-            success=success,
-            steps=statuses,
-            outputs=outputs,
-            errors=errors,
-            duration=duration
-        )
+        return WorkflowResult(success=success, steps=statuses, outputs=outputs, errors=errors, duration=duration)
 
-    async def _execute_with_retry(
-        self,
-        step: WorkflowStep,
-        context: dict,
-        outputs: dict
-    ) -> Any:
+    async def _execute_with_retry(self, step: WorkflowStep, context: dict, outputs: dict) -> Any:
         """Execute step with retries."""
         last_error = None
         for attempt in range(step.retry_count):
@@ -3541,7 +3461,7 @@ class Workflow:
             except Exception as e:
                 last_error = e
                 if attempt < step.retry_count - 1:
-                    await asyncio.sleep(2 ** attempt)
+                    await asyncio.sleep(2**attempt)
         raise last_error
 
     def _get_execution_order(self) -> list[str]:
@@ -3562,13 +3482,16 @@ class Workflow:
 
         return order
 
+
 # Usage
 workflow = Workflow("data_processing")
+
 
 @workflow.step("fetch_data")
 async def fetch_data(context: dict, outputs: dict) -> dict:
     """Fetch data from source."""
     return await fetch_from_api(context["source_url"])
+
 
 @workflow.step("transform_data", depends_on=["fetch_data"])
 async def transform_data(context: dict, outputs: dict) -> dict:
@@ -3576,11 +3499,13 @@ async def transform_data(context: dict, outputs: dict) -> dict:
     data = outputs["fetch_data"]
     return transform(data)
 
+
 @workflow.step("store_data", depends_on=["transform_data"])
 async def store_data(context: dict, outputs: dict) -> dict:
     """Store transformed data."""
     data = outputs["transform_data"]
     return await store_in_db(data)
+
 
 # Execute
 result = await workflow.execute({"source_url": "https://api.example.com/data"})

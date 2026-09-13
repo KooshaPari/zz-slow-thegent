@@ -211,6 +211,7 @@ from pathlib import Path
 
 CODEX_NOTIFY_SCRIPT = Path(__file__).parent / "codex_notify_handler.sh"
 
+
 def setup_codex_notify():
     """Configure Codex to invoke our handler for lifecycle events."""
     codex_config = Path.home() / ".codex" / "config.toml"
@@ -224,6 +225,7 @@ def setup_codex_notify():
         content += f'\nnotify = ["{handler}"]\n'
         codex_config.write_text(content)
 
+
 def handle_notify(payload: dict):
     """Process Codex notification events."""
     event = payload.get("event")
@@ -235,6 +237,7 @@ def handle_notify(payload: dict):
         _run_task_complete_handlers(payload)
     elif event == "error":
         _run_error_handlers(payload)
+
 
 def _run_session_end_handlers(payload: dict):
     """Execute session end logic (harvest, quality, queue)."""
@@ -325,6 +328,7 @@ import threading
 from queue import Queue
 from typing import Optional
 
+
 class CodexWrapper:
     def __init__(self):
         self.queue: Queue[str] = Queue()
@@ -339,7 +343,7 @@ class CodexWrapper:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            bufsize=1
+            bufsize=1,
         )
         # Start output reader threads
         threading.Thread(target=self._read_stdout, daemon=True).start()

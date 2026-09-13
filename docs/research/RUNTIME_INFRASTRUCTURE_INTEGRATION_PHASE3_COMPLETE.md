@@ -64,6 +64,7 @@ Phase 3 sets up CI/CD to run leak detection tests automatically:
 ```python
 def test_subprocess_manager_no_memory_leak(self):
     import tracemalloc
+
     tracemalloc.start()
     snapshot1 = tracemalloc.take_snapshot()
     # ... run code ...

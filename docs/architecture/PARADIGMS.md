@@ -100,8 +100,7 @@ class PluginRegistry:
 ```python
 # Extension hooks
 @extension_point("pre_process")
-def my_processor(data):
-    ...
+def my_processor(data): ...
 ```
 
 ### 4. Formalize Bounded Contexts

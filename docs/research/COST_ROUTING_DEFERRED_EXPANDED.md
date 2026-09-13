@@ -174,6 +174,7 @@ When unblocked, the cost routing implementation will provide:
 from thegent.governance.costs import CostTracker
 from thegent.planning.selector import ObjectiveSelector
 
+
 class CostRouter:
     """Cost-aware routing for model selection."""
 
@@ -181,21 +182,13 @@ class CostRouter:
         self.cost_tracker = cost_tracker
         self.selector = ObjectiveSelector()
 
-    def select_model(
-        self,
-        requirements: dict,
-        budget: float,
-        objective: str = "cost_quality"
-    ) -> str:
+    def select_model(self, requirements: dict, budget: float, objective: str = "cost_quality") -> str:
         """Select model based on cost and quality requirements."""
         # Get available models with cost estimates
         models = self._get_available_models(requirements)
 
         # Filter by budget
-        affordable_models = [
-            m for m in models
-            if m["estimated_cost"] <= budget
-        ]
+        affordable_models = [m for m in models if m["estimated_cost"] <= budget]
 
         if not affordable_models:
             raise BudgetExceededError(f"No models within budget: {budget}")

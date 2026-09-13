@@ -202,16 +202,16 @@ import json
 from pathlib import Path
 
 # Check specific records
-conn = sqlite3.connect('target.db')
+conn = sqlite3.connect("target.db")
 cursor = conn.cursor()
 
 # Sample verification
-cursor.execute('SELECT * FROM table LIMIT 10')
+cursor.execute("SELECT * FROM table LIMIT 10")
 for row in cursor.fetchall():
     # Verify fields exist and have expected types
-    assert row['id'] is not None
-    assert isinstance(row['timestamp'], (int, float))
-    assert row['content'] is not None
+    assert row["id"] is not None
+    assert isinstance(row["timestamp"], (int, float))
+    assert row["content"] is not None
 ```
 
 #### Step 4.3: Run Test Suite
@@ -379,8 +379,8 @@ SELECT COUNT(*) FROM target WHERE condition = 'expected';
 **Diagnosis:**
 ```python
 # Compare samples
-source_record = source.get('record_id')
-target_record = target.get('record_id')
+source_record = source.get("record_id")
+target_record = target.get("record_id")
 
 if source_record != target_record:
     print(f"Mismatch: {source_record} vs {target_record}")
@@ -452,6 +452,7 @@ python3 scripts/verify_migration.py
 ```python
 # Update application config
 from data_storage import SQLiteMemoryStorage
+
 storage = SQLiteMemoryStorage()
 ```
 

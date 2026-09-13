@@ -326,6 +326,7 @@ def test_cli_run_basic():
 ```python
 from pydantic_settings import BaseSettings
 
+
 class Settings(BaseSettings):
     api_key: str = ""
 
@@ -364,6 +365,7 @@ bandit --config .bandit.yaml --recursive src/
 ```python
 import pytest
 import time
+
 
 @pytest.mark.performance
 def test_hook_execution_time():

@@ -118,10 +118,10 @@ The system automatically detects which Serena backend is available:
 
 ```python
 # Config options (THGENT_* env vars):
-THGENT_SERENA_BACKEND=auto         # auto-detect (default)
-THGENT_SERENA_BACKEND=jetbrains     # Force JetBrains plugin
-THGENT_SERENA_BACKEND=lsp           # Force LSP backend
-THGENT_SERENA_JETBRAINS_PORT=8765   # Plugin MCP server port
+THGENT_SERENA_BACKEND = auto  # auto-detect (default)
+THGENT_SERENA_BACKEND = jetbrains  # Force JetBrains plugin
+THGENT_SERENA_BACKEND = lsp  # Force LSP backend
+THGENT_SERENA_JETBRAINS_PORT = 8765  # Plugin MCP server port
 ```
 
 ## Usage

@@ -27,17 +27,13 @@ router = Router(
     cost_tracking={
         "tags": {
             "team-ml": {"max_budget": 100.00, "budget_duration": "monthly"},
-            "project-x": {"max_budget": 50.00, "budget_duration": "weekly"}
+            "project-x": {"max_budget": 50.00, "budget_duration": "weekly"},
         }
-    }
+    },
 )
 
 # Tag each call
-response = router.completion(
-    model="claude-3",
-    messages=[...],
-    metadata={"tags": ["team-ml", "project-x"]}
-)
+response = router.completion(model="claude-3", messages=[...], metadata={"tags": ["team-ml", "project-x"]})
 ```
 
 **Status:** ADOPT NOW (Q1 2026)
@@ -190,20 +186,13 @@ fn thegent_hooks(_py: Python, m: &PyModule) -> PyResult<()> {
 def select_model(task_context):
     complexity = classify_task(task_context)  # simple/medium/complex
 
-    pareto_routing = {
-        "simple": "qwen3-32b",
-        "medium": "claude-sonnet",
-        "complex": "claude-opus"
-    }
+    pareto_routing = {"simple": "qwen3-32b", "medium": "claude-sonnet", "complex": "claude-opus"}
 
     return pareto_routing[complexity]
 
+
 # Use with LiteLLM
-response = router.completion(
-    model=select_model(task),
-    messages=[...],
-    metadata={"tags": ["pareto-routed"]}
-)
+response = router.completion(model=select_model(task), messages=[...], metadata={"tags": ["pareto-routed"]})
 ```
 
 **Status:** ADOPT IN Q2 2026 (Weeks 3-4)
@@ -282,6 +271,7 @@ fn compute_expensive(data: Vec<i32>) -> i32 {
 ```python
 # Python (transparent)
 from module import compute_expensive
+
 result = compute_expensive([1, 2, 3])  # Calls compiled Rust!
 ```
 

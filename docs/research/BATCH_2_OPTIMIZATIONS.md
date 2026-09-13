@@ -30,13 +30,7 @@ Batch 2 implements three additional fast abstraction layers for JSON schema vali
 ```python
 from thegent.infra import validate_json_schema, is_valid_json_schema
 
-schema = {
-    "type": "object",
-    "properties": {
-        "name": {"type": "string"},
-        "age": {"type": "integer"}
-    }
-}
+schema = {"type": "object", "properties": {"name": {"type": "string"}, "age": {"type": "integer"}}}
 
 data = {"name": "John", "age": 30}
 

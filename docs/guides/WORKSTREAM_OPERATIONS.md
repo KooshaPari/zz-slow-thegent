@@ -20,15 +20,15 @@ so concurrent agents can safely claim and complete items without races.
 ```python
 @dataclass
 class WorkStreamItem:
-    id:        str          # unique slug, e.g. "swarm-fix-macos-sampling"
-    title:     str          # human-readable description
-    source:    str = ""     # origin document
-    priority:  str = "P2"  # P0 through P4
-    depends:   str = "-"   # dash or comma-separated dependency IDs
-    status:    str = "backlog"  # "backlog" | "claimed" | "completed"
-    agent:     str = ""    # agent that claimed/completed (claimed/completed only)
-    timestamp: str = ""    # ISO-8601 when claimed/completed
-    notes:     str = ""    # free-form notes (completed only)
+    id: str  # unique slug, e.g. "swarm-fix-macos-sampling"
+    title: str  # human-readable description
+    source: str = ""  # origin document
+    priority: str = "P2"  # P0 through P4
+    depends: str = "-"  # dash or comma-separated dependency IDs
+    status: str = "backlog"  # "backlog" | "claimed" | "completed"
+    agent: str = ""  # agent that claimed/completed (claimed/completed only)
+    timestamp: str = ""  # ISO-8601 when claimed/completed
+    notes: str = ""  # free-form notes (completed only)
 ```
 
 **Methods:**
@@ -43,8 +43,8 @@ class WorkStreamItem:
 ```python
 @dataclass
 class WorkStreamState:
-    backlog:   list[WorkStreamItem]
-    claimed:   list[WorkStreamItem]
+    backlog: list[WorkStreamItem]
+    claimed: list[WorkStreamItem]
     completed: list[WorkStreamItem]
 ```
 

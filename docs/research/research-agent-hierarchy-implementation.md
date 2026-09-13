@@ -64,24 +64,20 @@ from pathlib import Path
 manager = AgentHierarchyManager(storage_path=Path(".thegent/hierarchy"))
 
 # Register root orchestrator
-manager.register_agent(
-    agent_id="orchestrator-1",
-    parent_id=None,
-    metadata={"role": "orchestrator", "level": 1}
-)
+manager.register_agent(agent_id="orchestrator-1", parent_id=None, metadata={"role": "orchestrator", "level": 1})
 
 # Register team lead
 manager.register_agent(
     agent_id="frontend-lead-1",
     parent_id="orchestrator-1",
-    metadata={"role": "team_lead", "team": "frontend", "level": 2}
+    metadata={"role": "team_lead", "team": "frontend", "level": 2},
 )
 
 # Register specialist
 manager.register_agent(
     agent_id="react-specialist-1",
     parent_id="frontend-lead-1",
-    metadata={"role": "specialist", "expertise": "react", "level": 3}
+    metadata={"role": "specialist", "expertise": "react", "level": 3},
 )
 ```
 
@@ -93,7 +89,7 @@ manager.create_team(
     name="Frontend Team",
     lead_agent_id="frontend-lead-1",
     member_agent_ids=["react-specialist-1", "css-specialist-1"],
-    team_type="functional"
+    team_type="functional",
 )
 ```
 

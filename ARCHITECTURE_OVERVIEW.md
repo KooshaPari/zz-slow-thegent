@@ -456,21 +456,26 @@ thegent exposes tools via MCP so agents can interact with the orchestration laye
 def read_queue_item(queue_id: str) -> QueueItem:
     """Read next item from unified queue"""
 
+
 @mcp_tool("thegent/queue/write")
 def write_queue_item(item: QueueItem) -> str:
     """Write item to queue for processing"""
+
 
 @mcp_tool("thegent/memory/get")
 def get_memory(key: str) -> Any:
     """Retrieve from shared memory store"""
 
+
 @mcp_tool("thegent/memory/set")
 def set_memory(key: str, value: Any, ttl: Optional[int] = None):
     """Store in shared memory with optional TTL"""
 
+
 @mcp_tool("thegent/agent/invoke")
 def invoke_agent(agent: str, prompt: str, timeout: Duration) -> RunResult:
     """Invoke another agent (for swarm coordination)"""
+
 
 @mcp_tool("thegent/exec/stream-subprocess")
 def stream_subprocess(cmd: str, cwd: Path) -> Iterator[str]:
@@ -667,7 +672,7 @@ result = fsm.execute(
     primary_agent="claude",
     fallback_chain=["gemini", "codex"],
     timeout=300,
-    mode=ExecutionMode.SEQUENTIAL_DELEGATION
+    mode=ExecutionMode.SEQUENTIAL_DELEGATION,
 )
 ```
 

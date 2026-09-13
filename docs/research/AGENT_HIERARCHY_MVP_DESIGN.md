@@ -123,25 +123,29 @@ The **Agent Hierarchy MVP** enables lightweight, specialized agents (SmolGents) 
 @dataclass
 class SmolGentTask:
     """Task routed to a SmolGent."""
-    task_id: str                          # Unique task ID
-    smolgent_type: str                    # "code-search", "code-gen", etc.
-    prompt: str                           # Task description
-    context: dict[str, Any]               # Execution context
-    timeout: int = 300                    # Task timeout (seconds)
-    retries: int = 3                      # Retry attempts
-    priority: int = 5                     # 1=highest, 10=lowest
+
+    task_id: str  # Unique task ID
+    smolgent_type: str  # "code-search", "code-gen", etc.
+    prompt: str  # Task description
+    context: dict[str, Any]  # Execution context
+    timeout: int = 300  # Task timeout (seconds)
+    retries: int = 3  # Retry attempts
+    priority: int = 5  # 1=highest, 10=lowest
+
 
 @dataclass
 class SmolGentResult:
     """Result from a SmolGent execution."""
-    task_id: str                          # Original task ID
-    smolgent_type: str                    # Type that executed
+
+    task_id: str  # Original task ID
+    smolgent_type: str  # Type that executed
     status: Literal["success", "failure", "timeout"]
-    output: str                           # Task output
-    metadata: dict[str, Any]              # Execution metadata
-    duration_secs: float                  # Execution time
-    error_msg: str | None = None          # Error if failed
-    try_count: int = 1                    # Number of attempts
+    output: str  # Task output
+    metadata: dict[str, Any]  # Execution metadata
+    duration_secs: float  # Execution time
+    error_msg: str | None = None  # Error if failed
+    try_count: int = 1  # Number of attempts
+
 
 class SmolGentBase(AgentRunner):
     """Base class for all SmolGents."""
@@ -349,6 +353,7 @@ def write_task_atomically(task: SmolGentTask) -> Path:
     tmp_file.replace(final_file)  # Atomic on POSIX
     return final_file
 
+
 def claim_task_atomically(task_id: str) -> SmolGentTask | None:
     """Atomically claim a task from inbox."""
     inbox_file = Path(".mgmt/inbox") / f"{task_id}.new"
@@ -364,6 +369,7 @@ def claim_task_atomically(task_id: str) -> SmolGentTask | None:
     except FileExistsError:
         # Already claimed by another process
         return None
+
 
 def write_result_atomically(result: SmolGentResult) -> Path:
     """Write result to results/ atomically."""
@@ -587,6 +593,7 @@ class CodeGenSmolGent(SmolGentBase):
         if use_subagent := task.context.get("use_subagent", False):
             # Spawn subagent for code generation
             from thegent.cli_impl import run_impl
+
             result = run_impl(
                 agent="free",  # or "claude"
                 prompt=task.prompt,
@@ -616,15 +623,21 @@ class CodeGenSmolGent(SmolGentBase):
 ```python
 class SmolGentError(Exception):
     """Base SmolGent error."""
+
     pass
+
 
 class TransientSmolGentError(SmolGentError):
     """Retryable error (timeout, rate limit, transient crash)."""
+
     pass
+
 
 class PermanentSmolGentError(SmolGentError):
     """Non-retryable error (bad input, unsupported task type)."""
+
     pass
+
 
 def classify_error(error: Exception) -> type[SmolGentError]:
     """Classify error as transient or permanent."""
@@ -640,6 +653,7 @@ def classify_error(error: Exception) -> type[SmolGentError]:
 @dataclass
 class SmolGentResult:
     """Result includes retry metadata."""
+
     task_id: str
     smolgent_type: str
     status: Literal["success", "failure", "timeout"]
@@ -648,6 +662,7 @@ class SmolGentResult:
     duration_secs: float
     error_msg: str | None = None
     try_count: int = 1  # How many times was this attempted?
+
 
 class ManagerRetryLogic:
     """Handles retry for failed tasks."""
@@ -734,6 +749,7 @@ class TeammateManager:
         # NEW: Initialize SmolGent coordinator
         self.smolgent_coordinator = SmolGentCoordinator(settings)
 
+
 # Extend existing AgentRunner interface
 class SmolGentBase(AgentRunner):
     """SmolGents implement AgentRunner interface."""
@@ -748,6 +764,7 @@ class SmolGentBase(AgentRunner):
     ) -> RunResult:
         """SmolGent runs as a normal agent runner."""
         pass
+
 
 # New: coordinator that ties it together
 class SmolGentCoordinator:
@@ -785,30 +802,12 @@ thegent teams delegate ml-team "Train model on dataset"
 ```python
 # .claude/smolgent-config.json
 {
-  "enabled": true,
-  "num_workers": 4,
-  "execution_mode": "local",  # or "distributed", "codex", "cc", "droid"
-  "smolgent_types": [
-    "code-search",
-    "code-gen",
-    "test-gen",
-    "doc-gen",
-    "refactor",
-    "review"
-  ],
-  "retry_policy": {
-    "max_retries": 3,
-    "initial_backoff_ms": 100,
-    "max_backoff_ms": 5000
-  },
-  "timeouts": {
-    "code-search": 60,
-    "code-gen": 300,
-    "test-gen": 300,
-    "doc-gen": 120,
-    "refactor": 180,
-    "review": 180
-  }
+    "enabled": true,
+    "num_workers": 4,
+    "execution_mode": "local",  # or "distributed", "codex", "cc", "droid"
+    "smolgent_types": ["code-search", "code-gen", "test-gen", "doc-gen", "refactor", "review"],
+    "retry_policy": {"max_retries": 3, "initial_backoff_ms": 100, "max_backoff_ms": 5000},
+    "timeouts": {"code-search": 60, "code-gen": 300, "test-gen": 300, "doc-gen": 120, "refactor": 180, "review": 180},
 }
 ```
 

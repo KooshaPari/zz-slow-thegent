@@ -62,7 +62,7 @@ path = normalize_path(relative, base)
 ```python
 # ❌ Inefficient
 content = read_file("large_file.md")  # Reads entire file
-lines = content.split('\n')[100:150]  # Only need 50 lines
+lines = content.split("\n")[100:150]  # Only need 50 lines
 
 # ✅ Improved
 content = read_file("large_file.md", offset=100, limit=50)
@@ -94,7 +94,7 @@ task_id = log_friction(
     description="Multiple read_file calls",
     impact="Reduces tool calls by 60%",
     solution="Use batch_read_files",
-    priority="P1"
+    priority="P1",
 )
 ```
 
@@ -199,7 +199,7 @@ read_file(normalize_path("docs/file.md", base="/custom/base"))
 **Before** (Inefficient):
 ```python
 content = read_file("large_file.md")  # Reads 1000+ lines
-lines = content.split('\n')[100:150]  # Only need 50 lines
+lines = content.split("\n")[100:150]  # Only need 50 lines
 ```
 
 **After** (Improved):

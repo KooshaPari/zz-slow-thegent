@@ -681,11 +681,11 @@ The core challenge: AI confidence scores must correspond to actual accuracy. Mis
 ```python
 @dataclass
 class TrustScore:
-    confidence: float         # 0.0-1.0, model's self-reported confidence
-    calibration_factor: float # historical accuracy / historical confidence
-    risk_impact: float        # potential damage if wrong (0.0-1.0)
+    confidence: float  # 0.0-1.0, model's self-reported confidence
+    calibration_factor: float  # historical accuracy / historical confidence
+    risk_impact: float  # potential damage if wrong (0.0-1.0)
     evidence_strength: float  # completeness and quality of supporting evidence
-    recency: float           # freshness of relevant training/context data
+    recency: float  # freshness of relevant training/context data
 
     @property
     def adjusted_confidence(self) -> float:

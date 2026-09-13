@@ -47,6 +47,7 @@ This document provides comprehensive research on modern alternatives and optimiz
 # Fast HTTP client abstraction
 class FastHTTPClient:
     """Multi-backend HTTP client with automatic selection."""
+
     def __init__(self):
         # Priority: curl_cffi > httpx > requests
         if curl_cffi_available:
@@ -108,6 +109,7 @@ class FastHTTPClient:
 # Fast YAML parser abstraction
 class FastYAMLParser:
     """Multi-backend YAML parser with automatic selection."""
+
     def __init__(self):
         if oyaml_available:
             self.backend = "oyaml"  # Fastest pure-Python
@@ -143,6 +145,7 @@ class FastYAMLParser:
 # Fast TOML parser abstraction
 class FastTOMLParser:
     """Multi-backend TOML parser."""
+
     def __init__(self, edit_mode=False):
         if edit_mode:
             self.backend = "tomlkit"  # Only option for editing
@@ -182,13 +185,14 @@ class FastTOMLParser:
 # Fast file operations abstraction
 class FastFileOps:
     """Optimized file operations."""
+
     @staticmethod
     def copy_fast(src: Path, dst: Path) -> None:
         # Use shutil.copy2 for metadata preservation
         # Or os.sendfile() on Linux for large files
         if sys.platform == "linux" and src.stat().st_size > 10_000_000:
             # Use sendfile for large files (faster)
-            with open(src, 'rb') as fsrc, open(dst, 'wb') as fdst:
+            with open(src, "rb") as fsrc, open(dst, "wb") as fdst:
                 os.sendfile(fdst.fileno(), fsrc.fileno(), 0, src.stat().st_size)
         else:
             shutil.copy2(src, dst)
@@ -221,6 +225,7 @@ class FastFileOps:
 # Fast file watcher abstraction
 class FastFileWatcher:
     """Multi-backend file watcher."""
+
     def __init__(self):
         if watchfiles_available:
             self.backend = "watchfiles"  # Fastest
@@ -260,6 +265,7 @@ class FastFileWatcher:
 # Multi-tier caching
 class FastCache:
     """Multi-tier caching system."""
+
     def __init__(self):
         self.l1 = {}  # In-memory, fastest
         self.l2 = cachetools.LRUCache(maxsize=1000)  # Medium-term
@@ -295,14 +301,12 @@ class FastCache:
 # Fast subprocess execution
 class FastSubprocess:
     """Optimized subprocess execution."""
+
     @staticmethod
     async def run_async(cmd: list[str], **kwargs) -> subprocess.CompletedProcess:
         # Use asyncio for concurrent execution
         proc = await asyncio.create_subprocess_exec(
-            *cmd,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-            **kwargs
+            *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, **kwargs
         )
         stdout, stderr = await proc.communicate()
         return subprocess.CompletedProcess(cmd, proc.returncode, stdout, stderr)

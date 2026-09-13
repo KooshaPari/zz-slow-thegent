@@ -199,7 +199,7 @@ Agent A:
 ```python
 # Detect at claim time
 platform = detect_platform()  # darwin, linux, win32
-shell = detect_shell()         # bash, zsh, pwsh, cmd
+shell = detect_shell()  # bash, zsh, pwsh, cmd
 
 # Validate against work constraints
 if not work.platform_compatible(platform):

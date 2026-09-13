@@ -149,6 +149,7 @@ import psutil
 import time
 from dataclasses import dataclass
 
+
 @dataclass
 class ResourceStats:
     fd_count: int
@@ -158,6 +159,7 @@ class ResourceStats:
     memory_mb: float
     cpu_percent: float
     timestamp: float
+
 
 class ResourceMonitor:
     def get_stats(self) -> ResourceStats:
@@ -185,12 +187,14 @@ class ResourceMonitor:
 # src/thegent/infra/process_registry.py (additions)
 import psutil
 
+
 class ProcessHandle:
     def get_psutil_process(self) -> Optional[psutil.Process]:
         try:
             return psutil.Process(self.pid)
         except psutil.NoSuchProcess:
             return None
+
 
 class ProcessRegistry:
     def cleanup_process_tree(self, pid: int, timeout: float = 10.0) -> int:
@@ -221,6 +225,7 @@ class ProcessRegistry:
 # tests/test_resource_leaks.py
 from psleak import MemoryLeakTestCase, Checkers
 from thegent.infra.subprocess_manager import get_subprocess_manager
+
 
 class TestSubprocessLeaks(MemoryLeakTestCase):
     def test_subprocess_manager_no_leak(self):

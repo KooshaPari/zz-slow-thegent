@@ -240,20 +240,24 @@ Quality (%)
 # File: src/thegent/models/catalog.py
 # Change _build_static_catalog() to set Codex as priority -1:
 
-Route(
-    provider="codex",
-    model_alias="gpt-5.3-codex",
-    backend_type="direct",
-    priority=-1,  # ← Highest priority
-    cost_weight=1.25
-),
-Route(
-    provider="minimax",
-    model_alias="minimax-m2.5",
-    backend_type="proxy",
-    priority=0,  # ← Fallback tier
-    cost_weight=0.79
-),
+(
+    Route(
+        provider="codex",
+        model_alias="gpt-5.3-codex",
+        backend_type="direct",
+        priority=-1,  # ← Highest priority
+        cost_weight=1.25,
+    ),
+)
+(
+    Route(
+        provider="minimax",
+        model_alias="minimax-m2.5",
+        backend_type="proxy",
+        priority=0,  # ← Fallback tier
+        cost_weight=0.79,
+    ),
+)
 ```
 
 ### Step 2: Integrate TaskRouter (30 min)

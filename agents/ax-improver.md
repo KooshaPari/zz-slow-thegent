@@ -33,6 +33,7 @@ def read_config():
         return {}
     return json.loads(config_path.read_text())
 
+
 # ✅ Reusable (shared utility)
 from scripts.config_utils import read_config
 ```
@@ -103,7 +104,7 @@ task_id = log_friction(
     description="Config reading duplicated across 5 agents",
     impact="Reduces code duplication, improves consistency",
     solution="Create scripts/config_utils.py with read_config()",
-    priority="P1"
+    priority="P1",
 )
 ```
 
@@ -202,8 +203,10 @@ def read_config(path: str = "config.json") -> dict:
     """Read config file."""
     # Implementation
 
+
 # In agents
 from scripts.config_utils import read_config
+
 config = read_config()
 ```
 

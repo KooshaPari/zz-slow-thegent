@@ -183,10 +183,7 @@ async def handle_responses_request(request: Request) -> Response:
     if stream:
         return await _stream_via_router(router, model, messages)
     else:
-        response = await router.acompletion(
-            model=model,
-            messages=messages
-        )
+        response = await router.acompletion(model=model, messages=messages)
         return _chat_to_responses_response(response)
 ```
 
@@ -216,12 +213,9 @@ async def handle_responses_request(request: Request) -> Response:
 # In CodexProxyRunner.run()
 if use_litellm_router:
     from thegent.routing.litellm_router import get_litellm_router
+
     router = get_litellm_router()
-    response = await router.acompletion(
-        model=model,
-        messages=[{"role": "user", "content": prompt}],
-        stream=use_stream
-    )
+    response = await router.acompletion(model=model, messages=[{"role": "user", "content": prompt}], stream=use_stream)
     return _convert_to_run_result(response)
 ```
 
@@ -291,10 +285,7 @@ for task_file in tasks_dir.glob("*.md"):
         validation_errors.append((task_file, result.errors))
 
 if validation_errors:
-    return {
-        "error": "Task validation failed",
-        "errors": validation_errors
-    }
+    return {"error": "Task validation failed", "errors": validation_errors}
 
 # Sync to WORK_STREAM.md
 sync = WorkStreamSync(work_stream_path, tasks_dir)
@@ -314,22 +305,13 @@ sync.update_work_stream_from_tasks()
 ```python
 # In build_litellm_model_list()
 # Codex CLI models
-codex_models = [
-    "gpt-5-mini", "gpt-5.3-codex-spark", "gpt-5.3-codex-high",
-    "minimax-m2.5", "glm-5", "gemini-3-flash"
-]
+codex_models = ["gpt-5-mini", "gpt-5.3-codex-spark", "gpt-5.3-codex-high", "minimax-m2.5", "glm-5", "gemini-3-flash"]
 
 # Claude Code models
-claude_models = [
-    "claude-opus-4.6", "claude-sonnet-4.5", "claude-haiku-4.5",
-    "composer-1.5", "composer-1.5-high"
-]
+claude_models = ["claude-opus-4.6", "claude-sonnet-4.5", "claude-haiku-4.5", "composer-1.5", "composer-1.5-high"]
 
 # Factory Droid models
-droid_models = [
-    "Qwen3 Coder [CEREBRAS]", "GLM-4.6 [Z.AI]",
-    "MiniMax-M2.5", "claude-opus-4.6"
-]
+droid_models = ["Qwen3 Coder [CEREBRAS]", "GLM-4.6 [Z.AI]", "MiniMax-M2.5", "claude-opus-4.6"]
 
 # Ensure all are in model_list
 ```

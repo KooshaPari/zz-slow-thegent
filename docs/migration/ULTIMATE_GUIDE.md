@@ -93,7 +93,7 @@ from thegent_discovery import DiscoveryInterface
 tools = detect_tools()  # {'jq': '/usr/bin/jq', ...}
 
 # Resolve binary
-path = resolve_binary('codex')  # '/usr/local/bin/codex'
+path = resolve_binary("codex")  # '/usr/local/bin/codex'
 
 # Discover agents
 discovery = DiscoveryInterface()

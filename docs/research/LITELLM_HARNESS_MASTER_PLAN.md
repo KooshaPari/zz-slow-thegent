@@ -115,7 +115,7 @@ See `ADVANCED_ROUTER_RESEARCH.md` for complete analysis.
 router = Router(
     cache_responses=True,
     redis_url="redis://localhost:6379",  # Optional
-    caching_groups=[("openai-gpt-3.5-turbo", "azure-gpt-3.5-turbo")]
+    caching_groups=[("openai-gpt-3.5-turbo", "azure-gpt-3.5-turbo")],
 )
 ```
 
@@ -132,7 +132,7 @@ router = Router(
 router = Router(
     provider_budget_config={
         "openai": {"budget": 100.0, "budget_duration": "1d"},
-        "anthropic": {"budget": 50.0, "budget_duration": "1d"}
+        "anthropic": {"budget": 50.0, "budget_duration": "1d"},
     }
 )
 ```
@@ -305,6 +305,7 @@ async def proxy_handler(request: Request) -> Response:
 
     if use_litellm and path == "/v1/responses":
         from thegent.routing.litellm_responses_handler import handle_responses_request
+
         return await handle_responses_request(request)
 
     # Fallback to CLIProxyAPIPlus
@@ -621,14 +622,14 @@ model_list = [
         },
         "model_info": {
             "base_model": "gpt-4o-mini",  # For cost tracking
-        }
+        },
     },
     {
         "model_name": "claude-opus-4.6",
         "litellm_params": {
             "model": "anthropic/claude-opus-4-20240229",
             "api_key": os.getenv("ANTHROPIC_API_KEY"),
-        }
+        },
     },
     # ... more models
 ]
@@ -660,8 +661,8 @@ router = Router(
     enable_cost_tracking=True,
     provider_budget_config={
         "openai": {"budget": 100.0, "budget_duration": "1d"},
-        "anthropic": {"budget": 50.0, "budget_duration": "1d"}
-    }
+        "anthropic": {"budget": 50.0, "budget_duration": "1d"},
+    },
 )
 ```
 
@@ -678,14 +679,8 @@ def test_responses_to_chat_completions():
     """Test Responses API → Chat Completions translation."""
     responses_body = {
         "model": "gpt-5-mini",
-        "input": [
-            {
-                "type": "message",
-                "role": "user",
-                "content": [{"type": "text", "text": "Hello"}]
-            }
-        ],
-        "stream": True
+        "input": [{"type": "message", "role": "user", "content": [{"type": "text", "text": "Hello"}]}],
+        "stream": True,
     }
 
     chat_body = _responses_to_chat_completions(responses_body)
@@ -694,11 +689,10 @@ def test_responses_to_chat_completions():
     assert chat_body["messages"] == [{"role": "user", "content": "Hello"}]
     assert chat_body["stream"] is True
 
+
 def test_chat_completions_to_responses():
     """Test Chat Completions → Responses API translation."""
-    chat_chunk = {
-        "choices": [{"delta": {"content": "Hello"}}]
-    }
+    chat_chunk = {"choices": [{"delta": {"content": "Hello"}}]}
 
     responses_event = _chat_completions_to_responses(chat_chunk)
 
@@ -713,10 +707,7 @@ async def test_litellm_router_integration():
     """Test LiteLLM Router integration."""
     router = get_litellm_router()
 
-    response = await router.acompletion(
-        model="gpt-5-mini",
-        messages=[{"role": "user", "content": "Hello"}]
-    )
+    response = await router.acompletion(model="gpt-5-mini", messages=[{"role": "user", "content": "Hello"}])
 
     assert response.choices[0].message.content is not None
 ```

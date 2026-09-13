@@ -194,6 +194,7 @@ def on_mount(self) -> None:
     # Initialize PTY, start shell, setup event handlers
     pass
 
+
 def on_unmount(self) -> None:
     """Called when panel is unmounted."""
     # Cleanup PTY, terminate shell, save state
@@ -266,7 +267,7 @@ class PanelErrorBoundary:
             return Panel(
                 f"[red]Panel Error[/red]\n{str(e)[:100]}",
                 title=f"Error (attempt {self.error_count})",
-                border_style="red"
+                border_style="red",
             )
 ```
 
@@ -590,6 +591,7 @@ def test_terminal_pane_mount_spawns_shell():
     assert pane.process is not None
     assert pane.pty_master is not None
 
+
 def test_terminal_pane_unmount_closes_pty():
     """Verify on_unmount() closes PTY."""
     pane = TerminalPane("test-pane", working_dir="/tmp")
@@ -605,6 +607,7 @@ def test_pane_render_error_shows_error_ui():
     pane = ErrorBoundaryPane(FailingPane())
     output = pane.render()
     assert "[red]Panel Error[/red]" in str(output)
+
 
 def test_error_boundary_tracks_error_count():
     """Verify error count incremented on crash."""
@@ -622,6 +625,7 @@ def test_composition_cache_hit():
     render = Panel("test")
     cache.set("pane1", render)
     assert cache.get("pane1") is render
+
 
 def test_composition_cache_ttl():
     """Verify cache expires after TTL."""

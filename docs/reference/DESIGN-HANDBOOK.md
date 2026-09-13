@@ -63,6 +63,7 @@ All agent personas use the AgentRunner strategy pattern:
 ```python
 class AgentRunner(Protocol):
     role: str
+
     def run(self, task: str, context: AgentContext) -> AgentResult: ...
 ```
 
@@ -142,6 +143,7 @@ No hardcoded `if cost > X: route_to_cheap()` chains — policy lives in CEL rule
 
 ```python
 from pydantic import BaseModel, field_validator
+
 
 class TaskSpec(BaseModel):
     id: str

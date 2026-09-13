@@ -200,10 +200,12 @@ batch_write_files \
 # In scripts, import and use directly
 from batch_file_ops import batch_write_files
 
-result = batch_write_files([
-    ("file1.py", "content1"),
-    ("file2.py", "content2"),
-])
+result = batch_write_files(
+    [
+        ("file1.py", "content1"),
+        ("file2.py", "content2"),
+    ]
+)
 ```
 
 ### Agent Integration

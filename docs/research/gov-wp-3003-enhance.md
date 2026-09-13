@@ -41,12 +41,7 @@ _log.info(
 ### Event Structure
 
 ```python
-{
-    "type": "governance.override.expired",
-    "override_id": str,
-    "policy": str,
-    "expired_at": datetime.isoformat()
-}
+{"type": "governance.override.expired", "override_id": str, "policy": str, "expired_at": datetime.isoformat()}
 ```
 
 ### Configuration

@@ -104,6 +104,7 @@ This document consolidates all library replacement research into a single compre
 # Library provides generic functionality
 from library import GenericFunction
 
+
 # Thin wrapper adds domain-specific logic
 def thegent_specific_function(*args, **kwargs):
     # Domain-specific validation
@@ -186,17 +187,15 @@ for attempt in range(max_retries):
     except Exception as e:
         if attempt == max_retries - 1:
             raise
-        time.sleep(backoff * (2 ** attempt))
+        time.sleep(backoff * (2**attempt))
 ```
 
 **Replacement Pattern**:
 ```python
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-@retry(
-    stop=stop_after_attempt(3),
-    wait=wait_exponential(multiplier=1, min=1, max=10)
-)
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=10))
 def do_work():
     # Implementation
     pass
@@ -241,10 +240,12 @@ while True:
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+
 class TriggerHandler(FileSystemEventHandler):
     def on_modified(self, event):
         if not event.is_directory:
             trigger_cycle(event.src_path)
+
 
 observer = Observer()
 observer.schedule(TriggerHandler(), directory, recursive=True)
@@ -305,7 +306,7 @@ cache[key] = value
 ```python
 import diskcache
 
-cache = diskcache.Cache('/tmp/cache', size_limit=1e9)
+cache = diskcache.Cache("/tmp/cache", size_limit=1e9)
 
 # Usage
 value = cache.get(key)
@@ -342,13 +343,15 @@ cache.set(key, value, expire=3600)
 ```python
 import re
 
+
 def strip_ansi(text):
-    return re.sub(r'\x1b\[[0-9;]*m', '', text)
+    return re.sub(r"\x1b\[[0-9;]*m", "", text)
 ```
 
 **Replacement Pattern**:
 ```python
 from rich.console import strip_control_codes
+
 
 def strip_ansi(text):
     return strip_control_codes(text)
@@ -396,10 +399,8 @@ class ToolCircuitBreaker:
 ```python
 from pybreaker import CircuitBreaker
 
-breaker = CircuitBreaker(
-    fail_max=5,
-    timeout_duration=60
-)
+breaker = CircuitBreaker(fail_max=5, timeout_duration=60)
+
 
 @breaker
 def call_tool():
@@ -430,9 +431,10 @@ def call_tool():
 ```python
 import re
 
+
 def parse_xml(text):
     # Custom regex parsing
-    matches = re.findall(r'<tag>(.*?)</tag>', text)
+    matches = re.findall(r"<tag>(.*?)</tag>", text)
     return matches
 ```
 
@@ -440,9 +442,10 @@ def parse_xml(text):
 ```python
 from defusedxml import ElementTree
 
+
 def parse_xml(text):
     root = ElementTree.fromstring(text)
-    return [elem.text for elem in root.findall('tag')]
+    return [elem.text for elem in root.findall("tag")]
 ```
 
 **Benefits**:
@@ -468,14 +471,16 @@ def parse_xml(text):
 ```python
 import subprocess
 
+
 def get_memory_usage():
-    result = subprocess.run(['ps', '-o', 'rss=', str(pid)], capture_output=True)
+    result = subprocess.run(["ps", "-o", "rss=", str(pid)], capture_output=True)
     return int(result.stdout.strip())
 ```
 
 **Replacement Pattern**:
 ```python
 import psutil
+
 
 def get_memory_usage():
     process = psutil.Process(pid)
@@ -573,14 +578,14 @@ output = orjson.dumps(obj).decode()
 ```python
 import yaml
 
-with open('config.yaml') as f:
+with open("config.yaml") as f:
     config = yaml.safe_load(f)
 
 # Edit config
-config['key'] = 'value'
+config["key"] = "value"
 
 # Save (loses comments, key order)
-with open('config.yaml', 'w') as f:
+with open("config.yaml", "w") as f:
     yaml.dump(config, f)
 ```
 
@@ -591,14 +596,14 @@ from ruamel.yaml import YAML
 yaml = YAML()
 yaml.preserve_quotes = True
 
-with open('config.yaml') as f:
+with open("config.yaml") as f:
     config = yaml.load(f)
 
 # Edit config
-config['key'] = 'value'
+config["key"] = "value"
 
 # Save (preserves comments, key order)
-with open('config.yaml', 'w') as f:
+with open("config.yaml", "w") as f:
     yaml.dump(config, f)
 ```
 
@@ -624,20 +629,22 @@ with open('config.yaml', 'w') as f:
 ```python
 import os
 
-api_key = os.environ.get('API_KEY')
-timeout = int(os.environ.get('TIMEOUT', '30'))
+api_key = os.environ.get("API_KEY")
+timeout = int(os.environ.get("TIMEOUT", "30"))
 ```
 
 **Proposed Pattern**:
 ```python
 from pydantic_settings import BaseSettings
 
+
 class Settings(BaseSettings):
     api_key: str
     timeout: int = 30
 
     class Config:
-        env_prefix = 'THEGENT_'
+        env_prefix = "THEGENT_"
+
 
 settings = Settings()
 ```
@@ -770,16 +777,13 @@ for attempt in range(max_retries):
     except Exception as e:
         if attempt == max_retries - 1:
             raise
-        time.sleep(backoff * (2 ** attempt))
+        time.sleep(backoff * (2**attempt))
 
 # After
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-@retry(
-    stop=stop_after_attempt(3),
-    wait=wait_exponential(multiplier=1, min=1, max=10),
-    reraise=True
-)
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=10), reraise=True)
 def do_work():
     # Implementation
     pass
@@ -805,6 +809,7 @@ class CustomCache:
     def set(self, key, value):
         self.cache[key] = value
         self.timestamps[key] = time.time()
+
 
 # After
 from cachetools import TTLCache

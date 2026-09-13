@@ -238,6 +238,7 @@ import subprocess
 from pathlib import Path
 from typing import Callable, Optional
 
+
 class FileWatcher:
     """Real-time file change detection using watchman."""
 
@@ -255,8 +256,20 @@ class FileWatcher:
         )
         # Subscribe to changes
         self._process = subprocess.Popen(
-            ["watchman", "subscribe", str(self.repo_root), "audit-changes",
-             "--fields", "name,type", "-e", "M", "-e", "A", "-e", "D"],
+            [
+                "watchman",
+                "subscribe",
+                str(self.repo_root),
+                "audit-changes",
+                "--fields",
+                "name,type",
+                "-e",
+                "M",
+                "-e",
+                "A",
+                "-e",
+                "D",
+            ],
             stdout=subprocess.PIPE,
             text=True,
         )
@@ -318,6 +331,7 @@ _SECRET_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
 **Enhanced (native scanner):**
 ```python
 from thegent.governance.native_secret_scan import scan_secrets, SecretMatch
+
 
 class GitJournalSecure(GitJournal):
     """GitJournal with enhanced secret scanning."""
@@ -419,6 +433,7 @@ class GitJournalAttested(GitJournal):
 from kafka import KafkaProducer, KafkaConsumer
 import json
 
+
 class AuditEvent:
     """Audit event for streaming."""
 
@@ -440,6 +455,7 @@ class AuditEvent:
 
     def to_dict(self) -> dict:
         return self.__dict__
+
 
 class GitJournalStreaming(GitJournal):
     """GitJournal with event streaming for audit updates."""
@@ -555,6 +571,7 @@ journal = GitJournalStreaming(
     bootstrap_servers="localhost:9092",
 )
 
+
 # All features combined (composition)
 class GitJournalComplete(
     GitJournalAttested,
@@ -562,6 +579,7 @@ class GitJournalComplete(
     GitJournalStreaming,
 ):
     """Complete GitJournal with all enhancements."""
+
     pass
 ```
 
@@ -612,6 +630,7 @@ async def git_journal_create_session(
 ):
     """Create a new git journal session."""
 
+
 @server.tool()
 async def git_journal_record_change(
     repo_path: str,
@@ -621,6 +640,7 @@ async def git_journal_record_change(
     action: str = "modified",
 ):
     """Record a file change in the journal."""
+
 
 # ... more tools
 ```
@@ -696,9 +716,7 @@ class UnifiedAudit:
         journal_entries = self.journal.get_audit_log()
 
         # Merge and sort by timestamp
-        combined = [
-            {"source": "commit", **c.model_dump()} for c in commits
-        ] + [
+        combined = [{"source": "commit", **c.model_dump()} for c in commits] + [
             {"source": "journal", **j} for j in journal_entries
         ]
         return sorted(combined, key=lambda x: x["created_at"])
@@ -751,8 +769,7 @@ class GitJournalBatched(GitJournal):
         self.batch_size = batch_size
         self._pending_changes: list[tuple[Path, Optional[bytes], str]] = []
 
-    def record_file_change(self, file_path: Path, content: Optional[bytes],
-                          action: str = "modified") -> str:
+    def record_file_change(self, file_path: Path, content: Optional[bytes], action: str = "modified") -> str:
         self._pending_changes.append((file_path, content, action))
 
         if len(self._pending_changes) >= self.batch_size:
@@ -864,8 +881,7 @@ class IntegrityVerifier:
     def verify_chain(self, session_id: str) -> bool:
         """Verify commit chain integrity."""
         result = subprocess.run(
-            ["git", "fsck", "--no-progress",
-             f"refs/audit/{session_id}"],
+            ["git", "fsck", "--no-progress", f"refs/audit/{session_id}"],
             cwd=self.repo_root,
             capture_output=True,
         )

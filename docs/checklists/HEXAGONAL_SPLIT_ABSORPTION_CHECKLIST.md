@@ -373,12 +373,14 @@ class ConversationThread:
         self.models_used = set()
 
     def add_message(self, role, content, model):
-        self.messages.append({
-            "role": role,
-            "content": content,
-            "model": model,  # Track which model sent this
-            "timestamp": now()
-        })
+        self.messages.append(
+            {
+                "role": role,
+                "content": content,
+                "model": model,  # Track which model sent this
+                "timestamp": now(),
+            }
+        )
 ```
 
 ### 3. Subagent Spawning

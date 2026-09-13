@@ -319,7 +319,7 @@ models: [
 router = Router(
     cache_responses=True,
     redis_url="redis://localhost:6379",  # Optional
-    caching_groups=[("openai-gpt-3.5-turbo", "azure-gpt-3.5-turbo")]
+    caching_groups=[("openai-gpt-3.5-turbo", "azure-gpt-3.5-turbo")],
 )
 ```
 
@@ -336,7 +336,7 @@ router = Router(
 router = Router(
     provider_budget_config={
         "openai": {"budget": 100.0, "budget_duration": "1d"},
-        "anthropic": {"budget": 50.0, "budget_duration": "1d"}
+        "anthropic": {"budget": 50.0, "budget_duration": "1d"},
     }
 )
 ```
@@ -367,12 +367,12 @@ model_list = [
             "api_base": os.getenv("AZURE_API_BASE"),
             "rpm": 900,  # Requests per minute
             "tpm": 100000,  # Tokens per minute
-            "max_parallel_requests": 10
+            "max_parallel_requests": 10,
         },
         "model_info": {
             "base_model": "azure/gpt-35-turbo",  # For cost tracking
-            "context_window": 16384  # Optional override
-        }
+            "context_window": 16384,  # Optional override
+        },
     }
 ]
 ```
@@ -384,36 +384,30 @@ model_list = [
         "model_name": "gpt-4",
         "litellm_params": {
             "model": "azure/gpt-4-primary",
-            "order": 1  # Highest priority
-        }
+            "order": 1,  # Highest priority
+        },
     },
     {
         "model_name": "gpt-4",
         "litellm_params": {
             "model": "azure/gpt-4-fallback",
-            "order": 2  # Used when order=1 unavailable
-        }
-    }
+            "order": 2,  # Used when order=1 unavailable
+        },
+    },
 ]
 ```
 
 **Weighted Deployments**:
 ```python
 model_list = [
+    {"model_name": "o1", "litellm_params": {"model": "o1-preview", "weight": 1}},
     {
         "model_name": "o1",
         "litellm_params": {
             "model": "o1-preview",
-            "weight": 1
-        }
+            "weight": 2,  # Picked 2x more often
+        },
     },
-    {
-        "model_name": "o1",
-        "litellm_params": {
-            "model": "o1-preview",
-            "weight": 2  # Picked 2x more often
-        }
-    }
 ]
 ```
 
@@ -475,9 +469,7 @@ async def route_intent(user_message: str) -> str:
     Category: """
 
     response = await client.messages.create(
-        model="claude-3-5-haiku-20241022",
-        max_tokens=10,
-        messages=[{"role": "user", "content": prompt}]
+        model="claude-3-5-haiku-20241022", max_tokens=10, messages=[{"role": "user", "content": prompt}]
     )
 
     return response.content[0].text.strip().lower()
@@ -489,21 +481,11 @@ from semantic_router import Route, RouteLayer
 
 routes = [
     Route(
-        name="billing",
-        utterances=[
-            "I was charged twice",
-            "My invoice is wrong",
-            "How do I cancel my subscription?"
-        ]
+        name="billing", utterances=["I was charged twice", "My invoice is wrong", "How do I cancel my subscription?"]
     ),
     Route(
-        name="technical",
-        utterances=[
-            "The app keeps crashing",
-            "I'm getting a 500 error",
-            "Integration not working"
-        ]
-    )
+        name="technical", utterances=["The app keeps crashing", "I'm getting a 500 error", "Integration not working"]
+    ),
 ]
 
 router = RouteLayer(routes=routes)
@@ -542,6 +524,7 @@ def estimate_complexity(prompt: str) -> float:
     }
     return weighted_average(factors)
 
+
 def route_by_complexity(prompt: str) -> str:
     complexity = estimate_complexity(prompt)
     if complexity < 0.3:
@@ -568,20 +551,14 @@ def route_by_complexity(prompt: str) -> str:
 ```python
 async def cascade_route(prompt: str) -> str:
     # Try cheap model first
-    response1 = await router.acompletion(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": prompt}]
-    )
+    response1 = await router.acompletion(model="gpt-3.5-turbo", messages=[{"role": "user", "content": prompt}])
 
     # Evaluate quality
     quality_score = evaluate_quality(response1)
 
     if quality_score < 0.7:
         # Escalate to better model
-        response2 = await router.acompletion(
-            model="gpt-4o",
-            messages=[{"role": "user", "content": prompt}]
-        )
+        response2 = await router.acompletion(model="gpt-4o", messages=[{"role": "user", "content": prompt}])
         return response2
 
     return response1
@@ -871,8 +848,9 @@ class PluginManager:
 ```python
 ZDR_PROVIDERS = {
     "anthropic": True,  # Supports ZDR
-    "openai": False,    # May store data
+    "openai": False,  # May store data
 }
+
 
 def is_zdr_provider(provider: str) -> bool:
     return ZDR_PROVIDERS.get(provider, False)

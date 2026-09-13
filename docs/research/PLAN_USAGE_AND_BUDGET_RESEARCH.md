@@ -184,6 +184,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+
 class UsageCollector:
     """Collect usage metrics from CLIProxyAPIPlus."""
 
@@ -215,10 +216,11 @@ class UsageCollector:
             lines.append(f"   Latency (P50): {latency}ms")
             lines.append(f"   Throughput: {tps} req/s")
             lines.append(f"   Cost: ${cost}/1K tokens")
-            lines.append(f"   Success Rate: {success*100:.1f}%")
+            lines.append(f"   Success Rate: {success * 100:.1f}%")
 
         lines.append("\n" + "-" * 50)
         return "\n".join(lines)
+
 
 if __name__ == "__main__":
     collector = UsageCollector()

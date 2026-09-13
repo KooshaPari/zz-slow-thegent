@@ -72,36 +72,26 @@ Request → L1 (cache hit?) → L2 (cache hit?) → L3 (query KG) → L4 (fallba
 import httpx
 from typing import List, Dict, Optional
 
+
 class SupermemoryClient:
     BASE_URL = "https://mcp.supermemory.ai/mcp"
 
     def __init__(self, api_key: str, project_id: str):
-        self.headers = {
-            "Authorization": f"Bearer {api_key}",
-            "x-sm-project": project_id
-        }
+        self.headers = {"Authorization": f"Bearer {api_key}", "x-sm-project": project_id}
 
-    async def store_knowledge(
-        self,
-        entity: str,
-        relationships: List[Dict]
-    ) -> str:
+    async def store_knowledge(self, entity: str, relationships: List[Dict]) -> str:
         async with httpx.AsyncClient() as client:
             resp = await client.post(
                 f"{self.BASE_URL}/knowledge/graph",
                 json={"entity": entity, "relationships": relationships},
-                headers=self.headers
+                headers=self.headers,
             )
             resp.raise_for_status()
             return resp.json()["id"]
 
     async def query_knowledge(self, query: str) -> List[Dict]:
         async with httpx.AsyncClient() as client:
-            resp = await client.post(
-                f"{self.BASE_URL}/knowledge/query",
-                json={"query": query},
-                headers=self.headers
-            )
+            resp = await client.post(f"{self.BASE_URL}/knowledge/query", json={"query": query}, headers=self.headers)
             resp.raise_for_status()
             return resp.json()["results"]
 ```

@@ -133,13 +133,14 @@ This document consolidates:
 
 from py_applescript import AppleScript
 
+
 class MacOSDesktopProvider:
     def click(self, x: int, y: int):
-        script = AppleScript(f'''
+        script = AppleScript(f"""
             tell application "System Events"
                 click at {{{x}, {y}}}
             end tell
-        ''')
+        """)
         script.run()
 
     def get_user_activity(self) -> float:
@@ -162,6 +163,7 @@ class MacOSDesktopProvider:
 # src/thegent/infra/desktop_automation/windows.py
 
 from pywinauto import Application
+
 
 class WindowsDesktopProvider:
     def click(self, x: int, y: int):
@@ -188,6 +190,7 @@ class WindowsDesktopProvider:
 # src/thegent/infra/desktop_automation/linux.py
 
 import pyatspi
+
 
 class LinuxDesktopProvider:
     def click(self, x: int, y: int):
@@ -249,10 +252,7 @@ class LinuxDesktopProvider:
 ```python
 def get_user_activity_macos() -> float:
     """Seconds since last user activity"""
-    return CGEventSourceSecondsSinceLastEventType(
-        kCGEventSourceStateHIDSystemState,
-        kCGAnyInputEventType
-    )
+    return CGEventSourceSecondsSinceLastEventType(kCGEventSourceStateHIDSystemState, kCGAnyInputEventType)
 ```
 
 **Windows**:
@@ -288,6 +288,7 @@ def get_user_activity_linux() -> float:
 ```python
 # src/thegent/infra/desktop_coordinator.py
 
+
 class DesktopCoordinator:
     def coordinate_action(self, action: DesktopAction, tenant: str):
         # Check user activity
@@ -317,6 +318,7 @@ class DesktopCoordinator:
 # src/thegent/infra/desktop_automation/base.py
 
 from abc import ABC, abstractmethod
+
 
 class DesktopAutomationProvider(ABC):
     @abstractmethod
@@ -398,10 +400,8 @@ class DesktopAutomationProvider(ABC):
 ```python
 # src/thegent/infra/shell_detection.py
 
-def get_preferred_shell(
-    platform: str,
-    context: Literal["hooks", "agent", "os_admin", "desktop"]
-) -> str:
+
+def get_preferred_shell(platform: str, context: Literal["hooks", "agent", "os_admin", "desktop"]) -> str:
     """Return preferred shell for context"""
     if platform == "windows" and context == "os_admin":
         return "pwsh"

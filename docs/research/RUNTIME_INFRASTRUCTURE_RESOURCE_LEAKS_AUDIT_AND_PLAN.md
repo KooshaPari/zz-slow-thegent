@@ -253,6 +253,7 @@ from thegent.thg_platform import Platform, detect_platform
 @dataclass
 class ProcessHandle:
     """Handle for a tracked subprocess."""
+
     pid: int
     proc: subprocess.Popen
     name: str
@@ -463,9 +464,7 @@ class SubprocessManager:
         # Check resource limits
         with self._lock:
             if self._active_count >= self.MAX_CONCURRENT_PROCESSES:
-                raise RuntimeError(
-                    f"Maximum concurrent processes ({self.MAX_CONCURRENT_PROCESSES}) exceeded"
-                )
+                raise RuntimeError(f"Maximum concurrent processes ({self.MAX_CONCURRENT_PROCESSES}) exceeded")
             self._active_count += 1
 
         proc: Optional[subprocess.Popen] = None
@@ -581,6 +580,7 @@ import psutil
 @dataclass
 class ResourceStats:
     """Resource usage statistics."""
+
     fd_count: int
     fd_limit: int
     fd_usage_percent: float
@@ -592,9 +592,7 @@ class ResourceStats:
     def is_critical(self) -> bool:
         """Check if resource usage is critical."""
         return (
-            self.fd_usage_percent > 80.0 or
-            self.process_count > 100 or
-            self.memory_mb > 2048  # 2GB
+            self.fd_usage_percent > 80.0 or self.process_count > 100 or self.memory_mb > 2048  # 2GB
         )
 
 
@@ -703,17 +701,17 @@ class ResourceMonitor:
 
         # Check for increasing FD count
         fd_trend = [s.fd_count for s in recent]
-        if all(fd_trend[i] < fd_trend[i+1] for i in range(len(fd_trend)-1)):
+        if all(fd_trend[i] < fd_trend[i + 1] for i in range(len(fd_trend) - 1)):
             return "File descriptor leak detected (increasing trend)"
 
         # Check for increasing process count
         proc_trend = [s.process_count for s in recent]
-        if all(proc_trend[i] < proc_trend[i+1] for i in range(len(proc_trend)-1)):
+        if all(proc_trend[i] < proc_trend[i + 1] for i in range(len(proc_trend) - 1)):
             return "Process leak detected (increasing trend)"
 
         # Check for increasing memory
         mem_trend = [s.memory_mb for s in recent]
-        if all(mem_trend[i] < mem_trend[i+1] for i in range(len(mem_trend)-1)):
+        if all(mem_trend[i] < mem_trend[i + 1] for i in range(len(mem_trend) - 1)):
             return "Memory leak detected (increasing trend)"
 
         return None
@@ -881,6 +879,7 @@ def get_resource_limits() -> ResourceLimits:
 from thegent.infra.process_registry import get_registry
 from thegent.infra.resource_monitor import get_resource_monitor
 
+
 def initialize_runtime_infrastructure():
     """Initialize runtime infrastructure with cleanup."""
     # Clean up orphaned processes
@@ -895,6 +894,7 @@ def initialize_runtime_infrastructure():
 
     # Set resource limits
     from thegent.infra.resource_limits import get_resource_limits
+
     limits = get_resource_limits()
     logging.info(f"FD limit: {limits.get_fd_limit()}, Process limit: {limits.get_process_limit()}")
 ```
@@ -1051,6 +1051,7 @@ def test_cleanup_on_error():
 ```python
 """Stress tests for resource exhaustion."""
 
+
 def test_concurrent_process_limit():
     """Test that concurrent process limit is enforced."""
     manager = get_subprocess_manager()
@@ -1079,6 +1080,7 @@ def test_concurrent_process_limit():
 
 ```python
 """Integration tests for runtime infrastructure."""
+
 
 def test_cliproxy_lifecycle():
     """Test cliproxy process lifecycle."""
@@ -1130,6 +1132,7 @@ def test_cliproxy_lifecycle():
 
 ```python
 """Health check for runtime infrastructure."""
+
 
 def check_runtime_health() -> dict:
     """Check runtime infrastructure health."""

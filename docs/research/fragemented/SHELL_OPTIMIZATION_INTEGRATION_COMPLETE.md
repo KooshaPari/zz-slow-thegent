@@ -92,7 +92,7 @@ All subprocess calls with `shell=True` now use zsh automatically:
 from thegent.utils.shell import run_shell_command
 
 # Automatically uses fastest shell (zsh)
-result = run_shell_command('chmod +x script.sh')
+result = run_shell_command("chmod +x script.sh")
 ```
 
 ### Manual Override
@@ -138,11 +138,11 @@ from thegent.utils.shell import get_fastest_shell, run_shell_command
 
 # Test shell detection
 shell = get_fastest_shell()
-assert 'zsh' in shell
+assert "zsh" in shell
 
 # Test command execution
-result = run_shell_command('echo test', capture_output=True)
-assert result.stdout.strip() == 'test'
+result = run_shell_command("echo test", capture_output=True)
+assert result.stdout.strip() == "test"
 ```
 
 ### Integration Tests

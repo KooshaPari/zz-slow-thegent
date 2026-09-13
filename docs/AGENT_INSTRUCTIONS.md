@@ -93,7 +93,8 @@ for attempt in range(5):
         result = httpx.get(url)
         break
     except Exception:
-        time.sleep(2 ** attempt)
+        time.sleep(2**attempt)
+
 
 # Good -- tenacity decorator
 @retry(stop=stop_after_attempt(5), wait=wait_exponential())
@@ -104,6 +105,7 @@ def fetch(url: str) -> httpx.Response:
 ```python
 # Bad -- manual env parsing with silent fallback
 db_url = os.environ.get("DATABASE_URL", "sqlite:///local.db")
+
 
 # Good -- pydantic-settings with type safety
 class Settings(BaseSettings):

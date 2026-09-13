@@ -129,6 +129,7 @@ from fastmcp import FastMCP
 
 mcp = FastMCP("thegent")
 
+
 @mcp.tool()
 def thegent_run(command: str, cwd: str | None = None) -> str:
     """Run a command."""
@@ -138,11 +139,7 @@ def thegent_run(command: str, cwd: str | None = None) -> str:
 
 **Tool with Annotations**:
 ```python
-@mcp.tool(
-    readOnlyHint=True,
-    timeout=30,
-    tags=["execution"]
-)
+@mcp.tool(readOnlyHint=True, timeout=30, tags=["execution"])
 def thegent_status() -> dict:
     """Get thegent status."""
     return {"status": "running"}
@@ -152,25 +149,24 @@ def thegent_status() -> dict:
 ```python
 from pydantic import BaseModel
 
+
 class RunResult(BaseModel):
     returncode: int
     stdout: str
     stderr: str
 
+
 @mcp.tool()
 def thegent_run(command: str) -> RunResult:
     """Run command with structured output."""
     # Implementation
-    return RunResult(
-        returncode=0,
-        stdout="...",
-        stderr=""
-    )
+    return RunResult(returncode=0, stdout="...", stderr="")
 ```
 
 **ToolResult Pattern**:
 ```python
 from fastmcp import ToolResult
+
 
 @mcp.tool()
 def thegent_run(command: str) -> ToolResult:
@@ -184,9 +180,9 @@ def thegent_run(command: str) -> ToolResult:
         structured_content={
             "returncode": result.returncode,
             "stdout": result.stdout.decode(),
-            "stderr": result.stderr.decode()
+            "stderr": result.stderr.decode(),
         },
-        meta={"execution_time_ms": execution_time * 1000}
+        meta={"execution_time_ms": execution_time * 1000},
     )
 ```
 
@@ -198,6 +194,7 @@ def thegent_run(command: str) -> ToolResult:
 def list_sessions() -> list[dict]:
     """List all sessions."""
     return [{"id": "123", "status": "running"}]
+
 
 @mcp.resource("thegent://session/{id}/meta")
 def get_session_meta(id: str) -> dict:
@@ -222,10 +219,7 @@ def get_session_meta(id: str, include_contract: bool = False) -> dict:
 @mcp.prompt()
 def agent_prompt(agent_type: str) -> str:
     """Get agent prompt template."""
-    templates = {
-        "planner": "You are a planning agent...",
-        "executor": "You are an execution agent..."
-    }
+    templates = {"planner": "You are a planning agent...", "executor": "You are an execution agent..."}
     return templates.get(agent_type, "Default prompt")
 ```
 
@@ -239,6 +233,7 @@ def agent_prompt(agent_type: str) -> str:
 ```python
 from fastmcp.dependencies import CurrentContext
 from fastmcp import AcceptedElicitation, DeclinedElicitation, CancelledElicitation
+
 
 @mcp.tool()
 async def configure_agent(ctx: CurrentContext = CurrentContext()) -> str:
@@ -275,15 +270,14 @@ selected = result.data  # ["email", "slack"] etc.
 ```python
 from pydantic import BaseModel
 
+
 class AgentConfig(BaseModel):
     name: str
     timeout_secs: int
     retry_count: int
 
-result = await ctx.elicit(
-    "Configure the agent",
-    response_type=AgentConfig
-)
+
+result = await ctx.elicit("Configure the agent", response_type=AgentConfig)
 if isinstance(result, AcceptedElicitation):
     config: AgentConfig = result.data
     await spawn_agent(config)
@@ -332,11 +326,7 @@ async def thegent_run(ctx: CurrentContext = CurrentContext(), command: str) -> s
 await ctx.log(
     "info",
     "Command executed",
-    metadata={
-        "command": command,
-        "returncode": result.returncode,
-        "execution_time_ms": execution_time
-    }
+    metadata={"command": command, "returncode": result.returncode, "execution_time_ms": execution_time},
 )
 ```
 
@@ -365,6 +355,7 @@ async def long_running_task(ctx: CurrentContext = CurrentContext()) -> str:
 ```python
 from fastmcp.dependencies import Progress
 
+
 @mcp.tool()
 async def my_tool(progress: ProgressLike = Progress()) -> str:
     """Tool with progress dependency."""
@@ -385,6 +376,7 @@ async def my_tool(progress: ProgressLike = Progress()) -> str:
 from fastmcp import TaskConfig
 from datetime import timedelta
 
+
 @mcp.tool(task=TaskConfig(mode="optional", poll_interval=timedelta(seconds=5)))
 async def thegent_run(command: str) -> dict:
     """Run command as background task."""
@@ -402,6 +394,7 @@ async def thegent_run(command: str) -> dict:
 @mcp.tool(task=TaskConfig(mode="optional"))
 async def thegent_run(command: str) -> dict:
     """Run sync code in async handler."""
+
     def run_impl():
         # Sync implementation
         return subprocess.run(command, shell=True, capture_output=True)
@@ -418,10 +411,10 @@ async def thegent_run(command: str) -> dict:
 Middleware executes in **order added**. First added = outermost (runs first in, last out).
 
 ```python
-mcp.add_middleware(ErrorHandlingMiddleware())   # 1st in, last out
-mcp.add_middleware(RateLimitingMiddleware())   # 2nd in, 2nd out
-mcp.add_middleware(TimingMiddleware())        # 3rd in, first out
-mcp.add_middleware(LoggingMiddleware())        # 4th in, first out
+mcp.add_middleware(ErrorHandlingMiddleware())  # 1st in, last out
+mcp.add_middleware(RateLimitingMiddleware())  # 2nd in, 2nd out
+mcp.add_middleware(TimingMiddleware())  # 3rd in, first out
+mcp.add_middleware(LoggingMiddleware())  # 4th in, first out
 ```
 
 **Recommended Order**: ErrorHandling → RateLimiting → Timing → Logging
@@ -436,14 +429,13 @@ from fastmcp.server.middleware.caching import (
     ReadResourceSettings,
 )
 
-mcp.add_middleware(ResponseCachingMiddleware(
-    list_tools_settings=ListToolsSettings(ttl=30),
-    call_tool_settings=CallToolSettings(
-        included_tools=["thegent_ps", "thegent_list_agents"],
-        ttl=60
-    ),
-    read_resource_settings=ReadResourceSettings(enabled=False)
-))
+mcp.add_middleware(
+    ResponseCachingMiddleware(
+        list_tools_settings=ListToolsSettings(ttl=30),
+        call_tool_settings=CallToolSettings(included_tools=["thegent_ps", "thegent_list_agents"], ttl=60),
+        read_resource_settings=ReadResourceSettings(enabled=False),
+    )
+)
 ```
 
 **Settings Classes**:
@@ -464,10 +456,7 @@ mcp.add_middleware(ResponseCachingMiddleware(
 ```python
 from fastmcp.server.middleware.rate_limiting import RateLimitingMiddleware
 
-mcp.add_middleware(RateLimitingMiddleware(
-    calls_per_minute=60,
-    calls_per_hour=1000
-))
+mcp.add_middleware(RateLimitingMiddleware(calls_per_minute=60, calls_per_hour=1000))
 ```
 
 **Options**:
@@ -479,6 +468,7 @@ mcp.add_middleware(RateLimitingMiddleware(
 
 ```python
 from fastmcp.server.middleware import Middleware
+
 
 class TimingMiddleware(Middleware):
     """Add execution time to tool results."""
@@ -515,9 +505,7 @@ cache_store = MemoryStore()
 ```python
 from key_value.aio.stores.disk import DiskStore
 
-middleware = ResponseCachingMiddleware(
-    cache_storage=DiskStore(directory="/var/cache/fastmcp")
-)
+middleware = ResponseCachingMiddleware(cache_storage=DiskStore(directory="/var/cache/fastmcp"))
 ```
 
 - **Use Case**: Single-server production
@@ -529,9 +517,7 @@ middleware = ResponseCachingMiddleware(
 ```python
 from key_value.aio.stores.redis import RedisStore
 
-middleware = ResponseCachingMiddleware(
-    cache_storage=RedisStore(host="redis.example.com", port=6379)
-)
+middleware = ResponseCachingMiddleware(cache_storage=RedisStore(host="redis.example.com", port=6379))
 ```
 
 - **Use Case**: Distributed production, multi-server deployments
@@ -545,10 +531,7 @@ from key_value.aio.wrappers.encryption import FernetEncryptionWrapper
 from cryptography.fernet import Fernet
 
 key = Fernet.generate_key()
-encrypted_store = FernetEncryptionWrapper(
-    DiskStore(directory="/var/lib/fastmcp/oauth"),
-    key=key
-)
+encrypted_store = FernetEncryptionWrapper(DiskStore(directory="/var/lib/fastmcp/oauth"), key=key)
 ```
 
 ---
@@ -562,15 +545,9 @@ encrypted_store = FernetEncryptionWrapper(
 from fastmcp.server.transforms import NamespaceTransform
 
 # Aggregate multiple providers under namespaces
-mcp.add_transform(NamespaceTransform(
-    namespace="thegent",
-    provider=thegent_provider
-))
+mcp.add_transform(NamespaceTransform(namespace="thegent", provider=thegent_provider))
 
-mcp.add_transform(NamespaceTransform(
-    namespace="external",
-    provider=external_provider
-))
+mcp.add_transform(NamespaceTransform(namespace="external", provider=external_provider))
 
 # Tools become: thegent:run, external:search
 ```
@@ -581,18 +558,15 @@ mcp.add_transform(NamespaceTransform(
 ```python
 from fastmcp.server.transforms import ToolTransform
 
-mcp.add_transform(ToolTransform(
-    tool_name="thegent_run",
-    description="Run a command (enhanced)",
-    schema_overrides={
-        "properties": {
-            "command": {
-                "description": "Command to execute",
-                "pattern": "^[a-zA-Z0-9_\\-]+"
-            }
-        }
-    }
-))
+mcp.add_transform(
+    ToolTransform(
+        tool_name="thegent_run",
+        description="Run a command (enhanced)",
+        schema_overrides={
+            "properties": {"command": {"description": "Command to execute", "pattern": "^[a-zA-Z0-9_\\-]+"}}
+        },
+    )
+)
 ```
 
 ### 8.3 ResourcesAsTools Transform
@@ -716,15 +690,14 @@ async def test_task() -> dict:
 ```python
 from fastmcp.dependencies import Depends
 
+
 def get_default_cwd() -> str:
     """Get default working directory."""
     return os.getcwd()
 
+
 @mcp.tool()
-def thegent_run(
-    command: str,
-    cwd: str = Depends(get_default_cwd)
-) -> str:
+def thegent_run(command: str, cwd: str = Depends(get_default_cwd)) -> str:
     """Run command with dependency injection."""
     return subprocess.run(command, cwd=cwd, shell=True, capture_output=True).stdout.decode()
 ```
@@ -734,6 +707,7 @@ def thegent_run(
 ```python
 from fastmcp import ToolResult
 
+
 @mcp.tool()
 async def thegent_run(command: str) -> ToolResult:
     """Run command with error handling."""
@@ -741,28 +715,17 @@ async def thegent_run(command: str) -> ToolResult:
         result = subprocess.run(command, shell=True, capture_output=True)
         return ToolResult(
             content=f"Command executed: {result.returncode}",
-            structured_content={
-                "returncode": result.returncode,
-                "stdout": result.stdout.decode()
-            }
+            structured_content={"returncode": result.returncode, "stdout": result.stdout.decode()},
         )
     except Exception as e:
-        return ToolResult(
-            content=f"Error: {e}",
-            structured_content={"error": str(e)},
-            meta={"error": True}
-        )
+        return ToolResult(content=f"Error: {e}", structured_content={"error": str(e)}, meta={"error": True})
 ```
 
 ### 11.3 Resource with Template Pattern
 
 ```python
 @mcp.resource("thegent://session/{id}/meta{?include_contract,include_logs}")
-def get_session_meta(
-    id: str,
-    include_contract: bool = False,
-    include_logs: bool = False
-) -> dict:
+def get_session_meta(id: str, include_contract: bool = False, include_logs: bool = False) -> dict:
     """Get session metadata with optional parameters."""
     meta = {"id": id, "status": "running"}
 
@@ -839,6 +802,7 @@ def get_session_meta(
 **Enable Debug Logging**:
 ```python
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 ```
 

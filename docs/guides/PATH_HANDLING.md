@@ -105,10 +105,10 @@ Return `True` if `child` is at or below `parent` in the filesystem tree.
 Both paths are fully resolved (symlinks expanded, `..` collapsed) before comparison.
 
 ```python
-is_within("/tmp/foo/bar.txt", "/tmp/foo")    # True
-is_within("/tmp/foo", "/tmp/foo")            # True  (same path)
-is_within("/tmp/foo", "/tmp/foo/bar")        # False (parent is not within child)
-is_within("/tmp/foo_extra", "/tmp/foo")      # False (prefix != path component)
+is_within("/tmp/foo/bar.txt", "/tmp/foo")  # True
+is_within("/tmp/foo", "/tmp/foo")  # True  (same path)
+is_within("/tmp/foo", "/tmp/foo/bar")  # False (parent is not within child)
+is_within("/tmp/foo_extra", "/tmp/foo")  # False (prefix != path component)
 ```
 
 **Note on symlinks**: `/tmp/link/file` where `link -> /tmp/real` will report `True` for `is_within("/tmp/link/file", "/tmp/real")` because both sides are resolved.
@@ -120,10 +120,10 @@ is_within("/tmp/foo_extra", "/tmp/foo")      # False (prefix != path component)
 Check whether `path` exists without raising on permission or OS errors.
 
 ```python
-safe_exists("/tmp")                         # True
-safe_exists("/nonexistent/path")            # False
-safe_exists("/root/secret")                 # False  (PermissionError caught)
-safe_exists("~/projects")                   # True  (~ expanded before check)
+safe_exists("/tmp")  # True
+safe_exists("/nonexistent/path")  # False
+safe_exists("/root/secret")  # False  (PermissionError caught)
+safe_exists("~/projects")  # True  (~ expanded before check)
 ```
 
 Unlike `Path.exists()`, this never propagates `PermissionError` or `OSError`.
@@ -158,7 +158,7 @@ ensure_dir("/tmp/myapp/logs")
 ensure_dir("~/.thegent/sessions")
 # PosixPath('/Users/username/.thegent/sessions')
 
-ensure_dir("/tmp")   # already exists -- no error
+ensure_dir("/tmp")  # already exists -- no error
 ```
 
 **Returns**: Resolved absolute `Path` of the created/existing directory.
@@ -223,13 +223,14 @@ CONFIG_BASE = normalize_path("~/.myapp")
 ensure_dir(CONFIG_BASE)
 
 config_file = safe_join(CONFIG_BASE, "config.toml")
-logs_dir    = ensure_dir(safe_join(CONFIG_BASE, "logs"))
+logs_dir = ensure_dir(safe_join(CONFIG_BASE, "logs"))
 ```
 
 ### User Input Validation
 
 ```python
 from scripts.path_utils import normalize_path, is_within, safe_join
+
 
 def process_user_file(user_path: str, allowed_base: str) -> Path:
     """Process user-provided file path safely."""

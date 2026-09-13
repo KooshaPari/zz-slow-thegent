@@ -104,6 +104,7 @@ To "maximally engineer" this system, we are adding the following dimensions:
 ```python
 class Environment(BaseModel):
     """Represents a compute environment (Mac, Linux, Windows)"""
+
     env_id: str  # "mac-m1-mini", "linux-ubuntu-22.04", "windows-11"
     os: str  # "macos", "linux", "windows"
     arch: str  # "arm64", "x86_64"
@@ -135,8 +136,10 @@ class Environment(BaseModel):
     created_at: datetime
     expires_at: Optional[datetime]  # For temporary nodes
 
+
 class CapabilityProfile(BaseModel):
     """Capabilities of an environment"""
+
     languages: Set[str]  # {"python", "node", "rust", "go", "swift"}
     package_managers: Set[str]  # {"pip", "npm", "cargo", "go"}
     runtimes: Set[str]  # {"python-3.12", "node-20", "jvm-21"}
@@ -148,8 +151,10 @@ class CapabilityProfile(BaseModel):
     cloud_tools: Set[str]  # {"aws-cli", "gcloud", "az"}
     dev_frameworks: Set[str]  # {"xcode", "visual-studio", "vscode"}
 
+
 class ComputeCatalog(BaseModel):
     """Registry of all available environments"""
+
     environments: Dict[str, Environment]  # env_id -> Environment
 
     @classmethod
@@ -268,8 +273,10 @@ class CapabilityResolver:
         result = subprocess.run(["python3", "--version"], capture_output=True, text=True)
         return result.stdout.strip().split()[-1]  # "3.12.0"
 
+
 class CapabilityCache:
     """Cache resolved capabilities with TTL"""
+
     def __init__(self, ttl_seconds: int = 600):  # 10 min default
         self.ttl = ttl_seconds
         self.profile: Optional[CapabilityProfile] = None
@@ -394,6 +401,7 @@ class WorkloadClassifier:
 
         return min(1.0, base_score)
 
+
 class Classification(BaseModel):
     required_capabilities: Set[str]
     preferred_os: Optional[str]  # "macos", "linux", "windows", or None
@@ -411,12 +419,14 @@ class Classification(BaseModel):
 ```python
 from enum import Enum
 
+
 class RoutingPolicy(Enum):
     COST_OPTIMAL = "cost_optimal"  # Cheapest
     LATENCY_OPTIMAL = "latency_optimal"  # Fastest
     CAPABILITY_OPTIMAL = "capability_optimal"  # Most capable
     AVAILABILITY_OPTIMAL = "availability_optimal"  # Highest SLA
     PARETO = "pareto"  # Pareto frontier (cost vs latency)
+
 
 class OffloadRouter:
     """Route workload to best target environment"""
@@ -484,6 +494,7 @@ class OffloadRouter:
         env = self.catalog.environments[env_id]
         return env.network_latency_ms
 
+
 class Route(BaseModel):
     env_id: str
     hostname: str
@@ -501,6 +512,7 @@ class Route(BaseModel):
 ```python
 class ExecutionRequest(BaseModel):
     """Request to offload task execution"""
+
     request_id: str  # UUID
     timestamp: datetime
 
@@ -536,8 +548,10 @@ class ExecutionRequest(BaseModel):
             }
         }
 
+
 class ExecutionResponse(BaseModel):
     """Response from remote executor"""
+
     request_id: str  # Echo request_id
     timestamp: datetime
 
@@ -733,7 +747,9 @@ class RemoteExecutor:
     def run(self):
         """Start the server"""
         import uvicorn
+
         uvicorn.run(self.app, host=self.host, port=self.port)
+
 
 class ExecutionResult(BaseModel):
     exit_code: int
@@ -855,6 +871,7 @@ def register_offload_decision(self, run_id: str, offload_decision: OffloadDecisi
         "reason": offload_decision.reason,
     }
     self._append_to_registry(event)
+
 
 def register_offload_completion(self, run_id: str, response: ExecutionResponse):
     """Record offload execution result"""

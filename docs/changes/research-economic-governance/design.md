@@ -44,25 +44,30 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Dict, List
 
+
 @dataclass
 class ProviderMetrics:
     """Measured provider performance"""
+
     provider_id: str
-    reliability: float      # 0.0-1.0 (uptime/success rate)
-    latency_p99: float      # milliseconds
+    reliability: float  # 0.0-1.0 (uptime/success rate)
+    latency_p99: float  # milliseconds
     cost_per_1m_tokens: float  # USD
-    last_updated: float     # Unix timestamp
-    sample_size: int        # Measurements in score
+    last_updated: float  # Unix timestamp
+    sample_size: int  # Measurements in score
+
 
 @dataclass
 class ProviderScore:
     """Normalized provider score"""
+
     provider_id: str
     reliability_score: float  # 0-10
-    latency_score: float      # 0-10 (lower latency = higher score)
-    cost_score: float         # 0-10 (lower cost = higher score)
-    composite_score: float    # Weighted average
+    latency_score: float  # 0-10 (lower latency = higher score)
+    cost_score: float  # 0-10 (lower cost = higher score)
+    composite_score: float  # Weighted average
     timestamp: float
+
 
 class ProviderScorer(ABC):
     """Abstract scorer for extensibility"""
@@ -76,6 +81,7 @@ class ProviderScorer(ABC):
     def normalize(self, raw_value: float, metric_type: str) -> float:
         """Normalize metric to 0-10 scale"""
         pass
+
 
 class DefaultProviderScorer(ProviderScorer):
     """Standard provider scorer with configurable weights"""
@@ -96,9 +102,9 @@ class DefaultProviderScorer(ProviderScorer):
         cost_score = self._normalize_cost(metrics.cost_per_1m_tokens)
 
         composite = (
-            reliability_score * self.RELIABILITY_WEIGHT +
-            latency_score * self.LATENCY_WEIGHT +
-            cost_score * self.COST_WEIGHT
+            reliability_score * self.RELIABILITY_WEIGHT
+            + latency_score * self.LATENCY_WEIGHT
+            + cost_score * self.COST_WEIGHT
         )
 
         return ProviderScore(
@@ -131,13 +137,16 @@ class DefaultProviderScorer(ProviderScorer):
 from typing import Dict, Optional
 from enum import Enum
 
+
 class ProviderType(Enum):
     DIRECT = "direct"
     PROXY = "proxy"
 
+
 @dataclass
 class ProviderConfig:
     """Provider configuration"""
+
     provider_id: str
     name: str
     provider_type: ProviderType
@@ -147,6 +156,7 @@ class ProviderConfig:
     max_rpm: int  # Requests per minute
     max_tpm: int  # Tokens per minute
     fallback_order: List[str]  # Preferred fallback providers
+
 
 class ProviderRegistry:
     """Centralized provider configuration"""
@@ -174,6 +184,7 @@ class ProviderRegistry:
         """Get fallback chain for provider"""
         config = cls.get(provider_id)
         return config.fallback_order if config else []
+
 
 # Initialize registry with built-in providers
 _BUILTIN_PROVIDERS = [
@@ -223,12 +234,14 @@ thegent/src/thegent/governance/
 from dataclasses import dataclass
 from enum import Enum
 
+
 class TaskComplexity(Enum):
     TRIVIAL = 1
     SIMPLE = 3
     MODERATE = 5
     COMPLEX = 7
     VERY_COMPLEX = 10
+
 
 class BusinessImpact(Enum):
     NONE = 0
@@ -237,20 +250,24 @@ class BusinessImpact(Enum):
     HIGH = 8
     CRITICAL = 10
 
+
 class UserPriority(Enum):
     STANDARD = 1
     ELEVATED = 3
     URGENT = 8
     BLOCKING = 10
 
+
 @dataclass
 class TaskValue:
     """Estimated task value"""
-    complexity: float      # 1-10
+
+    complexity: float  # 1-10
     business_impact: float  # 0-10
-    user_priority: float    # 1-10
+    user_priority: float  # 1-10
     estimated_value: float  # Composite
-    confidence: float       # 0.0-1.0 (confidence in estimate)
+    confidence: float  # 0.0-1.0 (confidence in estimate)
+
 
 class ValueEstimator:
     """Estimate task value for cost-to-value routing"""
@@ -267,9 +284,9 @@ class ValueEstimator:
         user_priority = self._estimate_user_priority(task)
 
         value = (
-            complexity * self.COMPLEXITY_WEIGHT +
-            business_impact * self.BUSINESS_IMPACT_WEIGHT +
-            user_priority * self.PRIORITY_WEIGHT
+            complexity * self.COMPLEXITY_WEIGHT
+            + business_impact * self.BUSINESS_IMPACT_WEIGHT
+            + user_priority * self.PRIORITY_WEIGHT
         )
 
         confidence = self._estimate_confidence(task)
@@ -285,36 +302,36 @@ class ValueEstimator:
     def _estimate_complexity(self, task) -> float:
         """Estimate task complexity (1-10)"""
         # Factors: lines of code, number of files, dependencies, etc.
-        if hasattr(task, 'complexity_hint'):
+        if hasattr(task, "complexity_hint"):
             return task.complexity_hint
 
         # Default: analyze task type
-        task_type = task.get('type', 'unknown')
+        task_type = task.get("type", "unknown")
         return {
-            'trivial_fix': 1,
-            'simple_refactor': 3,
-            'feature_addition': 7,
-            'system_design': 10,
+            "trivial_fix": 1,
+            "simple_refactor": 3,
+            "feature_addition": 7,
+            "system_design": 10,
         }.get(task_type, 5)
 
     def _estimate_business_impact(self, task) -> float:
         """Estimate business impact (0-10)"""
         # Factors: user-facing, revenue impact, compliance, etc.
-        if hasattr(task, 'business_impact'):
+        if hasattr(task, "business_impact"):
             return task.business_impact
 
-        business_category = task.get('business_category', 'internal')
+        business_category = task.get("business_category", "internal")
         return {
-            'internal': 2,
-            'user_experience': 6,
-            'revenue': 8,
-            'compliance': 9,
-            'security': 10,
+            "internal": 2,
+            "user_experience": 6,
+            "revenue": 8,
+            "compliance": 9,
+            "security": 10,
         }.get(business_category, 2)
 
     def _estimate_user_priority(self, task) -> float:
         """Estimate user priority (1-10)"""
-        if hasattr(task, 'priority'):
+        if hasattr(task, "priority"):
             return task.priority
 
         return 1  # Standard priority by default
@@ -322,8 +339,7 @@ class ValueEstimator:
     def _estimate_confidence(self, task) -> float:
         """Estimate confidence in value estimate (0-1)"""
         # Higher confidence for standard task types with explicit hints
-        if (hasattr(task, 'complexity_hint') and
-            hasattr(task, 'business_impact')):
+        if hasattr(task, "complexity_hint") and hasattr(task, "business_impact"):
             return 0.9
         return 0.6  # Lower confidence for inferred values
 ```
@@ -343,31 +359,36 @@ thegent/src/thegent/governance/cost.py
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class TokenEstimate:
     """Estimated token usage"""
+
     input_tokens: int
     output_tokens: int
     total_tokens: int
     confidence: float  # 0.0-1.0
 
+
 @dataclass
 class CostEstimate:
     """Estimated task cost"""
+
     provider_id: str
     token_estimate: TokenEstimate
     cost_usd: float
     confidence: float
+
 
 class CostEstimator:
     """Estimate task cost for given provider"""
 
     # Token estimation multipliers by task type
     TOKEN_ESTIMATES = {
-        'trivial_fix': (100, 50),           # (input, output)
-        'simple_refactor': (300, 150),
-        'feature_addition': (1000, 500),
-        'system_design': (2000, 1000),
+        "trivial_fix": (100, 50),  # (input, output)
+        "simple_refactor": (300, 150),
+        "feature_addition": (1000, 500),
+        "system_design": (2000, 1000),
     }
 
     def estimate(
@@ -385,10 +406,7 @@ class CostEstimator:
         token_estimate = self._estimate_tokens(task)
 
         # Calculate cost
-        cost_usd = (
-            token_estimate.total_tokens / 1_000_000 *
-            provider_config.cost_per_1m_tokens
-        )
+        cost_usd = token_estimate.total_tokens / 1_000_000 * provider_config.cost_per_1m_tokens
 
         return CostEstimate(
             provider_id=provider_id,
@@ -399,7 +417,7 @@ class CostEstimator:
 
     def _estimate_tokens(self, task) -> TokenEstimate:
         """Estimate token usage"""
-        task_type = task.get('type', 'unknown')
+        task_type = task.get("type", "unknown")
 
         if task_type in self.TOKEN_ESTIMATES:
             input_est, output_est = self.TOKEN_ESTIMATES[task_type]
@@ -408,7 +426,7 @@ class CostEstimator:
             input_est, output_est = 500, 250
 
         # Adjust based on task size hints
-        if hasattr(task, 'size_multiplier'):
+        if hasattr(task, "size_multiplier"):
             input_est *= task.size_multiplier
             output_est *= task.size_multiplier
 
@@ -439,9 +457,11 @@ from dataclasses import dataclass
 from typing import List, Optional
 import logging
 
+
 @dataclass
 class RoutingDecision:
     """Decision made by router"""
+
     selected_provider: str
     candidate_providers: List[str]
     cost_to_value_ratio: float
@@ -450,6 +470,7 @@ class RoutingDecision:
     fallback_chain: List[str]
     decision_rationale: str
     timestamp: float
+
 
 class CostAwareRouter:
     """Route tasks to providers based on cost-to-value ratio"""
@@ -498,7 +519,7 @@ class CostAwareRouter:
             else:
                 # Fallback: select highest-scoring provider
                 selected_provider = self._select_by_score(candidates)
-                best_ratio = float('inf')
+                best_ratio = float("inf")
 
             # Get fallback chain
             fallback_chain = ProviderRegistry.get_fallback_order(selected_provider)
@@ -511,9 +532,7 @@ class CostAwareRouter:
                 cost_estimates=cost_estimates,
                 value_estimate=value_estimate,
                 fallback_chain=fallback_chain,
-                decision_rationale=self._build_rationale(
-                    selected_provider, ratios, value_estimate
-                ),
+                decision_rationale=self._build_rationale(selected_provider, ratios, value_estimate),
                 timestamp=time.time(),
             )
 
@@ -673,11 +692,10 @@ async def store_provider_metrics(self, metrics: ProviderMetrics):
         ],
     )
 
+
 # Query provider scores
 async def get_provider_metrics(self, provider_id: str) -> ProviderMetrics:
-    nodes = await supermemory_client.query_knowledge(
-        f"provider:{provider_id}"
-    )
+    nodes = await supermemory_client.query_knowledge(f"provider:{provider_id}")
     return self._parse_metrics(nodes)
 ```
 
@@ -790,23 +808,25 @@ class AuditLogEntry:
 def test_value_estimator():
     """Test value estimation"""
     estimator = ValueEstimator()
-    task = {'type': 'feature_addition', 'priority': 5}
+    task = {"type": "feature_addition", "priority": 5}
     value = estimator.estimate(task)
     assert 5 < value.estimated_value < 8
+
 
 def test_cost_estimator():
     """Test cost estimation"""
     estimator = CostEstimator()
-    task = {'type': 'simple_refactor'}
-    cost = estimator.estimate(task, 'gemini-flash')
+    task = {"type": "simple_refactor"}
+    cost = estimator.estimate(task, "gemini-flash")
     assert cost.cost_usd < 0.01  # Should be cheap
+
 
 def test_router_selects_best_ratio():
     """Test router selects provider with best ratio"""
     router = CostAwareRouter()
-    task = {'type': 'trivial_fix'}
+    task = {"type": "trivial_fix"}
     decision = router.route(task)
-    assert decision.selected_provider == 'gemini-flash'  # Cheapest
+    assert decision.selected_provider == "gemini-flash"  # Cheapest
 ```
 
 ### 6.2 Integration Tests

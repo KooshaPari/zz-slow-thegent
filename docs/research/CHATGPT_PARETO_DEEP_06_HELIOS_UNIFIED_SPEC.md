@@ -174,9 +174,11 @@ Static "pick a model" logic fails because pricing, availability, and speed claim
 
 ```python
 for offer in offers:
-    if not hard_constraints_ok(offer): continue
+    if not hard_constraints_ok(offer):
+        continue
     cost = effective_cost(offer)
-    if cost > maxCost: continue
+    if cost > maxCost:
+        continue
     speed = speed_score(offer)
     quality = quality_score(offer)
     candidates.append((offer, cost, speed, quality))

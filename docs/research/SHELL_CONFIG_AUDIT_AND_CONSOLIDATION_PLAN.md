@@ -339,9 +339,11 @@ from pathlib import Path
 from dataclasses import dataclass
 from typing import List
 
+
 @dataclass
 class ShellConfig:
     """Shell configuration generator."""
+
     is_agent: bool = False
     use_starship: bool = True
     use_zsh_autosuggestions: bool = True
@@ -357,17 +359,21 @@ class ShellConfig:
         ]
 
         if self.is_agent:
-            lines.extend([
-                "# Agent mode: skip heavy init",
-                'export AGENT_ID="thegent"',
-                'export heliosShield_AGENT_CONTEXT="1"',
-                'return',
-            ])
+            lines.extend(
+                [
+                    "# Agent mode: skip heavy init",
+                    'export AGENT_ID="thegent"',
+                    'export heliosShield_AGENT_CONTEXT="1"',
+                    "return",
+                ]
+            )
         else:
-            lines.extend([
-                "# User mode: full initialization",
-                "",
-            ])
+            lines.extend(
+                [
+                    "# User mode: full initialization",
+                    "",
+                ]
+            )
 
         return "\n".join(lines)
 
@@ -383,15 +389,16 @@ class ShellConfig:
             lines.append('eval "$(starship init zsh)"')
 
         if self.use_zsh_autosuggestions:
-            lines.append('source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh')
+            lines.append("source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh")
 
         if self.use_fzf:
-            lines.append('source ~/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh')
+            lines.append("source ~/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh")
 
         if self.enable_protection:
-            lines.append('source ~/.zsh/safeguards.zsh')
+            lines.append("source ~/.zsh/safeguards.zsh")
 
         return "\n".join(lines)
+
 
 def main():
     config = ShellConfig(is_agent=False)
@@ -403,6 +410,7 @@ def main():
     print(zshenv)
     print("\nGenerated .zshrc:")
     print(zshrc)
+
 
 if __name__ == "__main__":
     main()

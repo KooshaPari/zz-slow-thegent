@@ -47,6 +47,7 @@ if element:
 ```python
 import subprocess
 
+
 def click_button_macos(button_name: str):
     script = f'''
     tell application "System Events"
@@ -59,6 +60,7 @@ def click_button_macos(button_name: str):
 **After (Cross-platform):**
 ```python
 from thegent.infra.desktop_automation import get_provider
+
 
 def click_button(button_name: str):
     provider = get_provider()
@@ -83,6 +85,7 @@ def automate_task():
 from thegent.infra.desktop_automation.coordinator import DesktopAutomationCoordinator, AutomationScope
 from thegent.infra.desktop_automation.base import AutomationAction
 
+
 def automate_task():
     provider = get_provider()
     coordinator = DesktopAutomationCoordinator(state_dir, provider)
@@ -90,11 +93,7 @@ def automate_task():
     scope = AutomationScope(app_name="TextEdit")
     action = AutomationAction(type="click", selector="button")
 
-    result = coordinator.execute_with_coordination(
-        scope=scope,
-        agent_id="my-agent",
-        action=action
-    )
+    result = coordinator.execute_with_coordination(scope=scope, agent_id="my-agent", action=action)
     return result
 ```
 
@@ -143,7 +142,7 @@ def automate_task():
 **Before:**
 ```python
 # macOS
-subprocess.run(["osascript", "-e", "tell application \"System Events\" to click button \"Save\""])
+subprocess.run(["osascript", "-e", 'tell application "System Events" to click button "Save"'])
 
 # Windows
 subprocess.run(["powershell", "-Command", "Click-Button -Name Save"])
@@ -217,6 +216,7 @@ from opentelemetry import trace
 
 tracer = trace.get_tracer("automation")
 
+
 def automate():
     with tracer.start_as_current_span("automation.click") as span:
         provider = get_provider()
@@ -238,6 +238,7 @@ def automate():
 ```python
 import subprocess
 
+
 def click_save_button():
     script = 'tell application "System Events" to click button "Save"'
     subprocess.run(["osascript", "-e", script])
@@ -246,6 +247,7 @@ def click_save_button():
 **After:**
 ```python
 from thegent.infra.desktop_automation import get_provider
+
 
 def click_save_button():
     provider = get_provider()
@@ -270,6 +272,7 @@ def fill_form_macos(data: dict):
 ```python
 from thegent.infra.desktop_automation import get_provider
 
+
 def fill_form(data: dict):
     provider = get_provider()
     for field, value in data.items():
@@ -286,19 +289,20 @@ def fill_form(data: dict):
 ```python
 def workflow_macos():
     # Step 1
-    subprocess.run(["osascript", "-e", "click button \"New\""])
+    subprocess.run(["osascript", "-e", 'click button "New"'])
     time.sleep(1)
     # Step 2
-    subprocess.run(["osascript", "-e", "set value of text field to \"Hello\""])
+    subprocess.run(["osascript", "-e", 'set value of text field to "Hello"'])
     time.sleep(1)
     # Step 3
-    subprocess.run(["osascript", "-e", "click button \"Save\""])
+    subprocess.run(["osascript", "-e", 'click button "Save"'])
 ```
 
 **After:**
 ```python
 from thegent.infra.desktop_automation.coordinator import DesktopAutomationCoordinator
 from thegent.infra.desktop_automation.base import AutomationAction, AutomationScope
+
 
 def workflow():
     provider = get_provider()
@@ -308,7 +312,7 @@ def workflow():
     steps = [
         AutomationAction(type="click", selector="button[name='New']"),
         AutomationAction(type="type_text", selector="text_field", text="Hello"),
-        AutomationAction(type="click", selector="button[name='Save']")
+        AutomationAction(type="click", selector="button[name='Save']"),
     ]
 
     for step in steps:

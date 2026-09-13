@@ -551,11 +551,13 @@ from pathlib import Path
 import subprocess
 import os
 
+
 class ShellType(Enum):
     BASH = "bash"
     ZSH = "zsh"
     SH = "sh"
     POWERSHELL = "pwsh"
+
 
 class ShellEnvironment:
     """Encapsulates shell detection and environment setup."""
@@ -652,6 +654,7 @@ class ShellEnvironment:
                 exit_code=e.returncode,
                 stderr=e.stderr,
             ) from e
+
 
 class ShellExecutor:
     """High-level executor for shell operations."""
@@ -1231,11 +1234,15 @@ tests/
 import pytest
 from thegent.shell.detection import detect_shell, ShellType
 
-@pytest.mark.parametrize("platform,expected", [
-    ("macos", ShellType.ZSH),   # or BASH if zsh unavailable
-    ("linux", ShellType.BASH),  # or ZSH if available
-    ("windows", ShellType.POWERSHELL),  # or BASH if WSL2
-])
+
+@pytest.mark.parametrize(
+    "platform,expected",
+    [
+        ("macos", ShellType.ZSH),  # or BASH if zsh unavailable
+        ("linux", ShellType.BASH),  # or ZSH if available
+        ("windows", ShellType.POWERSHELL),  # or BASH if WSL2
+    ],
+)
 def test_shell_detection(platform, expected):
     detected = detect_shell(platform=platform)
     assert detected == expected
@@ -1275,6 +1282,7 @@ echo "All tests passed"
 import subprocess
 from pathlib import Path
 
+
 def test_dispatcher_posix_hook():
     """Dispatcher routes to POSIX hook on Unix."""
     result = subprocess.run(
@@ -1284,6 +1292,7 @@ def test_dispatcher_posix_hook():
         text=True,
     )
     assert result.returncode == 0 or "qa-check.sh" in result.stderr
+
 
 def test_dispatcher_powershell_hook():
     """Dispatcher routes to PowerShell hook on Windows."""

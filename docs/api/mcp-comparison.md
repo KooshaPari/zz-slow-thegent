@@ -188,11 +188,7 @@ If you want to use `atoms-mcp-prod` from `agentapi/atomsagent`:
 2. **Compose it in agentapi/atomsagent**:
    ```python
    # The compose_mcp_servers() function will automatically include it
-   servers = await compose_mcp_servers(
-       user_id=user_id,
-       org_id=org_id,
-       additional_servers={"atoms-mcp": atoms_mcp_config}
-   )
+   servers = await compose_mcp_servers(user_id=user_id, org_id=org_id, additional_servers={"atoms-mcp": atoms_mcp_config})
    ```
 
 3. **Both MCP servers will be available**:

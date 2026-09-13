@@ -106,7 +106,7 @@ clean = merge_files(
     ours=Path("ours.py"),
     theirs=Path("theirs.py"),
     output=Path("merged.py"),
-    path_hint="src/parser.py",   # optional: helps mergiraf detect the language
+    path_hint="src/parser.py",  # optional: helps mergiraf detect the language
 )
 
 if not clean:

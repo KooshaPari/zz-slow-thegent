@@ -255,6 +255,7 @@ class PaneManager:
 def save_layout(self) -> dict:
     return self._serialize_tree(self.root)
 
+
 def restore_layout(self, layout_data: dict) -> None:
     self.root = self._deserialize_tree(layout_data)
 ```

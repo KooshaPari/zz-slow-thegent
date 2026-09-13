@@ -62,6 +62,7 @@ import asyncio
 from pathlib import Path
 from thegent.doc_tools import PlaywrightRecorder, RecordingConfig
 
+
 async def record_demo():
     config = RecordingConfig(
         base_url="http://localhost:5173",
@@ -83,6 +84,7 @@ async def record_demo():
             print(f"Success! Screenshots: {result.screenshot_paths}")
         else:
             print(f"Failed: {result.error}")
+
 
 # Run the recording
 asyncio.run(record_demo())
@@ -273,6 +275,7 @@ result.to_json(Path("recordings/result.json"))  # Save to file
 from pathlib import Path
 from thegent.doc_tools import PlaywrightRecorder, RecordingConfig
 
+
 async def simple_demo():
     config = RecordingConfig(output_dir=Path("docs/recordings/outputs"))
 
@@ -282,6 +285,7 @@ async def simple_demo():
         await recorder.wait(2000)
         screenshot = await recorder.screenshot("button-clicked")
         print(f"Screenshot: {screenshot}")
+
 
 # Run with: asyncio.run(simple_demo())
 ```
@@ -314,6 +318,7 @@ async def form_demo():
 
 ```python
 from thegent.doc_tools import RecordingConfig
+
 
 async def record_all_browsers():
     for browser in ["chromium", "firefox", "webkit"]:
@@ -420,7 +425,7 @@ Increase timeout in config:
 
 ```python
 config = RecordingConfig(
-    http_timeout=60000,        # 60 seconds
+    http_timeout=60000,  # 60 seconds
     navigation_timeout=60000,  # 60 seconds
 )
 ```

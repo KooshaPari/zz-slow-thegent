@@ -61,9 +61,11 @@ import platform
 from typing import Tuple, Optional
 from dataclasses import dataclass
 
+
 @dataclass
 class ResourceSnapshot:
     """System resource snapshot."""
+
     fd_used: int
     fd_limit: int
     mem_available_mb: int
@@ -71,6 +73,7 @@ class ResourceSnapshot:
     load_5m: float
     load_15m: float
     cpu_count: int
+
 
 def sample_resources() -> ResourceSnapshot:
     """Sample system resources (cross-platform)."""
@@ -98,6 +101,7 @@ def sample_resources() -> ResourceSnapshot:
         cpu_count=cpu_count,
     )
 
+
 def _get_fd_usage(system: str) -> Tuple[int, int]:
     """Get FD usage (used, limit)."""
     if system == "Linux":
@@ -109,6 +113,7 @@ def _get_fd_usage(system: str) -> Tuple[int, int]:
 
         # Get limit
         import resource
+
         soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
         return fd_count, soft
 
@@ -122,23 +127,23 @@ def _get_fd_usage(system: str) -> Tuple[int, int]:
                 timeout=1.0,
             )
             # Filter out .txt (loaded libraries)
-            fd_count = len([
-                line for line in result.stdout.splitlines()
-                if " txt " not in line
-            ])
+            fd_count = len([line for line in result.stdout.splitlines() if " txt " not in line])
         except (subprocess.TimeoutExpired, FileNotFoundError):
             fd_count = 0
 
         # Get limit
         import resource
+
         soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
         return fd_count, soft
 
     else:
         # Windows or unknown
         import resource
+
         soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
         return 0, soft
+
 
 def _get_memory_available_mb(system: str) -> int:
     """Get available memory in MB."""
@@ -192,6 +197,7 @@ from functools import lru_cache
 from time import time
 from typing import Dict
 
+
 class CachedResourceSampler:
     """Resource sampler with caching for expensive operations."""
 
@@ -233,9 +239,11 @@ class CachedResourceSampler:
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class ProcessMetrics:
     """Per-process resource metrics."""
+
     pid: int
     name: str
     rss_mb: float
@@ -243,6 +251,7 @@ class ProcessMetrics:
     fd_count: int
     thread_count: int
     port_count: int
+
 
 def get_process_metrics(pid: int) -> Optional[ProcessMetrics]:
     """Get metrics for a specific process."""
@@ -254,6 +263,7 @@ def get_process_metrics(pid: int) -> Optional[ProcessMetrics]:
         return _get_process_metrics_macos(pid)
     else:
         return None
+
 
 def _get_process_metrics_linux(pid: int) -> Optional[ProcessMetrics]:
     """Get process metrics on Linux."""
@@ -304,6 +314,7 @@ def _get_process_metrics_linux(pid: int) -> Optional[ProcessMetrics]:
     except (OSError, ValueError, IndexError):
         return None
 
+
 def _get_process_metrics_macos(pid: int) -> Optional[ProcessMetrics]:
     """Get process metrics on macOS."""
     try:
@@ -340,10 +351,7 @@ def _get_process_metrics_macos(pid: int) -> Optional[ProcessMetrics]:
                 text=True,
                 timeout=1.0,
             )
-            fd_count = len([
-                line for line in result.stdout.splitlines()
-                if " txt " not in line
-            ])
+            fd_count = len([line for line in result.stdout.splitlines() if " txt " not in line])
         except (subprocess.TimeoutExpired, FileNotFoundError):
             fd_count = 0
 
@@ -362,6 +370,7 @@ def _get_process_metrics_macos(pid: int) -> Optional[ProcessMetrics]:
     except (OSError, ValueError, IndexError, subprocess.TimeoutExpired):
         return None
 
+
 def _count_ports_linux(pid: int) -> int:
     """Count open ports for process on Linux."""
     try:
@@ -373,6 +382,7 @@ def _count_ports_linux(pid: int) -> int:
         return len([line for line in result.stdout.splitlines() if "TCP" in line or "UDP" in line])
     except (FileNotFoundError, subprocess.TimeoutExpired):
         return 0
+
 
 def _count_ports_macos(pid: int) -> int:
     """Count open ports for process on macOS."""
@@ -399,6 +409,7 @@ def get_all_process_metrics(pids: list[int]) -> list[ProcessMetrics]:
         if metric:
             metrics.append(metric)
     return metrics
+
 
 def get_top_processes_by_rss(n: int = 20) -> list[ProcessMetrics]:
     """Get top N processes by RSS."""
@@ -434,14 +445,17 @@ def get_top_processes_by_rss(n: int = 20) -> list[ProcessMetrics]:
 ```python
 from dataclasses import dataclass
 
+
 @dataclass
 class LimitGateConfig:
     """Resource gate configuration."""
+
     fd_threshold: float = 0.75  # Block when FD ≥ 75%
     memory_threshold_mb: int = 256  # Block when memory < 256 MB
     load_per_cpu_max: float = 1.5  # Block when load ≥ 1.5× CPU
     thread_threshold: Optional[int] = None  # Block when threads > threshold
     port_threshold: Optional[int] = None  # Block when ports > threshold
+
 
 def check_gates(snapshot: ResourceSnapshot, config: LimitGateConfig) -> Tuple[bool, list[str]]:
     """Check if resource gates allow execution."""
@@ -526,6 +540,7 @@ def prioritize_processes_for_prune(
 
     return [m.pid for m in metrics]
 
+
 def prune_orphans_rss_aware(
     threshold: int = 12,
     sort_by: str = "rss",
@@ -541,7 +556,7 @@ def prune_orphans_rss_aware(
     prioritized = prioritize_processes_for_prune(orphans, sort_by=sort_by)
 
     # Kill top N processes
-    to_kill = prioritized[:len(orphans) - threshold]
+    to_kill = prioritized[: len(orphans) - threshold]
     killed = 0
 
     for pid in to_kill:
@@ -624,6 +639,7 @@ prune:
 ```python
 # Enable debug logging
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 
 # Check resource snapshot

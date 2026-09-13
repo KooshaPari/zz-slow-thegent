@@ -256,7 +256,7 @@ def start(self):
         scope_tags={
             "swarm_controller_version": "1.0",
             "started_at": datetime.now().isoformat(),
-        }
+        },
     )
     self.l1_agent_id = l1_identity.agent_id
     self.logger.info(f"Registered L1 agent: {self.l1_agent_id}")
@@ -281,6 +281,7 @@ def monitor_agents(self):
 
         # ... rest of monitoring ...
 
+
 def _should_register_agent(self, agent_id: str, metrics: AgentMetrics) -> bool:
     """Check if agent needs registry entry."""
     # Don't re-register if already in registry
@@ -289,6 +290,7 @@ def _should_register_agent(self, agent_id: str, metrics: AgentMetrics) -> bool:
     # Register on first appearance
     return metrics.pid is not None
 
+
 def _register_agent_to_registry(self, agent_id: str, metrics: AgentMetrics):
     """Register agent to global registry."""
     try:
@@ -296,18 +298,22 @@ def _register_agent_to_registry(self, agent_id: str, metrics: AgentMetrics):
         level = AgentLevel.L3_EXECUTOR if "L3" in agent_id else AgentLevel.L2_WORKER
         role = AgentRole.GENERIC
 
-        identity = self.agent_factory.create_l2_agent(
-            self.project_name,
-            role=role,
-            parent_l1_id=self.l1_agent_id,
-            capabilities=["task_execution"],
-            scope_tags={
-                "swarm_controller_pid": metrics.pid,
-                "initial_status": metrics.status.value,
-            }
-        ) if level == AgentLevel.L2_WORKER else self.agent_factory.create_l3_agent(
-            self.project_name,
-            parent_l2_id=self.l1_agent_id,  # Simplified for now
+        identity = (
+            self.agent_factory.create_l2_agent(
+                self.project_name,
+                role=role,
+                parent_l1_id=self.l1_agent_id,
+                capabilities=["task_execution"],
+                scope_tags={
+                    "swarm_controller_pid": metrics.pid,
+                    "initial_status": metrics.status.value,
+                },
+            )
+            if level == AgentLevel.L2_WORKER
+            else self.agent_factory.create_l3_agent(
+                self.project_name,
+                parent_l2_id=self.l1_agent_id,  # Simplified for now
+            )
         )
 
         self.logger.info(f"Registered {agent_id} to registry as {identity.agent_id}")
@@ -348,6 +354,7 @@ def cleanup_stale_agents(self):
             else:
                 self.agent_registry.unregister_agent(agent.agent_id)
                 self.logger.info(f"Unregistered stale: {agent.agent_id}")
+
 
 def _try_recover_agent(self, agent_id: str) -> bool:
     """Attempt to restart or ping stale agent."""
@@ -518,8 +525,9 @@ self.agent_id_map = {
 ```python
 import fcntl
 
+
 def _save_to_disk_locked(self):
-    with open(self.registry_path, 'r+') as f:
+    with open(self.registry_path, "r+") as f:
         fcntl.flock(f.fileno(), fcntl.LOCK_EX)
         # write operation
         fcntl.flock(f.fileno(), fcntl.LOCK_UN)
@@ -1064,10 +1072,7 @@ for agent_dir in sorted(agents_dir.iterdir()):
     jsonl_count = sum(1 for line in open(jsonl_file) if line.strip())
 
     # Count SQLite records
-    sqlite_count = db.execute(
-        "SELECT COUNT(*) FROM memories WHERE agent_id = ?",
-        (agent_dir.name,)
-    ).fetchone()[0]
+    sqlite_count = db.execute("SELECT COUNT(*) FROM memories WHERE agent_id = ?", (agent_dir.name,)).fetchone()[0]
 
     status = "OK" if jsonl_count == sqlite_count else "MISMATCH"
     print(f"{agent_dir.name}: JSONL={jsonl_count} SQLite={sqlite_count} [{status}]")
@@ -1283,6 +1288,7 @@ from tenacity import (
 )
 from pybreaker import CircuitBreaker
 
+
 class ResilientHTTPClient:
     """HTTP client with retry, circuit breaker, timeout."""
 
@@ -1296,13 +1302,16 @@ class ResilientHTTPClient:
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=2, max=10),
-        retry=retry_if_exception_type((
-            httpx.NetworkError,
-            httpx.TimeoutException,
-        )),
+        retry=retry_if_exception_type(
+            (
+                httpx.NetworkError,
+                httpx.TimeoutException,
+            )
+        ),
     )
     async def get(self, url: str) -> dict:
         """GET request with retry and circuit breaker."""
+
         async def _request():
             response = await self.client.get(url)
             response.raise_for_status()
@@ -1312,6 +1321,7 @@ class ResilientHTTPClient:
 
     async def close(self):
         await self.client.aclose()
+
 
 # Usage
 client = ResilientHTTPClient()
@@ -1333,11 +1343,14 @@ import time
 
 app = FastAPI()
 
+
 class HealthStatus(Enum):
     HEALTHY = 200
     UNHEALTHY = 503
 
+
 startup_time = time.time()
+
 
 @app.get("/health/live")
 async def health_live(response: Response):
@@ -1347,6 +1360,7 @@ async def health_live(response: Response):
         "status": "alive",
         "uptime_sec": time.time() - startup_time,
     }
+
 
 @app.get("/health/ready")
 async def health_ready(response: Response):
@@ -1362,10 +1376,12 @@ async def health_ready(response: Response):
         response.status_code = HealthStatus.UNHEALTHY.value
         return {"status": "not_ready", "reason": str(e)}
 
+
 async def check_database():
     """Verify database connectivity."""
     # Your DB ping logic
     pass
+
 
 async def check_cache():
     """Verify cache connectivity."""
@@ -1412,12 +1428,14 @@ CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0"]
 ```python
 from tenacity import retry, stop_after_attempt, wait_exponential
 
+
 @retry(
     stop=stop_after_attempt(3),
     wait=wait_exponential(multiplier=1, min=2, max=10),
 )
 async def call_external_api():
     return await httpx.get("https://api.example.com/data")
+
 
 # With fallback
 async def call_with_fallback():
@@ -1433,9 +1451,10 @@ async def call_with_fallback():
 from pybreaker import CircuitBreaker
 
 breaker = CircuitBreaker(
-    fail_max=5,          # Open after 5 failures
+    fail_max=5,  # Open after 5 failures
     timeout_seconds=60,  # Wait 60s before retrying
 )
+
 
 async def call_protected_service():
     try:
@@ -1450,6 +1469,7 @@ async def call_protected_service():
 ```python
 import asyncio
 
+
 async def run_with_concurrency(tasks, max_concurrent=10):
     """Run tasks with concurrency limit."""
     semaphore = asyncio.Semaphore(max_concurrent)
@@ -1459,6 +1479,7 @@ async def run_with_concurrency(tasks, max_concurrent=10):
             return await task()
 
     return await asyncio.gather(*[bounded_task(t) for t in tasks])
+
 
 # Usage
 tasks = [fetch_user(i) for i in range(100)]
@@ -1470,6 +1491,7 @@ results = await run_with_concurrency(tasks, max_concurrent=10)
 ```python
 import asyncio
 
+
 async def call_with_timeout(coro, timeout_sec=5, default=None):
     """Call with timeout; return default on timeout."""
     try:
@@ -1477,6 +1499,7 @@ async def call_with_timeout(coro, timeout_sec=5, default=None):
     except asyncio.TimeoutError:
         logger.warning(f"Timeout after {timeout_sec}s")
         return default
+
 
 # Usage
 result = await call_with_timeout(
@@ -1492,6 +1515,7 @@ result = await call_with_timeout(
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
+
 class Bulkhead:
     def __init__(self, max_workers=10):
         self.executor = ThreadPoolExecutor(max_workers=max_workers)
@@ -1500,6 +1524,7 @@ class Bulkhead:
         """Run CPU-bound function in separate pool."""
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(self.executor, func, *args)
+
 
 # Usage
 bulkhead = Bulkhead(max_workers=4)
@@ -1511,6 +1536,7 @@ result = await bulkhead.call_cpu_bound(expensive_cpu_function)
 ```python
 import asyncio
 import signal
+
 
 class Service:
     def __init__(self):
@@ -1562,10 +1588,12 @@ class ExternalAPIClient:
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=1, max=10),
-        retry=retry_if_exception_type((
-            httpx.TimeoutException,
-            httpx.NetworkError,
-        )),
+        retry=retry_if_exception_type(
+            (
+                httpx.TimeoutException,
+                httpx.NetworkError,
+            )
+        ),
     )
     async def get_user(self, user_id: str) -> dict:
         async def _fetch():
@@ -1597,11 +1625,12 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 engine = create_async_engine(
     "postgresql+asyncpg://...",
-    pool_size=20,           # Max idle connections
-    max_overflow=10,        # Max overflow connections
-    pool_timeout=30,        # Wait 30s for connection
-    pool_recycle=3600,      # Recycle connections every hour
+    pool_size=20,  # Max idle connections
+    max_overflow=10,  # Max overflow connections
+    pool_timeout=30,  # Wait 30s for connection
+    pool_recycle=3600,  # Recycle connections every hour
 )
+
 
 async def get_user_with_timeout(user_id: int):
     """Query with timeout."""
@@ -1628,6 +1657,7 @@ from celery import Celery
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 app = Celery("tasks")
+
 
 @app.task(
     bind=True,
@@ -1661,6 +1691,7 @@ from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
+
 class LoadShedder:
     def __init__(self, max_queue_size=1000):
         self.queue_size = 0
@@ -1677,7 +1708,9 @@ class LoadShedder:
     async def decrement(self):
         self.queue_size -= 1
 
+
 shedder = LoadShedder()
+
 
 @app.post("/process")
 async def process_request(response: Response):
@@ -1711,12 +1744,14 @@ import httpx
 import asyncio
 from dataclasses import dataclass
 
+
 @dataclass
 class Agent:
     id: str
     url: str
     health: str = "unknown"
     response_time_ms: float = 0
+
 
 class AgentPool:
     def __init__(self, agents: list[Agent]):
@@ -1779,7 +1814,7 @@ print(f"Last failure: {breaker.last_failure_time}")
 breaker = CircuitBreaker(
     fail_max=5,
     timeout_seconds=120,  # Increased from 60
-    fail_counter=0,       # Reset counter manually if needed
+    fail_counter=0,  # Reset counter manually if needed
 )
 
 # Or manually reset
@@ -1794,6 +1829,7 @@ breaker.fail_counter = 0
 ```python
 # Log retry attempts
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 
 # Enable tenacity logging
@@ -1821,9 +1857,11 @@ async def api_call():
 from sqlalchemy import event
 from sqlalchemy.pool import Pool
 
+
 @event.listens_for(Pool, "connect")
 def receive_connect(dbapi_conn, connection_record):
     print(f"Connection created. Pool size: {dbapi_conn}")
+
 
 @event.listens_for(Pool, "checkout")
 def receive_checkout(dbapi_conn, connection_record, connection_proxy):
@@ -1835,12 +1873,13 @@ def receive_checkout(dbapi_conn, connection_record, connection_proxy):
 # Increase pool size
 engine = create_async_engine(
     "postgresql+asyncpg://...",
-    pool_size=50,      # Increase
-    max_overflow=20,   # Increase
+    pool_size=50,  # Increase
+    max_overflow=20,  # Increase
 )
 
 # Or use connection pooling in application
 from aiopool import AioPool
+
 pool = AioPool(min_size=10, max_size=50)
 ```
 
@@ -1852,6 +1891,7 @@ pool = AioPool(min_size=10, max_size=50)
 ```python
 # Measure actual latency
 import time
+
 start = time.time()
 result = await operation()
 elapsed = time.time() - start
@@ -3222,6 +3262,7 @@ import json
 import subprocess
 from pathlib import Path
 
+
 class AgentMetricsReporter:
     def __init__(self, agent_id: str):
         self.agent_id = agent_id
@@ -3243,6 +3284,7 @@ class AgentMetricsReporter:
         for key, value in self.metrics.items():
             args.append(f"{key}={value}")
         subprocess.run(args, check=False)
+
 
 # Usage
 reporter = AgentMetricsReporter("agent-1")
@@ -3297,6 +3339,7 @@ import subprocess
 import json
 from pathlib import Path
 
+
 class ThegentSwarmBridge:
     def __init__(self):
         self.controller_cmd = "python3 scripts/swarm_controller.py"
@@ -3311,28 +3354,21 @@ class ThegentSwarmBridge:
         )
 
         # Register with controller
-        subprocess.run([
-            self.controller_cmd, "--update-metrics", agent_id,
-            f"pid={proc.pid}",
-            "task_progress=0",
-            "error_count=0"
-        ])
+        subprocess.run(
+            [self.controller_cmd, "--update-metrics", agent_id, f"pid={proc.pid}", "task_progress=0", "error_count=0"]
+        )
 
         return proc.pid
 
     def report_progress(self, agent_id: str, progress: int, errors: int):
         """Report agent progress."""
-        subprocess.run([
-            self.controller_cmd, "--update-metrics", agent_id,
-            f"task_progress={progress}",
-            f"error_count={errors}"
-        ])
+        subprocess.run(
+            [self.controller_cmd, "--update-metrics", agent_id, f"task_progress={progress}", f"error_count={errors}"]
+        )
 
     def can_spawn_agent(self) -> bool:
         """Check if system can spawn new agent."""
-        result = subprocess.run([
-            self.controller_cmd, "--status"
-        ], capture_output=True, text=True)
+        result = subprocess.run([self.controller_cmd, "--status"], capture_output=True, text=True)
 
         if result.returncode != 0:
             return True  # Assume OK if controller not ready
@@ -3353,31 +3389,29 @@ from prefect import task, flow
 from prefect.engine import get_state
 import subprocess
 
+
 class PrefectSwarmReporter:
     @staticmethod
     def report_task_start(agent_id: str, task_name: str):
-        subprocess.run([
-            "python3", "scripts/swarm_controller.py",
-            "--update-metrics", agent_id,
-            "task_progress=1"
-        ])
+        subprocess.run(["python3", "scripts/swarm_controller.py", "--update-metrics", agent_id, "task_progress=1"])
 
     @staticmethod
     def report_task_complete(agent_id: str, task_name: str):
-        subprocess.run([
-            "python3", "scripts/swarm_controller.py",
-            "--update-metrics", agent_id,
-            "task_progress=10"
-        ])
+        subprocess.run(["python3", "scripts/swarm_controller.py", "--update-metrics", agent_id, "task_progress=10"])
 
     @staticmethod
     def report_task_error(agent_id: str, error_msg: str):
-        subprocess.run([
-            "python3", "scripts/swarm_controller.py",
-            "--update-metrics", agent_id,
-            f"last_error={error_msg}",
-            "error_count=1"
-        ])
+        subprocess.run(
+            [
+                "python3",
+                "scripts/swarm_controller.py",
+                "--update-metrics",
+                agent_id,
+                f"last_error={error_msg}",
+                "error_count=1",
+            ]
+        )
+
 
 @flow(name="prefect-swarm-flow")
 def my_flow():
@@ -3398,6 +3432,7 @@ def my_flow():
         # Error: report to controller
         PrefectSwarmReporter.report_task_error(agent_id, str(e))
         raise
+
 
 @task
 def my_task():
@@ -3505,10 +3540,9 @@ import json
 import subprocess
 from datetime import datetime
 
+
 def check_swarm_health():
-    result = subprocess.run([
-        "python3", "scripts/swarm_controller.py", "--status"
-    ], capture_output=True, text=True)
+    result = subprocess.run(["python3", "scripts/swarm_controller.py", "--status"], capture_output=True, text=True)
 
     if result.returncode != 0:
         return
@@ -3536,9 +3570,11 @@ def check_swarm_health():
     for alert in alerts:
         send_alert(alert)
 
+
 def send_alert(message: str):
     # Your alerting logic (email, Slack, etc.)
     print(f"[{datetime.now()}] {message}")
+
 
 if __name__ == "__main__":
     check_swarm_health()
@@ -3868,16 +3904,16 @@ import json
 from pathlib import Path
 
 # Check specific records
-conn = sqlite3.connect('target.db')
+conn = sqlite3.connect("target.db")
 cursor = conn.cursor()
 
 # Sample verification
-cursor.execute('SELECT * FROM table LIMIT 10')
+cursor.execute("SELECT * FROM table LIMIT 10")
 for row in cursor.fetchall():
     # Verify fields exist and have expected types
-    assert row['id'] is not None
-    assert isinstance(row['timestamp'], (int, float))
-    assert row['content'] is not None
+    assert row["id"] is not None
+    assert isinstance(row["timestamp"], (int, float))
+    assert row["content"] is not None
 ```
 
 #### Step 4.3: Run Test Suite
@@ -4045,8 +4081,8 @@ SELECT COUNT(*) FROM target WHERE condition = 'expected';
 **Diagnosis:**
 ```python
 # Compare samples
-source_record = source.get('record_id')
-target_record = target.get('record_id')
+source_record = source.get("record_id")
+target_record = target.get("record_id")
 
 if source_record != target_record:
     print(f"Mismatch: {source_record} vs {target_record}")
@@ -4118,6 +4154,7 @@ python3 scripts/verify_migration.py
 ```python
 # Update application config
 from data_storage import SQLiteMemoryStorage
+
 storage = SQLiteMemoryStorage()
 ```
 
@@ -4402,13 +4439,7 @@ Or in code:
 import granian
 
 if __name__ == "__main__":
-    granian.run(
-        "app:app",
-        interface="asgi",
-        host="0.0.0.0",
-        port=8000,
-        workers=4
-    )
+    granian.run("app:app", interface="asgi", host="0.0.0.0", port=8000, workers=4)
 ```
 
 ## Testing Checklist
@@ -4939,14 +4970,17 @@ import "net/http"
 ```python
 # Old (psycopg2)
 import psycopg2
+
 conn = psycopg2.connect(...)
 
 # New (psycopg3 - sync)
 import psycopg
+
 conn = psycopg.connect(...)
 
 # Or (asyncpg - async)
 import asyncpg
+
 conn = await asyncpg.connect(...)
 ```
 

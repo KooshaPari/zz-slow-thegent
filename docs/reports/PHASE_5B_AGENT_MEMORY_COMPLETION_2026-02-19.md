@@ -49,25 +49,25 @@ class MemoryService:
 ```python
 @dataclass
 class AgentMemory:
-    memory_id: str                              # Unique ID
-    agent_id: str                               # Agent that owns this memory
-    memory_type: MemoryType                     # Type of memory
-    timestamp: float                            # When it occurred
+    memory_id: str  # Unique ID
+    agent_id: str  # Agent that owns this memory
+    memory_type: MemoryType  # Type of memory
+    timestamp: float  # When it occurred
     content: Dict[str, Any] = field(default_factory=dict)  # Main data
     context: Dict[str, str] = field(default_factory=dict)  # Tags, session_id, project
-    importance: float = 0.5                     # 0.0-1.0 (for prioritization)
-    verified: bool = False                      # Validated by human or peer?
+    importance: float = 0.5  # 0.0-1.0 (for prioritization)
+    verified: bool = False  # Validated by human or peer?
 ```
 
 **MemoryType (Enum)**
 ```python
 class MemoryType(Enum):
-    EXECUTION = "execution"       # Task completion
-    LEARNING = "learning"         # Pattern learned
-    DECISION = "decision"         # Decision made
-    ERROR = "error"               # Error encountered
-    INTERACTION = "interaction"   # Agent communication
-    MILESTONE = "milestone"       # Achievement
+    EXECUTION = "execution"  # Task completion
+    LEARNING = "learning"  # Pattern learned
+    DECISION = "decision"  # Decision made
+    ERROR = "error"  # Error encountered
+    INTERACTION = "interaction"  # Agent communication
+    MILESTONE = "milestone"  # Achievement
 ```
 
 #### Storage Architecture
@@ -146,7 +146,7 @@ class MemoryType(Enum):
   ```python
   for member in MemoryType:
       if member.value == memory_type_value:
-          data['memory_type'] = member
+          data["memory_type"] = member
           break
   ```
 
@@ -405,7 +405,7 @@ print(f"Total memories: {stats['total_memories']}")
 learnings = service.get_memories_by_importance("agent-1", min_importance=0.7, limit=5)
 
 # Cleanup old memories (30+ days old)
-deleted = service.purge_old_memories("agent-1", ttl_seconds=86400*30)
+deleted = service.purge_old_memories("agent-1", ttl_seconds=86400 * 30)
 print(f"Deleted {deleted} old memories")
 ```
 

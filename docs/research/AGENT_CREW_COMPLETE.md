@@ -111,6 +111,7 @@ crew.add_task(code_task)
 # Execute
 agent_executor = create_agent_executor(cwd=Path.cwd())
 from thegent.agents.crew.executor import TaskExecutor
+
 task_executor = TaskExecutor(agent_executor=agent_executor)
 
 executor = CrewExecutor(crew, task_executor=task_executor)

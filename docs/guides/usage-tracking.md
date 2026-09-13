@@ -22,6 +22,7 @@ redis_stats = result["data"]["embedding_cache"]  # or token_cache, rate_limiting
 **Direct Access**:
 ```python
 from atoms_mcp.infrastructure.redis_monitoring import get_redis_metrics
+
 metrics = await get_redis_metrics()
 all_stats = await metrics.get_all_metrics()
 ```
@@ -47,6 +48,7 @@ db_stats = result["data"]
 **Direct Access**:
 ```python
 from atoms_mcp.infrastructure.monitoring import get_performance_monitor
+
 monitor = get_performance_monitor()
 stats = monitor.get_stats()
 ```
@@ -68,6 +70,7 @@ analytics = result["data"]
 **Direct Access**:
 ```python
 from atoms_mcp.infrastructure.monitoring import get_usage_analytics
+
 analytics = get_usage_analytics()
 report = analytics.get_analytics_report()
 ```
@@ -219,19 +222,13 @@ from atoms_mcp.server import create_consolidated_server
 mcp = create_consolidated_server()
 
 # Get all metrics
-metrics = await mcp.call_tool("monitoring_tool", {
-    "operation": "get_metrics"
-})
+metrics = await mcp.call_tool("monitoring_tool", {"operation": "get_metrics"})
 
 # Get performance
-performance = await mcp.call_tool("monitoring_tool", {
-    "operation": "get_performance_profile"
-})
+performance = await mcp.call_tool("monitoring_tool", {"operation": "get_performance_profile"})
 
 # Get usage analytics
-analytics = await mcp.call_tool("monitoring_tool", {
-    "operation": "get_usage_analytics"
-})
+analytics = await mcp.call_tool("monitoring_tool", {"operation": "get_usage_analytics"})
 
 # Get health
 health = await mcp.call_tool("health_check", {})

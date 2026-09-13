@@ -116,14 +116,17 @@ from typing import Optional, Dict, Any
 from datetime import datetime
 from enum import Enum
 
+
 class ResourceStatus(str, Enum):
     PENDING = "pending"
     RUNNING = "running"
     COMPLETED = "completed"
     FAILED = "failed"
 
+
 class Resource(BaseModel):
     """Domain model for infrastructure resource"""
+
     id: str
     name: str
     type: str
@@ -131,9 +134,11 @@ class Resource(BaseModel):
     metadata: Dict[str, Any] = Field(default_factory=dict)
     created_at: datetime
     updated_at: datetime
-    
+
+
 class Deployment(BaseModel):
     """Domain model for deployment"""
+
     id: str
     name: str
     resources: list[Resource]
@@ -148,50 +153,53 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 from .models import Resource, Deployment
 
+
 class InfrastructureProviderPort(ABC):
     """Port for infrastructure providers (AWS, GCP, Azure)"""
-    
+
     @abstractmethod
     async def create_resource(self, resource: Resource) -> Resource:
         """Create a new infrastructure resource"""
         pass
-    
+
     @abstractmethod
     async def get_resource(self, resource_id: str) -> Optional[Resource]:
         """Get resource by ID"""
         pass
-    
+
     @abstractmethod
     async def list_resources(self, filters: dict) -> List[Resource]:
         """List resources with filters"""
         pass
-    
+
     @abstractmethod
     async def delete_resource(self, resource_id: str) -> bool:
         """Delete a resource"""
         pass
 
+
 class DeploymentPort(ABC):
     """Port for deployment operations"""
-    
+
     @abstractmethod
     async def deploy(self, deployment: Deployment) -> Deployment:
         """Deploy infrastructure"""
         pass
-    
+
     @abstractmethod
     async def get_deployment_status(self, deployment_id: str) -> ResourceStatus:
         """Get deployment status"""
         pass
 
+
 class StoragePort(ABC):
     """Port for storage operations"""
-    
+
     @abstractmethod
     async def upload(self, key: str, data: bytes) -> str:
         """Upload data to storage"""
         pass
-    
+
     @abstractmethod
     async def download(self, key: str) -> bytes:
         """Download data from storage"""
@@ -206,28 +214,29 @@ from pheno_sdk.domain.models import Resource, ResourceStatus
 import boto3
 from typing import List, Optional
 
+
 class AWSInfrastructureAdapter(InfrastructureProviderPort):
     """AWS implementation of infrastructure provider"""
-    
+
     def __init__(self, region: str, credentials: dict):
         self.region = region
-        self.ec2 = boto3.client('ec2', region_name=region, **credentials)
-    
+        self.ec2 = boto3.client("ec2", region_name=region, **credentials)
+
     async def create_resource(self, resource: Resource) -> Resource:
         """Create AWS resource (EC2, etc.)"""
         # Implementation
         pass
-    
+
     async def get_resource(self, resource_id: str) -> Optional[Resource]:
         """Get AWS resource"""
         # Implementation
         pass
-    
+
     async def list_resources(self, filters: dict) -> List[Resource]:
         """List AWS resources"""
         # Implementation
         pass
-    
+
     async def delete_resource(self, resource_id: str) -> bool:
         """Delete AWS resource"""
         # Implementation
@@ -239,8 +248,10 @@ class AWSInfrastructureAdapter(InfrastructureProviderPort):
 from pheno_sdk.domain.ports import InfrastructureProviderPort
 from google.cloud import compute_v1
 
+
 class GCPInfrastructureAdapter(InfrastructureProviderPort):
     """GCP implementation of infrastructure provider"""
+
     # Similar structure to AWS adapter
     pass
 ```
@@ -252,19 +263,20 @@ from pheno_sdk.domain.ports import InfrastructureProviderPort
 from pheno_sdk.domain.models import Resource, ResourceStatus
 from typing import List, Optional
 
+
 class InfrastructureService:
     """Application service for infrastructure operations"""
-    
+
     def __init__(self, provider: InfrastructureProviderPort):
         self.provider = provider
-    
+
     async def provision_resource(self, resource: Resource) -> Resource:
         """Provision a new resource"""
         # Business logic
         created = await self.provider.create_resource(resource)
         # Additional orchestration
         return created
-    
+
     async def get_resource_status(self, resource_id: str) -> Optional[ResourceStatus]:
         """Get resource status"""
         resource = await self.provider.get_resource(resource_id)
@@ -313,52 +325,54 @@ from pydantic import Field, SecretStr
 from typing import Optional
 import yaml
 
+
 class AWSSettings(BaseSettings):
     """AWS configuration"""
+
     region: str = "us-east-1"
     access_key_id: Optional[SecretStr] = None
     secret_access_key: Optional[SecretStr] = None
 
+
 class GCPSettings(BaseSettings):
     """GCP configuration"""
+
     project_id: str
     credentials_file: Optional[str] = None
 
+
 class PhenoSDKSettings(BaseSettings):
     """Main SDK settings"""
-    model_config = SettingsConfigDict(
-        env_prefix='PHENO_',
-        env_nested_delimiter='__',
-        case_sensitive=False
-    )
-    
+
+    model_config = SettingsConfigDict(env_prefix="PHENO_", env_nested_delimiter="__", case_sensitive=False)
+
     # General
     debug: bool = False
     log_level: str = "INFO"
-    
+
     # Providers
     aws: Optional[AWSSettings] = None
     gcp: Optional[GCPSettings] = None
-    
+
     # Features
     enable_caching: bool = True
     cache_ttl: int = 3600
     max_retries: int = 3
     timeout: int = 30
-    
+
     @classmethod
     def load(cls):
         """Load settings from YAML"""
         try:
-            with open('config.yml', 'r') as f:
+            with open("config.yml", "r") as f:
                 config = yaml.safe_load(f)
-            
+
             try:
-                with open('secrets.yml', 'r') as f:
+                with open("secrets.yml", "r") as f:
                     secrets = yaml.safe_load(f)
             except FileNotFoundError:
                 secrets = {}
-            
+
             merged = {**config, **secrets}
             return cls(**merged)
         except FileNotFoundError:
@@ -441,6 +455,7 @@ repos:
 # tests/conftest.py
 import pytest
 from pheno_sdk.config.settings import PhenoSDKSettings
+
 
 @pytest.fixture
 def test_settings():

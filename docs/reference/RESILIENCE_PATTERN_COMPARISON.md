@@ -150,10 +150,12 @@
 from tenacity import retry, stop_after_attempt, wait_exponential
 from pybreaker import CircuitBreaker
 
+
 # Retry
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=60))
 async def api_call():
     pass
+
 
 # Circuit Breaker
 breaker = CircuitBreaker(fail_max=5, timeout_seconds=60)
@@ -520,16 +522,16 @@ CircuitBreaker(fail_max=10, timeout_seconds=120)
 
 ```python
 # API calls
-timeout_sec=30  # 30s for external APIs
+timeout_sec = 30  # 30s for external APIs
 
 # Database queries
-timeout_sec=5   # 5s for queries
+timeout_sec = 5  # 5s for queries
 
 # Background tasks
-timeout_sec=300 # 5 min for long tasks
+timeout_sec = 300  # 5 min for long tasks
 
 # Microservices
-timeout_sec=10  # 10s inter-service
+timeout_sec = 10  # 10s inter-service
 ```
 
 ### Bulkhead Configuration Quick Copy

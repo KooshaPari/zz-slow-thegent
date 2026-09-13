@@ -24,10 +24,11 @@ Overlay probabilistic confidence on WBS milestones instead of binary done/not-do
 @dataclass
 class PERTNode:
     task_id: str
-    optimistic_days: float   # best-case duration
-    most_likely_days: float # expected duration
+    optimistic_days: float  # best-case duration
+    most_likely_days: float  # expected duration
     pessimistic_days: float  # worst-case duration
     predecessors: list[str]
+
 
 @dataclass
 class PERTResult:
@@ -68,6 +69,7 @@ class ResourceProfile:
     capacity: int | float  # e.g. concurrent runs, API quota
     unit: str  # "concurrent" | "quota_per_hour"
 
+
 @dataclass
 class TaskResourceDemand:
     task_id: str
@@ -75,6 +77,7 @@ class TaskResourceDemand:
     demand: float
     start_float: float
     duration_float: float
+
 
 @dataclass
 class ContentionResult:
@@ -114,6 +117,7 @@ class ContinuityRiskInput:
     handoff_windows: list[tuple[datetime, datetime]]
     snapshot_freshness: dict[str, datetime]
     owner_coverage: dict[str, list[str]]
+
 
 @dataclass
 class ContinuityRiskResult:

@@ -78,6 +78,7 @@ import os
 
 _thegent_parser = None
 
+
 def _get_native_parser():
     global _thegent_parser
     if _thegent_parser is not None:
@@ -91,6 +92,7 @@ def _get_native_parser():
         _thegent_parser = mod
         return mod
     return None
+
 
 def extract_tags(text: str, tags: list[str] | None = None) -> dict[str, str]:
     native = _get_native_parser()
@@ -446,6 +448,7 @@ mod tests {
 def test_native_parser_fallback():
     """Test that Python fallback works when native unavailable."""
     import os
+
     old = os.environ.get("THGENT_USE_NATIVE_PARSER")
     os.environ.pop("THGENT_USE_NATIVE_PARSER", None)
     try:
@@ -537,12 +540,15 @@ maturin build --target x86_64-pc-windows-msvc
 ```python
 # Enable debug logging
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 
 # Check if native module loads
 import os
+
 os.environ["THGENT_USE_NATIVE_PARSER"] = "1"
 from thegent.contracts.parser import _get_native_parser
+
 native = _get_native_parser()
 print(f"Native parser available: {native is not None}")
 ```

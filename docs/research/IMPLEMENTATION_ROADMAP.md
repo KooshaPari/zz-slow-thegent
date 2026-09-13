@@ -122,7 +122,7 @@ async def handle_responses_request(request: Request) -> Response:
             response = completion(
                 model=model,
                 messages=chat_request["messages"],
-                **{k: v for k, v in chat_request.items() if k not in ("model", "messages", "stream")}
+                **{k: v for k, v in chat_request.items() if k not in ("model", "messages", "stream")},
             )
 
             # Translate response back to Responses API format
@@ -152,9 +152,7 @@ async def handle_responses_request(request: Request) -> Response:
         )
 
 
-async def handle_responses_stream(
-    request: Request, chat_request: dict[str, Any], router
-) -> StreamingResponse:
+async def handle_responses_stream(request: Request, chat_request: dict[str, Any], router) -> StreamingResponse:
     """Handle Responses API streaming request via LiteLLM Router."""
     from litellm import acompletion
 
@@ -167,19 +165,21 @@ async def handle_responses_stream(
                 model=model,
                 messages=messages,
                 stream=True,
-                **{k: v for k, v in chat_request.items() if k not in ("model", "messages", "stream")}
+                **{k: v for k, v in chat_request.items() if k not in ("model", "messages", "stream")},
             ):
                 # Translate Chat Completions → Responses API
-                responses_event = _chat_completions_to_responses(chunk.model_dump() if hasattr(chunk, 'model_dump') else chunk)
+                responses_event = _chat_completions_to_responses(
+                    chunk.model_dump() if hasattr(chunk, "model_dump") else chunk
+                )
                 if responses_event:
                     yield f"data: {json.dumps(responses_event)}\n\n"
 
             # Send completion event
-            yield "data: {\"type\": \"response.completed\"}\n\n"
+            yield 'data: {"type": "response.completed"}\n\n'
 
         except Exception as e:
             _log.error("Error in Responses API stream: %s", e, exc_info=True)
-            yield f"data: {{\"error\": {{\"message\": \"{str(e)}\"}}}}\n\n"
+            yield f'data: {{"error": {{"message": "{str(e)}"}}}}\n\n'
 
     return StreamingResponse(
         stream(),
@@ -215,9 +215,11 @@ async def handle_responses_websocket(websocket: WebSocket) -> None:
             model=model,
             messages=messages,
             stream=True,
-            **{k: v for k, v in chat_request.items() if k not in ("model", "messages", "stream")}
+            **{k: v for k, v in chat_request.items() if k not in ("model", "messages", "stream")},
         ):
-            responses_event = _chat_completions_to_responses(chunk.model_dump() if hasattr(chunk, 'model_dump') else chunk)
+            responses_event = _chat_completions_to_responses(
+                chunk.model_dump() if hasattr(chunk, "model_dump") else chunk
+            )
             if responses_event:
                 await websocket.send_json(responses_event)
 
@@ -271,6 +273,7 @@ async def proxy_handler(request: Request) -> Response:
     if use_litellm and path == "/v1/responses" and request.method == "POST":
         try:
             from thegent.routing.litellm_responses_handler import handle_responses_request
+
             return await handle_responses_request(request)
         except Exception as e:
             _log.error("LiteLLM Router handler failed: %s", e, exc_info=True)
@@ -293,6 +296,7 @@ async def websocket_responses_handler(websocket: Any) -> None:
     if use_litellm:
         try:
             from thegent.routing.litellm_responses_handler import handle_responses_websocket
+
             await handle_responses_websocket(websocket)
             return
         except Exception as e:
@@ -322,6 +326,7 @@ async def websocket_responses_handler(websocket: Any) -> None:
 # Add global router instance (lazy initialization)
 _router_instance: Router | None = None
 _router_lock = threading.Lock()
+
 
 def get_litellm_router_instance(policy: str | None = None) -> Router:
     """Get or create LiteLLM Router instance (singleton)."""
@@ -415,9 +420,7 @@ def __init__(
     self.agent_name = agent_name
     self._settings = settings or ThegentSettings()
     self._model = model or _PROXY_MODEL[agent_name]
-    self._use_litellm_router = use_litellm_router or (
-        os.environ.get("THGENT_USE_LITELLM_ROUTER", "0") == "1"
-    )
+    self._use_litellm_router = use_litellm_router or (os.environ.get("THGENT_USE_LITELLM_ROUTER", "0") == "1")
 ```
 
 2. Add LiteLLM Router path in `run` method:
@@ -485,9 +488,9 @@ def _run_via_litellm_router(
                     timeout=timeout,
                 ):
                     content = ""
-                    if hasattr(chunk, 'choices') and chunk.choices:
+                    if hasattr(chunk, "choices") and chunk.choices:
                         delta = chunk.choices[0].delta
-                        if hasattr(delta, 'content'):
+                        if hasattr(delta, "content"):
                             content = delta.content or ""
                     elif isinstance(chunk, dict):
                         content = chunk.get("choices", [{}])[0].get("delta", {}).get("content", "")
@@ -509,7 +512,7 @@ def _run_via_litellm_router(
                 )
             )
 
-            if hasattr(response, 'choices') and response.choices:
+            if hasattr(response, "choices") and response.choices:
                 stdout = response.choices[0].message.content or ""
             elif isinstance(response, dict):
                 stdout = response.get("choices", [{}])[0].get("message", {}).get("content", "")
@@ -616,9 +619,7 @@ def __init__(
     self.droids_dir = droids_dir.expanduser().resolve()
     self._droid_cmd = _resolve_droid_cmd(droid_cmd)
     self._model = model
-    self._use_litellm_router = use_litellm_router or (
-        os.environ.get("THGENT_USE_LITELLM_ROUTER", "0") == "1"
-    )
+    self._use_litellm_router = use_litellm_router or (os.environ.get("THGENT_USE_LITELLM_ROUTER", "0") == "1")
 ```
 
 2. Update `run` method to use LiteLLM Router endpoint:
@@ -706,15 +707,19 @@ def incorporate_impl(cd: Path | None = None, dry_run: bool = False) -> dict[str,
             try:
                 result = validate_task_file(task_file)
                 if not result.valid:
-                    validation_errors.append({
-                        "file": str(task_file),
-                        "errors": result.errors,
-                    })
+                    validation_errors.append(
+                        {
+                            "file": str(task_file),
+                            "errors": result.errors,
+                        }
+                    )
             except Exception as e:
-                validation_errors.append({
-                    "file": str(task_file),
-                    "errors": [f"Validation failed: {e}"],
-                })
+                validation_errors.append(
+                    {
+                        "file": str(task_file),
+                        "errors": [f"Validation failed: {e}"],
+                    }
+                )
 
         if validation_errors:
             return {

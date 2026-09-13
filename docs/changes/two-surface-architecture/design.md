@@ -92,9 +92,7 @@ A thin module (33 lines) that re-exports the four canonical execution boundary
 functions from `impl.py`:
 
 ```python
-from thegent.cli.commands.impl_execution import (
-    run_impl, bg_impl, resume_impl, loop_impl
-)
+from thegent.cli.commands.impl_execution import run_impl, bg_impl, resume_impl, loop_impl
 ```
 
 This shim is a transition artifact. Once all callers are migrated to import from

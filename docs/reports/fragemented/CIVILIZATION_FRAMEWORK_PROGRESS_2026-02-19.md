@@ -123,7 +123,7 @@ l1_identity = factory.create_l1_agent(
     "kush",
     role=AgentRole.COORDINATOR,
     capabilities=["health_monitoring", "agent_scaling", "dynamic_restart"],
-    scope_tags={"swarm_controller": "true"}
+    scope_tags={"swarm_controller": "true"},
 )
 # Result: kush:ada0ea7b:L1:coordinator
 ```
@@ -139,7 +139,7 @@ for agent_id, metrics in self.metrics.items():
             role=role,  # Detected from name
             parent_l1_id=self.l1_agent_id,
             capabilities=["task_execution", "sub_delegation"],
-            scope_tags={"local_id": agent_id}
+            scope_tags={"local_id": agent_id},
         )
 ```
 

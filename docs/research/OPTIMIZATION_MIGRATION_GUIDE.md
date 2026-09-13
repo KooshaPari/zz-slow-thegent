@@ -59,9 +59,11 @@ observer.start()
 ```python
 from thegent.infra import watch_files
 
+
 def on_change(changes):
     for change, path in changes:
         print(f"{change}: {path}")
+
 
 watch_files(path, on_change, recursive=True)  # 5-10x faster
 ```
@@ -173,9 +175,11 @@ toml_dump({"key": "value"}, "output.toml")
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+
 class Handler(FileSystemEventHandler):
     def on_modified(self, event):
         print(f"Modified: {event.src_path}")
+
 
 observer = Observer()
 observer.schedule(Handler(), path, recursive=True)
@@ -187,10 +191,12 @@ observer.start()
 from thegent.infra import watch_files
 from watchfiles import Change
 
+
 def on_change(changes):
     for change, path in changes:
         if change == Change.modified:
             print(f"Modified: {path}")
+
 
 watch_files(path, on_change, recursive=True)
 ```

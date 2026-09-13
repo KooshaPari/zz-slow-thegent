@@ -292,6 +292,7 @@ total_cost = usage.get("total_cost")
 if total_cost is not None:
     # Record actual OpenRouter cost
     from thegent.routing.cost_tracker import get_cost_tracker
+
     tracker = get_cost_tracker()
     tracker.record_cost(total_cost, model=self.model)
 ```
@@ -333,9 +334,22 @@ result = {
     "messages": messages,
     "stream": body.get("stream", False),
 }
-for opt_field in ("temperature", "top_p", "top_k", "frequency_penalty", "presence_penalty",
-                  "repetition_penalty", "min_p", "top_a", "seed", "max_tokens",
-                  "transforms", "provider", "route", "plugins"):
+for opt_field in (
+    "temperature",
+    "top_p",
+    "top_k",
+    "frequency_penalty",
+    "presence_penalty",
+    "repetition_penalty",
+    "min_p",
+    "top_a",
+    "seed",
+    "max_tokens",
+    "transforms",
+    "provider",
+    "route",
+    "plugins",
+):
     val = body.get(opt_field)
     if val is not None:
         result[opt_field] = val
@@ -520,8 +534,9 @@ path in `proxy_handler()` at line 594–602 always sends Responses API requests 
 `/chat/completions`:
 ```python
 if path == "/v1/responses":
-    return await _proxy_stream(body, req_headers, backend, "/chat/completions",
-                               transform_responses=True, model=req_model)
+    return await _proxy_stream(
+        body, req_headers, backend, "/chat/completions", transform_responses=True, model=req_model
+    )
 ```
 This is already handled correctly. No fix needed for the path routing. The issue is purely
 documentation: OpenRouter support requires the adapter layer be active.

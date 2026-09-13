@@ -57,13 +57,16 @@ response = thegent.proxy.route("gpt-4", prompt)
 
 # After (LiteLLM)
 from litellm import Router
+
 router = Router(model_list=[...])
 response = router.completion(...)
+
 
 # Adapter layer
 class LiteLLMAdapter:
     def __init__(self, router):
         self.router = router
+
     def route(self, model, prompt):
         return self.router.completion(model=model, messages=prompt)
 ```
@@ -96,6 +99,7 @@ class LiteLLMAdapter:
 **Integration Pattern:**
 ```python
 from agentops import Session
+
 
 @Session.instrument_agent  # AgentOps decorator
 def run_thegent_agent(agent_id):
@@ -131,6 +135,7 @@ def run_thegent_agent(agent_id):
 ```python
 # Optional Temporal backend
 from temporal import Client
+
 
 @workflow
 async def agent_workflow():
@@ -190,9 +195,11 @@ from mcp.server import Server
 
 server = Server("thegent-agents")
 
+
 @server.tool()
 def agent_researcher(query: str) -> str:
     return thegent.run("researcher", query)
+
 
 await server.run_async()
 ```

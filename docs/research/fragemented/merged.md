@@ -1259,10 +1259,12 @@ def test_valid_visa_accepted(validator):
     result = validator.validate("4532015112830366")
     assert result.validity == CardValidity.VALID
 
+
 @pytest.mark.requirement("FR-PAY-101")
 def test_invalid_checksum_rejected(validator):
     result = validator.validate("4532015112830367")
     assert result.validity == CardValidity.INVALID
+
 
 @given(card_number=st.integers(min_value=int(1e15), max_value=int(1e16)).map(str))
 @pytest.mark.requirement("FR-PAY-101")
@@ -1277,13 +1279,15 @@ def test_validator_never_crashes(validator, card_number):
 """
 @trace FR-PAY-101, FR-PAY-102, FR-PAY-103
 """
+
+
 class CardValidator:
     def validate(self, card_number: str) -> CardValidationResult:
-        if not self._is_valid_format(card_number):   # FR-PAY-102
+        if not self._is_valid_format(card_number):  # FR-PAY-102
             return CardValidationResult(CardValidity.INVALID, ...)
-        if not self._luhn_valid(card_number):         # FR-PAY-101
+        if not self._luhn_valid(card_number):  # FR-PAY-101
             return CardValidationResult(CardValidity.INVALID, ...)
-        brand = self._detect_brand(card_number)       # FR-PAY-101
+        brand = self._detect_brand(card_number)  # FR-PAY-101
         return CardValidationResult(CardValidity.VALID, Card(card_number[-4:], brand))
 ```
 
@@ -3110,6 +3114,7 @@ This session cluster (spanning 2026-02-16 through 2026-02-18) completed a compre
 **Validation:**
 ```python
 from thegent.utils.shell import get_fastest_shell
+
 shell = get_fastest_shell()  # Returns /bin/zsh or fallback
 ```
 
@@ -5777,6 +5782,7 @@ from tenacity import (
     retry_if_exception_type,
 )
 
+
 @retry(
     stop=stop_after_attempt(5),
     wait=wait_exponential(multiplier=1, min=2, max=60),
@@ -5806,6 +5812,7 @@ breaker = CircuitBreaker(
     listeners=[on_open, on_close],
 )
 
+
 def call_api():
     try:
         return breaker.call(requests.get, "https://api.example.com")
@@ -5826,6 +5833,7 @@ def call_api():
 **Example**:
 ```python
 from resilience4py import CircuitBreaker, Bulkhead, Retry
+
 
 @CircuitBreaker(max_failures=5, timeout=60)
 @Bulkhead(max_concurrent_calls=10)
@@ -5851,10 +5859,12 @@ from apscheduler.triggers.interval import IntervalTrigger
 
 scheduler = BackgroundScheduler()
 
+
 @scheduler.scheduled_job(IntervalTrigger(seconds=10))
 def health_check():
     # Runs every 10 seconds
     check_system_health()
+
 
 scheduler.start()
 ```
@@ -5872,11 +5882,13 @@ scheduler.start()
 ```python
 from pydantic import BaseModel, Field
 
+
 class ResilienceConfig(BaseModel):
     circuit_breaker_threshold: int = Field(default=5, ge=1, le=100)
     timeout_seconds: float = Field(default=30, gt=0, le=300)
     retry_max_attempts: int = Field(default=3, ge=1, le=10)
     bulkhead_max_concurrent: int = Field(default=50, ge=1, le=1000)
+
 
 config = ResilienceConfig()
 ```
@@ -6083,11 +6095,13 @@ import asyncio
 from dataclasses import dataclass
 from enum import Enum
 
+
 class HealthStatus(Enum):
     HEALTHY = "healthy"
     SLOW = "slow"
     UNHEALTHY = "unhealthy"
     CRASHED = "crashed"
+
 
 @dataclass
 class AgentHealth:
@@ -6096,6 +6110,7 @@ class AgentHealth:
     last_heartbeat: float
     response_time_ms: float
     error_count: int
+
 
 async def health_check_agent(agent_id: str, timeout: float = 5.0) -> AgentHealth:
     """Check if agent is responsive."""
@@ -6138,6 +6153,7 @@ async def health_check_agent(agent_id: str, timeout: float = 5.0) -> AgentHealth
             error_count=999,
         )
 
+
 async def monitor_agent_health(agent_ids: list[str], interval_sec: int = 10):
     """Continuously monitor agent health."""
     while True:
@@ -6172,11 +6188,13 @@ import signal
 from enum import Enum
 from dataclasses import dataclass
 
+
 class AgentState(Enum):
     RUNNING = "running"
     PAUSED = "paused"
     DRAINING = "draining"  # Finishing current task
     RESTARTING = "restarting"
+
 
 @dataclass
 class Agent:
@@ -6184,6 +6202,7 @@ class Agent:
     state: AgentState
     current_task: str = None
     checkpoint: dict = None
+
 
 async def pause_agent(agent: Agent, graceful: bool = True):
     """Pause agent gracefully."""
@@ -6201,6 +6220,7 @@ async def pause_agent(agent: Agent, graceful: bool = True):
         agent.state = AgentState.PAUSED
         print(f"Agent {agent.pid} paused (state preserved)")
 
+
 async def resume_agent(agent: Agent):
     """Resume paused agent."""
     if agent.state == AgentState.PAUSED:
@@ -6208,6 +6228,7 @@ async def resume_agent(agent: Agent):
         os.kill(agent.pid, signal.SIGCONT)
         agent.state = AgentState.RUNNING
         print(f"Agent {agent.pid} resumed")
+
 
 async def restart_agent_with_backoff(agent: Agent, max_retries: int = 5):
     """Restart with exponential backoff."""
@@ -6250,11 +6271,13 @@ async def restart_agent_with_backoff(agent: Agent, max_retries: int = 5):
 import psutil
 from dataclasses import dataclass
 
+
 @dataclass
 class ResourceThresholds:
     cpu_percent_max: float = 80.0
     memory_percent_max: float = 85.0
     memory_gb_max: float = 8.0
+
 
 async def monitor_agent_resources(
     agent_pid: int,
@@ -6268,7 +6291,7 @@ async def monitor_agent_resources(
         cpu_percent = process.cpu_percent(interval=1)
         memory_info = process.memory_info()
         memory_percent = process.memory_percent()
-        memory_gb = memory_info.rss / (1024 ** 3)
+        memory_gb = memory_info.rss / (1024**3)
 
         # Check thresholds
         if cpu_percent > thresholds.cpu_percent_max:
@@ -6300,11 +6323,13 @@ async def monitor_agent_resources(
 from collections import deque
 from dataclasses import dataclass
 
+
 @dataclass
 class QueueMetrics:
     size: int
     capacity: int
     load_percent: float
+
 
 class BackpressureQueue:
     def __init__(self, max_size: int = 1000):
@@ -6384,10 +6409,7 @@ class AgentSwarm:
         # Step 2: Wait for agents to finish current tasks
         start = time.time()
         while time.time() - start < timeout:
-            active_tasks = sum(
-                1 for agent in self.agents
-                if agent.current_task is not None
-            )
+            active_tasks = sum(1 for agent in self.agents if agent.current_task is not None)
             if active_tasks == 0:
                 print("Step 2: All agents finished their tasks")
                 break
@@ -6420,10 +6442,12 @@ from enum import Enum
 from typing import Callable, Any
 import time
 
+
 class CircuitBreakerState(Enum):
-    CLOSED = "closed"      # Normal operation
-    OPEN = "open"          # Failing fast
+    CLOSED = "closed"  # Normal operation
+    OPEN = "open"  # Failing fast
     HALF_OPEN = "half_open"  # Testing recovery
+
 
 class CircuitBreaker:
     def __init__(
@@ -6504,6 +6528,7 @@ class CircuitBreaker:
 import asyncio
 from typing import Callable, Any
 
+
 class Bulkhead:
     """Isolate resources to prevent cascading failures."""
 
@@ -6521,10 +6546,7 @@ class Bulkhead:
             acquired = self.semaphore._value > 0
             if not acquired and self.active_count >= self.max_concurrent:
                 self.rejected_count += 1
-                raise Exception(
-                    f"{self.name}: Bulkhead exhausted "
-                    f"({self.active_count}/{self.max_concurrent})"
-                )
+                raise Exception(f"{self.name}: Bulkhead exhausted ({self.active_count}/{self.max_concurrent})")
 
             # Acquire permit (might wait)
             async with self.semaphore:
@@ -6536,6 +6558,7 @@ class Bulkhead:
         except asyncio.QueueFull:
             self.rejected_count += 1
             raise
+
 
 class MultiResourceBulkhead:
     """Multiple bulkheads for different resource types."""
@@ -6576,6 +6599,7 @@ class MultiResourceBulkhead:
 import asyncio
 from functools import wraps
 
+
 async def with_timeout_and_fallback(
     func,
     timeout_sec: float,
@@ -6596,22 +6620,23 @@ async def with_timeout_and_fallback(
         else:
             raise
 
+
 # Decorator version
 def timeout_with_fallback(timeout_sec: float, fallback_value=None):
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
             try:
-                return await asyncio.wait_for(
-                    func(*args, **kwargs),
-                    timeout=timeout_sec
-                )
+                return await asyncio.wait_for(func(*args, **kwargs), timeout=timeout_sec)
             except asyncio.TimeoutError:
                 if fallback_value is not None:
                     return fallback_value
                 raise
+
         return wrapper
+
     return decorator
+
 
 # Usage
 @timeout_with_fallback(timeout_sec=5, fallback_value=[])
@@ -6629,6 +6654,7 @@ import os
 from dataclasses import asdict, dataclass
 from typing import Any
 
+
 @dataclass
 class TaskCheckpoint:
     task_id: str
@@ -6637,6 +6663,7 @@ class TaskCheckpoint:
     state: dict[str, Any]
     timestamp: float
     error: str = None
+
 
 class CheckpointManager:
     def __init__(self, checkpoint_dir: str = "/tmp/checkpoints"):
@@ -6666,6 +6693,7 @@ class CheckpointManager:
         if os.path.exists(filename):
             os.remove(filename)
 
+
 class ResumableTask:
     """Task that can be paused and resumed."""
 
@@ -6677,7 +6705,7 @@ class ResumableTask:
         # Determine starting point
         start_idx = 0
         if checkpoint:
-            print(f"Resuming task {task_id} at {checkpoint.progress*100:.1f}%")
+            print(f"Resuming task {task_id} at {checkpoint.progress * 100:.1f}%")
             start_idx = checkpoint.state.get("last_step_idx", 0)
 
         # Execute steps
@@ -6725,6 +6753,7 @@ import asyncio
 from tenacity import retry, stop_after_attempt, wait_exponential
 from pybreaker import CircuitBreaker
 
+
 class ResilientHTTPClient:
     def __init__(self):
         self.client = httpx.AsyncClient(timeout=30)
@@ -6739,6 +6768,7 @@ class ResilientHTTPClient:
     )
     async def get(self, url: str, **kwargs) -> dict:
         """GET with retry and circuit breaker."""
+
         async def _make_request():
             response = await self.client.get(url, **kwargs)
             response.raise_for_status()
@@ -6748,6 +6778,7 @@ class ResilientHTTPClient:
 
     async def close(self):
         await self.client.aclose()
+
 
 # Usage
 client = ResilientHTTPClient()
@@ -6765,12 +6796,14 @@ import asyncio
 import time
 from dataclasses import dataclass
 
+
 @dataclass
 class ConcurrencyStats:
     current: int
     success_count: int
     failure_count: int
     success_rate: float
+
 
 class AdaptiveConcurrency:
     def __init__(self, initial: int = 10, min_conc: int = 1, max_conc: int = 100):
@@ -6818,10 +6851,7 @@ class AdaptiveConcurrency:
                     self.failure_count += 1
                     raise
 
-        return await asyncio.gather(
-            *[bounded_task(t) for t in tasks],
-            return_exceptions=True
-        )
+        return await asyncio.gather(*[bounded_task(t) for t in tasks], return_exceptions=True)
 
     def get_stats(self) -> ConcurrencyStats:
         total = self.success_count + self.failure_count
@@ -6874,6 +6904,7 @@ ADAPTIVE_CONCURRENCY_FAILURE_THRESHOLD=0.80
 
 ```python
 from pydantic_settings import BaseSettings
+
 
 class ResilienceSettings(BaseSettings):
     # Circuit breaker
@@ -6979,6 +7010,7 @@ services:
 from dataclasses import dataclass
 from datetime import datetime
 
+
 @dataclass
 class ResilienceMetrics:
     # Circuit breaker
@@ -7005,6 +7037,7 @@ class ResilienceMetrics:
     # Timestamp
     timestamp: datetime
 
+
 class MetricsCollector:
     def __init__(self):
         self.metrics = []
@@ -7027,11 +7060,9 @@ class MetricsCollector:
             f"# HELP resilience_cb_failures Circuit breaker failures",
             f"# TYPE resilience_cb_failures counter",
             f"resilience_cb_failures {latest.cb_failures}",
-
             f"# HELP resilience_bulkhead_utilization Bulkhead utilization",
             f"# TYPE resilience_bulkhead_utilization gauge",
             f"resilience_bulkhead_utilization {latest.bh_utilization}",
-
             f"# HELP resilience_health_check_passed Health checks passed",
             f"# TYPE resilience_health_check_passed counter",
             f"resilience_health_check_passed {latest.health_checks_passed}",
@@ -7045,6 +7076,7 @@ class MetricsCollector:
 import json
 import logging
 from dataclasses import asdict
+
 
 class JSONFormatter(logging.Formatter):
     def format(self, record):
@@ -7066,6 +7098,7 @@ class JSONFormatter(logging.Formatter):
 
         return json.dumps(log_data)
 
+
 # Setup
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler()
@@ -7073,13 +7106,16 @@ handler.setFormatter(JSONFormatter())
 logger.addHandler(handler)
 
 # Usage
-logger.info("Circuit breaker state changed", extra={
-    "circuit_breaker": {
-        "name": "api_service",
-        "state": "OPEN",
-        "failures": 5,
-    }
-})
+logger.info(
+    "Circuit breaker state changed",
+    extra={
+        "circuit_breaker": {
+            "name": "api_service",
+            "state": "OPEN",
+            "failures": 5,
+        }
+    },
+)
 ```
 
 ---
@@ -10707,31 +10743,30 @@ import hashlib
 from pathlib import Path
 from typing import Optional
 
+
 def get_server_scope(project_root: Optional[Path] = None) -> tuple[str, Path]:
     """
     Determine server scope (system-wide or project-scoped).
-    
+
     Returns:
         (scope_type, lockfile_path)
         scope_type: 'system' or 'project'
     """
     # Default: system-wide
     system_lockfile = Path.home() / ".cache" / "thegent" / "mcp" / "system.lock"
-    
+
     # Check if project-specific requirements exist
     if project_root:
         # Check for project-specific config
         project_config = project_root / ".thegent" / "isolate_servers"
         if project_config.exists():
             # Project requires isolation
-            project_key = hashlib.sha256(
-                str(project_root.resolve()).encode()
-            ).hexdigest()[:16]
+            project_key = hashlib.sha256(str(project_root.resolve()).encode()).hexdigest()[:16]
             project_lockfile = Path.home() / ".cache" / "thegent" / "mcp" / f"{project_key}.lock"
-            return ('project', project_lockfile)
-    
+            return ("project", project_lockfile)
+
     # Default: system-wide
-    return ('system', system_lockfile)
+    return ("system", system_lockfile)
 ```
 
 **Benefits:**
@@ -10753,33 +10788,33 @@ import time
 import os
 from typing import Optional, Tuple
 
+
 def get_server_scope(project_root: Optional[Path] = None) -> Tuple[str, Path]:
     """
     Determine server scope (system-wide or project-scoped).
     Default: system-wide. Scope down only if project requires isolation.
-    
+
     Returns:
         (scope_type, lockfile_path)
     """
     cache_dir = Path.home() / ".cache" / "thegent" / "mcp"
     cache_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Default: system-wide
     system_lockfile = cache_dir / "system.lock"
-    
+
     # Check if project requires isolation
     if project_root:
         project_config = project_root / ".thegent" / "isolate_servers"
         if project_config.exists():
             # Project requires isolation - scope down
-            project_key = hashlib.sha256(
-                str(project_root.resolve()).encode()
-            ).hexdigest()[:16]
+            project_key = hashlib.sha256(str(project_root.resolve()).encode()).hexdigest()[:16]
             project_lockfile = cache_dir / f"{project_key}.lock"
-            return ('project', project_lockfile)
-    
+            return ("project", project_lockfile)
+
     # Default: system-wide
-    return ('system', system_lockfile)
+    return ("system", system_lockfile)
+
 
 def ensure_shared_mcp_server(project_root: Optional[Path] = None) -> Tuple[bool, Optional[str]]:
     """
@@ -10787,15 +10822,15 @@ def ensure_shared_mcp_server(project_root: Optional[Path] = None) -> Tuple[bool,
     Returns: (is_new_server, server_url_or_error)
     """
     scope_type, lockfile = get_server_scope(project_root)
-    
+
     # Check if server already running
     if lockfile.exists():
         try:
-            with open(lockfile, 'r') as f:
+            with open(lockfile, "r") as f:
                 data = json.load(f)
-                pid = data.get('pid')
-                port = data.get('port', 3847)
-                
+                pid = data.get("pid")
+                port = data.get("port", 3847)
+
                 # Check if process still alive
                 try:
                     os.kill(pid, 0)  # Check if process exists
@@ -10805,27 +10840,32 @@ def ensure_shared_mcp_server(project_root: Optional[Path] = None) -> Tuple[bool,
                     lockfile.unlink()
         except Exception:
             lockfile.unlink()
-    
+
     # Start new server (system-wide)
     from thegent.mcp_manage import mcp_up
+
     success, message = mcp_up()
     if not success:
         return False, message
-    
+
     # Create lockfile
     import subprocess
-    
+
     # Get process-compose PID
     # (Implementation depends on how mcp_up works)
-    
-    lockfile.write_text(json.dumps({
-        'pid': os.getpid(),  # Or actual server PID
-        'port': 3847,
-        'scope': scope_type,
-        'project_root': str(project_root) if project_root else None,
-        'started_at': time.time(),
-    }))
-    
+
+    lockfile.write_text(
+        json.dumps(
+            {
+                "pid": os.getpid(),  # Or actual server PID
+                "port": 3847,
+                "scope": scope_type,
+                "project_root": str(project_root) if project_root else None,
+                "started_at": time.time(),
+            }
+        )
+    )
+
     return True, f"http://127.0.0.1:3847/mcp"
 ```
 
@@ -10842,35 +10882,36 @@ import os
 from typing import Optional, Dict, Tuple
 
 LSP_SERVERS = {
-    'python': {
-        'command': 'pyright-langserver',
-        'args': ['--stdio'],
-        'supports_multi_client': True,
-        'supports_multi_root': True,  # Can handle multiple project roots
+    "python": {
+        "command": "pyright-langserver",
+        "args": ["--stdio"],
+        "supports_multi_client": True,
+        "supports_multi_root": True,  # Can handle multiple project roots
     },
-    'typescript': {
-        'command': 'typescript-language-server',
-        'args': ['--stdio'],
-        'supports_multi_client': True,
-        'supports_multi_root': True,
+    "typescript": {
+        "command": "typescript-language-server",
+        "args": ["--stdio"],
+        "supports_multi_client": True,
+        "supports_multi_root": True,
     },
 }
 
-def get_lsp_server_scope(project_root: Optional[Path] = None, language: str = 'python') -> Tuple[str, Path]:
+
+def get_lsp_server_scope(project_root: Optional[Path] = None, language: str = "python") -> Tuple[str, Path]:
     """
     Determine LSP server scope (system-wide or project-scoped).
     Default: system-wide. Scope down only if project requires isolation.
-    
+
     Returns:
         (scope_type, lockfile_path)
     """
     cache_dir = Path.home() / ".cache" / "thegent" / "lsp"
     cache_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Default: system-wide
     system_lockfile = cache_dir / "system" / f"{language}.lock"
     system_lockfile.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Check if project requires isolation
     if project_root:
         # Check for project-specific requirements
@@ -10879,31 +10920,30 @@ def get_lsp_server_scope(project_root: Optional[Path] = None, language: str = 'p
             # Check if language version differs
             # (e.g., Python 3.11 vs 3.12 might need separate servers)
             # For now, scope down if isolation requested
-            project_key = hashlib.sha256(
-                str(project_root.resolve()).encode()
-            ).hexdigest()[:16]
+            project_key = hashlib.sha256(str(project_root.resolve()).encode()).hexdigest()[:16]
             project_lockfile = cache_dir / project_key / f"{language}.lock"
             project_lockfile.parent.mkdir(parents=True, exist_ok=True)
-            return ('project', project_lockfile)
-    
-    # Default: system-wide
-    return ('system', system_lockfile)
+            return ("project", project_lockfile)
 
-def ensure_shared_lsp_server(project_root: Optional[Path] = None, language: str = 'python') -> Optional[str]:
+    # Default: system-wide
+    return ("system", system_lockfile)
+
+
+def ensure_shared_lsp_server(project_root: Optional[Path] = None, language: str = "python") -> Optional[str]:
     """
     Ensure shared LSP server is running (system-wide by default).
     Returns: stdio pipe path or socket path or None
     """
     scope_type, lockfile = get_lsp_server_scope(project_root, language)
     socket_path = lockfile.parent / f"{language}.sock"  # Unix domain socket
-    
+
     # Check if server already running
     if lockfile.exists() and socket_path.exists():
         try:
-            with open(lockfile, 'r') as f:
+            with open(lockfile, "r") as f:
                 data = json.load(f)
-                pid = data.get('pid')
-                
+                pid = data.get("pid")
+
                 try:
                     os.kill(pid, 0)  # Check if process exists
                     return str(socket_path)
@@ -10913,16 +10953,16 @@ def ensure_shared_lsp_server(project_root: Optional[Path] = None, language: str 
                     socket_path.unlink(missing_ok=True)
         except Exception:
             lockfile.unlink(missing_ok=True)
-    
+
     # Start new LSP server (system-wide)
     lsp_config = LSP_SERVERS.get(language)
     if not lsp_config:
         return None
-    
+
     # Start server with Unix domain socket for multi-client support
     # (Implementation depends on LSP server capabilities)
     # System-wide server can handle multiple project roots
-    
+
     return str(socket_path)
 ```
 
@@ -11345,8 +11385,8 @@ from thegent.utils.shell import run_shell_command, get_fastest_shell
 shell = get_fastest_shell()  # Returns '/bin/zsh' (or fastest available)
 
 # Run command with optimized shell
-result = run_shell_command('chmod +x script.sh')
-result = run_shell_command(['ls', '-la'], optimize_startup=True)
+result = run_shell_command("chmod +x script.sh")
+result = run_shell_command(["ls", "-la"], optimize_startup=True)
 ```
 
 ### Migration Pattern
@@ -11354,10 +11394,12 @@ result = run_shell_command(['ls', '-la'], optimize_startup=True)
 ```python
 # Before:
 import subprocess
+
 subprocess.run(cmd, shell=True)
 
 # After:
 from thegent.utils.shell import run_shell_command
+
 run_shell_command(cmd)
 ```
 
@@ -11498,7 +11540,7 @@ else:
 from thegent.utils.shell import get_fastest_shell, run_shell_command
 
 shell = get_fastest_shell()  # Returns '/bin/zsh'
-result = run_shell_command('echo test', capture_output=True)
+result = run_shell_command("echo test", capture_output=True)
 ```
 
 ### Check Hook Scripts
@@ -11619,7 +11661,7 @@ All subprocess calls with `shell=True` now use zsh automatically:
 from thegent.utils.shell import run_shell_command
 
 # Automatically uses fastest shell (zsh)
-result = run_shell_command('chmod +x script.sh')
+result = run_shell_command("chmod +x script.sh")
 ```
 
 ### Manual Override
@@ -11665,11 +11707,11 @@ from thegent.utils.shell import get_fastest_shell, run_shell_command
 
 # Test shell detection
 shell = get_fastest_shell()
-assert 'zsh' in shell
+assert "zsh" in shell
 
 # Test command execution
-result = run_shell_command('echo test', capture_output=True)
-assert result.stdout.strip() == 'test'
+result = run_shell_command("echo test", capture_output=True)
+assert result.stdout.strip() == "test"
 ```
 
 ### Integration Tests
@@ -11787,16 +11829,18 @@ Find all subprocess calls that use shells:
 import shutil
 import os
 
+
 def get_fastest_shell() -> str:
     """Get fastest available shell (zsh > bash > sh)."""
     # Check in order of preference
-    for shell in ['/bin/zsh', '/usr/bin/zsh', 'zsh']:
+    for shell in ["/bin/zsh", "/usr/bin/zsh", "zsh"]:
         if shutil.which(shell):
             return shell
-    for shell in ['/bin/bash', '/usr/bin/bash', 'bash']:
+    for shell in ["/bin/bash", "/usr/bin/bash", "bash"]:
         if shutil.which(shell):
             return shell
-    return '/bin/sh'  # Fallback
+    return "/bin/sh"  # Fallback
+
 
 FASTEST_SHELL = get_fastest_shell()
 
@@ -11858,57 +11902,59 @@ from typing import Optional
 
 _FASTEST_SHELL: Optional[str] = None
 
+
 def get_fastest_shell() -> str:
     """
     Get fastest available shell.
     Priority: zsh > bash > sh
     """
     global _FASTEST_SHELL
-    
+
     if _FASTEST_SHELL:
         return _FASTEST_SHELL
-    
+
     # Check zsh first (fastest)
-    for zsh_path in ['/bin/zsh', '/usr/bin/zsh']:
+    for zsh_path in ["/bin/zsh", "/usr/bin/zsh"]:
         if Path(zsh_path).exists():
             _FASTEST_SHELL = zsh_path
             return _FASTEST_SHELL
-    
+
     # Check zsh via which
-    zsh = shutil.which('zsh')
+    zsh = shutil.which("zsh")
     if zsh:
         _FASTEST_SHELL = zsh
         return _FASTEST_SHELL
-    
+
     # Fallback to bash
-    for bash_path in ['/bin/bash', '/usr/bin/bash']:
+    for bash_path in ["/bin/bash", "/usr/bin/bash"]:
         if Path(bash_path).exists():
             _FASTEST_SHELL = bash_path
             return _FASTEST_SHELL
-    
-    bash = shutil.which('bash')
+
+    bash = shutil.which("bash")
     if bash:
         _FASTEST_SHELL = bash
         return _FASTEST_SHELL
-    
+
     # Final fallback
-    _FASTEST_SHELL = '/bin/sh'
+    _FASTEST_SHELL = "/bin/sh"
     return _FASTEST_SHELL
+
 
 def run_shell_command(cmd: str, **kwargs) -> subprocess.CompletedProcess:
     """
     Run shell command using fastest available shell.
-    
+
     Args:
         cmd: Command string to execute
         **kwargs: Additional subprocess.run arguments
-    
+
     Returns:
         CompletedProcess result
     """
     import subprocess
-    
-    shell = kwargs.pop('executable', None) or get_fastest_shell()
+
+    shell = kwargs.pop("executable", None) or get_fastest_shell()
     return subprocess.run(cmd, shell=True, executable=shell, **kwargs)
 ```
 
@@ -11920,6 +11966,7 @@ subprocess.run(cmd, shell=True)
 
 # After:
 from thegent.utils.shell import run_shell_command
+
 run_shell_command(cmd)
 # Or:
 subprocess.run(cmd, shell=True, executable=get_fastest_shell())
@@ -11954,8 +12001,8 @@ shell:
 subprocess.run(
     cmd,
     shell=True,
-    executable='/bin/zsh',
-    env={**os.environ, 'ZDOTDIR': '/dev/null'}  # Skip .zshrc
+    executable="/bin/zsh",
+    env={**os.environ, "ZDOTDIR": "/dev/null"},  # Skip .zshrc
 )
 ```
 
@@ -12054,7 +12101,7 @@ from thegent.utils.shell import run_shell_command, get_fastest_shell
 shell = get_fastest_shell()  # Returns '/bin/zsh'
 
 # Run command with optimized shell
-result = run_shell_command('chmod +x script.sh')
+result = run_shell_command("chmod +x script.sh")
 ```
 
 ## Next Steps
@@ -12074,12 +12121,14 @@ subprocess.run(cmd, shell=True)
 
 # After:
 import subprocess
-subprocess.run(cmd, shell=True, executable='/bin/zsh')
+
+subprocess.run(cmd, shell=True, executable="/bin/zsh")
 ```
 
 Or use the utility:
 ```python
 from thegent.utils.shell import run_shell_command
+
 run_shell_command(cmd)
 ```
 

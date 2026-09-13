@@ -149,30 +149,33 @@ from enum import Enum
 
 class SpeedLevel(Enum):
     """Speed classification with numerical scores."""
+
     ULTRA_FAST = 100  # Gemini Flash, GPT-4o mini: 180-220 tok/s
-    VERY_FAST = 85    # MiniMax M2.5: ~150 tok/s
-    FAST = 70         # Claude Haiku, GPT-4o mini TTFT: 300-1200ms
-    MODERATE = 50     # Gemini Pro, Claude Sonnet TTFT: 400-1500ms
-    SLOW = 30         # Claude Opus, GLM-5: 1500-2000ms
+    VERY_FAST = 85  # MiniMax M2.5: ~150 tok/s
+    FAST = 70  # Claude Haiku, GPT-4o mini TTFT: 300-1200ms
+    MODERATE = 50  # Gemini Pro, Claude Sonnet TTFT: 400-1500ms
+    SLOW = 30  # Claude Opus, GLM-5: 1500-2000ms
 
 
 @dataclass
 class Model:
     """Model specification with quality, speed, and cost metrics."""
+
     name: str
-    quality_pct: float              # SWE-Bench score, 0-100%
-    speed_score: int                # 0-100 scale (see SpeedLevel)
-    cost_per_m_tokens: float        # USD per million tokens
+    quality_pct: float  # SWE-Bench score, 0-100%
+    speed_score: int  # 0-100 scale (see SpeedLevel)
+    cost_per_m_tokens: float  # USD per million tokens
 
 
 @dataclass
 class ParetoResult:
     """Result of Pareto frontier computation."""
+
     model: Model
-    dominated_by: List[str]         # Names of models that dominate this one
-    dominates: List[str]            # Names of models this one dominates
-    is_frontier: bool               # True if on Pareto frontier
-    dominance_count: int = 0        # Number of models this one dominates
+    dominated_by: List[str]  # Names of models that dominate this one
+    dominates: List[str]  # Names of models this one dominates
+    is_frontier: bool  # True if on Pareto frontier
+    dominance_count: int = 0  # Number of models this one dominates
 
 
 def dominates(model_a: Model, model_b: Model) -> bool:
@@ -193,9 +196,9 @@ def dominates(model_a: Model, model_b: Model) -> bool:
 
     # At least one strict improvement
     has_improvement = (
-        model_a.quality_pct > model_b.quality_pct or
-        model_a.speed_score > model_b.speed_score or
-        model_a.cost_per_m_tokens < model_b.cost_per_m_tokens
+        model_a.quality_pct > model_b.quality_pct
+        or model_a.speed_score > model_b.speed_score
+        or model_a.cost_per_m_tokens < model_b.cost_per_m_tokens
     )
 
     return quality_ok and speed_ok and cost_ok and has_improvement
@@ -212,11 +215,7 @@ def compute_pareto_frontier(models: List[Model]) -> List[Model]:
     frontier = []
 
     for candidate in models:
-        is_dominated = any(
-            dominates(other, candidate)
-            for other in models
-            if other is not candidate
-        )
+        is_dominated = any(dominates(other, candidate) for other in models if other is not candidate)
 
         if not is_dominated:
             frontier.append(candidate)
@@ -240,23 +239,17 @@ def analyze_models(models: List[Model]) -> Tuple[List[ParetoResult], List[Model]
     results = []
     for model in models:
         # Find models that dominate this one
-        dominated_by = [
-            m.name for m in models
-            if m is not model and dominates(m, model)
-        ]
+        dominated_by = [m.name for m in models if m is not model and dominates(m, model)]
 
         # Find models this one dominates
-        dominates_list = [
-            m.name for m in models
-            if m is not model and dominates(model, m)
-        ]
+        dominates_list = [m.name for m in models if m is not model and dominates(model, m)]
 
         result = ParetoResult(
             model=model,
             dominated_by=dominated_by,
             dominates=dominates_list,
             is_frontier=model in frontier_models,
-            dominance_count=len(dominates_list)
+            dominance_count=len(dominates_list),
         )
         results.append(result)
 
@@ -350,11 +343,13 @@ def test_frontier_size():
 
 def test_frontier_sorted_by_cost():
     """Frontier should be sorted by cost ascending."""
-    frontier = compute_pareto_frontier([
-        Model("Expensive", 85, 50, 15.00),
-        Model("Cheap", 70, 100, 0.375),
-        Model("Medium", 80, 85, 0.79),
-    ])
+    frontier = compute_pareto_frontier(
+        [
+            Model("Expensive", 85, 50, 15.00),
+            Model("Cheap", 70, 100, 0.375),
+            Model("Medium", 80, 85, 0.79),
+        ]
+    )
 
     costs = [m.cost_per_m_tokens for m in frontier]
     assert costs == sorted(costs), "Frontier should be sorted by cost"
@@ -460,6 +455,7 @@ function analyzeModels(models: Model[]): ParetoResult[] {
 ```python
 # Import pareto frontier module
 from thegent.models.optimizer import compute_pareto_frontier, analyze_models
+
 
 class CostGovernor:
     def recommend_models_for_budget(self, budget_usd: float) -> List[Model]:

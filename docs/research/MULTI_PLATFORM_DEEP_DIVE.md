@@ -376,7 +376,13 @@ Factory can import Claude hooks: `claudeHooksImported: true`, `importedClaudeHoo
 ```python
 output = {"decision": "block", "reason": "..."}
 # or
-output = {"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny", "permissionDecisionReason": "..."}}
+output = {
+    "hookSpecificOutput": {
+        "hookEventName": "PreToolUse",
+        "permissionDecision": "deny",
+        "permissionDecisionReason": "...",
+    }
+}
 print(json.dumps(output))
 sys.exit(0)  # or exit 2 for simple block
 ```

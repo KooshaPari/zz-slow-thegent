@@ -111,6 +111,7 @@ def get_model_provider_speed_index(
     Uses proxy metrics when reachable; falls back to Route.latency_ms.
     """
 
+
 def get_model_provider_speed_indices(
     settings: ThegentSettings | None = None,
 ) -> dict[str, dict[str, float]]:
@@ -270,12 +271,14 @@ def get_model_quality_index(
     Uses benchmarks JSON when available; falls back to Route.accuracy_score.
     """
 
+
 def get_all_model_quality_indices(
     settings: ThegentSettings | None = None,
 ) -> dict[str, float]:
     """
     Returns: {model_id: quality_index}
     """
+
 
 def get_model_provider_quality_indices(
     settings: ThegentSettings | None = None,
@@ -420,7 +423,7 @@ weighted_score = quality * weights.quality + latency * weights.latency + cost * 
 
 ```python
 # Use speed_index when available (per model-provider)
-speed_index = get_model_provider_speed_index(model_id, provider) or max(0, 1.0 - meta.avg_latency_ms/10000)
+speed_index = get_model_provider_speed_index(model_id, provider) or max(0, 1.0 - meta.avg_latency_ms / 10000)
 quality_index = get_model_quality_index(model_id) or meta.quality_score
 cost_score = max(0, 1.0 - (total_cost / 0.1))
 weighted_score = (quality_index * weights.quality) + (speed_index * weights.latency) + (cost_score * weights.cost)

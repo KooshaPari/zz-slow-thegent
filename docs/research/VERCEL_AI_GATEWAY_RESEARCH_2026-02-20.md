@@ -109,20 +109,16 @@ native) and `Authorization: Bearer` (standard).
 
 ```python
 from openai import OpenAI
-client = OpenAI(
-    api_key=os.getenv('AI_GATEWAY_API_KEY'),
-    base_url='https://ai-gateway.vercel.sh/v1'
-)
+
+client = OpenAI(api_key=os.getenv("AI_GATEWAY_API_KEY"), base_url="https://ai-gateway.vercel.sh/v1")
 ```
 
 **Anthropic Python SDK:**
 
 ```python
 import anthropic
-client = anthropic.Anthropic(
-    api_key=os.getenv('AI_GATEWAY_API_KEY'),
-    base_url='https://ai-gateway.vercel.sh'
-)
+
+client = anthropic.Anthropic(api_key=os.getenv("AI_GATEWAY_API_KEY"), base_url="https://ai-gateway.vercel.sh")
 ```
 
 **Claude Code (the Anthropic CLI agent):**

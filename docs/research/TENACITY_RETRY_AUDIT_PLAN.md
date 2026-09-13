@@ -142,12 +142,12 @@ for attempt in range(1, self.max_retries + 1):
 
 **Current**:
 ```python
-wait=wait_exponential(multiplier=1, min=min_wait, max=max_wait)
+wait = wait_exponential(multiplier=1, min=min_wait, max=max_wait)
 ```
 
 **Improvement**:
 ```python
-wait=wait_random_exponential(multiplier=1, min=min_wait, max=max_wait)
+wait = wait_random_exponential(multiplier=1, min=min_wait, max=max_wait)
 ```
 
 **Effect**: Adds random jitter to each wait (0 to max of exponential). Prevents thundering herd.
@@ -158,12 +158,12 @@ wait=wait_random_exponential(multiplier=1, min=min_wait, max=max_wait)
 
 **Current**:
 ```python
-wait=tenacity.wait_exponential(multiplier=1, min=2, max=10)
+wait = tenacity.wait_exponential(multiplier=1, min=2, max=10)
 ```
 
 **Improvement**:
 ```python
-wait=tenacity.wait_random_exponential(multiplier=1, min=2, max=10)
+wait = tenacity.wait_random_exponential(multiplier=1, min=2, max=10)
 ```
 
 ---

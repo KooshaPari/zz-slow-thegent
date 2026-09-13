@@ -78,6 +78,7 @@
 # Example: Retry wrapper
 from tenacity import retry, stop_after_attempt, wait_exponential
 
+
 def retry_with_usage_limit(max_attempts=3):
     """Domain-specific retry wrapper"""
     return retry(
@@ -275,12 +276,13 @@ for attempt in range(3):
     except Exception as e:
         if attempt == 2:
             raise
-        time.sleep(2 ** attempt)
+        time.sleep(2**attempt)
 ```
 
 **After**:
 ```python
 from tenacity import retry, stop_after_attempt, wait_exponential
+
 
 @retry(
     stop=stop_after_attempt(3),
@@ -304,6 +306,7 @@ def api_call():
 import os
 import time
 
+
 def watch_directory(path):
     last_mtime = {}
     while True:
@@ -323,10 +326,12 @@ def watch_directory(path):
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+
 class ChangeHandler(FileSystemEventHandler):
     def on_modified(self, event):
         if not event.is_directory:
             handle_change(event.src_path)
+
 
 observer = Observer()
 observer.schedule(ChangeHandler(), path, recursive=True)
@@ -345,6 +350,7 @@ observer.start()
 ```python
 import time
 from typing import Dict, Optional
+
 
 class TTLCache:
     def __init__(self, ttl: int):
@@ -369,8 +375,10 @@ from cachetools import TTLCache
 
 cache = TTLCache(maxsize=100, ttl=300)
 
+
 def get_cached(key: str):
     return cache.get(key)
+
 
 def set_cached(key: str, value: object):
     cache[key] = value
@@ -408,6 +416,7 @@ class ToolCircuitBreaker:
 from pybreaker import CircuitBreaker
 
 breaker = CircuitBreaker(fail_max=5, timeout_duration=60)
+
 
 @breaker
 def api_call():
@@ -501,6 +510,7 @@ def api_call():
 import pytest
 import httpx
 from unittest.mock import patch
+
 
 def test_httpx_replacement():
     """Test urllib → httpx migration"""

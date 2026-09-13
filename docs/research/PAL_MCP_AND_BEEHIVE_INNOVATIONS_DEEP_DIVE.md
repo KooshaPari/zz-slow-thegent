@@ -509,22 +509,28 @@ Auto-selection matrix logic:
 ```python
 # src/domain/models/
 
+
 class ConsensusRequest:
     """Multi-model debate request"""
+
     decision: str
     stances: Dict[str, AgentPersona]  # Model → role (pro/con/neutral)
     thinking_depth: int  # 128-32768 tokens
     context_files: List[Path]
 
+
 class SubagentSpawnRequest:
     """CLI subagent isolation request"""
+
     tool_name: str
     persona: AgentPersona
     context_budget: int  # Isolated context size
     timeout_seconds: int
 
+
 class ContextRevivalTrigger:
     """Cross-session continuity mechanism"""
+
     session_id: str
     prior_conversation_tokens: int
     detected_reset: bool
@@ -561,8 +567,8 @@ class ContextRevivalUseCase:
 **New Modules**:
 ```python
 # src/infrastructure/orchestration/
-consensus_engine.py         # Debate orchestrator
-subagent_spawner.py         # Process isolation
+consensus_engine.py  # Debate orchestrator
+subagent_spawner.py  # Process isolation
 context_revival_handler.py  # History synthesis
 
 # src/infrastructure/providers/

@@ -29,13 +29,16 @@ import pytest
 from thegent.phases.policy_federation import FederatedPolicyEngine
 from thegent.governance.isolation import TenantIsolationProvider
 
+
 @pytest.fixture
 def tenant_a_engine():
     return FederatedPolicyEngine(namespace="acme.payments")
 
+
 @pytest.fixture
 def tenant_b_engine():
     return FederatedPolicyEngine(namespace="competitor.analytics")
+
 
 @pytest.fixture
 def isolation_provider():
@@ -108,16 +111,10 @@ def test_tb004_telemetry_leakage(isolation_provider):
 
     # Attempt to access from Tenant B
     with pytest.raises(AccessDenied):
-        telemetry = isolation_provider.get_session_telemetry(
-            "competitor.analytics",
-            "session-1"
-        )
+        telemetry = isolation_provider.get_session_telemetry("competitor.analytics", "session-1")
 
     # Verify Tenant A can access its own telemetry
-    telemetry_a = isolation_provider.get_session_telemetry(
-        "acme.payments",
-        "session-1"
-    )
+    telemetry_a = isolation_provider.get_session_telemetry("acme.payments", "session-1")
     assert telemetry_a is not None
 ```
 
@@ -133,7 +130,7 @@ def test_tb005_policy_conflict():
     # Define conflicting policies
     policies = [
         {"namespace": "acme", "rules": {"auto_approve": False}},
-        {"namespace": "acme.payments", "rules": {"auto_approve": True}}
+        {"namespace": "acme.payments", "rules": {"auto_approve": True}},
     ]
 
     # Resolve conflict (project overrides org)

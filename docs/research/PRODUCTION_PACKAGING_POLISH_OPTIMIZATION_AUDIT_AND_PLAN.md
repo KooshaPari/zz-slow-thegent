@@ -71,6 +71,7 @@
 
 ```python
 """Cross-platform detection and utilities."""
+
 import os
 import platform
 import sys
@@ -78,13 +79,16 @@ from enum import Enum
 from pathlib import Path
 from typing import Literal
 
+
 class Platform(Enum):
     """Supported platforms."""
+
     MACOS = "macos"
     LINUX = "linux"
     WINDOWS = "windows"
     WSL2 = "wsl2"
     UNKNOWN = "unknown"
+
 
 def detect_platform() -> Platform:
     """Detect current platform."""
@@ -106,14 +110,17 @@ def detect_platform() -> Platform:
 
     return Platform.UNKNOWN
 
+
 def get_platform_name() -> str:
     """Get platform name string."""
     return detect_platform().value
+
 
 def is_windows() -> bool:
     """Check if running on Windows (native or WSL2)."""
     plat = detect_platform()
     return plat in (Platform.WINDOWS, Platform.WSL2)
+
 
 def is_unix() -> bool:
     """Check if running on Unix-like system."""
@@ -136,9 +143,8 @@ def is_unix() -> bool:
 ```python
 from thegent.platform import detect_platform, Platform
 
-def get_preferred_shell(
-    context: Literal["hooks", "agent", "os_admin", "desktop"]
-) -> str:
+
+def get_preferred_shell(context: Literal["hooks", "agent", "os_admin", "desktop"]) -> str:
     """Get preferred shell for context on current platform."""
     plat = detect_platform()
 
@@ -153,14 +159,11 @@ def get_preferred_shell(
 
     return "bash"
 
+
 def _wsl_available() -> bool:
     """Check if WSL2 is available."""
     try:
-        result = subprocess.run(
-            ["wsl", "--list", "--quiet"],
-            capture_output=True,
-            timeout=2
-        )
+        result = subprocess.run(["wsl", "--list", "--quiet"], capture_output=True, timeout=2)
         return result.returncode == 0
     except Exception:
         return False
@@ -513,29 +516,32 @@ end
 
 ```python
 """Build Windows installer for thegent."""
+
 import subprocess
 import sys
 from pathlib import Path
 
+
 def build_installer():
     """Build Windows MSI/EXE installer."""
     # 1. Build PyInstaller executable
-    subprocess.run([
-        "pyinstaller",
-        "--name=thegent",
-        "--onefile",
-        "--console",
-        "--add-data=hooks;hooks",
-        "--add-data=templates;templates",
-        "--add-data=scripts;scripts",
-        "src/thegent/main.py"
-    ], check=True)
+    subprocess.run(
+        [
+            "pyinstaller",
+            "--name=thegent",
+            "--onefile",
+            "--console",
+            "--add-data=hooks;hooks",
+            "--add-data=templates;templates",
+            "--add-data=scripts;scripts",
+            "src/thegent/main.py",
+        ],
+        check=True,
+    )
 
     # 2. Create Inno Setup installer
-    subprocess.run([
-        "iscc",
-        "scripts/thegent-installer.iss"
-    ], check=True)
+    subprocess.run(["iscc", "scripts/thegent-installer.iss"], check=True)
+
 
 if __name__ == "__main__":
     build_installer()
@@ -710,12 +716,14 @@ apps:
 
 ```python
 """Platform-specific path resolution."""
+
 import os
 import platform
 from pathlib import Path
 from typing import Optional
 
 from thegent.platform import detect_platform, Platform
+
 
 def get_config_dir() -> Path:
     """Get platform-specific config directory (XDG/AppData/Library)."""
@@ -740,6 +748,7 @@ def get_config_dir() -> Path:
             return Path(xdg_config) / "thegent"
         return Path.home() / ".config" / "thegent"
 
+
 def get_cache_dir() -> Path:
     """Get platform-specific cache directory."""
     plat = detect_platform()
@@ -761,6 +770,7 @@ def get_cache_dir() -> Path:
         if xdg_cache:
             return Path(xdg_cache) / "thegent"
         return Path.home() / ".cache" / "thegent"
+
 
 def get_data_dir() -> Path:
     """Get platform-specific data directory."""
@@ -784,6 +794,7 @@ def get_data_dir() -> Path:
             return Path(xdg_data) / "thegent"
         return Path.home() / ".local" / "share" / "thegent"
 
+
 def get_bin_dir() -> Path:
     """Get platform-specific binary directory."""
     plat = detect_platform()
@@ -798,6 +809,7 @@ def get_bin_dir() -> Path:
     else:  # macOS, Linux, WSL2
         # Unix: ~/.local/bin
         return Path.home() / ".local" / "bin"
+
 
 def get_log_dir() -> Path:
     """Get platform-specific log directory."""
@@ -834,8 +846,10 @@ def get_log_dir() -> Path:
 
 ```python
 """Migrate paths from old locations to platform-specific locations."""
+
 from pathlib import Path
 from thegent.platform_paths import get_config_dir, get_cache_dir, get_data_dir
+
 
 def migrate_paths() -> None:
     """Migrate old paths to platform-specific locations."""
@@ -881,6 +895,7 @@ def migrate_paths() -> None:
 
 ```python
 """Cross-platform utilities."""
+
 import os
 import site
 import sys
@@ -888,6 +903,7 @@ from pathlib import Path
 from typing import Optional
 
 from thegent.platform import detect_platform
+
 
 def _is_dev_mode() -> bool:
     """Detect if running from dev repo vs installed package (cross-platform)."""
@@ -900,6 +916,7 @@ def _is_dev_mode() -> bool:
 
     # Auto-detect: check if package is in site-packages
     import thegent
+
     pkg_path = Path(thegent.__file__).resolve().parent
 
     # Check site-packages (works on all platforms)
@@ -922,12 +939,14 @@ def _is_dev_mode() -> bool:
     # Fallback: assume installed (safer for production)
     return False
 
+
 def _get_thegent_root() -> Optional[Path]:
     """Get thegent root directory (dev repo) or None if installed."""
     if not _is_dev_mode():
         return None
 
     import thegent
+
     pkg_path = Path(thegent.__file__).resolve().parent
     for parent in [pkg_path.parent, pkg_path.parent.parent, pkg_path.parent.parent.parent]:
         if (parent / "pyproject.toml").exists() and (parent / "src" / "thegent").exists():
@@ -941,12 +960,14 @@ def _get_thegent_root() -> Optional[Path]:
 
 ```python
 """Cross-platform resource access."""
+
 import importlib.resources
 from pathlib import Path
 from typing import Optional
 
 from thegent.platform_paths import get_config_dir
 from thegent.utils import _is_dev_mode, _get_thegent_root
+
 
 def get_hooks_dir() -> Path:
     """Get hooks directory with cross-platform fallback chain."""
@@ -978,6 +999,7 @@ def get_hooks_dir() -> Path:
     user_hooks.mkdir(parents=True, exist_ok=True)
     return user_hooks
 
+
 def get_templates_dir() -> Path:
     """Get templates directory with cross-platform fallback chain."""
     # Same pattern as get_hooks_dir()
@@ -995,14 +1017,16 @@ def get_templates_dir() -> Path:
 ```python
 from thegent.platform import detect_platform, Platform
 
+
 class ThegentError(Exception):
     """Base exception with platform-aware remediation."""
+
     def __init__(
         self,
         message: str,
         remediation: str | None = None,
         exit_code: int = 1,
-        platform_hint: dict[str, str] | None = None
+        platform_hint: dict[str, str] | None = None,
     ):
         self.message = message
         self.remediation = remediation or self._get_platform_remediation(platform_hint)
@@ -1028,8 +1052,8 @@ raise ProviderError(
         "macos": "Run: thegent cliproxy login anthropic",
         "linux": "Run: thegent cliproxy login anthropic",
         "windows": "Run: thegent cliproxy login anthropic (or: pwsh -Command 'thegent cliproxy login anthropic')",
-        "default": "Run: thegent cliproxy login anthropic"
-    }
+        "default": "Run: thegent cliproxy login anthropic",
+    },
 )
 
 # Permission denied
@@ -1039,8 +1063,8 @@ raise PermissionError(
         "macos": "Check permissions: chmod 755 ~/Library/Application\\ Support/thegent",
         "linux": "Check permissions: chmod 755 ~/.config/thegent",
         "windows": "Run PowerShell as Administrator or check folder permissions",
-        "default": "Check directory permissions"
-    }
+        "default": "Check directory permissions",
+    },
 )
 ```
 
@@ -1093,6 +1117,7 @@ _cache_dir.mkdir(parents=True, exist_ok=True)
 
 # In-memory cache (all platforms)
 _memory_cache: TTLCache[str, Any] = TTLCache(maxsize=128, ttl=300)
+
 
 # Disk cache (all platforms)
 def _get_disk_cache_path(key: str) -> Path:
@@ -1193,11 +1218,7 @@ def first_run_wizard_windows() -> None:
 
     # Check PowerShell version
     try:
-        result = subprocess.run(
-            ["pwsh", "-Command", "$PSVersionTable.PSVersion"],
-            capture_output=True,
-            text=True
-        )
+        result = subprocess.run(["pwsh", "-Command", "$PSVersionTable.PSVersion"], capture_output=True, text=True)
         if result.returncode == 0:
             console.print("[green]PowerShell detected[/green]")
         else:
@@ -1207,11 +1228,7 @@ def first_run_wizard_windows() -> None:
 
     # Check WSL2
     try:
-        result = subprocess.run(
-            ["wsl", "--list", "--quiet"],
-            capture_output=True,
-            timeout=2
-        )
+        result = subprocess.run(["wsl", "--list", "--quiet"], capture_output=True, timeout=2)
         if result.returncode == 0:
             console.print("[green]WSL2 detected[/green]")
         else:
@@ -1424,15 +1441,21 @@ import pytest
 from unittest.mock import patch
 from thegent.platform_paths import get_config_dir, get_cache_dir
 
-@pytest.mark.parametrize("platform,appdata,expected", [
-    ("windows", "C:\\Users\\test\\AppData\\Roaming", "C:\\Users\\test\\AppData\\Roaming\\thegent"),
-    ("macos", None, "~/Library/Application Support/thegent"),
-    ("linux", None, "~/.config/thegent"),
-])
+
+@pytest.mark.parametrize(
+    "platform,appdata,expected",
+    [
+        ("windows", "C:\\Users\\test\\AppData\\Roaming", "C:\\Users\\test\\AppData\\Roaming\\thegent"),
+        ("macos", None, "~/Library/Application Support/thegent"),
+        ("linux", None, "~/.config/thegent"),
+    ],
+)
 def test_config_dir_windows(platform, appdata, expected):
     """Test config directory resolution."""
-    with patch("thegent.platform.detect_platform", return_value=platform), \
-         patch.dict("os.environ", {"APPDATA": appdata} if appdata else {}):
+    with (
+        patch("thegent.platform.detect_platform", return_value=platform),
+        patch.dict("os.environ", {"APPDATA": appdata} if appdata else {}),
+    ):
         result = get_config_dir()
         assert str(result) == expected.replace("~", str(Path.home()))
 ```
@@ -1616,7 +1639,9 @@ jobs:
 
 ```python
 """Cross-platform secret management."""
+
 from thegent.platform import detect_platform, Platform
+
 
 def get_secret_storage():
     """Get platform-specific secret storage."""
@@ -1624,19 +1649,23 @@ def get_secret_storage():
 
     if plat == Platform.MACOS:
         from thegent.security.macos_secrets import MacOSKeychain
+
         return MacOSKeychain()
 
     elif plat == Platform.LINUX:
         from thegent.security.linux_secrets import LinuxKeyring
+
         return LinuxKeyring()
 
     elif plat == Platform.WINDOWS:
         from thegent.security.windows_secrets import WindowsCredentialManager
+
         return WindowsCredentialManager()
 
     else:
         # Fallback: encrypted file
         from thegent.security.file_secrets import FileSecretStore
+
         return FileSecretStore()
 ```
 
@@ -1658,6 +1687,7 @@ def get_secret_storage():
 
 ```python
 from thegent.platform_paths import get_log_dir
+
 
 def setup_logging(level: str = "INFO") -> None:
     """Setup cross-platform logging."""
@@ -1958,11 +1988,9 @@ import sys
 if sys.platform == "win32":
     # Check if long paths enabled
     import winreg
+
     try:
-        key = winreg.OpenKey(
-            winreg.HKEY_LOCAL_MACHINE,
-            r"SYSTEM\CurrentControlSet\Control\FileSystem"
-        )
+        key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\FileSystem")
         long_paths = winreg.QueryValueEx(key, "LongPathsEnabled")[0]
         if not long_paths:
             console.print("[yellow]Long path support not enabled. Enable via Group Policy.[/yellow]")
@@ -2212,9 +2240,11 @@ thegent config show              # Shows platform-specific paths
 
 ```python
 """Complete platform-aware configuration loading."""
+
 from pathlib import Path
 from thegent.platform_paths import get_config_dir
 from thegent.platform import detect_platform
+
 
 def load_config() -> dict:
     """Load configuration with platform-aware paths."""
@@ -2225,6 +2255,7 @@ def load_config() -> dict:
     # Load config
     if config_file.exists():
         import yaml
+
         with open(config_file) as f:
             config = yaml.safe_load(f)
     else:
@@ -2232,11 +2263,14 @@ def load_config() -> dict:
 
     # Set platform-specific defaults
     config.setdefault("platform", plat.value)
-    config.setdefault("paths", {
-        "config": str(config_dir),
-        "cache": str(get_cache_dir()),
-        "data": str(get_data_dir()),
-    })
+    config.setdefault(
+        "paths",
+        {
+            "config": str(config_dir),
+            "cache": str(get_cache_dir()),
+            "data": str(get_data_dir()),
+        },
+    )
 
     return config
 ```
@@ -2245,7 +2279,9 @@ def load_config() -> dict:
 
 ```python
 """Cross-platform service installation."""
+
 from thegent.platform import detect_platform, Platform
+
 
 def install_service() -> bool:
     """Install thegent as system service (platform-aware)."""
@@ -2259,6 +2295,7 @@ def install_service() -> bool:
         return _install_task_scheduler_service()
     else:
         raise RuntimeError(f"Service installation not supported on {plat.value}")
+
 
 def _install_launchd_service() -> bool:
     """Install launchd service (macOS)."""
@@ -2284,6 +2321,7 @@ def _install_launchd_service() -> bool:
     subprocess.run(["launchctl", "load", str(plist_path)], check=True)
     return True
 
+
 def _install_systemd_service() -> bool:
     """Install systemd service (Linux)."""
     service_path = Path("/etc/systemd/system/thegent-mcp.service")
@@ -2305,17 +2343,13 @@ WantedBy=multi-user.target"""
     subprocess.run(["sudo", "systemctl", "enable", "thegent-mcp"], check=True)
     return True
 
+
 def _install_task_scheduler_service() -> bool:
     """Install Task Scheduler service (Windows)."""
     # Use schtasks.exe or Task Scheduler COM API
     import subprocess
-    command = [
-        "schtasks", "/Create",
-        "/TN", "thegent-mcp",
-        "/TR", "thegent serve",
-        "/SC", "ONLOGON",
-        "/F"
-    ]
+
+    command = ["schtasks", "/Create", "/TN", "thegent-mcp", "/TR", "thegent serve", "/SC", "ONLOGON", "/F"]
     subprocess.run(command, check=True)
     return True
 ```
@@ -2452,18 +2486,23 @@ def _install_task_scheduler_service() -> bool:
 
 ```python
 """Platform abstraction via dependency injection."""
+
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Protocol
 
+
 class PathResolver(Protocol):
     """Protocol for path resolution."""
+
     def get_config_dir(self) -> Path: ...
     def get_cache_dir(self) -> Path: ...
     def get_data_dir(self) -> Path: ...
 
+
 class PlatformPathResolver:
     """Concrete platform-aware path resolver."""
+
     def __init__(self, platform: str):
         self.platform = platform
 
@@ -2478,8 +2517,10 @@ class PlatformPathResolver:
 
     # ... other methods ...
 
+
 class ThegentApp:
     """Main application with injected dependencies."""
+
     def __init__(self, path_resolver: PathResolver):
         self.path_resolver = path_resolver
 
@@ -2487,10 +2528,12 @@ class ThegentApp:
         """Get config path using injected resolver."""
         return self.path_resolver.get_config_dir() / "config.yaml"
 
+
 # Usage
 def create_app() -> ThegentApp:
     """Create app with platform-aware resolver."""
     from thegent.platform import detect_platform
+
     resolver = PlatformPathResolver(detect_platform().value)
     return ThegentApp(resolver)
 ```
@@ -2501,61 +2544,50 @@ def create_app() -> ThegentApp:
 
 ```python
 """Strategy pattern for shell execution."""
+
 from abc import ABC, abstractmethod
 from typing import Optional
 import subprocess
 
+
 class ShellExecutor(ABC):
     """Abstract shell executor."""
+
     @abstractmethod
     def execute(self, command: str, cwd: Optional[Path] = None) -> subprocess.CompletedProcess:
         """Execute shell command."""
         pass
 
+
 class BashExecutor(ShellExecutor):
     """Bash executor (macOS/Linux)."""
+
     def execute(self, command: str, cwd: Optional[Path] = None) -> subprocess.CompletedProcess:
-        return subprocess.run(
-            ["bash", "-c", command],
-            cwd=cwd,
-            capture_output=True,
-            text=True,
-            check=False
-        )
+        return subprocess.run(["bash", "-c", command], cwd=cwd, capture_output=True, text=True, check=False)
+
 
 class PowerShellExecutor(ShellExecutor):
     """PowerShell executor (Windows)."""
+
     def execute(self, command: str, cwd: Optional[Path] = None) -> subprocess.CompletedProcess:
         return subprocess.run(
-            ["pwsh", "-NoProfile", "-Command", command],
-            cwd=cwd,
-            capture_output=True,
-            text=True,
-            check=False
+            ["pwsh", "-NoProfile", "-Command", command], cwd=cwd, capture_output=True, text=True, check=False
         )
+
 
 class WSLBashExecutor(ShellExecutor):
     """WSL2 bash executor (Windows)."""
+
     def execute(self, command: str, cwd: Optional[Path] = None) -> subprocess.CompletedProcess:
         # Convert Windows path to WSL path if needed
         wsl_cwd = self._convert_to_wsl_path(cwd) if cwd else None
-        return subprocess.run(
-            ["wsl", "bash", "-c", command],
-            cwd=wsl_cwd,
-            capture_output=True,
-            text=True,
-            check=False
-        )
+        return subprocess.run(["wsl", "bash", "-c", command], cwd=wsl_cwd, capture_output=True, text=True, check=False)
 
     def _convert_to_wsl_path(self, path: Path) -> str:
         """Convert Windows path to WSL path."""
-        result = subprocess.run(
-            ["wsl", "wslpath", str(path)],
-            capture_output=True,
-            text=True,
-            check=True
-        )
+        result = subprocess.run(["wsl", "wslpath", str(path)], capture_output=True, text=True, check=True)
         return result.stdout.strip()
+
 
 def get_shell_executor(platform: str, context: str = "agent") -> ShellExecutor:
     """Get appropriate shell executor for platform."""
@@ -2572,11 +2604,14 @@ def get_shell_executor(platform: str, context: str = "agent") -> ShellExecutor:
 
 ```python
 """Factory pattern for service management."""
+
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+
 class ServiceManager(ABC):
     """Abstract service manager."""
+
     @abstractmethod
     def install(self, service_name: str, command: str) -> bool:
         """Install service."""
@@ -2597,8 +2632,10 @@ class ServiceManager(ABC):
         """Uninstall service."""
         pass
 
+
 class LaunchdServiceManager(ServiceManager):
     """launchd service manager (macOS)."""
+
     def install(self, service_name: str, command: str) -> bool:
         plist_path = Path.home() / "Library" / "LaunchAgents" / f"{service_name}.plist"
         plist_content = self._generate_plist(service_name, command)
@@ -2640,8 +2677,10 @@ class LaunchdServiceManager(ServiceManager):
 </dict>
 </plist>"""
 
+
 class SystemdServiceManager(ServiceManager):
     """systemd service manager (Linux)."""
+
     def install(self, service_name: str, command: str) -> bool:
         service_path = Path(f"/etc/systemd/system/{service_name}.service")
         service_content = self._generate_service_file(service_name, command)
@@ -2681,16 +2720,15 @@ Restart=always
 [Install]
 WantedBy=multi-user.target"""
 
+
 class TaskSchedulerServiceManager(ServiceManager):
     """Task Scheduler service manager (Windows)."""
+
     def install(self, service_name: str, command: str) -> bool:
-        subprocess.run([
-            "schtasks", "/Create",
-            "/TN", service_name,
-            "/TR", f"thegent {command}",
-            "/SC", "ONLOGON",
-            "/F"
-        ], check=True)
+        subprocess.run(
+            ["schtasks", "/Create", "/TN", service_name, "/TR", f"thegent {command}", "/SC", "ONLOGON", "/F"],
+            check=True,
+        )
         return True
 
     def start(self, service_name: str) -> bool:
@@ -2704,6 +2742,7 @@ class TaskSchedulerServiceManager(ServiceManager):
     def uninstall(self, service_name: str) -> bool:
         subprocess.run(["schtasks", "/Delete", "/TN", service_name, "/F"], check=True)
         return True
+
 
 def get_service_manager(platform: str) -> ServiceManager:
     """Get platform-specific service manager."""
@@ -2723,21 +2762,26 @@ def get_service_manager(platform: str) -> ServiceManager:
 
 ```python
 """Observer pattern for configuration changes."""
+
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import List, Callable
 import watchdog.observers
 import watchdog.events
 
+
 class ConfigObserver(ABC):
     """Abstract config observer."""
+
     @abstractmethod
     def on_config_changed(self, config_path: Path) -> None:
         """Called when config changes."""
         pass
 
+
 class ConfigWatcher:
     """Watch config files for changes."""
+
     def __init__(self, config_dir: Path):
         self.config_dir = config_dir
         self.observers: List[ConfigObserver] = []
@@ -2758,8 +2802,10 @@ class ConfigWatcher:
         self.file_observer.stop()
         self.file_observer.join()
 
+
 class ConfigFileHandler(watchdog.events.FileSystemEventHandler):
     """Handle config file changes."""
+
     def __init__(self, observers: List[ConfigObserver]):
         self.observers = observers
 
@@ -2772,11 +2818,14 @@ class ConfigFileHandler(watchdog.events.FileSystemEventHandler):
             for observer in self.observers:
                 observer.on_config_changed(config_path)
 
+
 class ReloadProviderObserver(ConfigObserver):
     """Reload providers when config changes."""
+
     def on_config_changed(self, config_path: Path) -> None:
         """Reload providers."""
         from thegent.agents.cliproxy_manager import reload_providers
+
         reload_providers()
         console.print(f"[green]Configuration reloaded: {config_path}[/green]")
 ```
@@ -2791,6 +2840,7 @@ class ReloadProviderObserver(ConfigObserver):
 
 ```python
 """Retry logic with exponential backoff."""
+
 import time
 import random
 from typing import Callable, TypeVar, Optional
@@ -2798,12 +2848,13 @@ from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_excep
 
 T = TypeVar("T")
 
+
 def retry_with_backoff(
     func: Callable[[], T],
     max_attempts: int = 3,
     base_delay: float = 1.0,
     max_delay: float = 60.0,
-    exceptions: tuple = (Exception,)
+    exceptions: tuple = (Exception,),
 ) -> T:
     """Retry function with exponential backoff."""
     attempt = 0
@@ -2825,11 +2876,12 @@ def retry_with_backoff(
 
     raise RuntimeError("Retry exhausted")
 
+
 # Platform-aware retry
 @retry(
     stop=stop_after_attempt(3),
     wait=wait_exponential(multiplier=1, min=1, max=60),
-    retry=retry_if_exception_type((ConnectionError, TimeoutError))
+    retry=retry_if_exception_type((ConnectionError, TimeoutError)),
 )
 def fetch_provider_config(provider: str) -> dict:
     """Fetch provider config with retry."""
@@ -2843,26 +2895,26 @@ def fetch_provider_config(provider: str) -> dict:
 
 ```python
 """Circuit breaker pattern for resilience."""
+
 from enum import Enum
 from typing import Callable, TypeVar
 import time
 
 T = TypeVar("T")
 
+
 class CircuitState(Enum):
     """Circuit breaker states."""
-    CLOSED = "closed"      # Normal operation
-    OPEN = "open"          # Failing, reject requests
+
+    CLOSED = "closed"  # Normal operation
+    OPEN = "open"  # Failing, reject requests
     HALF_OPEN = "half_open"  # Testing if service recovered
+
 
 class CircuitBreaker:
     """Circuit breaker implementation."""
-    def __init__(
-        self,
-        failure_threshold: int = 5,
-        timeout: float = 60.0,
-        expected_exception: type = Exception
-    ):
+
+    def __init__(self, failure_threshold: int = 5, timeout: float = 60.0, expected_exception: type = Exception):
         self.failure_threshold = failure_threshold
         self.timeout = timeout
         self.expected_exception = expected_exception
@@ -2899,12 +2951,10 @@ class CircuitBreaker:
         if self.failure_count >= self.failure_threshold:
             self.state = CircuitState.OPEN
 
+
 # Usage
-mcp_circuit_breaker = CircuitBreaker(
-    failure_threshold=5,
-    timeout=60.0,
-    expected_exception=ConnectionError
-)
+mcp_circuit_breaker = CircuitBreaker(failure_threshold=5, timeout=60.0, expected_exception=ConnectionError)
+
 
 def call_mcp_server(command: str) -> dict:
     """Call MCP server with circuit breaker."""
@@ -2917,16 +2967,16 @@ def call_mcp_server(command: str) -> dict:
 
 ```python
 """Graceful degradation for platform features."""
+
 from typing import Optional, Callable, TypeVar
 from functools import wraps
 
 T = TypeVar("T")
 
-def graceful_degradation(
-    fallback_value: T,
-    fallback_message: str = "Feature not available"
-) -> Callable:
+
+def graceful_degradation(fallback_value: T, fallback_message: str = "Feature not available") -> Callable:
     """Decorator for graceful degradation."""
+
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -2935,13 +2985,13 @@ def graceful_degradation(
             except (NotImplementedError, RuntimeError) as e:
                 console.print(f"[yellow]{fallback_message}: {e}[/yellow]")
                 return fallback_value
+
         return wrapper
+
     return decorator
 
-@graceful_degradation(
-    fallback_value=False,
-    fallback_message="Desktop automation not available"
-)
+
+@graceful_degradation(fallback_value=False, fallback_message="Desktop automation not available")
 def automate_desktop(action: str) -> bool:
     """Automate desktop (platform-specific)."""
     plat = detect_platform()
@@ -2965,6 +3015,7 @@ def automate_desktop(action: str) -> bool:
 
 ```python
 """Multi-level cache system."""
+
 from cachetools import TTLCache, LRUCache
 from pathlib import Path
 import pickle
@@ -2973,20 +3024,15 @@ from typing import Optional, TypeVar
 
 T = TypeVar("T")
 
+
 class MultiLevelCache:
     """Multi-level cache: memory → disk → network."""
+
     def __init__(
-        self,
-        memory_size: int = 128,
-        memory_ttl: int = 300,
-        disk_dir: Optional[Path] = None,
-        disk_ttl: int = 3600
+        self, memory_size: int = 128, memory_ttl: int = 300, disk_dir: Optional[Path] = None, disk_ttl: int = 3600
     ):
         # Level 1: In-memory cache (fastest)
-        self.memory_cache: TTLCache[str, T] = TTLCache(
-            maxsize=memory_size,
-            ttl=memory_ttl
-        )
+        self.memory_cache: TTLCache[str, T] = TTLCache(maxsize=memory_size, ttl=memory_ttl)
 
         # Level 2: Disk cache (fast, persistent)
         self.disk_dir = disk_dir or Path.home() / ".cache" / "thegent" / "cache"
@@ -3046,13 +3092,9 @@ class MultiLevelCache:
         """Hash cache key."""
         return hashlib.sha256(key.encode()).hexdigest()
 
+
 # Global cache instance
-_cache = MultiLevelCache(
-    memory_size=128,
-    memory_ttl=300,
-    disk_dir=get_cache_dir() / "cache",
-    disk_ttl=3600
-)
+_cache = MultiLevelCache(memory_size=128, memory_ttl=300, disk_dir=get_cache_dir() / "cache", disk_ttl=3600)
 ```
 
 ### 30.2 Cache Invalidation Strategies
@@ -3061,11 +3103,14 @@ _cache = MultiLevelCache(
 
 ```python
 """Cache invalidation strategies."""
+
 from typing import Set, Callable
 from pathlib import Path
 
+
 class CacheInvalidator:
     """Smart cache invalidation."""
+
     def __init__(self):
         self.invalidation_rules: List[Callable[[str], bool]] = []
         self.watched_paths: Set[Path] = set()
@@ -3083,12 +3128,12 @@ class CacheInvalidator:
     def invalidate(self, key_pattern: str) -> None:
         """Invalidate cache entries matching pattern."""
         keys_to_remove = [
-            key for key in _cache.memory_cache.keys()
-            if any(rule(key) for rule in self.invalidation_rules)
+            key for key in _cache.memory_cache.keys() if any(rule(key) for rule in self.invalidation_rules)
         ]
         for key in keys_to_remove:
             _cache.memory_cache.pop(key, None)
             _cache._remove_from_disk(key)
+
 
 # Usage
 invalidator = CacheInvalidator()
@@ -3106,11 +3151,13 @@ invalidator.invalidate_on_file_change(get_config_dir() / "cliproxy-config.yaml")
 
 ```python
 """Structured logging with context."""
+
 import structlog
 import sys
 from pathlib import Path
 from thegent.platform_paths import get_log_dir
 from thegent.platform import detect_platform
+
 
 def setup_structured_logging(level: str = "INFO") -> None:
     """Setup structured logging with platform-aware configuration."""
@@ -3131,9 +3178,7 @@ def setup_structured_logging(level: str = "INFO") -> None:
             structlog.processors.format_exc_info,
             structlog.processors.JSONRenderer() if plat != "windows" else structlog.dev.ConsoleRenderer(),
         ],
-        wrapper_class=structlog.make_filtering_bound_logger(
-            getattr(logging, level.upper())
-        ),
+        wrapper_class=structlog.make_filtering_bound_logger(getattr(logging, level.upper())),
         context_class=dict,
         logger_factory=structlog.PrintLoggerFactory(),
         cache_logger_on_first_use=True,
@@ -3141,39 +3186,25 @@ def setup_structured_logging(level: str = "INFO") -> None:
 
     # Add file handler
     handler = logging.FileHandler(log_file)
-    handler.setFormatter(logging.Formatter(
-        "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
-    ))
+    handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s"))
     logging.getLogger().addHandler(handler)
+
 
 # Usage
 logger = structlog.get_logger()
 
+
 def run_agent(agent: str, prompt: str) -> dict:
     """Run agent with structured logging."""
-    logger.info(
-        "agent_started",
-        agent=agent,
-        prompt_length=len(prompt),
-        platform=detect_platform().value
-    )
+    logger.info("agent_started", agent=agent, prompt_length=len(prompt), platform=detect_platform().value)
 
     try:
         result = _execute_agent(agent, prompt)
-        logger.info(
-            "agent_completed",
-            agent=agent,
-            result_length=len(str(result)),
-            duration_ms=_get_duration()
-        )
+        logger.info("agent_completed", agent=agent, result_length=len(str(result)), duration_ms=_get_duration())
         return result
     except Exception as e:
         logger.error(
-            "agent_failed",
-            agent=agent,
-            error=str(e),
-            error_type=type(e).__name__,
-            duration_ms=_get_duration()
+            "agent_failed", agent=agent, error=str(e), error_type=type(e).__name__, duration_ms=_get_duration()
         )
         raise
 ```
@@ -3184,29 +3215,36 @@ def run_agent(agent: str, prompt: str) -> dict:
 
 ```python
 """Distributed tracing for cross-platform operations."""
+
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
 from opentelemetry.sdk.resources import Resource
 from thegent.platform import detect_platform
 
+
 def setup_tracing() -> None:
     """Setup distributed tracing."""
-    resource = Resource.create({
-        "service.name": "thegent",
-        "service.version": __version__,
-        "platform": detect_platform().value,
-    })
+    resource = Resource.create(
+        {
+            "service.name": "thegent",
+            "service.version": __version__,
+            "platform": detect_platform().value,
+        }
+    )
 
     provider = TracerProvider(resource=resource)
     processor = BatchSpanProcessor(ConsoleSpanExporter())
     provider.add_span_processor(processor)
     trace.set_tracer_provider(provider)
 
+
 tracer = trace.get_tracer(__name__)
+
 
 def trace_operation(operation_name: str):
     """Decorator for tracing operations."""
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -3218,14 +3256,14 @@ def trace_operation(operation_name: str):
                     span.set_status(trace.Status(trace.StatusCode.OK))
                     return result
                 except Exception as e:
-                    span.set_status(trace.Status(
-                        trace.StatusCode.ERROR,
-                        str(e)
-                    ))
+                    span.set_status(trace.Status(trace.StatusCode.ERROR, str(e)))
                     span.record_exception(e)
                     raise
+
         return wrapper
+
     return decorator
+
 
 # Usage
 @trace_operation("agent.run")
@@ -3245,11 +3283,14 @@ def run_agent(agent: str, prompt: str) -> dict:
 
 ```python
 """Secure secret storage (platform-specific)."""
+
 from abc import ABC, abstractmethod
 from typing import Optional
 
+
 class SecretStore(ABC):
     """Abstract secret store."""
+
     @abstractmethod
     def store(self, key: str, value: str) -> None:
         """Store secret."""
@@ -3265,16 +3306,12 @@ class SecretStore(ABC):
         """Delete secret."""
         pass
 
+
 class MacOSKeychainStore(SecretStore):
     """macOS Keychain secret store."""
+
     def store(self, key: str, value: str) -> None:
-        subprocess.run([
-            "security", "add-generic-password",
-            "-a", "thegent",
-            "-s", key,
-            "-w", value,
-            "-U"
-        ], check=True)
+        subprocess.run(["security", "add-generic-password", "-a", "thegent", "-s", key, "-w", value, "-U"], check=True)
 
     def retrieve(self, key: str) -> Optional[str]:
         try:
@@ -3282,27 +3319,27 @@ class MacOSKeychainStore(SecretStore):
                 ["security", "find-generic-password", "-a", "thegent", "-s", key, "-w"],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
             )
             return result.stdout.strip()
         except subprocess.CalledProcessError:
             return None
 
     def delete(self, key: str) -> None:
-        subprocess.run([
-            "security", "delete-generic-password",
-            "-a", "thegent",
-            "-s", key
-        ], check=False)
+        subprocess.run(["security", "delete-generic-password", "-a", "thegent", "-s", key], check=False)
+
 
 class LinuxKeyringStore(SecretStore):
     """Linux keyring secret store."""
+
     def store(self, key: str, value: str) -> None:
         import keyring
+
         keyring.set_password("thegent", key, value)
 
     def retrieve(self, key: str) -> Optional[str]:
         import keyring
+
         try:
             return keyring.get_password("thegent", key)
         except Exception:
@@ -3310,25 +3347,33 @@ class LinuxKeyringStore(SecretStore):
 
     def delete(self, key: str) -> None:
         import keyring
+
         try:
             keyring.delete_password("thegent", key)
         except Exception:
             pass
 
+
 class WindowsCredentialStore(SecretStore):
     """Windows Credential Manager secret store."""
+
     def store(self, key: str, value: str) -> None:
         import win32cred
-        win32cred.CredWrite({
-            "Type": win32cred.CRED_TYPE_GENERIC,
-            "TargetName": f"thegent:{key}",
-            "UserName": "thegent",
-            "CredentialBlob": value.encode(),
-            "Persist": win32cred.CRED_PERSIST_LOCAL_MACHINE
-        }, 0)
+
+        win32cred.CredWrite(
+            {
+                "Type": win32cred.CRED_TYPE_GENERIC,
+                "TargetName": f"thegent:{key}",
+                "UserName": "thegent",
+                "CredentialBlob": value.encode(),
+                "Persist": win32cred.CRED_PERSIST_LOCAL_MACHINE,
+            },
+            0,
+        )
 
     def retrieve(self, key: str) -> Optional[str]:
         import win32cred
+
         try:
             cred = win32cred.CredRead(f"thegent:{key}", win32cred.CRED_TYPE_GENERIC, 0)
             return cred["CredentialBlob"].decode()
@@ -3337,10 +3382,12 @@ class WindowsCredentialStore(SecretStore):
 
     def delete(self, key: str) -> None:
         import win32cred
+
         try:
             win32cred.CredDelete(f"thegent:{key}", win32cred.CRED_TYPE_GENERIC, 0)
         except Exception:
             pass
+
 
 def get_secret_store(platform: str) -> SecretStore:
     """Get platform-specific secret store."""
@@ -3360,9 +3407,11 @@ def get_secret_store(platform: str) -> SecretStore:
 
 ```python
 """Input validation and sanitization."""
+
 import re
 from pathlib import Path
 from thegent.platform import detect_platform
+
 
 def validate_path(path: str) -> Path:
     """Validate and sanitize path (platform-aware)."""
@@ -3380,9 +3429,9 @@ def validate_path(path: str) -> Path:
             raise ValueError(f"Path contains invalid characters: {path}")
 
         # Check for reserved names
-        reserved_names = {"CON", "PRN", "AUX", "NUL"} | {
-            f"COM{i}" for i in range(1, 10)
-        } | {f"LPT{i}" for i in range(1, 10)}
+        reserved_names = (
+            {"CON", "PRN", "AUX", "NUL"} | {f"COM{i}" for i in range(1, 10)} | {f"LPT{i}" for i in range(1, 10)}
+        )
         if Path(path).stem.upper() in reserved_names:
             raise ValueError(f"Path uses reserved name: {path}")
     else:
@@ -3399,6 +3448,7 @@ def validate_path(path: str) -> Path:
 
     return resolved
 
+
 def sanitize_command(command: str) -> str:
     """Sanitize shell command (platform-aware)."""
     plat = detect_platform()
@@ -3410,19 +3460,19 @@ def sanitize_command(command: str) -> str:
     if plat == "windows":
         # Windows: Remove PowerShell injection attempts
         dangerous_patterns = [
-            r'`.*`',  # Backtick execution
-            r'\$\(.*\)',  # Command substitution
-            r';\s*[&|]',  # Command chaining
+            r"`.*`",  # Backtick execution
+            r"\$\(.*\)",  # Command substitution
+            r";\s*[&|]",  # Command chaining
         ]
         for pattern in dangerous_patterns:
             command = re.sub(pattern, "", command)
     else:
         # Unix: Remove shell injection attempts
         dangerous_patterns = [
-            r'`.*`',  # Backtick execution
-            r'\$\(.*\)',  # Command substitution
-            r';\s*[&|]',  # Command chaining
-            r'<\(.*\)',  # Process substitution
+            r"`.*`",  # Backtick execution
+            r"\$\(.*\)",  # Command substitution
+            r";\s*[&|]",  # Command chaining
+            r"<\(.*\)",  # Process substitution
         ]
         for pattern in dangerous_patterns:
             command = re.sub(pattern, "", command)
@@ -3440,13 +3490,16 @@ def sanitize_command(command: str) -> str:
 
 ```python
 """Lazy loading with proxies."""
+
 from typing import TypeVar, Callable, Optional
 from functools import wraps
 
 T = TypeVar("T")
 
+
 class LazyProxy:
     """Lazy loading proxy."""
+
     def __init__(self, factory: Callable[[], T]):
         self._factory = factory
         self._value: Optional[T] = None
@@ -3466,11 +3519,14 @@ class LazyProxy:
             self._loaded = True
         return self._value(*args, **kwargs)
 
+
 # Usage
 def _load_heavy_module():
     """Load heavy module."""
     import thegent.agents.heavy_module
+
     return thegent.agents.heavy_module
+
 
 heavy_module = LazyProxy(_load_heavy_module)
 
@@ -3484,14 +3540,17 @@ heavy_module.some_function()
 
 ```python
 """Async operations for I/O-bound tasks."""
+
 import asyncio
 from typing import List, TypeVar, Callable
 from concurrent.futures import ThreadPoolExecutor
 
 T = TypeVar("T")
 
+
 class AsyncExecutor:
     """Async executor for I/O operations."""
+
     def __init__(self, max_workers: int = 10):
         self.executor = ThreadPoolExecutor(max_workers=max_workers)
 
@@ -3505,8 +3564,10 @@ class AsyncExecutor:
         tasks = [self.run_async(func) for func in funcs]
         return await asyncio.gather(*tasks)
 
+
 # Usage
 executor = AsyncExecutor()
+
 
 async def check_providers(providers: List[str]) -> List[dict]:
     """Check multiple providers in parallel."""
@@ -3524,10 +3585,12 @@ async def check_providers(providers: List[str]) -> List[dict]:
 
 ```python
 """Platform-specific test fixtures."""
+
 import pytest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 from thegent.platform import detect_platform
+
 
 @pytest.fixture
 def mock_platform(request):
@@ -3536,6 +3599,7 @@ def mock_platform(request):
     with patch("thegent.platform.detect_platform") as mock:
         mock.return_value = Platform(platform_name)
         yield platform_name
+
 
 @pytest.fixture
 def temp_config_dir(tmp_path, mock_platform):
@@ -3550,10 +3614,12 @@ def temp_config_dir(tmp_path, mock_platform):
     config_dir.mkdir(parents=True, exist_ok=True)
     return config_dir
 
+
 @pytest.mark.parametrize("mock_platform", ["macos", "linux", "windows"], indirect=True)
 def test_path_resolution(mock_platform, temp_config_dir):
     """Test path resolution on all platforms."""
     from thegent.platform_paths import get_config_dir
+
     assert get_config_dir() == temp_config_dir
 ```
 
@@ -3563,10 +3629,12 @@ def test_path_resolution(mock_platform, temp_config_dir):
 
 ```python
 """Integration test helpers."""
+
 import subprocess
 import tempfile
 from pathlib import Path
 from contextlib import contextmanager
+
 
 @contextmanager
 def isolated_environment():
@@ -3580,16 +3648,12 @@ def isolated_environment():
 
         yield env
 
+
 def run_thegent_command(command: List[str], env: dict = None) -> subprocess.CompletedProcess:
     """Run thegent command in test environment."""
     cmd = ["thegent"] + command
-    return subprocess.run(
-        cmd,
-        env=env,
-        capture_output=True,
-        text=True,
-        check=False
-    )
+    return subprocess.run(cmd, env=env, capture_output=True, text=True, check=False)
+
 
 # Usage
 def test_install_command():
@@ -3902,14 +3966,17 @@ spec:
 
 ```python
 """Hierarchical configuration management."""
+
 from pathlib import Path
 import yaml
 from typing import Dict, Any
 from thegent.platform_paths import get_config_dir
 from thegent.platform import detect_platform
 
+
 class ConfigManager:
     """Hierarchical configuration manager."""
+
     def __init__(self):
         self.config_dir = get_config_dir()
         self.platform = detect_platform().value
@@ -4011,11 +4078,14 @@ class ConfigManager:
 
 ```python
 """Configuration validation."""
+
 from pydantic import BaseModel, Field, field_validator
 from thegent.platform import detect_platform
 
+
 class PlatformConfig(BaseModel):
     """Platform-specific configuration."""
+
     platform: str = Field(default_factory=lambda: detect_platform().value)
 
     @field_validator("platform")
@@ -4027,8 +4097,10 @@ class PlatformConfig(BaseModel):
             raise ValueError(f"Invalid platform: {v}")
         return v
 
+
 class PathConfig(BaseModel):
     """Path configuration."""
+
     config_dir: Path
     cache_dir: Path
     data_dir: Path
@@ -4053,8 +4125,10 @@ class PathConfig(BaseModel):
         v.mkdir(parents=True, exist_ok=True)
         return v
 
+
 class ThegentConfig(BaseModel):
     """Complete thegent configuration."""
+
     platform: PlatformConfig
     paths: PathConfig
     providers: Dict[str, Dict[str, Any]] = Field(default_factory=dict)
@@ -4082,20 +4156,19 @@ class ThegentConfig(BaseModel):
 
 ```python
 """Health check endpoints."""
+
 from fastapi import FastAPI, status
 from fastapi.responses import JSONResponse
 from thegent.platform import detect_platform
 
 app = FastAPI()
 
+
 @app.get("/health")
 async def health_check():
     """Basic health check."""
-    return {
-        "status": "healthy",
-        "platform": detect_platform().value,
-        "version": __version__
-    }
+    return {"status": "healthy", "platform": detect_platform().value, "version": __version__}
+
 
 @app.get("/health/detailed")
 async def detailed_health_check():
@@ -4115,28 +4188,24 @@ async def detailed_health_check():
             "status": "healthy" if all_healthy else "degraded",
             "checks": checks,
             "platform": detect_platform().value,
-        }
+        },
     )
+
 
 def _check_platform() -> dict:
     """Check platform detection."""
     try:
         plat = detect_platform()
-        return {
-            "status": "healthy",
-            "platform": plat.value,
-            "message": f"Platform detected: {plat.value}"
-        }
+        return {"status": "healthy", "platform": plat.value, "message": f"Platform detected: {plat.value}"}
     except Exception as e:
-        return {
-            "status": "unhealthy",
-            "error": str(e)
-        }
+        return {"status": "unhealthy", "error": str(e)}
+
 
 def _check_paths() -> dict:
     """Check path resolution."""
     try:
         from thegent.platform_paths import get_config_dir, get_cache_dir, get_data_dir
+
         paths = {
             "config": get_config_dir(),
             "cache": get_cache_dir(),
@@ -4147,19 +4216,10 @@ def _check_paths() -> dict:
             if not path.exists():
                 path.mkdir(parents=True, exist_ok=True)
             if not os.access(path, os.W_OK):
-                return {
-                    "status": "unhealthy",
-                    "error": f"{name} directory not writable: {path}"
-                }
-        return {
-            "status": "healthy",
-            "paths": {k: str(v) for k, v in paths.items()}
-        }
+                return {"status": "unhealthy", "error": f"{name} directory not writable: {path}"}
+        return {"status": "healthy", "paths": {k: str(v) for k, v in paths.items()}}
     except Exception as e:
-        return {
-            "status": "unhealthy",
-            "error": str(e)
-        }
+        return {"status": "unhealthy", "error": str(e)}
 ```
 
 ### 38.2 Metrics Collection
@@ -4168,39 +4228,23 @@ def _check_paths() -> dict:
 
 ```python
 """Metrics collection."""
+
 from prometheus_client import Counter, Histogram, Gauge
 from thegent.platform import detect_platform
 
 # Metrics
-agent_runs_total = Counter(
-    "thegent_agent_runs_total",
-    "Total agent runs",
-    ["agent", "platform", "status"]
-)
+agent_runs_total = Counter("thegent_agent_runs_total", "Total agent runs", ["agent", "platform", "status"])
 
-agent_duration = Histogram(
-    "thegent_agent_duration_seconds",
-    "Agent duration",
-    ["agent", "platform"]
-)
+agent_duration = Histogram("thegent_agent_duration_seconds", "Agent duration", ["agent", "platform"])
 
 path_resolution_duration = Histogram(
-    "thegent_path_resolution_seconds",
-    "Path resolution duration",
-    ["path_type", "platform"]
+    "thegent_path_resolution_seconds", "Path resolution duration", ["path_type", "platform"]
 )
 
-cache_hits = Counter(
-    "thegent_cache_hits_total",
-    "Cache hits",
-    ["cache_level", "platform"]
-)
+cache_hits = Counter("thegent_cache_hits_total", "Cache hits", ["cache_level", "platform"])
 
-cache_misses = Counter(
-    "thegent_cache_misses_total",
-    "Cache misses",
-    ["cache_level", "platform"]
-)
+cache_misses = Counter("thegent_cache_misses_total", "Cache misses", ["cache_level", "platform"])
+
 
 def track_agent_run(agent: str, duration: float, success: bool):
     """Track agent run metrics."""
@@ -4209,10 +4253,12 @@ def track_agent_run(agent: str, duration: float, success: bool):
     agent_runs_total.labels(agent=agent, platform=plat, status=status).inc()
     agent_duration.labels(agent=agent, platform=plat).observe(duration)
 
+
 def track_path_resolution(path_type: str, duration: float):
     """Track path resolution metrics."""
     plat = detect_platform().value
     path_resolution_duration.labels(path_type=path_type, platform=plat).observe(duration)
+
 
 def track_cache_access(level: str, hit: bool):
     """Track cache access metrics."""
@@ -4233,24 +4279,29 @@ def track_cache_access(level: str, hit: bool):
 
 ```python
 """Progressive disclosure in CLI."""
+
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
 console = Console()
 
+
 def show_help_basic():
     """Show basic help (for beginners)."""
-    console.print(Panel(
-        "[bold cyan]thegent[/bold cyan] - Agentic orchestration platform\n\n"
-        "[green]Quick Start:[/green]\n"
-        "  1. thegent doctor          # Check your setup\n"
-        "  2. thegent cliproxy login  # Configure providers\n"
-        "  3. thegent serve           # Start MCP server\n"
-        "  4. thegent run \"task\"      # Run your first agent\n\n"
-        "[dim]For more help: thegent help --advanced[/dim]",
-        title="Welcome to thegent"
-    ))
+    console.print(
+        Panel(
+            "[bold cyan]thegent[/bold cyan] - Agentic orchestration platform\n\n"
+            "[green]Quick Start:[/green]\n"
+            "  1. thegent doctor          # Check your setup\n"
+            "  2. thegent cliproxy login  # Configure providers\n"
+            "  3. thegent serve           # Start MCP server\n"
+            '  4. thegent run "task"      # Run your first agent\n\n'
+            "[dim]For more help: thegent help --advanced[/dim]",
+            title="Welcome to thegent",
+        )
+    )
+
 
 def show_help_advanced():
     """Show advanced help (for power users)."""
@@ -4279,6 +4330,8 @@ def show_help_advanced():
 
 ```python
 """Contextual help system."""
+
+
 def get_contextual_help(context: str) -> str:
     """Get contextual help based on current state."""
     plat = detect_platform().value
@@ -4390,8 +4443,10 @@ echo "✅ Package built successfully!"
 
 ```python
 """Package signing."""
+
 import subprocess
 from pathlib import Path
+
 
 def sign_package(package_path: Path, platform: str) -> bool:
     """Sign package for platform."""
@@ -4406,40 +4461,49 @@ def sign_package(package_path: Path, platform: str) -> bool:
         return _sign_linux(package_path)
     return False
 
+
 def _sign_macos(package_path: Path) -> bool:
     """Sign macOS package."""
     # Requires Apple Developer certificate
-    subprocess.run([
-        "codesign",
-        "--sign", "Developer ID Application: Your Name",
-        "--timestamp",
-        "--options", "runtime",
-        str(package_path)
-    ], check=True)
+    subprocess.run(
+        [
+            "codesign",
+            "--sign",
+            "Developer ID Application: Your Name",
+            "--timestamp",
+            "--options",
+            "runtime",
+            str(package_path),
+        ],
+        check=True,
+    )
     return True
+
 
 def _sign_windows(package_path: Path) -> bool:
     """Sign Windows package."""
     # Requires code signing certificate
-    subprocess.run([
-        "signtool",
-        "sign",
-        "/f", "certificate.pfx",
-        "/p", "password",
-        "/t", "http://timestamp.digicert.com",
-        str(package_path)
-    ], check=True)
+    subprocess.run(
+        [
+            "signtool",
+            "sign",
+            "/f",
+            "certificate.pfx",
+            "/p",
+            "password",
+            "/t",
+            "http://timestamp.digicert.com",
+            str(package_path),
+        ],
+        check=True,
+    )
     return True
+
 
 def _sign_linux(package_path: Path) -> bool:
     """Sign Linux package."""
     # GPG signing
-    subprocess.run([
-        "gpg",
-        "--armor",
-        "--detach-sign",
-        str(package_path)
-    ], check=True)
+    subprocess.run(["gpg", "--armor", "--detach-sign", str(package_path)], check=True)
     return True
 ```
 
@@ -4474,24 +4538,18 @@ A production-ready, shipping-quality cross-platform package that can be installe
 
 ```python
 """Offline package builder."""
+
 import subprocess
 from pathlib import Path
+
 
 def build_offline_package(output_dir: Path) -> None:
     """Build offline package with all dependencies."""
     # 1. Download all dependencies
-    subprocess.run([
-        "pip", "download",
-        "-d", str(output_dir / "wheels"),
-        "-r", "requirements.txt"
-    ], check=True)
+    subprocess.run(["pip", "download", "-d", str(output_dir / "wheels"), "-r", "requirements.txt"], check=True)
 
     # 2. Build thegent wheel
-    subprocess.run([
-        "python", "-m", "build",
-        "--wheel",
-        "--outdir", str(output_dir / "wheels")
-    ], check=True)
+    subprocess.run(["python", "-m", "build", "--wheel", "--outdir", str(output_dir / "wheels")], check=True)
 
     # 3. Create installation script
     install_script = output_dir / "install-offline.sh"
@@ -4518,8 +4576,10 @@ thegent install --target all
 
 ```python
 """Multi-tenant configuration."""
+
 from pathlib import Path
 import os
+
 
 def get_tenant_config_dir(tenant_id: str) -> Path:
     """Get tenant-specific config directory."""
@@ -4528,12 +4588,14 @@ def get_tenant_config_dir(tenant_id: str) -> Path:
     tenant_dir.mkdir(parents=True, exist_ok=True)
     return tenant_dir
 
+
 def get_tenant_cache_dir(tenant_id: str) -> Path:
     """Get tenant-specific cache directory."""
     base_cache = get_cache_dir()
     tenant_dir = base_cache / "tenants" / tenant_id
     tenant_dir.mkdir(parents=True, exist_ok=True)
     return tenant_dir
+
 
 # Usage
 tenant_id = os.environ.get("THGENT_TENANT_ID", "default")
@@ -4549,11 +4611,14 @@ cache_dir = get_tenant_cache_dir(tenant_id)
 
 ```python
 """High-availability configuration."""
+
 from typing import Optional
 import redis
 
+
 class SharedStateBackend:
     """Shared state backend for HA deployments."""
+
     def __init__(self, redis_url: str):
         self.redis = redis.from_url(redis_url)
 
@@ -4569,8 +4634,9 @@ class SharedStateBackend:
         self.redis.setex(
             f"thegent:session:{session_id}",
             3600,  # TTL: 1 hour
-            json.dumps(data)
+            json.dumps(data),
         )
+
 
 # Configuration
 HA_BACKEND_URL = os.environ.get("THGENT_HA_BACKEND_URL")
@@ -4590,42 +4656,51 @@ else:
 
 ```python
 """Self-diagnostic system."""
+
 from typing import List, Dict
 from dataclasses import dataclass
 from enum import Enum
 
+
 class DiagnosticLevel(Enum):
     """Diagnostic severity levels."""
+
     INFO = "info"
     WARNING = "warning"
     ERROR = "error"
     CRITICAL = "critical"
 
+
 @dataclass
 class DiagnosticResult:
     """Diagnostic check result."""
+
     name: str
     level: DiagnosticLevel
     message: str
     remediation: str
     platform: str
 
+
 class DiagnosticSystem:
     """Self-diagnostic system."""
+
     def __init__(self):
         self.checks: List[Callable[[], DiagnosticResult]] = []
         self._register_checks()
 
     def _register_checks(self) -> None:
         """Register diagnostic checks."""
-        self.checks.extend([
-            self._check_platform_detection,
-            self._check_path_resolution,
-            self._check_permissions,
-            self._check_dependencies,
-            self._check_network_connectivity,
-            self._check_disk_space,
-        ])
+        self.checks.extend(
+            [
+                self._check_platform_detection,
+                self._check_path_resolution,
+                self._check_permissions,
+                self._check_dependencies,
+                self._check_network_connectivity,
+                self._check_disk_space,
+            ]
+        )
 
     def run_diagnostics(self) -> List[DiagnosticResult]:
         """Run all diagnostic checks."""
@@ -4635,13 +4710,15 @@ class DiagnosticSystem:
                 result = check()
                 results.append(result)
             except Exception as e:
-                results.append(DiagnosticResult(
-                    name=check.__name__,
-                    level=DiagnosticLevel.ERROR,
-                    message=f"Diagnostic check failed: {e}",
-                    remediation="Check logs for details",
-                    platform=detect_platform().value
-                ))
+                results.append(
+                    DiagnosticResult(
+                        name=check.__name__,
+                        level=DiagnosticLevel.ERROR,
+                        message=f"Diagnostic check failed: {e}",
+                        remediation="Check logs for details",
+                        platform=detect_platform().value,
+                    )
+                )
         return results
 
     def _check_platform_detection(self) -> DiagnosticResult:
@@ -4653,7 +4730,7 @@ class DiagnosticSystem:
                 level=DiagnosticLevel.INFO,
                 message=f"Platform detected: {plat.value}",
                 remediation="",
-                platform=plat.value
+                platform=plat.value,
             )
         except Exception as e:
             return DiagnosticResult(
@@ -4661,13 +4738,14 @@ class DiagnosticSystem:
                 level=DiagnosticLevel.CRITICAL,
                 message=f"Platform detection failed: {e}",
                 remediation="Set THGENT_PLATFORM environment variable",
-                platform="unknown"
+                platform="unknown",
             )
 
     def _check_path_resolution(self) -> DiagnosticResult:
         """Check path resolution."""
         try:
             from thegent.platform_paths import get_config_dir, get_cache_dir, get_data_dir
+
             config_dir = get_config_dir()
             cache_dir = get_cache_dir()
             data_dir = get_data_dir()
@@ -4682,7 +4760,7 @@ class DiagnosticSystem:
                         level=DiagnosticLevel.ERROR,
                         message=f"{name} directory not writable: {path}",
                         remediation=self._get_permission_remediation(name, path),
-                        platform=detect_platform().value
+                        platform=detect_platform().value,
                     )
 
             return DiagnosticResult(
@@ -4690,7 +4768,7 @@ class DiagnosticSystem:
                 level=DiagnosticLevel.INFO,
                 message="All paths resolved and writable",
                 remediation="",
-                platform=detect_platform().value
+                platform=detect_platform().value,
             )
         except Exception as e:
             return DiagnosticResult(
@@ -4698,7 +4776,7 @@ class DiagnosticSystem:
                 level=DiagnosticLevel.ERROR,
                 message=f"Path resolution failed: {e}",
                 remediation="Check platform detection and environment variables",
-                platform=detect_platform().value
+                platform=detect_platform().value,
             )
 
     def _get_permission_remediation(self, name: str, path: Path) -> str:
@@ -4732,6 +4810,7 @@ class DiagnosticSystem:
         # Implementation
         pass
 
+
 # Usage
 diagnostics = DiagnosticSystem()
 results = diagnostics.run_diagnostics()
@@ -4747,9 +4826,11 @@ for result in results:
 
 ```python
 """Automated issue reporting."""
+
 import json
 from pathlib import Path
 from datetime import datetime
+
 
 def generate_issue_report() -> dict:
     """Generate comprehensive issue report."""
@@ -4778,10 +4859,12 @@ def generate_issue_report() -> dict:
 
     return report
 
+
 def save_issue_report(report: dict, output_path: Path) -> None:
     """Save issue report to file."""
     output_path.write_text(json.dumps(report, indent=2))
     console.print(f"[green]Issue report saved to: {output_path}[/green]")
+
 
 def _collect_recent_logs() -> List[str]:
     """Collect recent log entries."""
@@ -4804,19 +4887,19 @@ def _collect_recent_logs() -> List[str]:
 
 ```python
 """Interactive setup wizard."""
+
 from rich.prompt import Prompt, Confirm
 from rich.console import Console
 from rich.panel import Panel
 
 console = Console()
 
+
 def run_setup_wizard() -> None:
     """Run interactive setup wizard."""
-    console.print(Panel(
-        "[bold cyan]Welcome to thegent![/bold cyan]\n\n"
-        "Let's set up your environment...",
-        title="Setup Wizard"
-    ))
+    console.print(
+        Panel("[bold cyan]Welcome to thegent![/bold cyan]\n\nLet's set up your environment...", title="Setup Wizard")
+    )
 
     # Step 1: Platform detection
     plat = detect_platform()
@@ -4833,8 +4916,7 @@ def run_setup_wizard() -> None:
     # Step 3: Configure providers
     console.print("\n[cyan]Configuring providers...[/cyan]")
     providers = Prompt.ask(
-        "Which providers would you like to configure? (comma-separated)",
-        default="anthropic,openai"
+        "Which providers would you like to configure? (comma-separated)", default="anthropic,openai"
     ).split(",")
 
     for provider in providers:
@@ -4844,10 +4926,7 @@ def run_setup_wizard() -> None:
 
     # Step 4: Install components
     console.print("\n[cyan]Installing components...[/cyan]")
-    targets = Prompt.ask(
-        "Which components to install? (all/hooks/templates/shell)",
-        default="all"
-    )
+    targets = Prompt.ask("Which components to install? (all/hooks/templates/shell)", default="all")
     subprocess.run(["thegent", "install", "--target", targets], check=True)
 
     # Step 5: Verify setup
@@ -4862,7 +4941,7 @@ def run_setup_wizard() -> None:
     # Step 6: Next steps
     console.print("\n[bold cyan]Next Steps:[/bold cyan]")
     console.print("  1. Start MCP server: [green]thegent serve[/green]")
-    console.print("  2. Run your first agent: [green]thegent run \"Hello, world!\"[/green]")
+    console.print('  2. Run your first agent: [green]thegent run "Hello, world!"[/green]')
     console.print("  3. Get help: [green]thegent help[/green]")
 ```
 
@@ -4872,15 +4951,19 @@ def run_setup_wizard() -> None:
 
 ```python
 """Guided tour system."""
+
 from typing import List, Dict
+
 
 class TourStep:
     """Tour step."""
+
     def __init__(self, title: str, description: str, command: str, expected_output: str = ""):
         self.title = title
         self.description = description
         self.command = command
         self.expected_output = expected_output
+
 
 def run_guided_tour() -> None:
     """Run guided tour."""
@@ -4889,7 +4972,7 @@ def run_guided_tour() -> None:
             title="Check Your Setup",
             description="Verify that thegent is installed correctly",
             command="thegent doctor",
-            expected_output="All checks passing"
+            expected_output="All checks passing",
         ),
         TourStep(
             title="List Available Agents",
@@ -4910,11 +4993,7 @@ def run_guided_tour() -> None:
         console.print(f"[dim]{step.description}[/dim]")
 
         if Confirm.ask(f"Run: [green]{step.command}[/green]?"):
-            result = subprocess.run(
-                step.command.split(),
-                capture_output=True,
-                text=True
-            )
+            result = subprocess.run(step.command.split(), capture_output=True, text=True)
             console.print(result.stdout)
 
             if step.expected_output and step.expected_output in result.stdout:
@@ -4936,10 +5015,12 @@ def run_guided_tour() -> None:
 
 ```python
 """Performance profiling."""
+
 import cProfile
 import pstats
 from pathlib import Path
 from contextlib import contextmanager
+
 
 @contextmanager
 def profile_operation(operation_name: str):
@@ -4964,6 +5045,7 @@ def profile_operation(operation_name: str):
         stats.sort_stats("cumulative")
         stats.print_stats(10)
 
+
 # Usage
 with profile_operation("agent.run"):
     run_agent("codex", "Hello, world!")
@@ -4975,12 +5057,15 @@ with profile_operation("agent.run"):
 
 ```python
 """Resource usage tracking."""
+
 import psutil
 import time
 from typing import Dict
 
+
 class ResourceTracker:
     """Track resource usage."""
+
     def __init__(self):
         self.start_time = time.time()
         self.start_memory = psutil.Process().memory_info().rss
@@ -5000,12 +5085,8 @@ class ResourceTracker:
     def log_usage(self, operation: str) -> None:
         """Log resource usage for operation."""
         usage = self.get_usage()
-        logger.info(
-            "resource_usage",
-            operation=operation,
-            **usage,
-            platform=detect_platform().value
-        )
+        logger.info("resource_usage", operation=operation, **usage, platform=detect_platform().value)
+
 
 # Usage
 tracker = ResourceTracker()
@@ -5024,13 +5105,17 @@ tracker.log_usage("shutdown")
 
 ```python
 """Environment-specific configuration."""
+
 from enum import Enum
+
 
 class Environment(Enum):
     """Environment types."""
+
     DEVELOPMENT = "development"
     STAGING = "staging"
     PRODUCTION = "production"
+
 
 def get_environment() -> Environment:
     """Detect current environment."""
@@ -5039,6 +5124,7 @@ def get_environment() -> Environment:
         return Environment(env_str)
     except ValueError:
         return Environment.DEVELOPMENT
+
 
 def load_environment_config() -> dict:
     """Load environment-specific configuration."""
@@ -5052,6 +5138,7 @@ def load_environment_config() -> dict:
     env_config_file = config_dir / f"config.{env.value}.yaml"
     if env_config_file.exists():
         import yaml
+
         with open(env_config_file) as f:
             env_config = yaml.safe_load(f) or {}
         base_config.update(env_config)
@@ -5065,10 +5152,13 @@ def load_environment_config() -> dict:
 
 ```python
 """Feature flags system."""
+
 from typing import Dict, Optional
+
 
 class FeatureFlags:
     """Feature flags manager."""
+
     def __init__(self):
         self.flags: Dict[str, bool] = {}
         self._load_flags()
@@ -5104,6 +5194,7 @@ class FeatureFlags:
         config["feature_flags"] = self.flags
         save_config(config)
 
+
 # Usage
 flags = FeatureFlags()
 
@@ -5123,20 +5214,25 @@ else:
 
 ```python
 """Automated quality gates."""
+
 from typing import Dict, List
 from dataclasses import dataclass
+
 
 @dataclass
 class QualityGate:
     """Quality gate definition."""
+
     name: str
     threshold: float
     current_value: float
     platform: str
     passed: bool
 
+
 class QualityGateSystem:
     """Quality gate system."""
+
     def __init__(self):
         self.gates: List[QualityGate] = []
         self._register_gates()
@@ -5154,22 +5250,24 @@ class QualityGateSystem:
 
         platform_thresholds = thresholds.get(plat, thresholds["linux"])
 
-        self.gates.extend([
-            QualityGate(
-                name="test_coverage",
-                threshold=platform_thresholds["coverage"],
-                current_value=self._get_coverage(),
-                platform=plat,
-                passed=False
-            ),
-            QualityGate(
-                name="startup_performance",
-                threshold=platform_thresholds["performance"],
-                current_value=self._get_startup_time(),
-                platform=plat,
-                passed=False
-            ),
-        ])
+        self.gates.extend(
+            [
+                QualityGate(
+                    name="test_coverage",
+                    threshold=platform_thresholds["coverage"],
+                    current_value=self._get_coverage(),
+                    platform=plat,
+                    passed=False,
+                ),
+                QualityGate(
+                    name="startup_performance",
+                    threshold=platform_thresholds["performance"],
+                    current_value=self._get_startup_time(),
+                    platform=plat,
+                    passed=False,
+                ),
+            ]
+        )
 
     def check_all_gates(self) -> tuple[bool, List[QualityGate]]:
         """Check all quality gates."""
@@ -5182,11 +5280,7 @@ class QualityGateSystem:
     def _get_coverage(self) -> float:
         """Get test coverage percentage."""
         # Run coverage and parse
-        result = subprocess.run(
-            ["pytest", "--cov=src", "--cov-report=term"],
-            capture_output=True,
-            text=True
-        )
+        result = subprocess.run(["pytest", "--cov=src", "--cov-report=term"], capture_output=True, text=True)
         # Parse coverage from output
         # ...
         return 85.0  # Placeholder
@@ -5194,9 +5288,11 @@ class QualityGateSystem:
     def _get_startup_time(self) -> float:
         """Get startup time in milliseconds."""
         import time
+
         start = time.time()
         subprocess.run(["thegent", "--version"], capture_output=True)
         return (time.time() - start) * 1000
+
 
 # Usage
 quality_gates = QualityGateSystem()
@@ -5215,11 +5311,14 @@ if not all_passed:
 
 ```python
 """Continuous quality monitoring."""
+
 from typing import Dict
 import time
 
+
 class QualityMonitor:
     """Monitor quality metrics."""
+
     def __init__(self):
         self.metrics_file = get_data_dir() / "quality" / "metrics.jsonl"
         self.metrics_file.parent.mkdir(parents=True, exist_ok=True)
@@ -5261,6 +5360,7 @@ class QualityMonitor:
         recent_avg = sum(trend[-7:]) / len(trend[-7:])
         return recent_avg > threshold
 
+
 # Usage
 monitor = QualityMonitor()
 
@@ -5283,8 +5383,10 @@ if monitor.check_regression("startup_time_ms", 200.0):
 
 ```python
 """End-to-end test scenarios."""
+
 import pytest
 from pathlib import Path
+
 
 class E2ETestScenarios:
     """E2E test scenarios."""
@@ -5358,8 +5460,10 @@ class E2ETestScenarios:
 
 ```python
 """Chaos engineering tests."""
+
 import random
 import time
+
 
 class ChaosTests:
     """Chaos engineering tests."""
@@ -5405,6 +5509,7 @@ class ChaosTests:
         time.sleep(2)
         assert mcp_server_running()
 
+
 @contextmanager
 def network_failure():
     """Simulate network failure."""
@@ -5412,6 +5517,7 @@ def network_failure():
     # ...
     yield
     # Restore network
+
 
 @contextmanager
 def disk_full():
@@ -5432,11 +5538,14 @@ def disk_full():
 
 ```python
 """Usage analytics (privacy-preserving)."""
+
 from typing import Dict
 import hashlib
 
+
 class UsageAnalytics:
     """Usage analytics collector."""
+
     def __init__(self):
         self.analytics_file = get_data_dir() / "analytics" / "usage.jsonl"
         self.analytics_file.parent.mkdir(parents=True, exist_ok=True)
@@ -5513,6 +5622,7 @@ class UsageAnalytics:
 
         return stats
 
+
 # Usage
 analytics = UsageAnalytics()
 
@@ -5531,11 +5641,14 @@ except Exception:
 
 ```python
 """Performance benchmarking."""
+
 from typing import List, Dict
 import statistics
 
+
 class PerformanceBenchmark:
     """Performance benchmark system."""
+
     def __init__(self):
         self.benchmark_file = get_data_dir() / "benchmarks" / "performance.jsonl"
         self.benchmark_file.parent.mkdir(parents=True, exist_ok=True)
@@ -5591,15 +5704,12 @@ class PerformanceBenchmark:
 
         return comparison
 
+
 # Usage
 benchmark = PerformanceBenchmark()
 
 # Benchmark path resolution
-stats = benchmark.benchmark_operation(
-    "path_resolution",
-    lambda: get_config_dir(),
-    iterations=100
-)
+stats = benchmark.benchmark_operation("path_resolution", lambda: get_config_dir(), iterations=100)
 
 console.print(f"Path resolution: {stats['mean_ms']:.2f}ms (median: {stats['median_ms']:.2f}ms)")
 ```
@@ -5614,11 +5724,14 @@ console.print(f"Path resolution: {stats['mean_ms']:.2f}ms (median: {stats['media
 
 ```python
 """Auto-generated troubleshooting guide."""
+
 from pathlib import Path
 from typing import Dict, List
 
+
 class TroubleshootingGuideGenerator:
     """Generate troubleshooting guide from error patterns."""
+
     def __init__(self):
         self.error_patterns: Dict[str, Dict] = {}
         self._load_error_patterns()
@@ -5654,7 +5767,8 @@ class TroubleshootingGuideGenerator:
             lines.append(f"## {platform.title()}", "")
 
             platform_errors = [
-                (error, info) for error, info in self.error_patterns.items()
+                (error, info)
+                for error, info in self.error_patterns.items()
                 if info.get("platform") == platform or info.get("platform") == "all"
             ]
 
@@ -5673,10 +5787,12 @@ class TroubleshootingGuideGenerator:
 
 ```python
 """Interactive API explorer."""
+
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
 app = FastAPI()
+
 
 @app.get("/api-explorer", response_class=HTMLResponse)
 async def api_explorer():
@@ -5703,6 +5819,7 @@ async def api_explorer():
     """
     return HTMLResponse(content=html)
 
+
 @app.get("/openapi.json")
 async def openapi_spec():
     """OpenAPI specification."""
@@ -5726,11 +5843,14 @@ async def openapi_spec():
 
 ```python
 """Blue-green deployment."""
+
 from pathlib import Path
 import shutil
 
+
 class BlueGreenDeployment:
     """Blue-green deployment manager."""
+
     def __init__(self):
         self.install_dir = get_data_dir() / "installations"
         self.install_dir.mkdir(parents=True, exist_ok=True)
@@ -5791,11 +5911,14 @@ class BlueGreenDeployment:
 
 ```python
 """Canary deployment."""
+
 from typing import Dict
 import random
 
+
 class CanaryDeployment:
     """Canary deployment manager."""
+
     def __init__(self):
         self.canary_percentage = 0.0  # 0-100
         self.canary_version: Optional[str] = None
@@ -5839,6 +5962,7 @@ class CanaryDeployment:
 
 ```python
 """Real-time metrics dashboard."""
+
 from rich.layout import Layout
 from rich.live import Live
 from rich.panel import Panel
@@ -5846,8 +5970,10 @@ from rich.table import Table
 from rich.graph import Graph
 import asyncio
 
+
 class RealTimeDashboard:
     """Real-time metrics dashboard."""
+
     def __init__(self):
         self.metrics_history: Dict[str, List[float]] = {}
         self.update_interval = 1.0  # seconds
@@ -5859,16 +5985,18 @@ class RealTimeDashboard:
             Layout(name="header", size=3),
             Layout(name="metrics"),
             Layout(name="graphs", size=15),
-            Layout(name="footer", size=3)
+            Layout(name="footer", size=3),
         )
 
         # Header
-        layout["header"].update(Panel(
-            f"[bold cyan]thegent Real-Time Dashboard[/bold cyan] | "
-            f"Platform: {detect_platform().value} | "
-            f"Uptime: {self._get_uptime()}",
-            border_style="cyan"
-        ))
+        layout["header"].update(
+            Panel(
+                f"[bold cyan]thegent Real-Time Dashboard[/bold cyan] | "
+                f"Platform: {detect_platform().value} | "
+                f"Uptime: {self._get_uptime()}",
+                border_style="cyan",
+            )
+        )
 
         # Metrics table
         metrics_table = self._build_metrics_table()
@@ -5879,10 +6007,7 @@ class RealTimeDashboard:
         layout["graphs"].update(Panel(graphs, title="Metrics Over Time"))
 
         # Footer
-        layout["footer"].update(Panel(
-            "[dim]Press Ctrl+C to exit[/dim]",
-            border_style="dim"
-        ))
+        layout["footer"].update(Panel("[dim]Press Ctrl+C to exit[/dim]", border_style="dim"))
 
         return layout
 
@@ -5956,6 +6081,7 @@ class RealTimeDashboard:
                 live.update(self.render())
                 time.sleep(self.update_interval)
 
+
 # Usage
 dashboard = RealTimeDashboard()
 dashboard.run()
@@ -5971,32 +6097,39 @@ dashboard.run()
 
 ```python
 """Proactive error detection."""
+
 from typing import List, Dict
 from dataclasses import dataclass
+
 
 @dataclass
 class PotentialIssue:
     """Potential issue."""
+
     severity: str
     category: str
     description: str
     remediation: str
 
+
 class ProactiveErrorDetector:
     """Detect potential errors proactively."""
+
     def __init__(self):
         self.checks: List[Callable[[], List[PotentialIssue]]] = []
         self._register_checks()
 
     def _register_checks(self) -> None:
         """Register proactive checks."""
-        self.checks.extend([
-            self._check_disk_space,
-            self._check_memory_usage,
-            self._check_network_connectivity,
-            self._check_config_validity,
-            self._check_dependency_versions,
-        ])
+        self.checks.extend(
+            [
+                self._check_disk_space,
+                self._check_memory_usage,
+                self._check_network_connectivity,
+                self._check_config_validity,
+                self._check_dependency_versions,
+            ]
+        )
 
     def detect_issues(self) -> List[PotentialIssue]:
         """Detect potential issues."""
@@ -6014,15 +6147,17 @@ class ProactiveErrorDetector:
         issues = []
         cache_dir = get_cache_dir()
         stat = shutil.disk_usage(cache_dir)
-        free_gb = stat.free / (1024 ** 3)
+        free_gb = stat.free / (1024**3)
 
         if free_gb < 1.0:
-            issues.append(PotentialIssue(
-                severity="high",
-                category="disk_space",
-                description=f"Low disk space: {free_gb:.2f}GB free",
-                remediation="Free up disk space or run: thegent cache cleanup"
-            ))
+            issues.append(
+                PotentialIssue(
+                    severity="high",
+                    category="disk_space",
+                    description=f"Low disk space: {free_gb:.2f}GB free",
+                    remediation="Free up disk space or run: thegent cache cleanup",
+                )
+            )
 
         return issues
 
@@ -6033,12 +6168,14 @@ class ProactiveErrorDetector:
         memory_percent = process.memory_percent()
 
         if memory_percent > 80.0:
-            issues.append(PotentialIssue(
-                severity="medium",
-                category="memory",
-                description=f"High memory usage: {memory_percent:.1f}%",
-                remediation="Restart thegent or check for memory leaks"
-            ))
+            issues.append(
+                PotentialIssue(
+                    severity="medium",
+                    category="memory",
+                    description=f"High memory usage: {memory_percent:.1f}%",
+                    remediation="Restart thegent or check for memory leaks",
+                )
+            )
 
         return issues
 
@@ -6047,12 +6184,14 @@ class ProactiveErrorDetector:
         issues = []
         # Check if MCP server is reachable
         if not _mcp_running():
-            issues.append(PotentialIssue(
-                severity="medium",
-                category="network",
-                description="MCP server not running",
-                remediation="Run: thegent serve"
-            ))
+            issues.append(
+                PotentialIssue(
+                    severity="medium",
+                    category="network",
+                    description="MCP server not running",
+                    remediation="Run: thegent serve",
+                )
+            )
 
         return issues
 
@@ -6063,12 +6202,14 @@ class ProactiveErrorDetector:
 
         # Check for deprecated settings
         if "api_keys" in config:
-            issues.append(PotentialIssue(
-                severity="low",
-                category="config",
-                description="Deprecated 'api_keys' setting found",
-                remediation="Migrate to OAuth: thegent cliproxy login <provider>"
-            ))
+            issues.append(
+                PotentialIssue(
+                    severity="low",
+                    category="config",
+                    description="Deprecated 'api_keys' setting found",
+                    remediation="Migrate to OAuth: thegent cliproxy login <provider>",
+                )
+            )
 
         return issues
 
@@ -6078,6 +6219,7 @@ class ProactiveErrorDetector:
         # Check for outdated dependencies
         # ...
         return issues
+
 
 # Usage
 detector = ProactiveErrorDetector()
@@ -6095,12 +6237,15 @@ for issue in issues:
 
 ```python
 """Predictive failure detection."""
+
 from typing import Dict, List
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
+
 class PredictiveFailureDetector:
     """Predict failures based on patterns."""
+
     def __init__(self):
         self.metrics_history: Dict[str, List[float]] = {}
         self.failure_thresholds: Dict[str, float] = {
@@ -6150,6 +6295,7 @@ class PredictiveFailureDetector:
                 f"predicted {predicted_value:.2f} >= threshold {self.failure_thresholds[metric_name]}"
             )
 
+
 # Usage
 predictor = PredictiveFailureDetector()
 
@@ -6170,11 +6316,14 @@ while True:
 
 ```python
 """User preference learning."""
+
 from typing import Dict, List
 from collections import defaultdict
 
+
 class UserPreferenceLearner:
     """Learn user preferences."""
+
     def __init__(self):
         self.preferences_file = get_data_dir() / "preferences" / "learned.json"
         self.preferences_file.parent.mkdir(parents=True, exist_ok=True)
@@ -6216,6 +6365,7 @@ class UserPreferenceLearner:
 
         # Most common tasks
         from collections import Counter
+
         task_counter = Counter(patterns)
         common_tasks = [task for task, count in task_counter.most_common(5)]
 
@@ -6223,8 +6373,9 @@ class UserPreferenceLearner:
 
         # Time preferences
         time_key = "morning" if time_of_day < 12 else "afternoon" if time_of_day < 18 else "evening"
-        self.preferences[agent]["time_preferences"][time_key] = \
+        self.preferences[agent]["time_preferences"][time_key] = (
             self.preferences[agent]["time_preferences"].get(time_key, 0) + 1
+        )
 
     def get_suggestions(self, context: Dict[str, Any]) -> List[str]:
         """Get personalized suggestions."""
@@ -6253,6 +6404,7 @@ class UserPreferenceLearner:
         with open(self.preferences_file, "w") as f:
             json.dump(self.preferences, f, indent=2)
 
+
 # Usage
 learner = UserPreferenceLearner()
 
@@ -6272,18 +6424,23 @@ for suggestion in suggestions:
 
 ```python
 """Adaptive UI/UX."""
+
 from enum import Enum
 from typing import Dict
 
+
 class UserExpertise(Enum):
     """User expertise levels."""
+
     BEGINNER = "beginner"
     INTERMEDIATE = "intermediate"
     ADVANCED = "advanced"
     EXPERT = "expert"
 
+
 class AdaptiveUX:
     """Adaptive user experience."""
+
     def __init__(self):
         self.expertise_file = get_data_dir() / "ux" / "expertise.json"
         self.expertise_file.parent.mkdir(parents=True, exist_ok=True)
@@ -6295,9 +6452,7 @@ class AdaptiveUX:
         if self.expertise_file.exists():
             with open(self.expertise_file) as f:
                 data = json.load(f)
-                self.expertise_levels = {
-                    k: UserExpertise(v) for k, v in data.items()
-                }
+                self.expertise_levels = {k: UserExpertise(v) for k, v in data.items()}
 
     def detect_expertise(self, command: str) -> UserExpertise:
         """Detect user expertise from command."""
@@ -6359,6 +6514,7 @@ class AdaptiveUX:
         concise_lines = [line for line in lines if not line.startswith("[dim]")]
         return "\n".join(concise_lines)
 
+
 # Usage
 adaptive_ux = AdaptiveUX()
 
@@ -6379,14 +6535,17 @@ console.print(adapted_output)
 
 ```python
 """Resource pool management."""
+
 from typing import TypeVar, Generic
 from queue import Queue
 import threading
 
 T = TypeVar("T")
 
+
 class ResourcePool(Generic[T]):
     """Generic resource pool."""
+
     def __init__(self, factory: Callable[[], T], max_size: int = 10):
         self.factory = factory
         self.max_size = max_size
@@ -6421,11 +6580,10 @@ class ResourcePool(Generic[T]):
         """Context manager exit."""
         self.release(self)
 
+
 # Usage
-http_client_pool = ResourcePool(
-    factory=lambda: httpx.AsyncClient(),
-    max_size=10
-)
+http_client_pool = ResourcePool(factory=lambda: httpx.AsyncClient(), max_size=10)
+
 
 async def make_request(url: str):
     """Make HTTP request using pool."""
@@ -6439,11 +6597,14 @@ async def make_request(url: str):
 
 ```python
 """Resource cleanup automation."""
+
 import atexit
 from typing import List, Callable
 
+
 class ResourceCleanup:
     """Resource cleanup manager."""
+
     def __init__(self):
         self.cleanup_handlers: List[Callable[[], None]] = []
         atexit.register(self.cleanup_all)
@@ -6491,6 +6652,7 @@ class ResourceCleanup:
                 mtime = datetime.fromtimestamp(state_file.stat().st_mtime)
                 if mtime < cutoff:
                     shutil.rmtree(session_dir)
+
 
 # Usage
 cleanup = ResourceCleanup()
@@ -6618,12 +6780,15 @@ A production-ready, shipping-quality cross-platform package that can be installe
 
 ```python
 """Integration with manage devkit system."""
+
 from pathlib import Path
 import json
 from typing import Optional, Dict
 
+
 class ManageDevkitIntegration:
     """Integrate with manage devkit system."""
+
     def __init__(self):
         self.manage_config_path = self._find_manage_config()
         self.manage_config: Dict = {}
@@ -6650,6 +6815,7 @@ class ManageDevkitIntegration:
             return
 
         import yaml
+
         with open(self.manage_config_path) as f:
             self.manage_config = yaml.safe_load(f) or {}
 
@@ -6671,9 +6837,7 @@ class ManageDevkitIntegration:
 
                 # Symlink thegent config
                 if not (shared_config / "config.yaml").exists():
-                    (shared_config / "config.yaml").symlink_to(
-                        thegent_config_dir / "config.yaml"
-                    )
+                    (shared_config / "config.yaml").symlink_to(thegent_config_dir / "config.yaml")
 
     def integrate_tools(self) -> None:
         """Integrate thegent tools with manage devkit."""
@@ -6702,10 +6866,7 @@ class ManageDevkitIntegration:
         }
 
         # Check if already registered
-        existing = [
-            t for t in self.manage_config["tools"]
-            if t.get("name") == "thegent"
-        ]
+        existing = [t for t in self.manage_config["tools"] if t.get("name") == "thegent"]
 
         if not existing:
             self.manage_config["tools"].append(thegent_entry)
@@ -6717,8 +6878,10 @@ class ManageDevkitIntegration:
             return
 
         import yaml
+
         with open(self.manage_config_path, "w") as f:
             yaml.dump(self.manage_config, f, default_flow_style=False)
+
 
 # Usage
 manage_integration = ManageDevkitIntegration()
@@ -6733,13 +6896,16 @@ manage_integration.register_with_manage()
 
 ```python
 """Integration with WORK_STREAM system."""
+
 from pathlib import Path
 import json
 from typing import List, Dict
 from datetime import datetime
 
+
 class WorkStreamIntegration:
     """Integrate with WORK_STREAM.md system."""
+
     def __init__(self):
         self.work_stream_file = Path("docs/reference/WORK_STREAM.md")
         self.work_stream_data: Dict = {}
@@ -6799,12 +6965,15 @@ class WorkStreamIntegration:
 
 ```python
 """Integration with plan system."""
+
 from pathlib import Path
 import yaml
 from typing import List, Dict
 
+
 class PlanSystemIntegration:
     """Integrate with PLAN.md and plan status."""
+
     def __init__(self):
         self.plan_file = Path("PLAN.md")
         self.plan_status_file = Path("docs/reference/PLAN_STATUS.md")
@@ -6861,12 +7030,15 @@ class PlanSystemIntegration:
 
 ```python
 """Unified configuration system."""
+
 from pathlib import Path
 import yaml
 from typing import Dict, Any
 
+
 class UnifiedConfigManager:
     """Unified configuration across systems."""
+
     def __init__(self):
         self.config_sources = [
             ("thegent", get_config_dir() / "config.yaml"),
@@ -6924,11 +7096,14 @@ class UnifiedConfigManager:
 
 ```python
 """Harmonized path strategy."""
+
 from typing import Dict
 from pathlib import Path
 
+
 class HarmonizedPathManager:
     """Harmonize paths across systems."""
+
     def __init__(self):
         self.path_mappings: Dict[str, Dict[str, Path]] = {}
         self._build_path_mappings()
@@ -6991,20 +7166,25 @@ class HarmonizedPathManager:
 
 ```python
 """System-wide consistency."""
+
 from typing import Dict, List
 from dataclasses import dataclass
+
 
 @dataclass
 class ConsistencyRule:
     """Consistency rule definition."""
+
     component: str
     property: str
     expected_value: Any
     actual_value: Any
     severity: str
 
+
 class ConsistencyChecker:
     """Check consistency across system."""
+
     def __init__(self):
         self.rules: List[ConsistencyRule] = []
         self._register_rules()
@@ -7012,31 +7192,37 @@ class ConsistencyChecker:
     def _register_rules(self) -> None:
         """Register consistency rules."""
         # Version consistency
-        self.rules.append(ConsistencyRule(
-            component="package",
-            property="version",
-            expected_value=__version__,
-            actual_value=self._get_package_version(),
-            severity="critical"
-        ))
+        self.rules.append(
+            ConsistencyRule(
+                component="package",
+                property="version",
+                expected_value=__version__,
+                actual_value=self._get_package_version(),
+                severity="critical",
+            )
+        )
 
         # Path consistency
-        self.rules.append(ConsistencyRule(
-            component="paths",
-            property="platform",
-            expected_value=detect_platform().value,
-            actual_value=self._get_path_platform(),
-            severity="high"
-        ))
+        self.rules.append(
+            ConsistencyRule(
+                component="paths",
+                property="platform",
+                expected_value=detect_platform().value,
+                actual_value=self._get_path_platform(),
+                severity="high",
+            )
+        )
 
         # Config consistency
-        self.rules.append(ConsistencyRule(
-            component="config",
-            property="providers",
-            expected_value="oauth_only",
-            actual_value=self._get_provider_auth_method(),
-            severity="high"
-        ))
+        self.rules.append(
+            ConsistencyRule(
+                component="config",
+                property="providers",
+                expected_value="oauth_only",
+                actual_value=self._get_provider_auth_method(),
+                severity="high",
+            )
+        )
 
     def check_all(self) -> List[ConsistencyRule]:
         """Check all consistency rules."""
@@ -7067,6 +7253,7 @@ class ConsistencyChecker:
 
         return "oauth_only"
 
+
 # Usage
 consistency = ConsistencyChecker()
 violations = consistency.check_all()
@@ -7074,8 +7261,10 @@ violations = consistency.check_all()
 if violations:
     console.print("[yellow]Consistency violations detected:[/yellow]")
     for violation in violations:
-        console.print(f"  • {violation.component}.{violation.property}: "
-                     f"expected {violation.expected_value}, got {violation.actual_value}")
+        console.print(
+            f"  • {violation.component}.{violation.property}: "
+            f"expected {violation.expected_value}, got {violation.actual_value}"
+        )
 ```
 
 ### 73.2 Harmonious API Design
@@ -7084,20 +7273,25 @@ if violations:
 
 ```python
 """Harmonious API design."""
+
 from typing import Protocol, TypeVar
 from abc import ABC, abstractmethod
 
 T = TypeVar("T")
 
+
 class HarmoniousAPI(Protocol):
     """Protocol for harmonious API design."""
+
     def get(self, key: str) -> Any: ...
     def set(self, key: str, value: Any) -> None: ...
     def delete(self, key: str) -> None: ...
     def list(self) -> List[str]: ...
 
+
 class ConfigAPI(HarmoniousAPI):
     """Config API following harmonious design."""
+
     def get(self, key: str) -> Any:
         """Get config value."""
         return config_manager.get(key)
@@ -7114,8 +7308,10 @@ class ConfigAPI(HarmoniousAPI):
         """List config keys."""
         return config_manager.list_keys()
 
+
 class StateAPI(HarmoniousAPI):
     """State API following harmonious design."""
+
     def get(self, key: str) -> Any:
         """Get state value."""
         return state_manager.get(key)
@@ -7132,6 +7328,7 @@ class StateAPI(HarmoniousAPI):
         """List state keys."""
         return state_manager.list_keys()
 
+
 # All APIs follow same pattern - harmonious design
 ```
 
@@ -7145,8 +7342,10 @@ class StateAPI(HarmoniousAPI):
 
 ```python
 """Cross-system integration tests."""
+
 import pytest
 from pathlib import Path
+
 
 class CrossSystemIntegrationTests:
     """Test integration with other systems."""
@@ -7218,8 +7417,10 @@ tools: []
 
 ```python
 """End-to-end system tests."""
+
 import pytest
 from pathlib import Path
+
 
 @pytest.mark.e2e
 def test_complete_system_workflow():
@@ -7264,12 +7465,15 @@ def test_complete_system_workflow():
 
 ```python
 """Cross-reference system."""
+
 from pathlib import Path
 import re
 from typing import Dict, List
 
+
 class DocumentationCrossReference:
     """Cross-reference system for documentation."""
+
     def __init__(self):
         self.references: Dict[str, List[str]] = {}
         self._build_reference_index()
@@ -7291,12 +7495,12 @@ class DocumentationCrossReference:
         references = []
 
         # Markdown links
-        link_pattern = r'\[([^\]]+)\]\(([^)]+)\)'
+        link_pattern = r"\[([^\]]+)\]\(([^)]+)\)"
         for match in re.finditer(link_pattern, content):
             references.append(match.group(2))
 
         # Explicit references
-        ref_pattern = r'See:\s*([^\s]+)'
+        ref_pattern = r"See:\s*([^\s]+)"
         for match in re.finditer(ref_pattern, content):
             references.append(match.group(1))
 
@@ -7329,6 +7533,7 @@ class DocumentationCrossReference:
         # ...
         return Path("docs") / ref
 
+
 # Usage
 cross_ref = DocumentationCrossReference()
 
@@ -7349,11 +7554,14 @@ if broken:
 
 ```python
 """Documentation generation pipeline."""
+
 from pathlib import Path
 import subprocess
 
+
 class DocumentationPipeline:
     """Documentation generation pipeline."""
+
     def __init__(self):
         self.docs_dir = Path("docs")
         self.dist_dir = Path("docs-dist")
@@ -7377,12 +7585,7 @@ class DocumentationPipeline:
 
     def generate_api_docs(self) -> None:
         """Generate API documentation."""
-        subprocess.run([
-            "sphinx-build",
-            "-b", "html",
-            "docs/api",
-            "docs-dist/api"
-        ], check=True)
+        subprocess.run(["sphinx-build", "-b", "html", "docs/api", "docs-dist/api"], check=True)
 
     def generate_platform_guides(self) -> None:
         """Generate platform-specific guides."""
@@ -7400,9 +7603,7 @@ class DocumentationPipeline:
 
     def build_vitepress_site(self) -> None:
         """Build VitePress documentation site."""
-        subprocess.run([
-            "pnpm", "docs:build"
-        ], check=True)
+        subprocess.run(["pnpm", "docs:build"], check=True)
 
     def validate_documentation(self) -> None:
         """Validate documentation."""
@@ -7412,6 +7613,7 @@ class DocumentationPipeline:
 
         if broken:
             raise ValueError(f"Broken references found: {broken}")
+
 
 # Usage
 pipeline = DocumentationPipeline()
@@ -7428,19 +7630,24 @@ pipeline.generate_all()
 
 ```python
 """Design language system."""
+
 from typing import Dict
 from dataclasses import dataclass
+
 
 @dataclass
 class DesignToken:
     """Design token definition."""
+
     name: str
     value: Any
     category: str
     platform: Optional[str] = None
 
+
 class DesignLanguage:
     """Design language system."""
+
     def __init__(self):
         self.tokens: Dict[str, DesignToken] = {}
         self._register_tokens()
@@ -7448,58 +7655,31 @@ class DesignLanguage:
     def _register_tokens(self) -> None:
         """Register design tokens."""
         # Colors
-        self.tokens["color.primary"] = DesignToken(
-            name="color.primary",
-            value="#4CAF50",
-            category="color"
-        )
-        self.tokens["color.error"] = DesignToken(
-            name="color.error",
-            value="#F44336",
-            category="color"
-        )
-        self.tokens["color.warning"] = DesignToken(
-            name="color.warning",
-            value="#FF9800",
-            category="color"
-        )
+        self.tokens["color.primary"] = DesignToken(name="color.primary", value="#4CAF50", category="color")
+        self.tokens["color.error"] = DesignToken(name="color.error", value="#F44336", category="color")
+        self.tokens["color.warning"] = DesignToken(name="color.warning", value="#FF9800", category="color")
 
         # Spacing
-        self.tokens["spacing.unit"] = DesignToken(
-            name="spacing.unit",
-            value=4,
-            category="spacing"
-        )
+        self.tokens["spacing.unit"] = DesignToken(name="spacing.unit", value=4, category="spacing")
 
         # Typography
         self.tokens["font.mono"] = DesignToken(
-            name="font.mono",
-            value="'Courier New', monospace",
-            category="typography"
+            name="font.mono", value="'Courier New', monospace", category="typography"
         )
 
         # Platform-specific tokens
         plat = detect_platform()
         if plat == Platform.MACOS:
             self.tokens["font.system"] = DesignToken(
-                name="font.system",
-                value="SF Pro",
-                category="typography",
-                platform="macos"
+                name="font.system", value="SF Pro", category="typography", platform="macos"
             )
         elif plat == Platform.WINDOWS:
             self.tokens["font.system"] = DesignToken(
-                name="font.system",
-                value="Segoe UI",
-                category="typography",
-                platform="windows"
+                name="font.system", value="Segoe UI", category="typography", platform="windows"
             )
         else:  # Linux
             self.tokens["font.system"] = DesignToken(
-                name="font.system",
-                value="Ubuntu",
-                category="typography",
-                platform="linux"
+                name="font.system", value="Ubuntu", category="typography", platform="linux"
             )
 
     def get_token(self, name: str, platform: Optional[str] = None) -> Any:
@@ -7528,6 +7708,7 @@ class DesignLanguage:
             # Apply other design tokens
         )
 
+
 # Usage
 design_language = DesignLanguage()
 
@@ -7543,18 +7724,21 @@ system_font = design_language.get_token("font.system", platform=detect_platform(
 
 ```python
 """Consistent naming conventions."""
+
 import re
 from typing import List
 
+
 class NamingConvention:
     """Naming convention enforcer."""
+
     def __init__(self):
         self.conventions = {
-            "command": r'^[a-z][a-z0-9-]*$',  # kebab-case
-            "config_key": r'^[a-z][a-z0-9_]*$',  # snake_case
-            "file": r'^[A-Z][A-Z0-9_]*\.md$',  # UPPER_SNAKE_CASE for docs
-            "function": r'^[a-z][a-z0-9_]*$',  # snake_case
-            "class": r'^[A-Z][A-Za-z0-9]*$',  # PascalCase
+            "command": r"^[a-z][a-z0-9-]*$",  # kebab-case
+            "config_key": r"^[a-z][a-z0-9_]*$",  # snake_case
+            "file": r"^[A-Z][A-Z0-9_]*\.md$",  # UPPER_SNAKE_CASE for docs
+            "function": r"^[a-z][a-z0-9_]*$",  # snake_case
+            "class": r"^[A-Z][A-Za-z0-9]*$",  # PascalCase
         }
 
     def validate(self, name: str, convention_type: str) -> bool:
@@ -7574,19 +7758,20 @@ class NamingConvention:
         # Convert to convention
         if convention_type == "command":
             # Convert to kebab-case
-            return re.sub(r'_', '-', name.lower())
+            return re.sub(r"_", "-", name.lower())
         elif convention_type == "config_key":
             # Convert to snake_case
-            return re.sub(r'-', '_', name.lower())
+            return re.sub(r"-", "_", name.lower())
         elif convention_type == "function":
             # Convert to snake_case
-            return re.sub(r'-', '_', name.lower())
+            return re.sub(r"-", "_", name.lower())
         elif convention_type == "class":
             # Convert to PascalCase
-            parts = re.split(r'[-_]', name)
-            return ''.join(p.capitalize() for p in parts)
+            parts = re.split(r"[-_]", name)
+            return "".join(p.capitalize() for p in parts)
 
         return name
+
 
 # Usage
 naming = NamingConvention()
@@ -7611,19 +7796,24 @@ assert suggested == "thegent-install"
 
 ```python
 """Complete development workflow."""
+
 from typing import List
 from dataclasses import dataclass
+
 
 @dataclass
 class WorkflowStep:
     """Workflow step."""
+
     name: str
     description: str
     command: str
     dependencies: List[str] = None
 
+
 class DevelopmentWorkflow:
     """Complete development workflow."""
+
     def __init__(self):
         self.steps: List[WorkflowStep] = []
         self._define_workflow()
@@ -7631,47 +7821,42 @@ class DevelopmentWorkflow:
     def _define_workflow(self) -> None:
         """Define complete workflow."""
         self.steps = [
-            WorkflowStep(
-                name="idea",
-                description="Capture idea",
-                command="thegent workflow idea",
-                dependencies=[]
-            ),
+            WorkflowStep(name="idea", description="Capture idea", command="thegent workflow idea", dependencies=[]),
             WorkflowStep(
                 name="research",
                 description="Research and document",
                 command="thegent workflow research",
-                dependencies=["idea"]
+                dependencies=["idea"],
             ),
             WorkflowStep(
                 name="plan",
                 description="Create implementation plan",
                 command="thegent workflow plan",
-                dependencies=["research"]
+                dependencies=["research"],
             ),
             WorkflowStep(
                 name="implement",
                 description="Implement feature",
                 command="thegent workflow implement",
-                dependencies=["plan"]
+                dependencies=["plan"],
             ),
             WorkflowStep(
                 name="test",
                 description="Test implementation",
                 command="thegent workflow test",
-                dependencies=["implement"]
+                dependencies=["implement"],
             ),
             WorkflowStep(
                 name="document",
                 description="Update documentation",
                 command="thegent workflow document",
-                dependencies=["implement"]
+                dependencies=["implement"],
             ),
             WorkflowStep(
                 name="release",
                 description="Release to production",
                 command="thegent workflow release",
-                dependencies=["test", "document"]
+                dependencies=["test", "document"],
             ),
         ]
 
@@ -7719,6 +7904,7 @@ class DevelopmentWorkflow:
         # ...
         pass
 
+
 # Usage
 workflow = DevelopmentWorkflow()
 workflow.execute_workflow(start_from="idea")
@@ -7730,24 +7916,29 @@ workflow.execute_workflow(start_from="idea")
 
 ```python
 """Quality assurance workflow."""
+
 from typing import List
+
 
 class QAWorkflow:
     """Quality assurance workflow."""
+
     def __init__(self):
         self.checks: List[Callable[[], bool]] = []
         self._register_checks()
 
     def _register_checks(self) -> None:
         """Register QA checks."""
-        self.checks.extend([
-            self._check_lint,
-            self._check_types,
-            self._check_tests,
-            self._check_coverage,
-            self._check_security,
-            self._check_documentation,
-        ])
+        self.checks.extend(
+            [
+                self._check_lint,
+                self._check_types,
+                self._check_tests,
+                self._check_coverage,
+                self._check_security,
+                self._check_documentation,
+            ]
+        )
 
     def run_all_checks(self) -> tuple[bool, List[str]]:
         """Run all QA checks."""
@@ -7779,9 +7970,7 @@ class QAWorkflow:
 
     def _check_coverage(self) -> bool:
         """Check coverage."""
-        result = subprocess.run([
-            "pytest", "--cov=src", "--cov-report=term-missing"
-        ], check=False)
+        result = subprocess.run(["pytest", "--cov=src", "--cov-report=term-missing"], check=False)
         # Parse coverage
         # ...
         return True
@@ -7797,6 +7986,7 @@ class QAWorkflow:
         # Validate documentation
         # ...
         return True
+
 
 # Usage
 qa = QAWorkflow()
@@ -7819,17 +8009,22 @@ if not all_passed:
 
 ```python
 """Progressive complexity."""
+
 from enum import Enum
+
 
 class ComplexityLevel(Enum):
     """Complexity levels."""
+
     SIMPLE = "simple"
     STANDARD = "standard"
     ADVANCED = "advanced"
     EXPERT = "expert"
 
+
 class ProgressiveComplexity:
     """Progressive complexity system."""
+
     def __init__(self):
         self.user_level = self._detect_user_level()
 
@@ -7922,6 +8117,7 @@ class ProgressiveComplexity:
         # ...
         return output
 
+
 # Usage
 progressive = ProgressiveComplexity()
 
@@ -7940,10 +8136,13 @@ console.print(adapted_output)
 
 ```python
 """Intuitive error messages."""
+
 from typing import Dict, List
+
 
 class IntuitiveErrorFormatter:
     """Format errors intuitively."""
+
     def __init__(self):
         self.error_templates: Dict[str, str] = {
             "provider_not_configured": """
@@ -7999,15 +8198,9 @@ Run: [green]thegent serve --help[/green]
 
         # Format with context
         if error_type == "ProviderError":
-            return self.format_error(
-                "provider_not_configured",
-                provider=context.get("provider", "unknown")
-            )
+            return self.format_error("provider_not_configured", provider=context.get("provider", "unknown"))
         elif error_type == "ConnectionError":
-            return self.format_error(
-                "mcp_not_running",
-                url=context.get("url", "http://localhost:3847")
-            )
+            return self.format_error("mcp_not_running", url=context.get("url", "http://localhost:3847"))
 
         # Generic error
         return f"""
@@ -8022,6 +8215,7 @@ Run: [green]thegent serve --help[/green]
 [cyan]Need help?[/cyan]
 Run: [green]thegent help[/green] or [green]thegent doctor[/green]
 """
+
 
 # Usage
 formatter = IntuitiveErrorFormatter()
@@ -8043,6 +8237,8 @@ except ProviderError as e:
 
 ```python
 """Complete new developer onboarding scenario."""
+
+
 def onboard_new_developer():
     """Complete onboarding workflow."""
     console.print("[bold cyan]Welcome! Let's get you set up...[/bold cyan]\n")
@@ -8093,7 +8289,7 @@ def onboard_new_developer():
     console.print("\n[bold green]🎉 Setup complete![/bold green]")
     console.print("\n[cyan]Next steps:[/cyan]")
     console.print("  1. Start MCP server: [green]thegent serve[/green]")
-    console.print("  2. Run your first agent: [green]thegent run \"Hello, world!\"[/green]")
+    console.print('  2. Run your first agent: [green]thegent run "Hello, world!"[/green]')
     console.print("  3. Explore: [green]thegent help[/green]")
 ```
 
@@ -8101,6 +8297,8 @@ def onboard_new_developer():
 
 ```python
 """Complete production deployment scenario."""
+
+
 def deploy_to_production(environment: str = "production"):
     """Deploy to production environment."""
     console.print(f"[bold cyan]Deploying to {environment}...[/bold cyan]\n")
@@ -8365,6 +8563,7 @@ After completing this comprehensive audit and plan, the next phase will focus on
 
 ```python
 """Dynamic version management using hatch-vcs."""
+
 # pyproject.toml
 [tool.hatch.version]
 source = "vcs"  # Automatically get version from git tags
@@ -8376,13 +8575,9 @@ try:
 except ImportError:
     # Dev mode fallback
     import subprocess
+
     try:
-        result = subprocess.run(
-            ["git", "describe", "--tags", "--always"],
-            capture_output=True,
-            text=True,
-            check=True
-        )
+        result = subprocess.run(["git", "describe", "--tags", "--always"], capture_output=True, text=True, check=True)
         __version__ = result.stdout.strip()
     except Exception:
         __version__ = "0.1.0-dev"
@@ -8407,9 +8602,11 @@ write_to = "src/thegent/_version.py"
 
 ```python
 """Enhanced package data access."""
+
 from importlib import resources
 from pathlib import Path
 from typing import Optional
+
 
 def get_hooks_dir() -> Path:
     """Get hooks directory with comprehensive fallback chain.
@@ -8446,6 +8643,7 @@ def get_hooks_dir() -> Path:
         return Path(env_override).expanduser()
 
     return user_hooks
+
 
 def _find_dev_repo() -> Path:
     """Find development repository root."""
@@ -8690,19 +8888,19 @@ end
 # -*- mode: python ; coding: utf-8 -*-
 
 a = Analysis(
-    ['src/thegent/cli.py'],
+    ["src/thegent/cli.py"],
     pathex=[],
     binaries=[],
     datas=[
-        ('hooks', 'hooks'),
-        ('templates', 'templates'),
-        ('scripts', 'scripts'),
+        ("hooks", "hooks"),
+        ("templates", "templates"),
+        ("scripts", "scripts"),
     ],
     hiddenimports=[
-        'thegent.platform',
-        'thegent.platform_paths',
-        'thegent.integration',
-        'thegent.design',
+        "thegent.platform",
+        "thegent.platform_paths",
+        "thegent.integration",
+        "thegent.design",
     ],
     hookspath=[],
     hooksconfig={},
@@ -8719,7 +8917,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='thegent',
+    name="thegent",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -8741,9 +8939,11 @@ exe = EXE(
 
 ```python
 """Auto-update mechanism."""
+
 from packaging import version
 import subprocess
 from thegent.platform import detect_platform, Platform
+
 
 class UpdateChecker:
     """Check for available updates."""
@@ -8805,6 +9005,7 @@ class UpdateChecker:
     def _get_current_version(self) -> str:
         """Get current installed version."""
         from thegent import __version__
+
         return __version__
 
     def _get_latest_version(self) -> str:
@@ -8820,11 +9021,7 @@ class UpdateChecker:
     def _installed_via_homebrew(self) -> bool:
         """Check if installed via Homebrew."""
         try:
-            result = subprocess.run(
-                ["brew", "list", "thegent"],
-                capture_output=True,
-                check=False
-            )
+            result = subprocess.run(["brew", "list", "thegent"], capture_output=True, check=False)
             return result.returncode == 0
         except Exception:
             return False
@@ -8834,12 +9031,7 @@ class UpdateChecker:
         nix_store = os.environ.get("NIX_STORE")
         if nix_store:
             try:
-                result = subprocess.run(
-                    ["nix", "profile", "list"],
-                    capture_output=True,
-                    text=True,
-                    check=False
-                )
+                result = subprocess.run(["nix", "profile", "list"], capture_output=True, text=True, check=False)
                 return "thegent" in result.stdout
             except Exception:
                 pass
@@ -8848,11 +9040,7 @@ class UpdateChecker:
     def _installed_via_apt(self) -> bool:
         """Check if installed via apt."""
         try:
-            result = subprocess.run(
-                ["dpkg", "-l", "python3-thegent"],
-                capture_output=True,
-                check=False
-            )
+            result = subprocess.run(["dpkg", "-l", "python3-thegent"], capture_output=True, check=False)
             return result.returncode == 0
         except Exception:
             return False
@@ -8860,11 +9048,7 @@ class UpdateChecker:
     def _installed_via_yum(self) -> bool:
         """Check if installed via yum."""
         try:
-            result = subprocess.run(
-                ["rpm", "-q", "python3-thegent"],
-                capture_output=True,
-                check=False
-            )
+            result = subprocess.run(["rpm", "-q", "python3-thegent"], capture_output=True, check=False)
             return result.returncode == 0
         except Exception:
             return False
@@ -8872,11 +9056,7 @@ class UpdateChecker:
     def _installed_via_winget(self) -> bool:
         """Check if installed via winget."""
         try:
-            result = subprocess.run(
-                ["winget", "list", "thegent"],
-                capture_output=True,
-                check=False
-            )
+            result = subprocess.run(["winget", "list", "thegent"], capture_output=True, check=False)
             return result.returncode == 0
         except Exception:
             return False
@@ -8890,47 +9070,63 @@ class UpdateChecker:
 
 ```python
 """macOS code signing."""
+
 import subprocess
 from pathlib import Path
 
+
 def sign_macos_binary(binary_path: Path, identity: str) -> None:
     """Sign macOS binary."""
-    subprocess.run([
-        "codesign",
-        "--sign", identity,
-        "--timestamp",
-        "--options", "runtime",
-        str(binary_path)
-    ], check=True)
+    subprocess.run(
+        ["codesign", "--sign", identity, "--timestamp", "--options", "runtime", str(binary_path)], check=True
+    )
+
 
 def notarize_macos_package(package_path: Path, apple_id: str, team_id: str, password: str) -> None:
     """Notarize macOS package."""
-    subprocess.run([
-        "xcrun", "notarytool", "submit",
-        str(package_path),
-        "--apple-id", apple_id,
-        "--team-id", team_id,
-        "--password", password,
-        "--wait"
-    ], check=True)
+    subprocess.run(
+        [
+            "xcrun",
+            "notarytool",
+            "submit",
+            str(package_path),
+            "--apple-id",
+            apple_id,
+            "--team-id",
+            team_id,
+            "--password",
+            password,
+            "--wait",
+        ],
+        check=True,
+    )
 ```
 
 **Windows Code Signing:**
 
 ```python
 """Windows code signing."""
+
 import subprocess
 from pathlib import Path
 
+
 def sign_windows_binary(binary_path: Path, cert_path: Path, password: str) -> None:
     """Sign Windows binary."""
-    subprocess.run([
-        "signtool", "sign",
-        "/f", str(cert_path),
-        "/p", password,
-        "/t", "http://timestamp.digicert.com",
-        str(binary_path)
-    ], check=True)
+    subprocess.run(
+        [
+            "signtool",
+            "sign",
+            "/f",
+            str(cert_path),
+            "/p",
+            password,
+            "/t",
+            "http://timestamp.digicert.com",
+            str(binary_path),
+        ],
+        check=True,
+    )
 ```
 
 ### 81.9 First-Run Wizard Implementation
@@ -8941,12 +9137,14 @@ def sign_windows_binary(binary_path: Path, cert_path: Path, password: str) -> No
 
 ```python
 """Enhanced first-run wizard."""
+
 from rich.prompt import Confirm, Prompt
 from rich.console import Console
 from thegent.platform import detect_platform
 from thegent.integration import ManageDevkitIntegration
 
 console = Console()
+
 
 def run_first_run_wizard() -> None:
     """Run comprehensive first-run setup wizard."""
@@ -9012,7 +9210,7 @@ def run_first_run_wizard() -> None:
     console.print("\n[bold green]🎉 Setup complete![/bold green]")
     console.print("\n[cyan]Next steps:[/cyan]")
     console.print("  1. Start MCP server: [green]thegent serve[/green]")
-    console.print("  2. Run your first agent: [green]thegent run \"Hello!\"[/green]")
+    console.print('  2. Run your first agent: [green]thegent run "Hello!"[/green]')
     console.print("  3. Explore: [green]thegent help[/green]")
 ```
 

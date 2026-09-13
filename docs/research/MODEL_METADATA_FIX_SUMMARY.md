@@ -102,6 +102,7 @@ All models now have complete metadata:
 
 ```python
 from thegent.routing.model_metadata import has_model_metadata, get_model_metadata
+
 assert has_model_metadata("glm-5")
 assert get_model_metadata("glm-5")["context_window"] == 128000
 ```

@@ -38,12 +38,9 @@
 ```python
 async with httpx.AsyncClient() as client:
     router = CLIProxyRouter(client=client)
-    selection = await router.select_model(RoutingConstraints(
-        task_complexity="high",
-        max_cost_per_call=2.0,
-        max_latency_ms=5000,
-        min_quality_score=0.8
-    ))
+    selection = await router.select_model(
+        RoutingConstraints(task_complexity="high", max_cost_per_call=2.0, max_latency_ms=5000, min_quality_score=0.8)
+    )
     model_id = selection.model_id
 ```
 
@@ -478,13 +475,16 @@ git log --oneline -5
 ```python
 from thegent.cliproxy_router import CLIProxyRouter, RoutingConstraints
 
+
 async def my_function():
     router = CLIProxyRouter()
     try:
-        selection = await router.select_model(RoutingConstraints(
-            task_complexity="medium",
-            max_cost_per_call=1.0,
-        ))
+        selection = await router.select_model(
+            RoutingConstraints(
+                task_complexity="medium",
+                max_cost_per_call=1.0,
+            )
+        )
         return selection.model_id
     except RuntimeError as e:
         if "CLIProxy not available" in str(e):

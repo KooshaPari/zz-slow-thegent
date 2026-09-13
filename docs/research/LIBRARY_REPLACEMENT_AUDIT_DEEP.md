@@ -817,6 +817,7 @@ USE_NEW_LIBRARY = os.getenv("THGENT_USE_HTTPX", "0") == "1"
 if USE_NEW_LIBRARY:
     try:
         import httpx
+
         client = httpx.Client()
     except ImportError:
         logger.warning("httpx not available, falling back to urllib")

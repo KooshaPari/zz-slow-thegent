@@ -81,6 +81,7 @@ from typing import Optional
 
 app = typer.Typer()
 
+
 @app.command()
 def list():
     """List all available teammates."""
@@ -92,11 +93,12 @@ def list():
             desc = agent_def.get("description", "")[:60]
             print(f"  • {agent_id}: {desc}...")
 
+
 @app.command()
 def delegate(
     teammate: str = typer.Argument(..., help="Teammate agent ID"),
     task: str = typer.Argument(..., help="Task description"),
-    context: Optional[Path] = typer.Option(None, "-c", "--context", help="Context directory")
+    context: Optional[Path] = typer.Option(None, "-c", "--context", help="Context directory"),
 ):
     """Delegate task to a teammate."""
     from thegent.agents.runner import AgentRunner
@@ -107,11 +109,7 @@ def delegate(
             ctx_file = Path(tmpdir) / "context.md"
             ctx_file.write_text(f"# Context from {context}\n\n{context.read_text()}")
 
-        runner = AgentRunner(
-            agent_id=teammate,
-            task_prompt=task,
-            work_dir=Path(tmpdir)
-        )
+        runner = AgentRunner(agent_id=teammate, task_prompt=task, work_dir=Path(tmpdir))
 
         result = runner.run()
 
@@ -120,6 +118,7 @@ def delegate(
         else:
             print(f"\n❌ Teammate {teammate} failed: {result.error}")
             raise SystemExit(1)
+
 
 @app.command()
 def status():
@@ -146,15 +145,18 @@ from dataclasses import dataclass
 from typing import Optional
 from enum import Enum
 
+
 class HandoffState(Enum):
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
     FAILED = "failed"
 
+
 @dataclass
 class Handoff:
     """Handoff between teammates."""
+
     from_agent: str
     to_agent: str
     task: str
@@ -172,26 +174,16 @@ class Handoff:
     <Confidence>{self.confidence}</Confidence>
 </Handoff>"""
 
+
 class HandoffProtocol:
     """Manage handoffs between teammates."""
 
     def __init__(self):
         self.pending_handoffs: list[Handoff] = []
 
-    def create_handoff(
-        self,
-        from_agent: str,
-        to_agent: str,
-        task: str,
-        context: str
-    ) -> Handoff:
+    def create_handoff(self, from_agent: str, to_agent: str, task: str, context: str) -> Handoff:
         """Create a new handoff."""
-        handoff = Handoff(
-            from_agent=from_agent,
-            to_agent=to_agent,
-            task=task,
-            context=context
-        )
+        handoff = Handoff(from_agent=from_agent, to_agent=to_agent, task=task, context=context)
         self.pending_handoffs.append(handoff)
         return handoff
 

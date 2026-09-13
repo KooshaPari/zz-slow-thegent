@@ -48,6 +48,7 @@ from textual.app import ComposeResult, App
 from textual.widgets import Header, Footer, Container
 from textual.containers import Container
 
+
 class CompositApp(App):
     """Main compositor application"""
 
@@ -114,22 +115,26 @@ from dataclasses import dataclass
 from typing import Optional
 import uuid
 
+
 class SplitDirection(Enum):
     VERTICAL = "vertical"
     HORIZONTAL = "horizontal"
 
+
 @dataclass
 class PaneNode:
     """Represents a pane or split in the layout tree"""
+
     id: str
-    pane: Optional['TerminalPane'] = None
-    left: Optional['PaneNode'] = None
-    right: Optional['PaneNode'] = None
+    pane: Optional["TerminalPane"] = None
+    left: Optional["PaneNode"] = None
+    right: Optional["PaneNode"] = None
     direction: Optional[SplitDirection] = None
 
     def is_leaf(self) -> bool:
         """Check if this is a leaf (terminal pane)"""
         return self.pane is not None
+
 
 class PaneManager:
     """Manages pane layout and lifecycle"""
@@ -152,11 +157,7 @@ class PaneManager:
         self.focus_pane = pane
         return pane
 
-    def split_pane(
-        self,
-        direction: str,
-        working_dir: str = "."
-    ) -> TerminalPane:
+    def split_pane(self, direction: str, working_dir: str = ".") -> TerminalPane:
         """Split current pane in given direction"""
         if self.focus_pane is None:
             return self.create_pane(working_dir)
@@ -258,6 +259,7 @@ import os
 import subprocess
 from dataclasses import dataclass
 
+
 class TerminalPane(Static):
     """Terminal pane widget wrapping PTY"""
 
@@ -318,14 +320,17 @@ from pathlib import Path
 from dataclasses import dataclass, asdict
 from datetime import datetime
 
+
 @dataclass
 class SessionMetadata:
     """Session metadata"""
+
     id: str
     name: str
     created_at: str
     updated_at: str
     working_dir: str
+
 
 class SessionState:
     """Manages session state and persistence"""
@@ -393,12 +398,14 @@ class SessionState:
 from textual.widgets import Header, Footer, Static
 from textual.reactive import reactive
 
+
 class CompositHeader(Header):
     """Header with menus"""
 
     def __init__(self):
         super().__init__()
         self.show_header_and_footer = True
+
 
 class CompositFooter(Footer):
     """Footer with statusbar"""
@@ -409,11 +416,7 @@ class CompositFooter(Footer):
 
     def render(self) -> str:
         """Render statusbar"""
-        return (
-            f"Session: {self.session_name} | "
-            f"Agent: {self.agent_status} | "
-            f"Panes: {self.pane_count}"
-        )
+        return f"Session: {self.session_name} | Agent: {self.agent_status} | Panes: {self.pane_count}"
 ```
 
 ---
@@ -494,6 +497,7 @@ async def on_terminal_output(self, pane_id: str, data: bytes):
     if pane:
         pane.append_output(data)
         self.refresh()
+
 
 async def on_resize(self):
     """Handle terminal resize"""

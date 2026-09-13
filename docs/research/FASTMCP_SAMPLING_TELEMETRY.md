@@ -21,10 +21,12 @@ return result.text or ""
 ```python
 from pydantic import BaseModel
 
+
 class SentimentResult(BaseModel):
     sentiment: str
     confidence: float
     reasoning: str
+
 
 result = await ctx.sample(
     messages=f"Analyze the sentiment of: {text}",
@@ -70,6 +72,7 @@ async def thegent_suggest_prompt(raw_prompt: str, ctx: Context) -> str:
 
 ```python
 from fastmcp.telemetry import get_tracer
+
 
 @mcp.tool()
 async def complex_operation(input: str) -> str:

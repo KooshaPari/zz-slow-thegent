@@ -585,11 +585,14 @@ client = Client("thegent://localhost:8080")
 screen = await client.call_tool("getScreen", {})
 
 # Safe interaction
-result = await client.call_tool("safeInteraction", {
-    "action": {"type": "tap", "selector": {"type": "label", "value": "Submit"}},
-    "collisionPolicy": "wait",
-    "waitTimeout": 10000
-})
+result = await client.call_tool(
+    "safeInteraction",
+    {
+        "action": {"type": "tap", "selector": {"type": "label", "value": "Submit"}},
+        "collisionPolicy": "wait",
+        "waitTimeout": 10000,
+    },
+)
 ```
 
 ## 11.3 AI Agent Integration

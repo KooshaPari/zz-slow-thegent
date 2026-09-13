@@ -836,12 +836,14 @@ impl Overlay {
 from typing import Tuple, Optional
 from enum import Enum
 
+
 class AgentState(Enum):
     IDLE = "idle"
     THINKING = "thinking"
     WORKING = "working"
     WAITING = "waiting"
     ERROR = "error"
+
 
 class CursorManager:
     """Main cursor manager for desktop agent."""
@@ -850,8 +852,7 @@ class CursorManager:
         self,
         safe_zone_radius: int = 100,
         enable_overlay: bool = True,
-    ):
-        ...
+    ): ...
 
     def get_user_cursor_position(self) -> Tuple[int, int]:
         """Get current user cursor position."""

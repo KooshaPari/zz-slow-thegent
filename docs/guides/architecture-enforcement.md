@@ -101,6 +101,7 @@ thegent.domain.models -> thegent.infrastructure.config
 # domain/scoring.py -- VIOLATION
 from job_hunter.infrastructure.config import Settings
 
+
 class Scorer:
     def __init__(self):
         self.settings = Settings()  # domain depends on infrastructure!
@@ -112,12 +113,15 @@ class Scorer:
 # domain/ports.py
 from typing import Protocol
 
+
 class ScoringConfig(Protocol):
     min_score: float
     weights: dict[str, float]
 
+
 # domain/scoring.py -- CLEAN
 from job_hunter.domain.ports import ScoringConfig
+
 
 class Scorer:
     def __init__(self, config: ScoringConfig):
@@ -132,6 +136,7 @@ class Scorer:
 # application/search_jobs.py -- VIOLATION
 from job_hunter.adapters.driven.scrapers.linkedin import LinkedInScraper
 
+
 class SearchJobsUseCase:
     def execute(self):
         scraper = LinkedInScraper()  # coupled to specific adapter!
@@ -144,8 +149,10 @@ class SearchJobsUseCase:
 class JobSearcher(Protocol):
     def search(self, query: str) -> list[Job]: ...
 
+
 # application/search_jobs.py -- CLEAN
 from job_hunter.domain.ports import JobSearcher
+
 
 class SearchJobsUseCase:
     def __init__(self, searcher: JobSearcher):
@@ -274,12 +281,15 @@ application/service.py imports infrastructure/email.py
 # Before (violation)
 from infrastructure.email import EmailService
 
+
 class UserService:
     def __init__(self):
         self.email = EmailService()
 
+
 # After (correct)
 from domain.ports import EmailPort
+
 
 class UserService:
     def __init__(self, email_port: EmailPort):
@@ -307,9 +317,11 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
+
 @dataclass
 class User:
     """Pure business entity - no framework dependencies."""
+
     id: Optional[str] = None
     name: str = ""
     email: str = ""
@@ -332,13 +344,17 @@ class User:
 from typing import Protocol
 from domain.entities import User
 
+
 class UserRepository(Protocol):
     """Domain defines the interface."""
+
     def save(self, user: User) -> None: ...
     def find_by_id(self, user_id: str) -> User: ...
 
+
 class UserService:
     """Application service - orchestrates domain objects."""
+
     def __init__(self, repo: UserRepository):
         self.repo = repo
 
@@ -356,6 +372,7 @@ class UserService:
 from domain.entities import User
 from application.services.user_service import UserRepository
 
+
 class SQLAlchemyUserRepository(UserRepository):
     """Infrastructure adapter - implements domain interface."""
 
@@ -364,21 +381,13 @@ class SQLAlchemyUserRepository(UserRepository):
 
     def save(self, user: User) -> None:
         """Implements the protocol."""
-        orm_user = UserOrm(
-            id=user.id,
-            name=user.name,
-            email=user.email
-        )
+        orm_user = UserOrm(id=user.id, name=user.name, email=user.email)
         self.session.add(orm_user)
 
     def find_by_id(self, user_id: str) -> User:
         orm_user = self.session.query(UserOrm).filter_by(id=user_id).first()
         if orm_user:
-            return User(
-                id=orm_user.id,
-                name=orm_user.name,
-                email=orm_user.email
-            )
+            return User(id=orm_user.id, name=orm_user.name, email=orm_user.email)
         return None
 ```
 

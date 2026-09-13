@@ -67,18 +67,17 @@ This audit identifies **extensive existing research** on multi-agent systems, hi
 ```python
 def execute_hierarchical(self):
     # Sort agents by role (managers first)
-    sorted_agents = sorted(agents, key=lambda a: (
-        0 if "manager" in a.role.lower() or "lead" in a.role.lower() else 1,
-        a.role
-    ))
+    sorted_agents = sorted(
+        agents, key=lambda a: (0 if "manager" in a.role.lower() or "lead" in a.role.lower() else 1, a.role)
+    )
 
     # Assign priority tasks to managers
     manager_agents = [a for a in sorted_agents if "manager" in a.role.lower()]
     worker_agents = [a for a in sorted_agents if a not in manager_agents]
 
     # Assign tasks hierarchically
-    priority_tasks = tasks[:len(manager_agents)]
-    regular_tasks = tasks[len(manager_agents):]
+    priority_tasks = tasks[: len(manager_agents)]
+    regular_tasks = tasks[len(manager_agents) :]
 ```
 
 **Key Components:**

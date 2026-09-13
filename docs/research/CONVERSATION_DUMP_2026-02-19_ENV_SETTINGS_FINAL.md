@@ -48,12 +48,12 @@ Successfully consolidated **6 files** worth of environment variable access (14 o
 
 ```python
 # BEFORE
-site_id=os.getenv("ANALYTICS_SITE_ID", "thegent")
-endpoint_url=os.getenv("SIEM_ENDPOINT_URL")
+site_id = os.getenv("ANALYTICS_SITE_ID", "thegent")
+endpoint_url = os.getenv("SIEM_ENDPOINT_URL")
 
 # AFTER
-site_id=self.settings.analytics_site_id
-endpoint_url=self.settings.siem_endpoint_url
+site_id = self.settings.analytics_site_id
+endpoint_url = self.settings.siem_endpoint_url
 ```
 
 **Risk**: LOW - settings already injected in `__init__`
@@ -67,6 +67,7 @@ endpoint_url=self.settings.siem_endpoint_url
 ```python
 # BEFORE
 os.environ["THGENT_TESTING"] = "1"
+
 
 # AFTER
 @pytest.fixture(autouse=True)
@@ -89,6 +90,7 @@ def _set_testing_mode_for_all_tests(monkeypatch) -> None:
 with patch.dict(os.environ, {}, clear=False):
     if "THGENT_CONTROL_PLANE_URL" in os.environ:
         del os.environ["THGENT_CONTROL_PLANE_URL"]
+
 
 # AFTER
 def test_returns_env_provider_by_default(self, monkeypatch) -> None:

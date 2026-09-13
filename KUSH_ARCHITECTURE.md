@@ -168,11 +168,7 @@ llm:
 # Usage tracking
 from thegent.integrations.token_ledger import track_usage
 
-track_usage(
-    model="gpt-4o",
-    tokens=1000,
-    cost=0.03
-)
+track_usage(model="gpt-4o", tokens=1000, cost=0.03)
 ```
 
 ### thegent → agentapi++

@@ -79,6 +79,7 @@ Test files must be named based on the **concern** they test, not the level.
 import pytest
 from unittest.mock import patch, MagicMock
 
+
 @pytest.fixture
 def mock_http_client():
     """Mock HTTP client for testing."""
@@ -88,15 +89,14 @@ def mock_http_client():
         mock_client.return_value.get.return_value = mock_response
         yield mock_client
 
+
 def test_external_service_call(mock_http_client):
     """Test that uses mocked HTTP client."""
     from mymodule import service
 
     result = service.call_external("https://api.example.com")
     assert result == {"status": "ok"}
-    mock_http_client.return_value.get.assert_called_once_with(
-        "https://api.example.com"
-    )
+    mock_http_client.return_value.get.assert_called_once_with("https://api.example.com")
 ```
 
 ### 5.2 Testing Async Code
@@ -105,6 +105,7 @@ def test_external_service_call(mock_http_client):
 import pytest
 import asyncio
 
+
 @pytest.fixture
 def event_loop():
     """Create event loop for async tests."""
@@ -112,11 +113,13 @@ def event_loop():
     yield loop
     loop.close()
 
+
 @pytest.mark.asyncio
 async def test_async_operation():
     """Test async function."""
     result = await async_fetch_data()
     assert result is not None
+
 
 @pytest.mark.asyncio
 async def test_async_with_timeout():
@@ -136,16 +139,15 @@ async def test_async_with_timeout():
 ```python
 from hypothesis import given, strategies as st
 
-@given(
-    st.integers(min_value=0, max_value=100),
-    st.integers(min_value=0, max_value=100)
-)
+
+@given(st.integers(min_value=0, max_value=100), st.integers(min_value=0, max_value=100))
 def test_addition_properties(a, b):
     """Property-based test for addition."""
     result = a + b
     assert result >= a
     assert result >= b
     assert isinstance(result, int)
+
 
 @given(st.text(min_size=1, max_size=100))
 def test_string_not_empty(s):
@@ -160,6 +162,7 @@ def test_string_not_empty(s):
 import pytest
 from factory import Factory, Faker
 
+
 class UserFactory(Factory):
     class Meta:
         model = dict
@@ -168,10 +171,12 @@ class UserFactory(Factory):
     email = Faker("email")
     role = "user"
 
+
 @pytest.fixture
 def sample_user():
     """Create sample user for testing."""
     return UserFactory(name="Test User", role="admin")
+
 
 def test_user_creation(sample_user):
     """Test with factory fixture."""

@@ -118,8 +118,7 @@ Never bypass with `--no-verify` or `# noqa` without justification.
 All tests MUST reference FR ID:
 ```python
 @pytest.mark.requirement("FR-XXX-NNN")
-def test_something():
-    ...
+def test_something(): ...
 ```
 
 Target: ≥ 85% FR traceability.

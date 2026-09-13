@@ -424,37 +424,38 @@ The proxy must emit the following minimal valid sequence for a text response:
 ```python
 import uuid, time, json
 
+
 def make_responses_stream(model: str, content_chunks):
     resp_id = f"resp_{uuid.uuid4().hex}"
     item_id = f"item_{uuid.uuid4().hex}"
     now = int(time.time())
 
     # 1. response.created
-    yield f'data: {json.dumps({"type":"response.created","response":{"id":resp_id,"object":"response","created_at":now,"status":"in_progress","model":model,"output":[]}})}\n\n'
+    yield f"data: {json.dumps({'type': 'response.created', 'response': {'id': resp_id, 'object': 'response', 'created_at': now, 'status': 'in_progress', 'model': model, 'output': []}})}\n\n"
 
     # 2. response.output_item.added (once, at start of message)
-    yield f'data: {json.dumps({"type":"response.output_item.added","output_index":0,"item":{"id":item_id,"type":"message","role":"assistant","content":[],"status":"in_progress"}})}\n\n'
+    yield f"data: {json.dumps({'type': 'response.output_item.added', 'output_index': 0, 'item': {'id': item_id, 'type': 'message', 'role': 'assistant', 'content': [], 'status': 'in_progress'}})}\n\n"
 
     # 3. response.content_part.added (once)
-    yield f'data: {json.dumps({"type":"response.content_part.added","item_id":item_id,"output_index":0,"content_index":0,"part":{"type":"output_text","text":""}})}\n\n'
+    yield f"data: {json.dumps({'type': 'response.content_part.added', 'item_id': item_id, 'output_index': 0, 'content_index': 0, 'part': {'type': 'output_text', 'text': ''}})}\n\n"
 
     # 4. response.output_text.delta (one per token chunk)
     full_text = ""
     for i, chunk in enumerate(content_chunks, 1):
         full_text += chunk
-        yield f'data: {json.dumps({"type":"response.output_text.delta","item_id":item_id,"output_index":0,"content_index":0,"delta":chunk,"sequence_number":i})}\n\n'
+        yield f"data: {json.dumps({'type': 'response.output_text.delta', 'item_id': item_id, 'output_index': 0, 'content_index': 0, 'delta': chunk, 'sequence_number': i})}\n\n"
 
     # 5. response.output_text.done
-    yield f'data: {json.dumps({"type":"response.output_text.done","item_id":item_id,"output_index":0,"content_index":0,"text":full_text})}\n\n'
+    yield f"data: {json.dumps({'type': 'response.output_text.done', 'item_id': item_id, 'output_index': 0, 'content_index': 0, 'text': full_text})}\n\n"
 
     # 6. response.content_part.done
-    yield f'data: {json.dumps({"type":"response.content_part.done","item_id":item_id,"output_index":0,"content_index":0,"part":{"type":"output_text","text":full_text}})}\n\n'
+    yield f"data: {json.dumps({'type': 'response.content_part.done', 'item_id': item_id, 'output_index': 0, 'content_index': 0, 'part': {'type': 'output_text', 'text': full_text}})}\n\n"
 
     # 7. response.output_item.done
-    yield f'data: {json.dumps({"type":"response.output_item.done","output_index":0,"item":{"id":item_id,"type":"message","role":"assistant","content":[{"type":"output_text","text":full_text}],"status":"completed"}})}\n\n'
+    yield f"data: {json.dumps({'type': 'response.output_item.done', 'output_index': 0, 'item': {'id': item_id, 'type': 'message', 'role': 'assistant', 'content': [{'type': 'output_text', 'text': full_text}], 'status': 'completed'}})}\n\n"
 
     # 8. response.completed (with full response object)
-    yield f'data: {json.dumps({"type":"response.completed","response":{"id":resp_id,"object":"response","created_at":now,"status":"completed","model":model,"output":[{"id":item_id,"type":"message","role":"assistant","content":[{"type":"output_text","text":full_text}],"status":"completed"}],"usage":{"input_tokens":0,"output_tokens":len(full_text.split()),"total_tokens":len(full_text.split())}}})}\n\n'
+    yield f"data: {json.dumps({'type': 'response.completed', 'response': {'id': resp_id, 'object': 'response', 'created_at': now, 'status': 'completed', 'model': model, 'output': [{'id': item_id, 'type': 'message', 'role': 'assistant', 'content': [{'type': 'output_text', 'text': full_text}], 'status': 'completed'}], 'usage': {'input_tokens': 0, 'output_tokens': len(full_text.split()), 'total_tokens': len(full_text.split())}}})}\n\n"
 ```
 
 ### Priority 2 (Model metadata)
@@ -466,7 +467,7 @@ headers = {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
     "Connection": "keep-alive",
-    "openai-model": model_name,   # 0.104.0 reads model from header, not body
+    "openai-model": model_name,  # 0.104.0 reads model from header, not body
     "x-request-id": request_id,
 }
 ```

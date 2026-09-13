@@ -39,44 +39,46 @@ from pydantic import Field, SecretStr
 from typing import Optional, List
 import yaml
 
+
 class AgentSettings(BaseSettings):
     """Agent configuration"""
+
     max_concurrent: int = 5
     timeout: int = 300
     retry_attempts: int = 3
 
+
 class LLMSettings(BaseSettings):
     """LLM configuration"""
+
     openai_api_key: Optional[SecretStr] = None
     anthropic_api_key: Optional[SecretStr] = None
     default_model: str = "gpt-4"
     temperature: float = 0.7
     max_tokens: int = 4000
 
+
 class CrunSettings(BaseSettings):
     """Main crun settings"""
-    model_config = SettingsConfigDict(
-        env_prefix='CRUN_',
-        env_nested_delimiter='__',
-        case_sensitive=False
-    )
-    
+
+    model_config = SettingsConfigDict(env_prefix="CRUN_", env_nested_delimiter="__", case_sensitive=False)
+
     app_name: str = "crun"
     debug: bool = False
     log_level: str = "INFO"
-    
+
     agents: AgentSettings = Field(default_factory=AgentSettings)
     llm: LLMSettings = Field(default_factory=LLMSettings)
-    
+
     enable_caching: bool = True
     cache_ttl: int = 3600
-    
+
     @classmethod
     def load(cls):
-        with open('config.yml', 'r') as f:
+        with open("config.yml", "r") as f:
             config = yaml.safe_load(f)
         try:
-            with open('secrets.yml', 'r') as f:
+            with open("secrets.yml", "r") as f:
                 secrets = yaml.safe_load(f)
         except FileNotFoundError:
             secrets = {}
@@ -168,19 +170,24 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict
 from pydantic import BaseModel
 
+
 class AgentInput(BaseModel):
     """Standard agent input"""
+
     task: str
     context: Dict[str, Any] = {}
 
+
 class AgentOutput(BaseModel):
     """Standard agent output"""
+
     result: Any
     metadata: Dict[str, Any] = {}
 
+
 class Agent(ABC):
     """Base agent interface"""
-    
+
     @abstractmethod
     async def execute(self, input: AgentInput) -> AgentOutput:
         """Execute agent task"""
@@ -194,17 +201,18 @@ from crun.agents.base import Agent, AgentInput, AgentOutput
 from typing import List
 import asyncio
 
+
 class AgentCoordinator:
     """Coordinate multiple agents"""
-    
+
     def __init__(self, agents: List[Agent]):
         self.agents = agents
-    
+
     async def execute_parallel(self, inputs: List[AgentInput]) -> List[AgentOutput]:
         """Execute agents in parallel"""
         tasks = [agent.execute(input) for agent, input in zip(self.agents, inputs)]
         return await asyncio.gather(*tasks)
-    
+
     async def execute_sequential(self, inputs: List[AgentInput]) -> List[AgentOutput]:
         """Execute agents sequentially"""
         results = []
@@ -224,13 +232,10 @@ class AgentCoordinator:
 import pytest
 from crun.config.settings import CrunSettings
 
+
 @pytest.fixture
 def test_settings():
-    return CrunSettings(
-        debug=True,
-        agents={"max_concurrent": 2},
-        llm={"default_model": "gpt-3.5-turbo"}
-    )
+    return CrunSettings(debug=True, agents={"max_concurrent": 2}, llm={"default_model": "gpt-3.5-turbo"})
 ```
 
 #### 4.2 Update Documentation

@@ -509,14 +509,14 @@ THGENT_HYSTERESIS_LOWER_THRESHOLD=0.4  # Scale DOWN when utilization < this
 
 ```python
 # Load thresholds
-load_spike_threshold = 10   # Warn when load > this
-load_surge_threshold = 20   # Block when load > this
+load_spike_threshold = 10  # Warn when load > this
+load_surge_threshold = 20  # Block when load > this
 
 # Resource gates
 LimitGateConfig(
-    fd_threshold=0.75,      # Block when FD ≥ 75%
+    fd_threshold=0.75,  # Block when FD ≥ 75%
     memory_threshold_mb=256,  # Block when memory < 256 MB
-    load_threshold=1.5,     # Block when load ≥ 1.5× CPU
+    load_threshold=1.5,  # Block when load ≥ 1.5× CPU
 )
 ```
 
@@ -556,6 +556,7 @@ export THGENT_LOG_LEVEL=DEBUG
 **Check resource sampling**:
 ```python
 from thegent.load_based_limits import sample_resources
+
 snapshot = sample_resources()
 print(snapshot)
 ```
@@ -563,6 +564,7 @@ print(snapshot)
 **Check ConcurrencyController**:
 ```python
 from thegent.execution import ConcurrencyController
+
 controller = ConcurrencyController()
 result = controller.acquire("standard")
 print(result)

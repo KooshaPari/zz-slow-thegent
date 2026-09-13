@@ -165,17 +165,11 @@ print(f"L1 Agent: {l1.agent_id}")
 
 # Create L2 workers
 l2_researcher = factory.create_l2_agent(
-    "thegent",
-    AgentRole.RESEARCHER,
-    l1.agent_id,
-    capabilities=["research", "analysis"]
+    "thegent", AgentRole.RESEARCHER, l1.agent_id, capabilities=["research", "analysis"]
 )
 
 l2_builder = factory.create_l2_agent(
-    "thegent",
-    AgentRole.BUILDER,
-    l1.agent_id,
-    capabilities=["implementation", "testing"]
+    "thegent", AgentRole.BUILDER, l1.agent_id, capabilities=["implementation", "testing"]
 )
 
 # Create L3 executors

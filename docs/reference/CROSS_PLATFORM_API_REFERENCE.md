@@ -28,11 +28,11 @@ Represents a UI element in the accessibility tree.
 ```python
 @dataclass
 class UIElement:
-    selector: str                    # Element selector
-    name: str                       # Accessibility name
-    role: str                       # Element role (button, text_field, etc.)
-    bounds: dict[str, int]          # {x, y, width, height}
-    attributes: dict[str, str]      # Platform-specific attributes
+    selector: str  # Element selector
+    name: str  # Accessibility name
+    role: str  # Element role (button, text_field, etc.)
+    bounds: dict[str, int]  # {x, y, width, height}
+    attributes: dict[str, str]  # Platform-specific attributes
     platform_specific: dict[str, any] = None
 
     def is_valid(self) -> bool:
@@ -46,7 +46,7 @@ element = UIElement(
     name="Save",
     role="button",
     bounds={"x": 100, "y": 200, "width": 80, "height": 30},
-    attributes={"process_name": "TextEdit"}
+    attributes={"process_name": "TextEdit"},
 )
 ```
 
@@ -57,22 +57,17 @@ Represents an automation action to execute.
 ```python
 @dataclass
 class AutomationAction:
-    type: str                       # click, type_text, find_element, screenshot, wait_for_idle
-    selector: str | None = None     # Element selector
-    text: str | None = None         # Text to type
+    type: str  # click, type_text, find_element, screenshot, wait_for_idle
+    selector: str | None = None  # Element selector
+    text: str | None = None  # Text to type
     region: dict[str, int] | None = None  # Screenshot region {x, y, width, height}
-    timeout_ms: float = 5000.0     # Timeout in milliseconds
+    timeout_ms: float = 5000.0  # Timeout in milliseconds
     wait_for_idle_seconds: float = 5.0  # Wait for user idle before action
 ```
 
 **Example:**
 ```python
-action = AutomationAction(
-    type="click",
-    selector="button[name='Save']",
-    timeout_ms=5000.0,
-    wait_for_idle_seconds=5.0
-)
+action = AutomationAction(type="click", selector="button[name='Save']", timeout_ms=5000.0, wait_for_idle_seconds=5.0)
 ```
 
 ### `AutomationResult`
@@ -82,22 +77,18 @@ Result of an automation action.
 ```python
 @dataclass
 class AutomationResult:
-    success: bool                   # Whether action succeeded
+    success: bool  # Whether action succeeded
     element: UIElement | None = None  # Element (for find operations)
     screenshot: bytes | None = None  # Screenshot data (for screenshot operations)
-    error: str | None = None        # Error message if failed
-    duration_ms: float = 0.0        # Action duration in milliseconds
+    error: str | None = None  # Error message if failed
+    duration_ms: float = 0.0  # Action duration in milliseconds
     metadata: dict[str, any] = None  # Additional metadata
-    skipped: bool = False           # True if action was skipped
+    skipped: bool = False  # True if action was skipped
 ```
 
 **Example:**
 ```python
-result = AutomationResult(
-    success=True,
-    duration_ms=95.2,
-    metadata={"click_count": 1}
-)
+result = AutomationResult(success=True, duration_ms=95.2, metadata={"click_count": 1})
 ```
 
 ### `AutomationScope`
@@ -107,7 +98,7 @@ Defines scope for automation coordination.
 ```python
 @dataclass
 class AutomationScope:
-    app_name: str                   # Application name
+    app_name: str  # Application name
     window_title: str | None = None  # Window title filter
     region: dict[str, int] | None = None  # Region restriction {x, y, width, height}
 ```
@@ -115,9 +106,7 @@ class AutomationScope:
 **Example:**
 ```python
 scope = AutomationScope(
-    app_name="TextEdit",
-    window_title="Untitled",
-    region={"x": 0, "y": 0, "width": 1920, "height": 1080}
+    app_name="TextEdit", window_title="Untitled", region={"x": 0, "y": 0, "width": 1920, "height": 1080}
 )
 ```
 
@@ -652,6 +641,7 @@ Base exception for automation errors.
 ```python
 class AutomationError(Exception):
     """Base exception for automation errors."""
+
     pass
 ```
 
@@ -662,6 +652,7 @@ Element not found error.
 ```python
 class ElementNotFoundError(AutomationError):
     """Element not found error."""
+
     pass
 ```
 
@@ -672,6 +663,7 @@ Permission denied error.
 ```python
 class PermissionDeniedError(AutomationError):
     """Permission denied error."""
+
     pass
 ```
 
@@ -682,6 +674,7 @@ Timeout error.
 ```python
 class AutomationTimeoutError(AutomationError):
     """Automation timeout error."""
+
     pass
 ```
 
@@ -692,6 +685,7 @@ Rate limit exceeded error.
 ```python
 class RateLimitExceededError(AutomationError):
     """Rate limit exceeded error."""
+
     pass
 ```
 

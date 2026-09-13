@@ -341,10 +341,7 @@ clean = strip_noise(raw_stream, profile="jsonl")
 
 ```python
 # thegent-resources binary
-result = subprocess.run(
-    ["thegent-resources", "sample", "--json"],
-    capture_output=True, text=True, timeout=2
-)
+result = subprocess.run(["thegent-resources", "sample", "--json"], capture_output=True, text=True, timeout=2)
 snapshot = json.loads(result.stdout)
 ```
 
@@ -355,6 +352,7 @@ snapshot = json.loads(result.stdout)
 @mcp.tool()
 async def thegent_resources_sample() -> ToolResult:
     from thegent_resources import sample  # PyO3
+
     return ToolResult(structured_content=sample())
 ```
 
@@ -625,6 +623,7 @@ fn thegent_parser(_py: Python, m: &PyModule) -> PyResult<()> {
 ```python
 # Python usage
 from thegent_parser import extract_xml_tags
+
 tags = extract_xml_tags("<TASK>foo</TASK>", ["TASK", "REASON"])
 ```
 
@@ -661,6 +660,7 @@ func main() {
 ```python
 # Python usage
 import subprocess, json
+
 result = subprocess.run(["thegent-resources", "sample"], capture_output=True)
 snap = json.loads(result.stdout)
 ```
@@ -681,6 +681,7 @@ let myModule = createPyModule("thegent_parser"):
 ```python
 # Python usage
 from thegent_parser import extract_xml_tags
+
 tags = extract_xml_tags("<TASK>foo</TASK>", ["TASK"])
 ```
 
@@ -699,6 +700,7 @@ cdef class XMLParser:
 ```python
 # Python usage (same interface)
 from thegent_parser_cy import XMLParser
+
 parser = XMLParser(["TASK", "REASON"])
 tags = parser.extract_tags("<TASK>foo</TASK>")
 ```

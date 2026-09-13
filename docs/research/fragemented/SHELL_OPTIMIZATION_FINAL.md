@@ -95,7 +95,7 @@ else:
 from thegent.utils.shell import get_fastest_shell, run_shell_command
 
 shell = get_fastest_shell()  # Returns '/bin/zsh'
-result = run_shell_command('echo test', capture_output=True)
+result = run_shell_command("echo test", capture_output=True)
 ```
 
 ### Check Hook Scripts

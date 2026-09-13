@@ -195,12 +195,7 @@ When using the OpenAI SDK, pass `models` in the `extra_body` parameter:
 client.chat.completions.create(
     model="anthropic/claude-sonnet-4-5",
     messages=[...],
-    extra_body={
-        "models": [
-            "anthropic/claude-sonnet-4-5",
-            "openai/gpt-4o"
-        ]
-    }
+    extra_body={"models": ["anthropic/claude-sonnet-4-5", "openai/gpt-4o"]},
 )
 ```
 

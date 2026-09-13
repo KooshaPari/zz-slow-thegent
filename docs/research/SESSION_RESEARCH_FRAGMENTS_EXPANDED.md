@@ -110,6 +110,7 @@ impl SupermemoryClient {
 
 from thegent_memory import SupermemoryClient
 
+
 class MemoryManager:
     def __init__(self):
         self.l3 = SupermemoryClient(
@@ -355,6 +356,7 @@ score = (reliability * 0.4) + (latency_score * 0.2) + (cost_score * 0.4)
 ```python
 # thegent/src/thegent/governance/cost_aware.py
 
+
 class CostAwareRouter:
     def __init__(self):
         self.providers = self._load_provider_scores()
@@ -362,16 +364,10 @@ class CostAwareRouter:
     def select_provider(self, task: Task) -> Provider:
         """Select provider based on cost-to-value ratio"""
         value = self._estimate_value(task)
-        cost_estimates = {
-            provider: self._estimate_cost(provider, task)
-            for provider in self.providers
-        }
+        cost_estimates = {provider: self._estimate_cost(provider, task) for provider in self.providers}
 
         # Calculate cost-to-value ratio
-        ratios = {
-            provider: cost / value
-            for provider, cost in cost_estimates.items()
-        }
+        ratios = {provider: cost / value for provider, cost in cost_estimates.items()}
 
         # Select provider with best ratio (lowest cost per unit value)
         return min(ratios.items(), key=lambda x: x[1])[0]
@@ -379,11 +375,7 @@ class CostAwareRouter:
     def _estimate_value(self, task: Task) -> float:
         """Estimate value of task completion"""
         # Factors: complexity, business impact, user priority
-        return (
-            task.complexity * 0.3 +
-            task.business_impact * 0.5 +
-            task.user_priority * 0.2
-        )
+        return task.complexity * 0.3 + task.business_impact * 0.5 + task.user_priority * 0.2
 
     def _estimate_cost(self, provider: Provider, task: Task) -> float:
         """Estimate cost of task execution"""
@@ -544,6 +536,7 @@ impl MAIFArtifact {
 
 from thegent_memory import SupermemoryClient
 
+
 class MAIFStorage:
     def __init__(self):
         self.client = SupermemoryClient()
@@ -640,6 +633,7 @@ class MAIFStorage:
 from thegent_memory import SupermemoryClient
 from thegent_maif import MAIFStorage
 
+
 class SimulationReplay:
     def __init__(self):
         self.memory = SupermemoryClient()
@@ -652,9 +646,7 @@ class SimulationReplay:
     ) -> ReplayResult:
         """Replay a past decision deterministically"""
         # Retrieve context from L3
-        context = await self.memory.query_knowledge(
-            f"session:{session_id} decision:{decision_id}"
-        )
+        context = await self.memory.query_knowledge(f"session:{session_id} decision:{decision_id}")
 
         # Retrieve artifacts from L4
         artifacts = await self.artifacts.get_artifacts(

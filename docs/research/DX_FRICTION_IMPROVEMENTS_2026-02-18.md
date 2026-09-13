@@ -85,10 +85,7 @@ from scripts.dx_helpers import batch_file_read, batch_file_write
 files = batch_file_read(["file1.md", "file2.md", "file3.md"])
 
 # Write multiple files in one call
-results = batch_file_write({
-    "file1.md": "content1",
-    "file2.md": "content2"
-})
+results = batch_file_write({"file1.md": "content1", "file2.md": "content2"})
 ```
 
 ---

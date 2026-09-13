@@ -52,6 +52,7 @@ async def elicit(
 # fastmcp.server.elicitation
 class AcceptedElicitation(BaseModel, Generic[T]):
     """Result when user accepts the elicitation."""
+
     action: Literal["accept"] = "accept"
     data: T
 ```
@@ -64,12 +65,16 @@ class AcceptedElicitation(BaseModel, Generic[ElicitSchemaModelT]):
     action: Literal["accept"] = "accept"
     data: ElicitSchemaModelT
 
+
 class DeclinedElicitation(BaseModel):
     """Result when user declines the elicitation."""
+
     action: Literal["decline"] = "decline"
+
 
 class CancelledElicitation(BaseModel):
     """Result when user cancels the elicitation."""
+
     action: Literal["cancel"] = "cancel"
 ```
 
@@ -160,6 +165,7 @@ Dependency that resolves to the active FastMCP `Context` for the current MCP ope
 
 ```python
 from fastmcp.dependencies import CurrentContext
+
 
 @mcp.tool()
 async def my_tool(ctx: Context = CurrentContext()) -> str:

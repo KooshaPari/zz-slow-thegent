@@ -78,7 +78,7 @@ tools = detect_tools()
 print(tools)  # {'jq': '/usr/bin/jq', 'rg': '/usr/bin/rg', ...}
 
 # Detect single tool
-path = detect_tool('jq')
+path = detect_tool("jq")
 print(path)  # '/usr/bin/jq' or None
 ```
 
@@ -104,15 +104,15 @@ thegent-path-resolve codex --format json
 from thegent_path_resolve import resolve_binary, PathResolver
 
 # Simple usage
-path = resolve_binary('codex')
+path = resolve_binary("codex")
 print(path)  # '/usr/local/bin/codex' or None
 
 # With skip directories
-resolver = PathResolver.with_skip_dirs(['/usr/local/bin'])
-path = resolver.resolve('codex')
+resolver = PathResolver.with_skip_dirs(["/usr/local/bin"])
+path = resolver.resolve("codex")
 
 # Resolve multiple at once (more efficient)
-results = resolver.resolve_many(['codex', 'maturin', 'cargo'])
+results = resolver.resolve_many(["codex", "maturin", "cargo"])
 ```
 
 ### Process Discovery

@@ -11,10 +11,8 @@
 ```python
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-@retry(
-    stop=stop_after_attempt(3),
-    wait=wait_exponential(multiplier=1, min=2, max=10)
-)
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
 def fetch_model_response(prompt: str) -> str:
     """Fetch response from LLM with retry."""
     response = httpx.post(url, json={"prompt": prompt})
@@ -27,10 +25,11 @@ def fetch_model_response(prompt: str) -> str:
 ```python
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
+
 @retry(
     stop=stop_after_attempt(5),
     wait=wait_exponential(min=1, max=60),
-    retry=retry_if_exception_type((httpx.ReadTimeout, httpx.ConnectError))
+    retry=retry_if_exception_type((httpx.ReadTimeout, httpx.ConnectError)),
 )
 def robust_fetch(url: str) -> httpx.Response:
     """Retry on specific exceptions."""
@@ -47,6 +46,7 @@ def robust_fetch(url: str) -> httpx.Response:
 from cachetools import TTLCache, cached
 from typing import Optional
 
+
 @cached(cache=TTLCache(maxsize=128, ttl=300))  # 5 minute TTL
 def get_cached_value(key: str) -> Optional[str]:
     """Get value from TTL cache."""
@@ -60,6 +60,7 @@ def get_cached_value(key: str) -> Optional[str]:
 from diskcache import Cache
 
 cache = Cache("~/.thegent/cache", size_limit=1024**3)  # 1GB limit
+
 
 def cached_load(path: str) -> dict:
     """Load JSON with file-based caching."""
@@ -81,9 +82,10 @@ def cached_load(path: str) -> dict:
 from pybreaker import CircuitBreaker
 
 circuit = CircuitBreaker(
-    fail_max=5,        # Open after 5 failures
-    reset_timeout=60   # Attempt recovery after 60 seconds
+    fail_max=5,  # Open after 5 failures
+    reset_timeout=60,  # Attempt recovery after 60 seconds
 )
+
 
 @circuit
 def call_external_service():
@@ -102,6 +104,7 @@ def call_external_service():
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+
 class ChangeHandler(FileSystemEventHandler):
     def __init__(self, callback):
         self.callback = callback
@@ -109,6 +112,7 @@ class ChangeHandler(FileSystemEventHandler):
     def on_modified(self, event):
         if not event.is_directory:
             self.callback(event.src_path)
+
 
 def watch_directory(path: str, callback):
     """Watch directory for changes."""
@@ -132,13 +136,14 @@ structlog.configure(
     processors=[
         structlog.processors.add_log_level,
         structlog.processors.TimeStamper(fmt="iso"),
-        structlog.dev.ConsoleRenderer()
+        structlog.dev.ConsoleRenderer(),
     ],
     wrapper_class=structlog.make_filtering_bound_logger(10),
     logger_factory=structlog.PrintLoggerFactory(),
 )
 
 logger = structlog.get_logger()
+
 
 def process_item(item: dict):
     """Process with structured logging."""
@@ -165,11 +170,12 @@ from typing import Optional
 
 app = typer.Typer()
 
+
 @app.command()
 def analyze(
     path: Path = typer.Argument(..., help="Path to analyze"),
     verbose: bool = typer.Option(False, "-v", "--verbose"),
-    output: Optional[Path] = typer.Option(None, "-o", "--output", help="Output file")
+    output: Optional[Path] = typer.Option(None, "-o", "--output", help="Output file"),
 ):
     """Analyze code at path."""
     if verbose:
@@ -194,9 +200,12 @@ def analyze(
 from importlib.metadata import entry_points
 from typing import Protocol
 
+
 class Plugin(Protocol):
     name: str
+
     def load(self) -> None: ...
+
 
 def discover_plugins() -> dict[str, Plugin]:
     """Discover plugins via entry points."""
@@ -207,6 +216,7 @@ def discover_plugins() -> dict[str, Plugin]:
         plugins[ep.name] = plugin
 
     return plugins
+
 
 def load_plugins() -> None:
     """Load all discovered plugins."""
@@ -227,13 +237,11 @@ from queue import Queue, Empty
 from threading import Thread
 from typing import Callable, Any
 
+
 class TaskQueue:
     def __init__(self, max_workers: int = 4):
         self.queue: Queue = Queue()
-        self.workers = [
-            Thread(target=self._worker, daemon=True)
-            for _ in range(max_workers)
-        ]
+        self.workers = [Thread(target=self._worker, daemon=True) for _ in range(max_workers)]
         for w in self.workers:
             w.start()
 

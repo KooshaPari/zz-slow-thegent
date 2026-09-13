@@ -328,16 +328,11 @@ def register_agent(agent_id: str, metadata: dict) -> bool:
     existing = find_agent_in_registry(agent_id, registry)
     if existing:
         # Update heartbeat, status
-        existing['last_heartbeat'] = now()
-        existing['current_state'] = metadata['current_state']
+        existing["last_heartbeat"] = now()
+        existing["current_state"] = metadata["current_state"]
     else:
         # Add new agent
-        registry['agents'].append({
-            'id': agent_id,
-            **metadata,
-            'created_at': now(),
-            'last_heartbeat': now()
-        })
+        registry["agents"].append({"id": agent_id, **metadata, "created_at": now(), "last_heartbeat": now()})
 
     write_registry(registry)
     git_commit(f"Register agent: {agent_id}")
@@ -358,8 +353,8 @@ def heartbeat(agent_id: str, current_state: dict) -> bool:
     if not agent:
         raise AgentNotFound(agent_id)
 
-    agent['last_heartbeat'] = now()
-    agent['current_state'] = current_state
+    agent["last_heartbeat"] = now()
+    agent["current_state"] = current_state
 
     write_registry(registry)
     # Batch commits: push every 30s or every 10 heartbeats
@@ -434,23 +429,23 @@ class FileBasedRegistry:
 
         # Try file
         registry = self._read_registry()
-        for agent in registry['agents']:
-            if agent['id'] == agent_id:
+        for agent in registry["agents"]:
+            if agent["id"] == agent_id:
                 self.local_cache[agent_id] = CacheEntry(agent, ttl=self.cache_ttl)
                 return agent
 
         # Try git pull
-        subprocess.run(['git', 'pull'], cwd=os.path.dirname(self.registry_path))
+        subprocess.run(["git", "pull"], cwd=os.path.dirname(self.registry_path))
         registry = self._read_registry()
-        for agent in registry['agents']:
-            if agent['id'] == agent_id:
+        for agent in registry["agents"]:
+            if agent["id"] == agent_id:
                 self.local_cache[agent_id] = CacheEntry(agent, ttl=self.cache_ttl)
                 return agent
 
         raise AgentNotFound(agent_id)
 
     def _read_registry(self) -> dict:
-        with open(self.registry_path, 'r') as f:
+        with open(self.registry_path, "r") as f:
             return json.load(f)
 ```
 
@@ -514,22 +509,15 @@ async def registry_lookup(agent_id: str) -> dict:
     """
     return get_registry_db().lookup(agent_id)
 
+
 @mcp.tool()
 async def registry_list_agents(
-    project: str = None,
-    tier: str = None,
-    capability: str = None,
-    status: str = "active"
+    project: str = None, tier: str = None, capability: str = None, status: str = "active"
 ) -> list:
     """
     List agents matching filters.
     """
-    return get_registry_db().filter({
-        'project': project,
-        'tier': tier,
-        'capability': capability,
-        'status': status
-    })
+    return get_registry_db().filter({"project": project, "tier": tier, "capability": capability, "status": status})
 ```
 
 ### Option 3: Gossip Protocol (Peer Discovery)
@@ -568,10 +556,10 @@ class GossipRegistry:
     def _send_heartbeat_to(self, peer_entry: AgentEntry):
         """Send heartbeat to peer agent."""
         message = {
-            'type': 'heartbeat',
-            'agent_id': self.agent_id,
-            'agents': list(self.known_agents.values()),  # Piggybacking
-            'timestamp': now()
+            "type": "heartbeat",
+            "agent_id": self.agent_id,
+            "agents": list(self.known_agents.values()),  # Piggybacking
+            "timestamp": now(),
         }
         self._send_message(peer_entry, message)
 
@@ -580,11 +568,11 @@ class GossipRegistry:
         Handle incoming heartbeat from peer.
         Merge view of agents from peer.
         """
-        for agent_entry in message['agents']:
+        for agent_entry in message["agents"]:
             self._merge_agent_entry(agent_entry)
 
         # Add peer to known peers
-        self.peers.add(message['agent_id'])
+        self.peers.add(message["agent_id"])
 
     def lookup(self, agent_id: str) -> AgentEntry:
         """Look up agent locally (gossip result)."""
@@ -629,9 +617,9 @@ class HybridRegistry:
         self.mcp_registry = MCPServiceRegistry(mcp_endpoint) if mcp_endpoint else None
         self.gossip_registry = GossipRegistry()
         self.fallback_chain = [
-            self.file_registry,      # Fast, reliable
-            self.mcp_registry,       # Real-time, if available
-            self.gossip_registry,    # P2P fallback
+            self.file_registry,  # Fast, reliable
+            self.mcp_registry,  # Real-time, if available
+            self.gossip_registry,  # P2P fallback
         ]
 
     async def lookup(self, agent_id: str) -> AgentEntry:
@@ -740,9 +728,9 @@ async def resolve(agent_id: str, timeout: float = 5.0) -> AgentEndpoint:
 
     # Try endpoints in priority order
     endpoints = [
-        agent_entry['endpoints'].get('mcp'),
-        agent_entry['endpoints'].get('http'),
-        agent_entry['endpoints'].get('git_home'),
+        agent_entry["endpoints"].get("mcp"),
+        agent_entry["endpoints"].get("http"),
+        agent_entry["endpoints"].get("git_home"),
     ]
 
     for endpoint in endpoints:
@@ -756,7 +744,7 @@ async def resolve(agent_id: str, timeout: float = 5.0) -> AgentEndpoint:
                 agent_id=agent_id,
                 endpoint=endpoint,
                 protocol=result.protocol,  # mcp, http, or file
-                latency_ms=result.latency_ms
+                latency_ms=result.latency_ms,
             )
         except DialFailed:
             continue  # Try next endpoint
@@ -860,23 +848,20 @@ class CRDTAgentEntry:
     CRDT-based agent entry.
     Supports concurrent updates without conflicts.
     """
+
     def __init__(self, agent_id: str):
         self.agent_id = agent_id
         self.clock = VectorClock()  # Per-agent logical clock
         self.last_heartbeat = Last_Writer_Wins(initial=None)
-        self.status = Multi_Value(initial='unknown')
+        self.status = Multi_Value(initial="unknown")
         self.current_state = Map()  # CRDT map for nested updates
 
     def update_heartbeat(self, timestamp: float, source_agent_id: str):
         """Update heartbeat with causal ordering."""
         self.clock.increment(source_agent_id)
-        self.last_heartbeat.update(
-            timestamp,
-            clock=self.clock,
-            source=source_agent_id
-        )
+        self.last_heartbeat.update(timestamp, clock=self.clock, source=source_agent_id)
 
-    def merge(self, other_entry: 'CRDTAgentEntry'):
+    def merge(self, other_entry: "CRDTAgentEntry"):
         """Merge two entries (from concurrent updates)."""
         self.clock.merge(other_entry.clock)
         self.last_heartbeat.merge(other_entry.last_heartbeat)
@@ -901,18 +886,18 @@ def mark_stale_agents(registry: dict, now: float):
     """
     Mark agents as stale if heartbeat expired.
     """
-    for agent in registry['agents']:
-        last_hb = datetime.fromisoformat(agent['last_heartbeat'])
-        heartbeat_interval = agent.get('heartbeat_interval_seconds', 30)
+    for agent in registry["agents"]:
+        last_hb = datetime.fromisoformat(agent["last_heartbeat"])
+        heartbeat_interval = agent.get("heartbeat_interval_seconds", 30)
         grace_period = heartbeat_interval * 3  # 3 missed heartbeats = stale
 
         if (now - last_hb.timestamp()) > grace_period:
-            agent['status'] = 'stale'
-            agent['status_reason'] = f"No heartbeat for {(now - last_hb.timestamp()):.0f}s"
-        elif agent['status'] == 'stale':
+            agent["status"] = "stale"
+            agent["status_reason"] = f"No heartbeat for {(now - last_hb.timestamp()):.0f}s"
+        elif agent["status"] == "stale":
             # Heartbeat recovered
-            agent['status'] = 'active'
-            agent['status_reason'] = None
+            agent["status"] = "active"
+            agent["status_reason"] = None
 ```
 
 **Registry Cleanup**:
@@ -925,17 +910,17 @@ def prune_stale_agents(registry: dict, max_stale_age_hours: int = 24):
     active_agents = []
     pruned_count = 0
 
-    for agent in registry['agents']:
-        last_hb = datetime.fromisoformat(agent['last_heartbeat']).timestamp()
+    for agent in registry["agents"]:
+        last_hb = datetime.fromisoformat(agent["last_heartbeat"]).timestamp()
         stale_age_hours = (now - last_hb) / 3600
 
-        if agent['status'] == 'stale' and stale_age_hours > max_stale_age_hours:
+        if agent["status"] == "stale" and stale_age_hours > max_stale_age_hours:
             pruned_count += 1
             continue  # Skip this agent
 
         active_agents.append(agent)
 
-    registry['agents'] = active_agents
+    registry["agents"] = active_agents
     return pruned_count
 ```
 
@@ -958,7 +943,7 @@ async def verify_agent_identity(endpoint: str, claimed_agent_id: str) -> bool:
     client = await connect_mcp(endpoint)
 
     # Ask agent for identity proof
-    result = await client.call_tool('get_agent_identity')
+    result = await client.call_tool("get_agent_identity")
 
     # Verify claimed_agent_id matches returned agent_id
     if result.agent_id != claimed_agent_id:
@@ -977,15 +962,15 @@ def authorize_registry_update(updating_agent_id: str, entry_to_update: dict) -> 
     Only allow agent to update its own entry.
     """
     # Extract project from agent_id
-    updating_project = updating_agent_id.split(':')[0]
-    entry_project = entry_to_update['id'].split(':')[0]
+    updating_project = updating_agent_id.split(":")[0]
+    entry_project = entry_to_update["id"].split(":")[0]
 
     # Only same-project agents can update (prevent cross-project tampering)
     if updating_project != entry_project:
         return False
 
     # Only agent itself can update its own entry
-    if updating_agent_id != entry_to_update['id']:
+    if updating_agent_id != entry_to_update["id"]:
         return False
 
     return True

@@ -108,16 +108,19 @@ Execute an agent task with streaming output.
 from pydantic import BaseModel
 from typing import Optional, AsyncIterator
 
+
 class RunAgentRequest(BaseModel):
     agent_id: str = "default"
     prompt: str
     context: Optional[dict] = None
+
 
 class AgentChunk(BaseModel):
     type: str  # "chunk" | "done"
     data: Optional[str] = None
     result: Optional[dict] = None
     timing_ms: Optional[int] = None
+
 
 class AgentSession:
     async def run_agent(self, req: RunAgentRequest) -> AsyncIterator[AgentChunk]:
@@ -411,10 +414,12 @@ Examples:
 from pydantic import BaseModel
 from typing import Optional, Any
 
+
 class ToolCall(BaseModel):
     tool_name: str  # e.g., "github/list_repos"
-    args: dict      # Tool-specific arguments
+    args: dict  # Tool-specific arguments
     timeout_sec: Optional[int] = 30
+
 
 class ToolResult(BaseModel):
     tool_name: str
@@ -517,6 +522,7 @@ class ToolRegistry:
     def get_tools_by_category(self, category: str) -> List[ToolMetadata]:
         """All tools in a category (e.g., "github")."""
 
+
 class ToolMetadata(BaseModel):
     name: str  # e.g., "github/list_repos"
     description: str
@@ -553,7 +559,7 @@ from thegent.models import OutputModel
 
 # ❌ FORBIDDEN: Import across sub-projects
 from thegent.agents import AgentRunner  # CLI cannot do this
-from thegent.cli import CLIOutput       # Agents cannot do this
+from thegent.cli import CLIOutput  # Agents cannot do this
 
 # ✅ ALLOWED: Call via MCP protocol instead
 await cli_client.run_agent(prompt)  # CLI uses MCP to invoke agents
@@ -682,6 +688,7 @@ Agents must implement exponential backoff:
 import asyncio
 from tenacity import retry, wait_exponential, stop_after_attempt
 
+
 @retry(
     wait=wait_exponential(multiplier=1, min=2, max=30),
     stop=stop_after_attempt(5),
@@ -705,6 +712,7 @@ Each sub-project must pass contract tests verifying it conforms to interface spe
 import pytest
 from httpx import AsyncClient
 
+
 @pytest.mark.asyncio
 async def test_agents_server_mcp_contract():
     """Agents server conforms to MCP protocol spec."""
@@ -715,8 +723,7 @@ async def test_agents_server_mcp_contract():
 
         # Test error format
         resp = await client.post(
-            "http://127.0.0.1:3847/tools/run_agent",
-            json={"agent_id": "nonexistent", "prompt": "test"}
+            "http://127.0.0.1:3847/tools/run_agent", json={"agent_id": "nonexistent", "prompt": "test"}
         )
         assert resp.status_code in [400, 404, 500]
         data = resp.json()
@@ -724,15 +731,13 @@ async def test_agents_server_mcp_contract():
         assert "code" in data["error"]
         assert "message" in data["error"]
 
+
 @pytest.mark.asyncio
 async def test_mcp_server_tool_response_format():
     """MCP server tool responses match contract."""
     async with AsyncClient() as client:
         # Tool response should have success + output or error
-        resp = await client.post(
-            "http://127.0.0.1:3848/tools/github/list_repos",
-            json={"owner": "anthropic"}
-        )
+        resp = await client.post("http://127.0.0.1:3848/tools/github/list_repos", json={"owner": "anthropic"})
         data = resp.json()
 
         if resp.status_code == 200:
@@ -807,14 +812,17 @@ Each sub-project includes performance tests:
 import pytest
 import time
 
+
 def test_cli_startup_time():
     """CLI startup should be <250ms."""
     start = time.time()
     # Import and initialize
     from thegent_cli.apps.main import app
+
     elapsed_ms = (time.time() - start) * 1000
 
     assert elapsed_ms < 250, f"Startup took {elapsed_ms}ms (target: 250ms)"
+
 
 def test_agents_server_list_agents():
     """list_agents should respond in <50ms."""

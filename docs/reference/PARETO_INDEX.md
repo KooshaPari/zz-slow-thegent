@@ -221,6 +221,7 @@ def is_on_frontier(model, all_models):
             return False
     return True
 
+
 # Model A dominates Model B if:
 # A.quality ≥ B.quality AND
 # A.speed ≥ B.speed AND

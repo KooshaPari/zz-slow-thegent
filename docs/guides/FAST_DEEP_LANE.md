@@ -55,14 +55,18 @@ uv run pytest -c pytest-fast.ini
 ```python
 import pytest
 
+
 @pytest.mark.fast
 def test_unit_thing(): ...
+
 
 @pytest.mark.deep
 def test_integration_thing(): ...
 
+
 @pytest.mark.gate
 def test_gate_thing(): ...
+
 
 @pytest.mark.slow
 def test_expensive_computation(): ...

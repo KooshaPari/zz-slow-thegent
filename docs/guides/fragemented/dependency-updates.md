@@ -193,13 +193,7 @@ Or in code:
 import granian
 
 if __name__ == "__main__":
-    granian.run(
-        "app:app",
-        interface="asgi",
-        host="0.0.0.0",
-        port=8000,
-        workers=4
-    )
+    granian.run("app:app", interface="asgi", host="0.0.0.0", port=8000, workers=4)
 ```
 
 ## Testing Checklist

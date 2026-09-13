@@ -255,10 +255,7 @@ for agent_dir in sorted(agents_dir.iterdir()):
     jsonl_count = sum(1 for line in open(jsonl_file) if line.strip())
 
     # Count SQLite records
-    sqlite_count = db.execute(
-        "SELECT COUNT(*) FROM memories WHERE agent_id = ?",
-        (agent_dir.name,)
-    ).fetchone()[0]
+    sqlite_count = db.execute("SELECT COUNT(*) FROM memories WHERE agent_id = ?", (agent_dir.name,)).fetchone()[0]
 
     status = "OK" if jsonl_count == sqlite_count else "MISMATCH"
     print(f"{agent_dir.name}: JSONL={jsonl_count} SQLite={sqlite_count} [{status}]")

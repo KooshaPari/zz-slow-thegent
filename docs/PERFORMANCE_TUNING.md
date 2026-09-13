@@ -49,7 +49,7 @@ from thegent.cache import TieredCache
 
 cache = TieredCache(l1_ttl=60.0, l2_ttl=3600.0)
 cache.set("key", "value")  # Sets in both tiers
-result = cache.get("key")   # Checks L1, then L2, promotes to L1
+result = cache.get("key")  # Checks L1, then L2, promotes to L1
 ```
 
 ### Cache Statistics
@@ -79,11 +79,7 @@ print(f"Pressure: {sample.pressure_score}")
 ```python
 from thegent.scaling import DynamicLimiter
 
-limiter = DynamicLimiter(
-    min_limit=1,
-    max_limit=100,
-    initial_limit=10
-)
+limiter = DynamicLimiter(min_limit=1, max_limit=100, initial_limit=10)
 
 # Adjusts automatically based on system pressure
 limiter.acquire()
@@ -99,7 +95,7 @@ from thegent.shell import ShellExecutor, ShellConfig
 
 config = ShellConfig(
     default_timeout=300.0,  # 5 minutes
-    max_retries=3
+    max_retries=3,
 )
 
 executor = ShellExecutor(config)
@@ -114,11 +110,7 @@ else:
 ### Retry with Backoff
 
 ```python
-config = ShellConfig(
-    max_retries=3,
-    retry_base_delay=1.0,
-    retry_exponential_base=2.0
-)
+config = ShellConfig(max_retries=3, retry_base_delay=1.0, retry_exponential_base=2.0)
 # Delays: 1s, 2s, 4s
 ```
 
@@ -142,12 +134,9 @@ for t in teammates:
 from thegent.teammates import Delegate, DelegationRequest
 
 delegate = Delegate(registry)
-result = delegate.delegate(DelegationRequest(
-    teammate_id="coder",
-    task="Refactor the authentication module",
-    priority="HIGH",
-    timeout=300.0
-))
+result = delegate.delegate(
+    DelegationRequest(teammate_id="coder", task="Refactor the authentication module", priority="HIGH", timeout=300.0)
+)
 
 print(f"Task ID: {result.id}")
 print(f"Status: {result.status}")

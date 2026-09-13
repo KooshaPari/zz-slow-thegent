@@ -36,7 +36,7 @@ from thegent.research.cost_sensitivity import CostSensitivityFramework
 framework = CostSensitivityFramework(
     baseline_config={"tenant_count": 1, "policy_depth": 1},
     experiment_a_config={"tenant_count": 10, "policy_depth": 2},
-    experiment_b_config={"tenant_count": 50, "policy_depth": 5}
+    experiment_b_config={"tenant_count": 50, "policy_depth": 5},
 )
 ```
 

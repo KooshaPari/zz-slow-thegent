@@ -61,7 +61,7 @@ proc.connections()  # Network connections
 # System-wide
 psutil.virtual_memory()
 psutil.cpu_percent()
-psutil.disk_usage('/')
+psutil.disk_usage("/")
 ```
 
 **Integration Opportunities:**
@@ -87,6 +87,7 @@ psutil.disk_usage('/')
 **Key Features:**
 ```python
 from psleak import MemoryLeakTestCase
+
 
 class TestLeaks(MemoryLeakTestCase):
     def test_fun(self):
@@ -169,7 +170,7 @@ snapshot1 = tracemalloc.take_snapshot()
 snapshot2 = tracemalloc.take_snapshot()
 
 # Compare to find leaks
-top_stats = snapshot2.compare_to(snapshot1, 'lineno')
+top_stats = snapshot2.compare_to(snapshot1, "lineno")
 for stat in top_stats[:10]:
     print(stat)
 
@@ -194,6 +195,7 @@ import tracemalloc
 import gc
 import pytest
 
+
 @pytest.fixture(autouse=True)
 def check_for_memory_leaks():
     if os.getenv("CHECK_LEAKS") == "1":
@@ -206,9 +208,7 @@ def check_for_memory_leaks():
         finally:
             gc.collect()
             final_mem_usage = tracemalloc.get_traced_memory()[0]
-            assert (
-                final_mem_usage - current_mem_usage < 10_000
-            ), "memory was leaked"
+            assert final_mem_usage - current_mem_usage < 10_000, "memory was leaked"
             tracemalloc.stop()
 ```
 
@@ -443,6 +443,7 @@ with ProcessPoolExecutor(max_workers=4) as executor:
 ```python
 import trio
 
+
 async def run_command():
     async with trio.open_process(["cmd", "args"]) as proc:
         # Automatic cleanup on exit
@@ -551,9 +552,11 @@ git("status")
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+
 class Handler(FileSystemEventHandler):
     def on_modified(self, event):
         print(f"File modified: {event.src_path}")
+
 
 observer = Observer()
 observer.schedule(Handler(), ".", recursive=True)
@@ -681,7 +684,7 @@ count = fd_count()
 ```python
 def fd_count():
     """Count the number of open file descriptors."""
-    if sys.platform.startswith(('linux', 'android', 'freebsd')):
+    if sys.platform.startswith(("linux", "android", "freebsd")):
         fd_path = "/proc/self/fd"
     elif support.is_apple:
         fd_path = "/dev/fd"
@@ -771,6 +774,7 @@ def runtest_refleak(test_name, test_func, hunt_refleak, quiet):
 ```python
 # CPython's cleanup pattern
 _active = []  # List of Popen instances
+
 
 def _cleanup():
     """Clean up zombie processes."""
@@ -881,9 +885,11 @@ import time
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class ResourceStats:
     """Resource usage statistics."""
+
     fd_count: int
     fd_limit: int
     fd_usage_percent: float
@@ -891,6 +897,7 @@ class ResourceStats:
     memory_mb: float
     cpu_percent: float
     timestamp: float
+
 
 class ResourceMonitor:
     """Monitor system resources using psutil."""
@@ -911,6 +918,7 @@ class ResourceMonitor:
         # FD limit
         try:
             import resource
+
             fd_limit = resource.getrlimit(resource.RLIMIT_NOFILE)[0]
         except Exception:
             fd_limit = 1024
@@ -986,6 +994,7 @@ class ResourceMonitor:
 import psutil
 from thegent.infra.process_registry import ProcessHandle, ProcessRegistry
 
+
 class ProcessHandle:
     """Enhanced with psutil integration."""
 
@@ -1013,6 +1022,7 @@ class ProcessHandle:
             }
         except (psutil.AccessDenied, AttributeError):
             return None
+
 
 class ProcessRegistry:
     """Enhanced with psutil integration."""
@@ -1089,6 +1099,7 @@ import pytest
 from psleak import MemoryLeakTestCase, Checkers
 from thegent.infra.subprocess_manager import get_subprocess_manager
 
+
 class TestSubprocessLeaks(MemoryLeakTestCase):
     """Test for subprocess resource leaks."""
 
@@ -1108,11 +1119,13 @@ class TestSubprocessLeaks(MemoryLeakTestCase):
             checkers=Checkers.only("memory", "fds"),
         )
 
+
 class TestFileDescriptorLeaks(MemoryLeakTestCase):
     """Test for file descriptor leaks."""
 
     def test_file_operations_no_leak(self):
         """Test that file operations don't leak FDs."""
+
         def open_files():
             for i in range(100):
                 with open(f"/tmp/test-{i}.txt", "w") as f:
@@ -1153,6 +1166,7 @@ import tracemalloc
 import pytest
 
 if os.getenv("CHECK_LEAKS") == "1":
+
     @pytest.fixture(autouse=True)
     def check_for_memory_leaks():
         """Check for memory leaks using tracemalloc."""
@@ -1166,9 +1180,9 @@ if os.getenv("CHECK_LEAKS") == "1":
             gc.collect()
             final_mem_usage = tracemalloc.get_traced_memory()[0]
             # Fail if more than 10KB leaked
-            assert (
-                final_mem_usage - current_mem_usage < 10_000
-            ), f"memory was leaked: {final_mem_usage - current_mem_usage} bytes"
+            assert final_mem_usage - current_mem_usage < 10_000, (
+                f"memory was leaked: {final_mem_usage - current_mem_usage} bytes"
+            )
             tracemalloc.stop()
 ```
 
@@ -1178,6 +1192,7 @@ if os.getenv("CHECK_LEAKS") == "1":
 
 import tracemalloc
 import pytest
+
 
 class TestMemoryLeaks:
     """Test for memory leaks using tracemalloc snapshots."""
@@ -1197,7 +1212,7 @@ class TestMemoryLeaks:
         snapshot2 = tracemalloc.take_snapshot()
 
         # Compare snapshots
-        top_stats = snapshot2.compare_to(snapshot1, 'lineno')
+        top_stats = snapshot2.compare_to(snapshot1, "lineno")
 
         # Check for significant leaks (>1MB)
         total_leaked = sum(stat.size_diff for stat in top_stats)
@@ -1264,6 +1279,7 @@ import os
 import sys
 from test.support import os_helper
 
+
 def runtest_refleak(test_func, warmups=3, runs=5):
     """Run a test multiple times, looking for resource leaks."""
     # Warmup runs
@@ -1316,6 +1332,7 @@ import pytest
 from psleak import MemoryLeakTestCase, Checkers
 from thegent.infra.subprocess_manager import get_subprocess_manager
 
+
 class TestSubprocessLeaks(MemoryLeakTestCase):
     """Test for subprocess resource leaks."""
 
@@ -1335,11 +1352,13 @@ class TestSubprocessLeaks(MemoryLeakTestCase):
             checkers=Checkers.only("memory", "fds"),
         )
 
+
 class TestFileDescriptorLeaks(MemoryLeakTestCase):
     """Test for file descriptor leaks."""
 
     def test_file_operations_no_leak(self):
         """Test that file operations don't leak FDs."""
+
         def open_files():
             for i in range(100):
                 with open(f"/tmp/test-{i}.txt", "w") as f:
@@ -1411,11 +1430,12 @@ import sys
 import os
 import errno
 
+
 def fd_count() -> int:
     """Count the number of open file descriptors (CPython pattern)."""
-    if sys.platform.startswith(('linux', 'android', 'freebsd', 'emscripten')):
+    if sys.platform.startswith(("linux", "android", "freebsd", "emscripten")):
         fd_path = "/proc/self/fd"
-    elif sys.platform == 'darwin':
+    elif sys.platform == "darwin":
         fd_path = "/dev/fd"
     else:
         fd_path = None
@@ -1430,7 +1450,7 @@ def fd_count() -> int:
 
     # Fallback: scan with os.dup()
     MAXFD = 256
-    if hasattr(os, 'sysconf'):
+    if hasattr(os, "sysconf"):
         try:
             MAXFD = os.sysconf("SC_OPEN_MAX")
         except OSError:
@@ -1471,6 +1491,7 @@ def fd_count() -> int:
 import resource
 import sys
 from contextlib import contextmanager
+
 
 @contextmanager
 def temp_rlimit(resource_type, limits):
@@ -1593,6 +1614,7 @@ class TestLeaks(MemoryLeakTestCase):
     def test_no_leak(self):
         self.execute(my_function, checkers=Checkers.all())
 
+
 # 2. Memory tracking with tracemalloc
 @pytest.fixture(autouse=True)
 def check_memory():
@@ -1600,6 +1622,7 @@ def check_memory():
     yield
     # Check for leaks
     tracemalloc.stop()
+
 
 # 3. Development-time monitoring with fdleaky
 # Run: python -m fdleaky my_script.py
@@ -1663,6 +1686,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ResourceStats:
     """Resource usage statistics."""
+
     fd_count: int
     fd_limit: int
     fd_usage_percent: float
@@ -1677,9 +1701,7 @@ class ResourceStats:
     def is_critical(self) -> bool:
         """Check if resource usage is critical."""
         return (
-            self.fd_usage_percent > 80.0
-            or self.process_count > 100
-            or self.memory_mb > 2048  # 2GB
+            self.fd_usage_percent > 80.0 or self.process_count > 100 or self.memory_mb > 2048  # 2GB
         )
 
 
@@ -1822,6 +1844,7 @@ class ResourceMonitor:
 
 import psutil
 from typing import Optional, List, Dict
+
 
 class ProcessHandle:
     """Enhanced with psutil integration."""
@@ -2022,7 +2045,7 @@ class TestMemoryLeaksTracemalloc:
             my_function()
 
         snapshot2 = tracemalloc.take_snapshot()
-        top_stats = snapshot2.compare_to(snapshot1, 'lineno')
+        top_stats = snapshot2.compare_to(snapshot1, "lineno")
 
         # Check for significant leaks (>1MB)
         total_leaked = sum(stat.size_diff for stat in top_stats if stat.size_diff > 0)
@@ -2081,9 +2104,9 @@ def check_for_memory_leaks():
             gc.collect()
             final_mem_usage = tracemalloc.get_traced_memory()[0]
             # Fail if more than 10KB leaked
-            assert (
-                final_mem_usage - current_mem_usage < 10_000
-            ), f"memory was leaked: {final_mem_usage - current_mem_usage} bytes"
+            assert final_mem_usage - current_mem_usage < 10_000, (
+                f"memory was leaked: {final_mem_usage - current_mem_usage} bytes"
+            )
             tracemalloc.stop()
 ```
 
@@ -2449,6 +2472,7 @@ proc.wait()  # Pipe still open!
 ```python
 # BAD: Custom resource monitoring
 import os
+
 fd_count = len(os.listdir("/proc/self/fd"))  # Unix-only!
 ```
 

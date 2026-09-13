@@ -40,63 +40,63 @@ from typing import Optional
 import os
 import yaml
 
+
 class DatabaseSettings(BaseSettings):
     url: SecretStr
     pool_size: int = 10
     max_overflow: int = 20
+
 
 class SupabaseSettings(BaseSettings):
     url: str
     anon_key: SecretStr
     service_role_key: SecretStr
 
+
 class AtomsSettings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_prefix='ATOMS_',
-        env_nested_delimiter='__',
-        case_sensitive=False,
-        env_ignore_empty=True
+        env_prefix="ATOMS_", env_nested_delimiter="__", case_sensitive=False, env_ignore_empty=True
     )
-    
+
     # App settings
     app_name: str = "atoms-mcp"
     debug: bool = False
     log_level: str = "INFO"
-    
+
     # Database
     database: DatabaseSettings
-    
+
     # Supabase
     supabase: SupabaseSettings
-    
+
     # API Keys
     openai_api_key: Optional[SecretStr] = None
     anthropic_api_key: Optional[SecretStr] = None
-    
+
     @classmethod
     def load(cls):
         """Load settings based on environment"""
-        if os.getenv('VERCEL') or os.getenv('VERCEL_ENV'):
+        if os.getenv("VERCEL") or os.getenv("VERCEL_ENV"):
             # Production: use environment variables
             return cls()
         else:
             # Local: use YAML files
             return cls.from_yaml()
-    
+
     @classmethod
     def from_yaml(cls):
         """Load from YAML files (local development)"""
         # Load non-sensitive config
-        with open('config.yml', 'r') as f:
+        with open("config.yml", "r") as f:
             config = yaml.safe_load(f)
-        
+
         # Load secrets
         try:
-            with open('secrets.yml', 'r') as f:
+            with open("secrets.yml", "r") as f:
                 secrets = yaml.safe_load(f)
         except FileNotFoundError:
             secrets = {}
-        
+
         # Merge and create settings
         merged = {**config, **secrets}
         return cls(**merged)
@@ -164,6 +164,7 @@ from settings.config import AtomsSettings
 
 # Load settings once at startup
 settings = AtomsSettings.load()
+
 
 # Use throughout application
 def get_database_url():
@@ -272,6 +273,7 @@ vercel deploy --prod
 import pytest
 from settings.config import AtomsSettings
 
+
 @pytest.fixture
 def test_settings():
     """Provide test settings"""
@@ -279,11 +281,7 @@ def test_settings():
         app_name="atoms-mcp-test",
         debug=True,
         database={"url": "postgresql://localhost/test"},
-        supabase={
-            "url": "http://localhost:54321",
-            "anon_key": "test-key",
-            "service_role_key": "test-key"
-        }
+        supabase={"url": "http://localhost:54321", "anon_key": "test-key", "service_role_key": "test-key"},
     )
 ```
 
@@ -298,17 +296,18 @@ app:
   name: "test-app"
   debug: true
 """)
-    
+
     # Test loading
     settings = AtomsSettings.from_yaml()
     assert settings.app_name == "test-app"
     assert settings.debug is True
 
+
 def test_settings_from_env(monkeypatch):
     """Test loading settings from environment"""
     monkeypatch.setenv("VERCEL", "1")
     monkeypatch.setenv("ATOMS_APP_NAME", "prod-app")
-    
+
     settings = AtomsSettings.load()
     assert settings.app_name == "prod-app"
 ```

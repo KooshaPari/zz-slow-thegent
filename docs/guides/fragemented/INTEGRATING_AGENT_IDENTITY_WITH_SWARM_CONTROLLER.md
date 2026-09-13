@@ -92,7 +92,7 @@ def start(self):
         scope_tags={
             "swarm_controller_version": "1.0",
             "started_at": datetime.now().isoformat(),
-        }
+        },
     )
     self.l1_agent_id = l1_identity.agent_id
     self.logger.info(f"Registered L1 agent: {self.l1_agent_id}")
@@ -117,6 +117,7 @@ def monitor_agents(self):
 
         # ... rest of monitoring ...
 
+
 def _should_register_agent(self, agent_id: str, metrics: AgentMetrics) -> bool:
     """Check if agent needs registry entry."""
     # Don't re-register if already in registry
@@ -125,6 +126,7 @@ def _should_register_agent(self, agent_id: str, metrics: AgentMetrics) -> bool:
     # Register on first appearance
     return metrics.pid is not None
 
+
 def _register_agent_to_registry(self, agent_id: str, metrics: AgentMetrics):
     """Register agent to global registry."""
     try:
@@ -132,18 +134,22 @@ def _register_agent_to_registry(self, agent_id: str, metrics: AgentMetrics):
         level = AgentLevel.L3_EXECUTOR if "L3" in agent_id else AgentLevel.L2_WORKER
         role = AgentRole.GENERIC
 
-        identity = self.agent_factory.create_l2_agent(
-            self.project_name,
-            role=role,
-            parent_l1_id=self.l1_agent_id,
-            capabilities=["task_execution"],
-            scope_tags={
-                "swarm_controller_pid": metrics.pid,
-                "initial_status": metrics.status.value,
-            }
-        ) if level == AgentLevel.L2_WORKER else self.agent_factory.create_l3_agent(
-            self.project_name,
-            parent_l2_id=self.l1_agent_id,  # Simplified for now
+        identity = (
+            self.agent_factory.create_l2_agent(
+                self.project_name,
+                role=role,
+                parent_l1_id=self.l1_agent_id,
+                capabilities=["task_execution"],
+                scope_tags={
+                    "swarm_controller_pid": metrics.pid,
+                    "initial_status": metrics.status.value,
+                },
+            )
+            if level == AgentLevel.L2_WORKER
+            else self.agent_factory.create_l3_agent(
+                self.project_name,
+                parent_l2_id=self.l1_agent_id,  # Simplified for now
+            )
         )
 
         self.logger.info(f"Registered {agent_id} to registry as {identity.agent_id}")
@@ -184,6 +190,7 @@ def cleanup_stale_agents(self):
             else:
                 self.agent_registry.unregister_agent(agent.agent_id)
                 self.logger.info(f"Unregistered stale: {agent.agent_id}")
+
 
 def _try_recover_agent(self, agent_id: str) -> bool:
     """Attempt to restart or ping stale agent."""
@@ -354,8 +361,9 @@ self.agent_id_map = {
 ```python
 import fcntl
 
+
 def _save_to_disk_locked(self):
-    with open(self.registry_path, 'r+') as f:
+    with open(self.registry_path, "r+") as f:
         fcntl.flock(f.fileno(), fcntl.LOCK_EX)
         # write operation
         fcntl.flock(f.fileno(), fcntl.LOCK_UN)

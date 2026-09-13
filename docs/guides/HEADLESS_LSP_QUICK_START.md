@@ -168,12 +168,9 @@ server = manager.ensure_server("python")
 
 # Format files
 cli = JetBrainsCLI()
-result = cli.format(
-    [Path("src/main.py"), Path("src/utils.py")],
-    project_root=Path("/path/to/project")
-)
+result = cli.format([Path("src/main.py"), Path("src/utils.py")], project_root=Path("/path/to/project"))
 
-if result['success']:
+if result["success"]:
     print("Files formatted!")
 ```
 

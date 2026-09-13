@@ -85,7 +85,7 @@ run = RunMeta(
     cwd="/path/to/project",
     owner="user",
     task_id="research-tui-compositor",  # NEW
-    task_metadata={...}  # NEW - full task data
+    task_metadata={...},  # NEW - full task data
 )
 ```
 

@@ -98,6 +98,7 @@ Create `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_thege
 
 ```python
 """Test PyO3 bindings for thegent-policy Rust crate."""
+
 import pytest
 from thegent.rust_wrappers import PolicyEngine
 
@@ -117,10 +118,7 @@ def test_policy_engine_new():
 def test_policy_evaluation_result_schema():
     """FAIL: EvaluationResult type is not defined."""
     engine = PolicyEngine("tests/fixtures/test-policy.toml")
-    result = engine.evaluate(
-        rule_id="FR-GOV-001",
-        context={"cost_per_call": 0.005}
-    )
+    result = engine.evaluate(rule_id="FR-GOV-001", context={"cost_per_call": 0.005})
     assert result["passed"] in (True, False)
     assert "reason" in result
     assert "latency_ms" in result
@@ -472,6 +470,7 @@ Update `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_thege
 
 ```python
 """Test PyO3 bindings for thegent-policy Rust crate."""
+
 import pytest
 from pathlib import Path
 
@@ -505,10 +504,7 @@ def test_policy_evaluation_returns_dict(policy_config_path):
     from thegent import policy_engine
 
     engine = policy_engine.PolicyEngine(policy_config_path)
-    result = engine.evaluate(
-        rule_id="FR-GOV-001",
-        context={"cost_per_call": "0.005", "call_count": "100"}
-    )
+    result = engine.evaluate(rule_id="FR-GOV-001", context={"cost_per_call": "0.005", "call_count": "100"})
 
     assert isinstance(result, dict)
     assert "passed" in result
@@ -547,10 +543,7 @@ def test_policy_error_handling(policy_config_path):
 
     # Should raise error for non-existent rule
     with pytest.raises(Exception):  # PyO3 will raise appropriate exception
-        engine.evaluate(
-            rule_id="DOES_NOT_EXIST",
-            context={"cost_per_call": "0.005"}
-        )
+        engine.evaluate(rule_id="DOES_NOT_EXIST", context={"cost_per_call": "0.005"})
 ```
 
 **Update pyproject.toml to add maturin build backend:**
@@ -689,6 +682,7 @@ Create `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_compl
 
 ```python
 """Test compliance checking via Rust."""
+
 import pytest
 from thegent import policy_engine
 
@@ -701,10 +695,7 @@ def compliance_checker():
 
 def test_check_cost_compliance(compliance_checker):
     """FAIL: cost compliance checking not implemented."""
-    result = compliance_checker.check_cost(
-        cost_amount=2.5,
-        limit=1.0
-    )
+    result = compliance_checker.check_cost(cost_amount=2.5, limit=1.0)
     assert result["passed"] is False
     assert "exceeded" in result["reason"].lower()
 
@@ -716,10 +707,7 @@ def test_batch_compliance_check(compliance_checker):
         {"id": "call-limit", "limit": 1000},
     ]
 
-    results = compliance_checker.check_batch(rules, context={
-        "cost": 0.5,
-        "calls": 500
-    })
+    results = compliance_checker.check_batch(rules, context={"cost": 0.5, "calls": 500})
 
     assert len(results) == 2
     assert all(r["passed"] for r in results)
@@ -1046,6 +1034,7 @@ Create `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_zmx_s
 
 ```python
 """Test session management via Rust."""
+
 import pytest
 from thegent import zmx_session
 
@@ -1078,11 +1067,7 @@ def test_session_context_storage():
     """FAIL: Context storage bindings not implemented."""
     session = zmx_session.Session("test")
 
-    context = {
-        "agent_id": "agent-1",
-        "cost_budget": "1.0",
-        "task_id": "task-123"
-    }
+    context = {"agent_id": "agent-1", "cost_budget": "1.0", "task_id": "task-123"}
 
     session.set_context(context)
     retrieved = session.get_context()
@@ -1097,6 +1082,7 @@ def test_session_timeout_tracking():
     assert session.created_at() > 0
 
     import time
+
     time.sleep(0.1)
 
     elapsed = session.elapsed_ms()
@@ -1441,6 +1427,7 @@ Create `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_audit
 
 ```python
 """Test audit logger via Rust."""
+
 import pytest
 import tempfile
 import json
@@ -1458,7 +1445,7 @@ def test_audit_entry_written_to_jsonl():
             timestamp="2026-02-22T00:00:00Z",
             event_type="policy_check",
             agent_id="agent-1",
-            details={"rule_id": "FR-GOV-001", "passed": True}
+            details={"rule_id": "FR-GOV-001", "passed": True},
         )
         logger.flush()
 
@@ -1481,22 +1468,12 @@ def test_audit_logger_immutable_hash():
 
         logger = audit_logger.AuditLogger(str(log_path))
 
-        logger.append(
-            timestamp="2026-02-22T00:00:00Z",
-            event_type="event1",
-            agent_id="agent-1",
-            details={}
-        )
+        logger.append(timestamp="2026-02-22T00:00:00Z", event_type="event1", agent_id="agent-1", details={})
         logger.flush()
 
         hash1 = logger.file_hash()
 
-        logger.append(
-            timestamp="2026-02-22T01:00:00Z",
-            event_type="event2",
-            agent_id="agent-2",
-            details={}
-        )
+        logger.append(timestamp="2026-02-22T01:00:00Z", event_type="event2", agent_id="agent-2", details={})
         logger.flush()
 
         hash2 = logger.file_hash()
@@ -1513,10 +1490,7 @@ def test_audit_logger_range_query():
         # Write 5 entries
         for i in range(5):
             logger.append(
-                timestamp=f"2026-02-22T0{i}:00:00Z",
-                event_type="event",
-                agent_id=f"agent-{i}",
-                details={"index": i}
+                timestamp=f"2026-02-22T0{i}:00:00Z", event_type="event", agent_id=f"agent-{i}", details={"index": i}
             )
         logger.flush()
 
@@ -1828,6 +1802,7 @@ Create `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_metri
 
 ```python
 """Test metrics collection via Rust."""
+
 import pytest
 from thegent import metrics
 
@@ -2232,6 +2207,7 @@ pytest tests/unit/test_metrics_binding.py -v
 
 ```python
 """Test parity between Python and Rust implementations."""
+
 import pytest
 from thegent.governance import compliance as py_compliance
 from thegent import policy_engine  # Rust binding
@@ -2249,17 +2225,11 @@ def compliance_context():
 def test_compliance_check_parity(compliance_context):
     """FAIL: Python and Rust implementations differ."""
     # Python implementation
-    py_result = py_compliance.check_rule(
-        rule_id="FR-GOV-001",
-        context=compliance_context
-    )
+    py_result = py_compliance.check_rule(rule_id="FR-GOV-001", context=compliance_context)
 
     # Rust implementation
     rust_engine = policy_engine.PolicyEngine("path/to/config.toml")
-    rust_result = rust_engine.evaluate(
-        rule_id="FR-GOV-001",
-        context=compliance_context
-    )
+    rust_result = rust_engine.evaluate(rule_id="FR-GOV-001", context=compliance_context)
 
     # Verify same result
     assert py_result["passed"] == rust_result["passed"]
@@ -2277,12 +2247,15 @@ def test_cost_enforcement_parity():
     assert py_enforcer.remaining() == rust_enforcer.remaining()
 
 
-@pytest.mark.parametrize("cost,limit,expected", [
-    (0.5, 1.0, True),
-    (1.5, 1.0, False),
-    (0.0, 0.0, False),
-    (1.0, 1.0, True),
-])
+@pytest.mark.parametrize(
+    "cost,limit,expected",
+    [
+        (0.5, 1.0, True),
+        (1.5, 1.0, False),
+        (0.0, 0.0, False),
+        (1.0, 1.0, True),
+    ],
+)
 def test_cost_boundary_parity(cost, limit, expected):
     """FAIL: Boundary conditions differ."""
     py_enforcer = py_compliance.CostEnforcer(daily_limit=limit)
@@ -2318,6 +2291,7 @@ pytest tests/integration/test_python_rust_parity.py -vv --tb=short
 
 ```python
 """Benchmark Rust vs Python implementations."""
+
 import pytest
 import time
 from thegent.governance import compliance as py_compliance
@@ -2326,15 +2300,13 @@ from thegent import policy_engine  # Rust
 
 @pytest.fixture
 def large_context():
-    return {
-        "cost_per_call": i * 0.001
-        for i in range(1000)
-    } | {"call_count": 10000}
+    return {"cost_per_call": i * 0.001 for i in range(1000)} | {"call_count": 10000}
 
 
 @pytest.mark.benchmark
 def test_compliance_check_performance_python(benchmark, large_context):
     """FAIL: No baseline to compare."""
+
     def check():
         return py_compliance.check_rule("FR-GOV-001", large_context)
 

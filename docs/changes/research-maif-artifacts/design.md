@@ -68,6 +68,7 @@
 ```python
 # thegent/src/thegent/maif/artifact_generator.py
 
+
 class MAIFArtifactGenerator:
     def __init__(self, signer: SigningKey):
         self.signer = signer
@@ -125,6 +126,7 @@ class MAIFArtifactGenerator:
 ```python
 # thegent/src/thegent/maif/hash_chain.py
 
+
 class HashChainValidator:
     def __init__(self):
         self.chain_heads: dict[str, str] = {}  # session_id -> latest_artifact_hash
@@ -141,9 +143,7 @@ class HashChainValidator:
             if i == 0:
                 expected_prev = ""
             else:
-                expected_prev = self._hash(
-                    self._serialize(artifacts[i - 1])
-                )
+                expected_prev = self._hash(self._serialize(artifacts[i - 1]))
 
             if artifact.previous_hash != expected_prev:
                 return False, f"Artifact {i}: hash chain broken"
@@ -153,9 +153,7 @@ class HashChainValidator:
                 return False, f"Artifact {i}: signature invalid"
 
         # Update chain head
-        self.chain_heads[session_id] = self._hash(
-            self._serialize(artifacts[-1])
-        )
+        self.chain_heads[session_id] = self._hash(self._serialize(artifacts[-1]))
 
         return True, "OK"
 
@@ -288,12 +286,14 @@ from enum import Enum
 from typing import Optional
 from pydantic import BaseModel
 
+
 class ActionType(str, Enum):
     CODE_CHANGE = "code_change"
     FILE_OPERATION = "file_operation"
     SYSTEM_CALL = "system_call"
     DECISION = "decision"
     ERROR = "error"
+
 
 class MAIFArtifact(BaseModel):
     id: str
@@ -356,6 +356,7 @@ class MAIFArtifact(BaseModel):
 ```python
 # thegent_maif_gen CLI or function
 
+
 async def create_artifact(
     action_type: ActionType,
     agent_id: str,
@@ -366,9 +367,7 @@ async def create_artifact(
 ) -> MAIFArtifact:
     """Create and store a MAIF artifact."""
     generator = MAIFArtifactGenerator(signer=get_signing_key())
-    artifact = generator.create_artifact(
-        action_type, agent_id, session_id, input_data, output_data, metadata
-    )
+    artifact = generator.create_artifact(action_type, agent_id, session_id, input_data, output_data, metadata)
 
     storage = MAIFStorage(supermemory_client)
     await storage.store(artifact)

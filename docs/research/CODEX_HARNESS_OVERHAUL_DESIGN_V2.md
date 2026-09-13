@@ -725,13 +725,18 @@ Changes NOT to push upstream:
 ```python
 # Current call pattern in codex_proxy.py
 cmd = [
-    "codex", "exec", "-",
+    "codex",
+    "exec",
+    "-",
     "--skip-git-repo-check",
     "--dangerously-bypass-approvals-and-sandbox",
-    "--cd", str(task.cwd),
+    "--cd",
+    str(task.cwd),
     "--json",
-    "--model", task.model,
-    "--sandbox", "workspace-write",
+    "--model",
+    task.model,
+    "--sandbox",
+    "workspace-write",
     "--full-auto",
 ]
 ```
@@ -741,18 +746,26 @@ cmd = [
 ```python
 # Phase 1: config-only improvements (no fork)
 cmd = [
-    "codex", "exec", "-",
+    "codex",
+    "exec",
+    "-",
     "--skip-git-repo-check",
     "--dangerously-bypass-approvals-and-sandbox",
-    "--cd", str(task.cwd),
+    "--cd",
+    str(task.cwd),
     "--json",
-    "--model", task.model,
-    "--sandbox", "workspace-write",
+    "--model",
+    task.model,
+    "--sandbox",
+    "workspace-write",
     "--full-auto",
     # Phase 1 additions:
-    "-c", f"project_doc_fallback_filenames=[\"CODEX.md\",\"CLAUDE.md\"]",
-    "-c", f"model_instructions_file={global_memory_path}",
-    "-c", f"project_doc_max_bytes=65536",
+    "-c",
+    f'project_doc_fallback_filenames=["CODEX.md","CLAUDE.md"]',
+    "-c",
+    f"model_instructions_file={global_memory_path}",
+    "-c",
+    f"project_doc_max_bytes=65536",
 ]
 ```
 
@@ -764,13 +777,18 @@ env = os.environ.copy()
 env["HOME"] = str(isolated_codex_home)  # Until --codex-home lands
 
 cmd = [
-    "codex", "exec", "-",
+    "codex",
+    "exec",
+    "-",
     "--skip-git-repo-check",
     "--dangerously-bypass-approvals-and-sandbox",
-    "--cd", str(task.cwd),
+    "--cd",
+    str(task.cwd),
     "--json",
-    "--model", task.model,
-    "--sandbox", "workspace-write",
+    "--model",
+    task.model,
+    "--sandbox",
+    "workspace-write",
     "--full-auto",
     # Phase 2: state isolation (fork adds --codex-home; use HOME env until then)
     # Phase 2: session resume

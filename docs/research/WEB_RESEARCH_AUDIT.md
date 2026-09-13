@@ -80,7 +80,7 @@ agent = Agent(
     role="Manager",
     goal="Coordinate team",
     allow_delegation=True,  # Can delegate to other agents
-    verbose=True
+    verbose=True,
 )
 ```
 
@@ -90,7 +90,7 @@ crew = Crew(
     agents=[manager, worker1, worker2],
     tasks=[task1, task2, task3],
     process=Process.hierarchical,
-    manager_llm="gpt-4"  # Required for hierarchical
+    manager_llm="gpt-4",  # Required for hierarchical
 )
 ```
 
@@ -210,8 +210,10 @@ await di.run("Run data analysis on sklearn Iris dataset")
 ```python
 from langgraph.graph import StateGraph, MessagesState, START, END
 
+
 def mock_llm(state: MessagesState):
     return {"messages": [{"role": "ai", "content": "hello world"}]}
+
 
 graph = StateGraph(MessagesState)
 graph.add_node(mock_llm)
@@ -275,11 +277,7 @@ math_agent_tool = AgentTool(math_agent, return_value_as_last_message=True)
 chemistry_agent_tool = AgentTool(chemistry_agent, ...)
 
 # Main agent uses expert tools
-agent = AssistantAgent(
-    "assistant",
-    tools=[math_agent_tool, chemistry_agent_tool],
-    max_tool_iterations=10
-)
+agent = AssistantAgent("assistant", tools=[math_agent_tool, chemistry_agent_tool], max_tool_iterations=10)
 ```
 
 **Patterns:**

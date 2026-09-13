@@ -106,20 +106,17 @@ capabilities = {
     "filesystem": {
         "read": ["/workspace/src", "/workspace/docs"],
         "write": ["/workspace/.sandbox/wasm/output"],
-        "create": ["/workspace/.sandbox/wasm/temp"]
+        "create": ["/workspace/.sandbox/wasm/temp"],
     },
-    "network": {
-        "tcp": ["api.example.com:443"],
-        "dns": ["8.8.8.8"]
-    },
+    "network": {"tcp": ["api.example.com:443"], "dns": ["8.8.8.8"]},
     "environment": {
         "read": ["PATH", "HOME", "LANG"],
-        "write": []  # No env writes allowed
+        "write": [],  # No env writes allowed
     },
     "process": {
         "spawn": False,  # No subprocess spawning
-        "signal": ["SIGTERM"]  # Only allow termination
-    }
+        "signal": ["SIGTERM"],  # Only allow termination
+    },
 }
 ```
 
@@ -147,7 +144,7 @@ wasm_binary = compile_to_wasm(agent_code)
 sandbox = WasmSandbox(
     project_path=Path("thegent/.sandbox/wasm"),
     max_memory_mb=128,
-    capabilities=["filesystem:read:thegent/src", "network:https:api.example.com"]
+    capabilities=["filesystem:read:thegent/src", "network:https:api.example.com"],
 )
 result = sandbox.run(wasm_binary, function="main", args=[])
 ```
@@ -204,12 +201,7 @@ class PodmanSandbox:
     def _verify_podman(self):
         """Verify Podman is installed and rootless mode works."""
         try:
-            result = subprocess.run(
-                ["podman", "info", "--format", "json"],
-                capture_output=True,
-                text=True,
-                check=True
-            )
+            result = subprocess.run(["podman", "info", "--format", "json"], capture_output=True, text=True, check=True)
             info = json.loads(result.stdout)
             if info.get("host", {}).get("security", {}).get("rootless") != True:
                 raise RuntimeError("Podman must run in rootless mode")
@@ -220,23 +212,37 @@ class PodmanSandbox:
         """Execute command in Podman container."""
         # Build podman command with security hardening
         cmd = [
-            "podman", "run",
+            "podman",
+            "run",
             "--rm",  # Auto-remove after execution
-            "--name", self.container_name,
-            "--memory", f"{self.config.get('memory_limit_mb', 512)}m",
-            "--memory-swap", f"{self.config.get('memory_limit_mb', 512)}m",  # No swap
-            "--cpus", str(self.config.get('cpu_limit', 2)),
-            "--network", self.config.get("network", "none"),  # No network by default
-            "--security-opt", "seccomp=unconfined",  # Or use custom profile
-            "--security-opt", "label=disable",  # Or use SELinux/AppArmor
-            "--volume", f"{self.project_path.absolute()}:/workspace:rw,Z",  # Z = SELinux relabel
-            "--workdir", "/workspace",
-            "--env", "HOME=/workspace",  # Override HOME
-            "--env", "USER=agent",  # Non-root user
-            "--user", "1000:1000",  # Run as non-root
+            "--name",
+            self.container_name,
+            "--memory",
+            f"{self.config.get('memory_limit_mb', 512)}m",
+            "--memory-swap",
+            f"{self.config.get('memory_limit_mb', 512)}m",  # No swap
+            "--cpus",
+            str(self.config.get("cpu_limit", 2)),
+            "--network",
+            self.config.get("network", "none"),  # No network by default
+            "--security-opt",
+            "seccomp=unconfined",  # Or use custom profile
+            "--security-opt",
+            "label=disable",  # Or use SELinux/AppArmor
+            "--volume",
+            f"{self.project_path.absolute()}:/workspace:rw,Z",  # Z = SELinux relabel
+            "--workdir",
+            "/workspace",
+            "--env",
+            "HOME=/workspace",  # Override HOME
+            "--env",
+            "USER=agent",  # Non-root user
+            "--user",
+            "1000:1000",  # Run as non-root
             "--read-only",  # Read-only rootfs (if base image supports)
-            "--tmpfs", "/tmp:rw,noexec,nosuid,size=100m",  # Secure tmpfs
-            self.image
+            "--tmpfs",
+            "/tmp:rw,noexec,nosuid,size=100m",  # Secure tmpfs
+            self.image,
         ]
 
         # Add environment variables
@@ -253,7 +259,7 @@ class PodmanSandbox:
                 capture_output=True,
                 text=True,
                 timeout=self.config.get("timeout", 300),
-                check=False  # Don't raise on non-zero exit
+                check=False,  # Don't raise on non-zero exit
             )
 
             return {
@@ -264,18 +270,13 @@ class PodmanSandbox:
                 "tier": "container",
                 "runtime": "podman",
                 "container_id": self.container_name,
-                "duration_ms": (time.time() - start_time) * 1000
+                "duration_ms": (time.time() - start_time) * 1000,
             }
         except subprocess.TimeoutExpired:
             # Force kill container
             subprocess.run(["podman", "kill", self.container_name], check=False)
             subprocess.run(["podman", "rm", self.container_name], check=False)
-            return {
-                "status": "timeout",
-                "exit_code": -1,
-                "error": "Container execution timed out",
-                "tier": "container"
-            }
+            return {"status": "timeout", "exit_code": -1, "error": "Container execution timed out", "tier": "container"}
 ```
 
 #### 2.2 containerd (CNCF Standard)
@@ -300,14 +301,20 @@ class ContainerdSandbox:
         """Execute command in containerd container."""
         # containerd uses ctr CLI or gRPC API
         cmd = [
-            "ctr", "--namespace", "thegent", "run",
+            "ctr",
+            "--namespace",
+            "thegent",
+            "run",
             "--rm",
-            "--mount", f"type=bind,src={self.project_path.absolute()},dst=/workspace,options=rbind:rw",
+            "--mount",
+            f"type=bind,src={self.project_path.absolute()},dst=/workspace,options=rbind:rw",
             "--net-host=false",  # Isolated network
-            "--memory-limit", f"{self.config.get('memory_limit_mb', 512)}m",
-            "--cpu-quota", str(self.config.get('cpu_limit', 2) * 100000),  # CPU quota in microseconds
+            "--memory-limit",
+            f"{self.config.get('memory_limit_mb', 512)}m",
+            "--cpu-quota",
+            str(self.config.get("cpu_limit", 2) * 100000),  # CPU quota in microseconds
             self.image,
-            self.container_name
+            self.container_name,
         ] + command
 
         result = subprocess.run(cmd, capture_output=True, text=True)
@@ -355,8 +362,9 @@ class GVisorSandbox:
             "--file-access=exclusive",  # Exclusive file access
             "--fsgofer-host-uds=false",  # No host UDS
             "run",
-            "--bundle", str(self.project_path / ".sandbox" / "container" / "bundle"),
-            self.container_name
+            "--bundle",
+            str(self.project_path / ".sandbox" / "container" / "bundle"),
+            self.container_name,
         ] + command
 
         result = subprocess.run(cmd, capture_output=True, text=True)
@@ -391,20 +399,33 @@ class BubblewrapSandbox:
         # Bubblewrap uses bwrap command
         cmd = [
             "bwrap",
-            "--ro-bind", "/usr", "/usr",  # Read-only /usr
-            "--ro-bind", "/lib", "/lib",  # Read-only /lib
-            "--ro-bind", "/lib64", "/lib64",  # Read-only /lib64
-            "--bind", str(self.project_path), "/workspace",  # Read-write workspace
-            "--proc", "/proc",  # Process namespace
-            "--dev", "/dev",  # Device namespace
+            "--ro-bind",
+            "/usr",
+            "/usr",  # Read-only /usr
+            "--ro-bind",
+            "/lib",
+            "/lib",  # Read-only /lib
+            "--ro-bind",
+            "/lib64",
+            "/lib64",  # Read-only /lib64
+            "--bind",
+            str(self.project_path),
+            "/workspace",  # Read-write workspace
+            "--proc",
+            "/proc",  # Process namespace
+            "--dev",
+            "/dev",  # Device namespace
             "--unshare-pid",  # PID namespace
             "--unshare-net",  # Network namespace
             "--unshare-ipc",  # IPC namespace
             "--unshare-uts",  # UTS namespace
             "--new-session",  # New session (prevents TIOCSTI attacks)
             "--die-with-parent",  # Die when parent dies
-            "--chdir", "/workspace",
-            "bash", "-c", " ".join(command)
+            "--chdir",
+            "/workspace",
+            "bash",
+            "-c",
+            " ".join(command),
         ]
 
         result = subprocess.run(cmd, capture_output=True, text=True)
@@ -624,7 +645,7 @@ class FirecrackerSandbox:
             "vcpu_count": self.config.get("cpu_count", 1),
             "mem_size_mib": self.config.get("memory_mb", 128),
             "ht_enabled": False,
-            "track_dirty_pages": False
+            "track_dirty_pages": False,
         }
 
         requests_unixsocket.patch()
@@ -634,26 +655,17 @@ class FirecrackerSandbox:
         boot_source = {
             "kernel_image_path": str(self.vm_image),
             "boot_args": "console=ttyS0 reboot=k panic=1 pci=off",
-            "initrd_path": None
+            "initrd_path": None,
         }
 
-        session.put(
-            f"http+unix://{self.socket}/boot-source",
-            json=boot_source
-        )
+        session.put(f"http+unix://{self.socket}/boot-source", json=boot_source)
 
         # Configure rootfs
-        drives = [{
-            "drive_id": "rootfs",
-            "path_on_host": str(self.rootfs),
-            "is_root_device": True,
-            "is_read_only": False
-        }]
+        drives = [
+            {"drive_id": "rootfs", "path_on_host": str(self.rootfs), "is_root_device": True, "is_read_only": False}
+        ]
 
-        session.put(
-            f"http+unix://{self.socket}/drives/rootfs",
-            json=drives[0]
-        )
+        session.put(f"http+unix://{self.socket}/drives/rootfs", json=drives[0])
 
         # Start VM
         session.put(f"http+unix://{self.socket}/actions", json={"action_type": "InstanceStart"})
@@ -893,6 +905,7 @@ class SandboxRouter:
 from wasmtime import Engine, Store, Module, Linker, Config
 from wasmtime import WasiConfig
 
+
 class WasmSandbox:
     """WASM-based sandbox using WASI."""
 
@@ -904,14 +917,8 @@ class WasmSandbox:
 
         # Configure WASI with capabilities
         wasi_config = WasiConfig()
-        wasi_config.preopen_dir(
-            str(project_path / "src"),
-            "/workspace/src"
-        )
-        wasi_config.preopen_dir(
-            str(project_path / ".sandbox" / "wasm"),
-            "/workspace/output"
-        )
+        wasi_config.preopen_dir(str(project_path / "src"), "/workspace/src")
+        wasi_config.preopen_dir(str(project_path / ".sandbox" / "wasm"), "/workspace/output")
 
         # Network capability (if allowed)
         if "network:https:api.example.com" in config.get("capabilities", []):
@@ -930,12 +937,7 @@ class WasmSandbox:
 
         result = func(self.store, *args)
 
-        return {
-            "status": "success",
-            "result": result,
-            "tier": "wasm",
-            "memory_used_mb": self._get_memory_usage()
-        }
+        return {"status": "success", "result": result, "tier": "wasm", "memory_used_mb": self._get_memory_usage()}
 ```
 
 ### Compiling Agent Code to WASM
@@ -990,6 +992,7 @@ podman info
 import subprocess
 from pathlib import Path
 
+
 class PodmanSandbox:
     """Podman-based container sandbox."""
 
@@ -1003,22 +1006,25 @@ class PodmanSandbox:
         """Execute command in Podman container."""
         # Build podman command
         cmd = [
-            "podman", "run", "--rm",
-            "--name", self.container_name,
-            "--memory", f"{self.config.get('memory_limit_mb', 512)}m",
-            "--cpus", str(self.config.get('cpu_limit', 2)),
-            "--network", self.config.get("network", "none"),
-            "--volume", f"{self.project_path}:/workspace:rw",
-            "--workdir", "/workspace",
-            self.image
+            "podman",
+            "run",
+            "--rm",
+            "--name",
+            self.container_name,
+            "--memory",
+            f"{self.config.get('memory_limit_mb', 512)}m",
+            "--cpus",
+            str(self.config.get("cpu_limit", 2)),
+            "--network",
+            self.config.get("network", "none"),
+            "--volume",
+            f"{self.project_path}:/workspace:rw",
+            "--workdir",
+            "/workspace",
+            self.image,
         ] + command
 
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=self.config.get("timeout", 300)
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=self.config.get("timeout", 300))
 
         return {
             "status": "success" if result.returncode == 0 else "failed",
@@ -1026,7 +1032,7 @@ class PodmanSandbox:
             "stdout": result.stdout,
             "stderr": result.stderr,
             "tier": "container",
-            "runtime": "podman"
+            "runtime": "podman",
         }
 ```
 
@@ -1048,17 +1054,21 @@ sudo systemctl enable containerd
 ```python
 import subprocess
 
+
 class ContainerdSandbox:
     """containerd-based container sandbox."""
 
     def run(self, command: list[str]) -> dict:
         """Execute command in containerd container."""
         cmd = [
-            "ctr", "run", "--rm",
-            "--mount", f"type=bind,src={self.project_path},dst=/workspace,options=rbind",
+            "ctr",
+            "run",
+            "--rm",
+            "--mount",
+            f"type=bind,src={self.project_path},dst=/workspace,options=rbind",
             "--net-host=false",
             self.image,
-            self.container_name
+            self.container_name,
         ] + command
 
         result = subprocess.run(cmd, capture_output=True, text=True)
@@ -1084,14 +1094,7 @@ class GVisorSandbox:
 
     def run(self, command: list[str]) -> dict:
         """Execute command in gVisor sandbox."""
-        cmd = [
-            "runsc",
-            "--network=none",
-            "--rootless",
-            "--overlay",
-            "run",
-            self.container_name
-        ] + command
+        cmd = ["runsc", "--network=none", "--rootless", "--overlay", "run", self.container_name] + command
 
         result = subprocess.run(cmd, capture_output=True, text=True)
         return self._parse_result(result)
@@ -1145,15 +1148,24 @@ class QemuSandbox:
         # Mount project directory as 9p filesystem
         cmd = [
             "qemu-system-x86_64",
-            "-machine", "q35,accel=kvm",
-            "-cpu", "host",
-            "-m", f"{self.config.get('memory_mb', 512)}M",
-            "-drive", f"file={self.vm_image},format=qcow2",
-            "-fsdev", f"local,id=workspace,path={self.project_path},security_model=mapped",
-            "-device", "virtio-9p-pci,fsdev=workspace,mount_tag=workspace",
-            "-kernel", "vmlinuz",
-            "-initrd", "initrd.img",
-            "-append", "root=/dev/sda1 rw"
+            "-machine",
+            "q35,accel=kvm",
+            "-cpu",
+            "host",
+            "-m",
+            f"{self.config.get('memory_mb', 512)}M",
+            "-drive",
+            f"file={self.vm_image},format=qcow2",
+            "-fsdev",
+            f"local,id=workspace,path={self.project_path},security_model=mapped",
+            "-device",
+            "virtio-9p-pci,fsdev=workspace,mount_tag=workspace",
+            "-kernel",
+            "vmlinuz",
+            "-initrd",
+            "initrd.img",
+            "-append",
+            "root=/dev/sda1 rw",
         ]
 
         # Execute command via SSH or console
@@ -1177,6 +1189,7 @@ Get-VMHost
 ```python
 import subprocess
 
+
 class HyperVSandbox:
     """Hyper-V-based VM sandbox (Windows)."""
 
@@ -1187,15 +1200,11 @@ class HyperVSandbox:
         $vm = Get-VM -Name "agent-vm"
         Invoke-Command -VMName "agent-vm" -ScriptBlock {{
             cd /workspace
-            {' '.join(command)}
+            {" ".join(command)}
         }}
         """
 
-        result = subprocess.run(
-            ["powershell", "-Command", ps_script],
-            capture_output=True,
-            text=True
-        )
+        result = subprocess.run(["powershell", "-Command", ps_script], capture_output=True, text=True)
 
         return self._parse_result(result)
 ```
@@ -1230,12 +1239,7 @@ class NativeSandbox:
         cwd = self.project_path
 
         result = subprocess.run(
-            command,
-            cwd=cwd,
-            env=env,
-            capture_output=True,
-            text=True,
-            timeout=self.config.get("timeout", 300)
+            command, cwd=cwd, env=env, capture_output=True, text=True, timeout=self.config.get("timeout", 300)
         )
 
         return {
@@ -1244,7 +1248,7 @@ class NativeSandbox:
             "stdout": result.stdout,
             "stderr": result.stderr,
             "tier": "native",
-            "warning": "No isolation applied"
+            "warning": "No isolation applied",
         }
 
     def _filter_env(self) -> dict:
@@ -1287,16 +1291,13 @@ class SandboxAgentRunner(AgentRunner):
     def run(self, prompt: str, cwd: Path, **kwargs) -> RunResult:
         """Run agent with sandbox isolation."""
         # Route to appropriate tier
-        result = self.router.route(
-            agent_code=self._prepare_code(prompt),
-            requirements=kwargs
-        )
+        result = self.router.route(agent_code=self._prepare_code(prompt), requirements=kwargs)
 
         return RunResult(
             exit_code=result.get("exit_code", 0),
             stdout=result.get("stdout", ""),
             stderr=result.get("stderr", ""),
-            metadata={"tier": result.get("tier"), "sandbox": result}
+            metadata={"tier": result.get("tier"), "sandbox": result},
         )
 ```
 
@@ -1323,7 +1324,7 @@ class PersistentEnvironment:
             "default_tier": tier,
             "fallback_to_native": fallback,
             "persistent": True,
-            "tiers": self._default_tier_configs()
+            "tiers": self._default_tier_configs(),
         }
 
         self.config_path.write_text(json.dumps(config, indent=2))
@@ -1514,33 +1515,33 @@ wasm_security = {
     "memory": {
         "max_pages": 2048,  # 128MB max
         "guard_pages": 1,  # Guard pages for overflow detection
-        "bounds_check": True  # Runtime bounds checking
+        "bounds_check": True,  # Runtime bounds checking
     },
     "capabilities": {
         "filesystem": {
             "read": ["/workspace/src"],  # Explicit read paths
             "write": ["/workspace/.sandbox/wasm/output"],  # Explicit write paths
-            "create": False  # No file creation outside allowed paths
+            "create": False,  # No file creation outside allowed paths
         },
         "network": {
             "allow": ["api.example.com:443"],  # Explicit allowlist
             "deny": ["*"],  # Default deny
-            "dns": ["8.8.8.8"]  # Trusted DNS only
+            "dns": ["8.8.8.8"],  # Trusted DNS only
         },
         "environment": {
             "read": ["PATH", "HOME"],  # Limited env vars
-            "write": []  # No env writes
+            "write": [],  # No env writes
         },
         "process": {
             "spawn": False,  # No subprocess spawning
-            "signal": ["SIGTERM"]  # Only termination signals
-        }
+            "signal": ["SIGTERM"],  # Only termination signals
+        },
     },
     "runtime": {
         "spectre_mitigation": True,  # Enable Spectre mitigations
         "stack_overflow_protection": True,  # Stack canaries
-        "control_flow_integrity": True  # CFI protection
-    }
+        "control_flow_integrity": True,  # CFI protection
+    },
 }
 ```
 
@@ -1569,43 +1570,41 @@ container_security = {
         "mount": True,  # Mount namespace
         "ipc": True,  # IPC namespace
         "uts": True,  # UTS namespace
-        "user": True  # User namespace (rootless)
+        "user": True,  # User namespace (rootless)
     },
     "capabilities": {
         "drop": ["ALL"],  # Drop all capabilities
-        "add": []  # No capabilities added
+        "add": [],  # No capabilities added
     },
     "seccomp": {
         "profile": "default.json",  # Seccomp profile
         "allow": ["read", "write", "open", "close", "stat"],  # Minimal syscalls
-        "deny": ["mount", "umount", "chroot", "ptrace"]  # Dangerous syscalls
+        "deny": ["mount", "umount", "chroot", "ptrace"],  # Dangerous syscalls
     },
     "apparmor": {
         "profile": "thegent-agent",  # AppArmor profile
-        "enforce": True
+        "enforce": True,
     },
     "selinux": {
         "type": "container_t",  # SELinux type
-        "enforce": True
+        "enforce": True,
     },
     "resources": {
         "memory": {"limit": "512m", "swap": "0"},  # No swap
         "cpu": {"quota": "200000", "period": "100000"},  # 2 CPUs max
         "pids": {"limit": 100},  # Max 100 processes
-        "devices": {"allow": [], "deny": ["*"]}  # No device access
+        "devices": {"allow": [], "deny": ["*"]},  # No device access
     },
     "filesystem": {
         "read_only": True,  # Read-only rootfs
         "tmpfs": ["/tmp", "/var/tmp"],  # Temporary filesystems
-        "volumes": {
-            "/workspace": {"source": ".", "read_only": False, "bind": True}
-        }
+        "volumes": {"/workspace": {"source": ".", "read_only": False, "bind": True}},
     },
     "network": {
         "mode": "none",  # No network
         "dns": [],  # No DNS
-        "ports": []  # No port mappings
-    }
+        "ports": [],  # No port mappings
+    },
 }
 ```
 
@@ -1632,28 +1631,28 @@ vm_security = {
         "type": "kvm",  # KVM (hardware acceleration)
         "spectre_mitigation": True,  # Spectre mitigations
         "meltdown_mitigation": True,  # Meltdown mitigations
-        "mds_mitigation": True  # MDS mitigations
+        "mds_mitigation": True,  # MDS mitigations
     },
     "disk": {
         "encryption": "luks",  # LUKS encryption
         "key_management": "tpm",  # TPM key management
-        "secure_erase": True  # Secure erase on destroy
+        "secure_erase": True,  # Secure erase on destroy
     },
     "network": {
         "mode": "isolated",  # Isolated virtual network
         "firewall": True,  # VM-level firewall
-        "macvtap": False  # No macvtap (prevents host network access)
+        "macvtap": False,  # No macvtap (prevents host network access)
     },
     "memory": {
         "encryption": True,  # Memory encryption (AMD SEV, Intel TDX)
         "secure_boot": True,  # UEFI Secure Boot
-        "tpm": True  # TPM passthrough
+        "tpm": True,  # TPM passthrough
     },
     "devices": {
         "passthrough": False,  # No PCI passthrough
         "usb": False,  # No USB devices
-        "audio": False  # No audio devices
-    }
+        "audio": False,  # No audio devices
+    },
 }
 ```
 
@@ -2070,8 +2069,10 @@ thegent run "task" --sandbox=auto
 from enum import Enum
 from typing import Optional
 
+
 class SandboxErrorType(Enum):
     """Sandbox execution error types."""
+
     TIMEOUT = "timeout"  # Execution exceeded time limit
     RESOURCE_EXHAUSTION = "resource_exhaustion"  # Memory/CPU/disk limits exceeded
     RUNTIME_UNAVAILABLE = "runtime_unavailable"  # WASM/container/VM runtime not available
@@ -2082,8 +2083,10 @@ class SandboxErrorType(Enum):
     RUNTIME_ERROR = "runtime_error"  # Runtime internal error
     UNKNOWN = "unknown"  # Unknown error
 
+
 class SandboxError(Exception):
     """Base exception for sandbox errors."""
+
     def __init__(
         self,
         error_type: SandboxErrorType,
@@ -2091,7 +2094,7 @@ class SandboxError(Exception):
         tier: str,
         runtime: Optional[str] = None,
         recoverable: bool = True,
-        retry_after: Optional[int] = None
+        retry_after: Optional[int] = None,
     ):
         self.error_type = error_type
         self.tier = tier
@@ -2110,6 +2113,7 @@ import time
 import random
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
+
 class SandboxExecutor:
     """Sandbox executor with retry logic."""
 
@@ -2117,7 +2121,7 @@ class SandboxExecutor:
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=1, max=10),
         retry=retry_if_exception_type((SandboxError, TimeoutError)),
-        reraise=True
+        reraise=True,
     )
     def execute_with_retry(self, command: list[str], tier: str) -> dict:
         """Execute command with automatic retry on transient errors."""
@@ -2134,8 +2138,8 @@ class SandboxExecutor:
                     "error_type": e.error_type.value,
                     "tier": tier,
                     "recoverable": e.recoverable,
-                    "retry_after": e.retry_after
-                }
+                    "retry_after": e.retry_after,
+                },
             )
 
             if e.retry_after:
@@ -2160,20 +2164,13 @@ from pybreaker import CircuitBreaker
 wasm_breaker = CircuitBreaker(
     fail_max=5,  # Open after 5 failures
     timeout_duration=60,  # Open for 60 seconds
-    expected_exception=SandboxError
+    expected_exception=SandboxError,
 )
 
-container_breaker = CircuitBreaker(
-    fail_max=3,
-    timeout_duration=120,
-    expected_exception=SandboxError
-)
+container_breaker = CircuitBreaker(fail_max=3, timeout_duration=120, expected_exception=SandboxError)
 
-vm_breaker = CircuitBreaker(
-    fail_max=2,
-    timeout_duration=300,
-    expected_exception=SandboxError
-)
+vm_breaker = CircuitBreaker(fail_max=2, timeout_duration=300, expected_exception=SandboxError)
+
 
 class SandboxRouter:
     """Sandbox router with circuit breakers."""
@@ -2281,56 +2278,40 @@ from prometheus_client import Counter, Histogram, Gauge
 
 # Sandbox execution metrics
 sandbox_executions_total = Counter(
-    "sandbox_executions_total",
-    "Total sandbox executions",
-    ["tier", "runtime", "status"]
+    "sandbox_executions_total", "Total sandbox executions", ["tier", "runtime", "status"]
 )
 
 sandbox_startup_time = Histogram(
     "sandbox_startup_time_seconds",
     "Sandbox startup time",
     ["tier", "runtime"],
-    buckets=[0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1.0, 5.0, 10.0]
+    buckets=[0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1.0, 5.0, 10.0],
 )
 
 sandbox_execution_time = Histogram(
     "sandbox_execution_time_seconds",
     "Sandbox execution time",
     ["tier", "runtime"],
-    buckets=[0.1, 0.5, 1.0, 5.0, 10.0, 30.0, 60.0, 300.0]
+    buckets=[0.1, 0.5, 1.0, 5.0, 10.0, 30.0, 60.0, 300.0],
 )
 
 sandbox_overhead = Histogram(
     "sandbox_overhead_percent",
     "Sandbox overhead percentage",
     ["tier", "runtime"],
-    buckets=[0, 1, 2, 5, 10, 15, 20, 30, 50]
+    buckets=[0, 1, 2, 5, 10, 15, 20, 30, 50],
 )
 
-sandbox_memory_usage = Gauge(
-    "sandbox_memory_usage_bytes",
-    "Sandbox memory usage",
-    ["tier", "runtime", "sandbox_id"]
-)
+sandbox_memory_usage = Gauge("sandbox_memory_usage_bytes", "Sandbox memory usage", ["tier", "runtime", "sandbox_id"])
 
-sandbox_cpu_usage = Gauge(
-    "sandbox_cpu_usage_percent",
-    "Sandbox CPU usage",
-    ["tier", "runtime", "sandbox_id"]
-)
+sandbox_cpu_usage = Gauge("sandbox_cpu_usage_percent", "Sandbox CPU usage", ["tier", "runtime", "sandbox_id"])
 
 # Circuit breaker metrics
 circuit_breaker_state = Gauge(
-    "circuit_breaker_state",
-    "Circuit breaker state (0=closed, 1=open, 2=half-open)",
-    ["tier", "runtime"]
+    "circuit_breaker_state", "Circuit breaker state (0=closed, 1=open, 2=half-open)", ["tier", "runtime"]
 )
 
-circuit_breaker_failures = Counter(
-    "circuit_breaker_failures_total",
-    "Circuit breaker failures",
-    ["tier", "runtime"]
-)
+circuit_breaker_failures = Counter("circuit_breaker_failures_total", "Circuit breaker failures", ["tier", "runtime"])
 ```
 
 ### 17.2 Structured Logging
@@ -2341,6 +2322,7 @@ circuit_breaker_failures = Counter(
 import structlog
 
 logger = structlog.get_logger()
+
 
 class SandboxExecutor:
     """Sandbox executor with structured logging."""
@@ -2355,7 +2337,7 @@ class SandboxExecutor:
             tier=tier,
             runtime=self.runtime,
             command=command,
-            project_path=str(self.project_path)
+            project_path=str(self.project_path),
         )
 
         start_time = time.time()
@@ -2372,7 +2354,7 @@ class SandboxExecutor:
                 runtime=self.runtime,
                 duration_ms=duration * 1000,
                 exit_code=result.get("exit_code"),
-                status="success"
+                status="success",
             )
 
             return result
@@ -2389,7 +2371,7 @@ class SandboxExecutor:
                 error_type=e.error_type.value,
                 error_message=str(e),
                 recoverable=e.recoverable,
-                status="failed"
+                status="failed",
             )
 
             raise
@@ -2406,6 +2388,7 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 
 tracer = trace.get_tracer(__name__)
+
 
 class SandboxExecutor:
     """Sandbox executor with distributed tracing."""
@@ -2463,7 +2446,7 @@ class SandboxHealth:
             "status": "healthy",
             "runtime_available": False,
             "last_check": time.time(),
-            "issues": []
+            "issues": [],
         }
 
         # Check runtime availability
@@ -2500,9 +2483,9 @@ class SandboxHealth:
                 "wasm": self.check_health("wasm"),
                 "container": self.check_health("container"),
                 "vm": self.check_health("vm"),
-                "native": {"status": "always_available"}
+                "native": {"status": "always_available"},
             },
-            "timestamp": time.time()
+            "timestamp": time.time(),
         }
 ```
 

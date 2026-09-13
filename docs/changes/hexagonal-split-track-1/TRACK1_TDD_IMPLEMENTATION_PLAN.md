@@ -458,23 +458,20 @@ def test_pareto_router_parity_thegent_vs_cliproxy():
         thegent_result = thegent_router.select_model(case)
 
         # Call CLIProxy endpoint
-        cliproxy_result = cliproxy_client.post(
-            "/v1/routing/select",
-            json=case
-        ).json()
+        cliproxy_result = cliproxy_client.post("/v1/routing/select", json=case).json()
 
         # Assert identical model selected
-        assert thegent_result["model_id"] == cliproxy_result["model_id"], \
-            f"Model mismatch for {case}: thegent={thegent_result['model_id']}, " \
-            f"cliproxy={cliproxy_result['model_id']}"
+        assert thegent_result["model_id"] == cliproxy_result["model_id"], (
+            f"Model mismatch for {case}: thegent={thegent_result['model_id']}, cliproxy={cliproxy_result['model_id']}"
+        )
 
         # Assert costs within 0.1% (floating-point tolerance)
-        assert abs(thegent_result["cost"] - cliproxy_result["estimated_cost"]) < 0.0001, \
-            f"Cost mismatch for {case}"
+        assert abs(thegent_result["cost"] - cliproxy_result["estimated_cost"]) < 0.0001, f"Cost mismatch for {case}"
 
         # Assert latency within 10ms (network latency tolerance)
-        assert abs(thegent_result["latency_ms"] - cliproxy_result["estimated_latency_ms"]) <= 10, \
+        assert abs(thegent_result["latency_ms"] - cliproxy_result["estimated_latency_ms"]) <= 10, (
             f"Latency mismatch for {case}"
+        )
 ```
 
 **Acceptance Criteria:**
@@ -669,10 +666,7 @@ def test_acp_adapter_parity_thegent_vs_cliproxy():
     thegent_acp_req = thegent_adapter.translate_to_acp(claude_req)
 
     # CLIProxy translator
-    cliproxy_resp = httpx.post(
-        "http://localhost:8317/v1/translate/acp",
-        json=claude_req
-    ).json()
+    cliproxy_resp = httpx.post("http://localhost:8317/v1/translate/acp", json=claude_req).json()
 
     # Assert identical transformations
     assert thegent_acp_req["model"] == cliproxy_resp["model"]
@@ -898,8 +892,7 @@ def test_oauth_token_refresh_parity_thegent_vs_cliproxy():
 
     # CLIProxy: Token manager
     cliproxy_resp = httpx.post(
-        "http://localhost:8317/v1/auth/oauth/refresh",
-        json={"refresh_token": "refresh_token_abc"}
+        "http://localhost:8317/v1/auth/oauth/refresh", json={"refresh_token": "refresh_token_abc"}
     ).json()
 
     # Assert tokens match
@@ -1124,10 +1117,7 @@ def test_quota_enforcement_parity_thegent_vs_cliproxy():
     thegent_allowed = thegent_quota.check_quota({"tokens": 50000})
 
     # CLIProxy: Quota enforcer
-    cliproxy_allowed = httpx.post(
-        "http://localhost:8317/v1/quota/check",
-        json={"tokens": 50000}
-    ).json()["allowed"]
+    cliproxy_allowed = httpx.post("http://localhost:8317/v1/quota/check", json={"tokens": 50000}).json()["allowed"]
 
     assert thegent_allowed == cliproxy_allowed
 ```
@@ -1232,6 +1222,7 @@ localhost:8317 /v1/routing/select endpoint.
 
 import httpx
 from typing import Optional
+
 
 class CLIProxyRoutingClient:
     """Client for CLIProxy routing endpoint."""
@@ -1405,9 +1396,7 @@ def test_e2e_thegent_routes_and_calls_provider():
                 "tokens_in": 2500,
                 "category": "code_analysis",
             },
-            messages=[
-                {"role": "user", "content": "Explain Python async/await"}
-            ],
+            messages=[{"role": "user", "content": "Explain Python async/await"}],
             max_tokens=500,
             max_cost_per_call=0.05,
             max_latency_ms=30000,
@@ -1471,8 +1460,7 @@ def test_parity_routing_legacy_vs_cliproxy():
         cliproxy_result = thegent_client.route_task(**case)
 
         # Assert identical model selection
-        assert legacy_result["model_id"] == cliproxy_result["model_id"], \
-            f"Model mismatch for {case}"
+        assert legacy_result["model_id"] == cliproxy_result["model_id"], f"Model mismatch for {case}"
 
         # Assert costs within tolerance
         assert abs(legacy_result["cost"] - cliproxy_result["cost"]) < 0.0001

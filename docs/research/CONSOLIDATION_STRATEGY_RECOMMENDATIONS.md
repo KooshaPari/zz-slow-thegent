@@ -133,14 +133,11 @@ Risk: LOW
 
        def route(self, model, prompt, **kwargs):
            # Cost tracking happens at request level
-           response = self.router.completion(
-               model=model,
-               messages=prompt,
-               **kwargs
-           )
+           response = self.router.completion(model=model, messages=prompt, **kwargs)
            # Still use thegent's governance hooks
            self._emit_governance_hook("llm_call", response)
            return response
+
 
    # Integrate into thegent agent runner
    agent_runner.router = LiteLLMRouter(config)
@@ -151,10 +148,8 @@ Risk: LOW
    # Decorator pattern - orthogonal to thegent
    from agentops import Session
 
-   @Session.instrument_agent(
-       name="researcher",
-       cost_limit_cents=1000
-   )
+
+   @Session.instrument_agent(name="researcher", cost_limit_cents=1000)
    def run_agent(agent_id, prompt):
        return thegent.run(agent_id, prompt)
    ```
@@ -165,9 +160,11 @@ Risk: LOW
 
    server = Server("thegent-agents")
 
+
    @server.tool()
    async def agent_researcher(query: str) -> str:
        return await thegent.run("researcher", query)
+
 
    # Register in MCP Registry
    # Enables tool discovery across frameworks

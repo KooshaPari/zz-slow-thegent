@@ -426,10 +426,7 @@ When using OpenAI SDK, wrap non-standard fields in `extra_body`:
 response = client.chat.completions.create(
     model="anthropic/claude-3.5-sonnet",
     messages=[...],
-    extra_body={
-        "models": ["anthropic/claude-3.5-sonnet", "openai/gpt-4o"],
-        "route": "fallback"
-    }
+    extra_body={"models": ["anthropic/claude-3.5-sonnet", "openai/gpt-4o"], "route": "fallback"},
 )
 ```
 

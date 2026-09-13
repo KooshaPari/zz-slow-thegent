@@ -29,7 +29,7 @@ Implementation of holistic + harmonious design and full integration with existin
 from thegent.platform import detect_platform, Platform, get_architecture
 
 platform = detect_platform()  # Returns Platform enum
-arch = get_architecture()      # Returns "x86_64", "arm64", etc.
+arch = get_architecture()  # Returns "x86_64", "arm64", etc.
 ```
 
 #### Platform-Specific Paths (`src/thegent/platform_paths.py`)
@@ -46,10 +46,7 @@ arch = get_architecture()      # Returns "x86_64", "arm64", etc.
 
 **API:**
 ```python
-from thegent.platform_paths import (
-    get_config_dir, get_cache_dir, get_data_dir,
-    get_bin_dir, get_log_dir, get_temp_dir
-)
+from thegent.platform_paths import get_config_dir, get_cache_dir, get_data_dir, get_bin_dir, get_log_dir, get_temp_dir
 
 config_dir = get_config_dir()  # Returns Path
 ```

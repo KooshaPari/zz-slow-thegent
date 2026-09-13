@@ -616,7 +616,7 @@ l1_identity = factory.create_l1_agent(
     "kush",
     role=AgentRole.COORDINATOR,
     capabilities=["health_monitoring", "agent_scaling", "dynamic_restart"],
-    scope_tags={"swarm_controller": "true"}
+    scope_tags={"swarm_controller": "true"},
 )
 # Result: kush:ada0ea7b:L1:coordinator
 ```
@@ -632,7 +632,7 @@ for agent_id, metrics in self.metrics.items():
             role=role,  # Detected from name
             parent_l1_id=self.l1_agent_id,
             capabilities=["task_execution", "sub_delegation"],
-            scope_tags={"local_id": agent_id}
+            scope_tags={"local_id": agent_id},
         )
 ```
 
@@ -1901,11 +1901,7 @@ async def stream_heartbeats(self):
     """Stream heartbeats at 1 Hz to all subscribers."""
     while self.heartbeat_stream_running:
         active_agents = [a for a in registry.agents if a.is_active]
-        heartbeat_msg = {
-            "type": "heartbeats",
-            "timestamp": time.time(),
-            "agents": [...]
-        }
+        heartbeat_msg = {"type": "heartbeats", "timestamp": time.time(), "agents": [...]}
         await self._broadcast_message(heartbeat_msg)
         await asyncio.sleep(1)  # 1 Hz rate
 ```
@@ -1925,13 +1921,13 @@ await server.unsubscribe_heartbeats("client_1")
 ```python
 @dataclass
 class AgentMessage:
-    id: str                      # Unique message ID
-    from_agent: str             # Sender agent ID
-    to_agent: str               # Recipient (or "broadcast")
-    type: str                   # Message type
-    payload: Dict               # Message data
-    timestamp: float            # Unix timestamp
-    ack: bool = False          # Acknowledged?
+    id: str  # Unique message ID
+    from_agent: str  # Sender agent ID
+    to_agent: str  # Recipient (or "broadcast")
+    type: str  # Message type
+    payload: Dict  # Message data
+    timestamp: float  # Unix timestamp
+    ack: bool = False  # Acknowledged?
     ack_timestamp: Optional[float] = None
 ```
 
@@ -2176,29 +2172,28 @@ heartbeat = server.call_tool("update_heartbeat", {"agent_id": "..."})
 status = server.call_tool("get_civilization_status", {})
 agents = server.call_tool("query_agents", {"filters": {"level": "L1"}})
 
+
 # Subscribe to heartbeats
 async def monitor():
     await server.subscribe_heartbeats("my_client")
     # Receives 1 Hz heartbeat updates
     await server.unsubscribe_heartbeats("my_client")
 
+
 asyncio.run(monitor())
+
 
 # Send messages
 async def communicate():
     success = await server.message_broker.send_message(
-        from_agent="agent_1",
-        to_agent="agent_2",
-        message_type="status_query",
-        payload={"requested_at": time.time()}
+        from_agent="agent_1", to_agent="agent_2", message_type="status_query", payload={"requested_at": time.time()}
     )
 
     # Broadcast to all in project
     await server.message_broker.broadcast_message(
-        from_agent="l1_coordinator",
-        message_type="broadcast",
-        payload={"message": "Update available"}
+        from_agent="l1_coordinator", message_type="broadcast", payload={"message": "Update available"}
     )
+
 
 asyncio.run(communicate())
 ```
@@ -2617,6 +2612,7 @@ print(summary)
 ```python
 from scripts.civilization_conflict_resolver import ConflictResolver
 
+
 def periodic_conflict_check():
     """Run conflict detection periodically."""
     resolver = ConflictResolver(registry)
@@ -2765,25 +2761,25 @@ class MemoryService:
 ```python
 @dataclass
 class AgentMemory:
-    memory_id: str                              # Unique ID
-    agent_id: str                               # Agent that owns this memory
-    memory_type: MemoryType                     # Type of memory
-    timestamp: float                            # When it occurred
+    memory_id: str  # Unique ID
+    agent_id: str  # Agent that owns this memory
+    memory_type: MemoryType  # Type of memory
+    timestamp: float  # When it occurred
     content: Dict[str, Any] = field(default_factory=dict)  # Main data
     context: Dict[str, str] = field(default_factory=dict)  # Tags, session_id, project
-    importance: float = 0.5                     # 0.0-1.0 (for prioritization)
-    verified: bool = False                      # Validated by human or peer?
+    importance: float = 0.5  # 0.0-1.0 (for prioritization)
+    verified: bool = False  # Validated by human or peer?
 ```
 
 **MemoryType (Enum)**
 ```python
 class MemoryType(Enum):
-    EXECUTION = "execution"       # Task completion
-    LEARNING = "learning"         # Pattern learned
-    DECISION = "decision"         # Decision made
-    ERROR = "error"               # Error encountered
-    INTERACTION = "interaction"   # Agent communication
-    MILESTONE = "milestone"       # Achievement
+    EXECUTION = "execution"  # Task completion
+    LEARNING = "learning"  # Pattern learned
+    DECISION = "decision"  # Decision made
+    ERROR = "error"  # Error encountered
+    INTERACTION = "interaction"  # Agent communication
+    MILESTONE = "milestone"  # Achievement
 ```
 
 #### Storage Architecture
@@ -2862,7 +2858,7 @@ class MemoryType(Enum):
   ```python
   for member in MemoryType:
       if member.value == memory_type_value:
-          data['memory_type'] = member
+          data["memory_type"] = member
           break
   ```
 
@@ -3121,7 +3117,7 @@ print(f"Total memories: {stats['total_memories']}")
 learnings = service.get_memories_by_importance("agent-1", min_importance=0.7, limit=5)
 
 # Cleanup old memories (30+ days old)
-deleted = service.purge_old_memories("agent-1", ttl_seconds=86400*30)
+deleted = service.purge_old_memories("agent-1", ttl_seconds=86400 * 30)
 print(f"Deleted {deleted} old memories")
 ```
 

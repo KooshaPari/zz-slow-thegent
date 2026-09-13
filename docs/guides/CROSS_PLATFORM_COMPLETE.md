@@ -147,6 +147,7 @@ if element:
 ```python
 import subprocess
 
+
 def click_button_macos(button_name: str):
     script = f'''
     tell application "System Events"
@@ -159,6 +160,7 @@ def click_button_macos(button_name: str):
 **After (Cross-platform):**
 ```python
 from thegent.infra.desktop_automation import get_provider
+
 
 def click_button(button_name: str):
     provider = get_provider()
@@ -181,6 +183,7 @@ def automate_task():
 **After (Multi-tenant):**
 ```python
 from thegent.infra.desktop_automation import get_provider, Coordinator
+
 
 def automate_task(agent_id: str):
     provider = get_provider()
@@ -362,14 +365,14 @@ def fill_form(provider, form_data: dict):
 def automate_workflow(provider, steps: list):
     """Execute a multi-step workflow."""
     for step in steps:
-        element = provider.find_element(step['selector'])
+        element = provider.find_element(step["selector"])
         if not element:
             raise ValueError(f"Element not found: {step['selector']}")
 
-        if step['action'] == 'click':
+        if step["action"] == "click":
             result = provider.click(element)
-        elif step['action'] == 'type':
-            result = provider.type_text(element, step['text'])
+        elif step["action"] == "type":
+            result = provider.type_text(element, step["text"])
         else:
             raise ValueError(f"Unknown action: {step['action']}")
 
@@ -385,10 +388,8 @@ def automate_workflow(provider, steps: list):
 ```python
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-@retry(
-    stop=stop_after_attempt(3),
-    wait=wait_exponential(multiplier=1, min=1, max=10)
-)
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=10))
 def click_with_retry(provider, selector: str):
     """Click element with retry logic."""
     element = provider.find_element(selector)
@@ -424,13 +425,13 @@ def manage_window(provider, window_name: str, action: str):
     if not window:
         raise ValueError(f"Window not found: {window_name}")
 
-    if action == 'focus':
+    if action == "focus":
         provider.focus(window)
-    elif action == 'minimize':
+    elif action == "minimize":
         provider.minimize(window)
-    elif action == 'maximize':
+    elif action == "maximize":
         provider.maximize(window)
-    elif action == 'close':
+    elif action == "close":
         provider.close(window)
     else:
         raise ValueError(f"Unknown action: {action}")
@@ -450,12 +451,12 @@ def automate_across_apps(provider, apps: list):
 
         # Execute actions
         for action in actions:
-            element = provider.find_element(action['selector'])
+            element = provider.find_element(action["selector"])
             if element:
-                if action['type'] == 'click':
+                if action["type"] == "click":
                     provider.click(element)
-                elif action['type'] == 'type':
-                    provider.type_text(element, action['text'])
+                elif action["type"] == "type":
+                    provider.type_text(element, action["text"])
 ```
 
 ### 4.8 Recipe 8: Conditional Automation
@@ -530,6 +531,7 @@ _log = logging.getLogger(__name__)
 @dataclass
 class UIElement:
     """Represents a UI element."""
+
     selector: str
     name: str
     role: str  # button, text_field, window, etc.
@@ -546,6 +548,7 @@ class UIElement:
 @dataclass
 class AutomationAction:
     """Represents an automation action."""
+
     type: str  # click, type_text, find_element, screenshot, wait_for_idle
     selector: str | None = None
     text: str | None = None
@@ -556,6 +559,7 @@ class AutomationAction:
 @dataclass
 class AutomationResult:
     """Result of an automation action."""
+
     success: bool
     error: str | None = None
     duration_ms: float = 0.0
@@ -602,6 +606,7 @@ from .base import DesktopAutomationProvider, UIElement, AutomationResult
 import subprocess
 import json
 
+
 class MacOSAutomationProvider(DesktopAutomationProvider):
     """macOS provider using AppleScript."""
 
@@ -611,22 +616,17 @@ class MacOSAutomationProvider(DesktopAutomationProvider):
         script = self._build_find_script(selector)
 
         try:
-            result = subprocess.run(
-                ["osascript", "-e", script],
-                capture_output=True,
-                text=True,
-                timeout=timeout
-            )
+            result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True, timeout=timeout)
 
             if result.returncode == 0:
                 data = json.loads(result.stdout)
                 return UIElement(
                     selector=selector,
-                    name=data.get('name', ''),
-                    role=data.get('role', ''),
-                    bounds=data.get('bounds', {}),
-                    attributes=data.get('attributes', {}),
-                    platform_specific={'applescript_data': data}
+                    name=data.get("name", ""),
+                    role=data.get("role", ""),
+                    bounds=data.get("bounds", {}),
+                    attributes=data.get("attributes", {}),
+                    platform_specific={"applescript_data": data},
                 )
         except Exception as e:
             _log.error(f"Error finding element: {e}")
@@ -637,48 +637,33 @@ class MacOSAutomationProvider(DesktopAutomationProvider):
         """Click element using AppleScript."""
         start_time = time.time()
 
-        script = f'''
+        script = f"""
         tell application "System Events"
-            click {element.platform_specific['applescript_data']['reference']}
+            click {element.platform_specific["applescript_data"]["reference"]}
         end tell
-        '''
+        """
 
         try:
-            result = subprocess.run(
-                ["osascript", "-e", script],
-                capture_output=True,
-                timeout=5.0
-            )
+            result = subprocess.run(["osascript", "-e", script], capture_output=True, timeout=5.0)
 
             duration_ms = (time.time() - start_time) * 1000
 
             if result.returncode == 0:
-                return AutomationResult(
-                    success=True,
-                    duration_ms=duration_ms
-                )
+                return AutomationResult(success=True, duration_ms=duration_ms)
             else:
-                return AutomationResult(
-                    success=False,
-                    error=result.stderr.decode(),
-                    duration_ms=duration_ms
-                )
+                return AutomationResult(success=False, error=result.stderr.decode(), duration_ms=duration_ms)
         except Exception as e:
-            return AutomationResult(
-                success=False,
-                error=str(e),
-                duration_ms=(time.time() - start_time) * 1000
-            )
+            return AutomationResult(success=False, error=str(e), duration_ms=(time.time() - start_time) * 1000)
 
     def _build_find_script(self, selector: str) -> str:
         """Build AppleScript query from selector."""
         # Parse selector and build AppleScript
         # This is a simplified version
-        return f'''
+        return f"""
         tell application "System Events"
             -- Parse selector and find element
         end tell
-        '''
+        """
 ```
 
 ### 5.3 Provider Factory
@@ -691,18 +676,22 @@ class MacOSAutomationProvider(DesktopAutomationProvider):
 import platform
 from .base import DesktopAutomationProvider
 
+
 def get_provider() -> DesktopAutomationProvider:
     """Get platform-specific provider."""
     system = platform.system()
 
     if system == "Darwin":
         from .macos import MacOSAutomationProvider
+
         return MacOSAutomationProvider()
     elif system == "Windows":
         from .windows import WindowsAutomationProvider
+
         return WindowsAutomationProvider()
     elif system == "Linux":
         from .linux import LinuxAutomationProvider
+
         return LinuxAutomationProvider()
     else:
         raise ValueError(f"Unsupported platform: {system}")

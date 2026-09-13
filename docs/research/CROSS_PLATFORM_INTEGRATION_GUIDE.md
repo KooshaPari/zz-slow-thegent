@@ -34,6 +34,7 @@
 ```python
 from thegent.orchestration.leasing import get_lease_manager, EditLeaseManager
 
+
 class DesktopAutomationCoordinator:
     """Coordinate desktop automation with edit leases."""
 
@@ -41,29 +42,17 @@ class DesktopAutomationCoordinator:
         self.lease_manager = get_lease_manager(state_dir)
         self.automation_locks: dict[str, EditLease] = {}
 
-    def acquire_automation_lock(
-        self,
-        scope: AutomationScope,
-        agent_id: str,
-        duration: float = 300.0
-    ) -> bool:
+    def acquire_automation_lock(self, scope: AutomationScope, agent_id: str, duration: float = 300.0) -> bool:
         """Acquire automation lock using edit lease pattern."""
         # Convert automation scope to lease path
         lease_path = self._scope_to_lease_path(scope)
 
         # Acquire lease
-        acquired = self.lease_manager.acquire(
-            path=lease_path,
-            agent_id=agent_id,
-            duration=duration,
-            force=False
-        )
+        acquired = self.lease_manager.acquire(path=lease_path, agent_id=agent_id, duration=duration, force=False)
 
         if acquired:
             self.automation_locks[lease_path] = EditLease(
-                path=lease_path,
-                agent_id=agent_id,
-                expires_at=time.time() + duration
+                path=lease_path, agent_id=agent_id, expires_at=time.time() + duration
             )
 
         return acquired
@@ -95,6 +84,7 @@ class DesktopAutomationCoordinator:
 import redis
 from redis.lock import Lock
 
+
 class DistributedAutomationCoordinator:
     """Distributed coordination via Redis."""
 
@@ -102,33 +92,18 @@ class DistributedAutomationCoordinator:
         self.redis = redis_client
         self.lock_timeout = 300  # 5 minutes
 
-    def acquire_distributed_lock(
-        self,
-        scope: AutomationScope,
-        agent_id: str,
-        ttl: int = 300
-    ) -> Lock | None:
+    def acquire_distributed_lock(self, scope: AutomationScope, agent_id: str, ttl: int = 300) -> Lock | None:
         """Acquire distributed lock via Redis."""
         lock_key = f"automation:lock:{scope.app_name}:{scope.window_title}"
 
-        lock = Lock(
-            redis=self.redis,
-            name=lock_key,
-            timeout=ttl,
-            sleep=0.1,
-            blocking_timeout=5.0
-        )
+        lock = Lock(redis=self.redis, name=lock_key, timeout=ttl, sleep=0.1, blocking_timeout=5.0)
 
         if lock.acquire(blocking=False):
             # Store lock metadata
             self.redis.setex(
                 f"{lock_key}:meta",
                 ttl,
-                json.dumps({
-                    "agent_id": agent_id,
-                    "acquired_at": time.time(),
-                    "scope": scope.to_dict()
-                })
+                json.dumps({"agent_id": agent_id, "acquired_at": time.time(), "scope": scope.to_dict()}),
             )
             return lock
 
@@ -152,24 +127,16 @@ class DistributedAutomationCoordinator:
 ```python
 from thegent.orchestration.swarm_consensus import SwarmConsensus, SwarmVote
 
+
 class ConsensusBasedAutomation:
     """Consensus-based automation coordination."""
 
     def __init__(self, task_id: str):
         self.consensus = SwarmConsensus(task_id, threshold=0.67)
 
-    def vote_on_automation(
-        self,
-        agent_id: str,
-        action: AutomationAction,
-        signature: str
-    ):
+    def vote_on_automation(self, agent_id: str, action: AutomationAction, signature: str):
         """Agent votes on automation action."""
-        vote = {
-            "action": action.to_dict(),
-            "approve": True,
-            "confidence": 0.85
-        }
+        vote = {"action": action.to_dict(), "approve": True, "confidence": 0.85}
         self.consensus.record_vote(agent_id, vote, signature)
 
     def evaluate_consensus(self, total_agents: int) -> tuple[bool, AutomationAction | None]:
@@ -201,6 +168,7 @@ from opentelemetry import trace
 from opentelemetry.trace import Status, StatusCode
 
 tracer = trace.get_tracer("thegent.desktop_automation")
+
 
 class ObservableDesktopAutomationProvider(DesktopAutomationProvider):
     """Desktop automation provider with OTel instrumentation."""
@@ -264,23 +232,18 @@ from prometheus_client import Counter, Histogram, Gauge
 
 # Metrics
 automation_actions_total = Counter(
-    "desktop_automation_actions_total",
-    "Total automation actions",
-    ["action_type", "platform", "success"]
+    "desktop_automation_actions_total", "Total automation actions", ["action_type", "platform", "success"]
 )
 
 automation_latency_seconds = Histogram(
     "desktop_automation_latency_seconds",
     "Automation action latency",
     ["action_type", "platform"],
-    buckets=[0.01, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0]
+    buckets=[0.01, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0],
 )
 
-automation_active_locks = Gauge(
-    "desktop_automation_active_locks",
-    "Active automation locks",
-    ["platform"]
-)
+automation_active_locks = Gauge("desktop_automation_active_locks", "Active automation locks", ["platform"])
+
 
 class MetricsDesktopAutomationProvider(DesktopAutomationProvider):
     """Provider with Prometheus metrics."""
@@ -296,29 +259,17 @@ class MetricsDesktopAutomationProvider(DesktopAutomationProvider):
 
             # Record metrics
             automation_actions_total.labels(
-                action_type="click",
-                platform=platform_name,
-                success=str(result.success)
+                action_type="click", platform=platform_name, success=str(result.success)
             ).inc()
 
-            automation_latency_seconds.labels(
-                action_type="click",
-                platform=platform_name
-            ).observe(duration)
+            automation_latency_seconds.labels(action_type="click", platform=platform_name).observe(duration)
 
             return result
 
         except Exception as e:
             duration = time.time() - start_time
-            automation_actions_total.labels(
-                action_type="click",
-                platform=platform_name,
-                success="false"
-            ).inc()
-            automation_latency_seconds.labels(
-                action_type="click",
-                platform=platform_name
-            ).observe(duration)
+            automation_actions_total.labels(action_type="click", platform=platform_name, success="false").inc()
+            automation_latency_seconds.labels(action_type="click", platform=platform_name).observe(duration)
             raise
 ```
 
@@ -329,6 +280,7 @@ class MetricsDesktopAutomationProvider(DesktopAutomationProvider):
 **Integration Pattern:**
 ```python
 from thegent.execution import RunRegistry
+
 
 class RegistryDesktopAutomationProvider(DesktopAutomationProvider):
     """Provider with run registry logging."""
@@ -351,7 +303,7 @@ class RegistryDesktopAutomationProvider(DesktopAutomationProvider):
             result=result.to_dict(),
             duration_ms=duration_ms,
             platform=platform.system(),
-            cost_usd=self._estimate_cost("click", duration_ms)
+            cost_usd=self._estimate_cost("click", duration_ms),
         )
 
         return result
@@ -392,6 +344,7 @@ class RegistryDesktopAutomationProvider(DesktopAutomationProvider):
 ```python
 from thegent.execution import CheckpointRegistry
 
+
 class CheckpointableAutomationWorkflow:
     """Automation workflow with checkpoint support."""
 
@@ -409,7 +362,7 @@ class CheckpointableAutomationWorkflow:
         self.workflow_state[f"step_{self.current_step}"] = {
             "step": step.to_dict(),
             "result": result.to_dict(),
-            "timestamp": datetime.now(UTC).isoformat()
+            "timestamp": datetime.now(UTC).isoformat(),
         }
         self.current_step += 1
 
@@ -417,7 +370,7 @@ class CheckpointableAutomationWorkflow:
         checkpoint = self.checkpoint_registry.create_checkpoint(
             reason=f"Automation step {self.current_step} completed",
             dag_content=json.dumps(self.workflow_state),
-            owner=self.agent_id
+            owner=self.agent_id,
         )
 
         return result
@@ -445,6 +398,7 @@ class CheckpointableAutomationWorkflow:
 @dataclass
 class AutomationContinuityPacket:
     """Continuity packet for automation handoff."""
+
     continuity_packet_id: str
     run_id: str
     created_at_utc: str
@@ -457,14 +411,11 @@ class AutomationContinuityPacket:
     owner: str
     handoff_to: str | None = None
 
+
 class ContinuityAutomationWorkflow:
     """Automation workflow with continuity packets."""
 
-    def create_continuity_packet(
-        self,
-        run_id: str,
-        handoff_to: str | None = None
-    ) -> AutomationContinuityPacket:
+    def create_continuity_packet(self, run_id: str, handoff_to: str | None = None) -> AutomationContinuityPacket:
         """Create continuity packet for handoff."""
         packet = AutomationContinuityPacket(
             continuity_packet_id=f"cp_{uuid.uuid4().hex[:8]}",
@@ -477,7 +428,7 @@ class ContinuityAutomationWorkflow:
             automation_state=self.workflow_state,
             unresolved_risks=self._identify_risks(),
             owner=self.current_owner,
-            handoff_to=handoff_to
+            handoff_to=handoff_to,
         )
 
         # Store continuity packet
@@ -514,6 +465,7 @@ from unittest.mock import Mock, patch
 from thegent.infra.desktop_automation.base import DesktopAutomationProvider
 from thegent.infra.desktop_automation.macos import macOSAutomationProvider
 
+
 @pytest.fixture
 def mock_automation_provider():
     """Mock automation provider for unit tests."""
@@ -524,9 +476,10 @@ def mock_automation_provider():
         selector="button[name='Save']",
         name="Save",
         role="button",
-        bounds={"x": 100, "y": 200, "width": 80, "height": 30}
+        bounds={"x": 100, "y": 200, "width": 80, "height": 30},
     )
     return provider
+
 
 @pytest.mark.unit
 def test_click_success(mock_automation_provider):
@@ -536,6 +489,7 @@ def test_click_success(mock_automation_provider):
 
     assert result.success
     mock_automation_provider.click.assert_called_once_with(element)
+
 
 @pytest.mark.unit
 def test_element_not_found(mock_automation_provider):
@@ -554,10 +508,7 @@ def test_element_not_found(mock_automation_provider):
 ```python
 @pytest.mark.integration
 @pytest.mark.slow
-@pytest.mark.skipif(
-    platform.system() != "Darwin",
-    reason="macOS-specific integration test"
-)
+@pytest.mark.skipif(platform.system() != "Darwin", reason="macOS-specific integration test")
 @pytest.mark.requires_permissions
 def test_macos_automation_integration():
     """Integration test for macOS automation."""
@@ -596,13 +547,14 @@ def test_automation_timeout_chaos(mock_automation_provider):
     with pytest.raises(TimeoutError):
         mock_automation_provider.click(element, timeout_ms=1000)
 
+
 @pytest.mark.chaos
 def test_permission_denied_chaos():
     """Chaos test: permission denied."""
     provider = macOSAutomationProvider()
 
     # Mock permission check failure
-    with patch.object(provider, '_check_permissions', return_value=False):
+    with patch.object(provider, "_check_permissions", return_value=False):
         element = UIElement(selector="button", name="Test", role="button", bounds={})
         result = provider.click(element)
 
@@ -618,10 +570,8 @@ def test_permission_denied_chaos():
 ```python
 from hypothesis import given, strategies as st
 
-@given(
-    selector=st.text(min_size=1, max_size=100),
-    timeout=st.floats(min_value=0.1, max_value=10.0)
-)
+
+@given(selector=st.text(min_size=1, max_size=100), timeout=st.floats(min_value=0.1, max_value=10.0))
 def test_find_element_properties(selector: str, timeout: float):
     """Property-based test for element finding."""
     provider = get_provider()
@@ -646,20 +596,13 @@ def test_find_element_properties(selector: str, timeout: float):
 
 **Integration Pattern:**
 ```python
-from thegent.agents.resilience import (
-    classify_failure,
-    is_retryable,
-    FailureKind,
-    retry_with_backoff
-)
+from thegent.agents.resilience import classify_failure, is_retryable, FailureKind, retry_with_backoff
+
 
 class ResilientDesktopAutomationProvider(DesktopAutomationProvider):
     """Provider with retry/fallback integration."""
 
-    @retry_with_backoff(
-        stop=stop_after_attempt(3),
-        wait=wait_exponential(multiplier=1, min=1, max=10)
-    )
+    @retry_with_backoff(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=10))
     def click_with_retry(self, element: UIElement, timeout_ms: float = 5000.0) -> AutomationResult:
         """Click with automatic retry."""
         result = self.click(element, timeout_ms)
@@ -684,23 +627,17 @@ class ResilientDesktopAutomationProvider(DesktopAutomationProvider):
 ```python
 from thegent.agents.resilience import ToolCircuitBreaker
 
+
 class CircuitBreakerAutomationProvider(DesktopAutomationProvider):
     """Provider with circuit breaker."""
 
     def __init__(self):
-        self.circuit_breaker = ToolCircuitBreaker(
-            name="desktop_automation",
-            threshold=5,
-            window_s=300
-        )
+        self.circuit_breaker = ToolCircuitBreaker(name="desktop_automation", threshold=5, window_s=300)
 
     def click(self, element: UIElement, timeout_ms: float = 5000.0) -> AutomationResult:
         """Click with circuit breaker."""
         if self.circuit_breaker.is_open():
-            return AutomationResult(
-                success=False,
-                error="Circuit breaker is open"
-            )
+            return AutomationResult(success=False, error="Circuit breaker is open")
 
         try:
             result = self._provider.click(element, timeout_ms)
@@ -729,6 +666,7 @@ class CircuitBreakerAutomationProvider(DesktopAutomationProvider):
 ```python
 from thegent.governance.cost import CostAggregator, CostEstimator
 
+
 class CostAwareAutomationProvider(DesktopAutomationProvider):
     """Provider with cost tracking."""
 
@@ -744,17 +682,12 @@ class CostAwareAutomationProvider(DesktopAutomationProvider):
 
         # Estimate cost
         cost = self.cost_estimator.estimate_automation(
-            action_type="click",
-            duration_ms=duration_ms,
-            success=result.success
+            action_type="click", duration_ms=duration_ms, success=result.success
         )
 
         # Track cost
         self.cost_aggregator.track_automation_cost(
-            action_type="click",
-            cost_usd=cost,
-            duration_ms=duration_ms,
-            success=result.success
+            action_type="click", cost_usd=cost, duration_ms=duration_ms, success=result.success
         )
 
         return result
@@ -768,6 +701,7 @@ class CostAwareAutomationProvider(DesktopAutomationProvider):
 ```python
 from thegent.agents.resilience import TokenBucket, get_token_bucket
 
+
 class RateLimitedAutomationProvider(DesktopAutomationProvider):
     """Provider with rate limiting."""
 
@@ -776,17 +710,14 @@ class RateLimitedAutomationProvider(DesktopAutomationProvider):
         self.token_bucket = TokenBucket(
             capacity=100,  # 100 actions per minute
             refill_per_sec=100.0 / 60.0,
-            provider=f"automation_{agent_id}"
+            provider=f"automation_{agent_id}",
         )
 
     def click(self, element: UIElement, timeout_ms: float = 5000.0) -> AutomationResult:
         """Click with rate limiting."""
         # Acquire token
         if not self.token_bucket.acquire():
-            return AutomationResult(
-                success=False,
-                error="Rate limit exceeded"
-            )
+            return AutomationResult(success=False, error="Rate limit exceeded")
 
         # Execute automation
         return self._provider.click(element, timeout_ms)
@@ -804,6 +735,7 @@ class RateLimitedAutomationProvider(DesktopAutomationProvider):
 ```python
 from thegent.execution import PolicyEngine
 
+
 class PolicyEnforcedAutomationProvider(DesktopAutomationProvider):
     """Provider with policy enforcement."""
 
@@ -816,17 +748,14 @@ class PolicyEnforcedAutomationProvider(DesktopAutomationProvider):
         run_meta = RunMeta(
             mode="desktop_automation",
             automation_action=AutomationAction(type="click", selector=element.selector),
-            agent_id=self.agent_id
+            agent_id=self.agent_id,
         )
 
         # Check policy
         decision, reason = self.policy_engine.evaluate(run_meta)
 
         if decision == "deny":
-            return AutomationResult(
-                success=False,
-                error=f"Policy denied: {reason}"
-            )
+            return AutomationResult(success=False, error=f"Policy denied: {reason}")
 
         # Execute automation
         return self._provider.click(element, timeout_ms)
@@ -844,6 +773,7 @@ class PolicyEnforcedAutomationProvider(DesktopAutomationProvider):
 ```python
 from thegent.execution import ConcurrencyController
 
+
 class ConcurrencyControlledAutomationProvider(DesktopAutomationProvider):
     """Provider with concurrency control."""
 
@@ -857,10 +787,7 @@ class ConcurrencyControlledAutomationProvider(DesktopAutomationProvider):
         for action in actions:
             # Acquire concurrency slot
             if not self.concurrency_controller.acquire(lane="standard", owner=self.agent_id):
-                results.append(AutomationResult(
-                    success=False,
-                    error="Concurrency limit exceeded"
-                ))
+                results.append(AutomationResult(success=False, error="Concurrency limit exceeded"))
                 continue
 
             try:

@@ -45,6 +45,7 @@ Add middleware to validate `Authorization: Bearer <token>`:
 # In mcp_server.py (future)
 from starlette.middleware.base import BaseHTTPMiddleware
 
+
 class BearerAuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         auth = request.headers.get("Authorization")
@@ -70,8 +71,7 @@ from cryptography.fernet import Fernet
 
 auth = GitHubProvider(
     client_storage=FernetEncryptionWrapper(
-        key_value=RedisStore(url=os.environ["REDIS_URL"]),
-        fernet=Fernet(os.environ["STORAGE_ENCRYPTION_KEY"])
+        key_value=RedisStore(url=os.environ["REDIS_URL"]), fernet=Fernet(os.environ["STORAGE_ENCRYPTION_KEY"])
     )
 )
 mcp.add_auth_provider(auth)

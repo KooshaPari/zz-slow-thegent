@@ -114,9 +114,10 @@
 **Python Integration**:
 ```python
 import memcache
-mc = memcache.Client(['127.0.0.1:11211'])
-mc.set('key', 'value', time=3600)  # TTL: 1 hour
-value = mc.get('key')
+
+mc = memcache.Client(["127.0.0.1:11211"])
+mc.set("key", "value", time=3600)  # TTL: 1 hour
+value = mc.get("key")
 ```
 
 **Optimization Strategies**:
@@ -179,23 +180,24 @@ value = mc.get('key')
 **Python Integration**:
 ```python
 import redis  # redis-py works with Valkey
-r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+
+r = redis.Redis(host="localhost", port=6379, decode_responses=True)
 
 # Simple operations
-r.set('key', 'value', ex=3600)  # TTL: 1 hour
-value = r.get('key')
+r.set("key", "value", ex=3600)  # TTL: 1 hour
+value = r.get("key")
 
 # Advanced: Hashes (perfect for RunMeta)
-r.hset('run:123', mapping={'status': 'running', 'agent': 'clode'})
-run_data = r.hgetall('run:123')
+r.hset("run:123", mapping={"status": "running", "agent": "clode"})
+run_data = r.hgetall("run:123")
 
 # Advanced: Streams (for event sourcing)
-r.xadd('events', {'type': 'tool_use', 'tool': 'grep'})
-events = r.xread({'events': '$'}, count=10)
+r.xadd("events", {"type": "tool_use", "tool": "grep"})
+events = r.xread({"events": "$"}, count=10)
 
 # Advanced: Pub/Sub (for cache invalidation)
 pubsub = r.pubsub()
-pubsub.subscribe('cache:invalidate')
+pubsub.subscribe("cache:invalidate")
 ```
 
 **Optimization Strategies**:
@@ -245,17 +247,17 @@ pubsub.subscribe('cache:invalidate')
 import diskcache as dc
 
 # Basic cache
-cache = dc.Cache('~/.cache/thegent/tool-cache')
-cache.set('key', 'value', expire=3600)
-value = cache.get('key')
+cache = dc.Cache("~/.cache/thegent/tool-cache")
+cache.set("key", "value", expire=3600)
+value = cache.get("key")
 
 # FanoutCache (sharded, faster)
-fanout = dc.FanoutCache('~/.cache/thegent/tool-cache-shards')
-fanout.set('key', 'value', expire=3600)
+fanout = dc.FanoutCache("~/.cache/thegent/tool-cache-shards")
+fanout.set("key", "value", expire=3600)
 
 # Deque (for command history)
-history = dc.Deque('~/.cache/thegent/command-history', maxlen=1000)
-history.append('git status')
+history = dc.Deque("~/.cache/thegent/command-history", maxlen=1000)
+history.append("git status")
 ```
 
 **Optimization Strategies**:
@@ -340,6 +342,7 @@ watcher = await kv.watch("key.*")
 async for entry in watcher:
     print(f"Key {entry.key} changed: {entry.value}")
 
+
 # Pub/Sub for cache invalidation
 async def invalidate_cache(key: str):
     await nc.publish("cache.invalidate", key.encode())
@@ -405,10 +408,12 @@ from temporalio import workflow, activity
 from temporalio.client import Client
 from temporalio.worker import Worker
 
+
 @activity
 async def call_llm(prompt: str) -> str:
     # Non-deterministic: API call
     return await llm_client.complete(prompt)
+
 
 @workflow.defn
 class AgentWorkflow:
@@ -421,6 +426,7 @@ class AgentWorkflow:
             start_to_close_timeout=timedelta(seconds=30),
         )
         return result
+
 
 # Worker
 async def main():
@@ -479,6 +485,7 @@ async def main():
 from hatchet_sdk import Hatchet
 
 hatchet = Hatchet()
+
 
 @hatchet.workflow()
 class AgentWorkflow:
@@ -559,12 +566,10 @@ from neo4j import GraphDatabase
 
 driver = GraphDatabase.driver("neo4j://localhost:7687", auth=("neo4j", "password"))
 
+
 def create_file_node(tx, file_path: str, content_hash: str):
-    tx.run(
-        "CREATE (f:File {path: $path, hash: $hash})",
-        path=file_path,
-        hash=content_hash
-    )
+    tx.run("CREATE (f:File {path: $path, hash: $hash})", path=file_path, hash=content_hash)
+
 
 def create_relationship(tx, file1: str, file2: str, rel_type: str):
     tx.run(
@@ -573,8 +578,9 @@ def create_relationship(tx, file1: str, file2: str, rel_type: str):
         CREATE (f1)-[r:IMPORTS]->(f2)
         """,
         file1=file1,
-        file2=file2
+        file2=file2,
     )
+
 
 # Vector search (Neo4j 5.x+)
 def vector_search(tx, query_vector: list[float], limit: int = 10):
@@ -587,7 +593,7 @@ def vector_search(tx, query_vector: list[float], limit: int = 10):
         LIMIT $limit
         """,
         query=query_vector,
-        limit=limit
+        limit=limit,
     )
     return [record["f.path"] for record in result]
 ```
@@ -652,18 +658,24 @@ cur.execute("""
 """)
 
 # Insert embedding
-cur.execute("""
+cur.execute(
+    """
     INSERT INTO code_embeddings (file_path, embedding)
     VALUES (%s, %s)
-""", ("src/thegent/main.py", embedding_vector))
+""",
+    ("src/thegent/main.py", embedding_vector),
+)
 
 # Vector similarity search
-cur.execute("""
+cur.execute(
+    """
     SELECT file_path, embedding <=> %s AS distance
     FROM code_embeddings
     ORDER BY distance
     LIMIT 10
-""", (query_vector,))
+""",
+    (query_vector,),
+)
 ```
 
 **Optimization Strategies**:

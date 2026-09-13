@@ -113,15 +113,19 @@ if tasks_dir.exists() and tasks_dir.is_dir():
         try:
             result = validate_task_file(task_file)
             if not result.valid:
-                validation_errors.append({
-                    "file": str(task_file),
-                    "errors": result.errors,
-                })
+                validation_errors.append(
+                    {
+                        "file": str(task_file),
+                        "errors": result.errors,
+                    }
+                )
         except Exception as e:
-            validation_errors.append({
-                "file": str(task_file),
-                "errors": [f"Validation failed: {e}"],
-            })
+            validation_errors.append(
+                {
+                    "file": str(task_file),
+                    "errors": [f"Validation failed: {e}"],
+                }
+            )
 
 if validation_errors:
     return {
@@ -222,14 +226,16 @@ def _extract_items_from_wbs(wbs_path: Path) -> list[dict[str, Any]]:
                 depends = parts[5].split(",") if len(parts) > 5 and parts[5] else []
 
                 if status.upper() != "DONE":
-                    items.append({
-                        "id": item_id,
-                        "title": title,
-                        "status": status,
-                        "priority": priority,
-                        "depends": [d.strip() for d in depends if d.strip()],
-                        "source": "02-UNIFIED-WBS.md",
-                    })
+                    items.append(
+                        {
+                            "id": item_id,
+                            "title": title,
+                            "status": status,
+                            "priority": priority,
+                            "depends": [d.strip() for d in depends if d.strip()],
+                            "source": "02-UNIFIED-WBS.md",
+                        }
+                    )
 
     return items
 ```

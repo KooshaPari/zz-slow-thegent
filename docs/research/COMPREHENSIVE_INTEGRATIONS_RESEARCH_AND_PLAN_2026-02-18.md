@@ -185,7 +185,7 @@ class HookMCPExporter:
     "last_run": "2026-02-18T06:00:00Z",
     "status": "passed",
     "results": {...},
-    "next_run": "2026-02-18T06:10:00Z"
+    "next_run": "2026-02-18T06:10:00Z",
 }
 ```
 
@@ -216,12 +216,7 @@ Skills can:
 **Implementation**:
 ```python
 # MCP resource: thegent://hooks/status
-{
-    "hooks": [
-        {"name": "quality-gate", "status": "passed", "last_run": "..."},
-        ...
-    ]
-}
+{"hooks": [{"name": "quality-gate", "status": "passed", "last_run": "..."}, ...]}
 ```
 
 #### 2. **MCP Tool: Trigger Hook**
@@ -233,10 +228,7 @@ Skills can:
 {
     "name": "thegent_trigger_hook",
     "description": "Trigger a thegent hook",
-    "inputSchema": {
-        "hook_name": "string",
-        "args": "object"
-    }
+    "inputSchema": {"hook_name": "string", "args": "object"},
 }
 ```
 
@@ -249,10 +241,7 @@ Skills can:
 {
     "name": "thegent_hook_results",
     "description": "Get hook execution results",
-    "inputSchema": {
-        "hook_name": "string",
-        "since": "datetime"
-    }
+    "inputSchema": {"hook_name": "string", "since": "datetime"},
 }
 ```
 
@@ -308,16 +297,7 @@ def discover_skills() -> List[Skill]:
 **Implementation**:
 ```python
 # MCP resource: thegent://skills/list
-{
-    "skills": [
-        {
-            "id": "thegent-skills",
-            "name": "Thegent Skills",
-            "capabilities": [...],
-            "mcp_tools": [...]
-        }
-    ]
-}
+{"skills": [{"id": "thegent-skills", "name": "Thegent Skills", "capabilities": [...], "mcp_tools": [...]}]}
 ```
 
 ### 2.4 Context Files & Instructions
@@ -688,17 +668,11 @@ return thegent
 # src/thegent/menubar/app.py
 import rumps
 
+
 class ThegentMenuBar(rumps.App):
     def __init__(self):
         super(ThegentMenuBar, self).__init__("thegent")
-        self.menu = [
-            "Work Stream",
-            "LSP Servers",
-            "Agents",
-            None,
-            "Settings",
-            "Quit"
-        ]
+        self.menu = ["Work Stream", "LSP Servers", "Agents", None, "Settings", "Quit"]
 
     @rumps.clicked("Work Stream")
     def work_stream(self, _):
@@ -855,36 +829,20 @@ class ThegentMenuBar(rumps.App):
 # src/thegent/config.py
 class ThegentSettings(BaseSettings):
     # JetBrains MCP Plugin
-    jetbrains_mcp_enabled: bool = Field(
-        default=True,
-        description="Enable JetBrains MCP Server plugin integration"
-    )
-    jetbrains_mcp_port: int = Field(
-        default=8765,
-        description="JetBrains MCP Server plugin port"
-    )
+    jetbrains_mcp_enabled: bool = Field(default=True, description="Enable JetBrains MCP Server plugin integration")
+    jetbrains_mcp_port: int = Field(default=8765, description="JetBrains MCP Server plugin port")
 
     # MCP Language Service Tools
-    jetbrains_lsp_tools_enabled: bool = Field(
-        default=True,
-        description="Enable MCP Language Service Tools plugin"
-    )
+    jetbrains_lsp_tools_enabled: bool = Field(default=True, description="Enable MCP Language Service Tools plugin")
 
     # Shell Integration
     shell_integration_enabled: bool = Field(
-        default=True,
-        description="Enable shell integration (zsh functions, aliases)"
+        default=True, description="Enable shell integration (zsh functions, aliases)"
     )
-    shell_prompt_integration: bool = Field(
-        default=True,
-        description="Show thegent status in prompt"
-    )
+    shell_prompt_integration: bool = Field(default=True, description="Show thegent status in prompt")
 
     # OS Integration
-    os_integration_enabled: bool = Field(
-        default=True,
-        description="Enable OS-level integrations (Raycast, etc.)"
-    )
+    os_integration_enabled: bool = Field(default=True, description="Enable OS-level integrations (Raycast, etc.)")
 ```
 
 ---

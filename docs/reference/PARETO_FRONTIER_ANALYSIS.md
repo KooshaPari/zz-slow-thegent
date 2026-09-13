@@ -345,12 +345,14 @@ Using the Pareto frontier, assign models to task budgets:
 from dataclasses import dataclass
 from typing import List
 
+
 @dataclass
 class Model:
     name: str
     quality_pct: float
     speed_score: int  # 0-100
     cost_per_m_tokens: float
+
 
 def dominates(a: Model, b: Model) -> bool:
     """Check if model A dominates model B."""
@@ -362,12 +364,11 @@ def dominates(a: Model, b: Model) -> bool:
     cost_ok = a.cost_per_m_tokens <= b.cost_per_m_tokens
 
     has_improvement = (
-        a.quality_pct > b.quality_pct or
-        a.speed_score > b.speed_score or
-        a.cost_per_m_tokens < b.cost_per_m_tokens
+        a.quality_pct > b.quality_pct or a.speed_score > b.speed_score or a.cost_per_m_tokens < b.cost_per_m_tokens
     )
 
     return quality_ok and speed_ok and cost_ok and has_improvement
+
 
 def pareto_frontier(models: List[Model]) -> List[Model]:
     """Compute Pareto frontier."""
@@ -376,6 +377,7 @@ def pareto_frontier(models: List[Model]) -> List[Model]:
         if not any(dominates(other, candidate) for other in models):
             frontier.append(candidate)
     return sorted(frontier, key=lambda m: m.cost_per_m_tokens)
+
 
 # Example usage:
 models = [

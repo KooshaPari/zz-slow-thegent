@@ -114,7 +114,7 @@ class SelectorValidator:
                 return False, f"Dangerous pattern detected: {pattern}"
 
         # Check for control characters
-        if any(ord(c) < 32 and c not in '\t\n\r' for c in selector):
+        if any(ord(c) < 32 and c not in "\t\n\r" for c in selector):
             return False, "Control characters not allowed"
 
         return True, "OK"
@@ -157,9 +157,7 @@ class macOSAppVerifier:
         # Check app signature
         if bundle_id:
             result = subprocess.run(
-                ["codesign", "-dv", f"/Applications/{app_name}.app"],
-                capture_output=True,
-                text=True
+                ["codesign", "-dv", f"/Applications/{app_name}.app"], capture_output=True, text=True
             )
             if result.returncode != 0:
                 return False
@@ -184,9 +182,7 @@ class WindowsAppVerifier:
         """Verify app is legitimate."""
         # Check executable signature
         result = subprocess.run(
-            ["powershell", "-Command", f"Get-AuthenticodeSignature '{exe_path}'"],
-            capture_output=True,
-            text=True
+            ["powershell", "-Command", f"Get-AuthenticodeSignature '{exe_path}'"], capture_output=True, text=True
         )
         if "NotSigned" in result.stdout:
             return False
@@ -221,7 +217,7 @@ class ScreenshotRedactor:
         for region in sensitive_regions:
             x, y, w, h = region["x"], region["y"], region["w"], region["h"]
             # Black out region
-            img.paste((0, 0, 0), (x, y, x+w, y+h))
+            img.paste((0, 0, 0), (x, y, x + w, y + h))
 
         # Convert back to bytes
         output = io.BytesIO()
@@ -319,6 +315,7 @@ class ActionTypePolicy:
 @dataclass
 class AutomationAuditEntry:
     """Audit log entry for automation actions."""
+
     timestamp: str
     agent_id: str
     user_id: str
@@ -343,13 +340,7 @@ class AutomationAuditLogger:
         self.audit_path = audit_path
         self.audit_path.mkdir(parents=True, exist_ok=True)
 
-    def log_action(
-        self,
-        agent_id: str,
-        action: AutomationAction,
-        result: AutomationResult,
-        context: dict
-    ):
+    def log_action(self, agent_id: str, action: AutomationAction, result: AutomationResult, context: dict):
         """Log automation action with full context."""
         entry = AutomationAuditEntry(
             timestamp=datetime.now(UTC).isoformat(),
@@ -395,30 +386,18 @@ class SecurityAnomalyDetector:
         # 1. High failure rate
         failure_rate = sum(1 for e in entries if not e.result.success) / len(entries)
         if failure_rate > 0.1:
-            anomalies.append({
-                "type": "high_failure_rate",
-                "rate": failure_rate,
-                "severity": "medium"
-            })
+            anomalies.append({"type": "high_failure_rate", "rate": failure_rate, "severity": "medium"})
 
         # 2. Unusual app access
         app_counts = Counter(e.app_name for e in entries)
         unusual_apps = [app for app, count in app_counts.items() if count > 100]
         if unusual_apps:
-            anomalies.append({
-                "type": "unusual_app_access",
-                "apps": unusual_apps,
-                "severity": "high"
-            })
+            anomalies.append({"type": "unusual_app_access", "apps": unusual_apps, "severity": "high"})
 
         # 3. Screenshot frequency spike
         screenshot_count = sum(1 for e in entries if e.action.type == "screenshot")
         if screenshot_count > 1000:
-            anomalies.append({
-                "type": "screenshot_frequency_spike",
-                "count": screenshot_count,
-                "severity": "medium"
-            })
+            anomalies.append({"type": "screenshot_frequency_spike", "count": screenshot_count, "severity": "medium"})
 
         return anomalies
 ```
@@ -447,6 +426,7 @@ class macOSPermissionChecker:
         """Check if Accessibility permission is granted."""
         try:
             import Quartz
+
             app = Quartz.AXUIElementCreateApplication(os.getpid())
             return True
         except Exception:
@@ -456,12 +436,7 @@ class macOSPermissionChecker:
         """Check if Screen Recording permission is granted."""
         # Try to capture screen
         try:
-            subprocess.run(
-                ["screencapture", "-x", "/tmp/test.png"],
-                capture_output=True,
-                timeout=2,
-                check=True
-            )
+            subprocess.run(["screencapture", "-x", "/tmp/test.png"], capture_output=True, timeout=2, check=True)
             os.remove("/tmp/test.png")
             return True
         except Exception:
@@ -481,15 +456,13 @@ class macOSPermissionChecker:
             # Open System Preferences
             for perm in missing:
                 if perm == "Accessibility":
-                    subprocess.run([
-                        "open",
-                        "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
-                    ])
+                    subprocess.run(
+                        ["open", "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"]
+                    )
                 elif perm == "Screen Recording":
-                    subprocess.run([
-                        "open",
-                        "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture"
-                    ])
+                    subprocess.run(
+                        ["open", "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture"]
+                    )
 ```
 
 **Windows Permission Checker:**
@@ -501,6 +474,7 @@ class WindowsPermissionChecker:
         """Check if UIA Access is enabled."""
         try:
             import comtypes.client
+
             automation = comtypes.client.CreateObject(...)
             return True
         except Exception:
@@ -510,6 +484,7 @@ class WindowsPermissionChecker:
         """Request UIA Access (requires admin)."""
         # Check if running as admin
         import ctypes
+
         is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
 
         if not is_admin:
@@ -517,11 +492,9 @@ class WindowsPermissionChecker:
 
         # Enable UIA Access via registry
         import winreg
+
         key = winreg.OpenKey(
-            winreg.HKEY_LOCAL_MACHINE,
-            r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System",
-            0,
-            winreg.KEY_WRITE
+            winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", 0, winreg.KEY_WRITE
         )
         winreg.SetValueEx(key, "EnableUIAccess", 0, winreg.REG_DWORD, 1)
         winreg.CloseKey(key)
@@ -591,10 +564,7 @@ class LeastPrivilegeAutomation:
         required = self._get_required_capabilities(action)
 
         if not required.issubset(self.capabilities):
-            return AutomationResult(
-                success=False,
-                error=f"Insufficient privileges: {required - self.capabilities}"
-            )
+            return AutomationResult(success=False, error=f"Insufficient privileges: {required - self.capabilities}")
 
         return self._execute_action(action)
 ```

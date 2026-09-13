@@ -73,9 +73,11 @@ from datetime import datetime, timedelta
 from typing import Optional
 from thegent.governance.compliance import ComplianceProfile
 
+
 @dataclass
 class ComplianceReport:
     """Compliance report structure."""
+
     profile: ComplianceProfile
     start_date: datetime
     end_date: datetime
@@ -85,17 +87,14 @@ class ComplianceReport:
     evidence: list[dict]
     signature: Optional[str] = None
 
+
 class ComplianceReportGenerator:
     """Generates compliance reports."""
 
     def __init__(self, profile: ComplianceProfile):
         self.profile = profile
 
-    def generate_report(
-        self,
-        start_date: datetime,
-        end_date: datetime
-    ) -> ComplianceReport:
+    def generate_report(self, start_date: datetime, end_date: datetime) -> ComplianceReport:
         """Generate compliance report for date range."""
         # Collect evidence
         evidence = self._collect_evidence(start_date, end_date)
@@ -114,7 +113,7 @@ class ComplianceReportGenerator:
             generated_at=datetime.now(UTC),
             summary=summary,
             violations=violations,
-            evidence=evidence
+            evidence=evidence,
         )
 
         # Sign report (for SOC 2, US-SEC)
@@ -123,11 +122,7 @@ class ComplianceReportGenerator:
 
         return report
 
-    def _collect_evidence(
-        self,
-        start_date: datetime,
-        end_date: datetime
-    ) -> list[dict]:
+    def _collect_evidence(self, start_date: datetime, end_date: datetime) -> list[dict]:
         """Collect compliance evidence for date range."""
         from thegent.governance.ledger import Ledger
         from thegent.governance.escalation import EscalationQueue
@@ -138,44 +133,33 @@ class ComplianceReportGenerator:
         evidence = []
 
         # Collect ledger entries
-        ledger_entries = ledger.query(
-            start_date=start_date,
-            end_date=end_date
-        )
+        ledger_entries = ledger.query(start_date=start_date, end_date=end_date)
         evidence.extend(ledger_entries)
 
         # Collect escalation queue items
-        escalations = escalation_queue.list_pending(
-            start_date=start_date,
-            end_date=end_date
-        )
+        escalations = escalation_queue.list_pending(start_date=start_date, end_date=end_date)
         evidence.extend(escalations)
 
         return evidence
 
-    def _analyze_compliance(
-        self,
-        evidence: list[dict]
-    ) -> list[dict]:
+    def _analyze_compliance(self, evidence: list[dict]) -> list[dict]:
         """Analyze evidence for compliance violations."""
         violations = []
 
         for control in self.profile.get_mandatory_controls():
             if not self._check_control_compliance(control, evidence):
-                violations.append({
-                    "control_id": control.id,
-                    "control_name": control.name,
-                    "severity": "high" if control.mandatory else "medium",
-                    "description": f"Control {control.id} not satisfied"
-                })
+                violations.append(
+                    {
+                        "control_id": control.id,
+                        "control_name": control.name,
+                        "severity": "high" if control.mandatory else "medium",
+                        "description": f"Control {control.id} not satisfied",
+                    }
+                )
 
         return violations
 
-    def _generate_summary(
-        self,
-        violations: list[dict],
-        evidence: list[dict]
-    ) -> dict:
+    def _generate_summary(self, violations: list[dict], evidence: list[dict]) -> dict:
         """Generate report summary."""
         return {
             "total_controls": len(self.profile.get_mandatory_controls()),
@@ -183,9 +167,10 @@ class ComplianceReportGenerator:
             "violations": len(violations),
             "evidence_count": len(evidence),
             "compliance_percentage": (
-                (len(self.profile.get_mandatory_controls()) - len(violations)) /
-                len(self.profile.get_mandatory_controls()) * 100
-            )
+                (len(self.profile.get_mandatory_controls()) - len(violations))
+                / len(self.profile.get_mandatory_controls())
+                * 100
+            ),
         }
 ```
 
@@ -195,25 +180,19 @@ class ComplianceReportGenerator:
 from apscheduler.schedulers.background import BackgroundScheduler
 from thegent.governance.compliance import ComplianceProfile
 
+
 class ScheduledReportRunner:
     """Runs scheduled compliance reports."""
 
     def __init__(self):
         self.scheduler = BackgroundScheduler()
-        self.generators = {
-            profile: ComplianceReportGenerator(profile)
-            for profile in ComplianceProfile
-        }
+        self.generators = {profile: ComplianceReportGenerator(profile) for profile in ComplianceProfile}
 
     def schedule_reports(self) -> None:
         """Schedule all compliance reports."""
         # Daily reports for critical profiles
         self.scheduler.add_job(
-            self._generate_daily_report,
-            trigger="cron",
-            hour=0,
-            minute=0,
-            args=[ComplianceProfile.US_SEC]
+            self._generate_daily_report, trigger="cron", hour=0, minute=0, args=[ComplianceProfile.US_SEC]
         )
 
         # Weekly reports for standard profiles
@@ -223,17 +202,11 @@ class ScheduledReportRunner:
             day_of_week="monday",
             hour=0,
             minute=0,
-            args=[ComplianceProfile.GDPR]
+            args=[ComplianceProfile.GDPR],
         )
 
         # Monthly reports for all profiles
-        self.scheduler.add_job(
-            self._generate_monthly_report,
-            trigger="cron",
-            day=1,
-            hour=0,
-            minute=0
-        )
+        self.scheduler.add_job(self._generate_monthly_report, trigger="cron", day=1, hour=0, minute=0)
 
     def _generate_daily_report(self, profile: ComplianceProfile) -> None:
         """Generate daily report."""
@@ -259,6 +232,7 @@ class ScheduledReportRunner:
 ```python
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+
 
 class ComplianceDashboard:
     """Real-time compliance dashboard."""
@@ -294,7 +268,7 @@ class ComplianceDashboard:
         return {
             "compliance_percentage": report.summary["compliance_percentage"],
             "violations": len(report.violations),
-            "last_updated": report.generated_at.isoformat()
+            "last_updated": report.generated_at.isoformat(),
         }
 ```
 

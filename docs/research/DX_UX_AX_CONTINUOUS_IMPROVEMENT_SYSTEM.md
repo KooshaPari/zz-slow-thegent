@@ -252,10 +252,10 @@ def normalize_path(path: str, base: str = None) -> str:
 # scripts/friction_logger.py
 def log_friction(
     category: str,  # dx/ux/ax
-    type: str,      # verbosity/complexity/etc
+    type: str,  # verbosity/complexity/etc
     location: str,
     impact: str,
-    solution: str
+    solution: str,
 ):
     """Log friction point for improvement."""
     # Implementation
@@ -271,11 +271,7 @@ def log_friction(
 
 ```python
 # scripts/generate_improvement_task.py
-def create_improvement_task(
-    category: str,
-    description: str,
-    priority: str = "P2"
-):
+def create_improvement_task(category: str, description: str, priority: str = "P2"):
     """Auto-create improvement task in WORK_STREAM.md."""
     # Implementation
 ```

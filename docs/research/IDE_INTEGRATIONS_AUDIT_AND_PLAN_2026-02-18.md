@@ -82,8 +82,7 @@ def detect_serena_backend() -> str:
 ```python
 # src/thegent/config.py
 serena_backend: Literal["auto", "lsp", "jetbrains"] = Field(
-    default="auto",
-    description="Serena backend: auto-detect, LSP, or JetBrains plugin"
+    default="auto", description="Serena backend: auto-detect, LSP, or JetBrains plugin"
 )
 ```
 
@@ -286,6 +285,7 @@ import socket
 from typing import Optional, Literal
 from thegent.config import ThegentSettings
 
+
 def detect_serena_backend() -> Literal["lsp", "jetbrains"]:
     """Detect available Serena backend."""
     settings = ThegentSettings()
@@ -302,7 +302,7 @@ def detect_serena_backend() -> Literal["lsp", "jetbrains"]:
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(1)
-        result = sock.connect_ex(('localhost', jetbrains_port))
+        result = sock.connect_ex(("localhost", jetbrains_port))
         sock.close()
 
         if result == 0:
@@ -312,6 +312,7 @@ def detect_serena_backend() -> Literal["lsp", "jetbrains"]:
 
     # Fallback to LSP
     return "lsp"
+
 
 def get_serena_mcp_config() -> dict:
     """Get Serena MCP configuration based on detected backend."""
@@ -328,9 +329,12 @@ def get_serena_mcp_config() -> dict:
         return {
             "command": "uvx",
             "args": [
-                "--from", "git+https://github.com/oraios/serena",
-                "serena", "start-mcp-server",
-                "--context", "ide",
+                "--from",
+                "git+https://github.com/oraios/serena",
+                "serena",
+                "start-mcp-server",
+                "--context",
+                "ide",
             ],
         }
 ```
@@ -347,6 +351,7 @@ import shutil
 from pathlib import Path
 from typing import Optional
 
+
 class GhosttyTerminalManager:
     """Manage Ghostty terminal sessions for agents."""
 
@@ -356,14 +361,14 @@ class GhosttyTerminalManager:
     def _find_ghostty(self) -> Optional[Path]:
         """Find Ghostty executable."""
         # Check PATH
-        ghostty_cmd = shutil.which('ghostty')
+        ghostty_cmd = shutil.which("ghostty")
         if ghostty_cmd:
             return Path(ghostty_cmd)
 
         # Check macOS app bundle
         macos_paths = [
-            Path('/Applications/Ghostty.app/Contents/MacOS/ghostty'),
-            Path.home() / 'Applications' / 'Ghostty.app' / 'Contents' / 'MacOS' / 'ghostty',
+            Path("/Applications/Ghostty.app/Contents/MacOS/ghostty"),
+            Path.home() / "Applications" / "Ghostty.app" / "Contents" / "MacOS" / "ghostty",
         ]
         for path in macos_paths:
             if path.exists():
@@ -379,8 +384,10 @@ class GhosttyTerminalManager:
         # Launch Ghostty with agent-specific config
         cmd = [
             str(self.ghostty_path),
-            '--title', f"thegent-{agent_name}",
-            '--cwd', str(cwd) if cwd else str(Path.cwd()),
+            "--title",
+            f"thegent-{agent_name}",
+            "--cwd",
+            str(cwd) if cwd else str(Path.cwd()),
         ]
 
         return subprocess.Popen(cmd)
@@ -404,6 +411,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import List, Optional
 
+
 class IDEIntegration(ABC):
     """Abstract base class for IDE integrations."""
 
@@ -422,11 +430,13 @@ class IDEIntegration(ABC):
         """Check if IDE is available."""
         pass
 
+
 class JetBrainsIntegration(IDEIntegration):
     """JetBrains IDE integration."""
 
     def __init__(self):
         from thegent.lsp.jetbrains_cli import JetBrainsCLI
+
         self.cli = JetBrainsCLI()
 
     def format_files(self, files: List[Path], project_root: Optional[Path] = None) -> dict:
@@ -437,6 +447,7 @@ class JetBrainsIntegration(IDEIntegration):
 
     def is_available(self) -> bool:
         return self.cli.ide_path is not None
+
 
 class VSCodeIntegration(IDEIntegration):
     """VSCode integration (future)."""
@@ -452,6 +463,7 @@ class VSCodeIntegration(IDEIntegration):
     def is_available(self) -> bool:
         # Check if code CLI is available
         pass
+
 
 def get_ide_integration() -> Optional[IDEIntegration]:
     """Get available IDE integration."""
@@ -482,27 +494,17 @@ class ThegentSettings(BaseSettings):
 
     # Serena backend selection
     serena_backend: Literal["auto", "lsp", "jetbrains"] = Field(
-        default="auto",
-        description="Serena backend: auto-detect, LSP, or JetBrains plugin"
+        default="auto", description="Serena backend: auto-detect, LSP, or JetBrains plugin"
     )
 
     # Serena JetBrains plugin port
-    serena_jetbrains_port: int = Field(
-        default=8765,
-        description="Port for Serena JetBrains plugin MCP server"
-    )
+    serena_jetbrains_port: int = Field(default=8765, description="Port for Serena JetBrains plugin MCP server")
 
     # Ghostty integration
-    ghostty_enabled: bool = Field(
-        default=True,
-        description="Enable Ghostty terminal integration"
-    )
+    ghostty_enabled: bool = Field(default=True, description="Enable Ghostty terminal integration")
 
     # IDE integration
-    ide_integration_enabled: bool = Field(
-        default=True,
-        description="Enable IDE integration (format, inspect, etc.)"
-    )
+    ide_integration_enabled: bool = Field(default=True, description="Enable IDE integration (format, inspect, etc.)")
 ```
 
 ---
@@ -522,6 +524,7 @@ def lsp_serena_backend() -> None:
     backend = detect_serena_backend()
     console.print(f"[green]Serena backend:[/green] {backend}")
 
+
 @lsp_app.command("serena-jetbrains-setup")
 def lsp_serena_jetbrains_setup() -> None:
     """Guide for setting up Serena JetBrains plugin."""
@@ -531,8 +534,10 @@ def lsp_serena_jetbrains_setup() -> None:
     console.print("3. Configure MCP server port (default: 8765)")
     console.print("4. Run: thegent lsp serena-backend")
 
+
 terminal_app = typer.Typer(help="Terminal session management")
 app.add_typer(terminal_app, name="terminal")
+
 
 @terminal_app.command("ghostty-check")
 def terminal_ghostty_check() -> None:

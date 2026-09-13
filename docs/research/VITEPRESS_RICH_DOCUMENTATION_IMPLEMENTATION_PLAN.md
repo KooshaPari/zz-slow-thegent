@@ -274,6 +274,7 @@ import inspect
 from pathlib import Path
 from typing import Dict, List
 
+
 def extract_docstrings(module_path: Path) -> Dict:
     """Extract docstrings from Python module"""
     with open(module_path) as f:
@@ -283,10 +284,11 @@ def extract_docstrings(module_path: Path) -> Dict:
     for node in ast.walk(tree):
         if isinstance(node, (ast.FunctionDef, ast.ClassDef)):
             docs[node.name] = {
-                'docstring': ast.get_docstring(node),
-                'signature': inspect.signature(node) if hasattr(node, 'signature') else None,
+                "docstring": ast.get_docstring(node),
+                "signature": inspect.signature(node) if hasattr(node, "signature") else None,
             }
     return docs
+
 
 def generate_markdown(docs: Dict, module_name: str) -> str:
     """Generate Markdown API docs"""
@@ -294,12 +296,13 @@ def generate_markdown(docs: Dict, module_name: str) -> str:
 
     for name, info in docs.items():
         md += f"## {name}\n\n"
-        if info['docstring']:
+        if info["docstring"]:
             md += f"{info['docstring']}\n\n"
-        if info['signature']:
+        if info["signature"]:
             md += f"```python\n{name}{info['signature']}\n```\n\n"
 
     return md
+
 
 # Agent workflow: Run on code changes, update VitePress pages
 ```
@@ -314,6 +317,7 @@ def generate_markdown(docs: Dict, module_name: str) -> str:
 import ast
 from pathlib import Path
 from typing import Set, Dict
+
 
 def analyze_dependencies(module_path: Path) -> Dict[str, Set[str]]:
     """Analyze module dependencies"""
@@ -330,17 +334,19 @@ def analyze_dependencies(module_path: Path) -> Dict[str, Set[str]]:
 
     return {module_path.stem: imports}
 
+
 def generate_mermaid(deps: Dict[str, Set[str]]) -> str:
     """Generate Mermaid dependency graph"""
     mermaid = "```mermaid\ngraph TD\n"
 
     for module, imports in deps.items():
         for imp in imports:
-            if imp.startswith('thegent'):
+            if imp.startswith("thegent"):
                 mermaid += f"  {module} --> {imp.replace('.', '_')}\n"
 
     mermaid += "```\n"
     return mermaid
+
 
 # Agent workflow: Run on architecture changes, update diagrams
 ```
@@ -355,16 +361,20 @@ def generate_mermaid(deps: Dict[str, Set[str]]) -> str:
 import inspect
 from thegent.cli import app  # Typer app
 
+
 def extract_commands(app) -> List[Dict]:
     """Extract commands from Typer app"""
     commands = []
     for command in app.registered_commands:
-        commands.append({
-            'name': command.name,
-            'help': command.help,
-            'params': [p.name for p in command.params],
-        })
+        commands.append(
+            {
+                "name": command.name,
+                "help": command.help,
+                "params": [p.name for p in command.params],
+            }
+        )
     return commands
+
 
 def generate_playgrounds(commands: List[Dict]) -> str:
     """Generate CodePlayground components"""
@@ -374,10 +384,11 @@ def generate_playgrounds(commands: List[Dict]) -> str:
         md += f"## {cmd['name']}\n\n"
         md += f"{cmd['help']}\n\n"
         md += f"<CodePlayground lang='bash' code='thegent {cmd['name']} "
-        md += " ".join(f"--{p} VALUE" for p in cmd['params'])
+        md += " ".join(f"--{p} VALUE" for p in cmd["params"])
         md += "' />\n\n"
 
     return md
+
 
 # Agent workflow: Run on CLI changes, update examples
 ```
@@ -393,6 +404,7 @@ from pathlib import Path
 import subprocess
 import re
 
+
 def find_demo_scripts(docs_dir: Path) -> List[Path]:
     """Find demo scripts in documentation"""
     demos = []
@@ -401,10 +413,11 @@ def find_demo_scripts(docs_dir: Path) -> List[Path]:
         content = md_file.read_text()
 
         # Find code blocks marked as demos
-        if re.search(r'```(python|bash|sh).*demo', content, re.IGNORECASE):
+        if re.search(r"```(python|bash|sh).*demo", content, re.IGNORECASE):
             demos.append(md_file)
 
     return demos
+
 
 def generate_gif(script_path: Path, output_dir: Path):
     """Generate GIF from demo script"""
@@ -413,6 +426,7 @@ def generate_gif(script_path: Path, output_dir: Path):
     # Run and generate GIF
     # Embed in original doc
     pass
+
 
 # Agent workflow: Run on doc changes, auto-generate GIFs
 ```
@@ -582,26 +596,28 @@ export default {
 from pathlib import Path
 import subprocess
 
+
 def main():
-    docs_dir = Path('docs')
-    vitepress_dir = docs_dir / '.vitepress'
+    docs_dir = Path("docs")
+    vitepress_dir = docs_dir / ".vitepress"
 
     # 1. Generate API docs
-    subprocess.run(['python', 'scripts/generate-api-docs.py'])
+    subprocess.run(["python", "scripts/generate-api-docs.py"])
 
     # 2. Generate architecture diagrams
-    subprocess.run(['python', 'scripts/generate-architecture-diagrams.py'])
+    subprocess.run(["python", "scripts/generate-architecture-diagrams.py"])
 
     # 3. Generate CLI examples
-    subprocess.run(['python', 'scripts/generate-cli-examples.py'])
+    subprocess.run(["python", "scripts/generate-cli-examples.py"])
 
     # 4. Generate demo GIFs
-    subprocess.run(['bash', 'scripts/generate-demo-gifs.sh'])
+    subprocess.run(["bash", "scripts/generate-demo-gifs.sh"])
 
     # 5. Rebuild VitePress
-    subprocess.run(['npm', 'run', 'docs:build'])
+    subprocess.run(["npm", "run", "docs:build"])
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
 ```
 

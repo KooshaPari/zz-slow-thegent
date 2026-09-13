@@ -134,7 +134,7 @@ src/thegent/
 from thegent.platform import detect_platform, get_architecture
 
 platform = detect_platform()  # Platform.MACOS
-arch = get_architecture()      # "arm64"
+arch = get_architecture()  # "arm64"
 ```
 
 ### Path Resolution
@@ -142,7 +142,7 @@ arch = get_architecture()      # "arm64"
 from thegent.platform_paths import get_config_dir, get_cache_dir
 
 config_dir = get_config_dir()  # ~/Library/Application Support/thegent
-cache_dir = get_cache_dir()    # ~/Library/Caches/thegent
+cache_dir = get_cache_dir()  # ~/Library/Caches/thegent
 ```
 
 ### System Integration

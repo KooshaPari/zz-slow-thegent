@@ -47,12 +47,14 @@ class MAIFHeader(BaseModel):
     artifact_id: str
     timestamp_us: int
 
+
 class MAIFBlock(BaseModel):
     block_id: str
     block_type: str  # "modality", "semantic", "security", "lifecycle"
     payload_hash: str
     signature: str | None = None
     payload: dict | bytes
+
 
 class MAIFArtifact(BaseModel):
     header: MAIFHeader

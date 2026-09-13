@@ -67,6 +67,7 @@ from textual.app import App
 from textual.containers import Vertical, Horizontal
 from textual.widgets import Static, Footer
 
+
 class ThegentApp(App):
     """Main TUI application."""
 
@@ -114,6 +115,7 @@ class ThegentApp(App):
 from textual.widgets import RichLog, Button, Input
 from textual.containers import Container
 
+
 class OutputWidget(Container):
     """Agent output stream widget."""
 
@@ -122,9 +124,8 @@ class OutputWidget(Container):
 
     async def on_message(self, message: AgentMessage):
         """Display agent message."""
-        self.query_one("#agent-output", RichLog).write(
-            message.formatted
-        )
+        self.query_one("#agent-output", RichLog).write(message.formatted)
+
 
 class StatusWidget(Container):
     """Agent status display."""

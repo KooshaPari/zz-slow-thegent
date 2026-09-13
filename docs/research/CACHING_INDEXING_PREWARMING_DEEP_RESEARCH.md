@@ -634,6 +634,7 @@ command_sequences = {
     ("find", "-name", "*.py"): ["grep", "-r", "import"],
 }
 
+
 # Pre-warm likely next commands
 def predict_next_commands(last_command):
     return command_sequences.get(last_command, [])
@@ -782,7 +783,7 @@ Complexity
 ```python
 # pyproject.toml additions
 diskcache = "^5.6.3"  # Disk-backed cache (replaces file-based)
-watchdog = "^4.0.0"   # File system events (index invalidation)
+watchdog = "^4.0.0"  # File system events (index invalidation)
 ```
 
 ### 11.2 Rust Crates to Consider (Future)

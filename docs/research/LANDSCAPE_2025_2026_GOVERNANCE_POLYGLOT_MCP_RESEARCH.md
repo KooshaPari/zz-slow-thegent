@@ -98,7 +98,7 @@ The agent governance landscape in 2025-2026 has matured significantly with produ
 cost_tracking = {
     "tags": {
         "project-x": {"max_budget": 100.00, "budget_duration": "monthly"},
-        "team-ml": {"max_budget": 500.00, "budget_duration": "monthly"}
+        "team-ml": {"max_budget": 500.00, "budget_duration": "monthly"},
     }
 }
 ```
@@ -359,6 +359,7 @@ fn my_module(_py: Python, m: &PyModule) -> PyResult<()> {
 ```python
 # Python code (transparent usage)
 from my_module import compute_hot_path
+
 result = compute_hot_path([1, 2, 3])  # Compiled Rust!
 ```
 

@@ -36,14 +36,14 @@ class RunMeta(BaseModel):
     # Existing fields...
 
     # NEW: Task Routing Fields (Phase 1)
-    task_category: str | None = None           # FAST, NORMAL, COMPLEX, HIGH_COMPLEX
-    task_complexity_score: float | None = None # 0.0 to 1.0
-    estimated_cost_usd: float | None = None    # Pre-execution estimate
+    task_category: str | None = None  # FAST, NORMAL, COMPLEX, HIGH_COMPLEX
+    task_complexity_score: float | None = None  # 0.0 to 1.0
+    estimated_cost_usd: float | None = None  # Pre-execution estimate
     estimated_duration_s: float | None = None  # Predicted execution time
 
     # NEW: Constraint Validation (Phase 1)
     constraint_violations: list[str] = Field(default_factory=list)  # e.g. ["speed_sla_exceeded"]
-    fallback_reason: str | None = None         # Why fallback was triggered (if any)
+    fallback_reason: str | None = None  # Why fallback was triggered (if any)
     fallback_chain: list[str] = Field(default_factory=list)  # [first_try, fallback1, fallback2...]
 ```
 
@@ -147,6 +147,7 @@ async def run_impl(
 @dataclass
 class CostAggregator:
     """Per-category cost tracking (Phase 2)."""
+
     session_dir: Path
 
     def add_to_category(
@@ -186,9 +187,11 @@ class CostAggregator:
                         continue
                     try:
                         data = json.loads(line)
-                        if (data.get("event") == "cost" and
-                            data.get("category") == category and
-                            data.get("timestamp", "").startswith(current_month)):
+                        if (
+                            data.get("event") == "cost"
+                            and data.get("category") == category
+                            and data.get("timestamp", "").startswith(current_month)
+                        ):
                             total += float(data.get("cost_usd", 0))
                     except Exception:
                         continue
@@ -214,9 +217,7 @@ class CostAggregator:
                     try:
                         data = json.loads(line)
                         ts = data.get("timestamp", "")[:10]
-                        if (data.get("event") == "cost" and
-                            data.get("category") == category and
-                            ts == today):
+                        if data.get("event") == "cost" and data.get("category") == category and ts == today:
                             total += float(data.get("cost_usd", 0))
                     except Exception:
                         continue
@@ -300,10 +301,7 @@ def resolve_route_for_category(
 
     # Filter routes by quality (from model catalog)
     # Requires model catalog to have quality scores (Phase 2 enhancement)
-    qualified_routes = [
-        r for r in routes
-        if _get_route_quality_score(r) >= min_quality
-    ]
+    qualified_routes = [r for r in routes if _get_route_quality_score(r) >= min_quality]
 
     if not qualified_routes:
         # Fallback: return cheapest route, log warning
@@ -312,21 +310,14 @@ def resolve_route_for_category(
     # Sort by policy
     if category in ("COMPLEX", "HIGH_COMPLEX"):
         # Prioritize quality, then cost
-        sorted_routes = sorted(
-            qualified_routes,
-            key=lambda r: (-_get_route_quality_score(r), r.cost_weight)
-        )
+        sorted_routes = sorted(qualified_routes, key=lambda r: (-_get_route_quality_score(r), r.cost_weight))
     elif category == "FAST":
         # Prioritize cost, then quality
-        sorted_routes = sorted(
-            qualified_routes,
-            key=lambda r: (r.cost_weight, -_get_route_quality_score(r))
-        )
+        sorted_routes = sorted(qualified_routes, key=lambda r: (r.cost_weight, -_get_route_quality_score(r)))
     else:  # NORMAL
         # Balance
         sorted_routes = sorted(
-            qualified_routes,
-            key=lambda r: (r.cost_weight * 0.5 + (1 - _get_route_quality_score(r)) * 0.5)
+            qualified_routes, key=lambda r: r.cost_weight * 0.5 + (1 - _get_route_quality_score(r)) * 0.5
         )
 
     best = sorted_routes[0]
@@ -337,6 +328,7 @@ def resolve_route_for_category(
         priority=best.priority,
         cost_weight=best.cost_weight,
     )
+
 
 def _get_route_quality_score(route: Route) -> float:
     """
@@ -355,6 +347,7 @@ def _get_route_quality_score(route: Route) -> float:
         ("gpt-5.3-codex", "gpt-5.3-codex"): 0.85,
     }
     return quality_map.get((route.provider, route.model_alias), 0.70)
+
 
 def _fallback_cheapest_route(routes: list[Route]) -> ResolvedRoute | None:
     """Fallback: return cheapest route when no quality threshold match."""
@@ -480,13 +473,11 @@ def _parse_complexity_keywords(cls, v: object) -> dict[str, list[str]]:
         try:
             parsed = json.loads(v)
             if isinstance(parsed, dict):
-                return {k: list(val) if isinstance(val, (list, tuple)) else [val]
-                        for k, val in parsed.items()}
+                return {k: list(val) if isinstance(val, (list, tuple)) else [val] for k, val in parsed.items()}
         except json.JSONDecodeError:
             pass
     if isinstance(v, dict):
-        return {k: list(val) if isinstance(val, (list, tuple)) else [val]
-                for k, val in v.items()}
+        return {k: list(val) if isinstance(val, (list, tuple)) else [val] for k, val in v.items()}
     return {"high_complexity": [], "medium_complexity": []}
 ```
 
@@ -526,26 +517,32 @@ __all__ = [
 from dataclasses import dataclass
 from enum import Enum
 
+
 class TaskCategory(str, Enum):
     """Task complexity categories."""
-    FAST = "FAST"              # Simple, <1s, <100 tokens, <$0.002
-    NORMAL = "NORMAL"          # Standard, <5s, <1k tokens, <$0.05
-    COMPLEX = "COMPLEX"        # Hard, <20s, <10k tokens, <$0.15
+
+    FAST = "FAST"  # Simple, <1s, <100 tokens, <$0.002
+    NORMAL = "NORMAL"  # Standard, <5s, <1k tokens, <$0.05
+    COMPLEX = "COMPLEX"  # Hard, <20s, <10k tokens, <$0.15
     HIGH_COMPLEX = "HIGH_COMPLEX"  # Very hard, <60s, >10k tokens, <$0.85
+
 
 @dataclass
 class TaskMetadata:
     """Metadata for classified task."""
-    category: str              # FAST, NORMAL, COMPLEX, HIGH_COMPLEX
-    complexity_score: float    # 0.0 (trivial) to 1.0 (hardest)
-    estimated_tokens: int      # Estimated input+output tokens
-    estimated_cost: float      # Estimated cost in USD
+
+    category: str  # FAST, NORMAL, COMPLEX, HIGH_COMPLEX
+    complexity_score: float  # 0.0 (trivial) to 1.0 (hardest)
+    estimated_tokens: int  # Estimated input+output tokens
+    estimated_cost: float  # Estimated cost in USD
     estimated_duration_s: float  # Estimated execution time
     reasoning: str | None = None  # Why this category was assigned
+
 
 @dataclass
 class ConstraintViolation:
     """A violated hard constraint."""
+
     constraint_type: str  # performance, cost, speed
     category: str
     threshold: float
@@ -571,6 +568,7 @@ if TYPE_CHECKING:
     from thegent.execution import RunRegistry
 
 _log = logging.getLogger(__name__)
+
 
 class TaskClassifier:
     """Classifies tasks by complexity and estimates cost/duration."""
@@ -761,14 +759,13 @@ class ConstraintValidator:
         # 2. Instantaneous cost constraint
         inst_budget = self.config.routing_instantaneous_budget.get(category, 0.05)
         if task_metadata.estimated_cost > inst_budget:
-            violations.append(
-                f"Cost (instantaneous): ${task_metadata.estimated_cost:.4f} > ${inst_budget:.4f}"
-            )
+            violations.append(f"Cost (instantaneous): ${task_metadata.estimated_cost:.4f} > ${inst_budget:.4f}")
 
         # 3. Cumulative cost constraint (if registry available)
         if registry:
             cum_budget = self.config.routing_cumulative_budget.get(category, 100.0)
             from thegent.governance.cost import CostAggregator
+
             agg = CostAggregator(self.config.session_dir)
             category_mtd = agg.get_category_mtd_total(category)
             if category_mtd + task_metadata.estimated_cost > cum_budget:
@@ -779,9 +776,7 @@ class ConstraintValidator:
         # 4. Speed constraint
         speed_sla = self.config.routing_speed_sla_ms.get(category, 5000) / 1000
         if task_metadata.estimated_duration_s > speed_sla:
-            violations.append(
-                f"Speed: {task_metadata.estimated_duration_s:.1f}s > {speed_sla:.1f}s SLA"
-            )
+            violations.append(f"Speed: {task_metadata.estimated_duration_s:.1f}s > {speed_sla:.1f}s SLA")
 
         return violations
 
@@ -1123,6 +1118,7 @@ def test_classify_fast_task():
     assert result.estimated_duration_s <= 1.0
     assert result.estimated_cost <= 0.002
 
+
 def test_classify_high_complex_task():
     """Classify complex task as HIGH_COMPLEX."""
     classifier = TaskClassifier(config)
@@ -1133,6 +1129,7 @@ def test_classify_high_complex_task():
     )
     assert result.category == "HIGH_COMPLEX"
     assert result.complexity_score > 0.75
+
 
 def test_complexity_keywords():
     """High-complexity keywords increase score."""
@@ -1157,6 +1154,7 @@ def test_validate_instantaneous_cost_constraint():
     violations = validator.validate(task)
     assert any("instantaneous" in v for v in violations)
 
+
 def test_validate_speed_constraint():
     """Reject if estimated duration > SLA."""
     validator = ConstraintValidator(config)
@@ -1169,6 +1167,7 @@ def test_validate_speed_constraint():
     )
     violations = validator.validate(task)
     assert any("Speed" in v for v in violations)
+
 
 def test_validate_cumulative_budget():
     """Reject if category MTD + estimate > budget."""
@@ -1220,6 +1219,7 @@ async def test_full_routing_flow():
     assert resolved is not None
     assert resolved.cost_weight <= 0.3  # FAST should pick cheap route
 
+
 @pytest.mark.asyncio
 async def test_cost_tracking_by_category():
     """Verify cost tracked per-category."""
@@ -1237,6 +1237,7 @@ async def test_cost_tracking_by_category():
     assert agg.get_category_mtd_total("FAST") == pytest.approx(0.003)
     assert agg.get_category_mtd_total("COMPLEX") == pytest.approx(0.10)
     assert agg.get_mtd_total() == pytest.approx(0.13)
+
 
 @pytest.mark.asyncio
 async def test_budget_enforcement():
@@ -1278,6 +1279,7 @@ async def test_e2e_fast_task_routed_cheap():
     assert result["duration_s"] < 1.0
     assert result["cost_usd"] < 0.002
 
+
 @pytest.mark.e2e
 @pytest.mark.asyncio
 async def test_e2e_high_complex_task_routed_quality():
@@ -1292,6 +1294,7 @@ async def test_e2e_high_complex_task_routed_quality():
     assert result["provider"] in ["claude", "minimax"]
     assert result["model_quality"] >= 0.80
     assert result["duration_s"] < 60
+
 
 @pytest.mark.e2e
 @pytest.mark.asyncio

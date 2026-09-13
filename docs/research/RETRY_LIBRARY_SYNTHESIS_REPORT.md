@@ -127,6 +127,7 @@ Application → @retry/@retry_async/retry_context
 ```python
 from thegent.resilience import retry_async
 
+
 @retry_async(strategy="http", max_attempts=3)
 async def fetch_data(url: str) -> dict:
     async with httpx.AsyncClient() as client:

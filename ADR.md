@@ -221,6 +221,7 @@ NOISE_PATTERNS = [
     r"(.*/copilot.*info:.*)",
 ]
 
+
 def filter_stderr(stderr: str) -> str:
     for pattern in NOISE_PATTERNS:
         stderr = re.sub(pattern, "", stderr)

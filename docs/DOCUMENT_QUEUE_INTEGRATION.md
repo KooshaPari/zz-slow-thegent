@@ -235,11 +235,7 @@ from thegent.agents.document import QueueManager, DocumentProcessor, ProcessingP
 from thegent.agents.document.processor import extract_metadata, compute_file_hash
 
 queue_manager = QueueManager(queue_file)
-processor = DocumentProcessor(
-    ProcessingPipeline()
-    .add_stage(extract_metadata)
-    .add_stage(compute_file_hash)
-)
+processor = DocumentProcessor(ProcessingPipeline().add_stage(extract_metadata).add_stage(compute_file_hash))
 
 # Process next month
 next_month = queue_manager.get_next_month()

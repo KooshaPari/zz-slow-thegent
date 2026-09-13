@@ -102,11 +102,7 @@ cost_estimator = CostEstimator()
 cost_aggregator = CostAggregator(session_dir=Path.cwd())
 
 # On task completion:
-actual_cost = cost_estimator.estimate(
-    model=selected_model,
-    tokens_in=input_token_count,
-    tokens_out=output_token_count
-)
+actual_cost = cost_estimator.estimate(model=selected_model, tokens_in=input_token_count, tokens_out=output_token_count)
 ```
 
 **Add to RunMeta finish event:**
@@ -251,6 +247,7 @@ from pathlib import Path
 from datetime import datetime
 import sys
 
+
 def load_jsonl_to_sqlite(jsonl_path: str, db_path: str = "monitoring.db"):
     """Load JSONL run registry into SQLite."""
     conn = sqlite3.connect(db_path)
@@ -259,7 +256,7 @@ def load_jsonl_to_sqlite(jsonl_path: str, db_path: str = "monitoring.db"):
     loaded = 0
     errors = 0
 
-    with open(jsonl_path, 'r') as f:
+    with open(jsonl_path, "r") as f:
         for line_num, line in enumerate(f, 1):
             if not line.strip():
                 continue
@@ -268,15 +265,16 @@ def load_jsonl_to_sqlite(jsonl_path: str, db_path: str = "monitoring.db"):
                 data = json.loads(line)
 
                 # Only load "finish" events for now
-                if data.get('event') != 'finish':
+                if data.get("event") != "finish":
                     continue
 
                 # Extract fields
-                run_id = data.get('run_id')
+                run_id = data.get("run_id")
                 if not run_id:
                     raise ValueError("Missing run_id")
 
-                cursor.execute('''
+                cursor.execute(
+                    """
                     INSERT OR REPLACE INTO run_registry (
                         run_id, event, task_category, complexity_score,
                         estimated_cost, actual_cost_usd, routing_reason,
@@ -284,25 +282,27 @@ def load_jsonl_to_sqlite(jsonl_path: str, db_path: str = "monitoring.db"):
                         started_at_utc, ended_at_utc, constraint_violations,
                         used_fallback_model, escalation_status, created_at
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ''', (
-                    run_id,
-                    data.get('event'),
-                    data.get('task_category'),
-                    data.get('complexity_score'),
-                    data.get('estimated_cost'),
-                    data.get('actual_cost_usd'),
-                    data.get('routing_reason'),
-                    data.get('selected_model'),
-                    data.get('status'),
-                    data.get('exit_code'),
-                    data.get('duration_s'),
-                    data.get('started_at_utc'),
-                    data.get('ended_at_utc'),
-                    json.dumps(data.get('constraint_violations', [])),
-                    data.get('used_fallback_model', False),
-                    data.get('escalation_status'),
-                    datetime.utcnow().isoformat()
-                ))
+                """,
+                    (
+                        run_id,
+                        data.get("event"),
+                        data.get("task_category"),
+                        data.get("complexity_score"),
+                        data.get("estimated_cost"),
+                        data.get("actual_cost_usd"),
+                        data.get("routing_reason"),
+                        data.get("selected_model"),
+                        data.get("status"),
+                        data.get("exit_code"),
+                        data.get("duration_s"),
+                        data.get("started_at_utc"),
+                        data.get("ended_at_utc"),
+                        json.dumps(data.get("constraint_violations", [])),
+                        data.get("used_fallback_model", False),
+                        data.get("escalation_status"),
+                        datetime.utcnow().isoformat(),
+                    ),
+                )
 
                 loaded += 1
 
@@ -321,6 +321,7 @@ def load_jsonl_to_sqlite(jsonl_path: str, db_path: str = "monitoring.db"):
 
     print(f"Loaded {loaded} records, {errors} errors")
     return loaded, errors
+
 
 if __name__ == "__main__":
     jsonl_path = sys.argv[1] if len(sys.argv) > 1 else "run_registry.jsonl"
@@ -627,6 +628,7 @@ import json
 app = Flask(__name__)
 DB_PATH = "monitoring.db"
 
+
 def query_db(sql):
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -636,7 +638,8 @@ def query_db(sql):
     conn.close()
     return [dict(row) for row in results]
 
-@app.route('/api/daily-costs')
+
+@app.route("/api/daily-costs")
 def daily_costs():
     sql = """
     SELECT DATE(ended_at_utc) as date,
@@ -647,7 +650,8 @@ def daily_costs():
     """
     return jsonify(query_db(sql))
 
-@app.route('/api/budget-status')
+
+@app.route("/api/budget-status")
 def budget_status():
     sql = """
     SELECT task_category,
@@ -658,11 +662,13 @@ def budget_status():
     """
     return jsonify(query_db(sql))
 
-@app.route('/')
-def dashboard():
-    return render_template('dashboard.html')
 
-if __name__ == '__main__':
+@app.route("/")
+def dashboard():
+    return render_template("dashboard.html")
+
+
+if __name__ == "__main__":
     app.run(debug=True, port=5000)
 ```
 
@@ -694,6 +700,7 @@ from datetime import datetime
 
 SLACK_WEBHOOK = "https://hooks.slack.com/services/..."
 
+
 def send_alert(title, severity, message, data=None):
     """Send alert to Slack."""
 
@@ -709,9 +716,8 @@ def send_alert(title, severity, message, data=None):
                 "fields": [
                     {"title": "Severity", "value": severity, "short": True},
                     {"title": "Time", "value": datetime.utcnow().isoformat(), "short": True},
-                ] + (
-                    [{"title": k, "value": str(v), "short": True} for k, v in (data or {}).items()]
-                ),
+                ]
+                + ([{"title": k, "value": str(v), "short": True} for k, v in (data or {}).items()]),
                 "footer": "thegent-monitoring",
                 "ts": int(datetime.utcnow().timestamp()),
             }
@@ -721,12 +727,13 @@ def send_alert(title, severity, message, data=None):
     response = requests.post(SLACK_WEBHOOK, json=payload)
     return response.status_code == 200
 
+
 # Example usage:
 send_alert(
     "CATEGORY_BUDGET_WARNING",
     "WARNING",
     "Normal category budget at 80%",
-    {"Budget": "$160/$200", "Daily Burn": "$11.43", "Days to Exhaustion": "3.5"}
+    {"Budget": "$160/$200", "Daily Burn": "$11.43", "Days to Exhaustion": "3.5"},
 )
 ```
 
@@ -761,6 +768,7 @@ Add to crontab:
 ```python
 import pdpyras
 
+
 def send_pagerduty_alert(summary, severity, details):
     client = pdpyras.APISession(...)
     client.post(
@@ -773,7 +781,7 @@ def send_pagerduty_alert(summary, severity, details):
                 "service": {"type": "service_reference", "id": "..."},
                 "body": {"type": "incident_body", "details": details},
             }
-        }
+        },
     )
 ```
 
@@ -858,23 +866,32 @@ for i in range(50000):
     days_offset = random.randint(0, 89)
     run_date = start_date + timedelta(days=days_offset)
 
-    category = random.choice(['fast', 'normal', 'complex', 'high_complex'])
-    cost = {'fast': 0.01, 'normal': 0.15, 'complex': 0.44, 'high_complex': 1.07}[category]
+    category = random.choice(["fast", "normal", "complex", "high_complex"])
+    cost = {"fast": 0.01, "normal": 0.15, "complex": 0.44, "high_complex": 1.07}[category]
 
-    cursor.execute('''
+    cursor.execute(
+        """
         INSERT INTO run_registry (
             run_id, event, task_category, complexity_score,
             estimated_cost, actual_cost_usd, selected_model,
             status, exit_code, duration_s, started_at_utc, ended_at_utc
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (
-        f'test-{i}', 'finish', category, random.randint(10, 95),
-        cost * 0.95, cost, 'minimax-m2.5',
-        random.choice(['success', 'timeout', 'error']),
-        random.choice([0, 1, 127]) if random.random() < 0.02 else 0,
-        random.uniform(0.1, 60.0),
-        run_date.isoformat(), run_date.isoformat()
-    ))
+    """,
+        (
+            f"test-{i}",
+            "finish",
+            category,
+            random.randint(10, 95),
+            cost * 0.95,
+            cost,
+            "minimax-m2.5",
+            random.choice(["success", "timeout", "error"]),
+            random.choice([0, 1, 127]) if random.random() < 0.02 else 0,
+            random.uniform(0.1, 60.0),
+            run_date.isoformat(),
+            run_date.isoformat(),
+        ),
+    )
 
 conn.commit()
 conn.close()

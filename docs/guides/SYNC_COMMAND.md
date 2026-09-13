@@ -124,23 +124,24 @@ cmd = SyncCommand(project_root=Path("/my/project"))
 
 # Run all
 result: SyncResult = cmd.sync_all()
-print(result.success)          # True / False
-print(result.total_duration)   # seconds
+print(result.success)  # True / False
+print(result.total_duration)  # seconds
 
 # Individual operations
 op = cmd.sync_work_stream(dry_run=True)
-print(op.status)               # SyncOperationStatus.DRY_RUN
-print(op.details)              # {"fragments_found": N}
+print(op.status)  # SyncOperationStatus.DRY_RUN
+print(op.details)  # {"fragments_found": N}
 
 op = cmd.sync_agents()
-print(op.details["new_agents"])   # list of unregistered agent names
+print(op.details["new_agents"])  # list of unregistered agent names
 
 op = cmd.sync_hooks()
-print(op.details["unregistered"]) # hook scripts with no config entry
-print(op.details["orphaned"])     # config entries with no script
+print(op.details["unregistered"])  # hook scripts with no config entry
+print(op.details["orphaned"])  # config entries with no script
 
 # Serialise
 import json
+
 print(json.dumps(result.to_dict(), indent=2))
 ```
 

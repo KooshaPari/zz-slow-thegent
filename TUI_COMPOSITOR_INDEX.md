@@ -90,37 +90,37 @@ python3 -c "from thegent.compositor import *; print('✓ All imports work')"
 ### Layout Engine Classes
 ```python
 from thegent.compositor import (
-    LayoutEngine,        # Main layout calculator
-    LayoutNode,          # Tree-based layout structure
-    Direction,           # VERTICAL | HORIZONTAL
-    Size,                # Dimension with units
-    SizeUnit,            # %, fr, cells, auto
-    LayoutConstraints,   # Complete constraints
-    Padding,             # Padding specification
-    Margin               # Margin specification
+    LayoutEngine,  # Main layout calculator
+    LayoutNode,  # Tree-based layout structure
+    Direction,  # VERTICAL | HORIZONTAL
+    Size,  # Dimension with units
+    SizeUnit,  # %, fr, cells, auto
+    LayoutConstraints,  # Complete constraints
+    Padding,  # Padding specification
+    Margin,  # Margin specification
 )
 ```
 
 ### UI Components
 ```python
 from thegent.compositor import (
-    OutputWidget,        # Rich text output
-    StatusWidget,        # Status display
-    SidebarWidget,       # Agent sidebar
-    HeaderWidget,        # Title header
-    FooterStatusBar,     # Status footer
-    MetricsPanel,        # Metrics display
-    ProgressIndicator    # Progress bar
+    OutputWidget,  # Rich text output
+    StatusWidget,  # Status display
+    SidebarWidget,  # Agent sidebar
+    HeaderWidget,  # Title header
+    FooterStatusBar,  # Status footer
+    MetricsPanel,  # Metrics display
+    ProgressIndicator,  # Progress bar
 )
 ```
 
 ### Pane Management (Existing)
 ```python
 from thegent.compositor import (
-    CompositApp,         # Main app (unchanged)
-    PaneManager,         # Pane tree management
-    SessionState,        # Session persistence
-    TerminalPane         # Individual pane
+    CompositApp,  # Main app (unchanged)
+    PaneManager,  # Pane tree management
+    SessionState,  # Session persistence
+    TerminalPane,  # Individual pane
 )
 ```
 
@@ -140,11 +140,13 @@ from textual.app import App, ComposeResult
 from textual.containers import Horizontal
 from thegent.compositor import OutputWidget, StatusWidget
 
+
 class MyApp(App):
     def compose(self) -> ComposeResult:
         with Horizontal():
             yield OutputWidget(id="output")
             yield StatusWidget(id="status")
+
 
 app = MyApp()
 app.run()
@@ -266,10 +268,8 @@ thegent/
 ```python
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
-from thegent.compositor import (
-    OutputWidget, StatusWidget, SidebarWidget,
-    HeaderWidget, FooterStatusBar, MetricsPanel
-)
+from thegent.compositor import OutputWidget, StatusWidget, SidebarWidget, HeaderWidget, FooterStatusBar, MetricsPanel
+
 
 class Dashboard(App):
     def compose(self) -> ComposeResult:
@@ -290,6 +290,7 @@ class Dashboard(App):
         output.write("Dashboard ready", style="green", timestamp=True)
         status.update_status("ready", model="claude-opus")
         sidebar.add_agent("worker-1", "Agent 1", "idle")
+
 
 if __name__ == "__main__":
     Dashboard().run()

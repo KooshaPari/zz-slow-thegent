@@ -196,6 +196,7 @@ def _get_native_parser():
     """Lazy import of thegent_parser native extension."""
     # ... implementation (see existing code)
 
+
 def extract_tags(text: str, tags: list[str] | None = None) -> dict[str, str]:
     native = _get_native_parser()
     if native is not None:
@@ -259,6 +260,7 @@ subtle = "2.5"
 def _get_native_crypto():
     """Lazy import of thegent_crypto native extension."""
     # ... implementation (see existing code)
+
 
 def sign_artifact(artifact: dict, secret_key: str) -> str:
     native = _get_native_crypto()
@@ -377,6 +379,7 @@ def _get_native_shm():
     """Lazy import of thegent_shm native extension."""
     # ... implementation
 
+
 class CircuitBreakerRegistry:
     def __init__(self):
         native = _get_native_shm()
@@ -483,6 +486,7 @@ fn thegent_git(m: &Bound<'_, PyModule>) -> PyResult<()> {
 def _get_native_git():
     """Lazy import of thegent_git native extension."""
     # ... implementation
+
 
 def _get_git_branch(self, root: Path) -> str:
     native = _get_native_git()
@@ -711,6 +715,7 @@ mod tests {
 def test_native_fallback():
     """Test Python fallback when native unavailable."""
     import os
+
     old = os.environ.get("THGENT_USE_NATIVE_PARSER")
     os.environ.pop("THGENT_USE_NATIVE_PARSER", None)
     try:

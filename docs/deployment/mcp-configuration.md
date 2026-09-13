@@ -93,10 +93,7 @@ Verify that atoms-mcp-prod is automatically composed:
 from atomsAgent.mcp.integration import compose_mcp_servers
 
 # Compose servers (atoms-mcp-prod should be included automatically)
-servers = await compose_mcp_servers(
-    user_id="user-123",
-    user_token="jwt-token-here"
-)
+servers = await compose_mcp_servers(user_id="user-123", user_token="jwt-token-here")
 
 # Check that atoms-mcp-prod is included
 assert "atoms-mcp" in servers

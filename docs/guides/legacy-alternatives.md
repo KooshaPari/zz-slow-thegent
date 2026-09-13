@@ -213,14 +213,17 @@ import "net/http"
 ```python
 # Old (psycopg2)
 import psycopg2
+
 conn = psycopg2.connect(...)
 
 # New (psycopg3 - sync)
 import psycopg
+
 conn = psycopg.connect(...)
 
 # Or (asyncpg - async)
 import asyncpg
+
 conn = await asyncpg.connect(...)
 ```
 

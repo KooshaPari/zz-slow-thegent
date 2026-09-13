@@ -84,6 +84,7 @@ import json
 import subprocess
 from pathlib import Path
 
+
 class AgentMetricsReporter:
     def __init__(self, agent_id: str):
         self.agent_id = agent_id
@@ -105,6 +106,7 @@ class AgentMetricsReporter:
         for key, value in self.metrics.items():
             args.append(f"{key}={value}")
         subprocess.run(args, check=False)
+
 
 # Usage
 reporter = AgentMetricsReporter("agent-1")
@@ -159,6 +161,7 @@ import subprocess
 import json
 from pathlib import Path
 
+
 class ThegentSwarmBridge:
     def __init__(self):
         self.controller_cmd = "python3 scripts/swarm_controller.py"
@@ -173,28 +176,21 @@ class ThegentSwarmBridge:
         )
 
         # Register with controller
-        subprocess.run([
-            self.controller_cmd, "--update-metrics", agent_id,
-            f"pid={proc.pid}",
-            "task_progress=0",
-            "error_count=0"
-        ])
+        subprocess.run(
+            [self.controller_cmd, "--update-metrics", agent_id, f"pid={proc.pid}", "task_progress=0", "error_count=0"]
+        )
 
         return proc.pid
 
     def report_progress(self, agent_id: str, progress: int, errors: int):
         """Report agent progress."""
-        subprocess.run([
-            self.controller_cmd, "--update-metrics", agent_id,
-            f"task_progress={progress}",
-            f"error_count={errors}"
-        ])
+        subprocess.run(
+            [self.controller_cmd, "--update-metrics", agent_id, f"task_progress={progress}", f"error_count={errors}"]
+        )
 
     def can_spawn_agent(self) -> bool:
         """Check if system can spawn new agent."""
-        result = subprocess.run([
-            self.controller_cmd, "--status"
-        ], capture_output=True, text=True)
+        result = subprocess.run([self.controller_cmd, "--status"], capture_output=True, text=True)
 
         if result.returncode != 0:
             return True  # Assume OK if controller not ready
@@ -215,31 +211,29 @@ from prefect import task, flow
 from prefect.engine import get_state
 import subprocess
 
+
 class PrefectSwarmReporter:
     @staticmethod
     def report_task_start(agent_id: str, task_name: str):
-        subprocess.run([
-            "python3", "scripts/swarm_controller.py",
-            "--update-metrics", agent_id,
-            "task_progress=1"
-        ])
+        subprocess.run(["python3", "scripts/swarm_controller.py", "--update-metrics", agent_id, "task_progress=1"])
 
     @staticmethod
     def report_task_complete(agent_id: str, task_name: str):
-        subprocess.run([
-            "python3", "scripts/swarm_controller.py",
-            "--update-metrics", agent_id,
-            "task_progress=10"
-        ])
+        subprocess.run(["python3", "scripts/swarm_controller.py", "--update-metrics", agent_id, "task_progress=10"])
 
     @staticmethod
     def report_task_error(agent_id: str, error_msg: str):
-        subprocess.run([
-            "python3", "scripts/swarm_controller.py",
-            "--update-metrics", agent_id,
-            f"last_error={error_msg}",
-            "error_count=1"
-        ])
+        subprocess.run(
+            [
+                "python3",
+                "scripts/swarm_controller.py",
+                "--update-metrics",
+                agent_id,
+                f"last_error={error_msg}",
+                "error_count=1",
+            ]
+        )
+
 
 @flow(name="prefect-swarm-flow")
 def my_flow():
@@ -260,6 +254,7 @@ def my_flow():
         # Error: report to controller
         PrefectSwarmReporter.report_task_error(agent_id, str(e))
         raise
+
 
 @task
 def my_task():
@@ -367,10 +362,9 @@ import json
 import subprocess
 from datetime import datetime
 
+
 def check_swarm_health():
-    result = subprocess.run([
-        "python3", "scripts/swarm_controller.py", "--status"
-    ], capture_output=True, text=True)
+    result = subprocess.run(["python3", "scripts/swarm_controller.py", "--status"], capture_output=True, text=True)
 
     if result.returncode != 0:
         return
@@ -398,9 +392,11 @@ def check_swarm_health():
     for alert in alerts:
         send_alert(alert)
 
+
 def send_alert(message: str):
     # Your alerting logic (email, Slack, etc.)
     print(f"[{datetime.now()}] {message}")
+
 
 if __name__ == "__main__":
     check_swarm_health()

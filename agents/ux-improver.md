@@ -115,7 +115,7 @@ task_id = log_friction(
     description="Error messages don't suggest fixes",
     impact="Faster debugging, clearer next steps",
     solution="Add suggested fixes to all error messages",
-    priority="P2"
+    priority="P2",
 )
 ```
 

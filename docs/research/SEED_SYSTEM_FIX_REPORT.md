@@ -43,6 +43,7 @@ def __post_init__(self):
     if isinstance(self.source, str):
         self.source = SeedSource(self.source)
 
+
 def to_dict(self) -> dict:
     """Convert to dictionary for JSON serialization."""
     source_value = self.source.value if isinstance(self.source, SeedSource) else self.source

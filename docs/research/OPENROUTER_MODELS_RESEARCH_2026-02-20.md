@@ -411,9 +411,9 @@ def openrouter_model_to_codex(
         # --- Reasoning ---
         "default_reasoning_level": default_reasoning_level,
         "supported_reasoning_levels": [
-            {"effort": "low",    "description": "Fast responses with lighter reasoning"},
+            {"effort": "low", "description": "Fast responses with lighter reasoning"},
             {"effort": "medium", "description": "Balances speed and reasoning depth for everyday tasks"},
-            {"effort": "high",   "description": "Greater reasoning depth for complex problems"},
+            {"effort": "high", "description": "Greater reasoning depth for complex problems"},
         ],
         # --- Shell / API ---
         "shell_type": shell_type,
@@ -520,9 +520,9 @@ for known_id, known_meta in MODEL_METADATA.items():
         "description": f"{known_meta.get('provider', 'unknown')} model",
         "default_reasoning_level": "medium",
         "supported_reasoning_levels": [
-            {"effort": "low",    "description": "Fast responses with lighter reasoning"},
+            {"effort": "low", "description": "Fast responses with lighter reasoning"},
             {"effort": "medium", "description": "Balanced"},
-            {"effort": "high",   "description": "Thorough, higher quality"},
+            {"effort": "high", "description": "Thorough, higher quality"},
         ],
         "shell_type": "shell_command",
         "visibility": "list",

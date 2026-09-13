@@ -71,6 +71,7 @@ To verify everything is working:
 
 ```python
 from thegent.routing.model_metadata import has_model_metadata
+
 assert has_model_metadata("glm-5")
 assert has_model_metadata("minimax-m2.5")
 ```

@@ -243,20 +243,22 @@ A typed message schema for all agent-to-agent communication. Implemented as `pyd
 ```python
 # src/thegent/orchestration/protocol.py
 
+
 class SubAgentRequest(BaseModel):
-    request_id: str          # UUID
-    parent_run_id: str       # Correlation with orchestrating run
-    node_id: str             # PlanNode.id
-    task: str                # Natural-language task description
-    agent_name: str          # Resolved agent runner name
-    model: str               # Resolved model alias
+    request_id: str  # UUID
+    parent_run_id: str  # Correlation with orchestrating run
+    node_id: str  # PlanNode.id
+    task: str  # Natural-language task description
+    agent_name: str  # Resolved agent runner name
+    model: str  # Resolved model alias
     cwd: Path | None
-    mode: str                # "read-only" | "write" | "full"
+    mode: str  # "read-only" | "write" | "full"
     sandbox: str
-    budget_tokens: int       # 0 = unlimited
+    budget_tokens: int  # 0 = unlimited
     timeout_s: float
-    context: dict            # Freeform key/value context from parent
+    context: dict  # Freeform key/value context from parent
     output_schema: dict | None
+
 
 class SubAgentResult(BaseModel):
     request_id: str
@@ -271,14 +273,16 @@ class SubAgentResult(BaseModel):
     model: str
     exit_code: int
 
+
 class SubAgentEvent(BaseModel):
     """Streaming event emitted during sub-agent execution."""
+
     event_id: str
     request_id: str
     node_id: str
     event_type: Literal["started", "output_delta", "completed", "failed"]
-    data: str                # Delta text or final output
-    timestamp: float         # monotonic
+    data: str  # Delta text or final output
+    timestamp: float  # monotonic
 ```
 
 **Wire format**: JSONL. Events written to an async queue consumed by the orchestrator.
@@ -291,6 +295,7 @@ The dispatcher translates an `OrchestrationPlan` + plan wave into concurrent `Su
 
 ```python
 # src/thegent/orchestration/dispatcher.py
+
 
 class SubAgentDispatcher:
     """Dispatches ready PlanNodes as typed SubAgentRequests to AgentRunners.
@@ -347,6 +352,7 @@ Merges `SubAgentResult` objects from a completed plan wave into a structured sum
 ```python
 # src/thegent/orchestration/aggregator.py
 
+
 class AggregationResult(BaseModel):
     plan_id: str
     total_nodes: int
@@ -355,10 +361,11 @@ class AggregationResult(BaseModel):
     total_tokens_in: int
     total_tokens_out: int
     total_elapsed_s: float
-    outputs: dict[str, str]        # node_id -> output
-    errors: dict[str, str]         # node_id -> error message
+    outputs: dict[str, str]  # node_id -> output
+    errors: dict[str, str]  # node_id -> error message
     partial_failure: bool
     budget_exceeded: bool
+
 
 class ResultAggregator:
     """Merges SubAgentResults from a plan wave.

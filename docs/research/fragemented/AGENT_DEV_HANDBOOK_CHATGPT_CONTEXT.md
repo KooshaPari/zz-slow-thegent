@@ -1078,10 +1078,12 @@ def test_valid_visa_accepted(validator):
     result = validator.validate("4532015112830366")
     assert result.validity == CardValidity.VALID
 
+
 @pytest.mark.requirement("FR-PAY-101")
 def test_invalid_checksum_rejected(validator):
     result = validator.validate("4532015112830367")
     assert result.validity == CardValidity.INVALID
+
 
 @given(card_number=st.integers(min_value=int(1e15), max_value=int(1e16)).map(str))
 @pytest.mark.requirement("FR-PAY-101")
@@ -1096,13 +1098,15 @@ def test_validator_never_crashes(validator, card_number):
 """
 @trace FR-PAY-101, FR-PAY-102, FR-PAY-103
 """
+
+
 class CardValidator:
     def validate(self, card_number: str) -> CardValidationResult:
-        if not self._is_valid_format(card_number):   # FR-PAY-102
+        if not self._is_valid_format(card_number):  # FR-PAY-102
             return CardValidationResult(CardValidity.INVALID, ...)
-        if not self._luhn_valid(card_number):         # FR-PAY-101
+        if not self._luhn_valid(card_number):  # FR-PAY-101
             return CardValidationResult(CardValidity.INVALID, ...)
-        brand = self._detect_brand(card_number)       # FR-PAY-101
+        brand = self._detect_brand(card_number)  # FR-PAY-101
         return CardValidationResult(CardValidity.VALID, Card(card_number[-4:], brand))
 ```
 

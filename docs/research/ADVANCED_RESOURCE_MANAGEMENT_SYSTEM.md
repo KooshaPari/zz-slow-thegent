@@ -121,7 +121,7 @@ cursor_card = cards["cursor-agent"]
 estimated = cursor_card.estimate_resources(
     session_count=10,
     isolated=False,
-    use_p95=True  # Use p95 for conservative planning
+    use_p95=True,  # Use p95 for conservative planning
 )
 
 # Returns comprehensive dictionary with min/avg/peak/p95 for all resources:

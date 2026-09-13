@@ -74,68 +74,68 @@ logger = logging.getLogger(__name__)
 
 # Comprehensive LSP server registry
 LSP_SERVERS = {
-    'python': {
-        'command': 'pyright-langserver',
-        'args': ['--stdio'],
-        'install': 'npm install -g pyright',
-        'supports_multi_client': True,
-        'supports_multi_root': True,
+    "python": {
+        "command": "pyright-langserver",
+        "args": ["--stdio"],
+        "install": "npm install -g pyright",
+        "supports_multi_client": True,
+        "supports_multi_root": True,
     },
-    'typescript': {
-        'command': 'typescript-language-server',
-        'args': ['--stdio'],
-        'install': 'npm install -g typescript-language-server typescript',
-        'supports_multi_client': True,
-        'supports_multi_root': True,
+    "typescript": {
+        "command": "typescript-language-server",
+        "args": ["--stdio"],
+        "install": "npm install -g typescript-language-server typescript",
+        "supports_multi_client": True,
+        "supports_multi_root": True,
     },
-    'rust': {
-        'command': 'rust-analyzer',
-        'args': [],
-        'install': 'rustup component add rust-analyzer',
-        'supports_multi_client': True,
-        'supports_multi_root': True,
+    "rust": {
+        "command": "rust-analyzer",
+        "args": [],
+        "install": "rustup component add rust-analyzer",
+        "supports_multi_client": True,
+        "supports_multi_root": True,
     },
-    'go': {
-        'command': 'gopls',
-        'args': ['-mode=stdio'],
-        'install': 'go install golang.org/x/tools/gopls@latest',
-        'supports_multi_client': True,
-        'supports_multi_root': True,
+    "go": {
+        "command": "gopls",
+        "args": ["-mode=stdio"],
+        "install": "go install golang.org/x/tools/gopls@latest",
+        "supports_multi_client": True,
+        "supports_multi_root": True,
     },
-    'java': {
-        'command': 'jdtls',  # Eclipse JDT Language Server
-        'args': [],
-        'install': 'See: https://github.com/eclipse/eclipse.jdt.ls',
-        'supports_multi_client': True,
-        'supports_multi_root': True,
+    "java": {
+        "command": "jdtls",  # Eclipse JDT Language Server
+        "args": [],
+        "install": "See: https://github.com/eclipse/eclipse.jdt.ls",
+        "supports_multi_client": True,
+        "supports_multi_root": True,
     },
-    'cpp': {
-        'command': 'clangd',
-        'args': [],
-        'install': 'brew install llvm  # or apt-get install clangd',
-        'supports_multi_client': True,
-        'supports_multi_root': True,
+    "cpp": {
+        "command": "clangd",
+        "args": [],
+        "install": "brew install llvm  # or apt-get install clangd",
+        "supports_multi_client": True,
+        "supports_multi_root": True,
     },
-    'bash': {
-        'command': 'bash-language-server',
-        'args': ['start'],
-        'install': 'npm install -g bash-language-server',
-        'supports_multi_client': True,
-        'supports_multi_root': True,
+    "bash": {
+        "command": "bash-language-server",
+        "args": ["start"],
+        "install": "npm install -g bash-language-server",
+        "supports_multi_client": True,
+        "supports_multi_root": True,
     },
-    'yaml': {
-        'command': 'yaml-language-server',
-        'args': ['--stdio'],
-        'install': 'npm install -g yaml-language-server',
-        'supports_multi_client': True,
-        'supports_multi_root': True,
+    "yaml": {
+        "command": "yaml-language-server",
+        "args": ["--stdio"],
+        "install": "npm install -g yaml-language-server",
+        "supports_multi_client": True,
+        "supports_multi_root": True,
     },
-    'json': {
-        'command': 'vscode-json-languageserver',
-        'args': ['--stdio'],
-        'install': 'npm install -g vscode-json-languageserver',
-        'supports_multi_client': True,
-        'supports_multi_root': True,
+    "json": {
+        "command": "vscode-json-languageserver",
+        "args": ["--stdio"],
+        "install": "npm install -g vscode-json-languageserver",
+        "supports_multi_client": True,
+        "supports_multi_root": True,
     },
 }
 
@@ -153,11 +153,12 @@ class HeadlessLSPServer:
 
     def start(self) -> bool:
         """Start LSP server process."""
-        command = self.config['command']
-        args = self.config.get('args', [])
+        command = self.config["command"]
+        args = self.config.get("args", [])
 
         # Check if command exists
         import shutil
+
         cmd_path = shutil.which(command)
         if not cmd_path:
             logger.error(f"LSP server '{command}' not found. Install: {self.config.get('install', 'N/A')}")
@@ -248,10 +249,10 @@ class HeadlessLSPManager:
         """List all running servers."""
         return {
             lang: {
-                'pid': server.pid,
-                'running': server.is_running(),
-                'started_at': server.started_at,
-                'clients': len(server.clients),
+                "pid": server.pid,
+                "running": server.is_running(),
+                "started_at": server.started_at,
+                "clients": len(server.clients),
             }
             for lang, server in self.servers.items()
         }
@@ -259,14 +260,14 @@ class HeadlessLSPManager:
     def _save_state(self) -> None:
         """Save manager state to lockfile."""
         state = {
-            'servers': {
+            "servers": {
                 lang: {
-                    'pid': server.pid,
-                    'started_at': server.started_at,
+                    "pid": server.pid,
+                    "started_at": server.started_at,
                 }
                 for lang, server in self.servers.items()
             },
-            'updated_at': time.time(),
+            "updated_at": time.time(),
         }
         self.lockfile.write_text(json.dumps(state, indent=2))
 ```
@@ -291,6 +292,7 @@ import shutil
 from pathlib import Path
 from typing import Optional, Dict, Any
 
+
 class JetBrainsCLI:
     """Wrapper for JetBrains IDE CLI tools."""
 
@@ -309,14 +311,14 @@ class JetBrainsCLI:
             return provided_path
 
         # Check PATH
-        idea_cmd = shutil.which('idea')
+        idea_cmd = shutil.which("idea")
         if idea_cmd:
             return Path(idea_cmd)
 
         # Check common macOS locations
         macos_paths = [
-            Path('/Applications/IntelliJ IDEA.app/Contents/MacOS/idea'),
-            Path.home() / 'Applications' / 'IntelliJ IDEA.app' / 'Contents' / 'MacOS' / 'idea',
+            Path("/Applications/IntelliJ IDEA.app/Contents/MacOS/idea"),
+            Path.home() / "Applications" / "IntelliJ IDEA.app" / "Contents" / "MacOS" / "idea",
         ]
         for path in macos_paths:
             if path.exists():
@@ -324,8 +326,8 @@ class JetBrainsCLI:
 
         # Check Linux locations
         linux_paths = [
-            Path('/opt/idea/bin/idea.sh'),
-            Path.home() / '.local' / 'share' / 'JetBrains' / 'Toolbox' / 'scripts' / 'idea',
+            Path("/opt/idea/bin/idea.sh"),
+            Path.home() / ".local" / "share" / "JetBrains" / "Toolbox" / "scripts" / "idea",
         ]
         for path in linux_paths:
             if path.exists():
@@ -344,11 +346,11 @@ class JetBrainsCLI:
             Dict with 'success', 'stdout', 'stderr'
         """
         if not self.ide_path:
-            return {'success': False, 'error': 'IntelliJ IDEA not found'}
+            return {"success": False, "error": "IntelliJ IDEA not found"}
 
-        cmd = [str(self.ide_path), 'format']
+        cmd = [str(self.ide_path), "format"]
         if project_root:
-            cmd.extend(['--project', str(project_root)])
+            cmd.extend(["--project", str(project_root)])
         cmd.extend([str(f) for f in files])
 
         try:
@@ -359,13 +361,13 @@ class JetBrainsCLI:
                 timeout=300,
             )
             return {
-                'success': result.returncode == 0,
-                'stdout': result.stdout,
-                'stderr': result.stderr,
-                'returncode': result.returncode,
+                "success": result.returncode == 0,
+                "stdout": result.stdout,
+                "stderr": result.stderr,
+                "returncode": result.returncode,
             }
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            return {"success": False, "error": str(e)}
 
     def inspect(self, project_root: Path, profile: Optional[str] = None) -> Dict[str, Any]:
         """Run code inspections using IntelliJ IDEA.
@@ -378,11 +380,11 @@ class JetBrainsCLI:
             Dict with inspection results
         """
         if not self.ide_path:
-            return {'success': False, 'error': 'IntelliJ IDEA not found'}
+            return {"success": False, "error": "IntelliJ IDEA not found"}
 
-        cmd = [str(self.ide_path), 'inspect', str(project_root)]
+        cmd = [str(self.ide_path), "inspect", str(project_root)]
         if profile:
-            cmd.extend(['--profile', profile])
+            cmd.extend(["--profile", profile])
 
         try:
             result = subprocess.run(
@@ -392,13 +394,13 @@ class JetBrainsCLI:
                 timeout=600,
             )
             return {
-                'success': result.returncode == 0,
-                'stdout': result.stdout,
-                'stderr': result.stderr,
-                'returncode': result.returncode,
+                "success": result.returncode == 0,
+                "stdout": result.stdout,
+                "stderr": result.stderr,
+                "returncode": result.returncode,
             }
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            return {"success": False, "error": str(e)}
 
     def diff(self, file1: Path, file2: Path) -> Dict[str, Any]:
         """Show diff between two files.
@@ -411,9 +413,9 @@ class JetBrainsCLI:
             Dict with diff output
         """
         if not self.ide_path:
-            return {'success': False, 'error': 'IntelliJ IDEA not found'}
+            return {"success": False, "error": "IntelliJ IDEA not found"}
 
-        cmd = [str(self.ide_path), 'diff', str(file1), str(file2)]
+        cmd = [str(self.ide_path), "diff", str(file1), str(file2)]
 
         try:
             result = subprocess.run(
@@ -423,13 +425,13 @@ class JetBrainsCLI:
                 timeout=60,
             )
             return {
-                'success': result.returncode == 0,
-                'stdout': result.stdout,
-                'stderr': result.stderr,
-                'returncode': result.returncode,
+                "success": result.returncode == 0,
+                "stdout": result.stdout,
+                "stderr": result.stderr,
+                "returncode": result.returncode,
             }
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            return {"success": False, "error": str(e)}
 
     def merge(self, file1: Path, file2: Path, base: Path, output: Path) -> Dict[str, Any]:
         """Merge two files with base.
@@ -444,11 +446,11 @@ class JetBrainsCLI:
             Dict with merge result
         """
         if not self.ide_path:
-            return {'success': False, 'error': 'IntelliJ IDEA not found'}
+            return {"success": False, "error": "IntelliJ IDEA not found"}
 
         cmd = [
             str(self.ide_path),
-            'merge',
+            "merge",
             str(file1),
             str(file2),
             str(base),
@@ -463,13 +465,13 @@ class JetBrainsCLI:
                 timeout=300,
             )
             return {
-                'success': result.returncode == 0,
-                'stdout': result.stdout,
-                'stderr': result.stderr,
-                'returncode': result.returncode,
+                "success": result.returncode == 0,
+                "stdout": result.stdout,
+                "stderr": result.stderr,
+                "returncode": result.returncode,
             }
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            return {"success": False, "error": str(e)}
 ```
 
 ---
@@ -492,6 +494,7 @@ import json
 from pathlib import Path
 from typing import Optional, Dict, Any
 
+
 class JetBrainsGateway:
     """Manages JetBrains Gateway for headless backend access."""
 
@@ -511,8 +514,8 @@ class JetBrainsGateway:
 
         # Check common locations
         macos_paths = [
-            Path('/Applications/JetBrains Gateway.app/Contents/MacOS/gateway'),
-            Path.home() / 'Applications' / 'JetBrains Gateway.app' / 'Contents' / 'MacOS' / 'gateway',
+            Path("/Applications/JetBrains Gateway.app/Contents/MacOS/gateway"),
+            Path.home() / "Applications" / "JetBrains Gateway.app" / "Contents" / "MacOS" / "gateway",
         ]
         for path in macos_paths:
             if path.exists():
@@ -537,7 +540,7 @@ class JetBrainsGateway:
             Dict with backend connection info
         """
         if not self.gateway_path:
-            return {'success': False, 'error': 'JetBrains Gateway not found'}
+            return {"success": False, "error": "JetBrains Gateway not found"}
 
         # For local backend, we can use Gateway CLI
         # For remote, we'd use SSH connection
@@ -545,13 +548,15 @@ class JetBrainsGateway:
 
         cmd = [
             str(self.gateway_path),
-            'start',
-            '--project', str(project_root),
-            '--ide', ide_version,
+            "start",
+            "--project",
+            str(project_root),
+            "--ide",
+            ide_version,
         ]
 
         if ssh_host:
-            cmd.extend(['--host', ssh_host])
+            cmd.extend(["--host", ssh_host])
 
         try:
             result = subprocess.run(
@@ -565,16 +570,16 @@ class JetBrainsGateway:
                 # Parse connection info from output
                 # Gateway returns connection details
                 return {
-                    'success': True,
-                    'connection_info': result.stdout,
+                    "success": True,
+                    "connection_info": result.stdout,
                 }
             else:
                 return {
-                    'success': False,
-                    'error': result.stderr,
+                    "success": False,
+                    "error": result.stderr,
                 }
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            return {"success": False, "error": str(e)}
 ```
 
 ---
@@ -586,6 +591,7 @@ class JetBrainsGateway:
 ```python
 lsp_app = typer.Typer(help="Headless LSP server management")
 app.add_typer(lsp_app, name="lsp")
+
 
 @lsp_app.command("start")
 def lsp_start(
@@ -603,6 +609,7 @@ def lsp_start(
         console.print(f"[red]Failed to start LSP server: {language}[/red]")
         raise typer.Exit(1)
 
+
 @lsp_app.command("stop")
 def lsp_stop(
     language: str = typer.Argument(..., help="Language to stop"),
@@ -613,6 +620,7 @@ def lsp_stop(
     manager = HeadlessLSPManager()
     manager.stop_server(language)
     console.print(f"[green]Stopped LSP server: {language}[/green]")
+
 
 @lsp_app.command("list")
 def lsp_list():
@@ -630,11 +638,12 @@ def lsp_list():
     table.add_column("Uptime", style="white")
 
     for lang, info in servers.items():
-        status = "✅ Running" if info['running'] else "❌ Stopped"
-        uptime = f"{int(time.time() - info['started_at'])}s" if info['started_at'] else "N/A"
-        table.add_row(lang, str(info['pid']), status, uptime)
+        status = "✅ Running" if info["running"] else "❌ Stopped"
+        uptime = f"{int(time.time() - info['started_at'])}s" if info["started_at"] else "N/A"
+        table.add_row(lang, str(info["pid"]), status, uptime)
 
     console.print(table)
+
 
 @lsp_app.command("format")
 def lsp_format(
@@ -647,11 +656,12 @@ def lsp_format(
     cli = JetBrainsCLI()
     result = cli.format(files, project)
 
-    if result['success']:
+    if result["success"]:
         console.print("[green]Files formatted successfully[/green]")
     else:
         console.print(f"[red]Format failed: {result.get('error', result.get('stderr'))}[/red]")
         raise typer.Exit(1)
+
 
 @lsp_app.command("inspect")
 def lsp_inspect(
@@ -664,8 +674,8 @@ def lsp_inspect(
     cli = JetBrainsCLI()
     result = cli.inspect(project, profile)
 
-    if result['success']:
-        console.print(result['stdout'])
+    if result["success"]:
+        console.print(result["stdout"])
     else:
         console.print(f"[red]Inspection failed: {result.get('error', result.get('stderr'))}[/red]")
         raise typer.Exit(1)

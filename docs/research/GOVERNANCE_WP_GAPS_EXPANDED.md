@@ -80,6 +80,7 @@ The DLQ integration is implemented in `src/thegent/execution.py` and `src/thegen
 from thegent.execution import DLQManager, EscalationQueue
 from thegent.governance.escalation import EscalationPriority
 
+
 class DLQEscalationIntegration:
     """Integrates DLQ with escalation queue."""
 
@@ -104,12 +105,9 @@ class DLQEscalationIntegration:
                 blocked_run=run_id,
                 reason=f"DLQ exhausted: {item.get('reason', 'Unknown')}",
                 sla_minutes=30,  # Default SLA
-                priority=EscalationPriority.HIGH
+                priority=EscalationPriority.HIGH,
             )
-            logger.warning(
-                f"DLQ item {run_id} exhausted recovery attempts, "
-                f"escalated to governance queue"
-            )
+            logger.warning(f"DLQ item {run_id} exhausted recovery attempts, escalated to governance queue")
 ```
 
 **Integration Points**:

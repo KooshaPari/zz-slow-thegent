@@ -87,6 +87,7 @@ is_dev = not is_installed and (pkg_path.parent.parent / "pyproject.toml").exists
 def _is_dev_mode() -> bool:
     """Detect if running from dev repo vs installed package."""
     import thegent
+
     pkg_path = Path(thegent.__file__).resolve().parent
     # Check if we're in a repo (has pyproject.toml nearby)
     for parent in [pkg_path.parent, pkg_path.parent.parent, pkg_path.parent.parent.parent]:
@@ -263,6 +264,7 @@ import site
 from pathlib import Path
 from typing import Optional
 
+
 def _is_dev_mode() -> bool:
     """Detect if running from dev repo vs installed package.
 
@@ -278,6 +280,7 @@ def _is_dev_mode() -> bool:
 
     # Auto-detect: check if package is in site-packages
     import thegent
+
     pkg_path = Path(thegent.__file__).resolve().parent
 
     # Check site-packages
@@ -293,12 +296,14 @@ def _is_dev_mode() -> bool:
     # Fallback: assume installed (safer)
     return False
 
+
 def _get_thegent_root() -> Optional[Path]:
     """Get thegent root directory (dev repo) or None if installed."""
     if not _is_dev_mode():
         return None
 
     import thegent
+
     pkg_path = Path(thegent.__file__).resolve().parent
     for parent in [pkg_path.parent, pkg_path.parent.parent, pkg_path.parent.parent.parent]:
         if (parent / "pyproject.toml").exists() and (parent / "src" / "thegent").exists():
@@ -313,17 +318,20 @@ def _get_thegent_root() -> Optional[Path]:
 from pathlib import Path
 import os
 
+
 def _get_user_config_dir() -> Path:
     """Get user config directory (XDG compliant)."""
     if "XDG_CONFIG_HOME" in os.environ:
         return Path(os.environ["XDG_CONFIG_HOME"]) / "thegent"
     return Path.home() / ".config" / "thegent"
 
+
 def _get_user_data_dir() -> Path:
     """Get user data directory (XDG compliant)."""
     if "XDG_DATA_HOME" in os.environ:
         return Path(os.environ["XDG_DATA_HOME"]) / "thegent"
     return Path.home() / ".local" / "share" / "thegent"
+
 
 # Add to ThegentSettings
 hooks_dir: Path = Field(
@@ -474,6 +482,7 @@ packages = ["src/thegent"]
 ```python
 import importlib.resources
 from pathlib import Path
+
 
 def _get_package_hooks_dir() -> Path | None:
     """Get hooks directory from installed package."""

@@ -555,6 +555,7 @@ from tenacity import (
     retry_if_exception_type,
 )
 
+
 @retry(
     stop=stop_after_attempt(5),
     wait=wait_exponential(multiplier=1, min=2, max=60),
@@ -584,6 +585,7 @@ breaker = CircuitBreaker(
     listeners=[on_open, on_close],
 )
 
+
 def call_api():
     try:
         return breaker.call(requests.get, "https://api.example.com")
@@ -604,6 +606,7 @@ def call_api():
 **Example**:
 ```python
 from resilience4py import CircuitBreaker, Bulkhead, Retry
+
 
 @CircuitBreaker(max_failures=5, timeout=60)
 @Bulkhead(max_concurrent_calls=10)
@@ -629,10 +632,12 @@ from apscheduler.triggers.interval import IntervalTrigger
 
 scheduler = BackgroundScheduler()
 
+
 @scheduler.scheduled_job(IntervalTrigger(seconds=10))
 def health_check():
     # Runs every 10 seconds
     check_system_health()
+
 
 scheduler.start()
 ```
@@ -650,11 +655,13 @@ scheduler.start()
 ```python
 from pydantic import BaseModel, Field
 
+
 class ResilienceConfig(BaseModel):
     circuit_breaker_threshold: int = Field(default=5, ge=1, le=100)
     timeout_seconds: float = Field(default=30, gt=0, le=300)
     retry_max_attempts: int = Field(default=3, ge=1, le=10)
     bulkhead_max_concurrent: int = Field(default=50, ge=1, le=1000)
+
 
 config = ResilienceConfig()
 ```
@@ -861,11 +868,13 @@ import asyncio
 from dataclasses import dataclass
 from enum import Enum
 
+
 class HealthStatus(Enum):
     HEALTHY = "healthy"
     SLOW = "slow"
     UNHEALTHY = "unhealthy"
     CRASHED = "crashed"
+
 
 @dataclass
 class AgentHealth:
@@ -874,6 +883,7 @@ class AgentHealth:
     last_heartbeat: float
     response_time_ms: float
     error_count: int
+
 
 async def health_check_agent(agent_id: str, timeout: float = 5.0) -> AgentHealth:
     """Check if agent is responsive."""
@@ -916,6 +926,7 @@ async def health_check_agent(agent_id: str, timeout: float = 5.0) -> AgentHealth
             error_count=999,
         )
 
+
 async def monitor_agent_health(agent_ids: list[str], interval_sec: int = 10):
     """Continuously monitor agent health."""
     while True:
@@ -950,11 +961,13 @@ import signal
 from enum import Enum
 from dataclasses import dataclass
 
+
 class AgentState(Enum):
     RUNNING = "running"
     PAUSED = "paused"
     DRAINING = "draining"  # Finishing current task
     RESTARTING = "restarting"
+
 
 @dataclass
 class Agent:
@@ -962,6 +975,7 @@ class Agent:
     state: AgentState
     current_task: str = None
     checkpoint: dict = None
+
 
 async def pause_agent(agent: Agent, graceful: bool = True):
     """Pause agent gracefully."""
@@ -979,6 +993,7 @@ async def pause_agent(agent: Agent, graceful: bool = True):
         agent.state = AgentState.PAUSED
         print(f"Agent {agent.pid} paused (state preserved)")
 
+
 async def resume_agent(agent: Agent):
     """Resume paused agent."""
     if agent.state == AgentState.PAUSED:
@@ -986,6 +1001,7 @@ async def resume_agent(agent: Agent):
         os.kill(agent.pid, signal.SIGCONT)
         agent.state = AgentState.RUNNING
         print(f"Agent {agent.pid} resumed")
+
 
 async def restart_agent_with_backoff(agent: Agent, max_retries: int = 5):
     """Restart with exponential backoff."""
@@ -1028,11 +1044,13 @@ async def restart_agent_with_backoff(agent: Agent, max_retries: int = 5):
 import psutil
 from dataclasses import dataclass
 
+
 @dataclass
 class ResourceThresholds:
     cpu_percent_max: float = 80.0
     memory_percent_max: float = 85.0
     memory_gb_max: float = 8.0
+
 
 async def monitor_agent_resources(
     agent_pid: int,
@@ -1046,7 +1064,7 @@ async def monitor_agent_resources(
         cpu_percent = process.cpu_percent(interval=1)
         memory_info = process.memory_info()
         memory_percent = process.memory_percent()
-        memory_gb = memory_info.rss / (1024 ** 3)
+        memory_gb = memory_info.rss / (1024**3)
 
         # Check thresholds
         if cpu_percent > thresholds.cpu_percent_max:
@@ -1078,11 +1096,13 @@ async def monitor_agent_resources(
 from collections import deque
 from dataclasses import dataclass
 
+
 @dataclass
 class QueueMetrics:
     size: int
     capacity: int
     load_percent: float
+
 
 class BackpressureQueue:
     def __init__(self, max_size: int = 1000):
@@ -1162,10 +1182,7 @@ class AgentSwarm:
         # Step 2: Wait for agents to finish current tasks
         start = time.time()
         while time.time() - start < timeout:
-            active_tasks = sum(
-                1 for agent in self.agents
-                if agent.current_task is not None
-            )
+            active_tasks = sum(1 for agent in self.agents if agent.current_task is not None)
             if active_tasks == 0:
                 print("Step 2: All agents finished their tasks")
                 break
@@ -1198,10 +1215,12 @@ from enum import Enum
 from typing import Callable, Any
 import time
 
+
 class CircuitBreakerState(Enum):
-    CLOSED = "closed"      # Normal operation
-    OPEN = "open"          # Failing fast
+    CLOSED = "closed"  # Normal operation
+    OPEN = "open"  # Failing fast
     HALF_OPEN = "half_open"  # Testing recovery
+
 
 class CircuitBreaker:
     def __init__(
@@ -1282,6 +1301,7 @@ class CircuitBreaker:
 import asyncio
 from typing import Callable, Any
 
+
 class Bulkhead:
     """Isolate resources to prevent cascading failures."""
 
@@ -1299,10 +1319,7 @@ class Bulkhead:
             acquired = self.semaphore._value > 0
             if not acquired and self.active_count >= self.max_concurrent:
                 self.rejected_count += 1
-                raise Exception(
-                    f"{self.name}: Bulkhead exhausted "
-                    f"({self.active_count}/{self.max_concurrent})"
-                )
+                raise Exception(f"{self.name}: Bulkhead exhausted ({self.active_count}/{self.max_concurrent})")
 
             # Acquire permit (might wait)
             async with self.semaphore:
@@ -1314,6 +1331,7 @@ class Bulkhead:
         except asyncio.QueueFull:
             self.rejected_count += 1
             raise
+
 
 class MultiResourceBulkhead:
     """Multiple bulkheads for different resource types."""
@@ -1354,6 +1372,7 @@ class MultiResourceBulkhead:
 import asyncio
 from functools import wraps
 
+
 async def with_timeout_and_fallback(
     func,
     timeout_sec: float,
@@ -1374,22 +1393,23 @@ async def with_timeout_and_fallback(
         else:
             raise
 
+
 # Decorator version
 def timeout_with_fallback(timeout_sec: float, fallback_value=None):
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
             try:
-                return await asyncio.wait_for(
-                    func(*args, **kwargs),
-                    timeout=timeout_sec
-                )
+                return await asyncio.wait_for(func(*args, **kwargs), timeout=timeout_sec)
             except asyncio.TimeoutError:
                 if fallback_value is not None:
                     return fallback_value
                 raise
+
         return wrapper
+
     return decorator
+
 
 # Usage
 @timeout_with_fallback(timeout_sec=5, fallback_value=[])
@@ -1407,6 +1427,7 @@ import os
 from dataclasses import asdict, dataclass
 from typing import Any
 
+
 @dataclass
 class TaskCheckpoint:
     task_id: str
@@ -1415,6 +1436,7 @@ class TaskCheckpoint:
     state: dict[str, Any]
     timestamp: float
     error: str = None
+
 
 class CheckpointManager:
     def __init__(self, checkpoint_dir: str = "/tmp/checkpoints"):
@@ -1444,6 +1466,7 @@ class CheckpointManager:
         if os.path.exists(filename):
             os.remove(filename)
 
+
 class ResumableTask:
     """Task that can be paused and resumed."""
 
@@ -1455,7 +1478,7 @@ class ResumableTask:
         # Determine starting point
         start_idx = 0
         if checkpoint:
-            print(f"Resuming task {task_id} at {checkpoint.progress*100:.1f}%")
+            print(f"Resuming task {task_id} at {checkpoint.progress * 100:.1f}%")
             start_idx = checkpoint.state.get("last_step_idx", 0)
 
         # Execute steps
@@ -1503,6 +1526,7 @@ import asyncio
 from tenacity import retry, stop_after_attempt, wait_exponential
 from pybreaker import CircuitBreaker
 
+
 class ResilientHTTPClient:
     def __init__(self):
         self.client = httpx.AsyncClient(timeout=30)
@@ -1517,6 +1541,7 @@ class ResilientHTTPClient:
     )
     async def get(self, url: str, **kwargs) -> dict:
         """GET with retry and circuit breaker."""
+
         async def _make_request():
             response = await self.client.get(url, **kwargs)
             response.raise_for_status()
@@ -1526,6 +1551,7 @@ class ResilientHTTPClient:
 
     async def close(self):
         await self.client.aclose()
+
 
 # Usage
 client = ResilientHTTPClient()
@@ -1543,12 +1569,14 @@ import asyncio
 import time
 from dataclasses import dataclass
 
+
 @dataclass
 class ConcurrencyStats:
     current: int
     success_count: int
     failure_count: int
     success_rate: float
+
 
 class AdaptiveConcurrency:
     def __init__(self, initial: int = 10, min_conc: int = 1, max_conc: int = 100):
@@ -1596,10 +1624,7 @@ class AdaptiveConcurrency:
                     self.failure_count += 1
                     raise
 
-        return await asyncio.gather(
-            *[bounded_task(t) for t in tasks],
-            return_exceptions=True
-        )
+        return await asyncio.gather(*[bounded_task(t) for t in tasks], return_exceptions=True)
 
     def get_stats(self) -> ConcurrencyStats:
         total = self.success_count + self.failure_count
@@ -1652,6 +1677,7 @@ ADAPTIVE_CONCURRENCY_FAILURE_THRESHOLD=0.80
 
 ```python
 from pydantic_settings import BaseSettings
+
 
 class ResilienceSettings(BaseSettings):
     # Circuit breaker
@@ -1757,6 +1783,7 @@ services:
 from dataclasses import dataclass
 from datetime import datetime
 
+
 @dataclass
 class ResilienceMetrics:
     # Circuit breaker
@@ -1783,6 +1810,7 @@ class ResilienceMetrics:
     # Timestamp
     timestamp: datetime
 
+
 class MetricsCollector:
     def __init__(self):
         self.metrics = []
@@ -1805,11 +1833,9 @@ class MetricsCollector:
             f"# HELP resilience_cb_failures Circuit breaker failures",
             f"# TYPE resilience_cb_failures counter",
             f"resilience_cb_failures {latest.cb_failures}",
-
             f"# HELP resilience_bulkhead_utilization Bulkhead utilization",
             f"# TYPE resilience_bulkhead_utilization gauge",
             f"resilience_bulkhead_utilization {latest.bh_utilization}",
-
             f"# HELP resilience_health_check_passed Health checks passed",
             f"# TYPE resilience_health_check_passed counter",
             f"resilience_health_check_passed {latest.health_checks_passed}",
@@ -1823,6 +1849,7 @@ class MetricsCollector:
 import json
 import logging
 from dataclasses import asdict
+
 
 class JSONFormatter(logging.Formatter):
     def format(self, record):
@@ -1844,6 +1871,7 @@ class JSONFormatter(logging.Formatter):
 
         return json.dumps(log_data)
 
+
 # Setup
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler()
@@ -1851,13 +1879,16 @@ handler.setFormatter(JSONFormatter())
 logger.addHandler(handler)
 
 # Usage
-logger.info("Circuit breaker state changed", extra={
-    "circuit_breaker": {
-        "name": "api_service",
-        "state": "OPEN",
-        "failures": 5,
-    }
-})
+logger.info(
+    "Circuit breaker state changed",
+    extra={
+        "circuit_breaker": {
+            "name": "api_service",
+            "state": "OPEN",
+            "failures": 5,
+        }
+    },
+)
 ```
 
 ---

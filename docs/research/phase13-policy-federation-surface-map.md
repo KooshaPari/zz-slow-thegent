@@ -39,10 +39,7 @@ The `FederatedPolicyEngine` is implemented in `src/thegent/phases/policy_federat
 from thegent.phases.policy_federation import FederatedPolicyEngine
 
 # Initialize with namespace support
-engine = FederatedPolicyEngine(
-    namespace="acme.payments.production",
-    parent_namespaces=["acme.payments", "acme"]
-)
+engine = FederatedPolicyEngine(namespace="acme.payments.production", parent_namespaces=["acme.payments", "acme"])
 
 # Policy resolution with inheritance
 policy = engine.resolve_policy("cost_cap")
@@ -55,9 +52,11 @@ policy = engine.resolve_policy("cost_cap")
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class PolicyNamespace:
     """Represents a policy namespace with inheritance."""
+
     org: str
     project: Optional[str] = None
     environment: Optional[str] = None
@@ -93,16 +92,12 @@ class PolicyConflictResolver:
         Precedence: project > org > default
         """
         # Sort by namespace depth (deeper = higher precedence)
-        sorted_policies = sorted(
-            policies,
-            key=lambda p: len(p['namespace'].split('.')),
-            reverse=True
-        )
+        sorted_policies = sorted(policies, key=lambda p: len(p["namespace"].split(".")), reverse=True)
 
         # Merge policies with precedence
         resolved = {}
         for policy in sorted_policies:
-            resolved.update(policy['rules'])
+            resolved.update(policy["rules"])
 
         return resolved
 ```

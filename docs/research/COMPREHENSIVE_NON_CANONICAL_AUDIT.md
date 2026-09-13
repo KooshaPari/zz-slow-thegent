@@ -440,33 +440,34 @@ import re
 from pathlib import Path
 
 FORBIDDEN_PATTERNS = [
-    r'\.optimized\b',
-    r'\.minimal\b',
-    r'\.dev\b',
-    r'\.prod\b',
-    r'\.test\b',
-    r'\.staging\b',
-    r'_optimized\b',
-    r'_minimal\b',
-    r'_dev\b',
-    r'_prod\b',
-    r'_test\b',
-    r'_staging\b',
+    r"\.optimized\b",
+    r"\.minimal\b",
+    r"\.dev\b",
+    r"\.prod\b",
+    r"\.test\b",
+    r"\.staging\b",
+    r"_optimized\b",
+    r"_minimal\b",
+    r"_dev\b",
+    r"_prod\b",
+    r"_test\b",
+    r"_staging\b",
 ]
 
 LEGITIMATE_PREFIXES = [
-    '.template',
-    '.example',
-    '.sample',
-    '.mac',
-    '.linux',
-    '.windows',
+    ".template",
+    ".example",
+    ".sample",
+    ".mac",
+    ".linux",
+    ".windows",
 ]
+
 
 def find_non_canonical_files(root: Path) -> list[tuple[Path, str]]:
     """Find files matching forbidden patterns."""
     violations = []
-    for path in root.rglob('*'):
+    for path in root.rglob("*"):
         if path.is_file():
             name = path.name
             # Skip legitimate patterns
@@ -477,6 +478,7 @@ def find_non_canonical_files(root: Path) -> list[tuple[Path, str]]:
                 if re.search(pattern, name):
                     violations.append((path, pattern))
     return violations
+
 
 def main():
     root = Path(__file__).parent.parent

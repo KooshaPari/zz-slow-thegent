@@ -128,6 +128,7 @@ from cachetools import cached
 
 _cache = get_cache_ttl(maxsize=100, ttl=300)
 
+
 @cached(cache=_cache)
 def get_data(item_id: str):
     return fetch_data(item_id)  # Cached 5 minutes
@@ -137,6 +138,7 @@ def get_data(item_id: str):
 ```python
 from src.lib.project_cache import get_cache_lru
 from cachetools import cached
+
 
 class DataManager:
     _cache = get_cache_lru(maxsize=50)
@@ -154,6 +156,7 @@ from threading import RLock
 
 _cache = get_cache_ttl(maxsize=100, ttl=300)
 _lock = RLock()
+
 
 @cached(cache=_cache, lock=_lock)
 def get_data_safe(item_id: str):

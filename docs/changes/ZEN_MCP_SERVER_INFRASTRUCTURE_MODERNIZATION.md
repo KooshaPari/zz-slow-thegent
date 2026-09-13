@@ -44,70 +44,76 @@ from typing import Optional, List
 import yaml
 from pathlib import Path
 
+
 class LLMProviderSettings(BaseSettings):
     """LLM provider configuration"""
+
     openai_api_key: Optional[SecretStr] = None
     anthropic_api_key: Optional[SecretStr] = None
     openrouter_api_key: Optional[SecretStr] = None
-    
+
+
 class DatabaseSettings(BaseSettings):
     """Database configuration"""
+
     url: SecretStr = Field(default="sqlite:///zen_mcp.db")
     pool_size: int = 5
     max_overflow: int = 10
     echo: bool = False
 
+
 class ZenSettings(BaseSettings):
     """Main Zen MCP settings"""
+
     model_config = SettingsConfigDict(
-        env_prefix='ZEN_',
-        env_nested_delimiter='__',
+        env_prefix="ZEN_",
+        env_nested_delimiter="__",
         case_sensitive=False,
         env_ignore_empty=True,
-        yaml_file='config.yml',
-        secrets_dir='.'
+        yaml_file="config.yml",
+        secrets_dir=".",
     )
-    
+
     # App settings
     app_name: str = "zen-mcp-server"
     debug: bool = False
     log_level: str = "INFO"
-    
+
     # Server settings
     host: str = "0.0.0.0"
     port: int = 8000
-    
+
     # Components
     llm_providers: LLMProviderSettings = Field(default_factory=LLMProviderSettings)
     database: DatabaseSettings = Field(default_factory=DatabaseSettings)
-    
+
     # Features
     enable_caching: bool = True
     cache_ttl: int = 3600
     enable_metrics: bool = True
     enable_tracing: bool = False
-    
+
     # Zen-specific
     max_context_length: int = 128000
     default_model: str = "gpt-4"
     enable_streaming: bool = True
-    
+
     @classmethod
     def load(cls):
         """Load settings from YAML files"""
-        config_path = Path('config.yml')
-        secrets_path = Path('secrets.yml')
-        
+        config_path = Path("config.yml")
+        secrets_path = Path("secrets.yml")
+
         config = {}
         if config_path.exists():
-            with open(config_path, 'r') as f:
+            with open(config_path, "r") as f:
                 config = yaml.safe_load(f) or {}
-        
+
         secrets = {}
         if secrets_path.exists():
-            with open(secrets_path, 'r') as f:
+            with open(secrets_path, "r") as f:
                 secrets = yaml.safe_load(f) or {}
-        
+
         merged = {**config, **secrets}
         return cls(**merged)
 ```
@@ -189,6 +195,7 @@ from zen_mcp.config.settings import ZenSettings
 
 # Load settings once at startup
 settings = ZenSettings.load()
+
 
 # Use throughout application
 def get_llm_client():

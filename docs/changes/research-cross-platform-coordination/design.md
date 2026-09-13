@@ -91,9 +91,7 @@ class CapabilityDetector:
             capabilities=self._detect_capabilities(),
             last_updated=datetime.now(),
         )
-        platform_caps.hash = hashlib.sha256(
-            json.dumps(asdict(platform_caps), default=str).encode()
-        ).hexdigest()
+        platform_caps.hash = hashlib.sha256(json.dumps(asdict(platform_caps), default=str).encode()).hexdigest()
         return platform_caps
 ```
 
@@ -129,10 +127,7 @@ fallback_strategy:
 
 **Constraint Matching**:
 ```python
-def matches_constraints(
-    caps: PlatformCapabilities,
-    constraints: PlatformConstraints
-) -> MatchResult:
+def matches_constraints(caps: PlatformCapabilities, constraints: PlatformConstraints) -> MatchResult:
     """Check if platform satisfies task constraints"""
     errors = []
     warnings = []
@@ -160,7 +155,7 @@ def matches_constraints(
         matches=len(errors) == 0,
         errors=errors,
         warnings=warnings,
-        fallback_applied=constraints.fallback_strategy if warnings else None
+        fallback_applied=constraints.fallback_strategy if warnings else None,
     )
 ```
 
@@ -171,11 +166,7 @@ def matches_constraints(
 **Dispatch Algorithm**:
 ```python
 class PlatformDispatcher:
-    def dispatch(
-        self,
-        task: Task,
-        available_executors: List[ExecutorInfo]
-    ) -> DispatchDecision:
+    def dispatch(self, task: Task, available_executors: List[ExecutorInfo]) -> DispatchDecision:
         """Select best-fit executor for task"""
 
         candidates = []
@@ -192,17 +183,14 @@ class PlatformDispatcher:
             return DispatchDecision(
                 success=False,
                 reason="No compatible executor found",
-                diagnostics=self._suggest_fixes(task, available_executors)
+                diagnostics=self._suggest_fixes(task, available_executors),
             )
 
         # Sort by score: full match > fallback available > degraded
         best_executor, score, warnings = max(candidates, key=lambda x: x[1])
 
         return DispatchDecision(
-            success=True,
-            executor=best_executor,
-            warnings=warnings,
-            fallback_strategy=match.fallback_applied
+            success=True, executor=best_executor, warnings=warnings, fallback_strategy=match.fallback_applied
         )
 
     def _score_executor(self, executor, caps, task) -> float:
@@ -244,11 +232,7 @@ class PlatformDispatcher:
 
 **Graceful Handling**:
 ```python
-def execute_with_fallback(
-    task: Task,
-    executor: ExecutorInfo,
-    fallback_strategy: FallbackStrategy
-) -> ExecutionResult:
+def execute_with_fallback(task: Task, executor: ExecutorInfo, fallback_strategy: FallbackStrategy) -> ExecutionResult:
     """Execute task with fallback handling"""
 
     try:
@@ -338,11 +322,12 @@ thegent platform dispatch-sim <task> --executors <executor-list>
 # In agent skill or task
 from thegent.platform import PlatformConstraint, fallback
 
+
 @PlatformConstraint(
     supported_platforms=["darwin", "linux"],
     required_tools=["rg", "fd"],
     min_memory_mb=512,
-    fallbacks={"rg": "grep", "fd": "find"}
+    fallbacks={"rg": "grep", "fd": "find"},
 )
 def my_agent_task():
     pass

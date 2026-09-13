@@ -332,6 +332,7 @@ print(summary)
 ```python
 from scripts.civilization_conflict_resolver import ConflictResolver
 
+
 def periodic_conflict_check():
     """Run conflict detection periodically."""
     resolver = ConflictResolver(registry)

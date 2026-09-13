@@ -100,7 +100,7 @@ from thegent.session import ZmxBackend, resolve_session_backend
 backend = resolve_session_backend()
 if backend is not None:
     ok = backend.create("my-agent", ["claude", "--no-tty", "-p", "task.md"])
-    sessions = backend.list()       # list[ZmxSession]
+    sessions = backend.list()  # list[ZmxSession]
     output = backend.capture("my-agent", last_lines=100)
     backend.kill("my-agent")
 

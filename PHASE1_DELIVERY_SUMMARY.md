@@ -178,15 +178,27 @@ progress.update_progress(50, 100, "Processing...")
 ```python
 from thegent.compositor import (
     # Existing (still works)
-    CompositApp, PaneManager, SessionState, TerminalPane,
-
+    CompositApp,
+    PaneManager,
+    SessionState,
+    TerminalPane,
     # New (Phase 1)
-    OutputWidget, StatusWidget, SidebarWidget,
-    HeaderWidget, FooterStatusBar, MetricsPanel, ProgressIndicator,
-
+    OutputWidget,
+    StatusWidget,
+    SidebarWidget,
+    HeaderWidget,
+    FooterStatusBar,
+    MetricsPanel,
+    ProgressIndicator,
     # Layout engine
-    LayoutEngine, LayoutNode, Direction, Size, SizeUnit,
-    LayoutConstraints, Padding, Margin
+    LayoutEngine,
+    LayoutNode,
+    Direction,
+    Size,
+    SizeUnit,
+    LayoutConstraints,
+    Padding,
+    Margin,
 )
 ```
 
@@ -281,10 +293,8 @@ from thegent.compositor import *  # ✅ All imports work
 ```python
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
-from thegent.compositor import (
-    OutputWidget, StatusWidget, SidebarWidget,
-    HeaderWidget, FooterStatusBar
-)
+from thegent.compositor import OutputWidget, StatusWidget, SidebarWidget, HeaderWidget, FooterStatusBar
+
 
 class AgentDashboard(App):
     def compose(self) -> ComposeResult:
@@ -305,6 +315,7 @@ class AgentDashboard(App):
         output.write("Dashboard initialized", style="green")
         status.update_status("ready", model="claude-opus")
         sidebar.add_agent("worker-1", "Agent 1", "idle")
+
 
 if __name__ == "__main__":
     app = AgentDashboard()

@@ -37,10 +37,7 @@ from thegent.infra import run_subprocess_async, run_subprocesses_concurrent
 result = await run_subprocess_async(["ls", "-la"])
 
 # Concurrent execution
-results = await run_subprocesses_concurrent(
-    [["cmd1"], ["cmd2"], ["cmd3"]],
-    max_concurrent=5
-)
+results = await run_subprocesses_concurrent([["cmd1"], ["cmd2"], ["cmd3"]], max_concurrent=5)
 ```
 
 ---

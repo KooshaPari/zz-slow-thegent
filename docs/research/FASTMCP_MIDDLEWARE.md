@@ -12,10 +12,10 @@
 Middleware executes in **order added**. First added = outermost (runs first in, last out).
 
 ```python
-mcp.add_middleware(ErrorHandlingMiddleware())   # 1st in, last out
-mcp.add_middleware(RateLimitingMiddleware())   # 2nd in, 2nd out
-mcp.add_middleware(TimingMiddleware())        # 3rd in, first out
-mcp.add_middleware(LoggingMiddleware())        # 4th in, first out
+mcp.add_middleware(ErrorHandlingMiddleware())  # 1st in, last out
+mcp.add_middleware(RateLimitingMiddleware())  # 2nd in, 2nd out
+mcp.add_middleware(TimingMiddleware())  # 3rd in, first out
+mcp.add_middleware(LoggingMiddleware())  # 4th in, first out
 ```
 
 **Recommended order:** ErrorHandling → RateLimiting → Timing → Logging (first added = outermost).
@@ -32,11 +32,13 @@ from fastmcp.server.middleware.caching import (
     ReadResourceSettings,
 )
 
-mcp.add_middleware(ResponseCachingMiddleware(
-    list_tools_settings=ListToolsSettings(ttl=30),
-    call_tool_settings=CallToolSettings(included_tools=["expensive_tool"]),
-    read_resource_settings=ReadResourceSettings(enabled=False)
-))
+mcp.add_middleware(
+    ResponseCachingMiddleware(
+        list_tools_settings=ListToolsSettings(ttl=30),
+        call_tool_settings=CallToolSettings(included_tools=["expensive_tool"]),
+        read_resource_settings=ReadResourceSettings(enabled=False),
+    )
+)
 ```
 
 ### Settings Classes
@@ -66,9 +68,8 @@ mcp.add_middleware(ResponseCachingMiddleware(
 
 ```python
 from key_value.aio.stores.disk import DiskStore
-mcp.add_middleware(ResponseCachingMiddleware(
-    cache_storage=DiskStore(directory="cache")
-))
+
+mcp.add_middleware(ResponseCachingMiddleware(cache_storage=DiskStore(directory="cache")))
 ```
 
 ---
@@ -78,10 +79,7 @@ mcp.add_middleware(ResponseCachingMiddleware(
 ```python
 from fastmcp.server.middleware.rate_limiting import RateLimitingMiddleware
 
-mcp.add_middleware(RateLimitingMiddleware(
-    max_requests_per_second=10.0,
-    burst_capacity=20
-))
+mcp.add_middleware(RateLimitingMiddleware(max_requests_per_second=10.0, burst_capacity=20))
 ```
 
 | Parameter | Type | Default | Description |
@@ -160,12 +158,13 @@ For `thegent_logs` — limit response size to avoid context overflow.
 mcp.add_middleware(ErrorHandlingMiddleware())
 mcp.add_middleware(RateLimitingMiddleware(max_requests_per_second=10, burst_capacity=20))
 mcp.add_middleware(TimingMiddleware())
-mcp.add_middleware(ResponseCachingMiddleware(
-    call_tool_settings=CallToolSettings(
-        included_tools=["thegent_ps", "thegent_list_agents", "thegent_list_droids", "thegent_list_models"],
-        ttl=30
+mcp.add_middleware(
+    ResponseCachingMiddleware(
+        call_tool_settings=CallToolSettings(
+            included_tools=["thegent_ps", "thegent_list_agents", "thegent_list_droids", "thegent_list_models"], ttl=30
+        )
     )
-))
+)
 mcp.add_middleware(ResponseLimitingMiddleware(max_size=500_000))
 mcp.add_middleware(LoggingMiddleware())
 ```
@@ -182,16 +181,21 @@ mcp.add_middleware(LoggingMiddleware())
 from fastmcp.server.middleware import Middleware, MiddlewareContext
 from functools import wraps
 
+
 def conditional_middleware(condition: callable):
     """Apply middleware only when condition is met."""
+
     def decorator(middleware_class):
         class ConditionalMiddleware(middleware_class):
             async def on_call_tool(self, context: MiddlewareContext, call_next):
                 if condition(context):
                     return await super().on_call_tool(context, call_next)
                 return await call_next(context)
+
         return ConditionalMiddleware
+
     return decorator
+
 
 # Usage: Apply rate limiting only in production
 @conditional_middleware(lambda ctx: os.environ.get("ENV") == "production")
@@ -206,11 +210,13 @@ class ProductionRateLimiting(RateLimitingMiddleware):
 ```python
 from enum import IntEnum, auto
 
+
 class MiddlewarePriority(IntEnum):
-    SECURITY = auto()      # First: Auth, rate limiting
-    RELIABILITY = auto()   # Second: Retries, circuit breaker
-    PERFORMANCE = auto()   # Third: Caching, compression
-    OBSERVABILITY = auto() # Last: Logging, metrics
+    SECURITY = auto()  # First: Auth, rate limiting
+    RELIABILITY = auto()  # Second: Retries, circuit breaker
+    PERFORMANCE = auto()  # Third: Caching, compression
+    OBSERVABILITY = auto()  # Last: Logging, metrics
+
 
 def add_with_priority(mcp, middleware, priority: MiddlewarePriority):
     """Add middleware with explicit priority ordering."""
@@ -224,6 +230,7 @@ def add_with_priority(mcp, middleware, priority: MiddlewarePriority):
 
 ```python
 from fastmcp.server.middleware import Middleware, MiddlewareContext
+
 
 class CircuitBreakerMiddleware(Middleware):
     """Prevent cascade failures with circuit breaker pattern."""
@@ -277,6 +284,7 @@ class CircuitBreakerMiddleware(Middleware):
 ```python
 from fastmcp.server.middleware import Middleware, MiddlewareContext
 import time
+
 
 class MetricsMiddleware(Middleware):
     """Collect execution metrics for observability."""

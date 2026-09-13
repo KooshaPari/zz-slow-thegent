@@ -29,6 +29,7 @@ Hooks in `hooks/suppress-*.sh` detect and prevent common agent anti-patterns at 
 ```python
 from tenacity import retry, stop_after_attempt, wait_random_exponential
 
+
 @retry(stop=stop_after_attempt(5), wait=wait_random_exponential(min=2, max=60))
 def fetch(url: str) -> httpx.Response:
     return httpx.get(url, timeout=10)
@@ -61,6 +62,7 @@ def fetch(url: str) -> httpx.Response:
 **Fix**:
 ```python
 from myproject.config import settings
+
 provider = registry.get(settings.llm_provider)
 ```
 
@@ -77,6 +79,7 @@ provider = registry.get(settings.llm_provider)
 **Fix**:
 ```python
 import structlog
+
 logger = structlog.get_logger()
 logger.info("message", key="value")
 ```
@@ -94,6 +97,7 @@ logger.info("message", key="value")
 **Fix**:
 ```python
 from cachetools import TTLCache
+
 cache = TTLCache(maxsize=1000, ttl=60)
 # or diskcache for file-based
 ```
@@ -141,6 +145,7 @@ from watchdog.events import FileSystemEventHandler
 **Fix**:
 ```python
 import httpx
+
 response = httpx.get(url, timeout=10)
 
 # Async
@@ -192,10 +197,12 @@ All hooks receive these environment variables from the dispatcher:
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+
 class MyHandler(FileSystemEventHandler):
     def on_modified(self, event):
         if not event.is_directory:
             print(f"Modified: {event.src_path}")
+
 
 observer = Observer()
 observer.schedule(MyHandler(), path=".", recursive=True)
@@ -219,6 +226,7 @@ observer.start()
 from pybreaker import CircuitBreaker, CircuitBreakerError
 
 circuit = CircuitBreaker(fail_max=5, reset_timeout=30)
+
 
 @circuit
 def risky_call():
@@ -285,6 +293,7 @@ ANTI_PATTERNS = [
     ("Manual cache", r"dict.*expiry|TTL.*cache", "Use cachetools"),
 ]
 
+
 def scan_file(path: Path) -> List[Tuple[int, str, str]]:
     """Scan file for anti-patterns."""
     try:
@@ -296,12 +305,14 @@ def scan_file(path: Path) -> List[Tuple[int, str, str]]:
     for pattern_id, pattern, fix in ANTI_PATTERNS:
         matches = list(re.finditer(pattern, content, re.MULTILINE))
         for match in matches:
-            line_no = content[:match.start()].count('\n') + 1
+            line_no = content[: match.start()].count("\n") + 1
             findings.append((line_no, pattern_id, fix))
     return findings
 
+
 def main():
     import sys
+
     path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path.cwd()
 
     if path.is_file():

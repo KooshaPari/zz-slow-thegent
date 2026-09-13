@@ -111,16 +111,20 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime
 from enum import Enum
 
+
 class AgentStatus(str, Enum):
     """Agent status."""
+
     ACTIVE = "active"
     INACTIVE = "inactive"
     BUSY = "busy"
     ERROR = "error"
     MAINTENANCE = "maintenance"
 
+
 class AgentCapability(str, Enum):
     """Agent capabilities."""
+
     CODE_GENERATION = "code_generation"
     CODE_REVIEW = "code_review"
     TESTING = "testing"
@@ -129,30 +133,38 @@ class AgentCapability(str, Enum):
     DEPLOYMENT = "deployment"
     MONITORING = "monitoring"
 
+
 class ProjectAssignment(BaseModel):
     """Project assignment."""
+
     project_id: str
     role: str = Field(..., description="primary, secondary, consultant")
     permissions: List[str] = Field(default_factory=list)
     assigned_at: datetime
     last_active: Optional[datetime] = None
 
+
 class CollaborationRule(BaseModel):
     """Collaboration rules."""
+
     can_initiate_with: List[str] = Field(default_factory=list)
     must_consult_with: List[str] = Field(default_factory=list)
     ignore_agents: List[str] = Field(default_factory=list)
     auto_join_topics: List[str] = Field(default_factory=list)
 
+
 class Availability(BaseModel):
     """Agent availability."""
+
     schedule: Optional[str] = Field(None, description="Cron expression")
     timezone: str = "UTC"
     office_hours: Optional[Dict[str, str]] = None
     is_available: bool = True
 
+
 class PerformanceMetrics(BaseModel):
     """Performance metrics."""
+
     total_tasks: int = 0
     completed_tasks: int = 0
     failed_tasks: int = 0
@@ -160,8 +172,10 @@ class PerformanceMetrics(BaseModel):
     success_rate: float = 0.0
     last_updated: datetime
 
+
 class Agent(BaseModel):
     """Unified agent model."""
+
     # Identity
     id: str = Field(..., description="Unique agent identifier")
     name: str
@@ -193,9 +207,7 @@ class Agent(BaseModel):
     last_active: Optional[datetime] = None
 
     # Performance
-    metrics: PerformanceMetrics = Field(default_factory=lambda: PerformanceMetrics(
-        last_updated=datetime.now()
-    ))
+    metrics: PerformanceMetrics = Field(default_factory=lambda: PerformanceMetrics(last_updated=datetime.now()))
 
     # Metadata
     metadata: Dict[str, Any] = Field(default_factory=dict)
@@ -245,20 +257,20 @@ Response: Agent
 
 ```python
 # Assign agent to project
-POST /api/v1/agents/{agent_id}/projects
+POST / api / v1 / agents / {agent_id} / projects
 Request: ProjectAssignment
 Response: Agent
 
 # Remove agent from project
-DELETE /api/v1/agents/{agent_id}/projects/{project_id}
+DELETE / api / v1 / agents / {agent_id} / projects / {project_id}
 Response: Agent
 
 # List agents for project
-GET /api/v1/projects/{project_id}/agents
+GET / api / v1 / projects / {project_id} / agents
 Response: List[Agent]
 
 # List projects for agent
-GET /api/v1/agents/{agent_id}/projects
+GET / api / v1 / agents / {agent_id} / projects
 Response: List[ProjectAssignment]
 ```
 
@@ -292,16 +304,16 @@ Response: Agent
 
 ```python
 # Get collaboration rules
-GET /api/v1/agents/{agent_id}/collaboration
+GET / api / v1 / agents / {agent_id} / collaboration
 Response: CollaborationRule
 
 # Update collaboration rules
-PUT /api/v1/agents/{agent_id}/collaboration
+PUT / api / v1 / agents / {agent_id} / collaboration
 Request: CollaborationRule
 Response: CollaborationRule
 
 # Get compatible agents
-GET /api/v1/agents/{agent_id}/compatible
+GET / api / v1 / agents / {agent_id} / compatible
 Response: List[Agent]
 ```
 
@@ -337,37 +349,29 @@ from fastmcp import FastMCP
 
 mcp = FastMCP("unified-agent-registry")
 
+
 @mcp.tool()
-async def register_agent(
-    agent_id: str,
-    name: str,
-    capabilities: List[str],
-    tools: List[str],
-    **kwargs
-) -> dict:
+async def register_agent(agent_id: str, name: str, capabilities: List[str], tools: List[str], **kwargs) -> dict:
     """Register a new agent in the unified registry."""
     # Implementation
     pass
 
+
 @mcp.tool()
 async def discover_agents(
-    capability: Optional[str] = None,
-    project_id: Optional[str] = None,
-    available: bool = True
+    capability: Optional[str] = None, project_id: Optional[str] = None, available: bool = True
 ) -> List[dict]:
     """Discover agents matching criteria."""
     # Implementation
     pass
 
+
 @mcp.tool()
-async def assign_agent_to_project(
-    agent_id: str,
-    project_id: str,
-    role: str = "contributor"
-) -> dict:
+async def assign_agent_to_project(agent_id: str, project_id: str, role: str = "contributor") -> dict:
     """Assign an agent to a project."""
     # Implementation
     pass
+
 
 @mcp.tool()
 async def get_agent_status(agent_id: str) -> dict:
@@ -499,31 +503,18 @@ CREATE INDEX idx_agents_tools ON agents USING GIN(tools);
 ```python
 from unified_agent_registry import AgentRegistryClient
 
-client = AgentRegistryClient(
-    base_url="http://localhost:8000",
-    api_key="your-api-key"
-)
+client = AgentRegistryClient(base_url="http://localhost:8000", api_key="your-api-key")
 
 # Register agent
 agent = await client.register_agent(
-    name="Code Review Agent",
-    capabilities=["code_review", "testing"],
-    tools=["ruff", "mypy", "pytest"]
+    name="Code Review Agent", capabilities=["code_review", "testing"], tools=["ruff", "mypy", "pytest"]
 )
 
 # Discover agents
-agents = await client.discover_agents(
-    capability="code_review",
-    project_id="project-123",
-    available=True
-)
+agents = await client.discover_agents(capability="code_review", project_id="project-123", available=True)
 
 # Assign to project
-await client.assign_to_project(
-    agent_id=agent.id,
-    project_id="project-123",
-    role="primary"
-)
+await client.assign_to_project(agent_id=agent.id, project_id="project-123", role="primary")
 ```
 
 ### 5.2 TypeScript Client
@@ -595,6 +586,7 @@ agents = discover_agents()
 
 # After (unified)
 from unified_agent_registry import AgentRegistryClient
+
 client = AgentRegistryClient()
 agents = await client.discover_agents()
 ```
@@ -618,13 +610,13 @@ agent = {
     "collaboration_rules": {
         "can_initiate_with": ["testing-agent", "documentation-agent"],
         "must_consult_with": ["security-agent"],
-        "ignore_agents": ["deployment-agent"]
+        "ignore_agents": ["deployment-agent"],
     },
     "availability": {
         "schedule": "0 9-17 * * 1-5",
         "timezone": "America/Los_Angeles",
-        "office_hours": {"start": "09:00", "end": "17:00"}
-    }
+        "office_hours": {"start": "09:00", "end": "17:00"},
+    },
 }
 
 response = await client.register_agent(agent)
@@ -638,7 +630,7 @@ task = {
     "task_description": "Review Python code for security vulnerabilities",
     "required_capabilities": ["code_review", "security"],
     "project_id": "project-123",
-    "preferred_models": ["gpt-4", "claude-3-opus"]
+    "preferred_models": ["gpt-4", "claude-3-opus"],
 }
 
 best_agent = await client.discover_best_agent(task)
@@ -648,16 +640,9 @@ best_agent = await client.discover_best_agent(task)
 
 ```python
 # Assign agent to project
-assignment = {
-    "project_id": "project-123",
-    "role": "primary",
-    "permissions": ["read", "write", "review"]
-}
+assignment = {"project_id": "project-123", "role": "primary", "permissions": ["read", "write", "review"]}
 
-await client.assign_to_project(
-    agent_id="agent-456",
-    **assignment
-)
+await client.assign_to_project(agent_id="agent-456", **assignment)
 ```
 
 ---

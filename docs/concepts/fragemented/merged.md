@@ -440,33 +440,31 @@ def acquire_semaphore(resource_id: str, agent_id: str, timeout_seconds: int = 30
         semaphore = read_json(semaphore_path)
 
         # Check if available
-        if semaphore['current_lease']['holder_id'] is None:
+        if semaphore["current_lease"]["holder_id"] is None:
             # Try to acquire
-            semaphore['current_lease']['holder_id'] = agent_id
-            semaphore['current_lease']['acquired_at'] = now()
-            semaphore['current_lease']['lease_until'] = now() + 60
+            semaphore["current_lease"]["holder_id"] = agent_id
+            semaphore["current_lease"]["acquired_at"] = now()
+            semaphore["current_lease"]["lease_until"] = now() + 60
             write_json(semaphore_path, semaphore)
             git_push()  # Make it official
             return True  # Acquired!
 
         # Check if lease expired
-        lease_until = datetime.fromisoformat(semaphore['current_lease']['lease_until'])
+        lease_until = datetime.fromisoformat(semaphore["current_lease"]["lease_until"])
         if lease_until < datetime.now():
             # Lease expired, forcibly acquire
-            semaphore['current_lease']['holder_id'] = agent_id
-            semaphore['current_lease']['acquired_at'] = now()
-            semaphore['current_lease']['lease_until'] = now() + 60
+            semaphore["current_lease"]["holder_id"] = agent_id
+            semaphore["current_lease"]["acquired_at"] = now()
+            semaphore["current_lease"]["lease_until"] = now() + 60
             write_json(semaphore_path, semaphore)
             git_push()
             return True  # Acquired after expiry
 
         # Add self to queue if not already there
-        if agent_id not in [q['requester_id'] for q in semaphore['queue']]:
-            semaphore['queue'].append({
-                'requester_id': agent_id,
-                'priority': calculate_priority(agent_id),
-                'requested_at': now()
-            })
+        if agent_id not in [q["requester_id"] for q in semaphore["queue"]]:
+            semaphore["queue"].append(
+                {"requester_id": agent_id, "priority": calculate_priority(agent_id), "requested_at": now()}
+            )
             write_json(semaphore_path, semaphore)
             git_push()
 
@@ -486,20 +484,17 @@ def release_semaphore(resource_id: str, agent_id: str):
     semaphore = read_json(semaphore_path)
 
     # Verify this agent holds the lock
-    if semaphore['current_lease']['holder_id'] != agent_id:
+    if semaphore["current_lease"]["holder_id"] != agent_id:
         raise SemaphoreNotHeld(resource_id, agent_id)
 
     # Clear holder
-    semaphore['current_lease']['holder_id'] = None
-    semaphore['current_lease']['released_at'] = now()
+    semaphore["current_lease"]["holder_id"] = None
+    semaphore["current_lease"]["released_at"] = now()
 
     # Pop next from queue
-    if semaphore['queue']:
-        next_requester = semaphore['queue'].pop(0)
-        semaphore['next_lease'] = {
-            'intended_holder': next_requester['requester_id'],
-            'ready_at': now()
-        }
+    if semaphore["queue"]:
+        next_requester = semaphore["queue"].pop(0)
+        semaphore["next_lease"] = {"intended_holder": next_requester["requester_id"], "ready_at": now()}
 
     write_json(semaphore_path, semaphore)
     git_push()
@@ -765,10 +760,7 @@ async def subscribe_events(topic: str = "all"):
 **Exponential Backoff with Jitter**:
 ```python
 def retry_with_backoff(
-    operation,
-    max_retries: int = 5,
-    initial_backoff_seconds: float = 1.0,
-    jitter_percent: float = 10
+    operation, max_retries: int = 5, initial_backoff_seconds: float = 1.0, jitter_percent: float = 10
 ):
     """
     Retry with exponential backoff and jitter.
@@ -781,7 +773,7 @@ def retry_with_backoff(
                 raise
 
             # Exponential backoff: 1s, 2s, 4s, 8s, 16s
-            backoff = initial_backoff_seconds * (2 ** attempt)
+            backoff = initial_backoff_seconds * (2**attempt)
 
             # Add jitter: ±10%
             jitter = backoff * random.uniform(-jitter_percent / 100, jitter_percent / 100)
@@ -807,11 +799,13 @@ def detect_deadlock():
     cycles = find_cycles(graph)
     if cycles:
         for cycle in cycles:
-            publish_event({
-                "type": "civilization.deadlock_detected",
-                "cycle": cycle,
-                "recommended_resolution": compute_resolution(cycle)
-            })
+            publish_event(
+                {
+                    "type": "civilization.deadlock_detected",
+                    "cycle": cycle,
+                    "recommended_resolution": compute_resolution(cycle),
+                }
+            )
 ```
 
 **Prevention** (configured in WORK_STREAM.md):
@@ -1275,15 +1269,16 @@ All inputs validated before processing:
 ```python
 from pydantic import BaseModel, Field, validator
 
+
 class PlanRequest(BaseModel):
     description: str = Field(..., min_length=1, max_length=10000)
     max_tokens: int = Field(default=4000, ge=100, le=10000)
-    
-    @validator('description')
+
+    @validator("description")
     def no_script_injection(cls, v):
         # Prevent script injection
-        if '<script>' in v.lower():
-            raise ValueError('Invalid content')
+        if "<script>" in v.lower():
+            raise ValueError("Invalid content")
         return v
 ```
 
@@ -1297,9 +1292,9 @@ class PlanResponse(BaseModel):
     description: str
     # ✓ DO: Exclude sensitive data
     # ✗ DON'T: Include API_KEY in response
-    
+
     class Config:
-        exclude = {'api_key', 'password', 'secret'}
+        exclude = {"api_key", "password", "secret"}
 ```
 
 ### Error Handling
@@ -1312,7 +1307,7 @@ try:
     result = process()
 except Exception:
     logger.exception("Processing failed")  # Detailed log
-    return {"error": "Processing failed"}   # Generic response
+    return {"error": "Processing failed"}  # Generic response
 
 # ✗ DON'T: Expose stack trace
 except Exception as e:

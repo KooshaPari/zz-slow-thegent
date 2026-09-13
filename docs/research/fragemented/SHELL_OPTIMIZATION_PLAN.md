@@ -66,16 +66,18 @@ Find all subprocess calls that use shells:
 import shutil
 import os
 
+
 def get_fastest_shell() -> str:
     """Get fastest available shell (zsh > bash > sh)."""
     # Check in order of preference
-    for shell in ['/bin/zsh', '/usr/bin/zsh', 'zsh']:
+    for shell in ["/bin/zsh", "/usr/bin/zsh", "zsh"]:
         if shutil.which(shell):
             return shell
-    for shell in ['/bin/bash', '/usr/bin/bash', 'bash']:
+    for shell in ["/bin/bash", "/usr/bin/bash", "bash"]:
         if shutil.which(shell):
             return shell
-    return '/bin/sh'  # Fallback
+    return "/bin/sh"  # Fallback
+
 
 FASTEST_SHELL = get_fastest_shell()
 
@@ -137,57 +139,59 @@ from typing import Optional
 
 _FASTEST_SHELL: Optional[str] = None
 
+
 def get_fastest_shell() -> str:
     """
     Get fastest available shell.
     Priority: zsh > bash > sh
     """
     global _FASTEST_SHELL
-    
+
     if _FASTEST_SHELL:
         return _FASTEST_SHELL
-    
+
     # Check zsh first (fastest)
-    for zsh_path in ['/bin/zsh', '/usr/bin/zsh']:
+    for zsh_path in ["/bin/zsh", "/usr/bin/zsh"]:
         if Path(zsh_path).exists():
             _FASTEST_SHELL = zsh_path
             return _FASTEST_SHELL
-    
+
     # Check zsh via which
-    zsh = shutil.which('zsh')
+    zsh = shutil.which("zsh")
     if zsh:
         _FASTEST_SHELL = zsh
         return _FASTEST_SHELL
-    
+
     # Fallback to bash
-    for bash_path in ['/bin/bash', '/usr/bin/bash']:
+    for bash_path in ["/bin/bash", "/usr/bin/bash"]:
         if Path(bash_path).exists():
             _FASTEST_SHELL = bash_path
             return _FASTEST_SHELL
-    
-    bash = shutil.which('bash')
+
+    bash = shutil.which("bash")
     if bash:
         _FASTEST_SHELL = bash
         return _FASTEST_SHELL
-    
+
     # Final fallback
-    _FASTEST_SHELL = '/bin/sh'
+    _FASTEST_SHELL = "/bin/sh"
     return _FASTEST_SHELL
+
 
 def run_shell_command(cmd: str, **kwargs) -> subprocess.CompletedProcess:
     """
     Run shell command using fastest available shell.
-    
+
     Args:
         cmd: Command string to execute
         **kwargs: Additional subprocess.run arguments
-    
+
     Returns:
         CompletedProcess result
     """
     import subprocess
-    
-    shell = kwargs.pop('executable', None) or get_fastest_shell()
+
+    shell = kwargs.pop("executable", None) or get_fastest_shell()
     return subprocess.run(cmd, shell=True, executable=shell, **kwargs)
 ```
 
@@ -199,6 +203,7 @@ subprocess.run(cmd, shell=True)
 
 # After:
 from thegent.utils.shell import run_shell_command
+
 run_shell_command(cmd)
 # Or:
 subprocess.run(cmd, shell=True, executable=get_fastest_shell())
@@ -233,8 +238,8 @@ shell:
 subprocess.run(
     cmd,
     shell=True,
-    executable='/bin/zsh',
-    env={**os.environ, 'ZDOTDIR': '/dev/null'}  # Skip .zshrc
+    executable="/bin/zsh",
+    env={**os.environ, "ZDOTDIR": "/dev/null"},  # Skip .zshrc
 )
 ```
 

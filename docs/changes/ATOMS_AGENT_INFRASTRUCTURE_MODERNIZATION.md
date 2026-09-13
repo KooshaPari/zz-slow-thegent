@@ -36,7 +36,7 @@
 class AtomsAgentSettings(BaseSettings):
     @classmethod
     def load(cls):
-        if os.getenv('VERCEL'):
+        if os.getenv("VERCEL"):
             return cls()  # Environment variables
         else:
             return cls.from_yaml()  # YAML files

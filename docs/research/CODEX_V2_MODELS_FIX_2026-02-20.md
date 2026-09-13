@@ -58,8 +58,7 @@ Produces a deterministic, order-independent SHA256 hex digest of sorted model ID
 ```python
 transformed = _transform_models_response(resp.body)
 if transformed is not None:
-    return Response(content=transformed, status_code=200,
-                    headers={"Content-Type": "application/json"})
+    return Response(content=transformed, status_code=200, headers={"Content-Type": "application/json"})
 ```
 
 **After:**
@@ -67,11 +66,14 @@ if transformed is not None:
 result = _transform_models_response(resp.body)
 if result is not None:
     transformed, etag = result
-    return Response(content=transformed, status_code=200,
-                    headers={
-                        "Content-Type": "application/json",
-                        "x-models-etag": etag,  # ADDED: required by Codex 0.104.0
-                    })
+    return Response(
+        content=transformed,
+        status_code=200,
+        headers={
+            "Content-Type": "application/json",
+            "x-models-etag": etag,  # ADDED: required by Codex 0.104.0
+        },
+    )
 ```
 
 ## Verification

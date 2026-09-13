@@ -623,10 +623,12 @@ from fastmcp import Client
 from fastmcp.client.transports import FastMCPTransport
 from thegent.mcp_server import mcp
 
+
 @pytest.fixture
 async def thegent_client():
     async with Client(transport=mcp) as client:
         yield client
+
 
 async def test_queue_list(thegent_client: Client[FastMCPTransport]):
     result = await thegent_client.call_tool("thegent_queue_list", {"limit": 10})

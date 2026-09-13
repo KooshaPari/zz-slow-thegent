@@ -95,13 +95,16 @@ Phase 6: Documentation & Cleanup (2 tasks)
 ```python
 from cachetools import TTLCache, LRUCache, LFUCache, cached
 
+
 def get_cache_ttl(maxsize: int, ttl: int) -> TTLCache:
     """Return a TTL cache. Use with @cached decorator."""
     return TTLCache(maxsize=maxsize, ttl=ttl)
 
+
 def get_cache_lru(maxsize: int) -> LRUCache:
     """Return an LRU cache. Use with @cached decorator."""
     return LRUCache(maxsize=maxsize)
+
 
 def get_cache_lfu(maxsize: int) -> LFUCache:
     """Return an LFU cache. Use with @cached decorator."""
@@ -117,6 +120,7 @@ from cachetools import cached
 
 _cache = get_cache_ttl(maxsize=100, ttl=300)
 
+
 @cached(cache=_cache)
 def get_data(item_id: str) -> dict:
     return fetch_data(item_id)  # Cached 5 min
@@ -126,6 +130,7 @@ def get_data(item_id: str) -> dict:
 ```python
 from src.lib.project_cache import get_cache_lru
 from cachetools import cached
+
 
 class DataManager:
     _cache = get_cache_lru(maxsize=50)
@@ -143,6 +148,7 @@ from threading import RLock
 
 _cache = get_cache_ttl(maxsize=100, ttl=300)
 _lock = RLock()
+
 
 @cached(cache=_cache, lock=_lock)
 def get_data_threadsafe(item_id: str):
@@ -423,19 +429,23 @@ from src.lib.project_cache import get_cache_ttl, get_cache_lru, get_cache_lfu
 # Create cache
 cache = get_cache_ttl(maxsize=100, ttl=300)
 
+
 # Decorate function
 @cached(cache=cache)
 def my_func(arg1, arg2):
     return expensive_operation(arg1, arg2)
+
 
 # Thread-safe decoration
 @cached(cache=cache, lock=RLock())
 def thread_safe_func(arg):
     return operation(arg)
 
+
 # Custom key function
 def key_func(arg1, arg2, **kwargs):
     return (arg1, arg2)
+
 
 @cached(cache=cache, key=key_func)
 def custom_key_func(arg1, arg2, **kwargs):

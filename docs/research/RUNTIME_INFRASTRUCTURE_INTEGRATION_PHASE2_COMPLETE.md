@@ -47,6 +47,7 @@ initialize_runtime_infrastructure()
 
 # Get stats
 from thegent.infra.runtime_init import get_resource_stats
+
 stats = get_resource_stats()
 if stats and stats.is_critical():
     # Handle critical resource usage

@@ -132,10 +132,16 @@ def install_mise(console: Console | None = None, dry_run: bool = False, use_nix:
 
 **After** (all three):
 ```python
-def install_mise(console: Console | None = None, dry_run: bool = False, use_nix: bool = False, settings: "ThegentSettings | None" = None) -> tuple[bool, str]:
+def install_mise(
+    console: Console | None = None,
+    dry_run: bool = False,
+    use_nix: bool = False,
+    settings: "ThegentSettings | None" = None,
+) -> tuple[bool, str]:
     """Install mise (formerly rtx) via Homebrew or Nix. Returns (success, message)."""
     if settings is None:
         from thegent.config import ThegentSettings
+
         settings = ThegentSettings()
 
     # ...
@@ -189,6 +195,7 @@ def run_install(
 ) -> dict:
     if settings is None:
         from thegent.config import ThegentSettings
+
         settings = ThegentSettings()
 
     # ... function body
@@ -268,6 +275,7 @@ install_mise(console=console, dry_run=True)
 
 # New way (recommended)
 from thegent.config import ThegentSettings
+
 settings = ThegentSettings()
 install_mise(console=console, dry_run=True, settings=settings)
 ```
@@ -283,10 +291,12 @@ def test_shell_detection_from_settings():
     settings = ThegentSettings(shell_path="/bin/bash")
     # Test install_mise, verify_mise_installation, etc. with custom shell_path
 
+
 def test_appdata_path_windows():
     """Verify Windows APPDATA detection."""
     settings = ThegentSettings(appdata_path=Path("C:\\Users\\Test\\AppData\\Roaming"))
     # Test run_install with claude-desktop target
+
 
 def test_codex_env_isolation():
     """Verify env vars don't leak to global os.environ."""

@@ -369,15 +369,16 @@ All inputs validated before processing:
 ```python
 from pydantic import BaseModel, Field, validator
 
+
 class PlanRequest(BaseModel):
     description: str = Field(..., min_length=1, max_length=10000)
     max_tokens: int = Field(default=4000, ge=100, le=10000)
-    
-    @validator('description')
+
+    @validator("description")
     def no_script_injection(cls, v):
         # Prevent script injection
-        if '<script>' in v.lower():
-            raise ValueError('Invalid content')
+        if "<script>" in v.lower():
+            raise ValueError("Invalid content")
         return v
 ```
 
@@ -391,9 +392,9 @@ class PlanResponse(BaseModel):
     description: str
     # ✓ DO: Exclude sensitive data
     # ✗ DON'T: Include API_KEY in response
-    
+
     class Config:
-        exclude = {'api_key', 'password', 'secret'}
+        exclude = {"api_key", "password", "secret"}
 ```
 
 ### Error Handling
@@ -406,7 +407,7 @@ try:
     result = process()
 except Exception:
     logger.exception("Processing failed")  # Detailed log
-    return {"error": "Processing failed"}   # Generic response
+    return {"error": "Processing failed"}  # Generic response
 
 # ✗ DON'T: Expose stack trace
 except Exception as e:

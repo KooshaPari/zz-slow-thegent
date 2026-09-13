@@ -140,11 +140,19 @@ from pathlib import Path
 from typing import List, Tuple
 
 GOVERNANCE_DOMAINS = [
-    "retry", "cache", "file_watch", "http", "auth",
-    "logging", "concurrency", "subprocess", "circuit_breaker"
+    "retry",
+    "cache",
+    "file_watch",
+    "http",
+    "auth",
+    "logging",
+    "concurrency",
+    "subprocess",
+    "circuit_breaker",
 ]
 
 ANTI_PATTERNS_PATH = Path(__file__).parent.parent / "docs" / "guides" / "anti-patterns.md"
+
 
 def check_governance_domains(file_path: Path) -> List[Tuple[str, int]]:
     """Check if file touches governance domains."""
@@ -165,12 +173,14 @@ def check_governance_domains(file_path: Path) -> List[Tuple[str, int]]:
 
     for domain, regexes in patterns.items():
         import re
+
         for i, regex in enumerate(regexes):
             if re.search(regex, content, re.IGNORECASE):
                 violations.append((domain, 0))
                 break
 
     return violations
+
 
 def run_checkpoint(file_path: Path):
     """Run governance checkpoint on a file."""
@@ -185,8 +195,10 @@ def run_checkpoint(file_path: Path):
         print(f"✅ {file_path.name} - No governance concerns")
         return True
 
+
 if __name__ == "__main__":
     import sys
+
     file_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path.cwd() / "src"
     run_checkpoint(file_path)
 ```

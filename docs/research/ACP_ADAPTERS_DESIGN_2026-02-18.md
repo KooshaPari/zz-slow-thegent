@@ -176,9 +176,7 @@ class ACPServerAdapter:
     async def run_stdio(self):
         """Run ACP server over stdio (for local agents)."""
         while True:
-            line = await asyncio.get_event_loop().run_in_executor(
-                None, sys.stdin.readline
-            )
+            line = await asyncio.get_event_loop().run_in_executor(None, sys.stdin.readline)
             if not line:
                 break
 
@@ -285,7 +283,7 @@ class ACPClientAdapter(AgentRunner):
             "method": "initialize",
             "params": {
                 "capabilities": {},
-            }
+            },
         }
         self.process.stdin.write(json.dumps(init_request) + "\n")
         self.process.stdin.flush()
@@ -298,7 +296,7 @@ class ACPClientAdapter(AgentRunner):
             "params": {
                 "prompt": prompt,
                 "cwd": str(cwd) if cwd else None,
-            }
+            },
         }
         self.process.stdin.write(json.dumps(spawn_request) + "\n")
         self.process.stdin.flush()
@@ -338,6 +336,7 @@ class ACPClientAdapter(AgentRunner):
 
 ```python
 from thegent.acp.client import ACPClientAdapter
+
 
 def get_acp_runner(acp_config: dict[str, Any]) -> ACPClientAdapter:
     """Create ACP client adapter from config."""
@@ -438,6 +437,7 @@ def acp_cmd(
     """ACP protocol integration."""
     if server:
         from thegent.acp.server import main
+
         asyncio.run(main())
     elif client:
         # Spawn ACP client
@@ -528,10 +528,7 @@ def acp_cmd(
 # tests/test_acp_server.py
 def test_acp_server_spawn():
     adapter = ACPServerAdapter()
-    request = {
-        "method": "agent/spawn",
-        "params": {"agent": "claude", "prompt": "Hello"}
-    }
+    request = {"method": "agent/spawn", "params": {"agent": "claude", "prompt": "Hello"}}
     response = await adapter.handle_request(request)
     assert "result" in response
 ```

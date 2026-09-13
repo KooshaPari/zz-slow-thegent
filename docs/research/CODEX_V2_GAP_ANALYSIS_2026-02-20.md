@@ -433,14 +433,16 @@ Codex 0.104.0 reads a `prefer_websockets` flag from its own config (not from us)
 
 Add immediately after `await websocket.accept()`:
 ```python
-await websocket.send_json({
-    "jsonrpc": "2.0",
-    "method": "session_configured",
-    "params": {
-        "model": "",
-        "session_id": str(uuid4()),
+await websocket.send_json(
+    {
+        "jsonrpc": "2.0",
+        "method": "session_configured",
+        "params": {
+            "model": "",
+            "session_id": str(uuid4()),
+        },
     }
-})
+)
 ```
 
 This stops the reconnect loop. Codex will wait for the first `response.create` to be handled.

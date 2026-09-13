@@ -634,9 +634,11 @@ pub fn find_files(
 
 try:
     from thegent_tool_detect import detect_tools as _detect_tools_rust
+
     USE_RUST = True
 except ImportError:
     USE_RUST = False
+
 
 def detect_tools():
     """Detect tools with Rust fallback to bash."""

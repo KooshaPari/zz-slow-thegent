@@ -39,6 +39,7 @@ The thegent infrastructure exhibits a **library-first culture** with strategic c
 ```python
 import pybreaker  # ✅ Uses pybreaker library
 
+
 class ProviderCircuitBreaker:
     """Per-provider circuit breaker backed by pybreaker."""
 
@@ -107,11 +108,18 @@ from dataclasses import dataclass
 
 ```python
 from watchdog.events import (
-    DirCreatedEvent, DirDeletedEvent, DirModifiedEvent, DirMovedEvent,
-    FileCreatedEvent, FileDeletedEvent, FileModifiedEvent, FileMovedEvent,
+    DirCreatedEvent,
+    DirDeletedEvent,
+    DirModifiedEvent,
+    DirMovedEvent,
+    FileCreatedEvent,
+    FileDeletedEvent,
+    FileModifiedEvent,
+    FileMovedEvent,
     PatternMatchingEventHandler,
 )
 from watchdog.observers import Observer
+
 
 class WatcherDaemon:
     """Multi-tenant file watcher using the watchdog library."""
@@ -136,14 +144,18 @@ def _try_import_native() -> Any | None:
     """Attempt to import the optional thegent_shm Rust extension."""
     try:
         import thegent_shm  # PyO3 native extension
+
         return thegent_shm
     except ImportError:
         return None
 
+
 # Fallback to pure-Python implementation if Rust extension unavailable
 if _native_module is None:
+
     class CircuitBreakerShm:
         """Pure-Python fallback for circuitbreaker state tracking."""
+
         # ...
 ```
 
@@ -180,13 +192,12 @@ from rich.panel import Panel
 from rich.prompt import Confirm, Prompt
 from rich.table import Table
 
+
 class ConfigWizard:
     """Interactive configuration wizard."""
 
     console = Console()
-    console.print(
-        Panel("[bold cyan]thegent Configuration Wizard[/bold cyan]")
-    )
+    console.print(Panel("[bold cyan]thegent Configuration Wizard[/bold cyan]"))
 ```
 
 **Assessment:** ✅ **COMPLIANT**
@@ -200,6 +211,7 @@ class ConfigWizard:
 
 ```python
 import psutil  # ✅ Uses psutil for process introspection
+
 
 class ProcessMonitor:
     """Monitor process lifecycle, CPU, memory, I/O."""
@@ -494,6 +506,7 @@ if output:
             json.dump(result, f, indent=2)
     elif format == "yaml":
         import yaml
+
         with open(output_path, "w") as f:
             yaml.dump(result, f, default_flow_style=False)
 ```

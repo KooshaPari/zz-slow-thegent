@@ -880,17 +880,17 @@ environment:
 ```python
 # Output modes
 class OutputFormatter:
-    FORMATS = ['json', 'yaml', 'table', 'quiet']
+    FORMATS = ["json", "yaml", "table", "quiet"]
 
-    def format(data, format='json', verbose=False):
-        if format == 'json':
+    def format(data, format="json", verbose=False):
+        if format == "json":
             return json.dumps(data, indent=2)
-        elif format == 'yaml':
+        elif format == "yaml":
             return yaml.dump(data)
-        elif format == 'table':
+        elif format == "table":
             return TableRenderer.render(data, verbose)
-        elif format == 'quiet':
-            return '' if not data else str(data)
+        elif format == "quiet":
+            return "" if not data else str(data)
 ```
 
 ### 9.4 Error Handling Pattern
@@ -906,6 +906,7 @@ class ExitCode:
     TIMEOUT = 5
     NETWORK_ERROR = 6
     CONFIG_ERROR = 7
+
 
 # Usage
 def main():
@@ -939,17 +940,17 @@ class ProgressIndicator:
         self.stages = []
 
     def add_stage(self, name):
-        self.stages.append({'name': name, 'status': 'pending'})
+        self.stages.append({"name": name, "status": "pending"})
         return self
 
     def start_stage(self, stage_name):
-        stage = next(s for s in self.stages if s['name'] == stage_name)
-        stage['status'] = 'running'
+        stage = next(s for s in self.stages if s["name"] == stage_name)
+        stage["status"] = "running"
         self._render()
 
     def complete_stage(self, stage_name, success=True):
-        stage = next(s for s in self.stages if s['name'] == stage_name)
-        stage['status'] = 'success' if success else 'error'
+        stage = next(s for s in self.stages if s["name"] == stage_name)
+        stage["status"] = "success" if success else "error"
         self._render()
 
     def _render(self):
@@ -968,10 +969,10 @@ class SubcommandLoader:
 
     def discover(self):
         for filename in os.listdir(self.command_dir):
-            if filename.endswith('.py') and not filename.startswith('_'):
+            if filename.endswith(".py") and not filename.startswith("_"):
                 module_name = filename[:-3]
-                module = importlib.import_module(f'commands.{module_name}')
-                if hasattr(module, 'register'):
+                module = importlib.import_module(f"commands.{module_name}")
+                if hasattr(module, "register"):
                     self.subcommands[module_name] = module.register()
         return self.subcommands
 ```
@@ -981,7 +982,7 @@ class SubcommandLoader:
 ```python
 # CLI args > config file > environment > defaults
 class ConfigOverride:
-    PRIORITY = ['args', 'config', 'env', 'defaults']
+    PRIORITY = ["args", "config", "env", "defaults"]
 
     def load(self, args):
         # 1. Load defaults
@@ -1001,9 +1002,9 @@ class ConfigOverride:
 
     def _load_env(self):
         env_mappings = {
-            'THGENT_MODEL': ('model', str),
-            'THGENT_TIMEOUT': ('timeout', int),
-            'THGENT_PORT': ('port', int),
+            "THGENT_MODEL": ("model", str),
+            "THGENT_TIMEOUT": ("timeout", int),
+            "THGENT_PORT": ("port", int),
         }
         for env_var, (key, type_cast) in env_mappings.items():
             if env_var in os.environ:

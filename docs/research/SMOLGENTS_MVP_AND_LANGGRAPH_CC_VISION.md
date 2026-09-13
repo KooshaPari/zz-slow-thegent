@@ -177,10 +177,10 @@ task.add_dependency(other_task.id)
 **State**:
 ```python
 class CCWorkflowState(TypedDict):
-    task_list: list[dict]       # CC task format
-    completed_tasks: dict       # task_id -> result
-    current_phase: str          # planning, research, coding, review
-    blocked_by: dict            # task_id -> list of blocking task ids
+    task_list: list[dict]  # CC task format
+    completed_tasks: dict  # task_id -> result
+    current_phase: str  # planning, research, coding, review
+    blocked_by: dict  # task_id -> list of blocking task ids
     human_input: Optional[str]  # for interrupt/resume
 ```
 

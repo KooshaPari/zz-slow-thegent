@@ -93,16 +93,16 @@ Create an automatic agent registry system that allows:
 # Registry side
 fifo_path = session_dir / f"{session_id}.in"
 os.mkfifo(fifo_path, 0o666)
-with open(fifo_path, 'w') as f:
+with open(fifo_path, "w") as f:
     f.write(json.dumps({"type": "reprompt", "prompt": "..."}))
 
 # Agent side (in agent loop)
 fifo_path = Path(os.environ.get("THGENT_SESSION_INPUT_FIFO"))
 if fifo_path.exists():
-    with open(fifo_path, 'r') as f:
+    with open(fifo_path, "r") as f:
         msg = json.loads(f.read())
         if msg["type"] == "reprompt":
-            pass # Handle reprompt
+            pass  # Handle reprompt
 ```
 
 ### Option 2: Unix Domain Sockets
@@ -129,6 +129,7 @@ if fifo_path.exists():
 ```python
 # Registry side
 import socket
+
 sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 sock.connect(f"/tmp/thegent_{session_id}.sock")
 sock.sendall(json.dumps({"type": "reprompt", "prompt": "..."}).encode())
@@ -166,8 +167,9 @@ data = conn.recv(4096)
 ```python
 # Registry side
 msg_file = session_dir / f"{session_id}.messages.jsonl"
-with open(msg_file, 'a') as f:
+with open(msg_file, "a") as f:
     f.write(json.dumps({"id": uuid4(), "type": "reprompt", "prompt": "...", "timestamp": now()}) + "\n")
+
 
 # Agent side (polling)
 def poll_messages(session_id):

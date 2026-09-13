@@ -161,11 +161,13 @@ uv sync --extra fast
 ```python
 # Before
 import yaml
+
 data = yaml.safe_load(path.read_text())
 yaml.dump(data, file)
 
 # After
 from thegent.infra import yaml_load, yaml_dump
+
 data = yaml_load(path)
 yaml_dump(data, file)
 ```
@@ -174,11 +176,13 @@ yaml_dump(data, file)
 ```python
 # Before
 import shutil
+
 shutil.copy2(src, dst)
 shutil.copytree(src, dst)
 
 # After
 from thegent.infra import copy_file, copy_tree
+
 copy_file(src, dst)  # Uses sendfile on Linux for large files
 copy_tree(src, dst)  # Optimized directory operations
 ```
@@ -187,11 +191,13 @@ copy_tree(src, dst)  # Optimized directory operations
 ```python
 # Before
 from jsonschema import Draft202012Validator
+
 validator = Draft202012Validator(schema)
 validator.validate(data)
 
 # After
 from thegent.infra import FastJSONSchemaValidator
+
 validator = FastJSONSchemaValidator(schema)
 validator.validate(data)
 ```

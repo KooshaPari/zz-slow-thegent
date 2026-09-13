@@ -158,10 +158,8 @@ from smolagents import CodeAgent, ToolCallingAgent, InferenceClientModel
 
 model = InferenceClientModel("meta-llama/Meta-Llama-3.1-70B-Instruct")
 
-researcher = ToolCallingAgent(tools=[...], model=model, name="researcher",
-                              description="Searches the web")
-coder = CodeAgent(tools=[], model=model, name="coder",
-                  description="Writes and runs code")
+researcher = ToolCallingAgent(tools=[...], model=model, name="researcher", description="Searches the web")
+coder = CodeAgent(tools=[], model=model, name="coder", description="Writes and runs code")
 
 # Orchestrator automatically wraps sub-agents as callable tools
 orchestrator = CodeAgent(

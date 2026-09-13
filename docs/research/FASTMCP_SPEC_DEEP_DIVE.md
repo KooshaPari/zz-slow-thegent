@@ -52,9 +52,9 @@ Provider → [Provider Transforms] → [Server Transforms] → Client
 
 ```python
 ToolResult(
-    content="...",           # TextContent or list of content blocks
-    structured_content={...}, # Machine-readable JSON
-    meta={"execution_time_ms": 145}
+    content="...",  # TextContent or list of content blocks
+    structured_content={...},  # Machine-readable JSON
+    meta={"execution_time_ms": 145},
 )
 ```
 
@@ -214,14 +214,14 @@ ctx: Context = CurrentContext()  # Preferred
 
 ```python
 result = await ctx.sample(
-    messages="...",           # or list[SamplingMessage]
+    messages="...",  # or list[SamplingMessage]
     system_prompt="...",
     temperature=0.7,
     max_tokens=300,
     model_preferences=["claude-opus-4-5"],
     tools=[search, fetch_url],
     result_type=SentimentResult,  # Structured output
-    tool_concurrency=0,       # None = sequential, 0 = unlimited
+    tool_concurrency=0,  # None = sequential, 0 = unlimited
 )
 # result.text, result.result, result.history
 ```
@@ -477,15 +477,20 @@ python -c "import fastmcp; print(fastmcp.__mcp_version__)"
 ```python
 from fastmcp.exceptions import ToolError, ValidationError
 
+
 class ThegentError(ToolError):
     """Base error for thegent-specific failures."""
+
     exit_code: int = 1
     recoverable: bool = False
 
+
 class AgentNotFoundError(ThegentError):
     """Raised when requested agent doesn't exist."""
+
     exit_code: int = 42
     recoverable: bool = True
+
 
 @mcp.tool()
 async def thegent_run(agents: list[str]) -> dict:
@@ -513,9 +518,7 @@ async def thegent_run(agents: list[str]) -> dict:
 
 ```python
 async def resilient_agent_execution(
-    agent_name: str,
-    max_retries: int = 3,
-    backoff_factor: float = 2.0
+    agent_name: str, max_retries: int = 3, backoff_factor: float = 2.0
 ) -> ExecutionResult:
     """Execute agent with retry logic."""
     last_error = None
@@ -527,7 +530,7 @@ async def resilient_agent_execution(
             raise  # Non-recoverable
         except (NetworkError, TimeoutError) as e:
             last_error = e
-            wait_time = backoff_factor ** attempt
+            wait_time = backoff_factor**attempt
             await asyncio.sleep(wait_time)
 
     raise ExecutionError(f"Failed after {max_retries} attempts") from last_error
@@ -542,7 +545,7 @@ async def resilient_agent_execution(
     annotations={
         "version": "2.1.0",
         "deprecation_warning": "Use thegent_run_v3 instead",
-        "replacement": "thegent_run_v3"
+        "replacement": "thegent_run_v3",
     }
 )
 async def thegent_run_v2(agents: list[str]) -> dict:
@@ -563,8 +566,10 @@ async def thegent_run_v2(agents: list[str]) -> dict:
 ```python
 from pydantic import BaseModel, Field
 
+
 class AgentConfigV2(BaseModel):
     """V2 schema with backward compatibility."""
+
     name: str
     timeout_secs: int = Field(default=600, ge=60, le=3600)
     retry_count: int = Field(default=3, ge=0, le=10)
@@ -578,7 +583,7 @@ class AgentConfigV2(BaseModel):
             name=v1_config["agent_name"],
             timeout_secs=v1_config.get("timeout", 600),
             retry_count=v1_config.get("retries", 3),
-            priority=0  # Default for migrated configs
+            priority=0,  # Default for migrated configs
         )
 ```
 

@@ -27,11 +27,13 @@ from datetime import datetime, timedelta
 from typing import Dict, Optional
 from enum import Enum
 
+
 class BudgetType(Enum):
     MONTHLY = "monthly"
     QUARTERLY = "quarterly"
     PER_MODEL = "per_model"
     EMERGENCY = "emergency"
+
 
 @dataclass
 class Budget:
@@ -100,11 +102,7 @@ class CostMeter:
 
 ```python
 class CostAttributor:
-    def attribute_cost(
-        self,
-        request: Request,
-        response: Response
-    ) -> Dict[str, float]:
+    def attribute_cost(self, request: Request, response: Response) -> Dict[str, float]:
         """Attribute cost to specific components."""
         return {
             "prompt_tokens": response.usage.input_tokens,
@@ -120,20 +118,13 @@ class CostAttributor:
 
 ```python
 class BudgetAwareRouter:
-    def __init__(
-        self,
-        budget_manager: BudgetManager,
-        router: ParetoRouter
-    ):
+    def __init__(self, budget_manager: BudgetManager, router: ParetoRouter):
         self.budget_manager = budget_manager
         self.router = router
 
     def route(self, request: Request) -> RoutingDecision:
         # Check budget first
-        budget_status = self.budget_manager.check_budget(
-            request.project_id,
-            request.requested_model
-        )
+        budget_status = self.budget_manager.check_budget(request.project_id, request.requested_model)
 
         if not budget_status.can_proceed:
             # Fall back to cheaper model or reject
@@ -142,16 +133,9 @@ class BudgetAwareRouter:
         # Normal routing with budget awareness
         return self.router.route(request)
 
-    def _route_to_budget(
-        self,
-        budget_status: BudgetStatus,
-        request: Request
-    ) -> RoutingDecision:
+    def _route_to_budget(self, budget_status: BudgetStatus, request: Request) -> RoutingDecision:
         """Route to cheapest available model."""
-        available = [
-            m for m in ALL_MODELS
-            if m.cost <= budget_status.remaining_budget
-        ]
+        available = [m for m in ALL_MODELS if m.cost <= budget_status.remaining_budget]
         return min(available, key=lambda m: m.cost)
 ```
 
@@ -159,11 +143,7 @@ class BudgetAwareRouter:
 
 ```python
 class OverageHandler:
-    def handle_overage(
-        self,
-        project_id: str,
-        overage_amount: float
-    ) -> OverageAction:
+    def handle_overage(self, project_id: str, overage_amount: float) -> OverageAction:
         """Determine action for budget overage."""
         if overage_amount < 10:  # Small overage
             return OverageAction.WARN
@@ -179,46 +159,23 @@ class OverageHandler:
 class EconomicGovernance:
     """Main interface for economic governance."""
 
-    async def check_budget(
-        self,
-        project_id: str,
-        model: str
-    ) -> BudgetStatus:
+    async def check_budget(self, project_id: str, model: str) -> BudgetStatus:
         """Check if request can proceed within budget."""
         pass
 
-    async def record_cost(
-        self,
-        project_id: str,
-        model: str,
-        tokens: int,
-        cost: float
-    ):
+    async def record_cost(self, project_id: str, model: str, tokens: int, cost: float):
         """Record cost for a request."""
         pass
 
-    async def get_remaining_budget(
-        self,
-        project_id: str
-    ) -> float:
+    async def get_remaining_budget(self, project_id: str) -> float:
         """Get remaining budget for a project."""
         pass
 
-    async def allocate_budget(
-        self,
-        project_id: str,
-        amount: float,
-        budget_type: BudgetType
-    ) -> Budget:
+    async def allocate_budget(self, project_id: str, amount: float, budget_type: BudgetType) -> Budget:
         """Allocate new budget."""
         pass
 
-    async def get_cost_report(
-        self,
-        project_id: str,
-        start_date: datetime,
-        end_date: datetime
-    ) -> CostReport:
+    async def get_cost_report(self, project_id: str, start_date: datetime, end_date: datetime) -> CostReport:
         """Generate cost report."""
         pass
 ```

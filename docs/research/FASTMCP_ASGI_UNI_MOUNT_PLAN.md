@@ -62,9 +62,11 @@ def http_app(stateless_http: bool = True):
         app.add_middleware(BearerAuthMiddleware)
     return app
 
+
 def run(host=None, port=None, reload=False):
     """Start with uvicorn."""
     import uvicorn
+
     app = http_app(stateless_http=True)
     uvicorn.run(app, host=host, port=port, lifespan="on")
 ```
@@ -112,12 +114,16 @@ from fastmcp import FastMCP
 
 # Server code
 other_mcp = FastMCP("OtherServer")
+
+
 @other_mcp.tool()
 def other_tool(x: int) -> int:
     return x * 2
 
+
 # Mount in thegent
 from fastmcp.server.asgi import mount_asgi
+
 mounted = mount_asgi(other_mcp, namespace="other")
 mcp_app.mount(mounted, namespace="other")
 ```
@@ -130,8 +136,10 @@ from starlette.applications import Starlette
 from starlette.routing import Route
 from fastmcp.server.asgi import mount_asgi
 
+
 async def homepage(request):
     return PlainTextResponse("Hello")
+
 
 app = Starlette(routes=[Route("/", homepage)])
 

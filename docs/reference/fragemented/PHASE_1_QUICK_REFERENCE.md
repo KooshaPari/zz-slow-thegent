@@ -117,25 +117,25 @@ Examples:
 agent = registry.get_agent(agent_id)
 
 # Identity
-agent.project                  # "thegent"
-agent.uuid                     # "abc123"
-agent.level                    # AgentLevel.L1_STRATEGIC
-agent.role                     # AgentRole.COORDINATOR
-agent.agent_id                 # Full ID string
+agent.project  # "thegent"
+agent.uuid  # "abc123"
+agent.level  # AgentLevel.L1_STRATEGIC
+agent.role  # AgentRole.COORDINATOR
+agent.agent_id  # Full ID string
 
 # Relationships
-agent.parent_agent_id          # Parent L1/L2 ID (or None)
-agent.child_agent_ids          # List of child IDs
-agent.peer_agent_ids           # Peer agents at same level
+agent.parent_agent_id  # Parent L1/L2 ID (or None)
+agent.child_agent_ids  # List of child IDs
+agent.peer_agent_ids  # Peer agents at same level
 
 # Status
-agent.is_active                # True/False
-agent.status_message           # "healthy", etc.
-agent.last_heartbeat           # Unix timestamp
+agent.is_active  # True/False
+agent.status_message  # "healthy", etc.
+agent.last_heartbeat  # Unix timestamp
 
 # Metadata
-agent.capabilities             # ["orchestration", "monitoring"]
-agent.scope_tags               # {"tier": "strategic"}
+agent.capabilities  # ["orchestration", "monitoring"]
+agent.scope_tags  # {"tier": "strategic"}
 ```
 
 ---

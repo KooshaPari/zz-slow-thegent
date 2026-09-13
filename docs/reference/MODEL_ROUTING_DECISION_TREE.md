@@ -64,8 +64,7 @@ def select_model(
         # Opus cost: $17.50/M, avg 10K+ tokens per call
         opus_cost_cents = (17.50 / 1_000_000) * input_tokens * 100
         if opus_cost_cents > budget_cents:
-            return WARN(f"Opus costs {opus_cost_cents}¢ > budget {budget_cents}¢") \
-                   and use_fallback("minimax-m2.5")
+            return WARN(f"Opus costs {opus_cost_cents}¢ > budget {budget_cents}¢") and use_fallback("minimax-m2.5")
         return "claude-opus-4.6"
 
     # ═══════════════════════════════════════════════════════════════
@@ -92,8 +91,7 @@ def select_model(
         if gpt4o_mini_cost_cents <= budget_cents:
             return "gpt-4o-mini"
         # No other model achieves <300ms SLA well
-        return WARN("No model achieves <300ms SLA within budget") \
-               and use_best_effort("gemini-3-flash")
+        return WARN("No model achieves <300ms SLA within budget") and use_best_effort("gemini-3-flash")
 
     if latency_sla_ms < 500:
         # Need fast model (>100 tok/s)
@@ -112,8 +110,7 @@ def select_model(
         # Ultimate budget minimum: GPT-4o mini
         if gpt4o_mini_cost_cents <= budget_cents:
             return "gpt-4o-mini"
-        return WARN("Budget too low even for GPT-4o mini") \
-               and use_fallback("gpt-4o-mini")
+        return WARN("Budget too low even for GPT-4o mini") and use_fallback("gpt-4o-mini")
 
     # ═══════════════════════════════════════════════════════════════
     # PHASE 5: Quality-critical path (reasoning or domain-specific)
@@ -166,8 +163,7 @@ def select_model(
         if quality_threshold <= 70:
             return "gpt-4o-mini"
         else:
-            return WARN(f"Quality drop: MiniMax 80.2% → GPT-4o mini 70%") \
-                   and use_fallback("gpt-4o-mini")
+            return WARN(f"Quality drop: MiniMax 80.2% → GPT-4o mini 70%") and use_fallback("gpt-4o-mini")
 
     # All models over budget: hard error
     return ERROR(f"All models exceed budget {budget_cents}¢")

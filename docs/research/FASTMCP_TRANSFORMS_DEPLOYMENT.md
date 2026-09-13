@@ -258,17 +258,17 @@ from fastmcp import FastMCP
 from starlette.responses import JSONResponse
 from starlette.routing import Route
 
+
 def health_check(request):
     """Health check endpoint for deployment."""
-    return JSONResponse({
-        "status": "healthy",
-        "version": "1.0.0",
-        "components": {
-            "mcp": "healthy",
-            "cache": "healthy",
-            "event_store": "healthy"
+    return JSONResponse(
+        {
+            "status": "healthy",
+            "version": "1.0.0",
+            "components": {"mcp": "healthy", "cache": "healthy", "event_store": "healthy"},
         }
-    })
+    )
+
 
 mcp = FastMCP("ThegentServer")
 mcp.router.add_route("/health", health_check)

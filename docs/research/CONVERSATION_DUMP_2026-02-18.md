@@ -166,6 +166,7 @@ This session cluster (spanning 2026-02-16 through 2026-02-18) completed a compre
 **Validation:**
 ```python
 from thegent.utils.shell import get_fastest_shell
+
 shell = get_fastest_shell()  # Returns /bin/zsh or fallback
 ```
 

@@ -11,16 +11,20 @@ from batch_file_ops import batch_read_files, batch_write_files, batch_edit_files
 files = batch_read_files(["file1.py", "file2.py", "file3.py"])
 
 # Write multiple files atomically (automatic rollback on failure)
-result = batch_write_files([
-    ("file1.py", "content1"),
-    ("file2.py", "content2"),
-])
+result = batch_write_files(
+    [
+        ("file1.py", "content1"),
+        ("file2.py", "content2"),
+    ]
+)
 
 # Edit multiple files with search/replace (atomic)
-result = batch_edit_files([
-    ("file1.py", "old", "new"),
-    ("file2.py", "search", "replace"),
-])
+result = batch_edit_files(
+    [
+        ("file1.py", "old", "new"),
+        ("file2.py", "search", "replace"),
+    ]
+)
 
 # Delete multiple files atomically (with backup)
 result = batch_delete_files(["file1.py", "file2.py"])
@@ -40,7 +44,7 @@ files = batch_read_files(["file1.py", "file2.py"])
 files = batch_read_files(
     ["large.txt"],
     offsets={"large.txt": 100},  # Start at line 100
-    limits={"large.txt": 50}      # Read 50 lines
+    limits={"large.txt": 50},  # Read 50 lines
 )
 ```
 
@@ -53,10 +57,12 @@ files = batch_read_files(
 Write multiple files atomically with automatic rollback.
 
 ```python
-result = batch_write_files([
-    ("file1.py", "content1"),
-    ("file2.py", "content2"),
-])
+result = batch_write_files(
+    [
+        ("file1.py", "content1"),
+        ("file2.py", "content2"),
+    ]
+)
 
 # Access results
 print(f"Wrote {result.successful}/{result.total} files")
@@ -73,14 +79,20 @@ Edit multiple files with search/replace atomically.
 
 ```python
 # Replace first occurrence in each file
-result = batch_edit_files([
-    ("file.py", "old", "new"),
-], count=1)
+result = batch_edit_files(
+    [
+        ("file.py", "old", "new"),
+    ],
+    count=1,
+)
 
 # Replace all occurrences
-result = batch_edit_files([
-    ("file.py", "pattern", "replacement"),
-], count=-1)
+result = batch_edit_files(
+    [
+        ("file.py", "pattern", "replacement"),
+    ],
+    count=-1,
+)
 ```
 
 **Returns**: `BatchOperationResult` - detailed operation result
@@ -105,22 +117,22 @@ assert result.backup_dir is not None
 ## Result Object
 
 ```python
-result.total          # Total operations
-result.successful     # Successfully completed
-result.failed         # Failed operations
-result.errors         # List of error messages
-result.backup_dir     # Backup location
-result.duration_ms    # Operation duration
-result.operations     # List of BatchOperation objects
+result.total  # Total operations
+result.successful  # Successfully completed
+result.failed  # Failed operations
+result.errors  # List of error messages
+result.backup_dir  # Backup location
+result.duration_ms  # Operation duration
+result.operations  # List of BatchOperation objects
 
 # Per-operation details
 for op in result.operations:
-    op.file_path         # File path
-    op.operation_type    # 'read', 'write', 'edit', 'delete'
-    op.success          # Boolean
-    op.error_message    # Error if failed
-    op.result           # Metadata dict
-    op.timestamp        # ISO timestamp
+    op.file_path  # File path
+    op.operation_type  # 'read', 'write', 'edit', 'delete'
+    op.success  # Boolean
+    op.error_message  # Error if failed
+    op.result  # Metadata dict
+    op.timestamp  # ISO timestamp
 ```
 
 ## Error Handling
@@ -129,10 +141,12 @@ for op in result.operations:
 from batch_file_ops import BatchFileOpsError
 
 try:
-    result = batch_edit_files([
-        ("file.py", "search", "replace"),
-        ("missing.py", "old", "new"),  # Will fail
-    ])
+    result = batch_edit_files(
+        [
+            ("file.py", "search", "replace"),
+            ("missing.py", "old", "new"),  # Will fail
+        ]
+    )
 except BatchFileOpsError as e:
     print(f"Error: {e}")
     print(f"Failed: {e.result.failed}")
@@ -225,6 +239,7 @@ batch_write_files "/path/file1:generated" "/path/file2:generated"
 ### Script Integration
 ```python
 from scripts.batch_file_ops import batch_edit_files
+
 result = batch_edit_files([("file.py", "old", "new")])
 ```
 

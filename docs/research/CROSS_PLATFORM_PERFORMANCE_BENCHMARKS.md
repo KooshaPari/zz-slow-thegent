@@ -290,17 +290,16 @@ automation_latency = Histogram(
     "desktop_automation_latency_seconds",
     "Automation action latency",
     ["action_type", "platform", "success"],
-    buckets=[0.01, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0]
+    buckets=[0.01, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0],
 )
+
 
 def record_automation(action_type: str, duration_ms: float, success: bool):
     """Record automation metrics."""
     platform = platform.system().lower()
-    automation_latency.labels(
-        action_type=action_type,
-        platform=platform,
-        success=str(success)
-    ).observe(duration_ms / 1000.0)
+    automation_latency.labels(action_type=action_type, platform=platform, success=str(success)).observe(
+        duration_ms / 1000.0
+    )
 ```
 
 **Success Rate Counters:**
@@ -308,15 +307,11 @@ def record_automation(action_type: str, duration_ms: float, success: bool):
 from prometheus_client import Counter
 
 automation_success = Counter(
-    "desktop_automation_success_total",
-    "Successful automation actions",
-    ["action_type", "platform"]
+    "desktop_automation_success_total", "Successful automation actions", ["action_type", "platform"]
 )
 
 automation_failure = Counter(
-    "desktop_automation_failure_total",
-    "Failed automation actions",
-    ["action_type", "platform", "error_type"]
+    "desktop_automation_failure_total", "Failed automation actions", ["action_type", "platform", "error_type"]
 )
 ```
 
@@ -456,9 +451,11 @@ def benchmark_macos_click():
             result = provider.click(element)
             latencies.append((time.time() - start) * 1000)
 
-    print(f"Click latency: p50={np.percentile(latencies, 50):.1f}ms, "
-          f"p95={np.percentile(latencies, 95):.1f}ms, "
-          f"p99={np.percentile(latencies, 99):.1f}ms")
+    print(
+        f"Click latency: p50={np.percentile(latencies, 50):.1f}ms, "
+        f"p95={np.percentile(latencies, 95):.1f}ms, "
+        f"p99={np.percentile(latencies, 99):.1f}ms"
+    )
 ```
 
 **Cross-Platform Benchmark:**
@@ -535,12 +532,14 @@ def detect_regression(baseline: dict, current: dict, threshold: float = 0.2):
 
         regression_pct = (current_value - baseline_value) / baseline_value
         if regression_pct > threshold:
-            regressions.append({
-                "metric": metric,
-                "baseline": baseline_value,
-                "current": current_value,
-                "regression_pct": regression_pct * 100
-            })
+            regressions.append(
+                {
+                    "metric": metric,
+                    "baseline": baseline_value,
+                    "current": current_value,
+                    "regression_pct": regression_pct * 100,
+                }
+            )
 
     return regressions
 ```
@@ -630,6 +629,7 @@ performance_budgets:
 import cProfile
 import pstats
 
+
 def profile_automation():
     """Profile automation performance."""
     profiler = cProfile.Profile()
@@ -642,7 +642,7 @@ def profile_automation():
 
     profiler.disable()
     stats = pstats.Stats(profiler)
-    stats.sort_stats('cumulative')
+    stats.sort_stats("cumulative")
     stats.print_stats(20)  # Top 20 functions
 ```
 

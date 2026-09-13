@@ -278,6 +278,7 @@ thegent desktop-automation check-permissions
 ```python
 # Enable debug logging
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 
 # Try finding element
@@ -340,10 +341,12 @@ thegent automation rate-limit-status
 3. **Use batch operations:**
    ```python
    # Batch multiple clicks
-   provider.execute_batch([
-       AutomationAction(type="click", selector="button1"),
-       AutomationAction(type="click", selector="button2"),
-   ])
+   provider.execute_batch(
+       [
+           AutomationAction(type="click", selector="button1"),
+           AutomationAction(type="click", selector="button2"),
+       ]
+   )
    ```
 
 #### Issue: Cost Budget Exceeded

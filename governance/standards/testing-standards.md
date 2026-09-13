@@ -79,6 +79,7 @@ tests/
 def test_user_can_login():
     pass
 
+
 # Python: Option 2 — Comment tag
 def test_user_can_login():
     """
@@ -87,6 +88,7 @@ def test_user_can_login():
     Traces to: FR-THEGENT-001
     """
     pass
+
 
 # Python: Option 3 — Docstring
 def test_user_can_login():
@@ -169,6 +171,7 @@ test("should calculate discount for premium customer", () => {
 # ✅ Good: Mock external dependencies
 from unittest.mock import Mock, patch
 
+
 def test_get_user_with_cache():
     # Arrange
     mock_db = Mock()
@@ -202,13 +205,16 @@ def test_get_user_with_cache():
 # ✅ Good: Reusable fixtures
 import pytest
 
+
 @pytest.fixture
 def mock_db():
     return Mock()
 
+
 @pytest.fixture
 def user_service(mock_db):
     return UserService(db=mock_db)
+
 
 def test_get_user(user_service, mock_db):
     # Arrange
@@ -310,11 +316,7 @@ test("User can complete login flow", async ({ page }) => {
 def test_complete_user_signup_flow(client):
     """Test complete signup workflow: register → verify → login."""
     # Arrange
-    signup_data = {
-        "name": "Charlie",
-        "email": "charlie@example.com",
-        "password": "secure123"
-    }
+    signup_data = {"name": "Charlie", "email": "charlie@example.com", "password": "secure123"}
 
     # Act: Register
     register_resp = client.post("/api/auth/signup", json=signup_data)
@@ -327,8 +329,7 @@ def test_complete_user_signup_flow(client):
 
     # Act: Login
     login_resp = client.post(
-        "/api/auth/login",
-        json={"email": signup_data["email"], "password": signup_data["password"]}
+        "/api/auth/login", json={"email": signup_data["email"], "password": signup_data["password"]}
     )
 
     # Assert
@@ -428,6 +429,7 @@ def test_create_user_with_valid_data():
     user = create_user(name="Alice")
     assert user.id is not None
 
+
 def test_create_user_with_invalid_email():
     with pytest.raises(ValueError):
         create_user(name="Bob", email="invalid")
@@ -440,6 +442,7 @@ def test_create_user():
     user = create_user(name="Alice")
     user_id = user.id
     assert user_id is not None
+
 
 def test_get_user():
     user = get_user(user_id)  # Depends on test_create_user running first
@@ -458,7 +461,9 @@ def user_factory():
         defaults = {"name": "Test User", "email": "test@example.com"}
         defaults.update(kwargs)
         return User(**defaults)
+
     return _make_user
+
 
 def test_get_user(user_factory):
     user = user_factory(name="Alice")
@@ -472,10 +477,7 @@ def test_get_user(user_factory):
 @pytest.fixture
 def populated_db(db_session):
     """Populate DB with test data."""
-    users = [
-        User(name=f"User {i}", email=f"user{i}@example.com")
-        for i in range(100)
-    ]
+    users = [User(name=f"User {i}", email=f"user{i}@example.com") for i in range(100)]
     db_session.add_all(users)
     db_session.commit()
     return db_session
@@ -485,11 +487,14 @@ def populated_db(db_session):
 
 ```python
 # ✅ Good: Test multiple inputs with one test function
-@pytest.mark.parametrize("discount_tier,expected_discount", [
-    ("premium", 0.20),
-    ("standard", 0.05),
-    ("none", 0.0),
-])
+@pytest.mark.parametrize(
+    "discount_tier,expected_discount",
+    [
+        ("premium", 0.20),
+        ("standard", 0.05),
+        ("none", 0.0),
+    ],
+)
 def test_calculate_discount(discount_tier, expected_discount):
     result = calculate_discount(100, discount_tier)
     expected = 100 * (1 - expected_discount)

@@ -147,7 +147,7 @@
 **Explicit Detection** (Flag-based):
 ```python
 # Regex pattern for $idea flag
-EXPLICIT_PATTERN = r'\$idea:\s*(.+?)(?=\$|$)'
+EXPLICIT_PATTERN = r"\$idea:\s*(.+?)(?=\$|$)"
 
 # Example: "$idea: Add caching layer for faster queries"
 # Extracts: "Add caching layer for faster queries"
@@ -156,13 +156,13 @@ EXPLICIT_PATTERN = r'\$idea:\s*(.+?)(?=\$|$)'
 **Implicit Detection** (Heuristic-based):
 ```python
 IMPLICIT_PATTERNS = [
-    r'new idea:\s*(.+?)(?:\n|$)',              # "New idea: ..."
-    r'idea:\s*(.+?)(?:\n|$)',                  # "Idea: ..."
-    r'what if we\s+(.+?)(?:\n|$)',             # "What if we ..."
-    r'consider(?:ing)?:\s*(.+?)(?:\n|$)',      # "Consider: ..."
-    r'concept:\s*(.+?)(?:\n|$)',               # "Concept: ..."
-    r'i[\'m ]*thinking\s+about\s+(.+?)(?:\n|$)', # "I'm thinking about ..."
-    r'(?:proposal|vision|roadmap):\s*(.+?)(?:\n|$)',
+    r"new idea:\s*(.+?)(?:\n|$)",  # "New idea: ..."
+    r"idea:\s*(.+?)(?:\n|$)",  # "Idea: ..."
+    r"what if we\s+(.+?)(?:\n|$)",  # "What if we ..."
+    r"consider(?:ing)?:\s*(.+?)(?:\n|$)",  # "Consider: ..."
+    r"concept:\s*(.+?)(?:\n|$)",  # "Concept: ..."
+    r"i[\'m ]*thinking\s+about\s+(.+?)(?:\n|$)",  # "I'm thinking about ..."
+    r"(?:proposal|vision|roadmap):\s*(.+?)(?:\n|$)",
 ]
 ```
 
@@ -220,8 +220,8 @@ def store_idea(idea: IdeaObject, path: str) -> str:
     5. Update indices
     6. Return idea ID
     """
-    json_line = json.dumps(idea.to_dict()) + '\n'
-    with open(path + '/ideas.jsonl', 'a') as f:
+    json_line = json.dumps(idea.to_dict()) + "\n"
+    with open(path + "/ideas.jsonl", "a") as f:
         f.write(json_line)
         f.flush()
         os.fsync(f.fileno())
@@ -280,7 +280,7 @@ Date:   Mon Feb 16 14:30:25 2026 +0000
 class FullTextIndex:
     def __init__(self):
         self.inverted_index = {}  # word → [idea_ids]
-        self.doc_freqs = {}       # word → count
+        self.doc_freqs = {}  # word → count
 
     def index_idea(self, idea: IdeaObject):
         """Add idea to full-text index."""
@@ -295,8 +295,7 @@ class FullTextIndex:
         tokens = tokenize(query.lower())
         results = self.inverted_index.get(tokens[0], [])
         for token in tokens[1:]:
-            results = [id for id in results
-                      if id in self.inverted_index.get(token, [])]
+            results = [id for id in results if id in self.inverted_index.get(token, [])]
         return results
 ```
 
@@ -680,18 +679,25 @@ exit $?
 ```python
 class DetectionError(Exception):
     """Base detection error."""
+
     pass
+
 
 class InvalidIdeaError(DetectionError):
     """Idea doesn't meet minimum requirements."""
+
     # Too short, invalid schema, etc.
+
 
 class DuplicateIdeaError(DetectionError):
     """Idea already exists."""
+
     # User can choose to skip or merge
+
 
 class PatternMatchError(DetectionError):
     """Pattern matching failed."""
+
     # Log and continue
 ```
 
@@ -700,18 +706,25 @@ class PatternMatchError(DetectionError):
 ```python
 class StorageError(Exception):
     """Base storage error."""
+
     pass
+
 
 class WriteError(StorageError):
     """Failed to write to JSONL."""
+
     # Retry with backoff
+
 
 class GitError(StorageError):
     """Git operation failed."""
+
     # Abort, notify user
+
 
 class ChecksumError(StorageError):
     """Checksum mismatch on read."""
+
     # Data corruption, abort
 ```
 
@@ -745,6 +758,7 @@ def detect_ideas(prompt: str) -> List[IdeaObject]:
     ideas = []
     # Custom detection...
     return ideas
+
 
 register_detector(detect_ideas)
 ```

@@ -182,10 +182,7 @@ from thegent.acp.client import ACPClientAdapter
 from pathlib import Path
 
 # Create ACP client adapter
-adapter = ACPClientAdapter(
-    ["npx", "-y", "@zed-industries/claude-agent-acp"],
-    agent_name="claude-acp"
-)
+adapter = ACPClientAdapter(["npx", "-y", "@zed-industries/claude-agent-acp"], agent_name="claude-acp")
 
 # Run agent
 result = adapter.run(

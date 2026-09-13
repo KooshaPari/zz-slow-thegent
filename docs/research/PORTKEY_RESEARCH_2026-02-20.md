@@ -138,16 +138,10 @@ from portkey_ai import PORTKEY_GATEWAY_URL, createHeaders
 client = OpenAI(
     api_key="OPENAI_API_KEY",  # or can be anything if using virtual keys
     base_url=PORTKEY_GATEWAY_URL,  # https://api.portkey.ai/v1
-    default_headers=createHeaders(
-        api_key="PORTKEY_API_KEY",
-        provider="openai"
-    )
+    default_headers=createHeaders(api_key="PORTKEY_API_KEY", provider="openai"),
 )
 
-response = client.chat.completions.create(
-    model="gpt-4o",
-    messages=[{"role": "user", "content": "Hello"}]
-)
+response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "user", "content": "Hello"}])
 ```
 
 ### Python (Portkey native SDK)
@@ -155,15 +149,9 @@ response = client.chat.completions.create(
 ```python
 from portkey_ai import Portkey
 
-portkey = Portkey(
-    api_key="PORTKEY_API_KEY",
-    virtual_key="my-openai-vk"
-)
+portkey = Portkey(api_key="PORTKEY_API_KEY", virtual_key="my-openai-vk")
 
-response = portkey.chat.completions.create(
-    model="gpt-4o",
-    messages=[{"role": "user", "content": "Hello"}]
-)
+response = portkey.chat.completions.create(model="gpt-4o", messages=[{"role": "user", "content": "Hello"}])
 ```
 
 ### JavaScript/TypeScript (OpenAI SDK)
@@ -513,10 +501,7 @@ TTL precedence: request `max_age` honored unless it exceeds org-level cap (org c
 Override default cache partitioning (which uses all headers) with a custom string key:
 
 ```python
-portkey.chat.completions.create(
-    ...,
-    cache_namespace="user-123"
-)
+portkey.chat.completions.create(..., cache_namespace="user-123")
 ```
 
 ```bash
@@ -716,8 +701,8 @@ Collect human evaluation signals linked to logs:
 ```python
 portkey.feedback.create(
     trace_id="trace_id_from_response",
-    value=1,    # 1 = thumbs up, -1 = thumbs down
-    weight=1
+    value=1,  # 1 = thumbs up, -1 = thumbs down
+    weight=1,
 )
 ```
 
@@ -728,14 +713,7 @@ Feedback is visible in the logs UI with count and value:weight pairs per trace.
 Attach arbitrary key-value pairs to any request for filtering/segmentation:
 
 ```python
-portkey.chat.completions.create(
-    ...,
-    metadata={
-        "user_id": "user_123",
-        "environment": "production",
-        "feature": "search"
-    }
-)
+portkey.chat.completions.create(..., metadata={"user_id": "user_123", "environment": "production", "feature": "search"})
 ```
 
 ---
@@ -793,8 +771,7 @@ Call prompts by ID with variable substitution:
 
 ```python
 portkey.prompts.completions.create(
-    prompt_id="pp-my-prompt-abc",
-    variables={"user_name": "Alice", "topic": "machine learning"}
+    prompt_id="pp-my-prompt-abc", variables={"user_name": "Alice", "topic": "machine learning"}
 )
 ```
 

@@ -101,11 +101,7 @@ async def stream_heartbeats(self):
     """Stream heartbeats at 1 Hz to all subscribers."""
     while self.heartbeat_stream_running:
         active_agents = [a for a in registry.agents if a.is_active]
-        heartbeat_msg = {
-            "type": "heartbeats",
-            "timestamp": time.time(),
-            "agents": [...]
-        }
+        heartbeat_msg = {"type": "heartbeats", "timestamp": time.time(), "agents": [...]}
         await self._broadcast_message(heartbeat_msg)
         await asyncio.sleep(1)  # 1 Hz rate
 ```
@@ -125,13 +121,13 @@ await server.unsubscribe_heartbeats("client_1")
 ```python
 @dataclass
 class AgentMessage:
-    id: str                      # Unique message ID
-    from_agent: str             # Sender agent ID
-    to_agent: str               # Recipient (or "broadcast")
-    type: str                   # Message type
-    payload: Dict               # Message data
-    timestamp: float            # Unix timestamp
-    ack: bool = False          # Acknowledged?
+    id: str  # Unique message ID
+    from_agent: str  # Sender agent ID
+    to_agent: str  # Recipient (or "broadcast")
+    type: str  # Message type
+    payload: Dict  # Message data
+    timestamp: float  # Unix timestamp
+    ack: bool = False  # Acknowledged?
     ack_timestamp: Optional[float] = None
 ```
 
@@ -376,29 +372,28 @@ heartbeat = server.call_tool("update_heartbeat", {"agent_id": "..."})
 status = server.call_tool("get_civilization_status", {})
 agents = server.call_tool("query_agents", {"filters": {"level": "L1"}})
 
+
 # Subscribe to heartbeats
 async def monitor():
     await server.subscribe_heartbeats("my_client")
     # Receives 1 Hz heartbeat updates
     await server.unsubscribe_heartbeats("my_client")
 
+
 asyncio.run(monitor())
+
 
 # Send messages
 async def communicate():
     success = await server.message_broker.send_message(
-        from_agent="agent_1",
-        to_agent="agent_2",
-        message_type="status_query",
-        payload={"requested_at": time.time()}
+        from_agent="agent_1", to_agent="agent_2", message_type="status_query", payload={"requested_at": time.time()}
     )
 
     # Broadcast to all in project
     await server.message_broker.broadcast_message(
-        from_agent="l1_coordinator",
-        message_type="broadcast",
-        payload={"message": "Update available"}
+        from_agent="l1_coordinator", message_type="broadcast", payload={"message": "Update available"}
     )
+
 
 asyncio.run(communicate())
 ```

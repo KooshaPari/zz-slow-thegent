@@ -229,6 +229,7 @@ thegent should consume cliproxy++ as a library and extend it through three clean
 # thegent/config.py
 from cliproxy.config import ClipproxySettings
 
+
 class ThegentSettings(ClipproxySettings):
     # thegent-specific overrides and additions
     cliproxy_binary: str = "cli-proxy-api-plus"
@@ -245,6 +246,7 @@ cliproxy++ exposes a `RouterStrategy` protocol:
 # cliproxy/router.py
 from typing import Protocol
 
+
 class RouterStrategy(Protocol):
     async def select_model(self, request: dict) -> str:
         """Return model identifier to route to."""
@@ -257,9 +259,11 @@ thegent registers its Pareto router:
 # thegent/routing/pareto_router_strategy.py
 from cliproxy.router import RouterStrategy
 
+
 class ParetoRouterStrategy:
     async def select_model(self, request: dict) -> str:
         from thegent.routing.pareto_router import select_offer
+
         route = select_offer(complexity_tier=request.get("complexity", "moderate"))
         if route:
             return f"{route[0]}/{route[1]}"
@@ -289,6 +293,7 @@ class MetricsEvent:
     cost_usd: float
     latency_ms: float
     is_fallback: bool
+
 
 # thegent registers a callback:
 from cliproxy.metrics import subscribe_metrics
@@ -482,13 +487,16 @@ One proxy. Every AI tool. Any LLM.
 from cliproxy.lifecycle import start_managed, stop_proxy, is_ready
 from cliproxy.config import ClipproxySettings
 
+
 class ThegentSettings(ClipproxySettings):
     # thegent-specific fields only
     ...
 
+
 # thegent's cliproxy_manager.py becomes:
 def ensure_proxy_running(settings: ThegentSettings) -> str:
     from cliproxy.lifecycle import start_managed
+
     _, base_url = start_managed(settings)
     return base_url
 ```

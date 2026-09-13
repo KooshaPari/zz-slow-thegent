@@ -34,13 +34,16 @@ from thegent.governance.compliance import ComplianceReporter
 from thegent.governance.plugins import PluginRegistry
 from thegent.governance.forensics import IncidentReplayer
 
+
 @pytest.fixture
 def siem_exporter():
     return SIEMExporter(endpoint="http://mock-siem:8080/events")
 
+
 @pytest.fixture
 def ledger():
     return Ledger()
+
 
 @pytest.fixture
 def redactor():
@@ -60,7 +63,7 @@ def test_ec001_siem_egress(siem_exporter):
         "type": "high_risk",
         "severity": "critical",
         "session_id": "session-123",
-        "timestamp": datetime.now(UTC).isoformat()
+        "timestamp": datetime.now(UTC).isoformat(),
     }
 
     start_time = time.time()
@@ -120,10 +123,7 @@ def test_ec004_soc2_evidence_bundle():
     from thegent.governance.compliance import ComplianceReporter
 
     reporter = ComplianceReporter(profile="SOC2")
-    bundle = reporter.generate_evidence_bundle(
-        start_date="2026-01-01",
-        end_date="2026-02-19"
-    )
+    bundle = reporter.generate_evidence_bundle(start_date="2026-01-01", end_date="2026-02-19")
 
     # Verify bundle contents
     assert "run_history" in bundle
@@ -146,7 +146,7 @@ def test_ec005_unsigned_plugin_rejection():
     unsigned_contract = {
         "name": "malicious-plugin",
         "version": "1.0.0",
-        "actions": ["execute_code"]
+        "actions": ["execute_code"],
         # Missing: signature, certificate
     }
 
@@ -169,8 +169,8 @@ def test_ec006_incident_replay(ledger):
         "session_id": "incident-123",
         "actions": [
             {"type": "model_call", "model": "claude-sonnet", "input": "test"},
-            {"type": "file_write", "path": "/tmp/test.txt", "content": "data"}
-        ]
+            {"type": "file_write", "path": "/tmp/test.txt", "content": "data"},
+        ],
     }
 
     ledger.add({"type": "incident", "trace": original_trace})

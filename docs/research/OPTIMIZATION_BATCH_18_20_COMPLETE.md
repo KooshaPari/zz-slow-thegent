@@ -59,6 +59,7 @@ Successfully completed optimization items 18-20, migrating subprocess calls to f
 # Route resolution caching
 try:
     from thegent.infra import MultiTierCache, get_cache
+
     _ROUTE_CACHE = get_cache(l1_size=100, l2_size=1000, l3_path=None, default_ttl=300)
     _USE_MULTI_TIER_CACHE = True
 except ImportError:

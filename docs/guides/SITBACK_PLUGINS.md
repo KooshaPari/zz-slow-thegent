@@ -34,11 +34,9 @@ Plugins are loaded from `~/.claude/sitback-plugins/`:
 ```python
 def register_sitback(registry):
     registry.register_startup_step("Run custom pre-check.")
-    registry.register_widget("dynamic", lambda: {
-        "title": "Live Data",
-        "content": fetch_live_data(),
-        "border_style": "green"
-    })
+    registry.register_widget(
+        "dynamic", lambda: {"title": "Live Data", "content": fetch_live_data(), "border_style": "green"}
+    )
     registry.register_harness_status(lambda: get_heliosShield_status())  # override default
 ```
 

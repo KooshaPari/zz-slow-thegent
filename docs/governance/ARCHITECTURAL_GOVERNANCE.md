@@ -800,6 +800,7 @@ cli/
 def get_config():
     return os.environ.get("THGENT_X", "default")
 
+
 # config_provider.py
 def get_config():
     return settings.x  # Different implementation
@@ -809,6 +810,7 @@ def get_config():
 ```python
 # config.py (canonical)
 from thegent.config import ThegentSettings
+
 
 def get_config():
     settings = ThegentSettings()

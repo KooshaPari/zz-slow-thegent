@@ -108,6 +108,7 @@ write_to = "src/thegent/_version.py"
 
 ```python
 from importlib import resources
+
 hooks_pkg = resources.files("thegent") / "hooks"
 ```
 
@@ -124,6 +125,7 @@ linux = ["dbus-python>=1.3.0"]
 
 ```python
 from packaging import version
+
 latest = get_latest_version()
 current = get_current_version()
 if version.parse(latest) > version.parse(current):

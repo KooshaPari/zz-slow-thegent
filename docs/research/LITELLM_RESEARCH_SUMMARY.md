@@ -44,10 +44,7 @@ LiteLLM Router is a Python library that provides:
 
 **Example**:
 ```python
-router = Router(
-    model_list=model_list,
-    routing_strategy="simple-shuffle"
-)
+router = Router(model_list=model_list, routing_strategy="simple-shuffle")
 ```
 
 ### 2. cost-based-routing
@@ -96,7 +93,7 @@ router = Router(
 ```python
 router = Router(
     num_retries=3,
-    retry_after=5  # Wait 5s before retrying
+    retry_after=5,  # Wait 5s before retrying
 )
 ```
 
@@ -108,10 +105,7 @@ router = Router(
 **Custom Retry Policy**:
 ```python
 retry_policy = RetryPolicy(
-    ContentPolicyViolationErrorRetries=3,
-    AuthenticationErrorRetries=0,
-    RateLimitErrorRetries=3,
-    TimeoutErrorRetries=2
+    ContentPolicyViolationErrorRetries=3, AuthenticationErrorRetries=0, RateLimitErrorRetries=3, TimeoutErrorRetries=2
 )
 ```
 
@@ -126,8 +120,8 @@ retry_policy = RetryPolicy(
 **Configuration**:
 ```python
 router = Router(
-    allowed_fails=1,      # Cooldown if > 1 failure/minute
-    cooldown_time=100    # Cooldown for 100 seconds
+    allowed_fails=1,  # Cooldown if > 1 failure/minute
+    cooldown_time=100,  # Cooldown for 100 seconds
 )
 ```
 
@@ -140,15 +134,12 @@ router = Router(
 
 **Configuration**:
 ```python
-fallbacks = [
-    {"gpt-4": ["gpt-3.5-turbo", "deepseek-v3.2"]},
-    {"claude-opus-4.6": ["claude-sonnet-4.5", "glm-5"]}
-]
+fallbacks = [{"gpt-4": ["gpt-3.5-turbo", "deepseek-v3.2"]}, {"claude-opus-4.6": ["claude-sonnet-4.5", "glm-5"]}]
 
 router = Router(
     model_list=model_list,
     fallbacks=fallbacks,
-    max_fallbacks=5  # Max fallbacks to try
+    max_fallbacks=5,  # Max fallbacks to try
 )
 ```
 
@@ -176,10 +167,7 @@ router = Router(
 
 **Configuration**:
 ```python
-router = Router(
-    cache_responses=True,
-    redis_url="redis://localhost:6379"
-)
+router = Router(cache_responses=True, redis_url="redis://localhost:6379")
 ```
 
 **Use Case**: Production, multiple instances
@@ -188,10 +176,7 @@ router = Router(
 
 **Configuration**:
 ```python
-router = Router(
-    cache_responses=True,
-    caching_groups=[("openai-gpt-3.5-turbo", "azure-gpt-3.5-turbo")]
-)
+router = Router(cache_responses=True, caching_groups=[("openai-gpt-3.5-turbo", "azure-gpt-3.5-turbo")])
 ```
 
 **Use Case**: Cache across model groups (e.g., Azure + OpenAI)
@@ -221,13 +206,10 @@ def log_success_event(self, kwargs, response_obj, start_time, end_time):
 ```python
 provider_budget_config = {
     "openai": {"budget": 100.0, "budget_duration": "1d"},
-    "anthropic": {"budget": 50.0, "budget_duration": "1d"}
+    "anthropic": {"budget": 50.0, "budget_duration": "1d"},
 }
 
-router = Router(
-    model_list=model_list,
-    provider_budget_config=provider_budget_config
-)
+router = Router(model_list=model_list, provider_budget_config=provider_budget_config)
 ```
 
 **Behavior**:
@@ -250,10 +232,10 @@ router = Router(
             "model_name": "gpt-3.5-turbo",
             "litellm_params": {
                 "model": "azure/chatgpt-v-2",
-                "base_model": "azure/gpt-35-turbo"  # For context window check
-            }
+                "base_model": "azure/gpt-35-turbo",  # For context window check
+            },
         }
-    ]
+    ],
 )
 ```
 
@@ -271,8 +253,8 @@ model_list = [
         "model_name": "gpt-3.5-turbo",
         "litellm_params": {
             "model": "azure/chatgpt-v-2",
-            "region_name": "eu"  # Filter for EU region
-        }
+            "region_name": "eu",  # Filter for EU region
+        },
     }
 ]
 ```
@@ -292,6 +274,7 @@ model_list = [
 ```python
 from litellm.integrations.custom_logger import CustomLogger
 
+
 class MyCustomHandler(CustomLogger):
     def log_success_event(self, kwargs, response_obj, start_time, end_time):
         api_key = kwargs.get("litellm_params", {}).get("api_key")
@@ -299,6 +282,7 @@ class MyCustomHandler(CustomLogger):
         model = kwargs.get("model")
         cost = kwargs.get("response_cost")
         print(f"Model: {model}, Cost: ${cost}, Base: {api_base}")
+
 
 customHandler = MyCustomHandler()
 litellm.callbacks = [customHandler]
@@ -314,8 +298,8 @@ router = Router(
     model_list=model_list,
     alerting_config=AlertingConfig(
         alerting_threshold=10,  # Alert after 10 errors
-        webhook_url="https://hooks.slack.com/..."
-    )
+        webhook_url="https://hooks.slack.com/...",
+    ),
 )
 ```
 
@@ -341,12 +325,12 @@ model_list = [
             "api_version": os.getenv("AZURE_API_VERSION"),
             "rpm": 900,  # Requests per minute
             "tpm": 100000,  # Tokens per minute
-            "max_parallel_requests": 10
+            "max_parallel_requests": 10,
         },
         "model_info": {
             "base_model": "azure/gpt-35-turbo",  # For cost tracking
-            "context_window": 16384  # Optional override
-        }
+            "context_window": 16384,  # Optional override
+        },
     }
 ]
 ```
@@ -359,21 +343,21 @@ model_list = [
         "model_name": "gpt-4",
         "litellm_params": {
             "model": "azure/gpt-4-primary",
-            "order": 1  # Highest priority
-        }
+            "order": 1,  # Highest priority
+        },
     },
     {
         "model_name": "gpt-4",
         "litellm_params": {
             "model": "azure/gpt-4-fallback",
-            "order": 2  # Used when order=1 unavailable
-        }
-    }
+            "order": 2,  # Used when order=1 unavailable
+        },
+    },
 ]
 
 router = Router(
     model_list=model_list,
-    enable_pre_call_checks=True  # Required for 'order' to work
+    enable_pre_call_checks=True,  # Required for 'order' to work
 )
 ```
 
@@ -381,20 +365,14 @@ router = Router(
 
 ```python
 model_list = [
+    {"model_name": "o1", "litellm_params": {"model": "o1-preview", "weight": 1}},
     {
         "model_name": "o1",
         "litellm_params": {
             "model": "o1-preview",
-            "weight": 1
-        }
+            "weight": 2,  # Picked 2x more often
+        },
     },
-    {
-        "model_name": "o1",
-        "litellm_params": {
-            "model": "o1-preview",
-            "weight": 2  # Picked 2x more often
-        }
-    }
 ]
 ```
 

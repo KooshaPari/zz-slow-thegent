@@ -36,8 +36,10 @@ src/thegent/
 # src/thegent/routing/classifier.py
 from enum import Enum, auto
 
+
 class TaskCategory(str, Enum):
     """Task complexity classification."""
+
     FAST = "FAST"
     NORMAL = "NORMAL"
     COMPLEX = "COMPLEX"
@@ -109,30 +111,31 @@ class TaskCategory(str, Enum):
 # src/thegent/routing/signals.py
 from dataclasses import dataclass, field
 
+
 @dataclass
 class TaskClassificationInput:
     """Signals for task classification."""
 
     # Required
-    prompt: str                    # Full prompt text
-    agent: str                     # Agent name
+    prompt: str  # Full prompt text
+    agent: str  # Agent name
 
     # Optional but important
-    mode: str = "write"            # write, read, observe, session, etc.
-    lane: str = "standard"         # standard, critical, recovery
-    owner: str = "unknown"         # User/team identifier
-    cwd: str = "."                 # Working directory
+    mode: str = "write"  # write, read, observe, session, etc.
+    lane: str = "standard"  # standard, critical, recovery
+    owner: str = "unknown"  # User/team identifier
+    cwd: str = "."  # Working directory
 
     # Explicit signals (override heuristics)
     token_budget_explicit: int | None = None  # Explicit token limit
-    tokens_in_explicit: int | None = None     # Explicit input token count
-    tokens_out_explicit: int | None = None    # Explicit output token count
-    confidence: float | None = None           # Caller confidence (0.0–1.0)
-    provider_hint: str | None = None          # Preferred provider
+    tokens_in_explicit: int | None = None  # Explicit input token count
+    tokens_out_explicit: int | None = None  # Explicit output token count
+    confidence: float | None = None  # Caller confidence (0.0–1.0)
+    provider_hint: str | None = None  # Preferred provider
 
     # Context
-    contract_version: str | None = None       # For drift checking
-    domain_tag: str | None = None            # Compliance domain
+    contract_version: str | None = None  # For drift checking
+    domain_tag: str | None = None  # Compliance domain
 ```
 
 ### RoutingDecision
@@ -145,15 +148,15 @@ class RoutingDecision:
     category: TaskCategory
     provider: str
     model_alias: str
-    backend_type: str                # "direct" or "proxy"
-    cost_estimate: float             # Estimated cost in USD
-    cost_weight: float               # Cost multiplier (for budget calc)
+    backend_type: str  # "direct" or "proxy"
+    cost_estimate: float  # Estimated cost in USD
+    cost_weight: float  # Cost multiplier (for budget calc)
 
     # Audit trail
-    reasoning: str                   # Human-readable explanation
+    reasoning: str  # Human-readable explanation
     signals_used: dict[str, object]  # Classification signals snapshot
-    alternatives: list[str]          # Alternative providers considered
-    fallback_chain: list[str]        # Fallback sequence if primary exhausted
+    alternatives: list[str]  # Alternative providers considered
+    fallback_chain: list[str]  # Fallback sequence if primary exhausted
 ```
 
 ---
@@ -169,6 +172,7 @@ from pathlib import Path
 from typing import Optional
 
 logger = logging.getLogger(__name__)
+
 
 class TaskRouter:
     """Route tasks to optimal providers based on complexity, cost, and quality."""
@@ -192,17 +196,12 @@ class TaskRouter:
 
         # Step 3: Resolve provider
         provider, model = self._resolve_provider(
-            category=category,
-            provider_hint=input.provider_hint,
-            policy=self.settings.route_policy or "prefer_direct"
+            category=category, provider_hint=input.provider_hint, policy=self.settings.route_policy or "prefer_direct"
         )
 
         # Step 4: Build routing decision
         routes = ModelCatalog.routes_for(model)
-        selected_route = next(
-            (r for r in routes if r.provider == provider and r.model_alias == model),
-            None
-        )
+        selected_route = next((r for r in routes if r.provider == provider and r.model_alias == model), None)
 
         if not selected_route:
             raise ValueError(f"No route found for {provider}/{model}")
@@ -219,7 +218,7 @@ class TaskRouter:
             reasoning=f"{category.value} task routed to {provider}/{model}",
             signals_used=signals,
             alternatives=self._get_alternatives(category),
-            fallback_chain=fallback_chain
+            fallback_chain=fallback_chain,
         )
 
     def _extract_signals(self, input: TaskClassificationInput) -> dict[str, object]:
@@ -277,21 +276,11 @@ class TaskRouter:
             return TaskCategory.HIGH_COMPLEX
 
         # Rule: COMPLEX if moderate tokens and reasoning
-        if (
-            tokens_in < 10_000
-            and tokens_out < 15_000
-            and reasoning_depth >= 2
-            and quality_bar == "excellent"
-        ):
+        if tokens_in < 10_000 and tokens_out < 15_000 and reasoning_depth >= 2 and quality_bar == "excellent":
             return TaskCategory.COMPLEX
 
         # Rule: NORMAL if medium tokens, moderate reasoning
-        if (
-            tokens_in < 3_000
-            and tokens_out < 5_000
-            and reasoning_depth <= 1
-            and quality_bar != "critical"
-        ):
+        if tokens_in < 3_000 and tokens_out < 5_000 and reasoning_depth <= 1 and quality_bar != "critical":
             return TaskCategory.NORMAL
 
         # Default: FAST for small, simple tasks
@@ -356,31 +345,21 @@ class TaskRouter:
         return 0
 
     def _resolve_provider(
-        self,
-        category: TaskCategory,
-        provider_hint: str | None = None,
-        policy: str = "prefer_direct"
+        self, category: TaskCategory, provider_hint: str | None = None, policy: str = "prefer_direct"
     ) -> tuple[str, str]:
         """Resolve category to (provider, model_alias)."""
         from thegent.models.catalog import ModelCatalog, resolve_route
 
         # If hint provided, validate it
         if provider_hint:
-            route = resolve_route(
-                category.preferred_model,
-                provider_hint=provider_hint,
-                policy="prefer_direct"
-            )
+            route = resolve_route(category.preferred_model, provider_hint=provider_hint, policy="prefer_direct")
             if route:
                 return route
             else:
                 logger.warning(f"Provider hint {provider_hint} not available; using default")
 
         # Use routing policy
-        route = resolve_route(
-            category.preferred_model,
-            policy=policy
-        )
+        route = resolve_route(category.preferred_model, policy=policy)
 
         if not route:
             # Fallback: use category's preferred
@@ -391,30 +370,14 @@ class TaskRouter:
     def _get_fallback_chain(self, category: TaskCategory) -> list[str]:
         """Return fallback chain for category."""
         chains = {
-            TaskCategory.FAST: [
-                "haiku-4.5",
-                "gemini-2.5-flash",
-                "composer-1.5",
-                "sonnet-4.5"
-            ],
-            TaskCategory.NORMAL: [
-                "sonnet-4.5",
-                "minimax-m2.5",
-                "glm-5",
-                "gpt-5.3-codex",
-                "haiku-4.5"
-            ],
-            TaskCategory.COMPLEX: [
-                "opus-4.6",
-                "opus-thinking",
-                "gpt-5.3-codex-high",
-                "sonnet-4.5"
-            ],
+            TaskCategory.FAST: ["haiku-4.5", "gemini-2.5-flash", "composer-1.5", "sonnet-4.5"],
+            TaskCategory.NORMAL: ["sonnet-4.5", "minimax-m2.5", "glm-5", "gpt-5.3-codex", "haiku-4.5"],
+            TaskCategory.COMPLEX: ["opus-4.6", "opus-thinking", "gpt-5.3-codex-high", "sonnet-4.5"],
             TaskCategory.HIGH_COMPLEX: [
                 "opus-4.6",
                 "opus-thinking",
                 # NO LOWER FALLBACKS FOR HIGH_COMPLEX
-            ]
+            ],
         }
         return chains.get(category, [])
 
@@ -432,6 +395,7 @@ class TaskRouter:
 ```python
 # src/thegent/execution.py (updated)
 
+
 class PolicyEngine:
     """Evaluates execution requests against governance policies."""
 
@@ -439,7 +403,7 @@ class PolicyEngine:
         self,
         run: RunMeta,
         registry: RunRegistry | None = None,
-        router: TaskRouter | None = None  # NEW
+        router: TaskRouter | None = None,  # NEW
     ) -> tuple[str, str]:
         """
         Evaluate a run against active policies.
@@ -458,7 +422,7 @@ class PolicyEngine:
                     owner=run.owner,
                     cwd=run.cwd,
                     confidence=run.confidence,
-                    provider_hint=run.provider_hint if hasattr(run, 'provider_hint') else None,
+                    provider_hint=run.provider_hint if hasattr(run, "provider_hint") else None,
                 )
                 routing_decision = router.classify(input)
 
@@ -568,11 +532,11 @@ def register_end(
     duration_s: float,
     error_class: str | None = None,
     cost_usd: float | None = None,
-    task_category: str | None = None,          # NEW
-    tokens_in_estimated: int | None = None,    # NEW
-    tokens_out_estimated: int | None = None,   # NEW
-    reasoning_depth: int | None = None,        # NEW
-    fallback_count: int | None = None,         # NEW
+    task_category: str | None = None,  # NEW
+    tokens_in_estimated: int | None = None,  # NEW
+    tokens_out_estimated: int | None = None,  # NEW
+    reasoning_depth: int | None = None,  # NEW
+    fallback_count: int | None = None,  # NEW
 ) -> None:
     """Update a run with completion metadata."""
     event = {
@@ -650,13 +614,10 @@ ORDER BY avg_feedback DESC;
 ```python
 # tests/test_unit_routing_classifier.py
 
+
 def test_classify_fast_simple_query():
     router = TaskRouter(MockSettings())
-    input = TaskClassificationInput(
-        prompt="Find the retry decorator in utils.py",
-        agent="claude",
-        lane="standard"
-    )
+    input = TaskClassificationInput(prompt="Find the retry decorator in utils.py", agent="claude", lane="standard")
     decision = router.classify(input)
 
     assert decision.category == TaskCategory.FAST
@@ -664,12 +625,11 @@ def test_classify_fast_simple_query():
     assert decision.model_alias == "haiku-4.5"
     assert decision.cost_estimate == 0.002
 
+
 def test_classify_normal_implementation():
     router = TaskRouter(MockSettings())
     input = TaskClassificationInput(
-        prompt="Implement an auth handler with error handling and tests",
-        agent="claude",
-        lane="standard"
+        prompt="Implement an auth handler with error handling and tests", agent="claude", lane="standard"
     )
     decision = router.classify(input)
 
@@ -678,13 +638,14 @@ def test_classify_normal_implementation():
     assert decision.model_alias == "sonnet-4.5"
     assert decision.cost_estimate == 0.030
 
+
 def test_classify_complex_design():
     router = TaskRouter(MockSettings())
     input = TaskClassificationInput(
         prompt="Design the microservices architecture for our data pipeline",
         agent="claude",
         lane="critical",
-        confidence=0.92
+        confidence=0.92,
     )
     decision = router.classify(input)
 
@@ -693,13 +654,14 @@ def test_classify_complex_design():
     assert decision.model_alias == "opus-4.6"
     assert decision.cost_estimate == 0.150
 
+
 def test_classify_high_complex_feature():
     router = TaskRouter(MockSettings())
     input = TaskClassificationInput(
         prompt="Full-stack feature: auth + tests + docs + CI setup" * 10,  # Long prompt
         agent="claude",
         lane="critical",
-        confidence=0.93
+        confidence=0.93,
     )
     decision = router.classify(input)
 
@@ -714,6 +676,7 @@ def test_classify_high_complex_feature():
 ```python
 # tests/test_integration_routing_governance.py
 
+
 def test_complex_with_high_confidence_allowed():
     settings = MockSettings(cost_budget_mtd=500.0)
     engine = PolicyEngine(settings)
@@ -721,18 +684,14 @@ def test_complex_with_high_confidence_allowed():
     registry = RunRegistry(Path("/tmp/test"))
 
     run = RunMeta(
-        agent="claude",
-        prompt="Design auth architecture",
-        lane="critical",
-        confidence=0.92,
-        owner="alice",
-        cwd="."
+        agent="claude", prompt="Design auth architecture", lane="critical", confidence=0.92, owner="alice", cwd="."
     )
 
     result, reason = engine.evaluate(run, registry, router)
 
     assert result == "allow"
     assert run.task_category == "COMPLEX"
+
 
 def test_high_complex_low_confidence_denied():
     settings = MockSettings()
@@ -746,7 +705,7 @@ def test_high_complex_low_confidence_denied():
         lane="critical",
         confidence=0.80,  # Too low
         owner="alice",
-        cwd="."
+        cwd=".",
     )
 
     result, reason = engine.evaluate(run, registry, router)
@@ -764,6 +723,7 @@ def test_high_complex_low_confidence_denied():
 ```python
 # src/thegent/config.py (additions)
 
+
 @dataclass
 class Settings(BaseSettings):
     # ... existing fields ...
@@ -771,29 +731,22 @@ class Settings(BaseSettings):
     # NEW: Routing configuration
     route_policy: str = Field(
         default="prefer_direct",
-        description="Routing policy: prefer_direct, prefer_proxy, cheapest, round_robin (THGENT_ROUTE_POLICY)"
+        description="Routing policy: prefer_direct, prefer_proxy, cheapest, round_robin (THGENT_ROUTE_POLICY)",
     )
-    fast_provider: str = Field(
-        default="claude",
-        description="Default provider for FAST tasks (THGENT_FAST_PROVIDER)"
-    )
+    fast_provider: str = Field(default="claude", description="Default provider for FAST tasks (THGENT_FAST_PROVIDER)")
     normal_provider: str = Field(
-        default="claude",
-        description="Default provider for NORMAL tasks (THGENT_NORMAL_PROVIDER)"
+        default="claude", description="Default provider for NORMAL tasks (THGENT_NORMAL_PROVIDER)"
     )
     complex_provider: str = Field(
-        default="claude",
-        description="Default provider for COMPLEX tasks (THGENT_COMPLEX_PROVIDER)"
+        default="claude", description="Default provider for COMPLEX tasks (THGENT_COMPLEX_PROVIDER)"
     )
     high_complex_provider: str = Field(
-        default="claude",
-        description="Default provider for HIGH_COMPLEX tasks (THGENT_HIGH_COMPLEX_PROVIDER)"
+        default="claude", description="Default provider for HIGH_COMPLEX tasks (THGENT_HIGH_COMPLEX_PROVIDER)"
     )
 
     # Confidence & calibration
     critical_lane_min_confidence: float = Field(
-        default=0.9,
-        description="Minimum confidence for critical lane (THGENT_CRITICAL_LANE_MIN_CONFIDENCE)"
+        default=0.9, description="Minimum confidence for critical lane (THGENT_CRITICAL_LANE_MIN_CONFIDENCE)"
     )
 ```
 

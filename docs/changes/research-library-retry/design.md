@@ -72,11 +72,12 @@ class RetryConfig(BaseSettings):
 
 ```python
 class RetryStrategy(str, Enum):
-    DEFAULT = "default"      # Retry on any Exception
-    HTTP = "http"            # HTTP 5xx, timeouts, connection errors
-    DATABASE = "database"    # DB connection errors, transient locks
-    AGENT = "agent"          # Agent service unavailability
-    CUSTOM = "custom"        # User-provided exception matcher
+    DEFAULT = "default"  # Retry on any Exception
+    HTTP = "http"  # HTTP 5xx, timeouts, connection errors
+    DATABASE = "database"  # DB connection errors, transient locks
+    AGENT = "agent"  # Agent service unavailability
+    CUSTOM = "custom"  # User-provided exception matcher
+
 
 def strategy_matcher(strategy: RetryStrategy) -> Callable[[Exception], bool]:
     """Returns a predicate: Exception -> bool (retry or not)."""
@@ -87,15 +88,13 @@ def strategy_matcher(strategy: RetryStrategy) -> Callable[[Exception], bool]:
 #### Sync Version
 ```python
 @retry(strategy="http", max_attempts=3, max_delay_seconds=10)
-def fetch_data(url: str) -> dict:
-    ...
+def fetch_data(url: str) -> dict: ...
 ```
 
 #### Async Version
 ```python
 @retry_async(strategy="agent", max_attempts=5)
-async def call_agent(prompt: str) -> str:
-    ...
+async def call_agent(prompt: str) -> str: ...
 ```
 
 #### Context Manager
@@ -178,15 +177,20 @@ Every span created in a retried operation includes:
 ```python
 class RetryException(Exception):
     """Base exception for retry-specific errors."""
+
     pass
+
 
 class RetryExhausted(RetryException):
     """Raised when max attempts reached."""
+
     last_exception: Exception
     attempts: int
 
+
 class RetryTimeout(RetryException):
     """Raised when total_timeout_seconds exceeded."""
+
     last_exception: Exception
     elapsed_seconds: float
 ```

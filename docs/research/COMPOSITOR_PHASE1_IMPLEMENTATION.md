@@ -71,11 +71,13 @@ def on_unmount(self) -> None:
 
     if self.session_state:
         layout = self.pane_manager.save_layout()
-        self.session_state.save({
-            "layout": layout,
-            "pane_count": self._pane_count,
-            "current_pane": self.pane_manager.current_pane_id,
-        })
+        self.session_state.save(
+            {
+                "layout": layout,
+                "pane_count": self._pane_count,
+                "current_pane": self.pane_manager.current_pane_id,
+            }
+        )
 ```
 
 #### `TerminalPane.on_mount()`
@@ -152,7 +154,7 @@ error_widget = ErrorBoundary(
     error_message="Failed to spawn shell",
     error_type="Process Error",
     stack_trace="OSError: PTY allocation failed",
-    pane_id="pane-0"
+    pane_id="pane-0",
 )
 ```
 

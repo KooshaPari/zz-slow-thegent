@@ -42,9 +42,7 @@ from thegent.artifacts import BaseArtifact, ArtifactMetadata, ArtifactCategory
 
 # Create artifact from MAIF
 metadata = ArtifactMetadata(
-    category=ArtifactCategory.CODE,
-    tags=["refactor", "performance"],
-    dependencies=["artifact-id-1"]
+    category=ArtifactCategory.CODE, tags=["refactor", "performance"], dependencies=["artifact-id-1"]
 )
 artifact = BaseArtifact.from_maif_artifact(maif, category=ArtifactCategory.CODE, metadata=metadata.model_dump())
 
@@ -186,7 +184,7 @@ code_artifact = factory.code.create_code_change(
     before_content=b"old code",
     after_content=b"new code",
     language="python",
-    tags=["feature", "async"]
+    tags=["feature", "async"],
 )
 
 # Create tool invocation
@@ -197,7 +195,7 @@ tool_artifact = factory.tool.create_tool_invocation(
     tool_name="file_read",
     arguments={"path": "/path/to/file"},
     result_status=ToolResultStatus.SUCCESS,
-    result_output="file contents"
+    result_output="file contents",
 )
 
 # Create decision
@@ -207,7 +205,7 @@ decision_artifact = factory.decision.create_decision(
     decision_type=DecisionType.ROUTING,
     options_considered=["option-a", "option-b"],
     selected_option="option-a",
-    rationale="Option A has lower cost"
+    rationale="Option A has lower cost",
 )
 ```
 
@@ -220,11 +218,7 @@ Unified interface for all artifact operations:
 ```python
 from thegent.artifacts import ArtifactAPI
 
-api = ArtifactAPI(
-    signing_key=signing_key,
-    verifying_key=verifying_key,
-    storage=storage
-)
+api = ArtifactAPI(signing_key=signing_key, verifying_key=verifying_key, storage=storage)
 
 # Create and store
 artifact = await api.generators.code.create_code_change(...)
@@ -254,14 +248,7 @@ stats = await api.get_stats()
 ## Usage Example: Complete Workflow
 
 ```python
-from thegent.artifacts import (
-    ArtifactAPI,
-    CodeChangeType,
-    FileOperationType,
-    ToolType,
-    ToolResultStatus,
-    DecisionType
-)
+from thegent.artifacts import ArtifactAPI, CodeChangeType, FileOperationType, ToolType, ToolResultStatus, DecisionType
 from thegent.maif import SigningKey
 
 # Initialize
@@ -279,7 +266,7 @@ code_artifact = await api.generators.code.create_code_change(
     after_content=b"fixed version",
     language="python",
     affected_symbols=["parse_config"],
-    tags=["bug-fix", "security"]
+    tags=["bug-fix", "security"],
 )
 await api.store_artifact(code_artifact)
 
@@ -290,7 +277,7 @@ file_op = await api.generators.code.create_file_operation(
     operation_type=FileOperationType.CREATE,
     source_path="src/tests/test_utils.py",
     before_content=b"",
-    after_content=b"test code"
+    after_content=b"test code",
 )
 await api.store_artifact(file_op)
 
@@ -303,7 +290,7 @@ tool_artifact = await api.generators.tool.create_mcp_call(
     call_status=ToolResultStatus.SUCCESS,
     request_parameters={"path": "src/utils.py"},
     input_data=b"",
-    output_data=b"file content"
+    output_data=b"file content",
 )
 await api.store_artifact(tool_artifact)
 
@@ -315,7 +302,7 @@ decision = await api.generators.decision.create_decision(
     options_considered=["quick_fix", "thorough_refactor"],
     selected_option="quick_fix",
     rationale="Priority is correctness, time budget allows thorough testing",
-    confidence_score=0.85
+    confidence_score=0.85,
 )
 await api.store_artifact(decision)
 

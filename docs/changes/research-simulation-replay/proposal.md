@@ -203,6 +203,7 @@ class DiffReport:
     non_deterministic_changes: List[NonDeterministicChange]
     summary: str  # "100% match" | "2 divergences (deterministic)"
 
+
 @dataclass
 class DeterministicChange:
     tool_name: str
@@ -210,6 +211,7 @@ class DeterministicChange:
     original_output: str
     replayed_output: str
     reason: str  # "config change" | "model upgrade"
+
 
 @dataclass
 class NonDeterministicChange:

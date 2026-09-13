@@ -216,14 +216,11 @@ import httpx
 import json
 from typing import AsyncGenerator
 
+
 class ResponsesToChatAdapter:
     """Bridges OpenAI Responses API to Chat Completions."""
 
-    async def transform_request(
-        self,
-        request_body: dict,
-        backend_url: str
-    ) -> dict:
+    async def transform_request(self, request_body: dict, backend_url: str) -> dict:
         """Transform Responses API request to Chat Completions."""
         # Extract model from response_format or use default
         model = request_body.get("model", "gpt-4")
@@ -239,11 +236,7 @@ class ResponsesToChatAdapter:
 
         return chat_request
 
-    async def transform_response(
-        self,
-        chat_response: dict,
-        original_request: dict
-    ) -> dict:
+    async def transform_response(self, chat_response: dict, original_request: dict) -> dict:
         """Transform Chat Completions response back to Responses API format."""
         # Map chat choice to response item
         response = {
@@ -255,9 +248,9 @@ class ResponsesToChatAdapter:
                 "choices": chat_response["choices"],
                 "item": {
                     "id": chat_response["choices"][0]["index"],
-                    "content": chat_response["choices"][0]["message"]["content"]
-                }
-            }
+                    "content": chat_response["choices"][0]["message"]["content"],
+                },
+            },
         }
         return response
 
@@ -281,15 +274,11 @@ import asyncio
 import json
 from starlette.websockets import WebSocket
 
+
 class ResponsesWebSocketBridge:
     """Bridges WebSocket /v1/responses to HTTP SSE."""
 
-    async def handle_websocket(
-        self,
-        websocket: WebSocket,
-        backend_url: str,
-        api_key: str
-    ):
+    async def handle_websocket(self, websocket: WebSocket, backend_url: str, api_key: str):
         """Handle Codex WebSocket connection and bridge to HTTP stream."""
         await websocket.accept()
 
@@ -300,7 +289,7 @@ class ResponsesWebSocketBridge:
                     "POST",
                     f"{backend_url}/chat/completions",
                     headers={"Authorization": f"Bearer {api_key}"},
-                    json={"model": "gpt-4", "stream": True}
+                    json={"model": "gpt-4", "stream": True},
                 ) as response:
                     async for chunk in response.aiter_bytes():
                         # Transform chunk to Responses API format
@@ -315,10 +304,7 @@ class ResponsesWebSocketBridge:
         """Transform SSE chunk to Responses API format."""
         # Parse Chat Completions chunk
         # Emit response.output_item.added events
-        return json.dumps({
-            "type": "response.output_item.added",
-            "item": {"content": "..."}
-        })
+        return json.dumps({"type": "response.output_item.added", "item": {"content": "..."}})
 ```
 
 ### 8.3 Model Alias Mapping Configuration
@@ -390,19 +376,15 @@ python -m thegent.cliproxy_adapter resolve "codex-MiniMax-M2.5"
 import pytest
 from thegent.cliproxy_adapter import ResponsesToChatAdapter
 
-class TestResponsesToChatAdapter:
 
+class TestResponsesToChatAdapter:
     def test_model_alias_resolution(self):
         adapter = ResponsesToChatAdapter()
         assert adapter.resolve_alias("codex-MiniMax-M2.5") == "minimax-m2.5"
 
     def test_request_transformation(self):
         adapter = ResponsesToChatAdapter()
-        request = {
-            "model": "codex-MiniMax-M2.5",
-            "input_text": "Hello, world!",
-            "stream": True
-        }
+        request = {"model": "codex-MiniMax-M2.5", "input_text": "Hello, world!", "stream": True}
         chat_request = adapter.transform_request(request, "http://localhost:8318/v1")
         assert chat_request["model"] == "minimax-m2.5"
         assert chat_request["messages"] == [{"role": "user", "content": "Hello, world!"}]
@@ -414,11 +396,9 @@ class TestResponsesToChatAdapter:
             "object": "chat.completion",
             "created": 1234567890,
             "model": "gpt-4",
-            "choices": [{
-                "index": 0,
-                "message": {"role": "assistant", "content": "Hi there!"},
-                "finish_reason": "stop"
-            }]
+            "choices": [
+                {"index": 0, "message": {"role": "assistant", "content": "Hi there!"}, "finish_reason": "stop"}
+            ],
         }
         resp = adapter.transform_response(chat_response, {})
         assert resp["object"] == "response"

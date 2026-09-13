@@ -141,6 +141,7 @@ The `doctor` command can now be enhanced to use multi-runtime diagnostics:
 ```python
 from thegent.infra.multi_runtime_diagnostics import check_all_runtimes, display_runtime_status
 
+
 def run_doctor(fix: bool = False, runtime: bool = False) -> bool:
     # ... existing checks ...
 
@@ -178,6 +179,7 @@ Long-running operations can use progress indicators:
 
 ```python
 from thegent.infra.progress import progress_context, print_status
+
 
 def long_operation():
     with progress_context("Processing items", total=1000) as progress:

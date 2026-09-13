@@ -18,10 +18,7 @@ from thegent.agents.document import MarkdownScanner, ScanConfig
 config = ScanConfig(
     locations={
         "kush": {"path": "/Users/kooshapari/kush", "recursive": True},
-        "temp-PRODVERCEL": {
-            "path": "/Users/kooshapari/temp-PRODVERCEL",
-            "recursive": True
-        },
+        "temp-PRODVERCEL": {"path": "/Users/kooshapari/temp-PRODVERCEL", "recursive": True},
     },
     min_date="2025-04",
 )
@@ -42,7 +39,7 @@ queue_manager = QueueManager(queue_file)
 next_month = queue_manager.get_next_month()
 if next_month:
     print(f"Processing: {next_month['month']}")
-    files = queue_manager.get_month_files(next_month['month'])
+    files = queue_manager.get_month_files(next_month["month"])
     print(f"Found {len(files)} files")
 ```
 

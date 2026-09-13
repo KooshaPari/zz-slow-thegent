@@ -48,6 +48,7 @@ def extract_tags(text: str, tags: list[str] | None = None) -> dict[str, str]:
         return native.extract_xml_tags(text, allowed_tags=tags, case_sensitive=False)
     # Fallback to Python IncrementalXMLParser
 
+
 # output_parser.py
 def _strip_think_blocks(text: str) -> str:
     native = _get_native_parser()
@@ -79,12 +80,14 @@ def generate_artifact_hash(artifact: dict) -> str:
         return native.artifact_hash_bytes(canonical_json.encode())
     # Fallback to Python hashlib
 
+
 def sign_artifact(artifact: dict, secret_key: str) -> str:
     native = _get_native_crypto()
     if native is not None:
         canonical_json = orjson.dumps(artifact, option=orjson.OPT_SORT_KEYS).decode()
         return native.sign_artifact_bytes(canonical_json.encode(), secret_key)
     # Fallback to Python hmac
+
 
 def verify_signature(artifact: dict, signature: str, secret_key: str) -> bool:
     native = _get_native_crypto()
@@ -154,6 +157,7 @@ def _get_git_branch(self, root: Path) -> str:
     except Exception:
         return "n/a"
 
+
 def _get_git_status(self, root: Path) -> str:
     native = _get_native_git()
     if native is not None:
@@ -167,6 +171,7 @@ def _get_git_status(self, root: Path) -> str:
         return subprocess.check_output(["git", "status", "--short"], cwd=root).decode().strip()
     except Exception:
         return "n/a"
+
 
 def _get_git_diff(self, root: Path) -> str:
     native = _get_native_git()
@@ -229,6 +234,7 @@ All native modules use lazy loading to avoid import-time failures:
 
 ```python
 _native_module = None
+
 
 def _get_native_module():
     global _native_module
@@ -366,6 +372,7 @@ Test native + fallback:
 def test_native_fallback():
     """Test Python fallback when native unavailable."""
     import os
+
     old = os.environ.get("THGENT_USE_NATIVE_PARSER")
     os.environ.pop("THGENT_USE_NATIVE_PARSER", None)
     try:

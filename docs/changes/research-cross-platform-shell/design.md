@@ -266,7 +266,7 @@ function Validate-Changes {
 **Python CLI** (`src/thegent/cli/hooks.py`):
 ```python
 @click.command()
-@click.argument('files', nargs=-1, required=True)
+@click.argument("files", nargs=-1, required=True)
 def validate_files(files):
     """Validate file changes against governance."""
     validator = FileChangeValidator()
@@ -590,7 +590,7 @@ Describe 'Write-Log' {
 **Cross-Platform**: pytest + subprocess
 ```python
 # tests/integration/conftest.py
-@pytest.fixture(params=['bash', 'pwsh'])
+@pytest.fixture(params=["bash", "pwsh"])
 def shell_runner(request):
     """Parameterized shell runner for cross-platform tests"""
     shell = request.param

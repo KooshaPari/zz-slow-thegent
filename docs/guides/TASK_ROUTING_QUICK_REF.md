@@ -106,12 +106,12 @@ No special gates. Check cost budget.
 ## RunMeta: New Fields to Track
 
 ```python
-task_category: str | None          # "FAST", "NORMAL", "COMPLEX", "HIGH_COMPLEX"
-tokens_in_estimated: int | None    # estimated input tokens
-tokens_out_estimated: int | None   # estimated output tokens
-reasoning_depth: int | None        # 0=none, 1=light, 2=moderate, 3=deep
-route_decision: str | None         # trace: "prefer_direct > opus"
-fallback_count: int = 0            # how many times did we fallback?
+task_category: str | None  # "FAST", "NORMAL", "COMPLEX", "HIGH_COMPLEX"
+tokens_in_estimated: int | None  # estimated input tokens
+tokens_out_estimated: int | None  # estimated output tokens
+reasoning_depth: int | None  # 0=none, 1=light, 2=moderate, 3=deep
+route_decision: str | None  # trace: "prefer_direct > opus"
+fallback_count: int = 0  # how many times did we fallback?
 ```
 
 ---
@@ -275,15 +275,16 @@ Critical lane requires 0.9 → DENIED
 def classify_task(input: TaskClassificationInput) -> TaskCategory:
     """Classify task into FAST, NORMAL, COMPLEX, or HIGH_COMPLEX."""
 
+
 def resolve_provider(
-    category: TaskCategory,
-    provider_hint: str | None = None,
-    policy: RoutePolicy = "prefer_direct"
+    category: TaskCategory, provider_hint: str | None = None, policy: RoutePolicy = "prefer_direct"
 ) -> tuple[str, str]:
     """Resolve category to (provider, model_alias)."""
 
+
 def estimate_tokens_input(prompt: str) -> int:
     """Quick estimate of input tokens (1 token ≈ 4 chars)."""
+
 
 def infer_reasoning_depth(prompt: str) -> int:
     """Infer reasoning depth 0–3 from prompt keywords."""

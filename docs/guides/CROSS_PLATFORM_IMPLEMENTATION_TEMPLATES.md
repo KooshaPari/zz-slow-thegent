@@ -28,6 +28,7 @@ _log = logging.getLogger(__name__)
 @dataclass
 class UIElement:
     """Represents a UI element."""
+
     selector: str
     name: str
     role: str  # button, text_field, window, etc.
@@ -44,6 +45,7 @@ class UIElement:
 @dataclass
 class AutomationAction:
     """Represents an automation action."""
+
     type: str  # click, type_text, find_element, screenshot, wait_for_idle
     selector: str | None = None
     text: str | None = None
@@ -71,6 +73,7 @@ class AutomationAction:
 @dataclass
 class AutomationResult:
     """Result of an automation action."""
+
     success: bool
     element: UIElement | None = None
     screenshot: bytes | None = None
@@ -127,12 +130,7 @@ class DesktopAutomationProvider(ABC):
         pass
 
     @abstractmethod
-    def type_text(
-        self,
-        element: UIElement,
-        text: str,
-        timeout_ms: float = 5000.0
-    ) -> AutomationResult:
+    def type_text(self, element: UIElement, text: str, timeout_ms: float = 5000.0) -> AutomationResult:
         """Type text into an element.
 
         Args:
@@ -146,11 +144,7 @@ class DesktopAutomationProvider(ABC):
         pass
 
     @abstractmethod
-    def find_element(
-        self,
-        selector: str,
-        timeout_ms: float = 5000.0
-    ) -> Optional[UIElement]:
+    def find_element(self, selector: str, timeout_ms: float = 5000.0) -> Optional[UIElement]:
         """Find UI element by selector.
 
         Args:
@@ -163,10 +157,7 @@ class DesktopAutomationProvider(ABC):
         pass
 
     @abstractmethod
-    def screenshot(
-        self,
-        region: Optional[dict[str, int]] = None
-    ) -> bytes:
+    def screenshot(self, region: Optional[dict[str, int]] = None) -> bytes:
         """Take screenshot of desktop or region.
 
         Args:
@@ -178,11 +169,7 @@ class DesktopAutomationProvider(ABC):
         pass
 
     @abstractmethod
-    def wait_for_user_idle(
-        self,
-        idle_seconds: float = 5.0,
-        timeout_ms: float = 30000.0
-    ) -> bool:
+    def wait_for_user_idle(self, idle_seconds: float = 5.0, timeout_ms: float = 30000.0) -> bool:
         """Wait until user is idle.
 
         Args:
@@ -215,11 +202,7 @@ class DesktopAutomationProvider(ABC):
         """
         pass
 
-    def find_element_cached(
-        self,
-        selector: str,
-        timeout_ms: float = 5000.0
-    ) -> Optional[UIElement]:
+    def find_element_cached(self, selector: str, timeout_ms: float = 5000.0) -> Optional[UIElement]:
         """Find element with caching.
 
         Args:
@@ -288,6 +271,7 @@ class macOSAutomationProvider(DesktopAutomationProvider):
         """Check if Accessibility permission is granted."""
         try:
             import Quartz
+
             app = Quartz.AXUIElementCreateApplication(os.getpid())
             return True
         except Exception:
@@ -302,52 +286,29 @@ class macOSAutomationProvider(DesktopAutomationProvider):
             # AppleScript to click element
             script = f'''
             tell application "System Events"
-                tell process "{element.attributes.get('process_name', '')}"
+                tell process "{element.attributes.get("process_name", "")}"
                     click {element.selector}
                 end tell
             end tell
             '''
 
             result = subprocess.run(
-                ["osascript", "-e", script],
-                capture_output=True,
-                text=True,
-                timeout=timeout_ms / 1000.0
+                ["osascript", "-e", script], capture_output=True, text=True, timeout=timeout_ms / 1000.0
             )
 
             duration_ms = (time.time() - start_time) * 1000
 
             if result.returncode == 0:
-                return AutomationResult(
-                    success=True,
-                    duration_ms=duration_ms
-                )
+                return AutomationResult(success=True, duration_ms=duration_ms)
             else:
-                return AutomationResult(
-                    success=False,
-                    error=result.stderr,
-                    duration_ms=duration_ms
-                )
+                return AutomationResult(success=False, error=result.stderr, duration_ms=duration_ms)
 
         except subprocess.TimeoutExpired:
-            return AutomationResult(
-                success=False,
-                error="Timeout",
-                duration_ms=timeout_ms
-            )
+            return AutomationResult(success=False, error="Timeout", duration_ms=timeout_ms)
         except Exception as e:
-            return AutomationResult(
-                success=False,
-                error=str(e),
-                duration_ms=(time.time() - start_time) * 1000
-            )
+            return AutomationResult(success=False, error=str(e), duration_ms=(time.time() - start_time) * 1000)
 
-    def type_text(
-        self,
-        element: UIElement,
-        text: str,
-        timeout_ms: float = 5000.0
-    ) -> AutomationResult:
+    def type_text(self, element: UIElement, text: str, timeout_ms: float = 5000.0) -> AutomationResult:
         """Type text using AppleScript."""
         start_time = time.time()
 
@@ -355,59 +316,38 @@ class macOSAutomationProvider(DesktopAutomationProvider):
             # AppleScript to type text
             script = f'''
             tell application "System Events"
-                tell process "{element.attributes.get('process_name', '')}"
+                tell process "{element.attributes.get("process_name", "")}"
                     set value of {element.selector} to "{text}"
                 end tell
             end tell
             '''
 
             result = subprocess.run(
-                ["osascript", "-e", script],
-                capture_output=True,
-                text=True,
-                timeout=timeout_ms / 1000.0
+                ["osascript", "-e", script], capture_output=True, text=True, timeout=timeout_ms / 1000.0
             )
 
             duration_ms = (time.time() - start_time) * 1000
 
             if result.returncode == 0:
-                return AutomationResult(
-                    success=True,
-                    duration_ms=duration_ms
-                )
+                return AutomationResult(success=True, duration_ms=duration_ms)
             else:
-                return AutomationResult(
-                    success=False,
-                    error=result.stderr,
-                    duration_ms=duration_ms
-                )
+                return AutomationResult(success=False, error=result.stderr, duration_ms=duration_ms)
 
         except Exception as e:
-            return AutomationResult(
-                success=False,
-                error=str(e),
-                duration_ms=(time.time() - start_time) * 1000
-            )
+            return AutomationResult(success=False, error=str(e), duration_ms=(time.time() - start_time) * 1000)
 
-    def find_element(
-        self,
-        selector: str,
-        timeout_ms: float = 5000.0
-    ) -> Optional[UIElement]:
+    def find_element(self, selector: str, timeout_ms: float = 5000.0) -> Optional[UIElement]:
         """Find element using AppleScript."""
         try:
             # AppleScript to find element
-            script = f'''
+            script = f"""
             tell application "System Events"
                 -- Find element logic here
             end tell
-            '''
+            """
 
             result = subprocess.run(
-                ["osascript", "-e", script],
-                capture_output=True,
-                text=True,
-                timeout=timeout_ms / 1000.0
+                ["osascript", "-e", script], capture_output=True, text=True, timeout=timeout_ms / 1000.0
             )
 
             if result.returncode == 0:
@@ -417,7 +357,7 @@ class macOSAutomationProvider(DesktopAutomationProvider):
                     name="",  # Parse from result
                     role="",  # Parse from result
                     bounds={},  # Parse from result
-                    attributes={}
+                    attributes={},
                 )
 
             return None
@@ -426,10 +366,7 @@ class macOSAutomationProvider(DesktopAutomationProvider):
             _log.error(f"Error finding element: {e}")
             return None
 
-    def screenshot(
-        self,
-        region: Optional[dict[str, int]] = None
-    ) -> bytes:
+    def screenshot(self, region: Optional[dict[str, int]] = None) -> bytes:
         """Take screenshot using screencapture."""
         try:
             if region:
@@ -437,24 +374,17 @@ class macOSAutomationProvider(DesktopAutomationProvider):
                 cmd = [
                     "screencapture",
                     "-x",  # No sounds
-                    "-R", f"{region['x']},{region['y']},{region['width']},{region['height']}",
-                    "-t", "png",
-                    "-"
+                    "-R",
+                    f"{region['x']},{region['y']},{region['width']},{region['height']}",
+                    "-t",
+                    "png",
+                    "-",
                 ]
             else:
                 # Full screen
-                cmd = [
-                    "screencapture",
-                    "-x",
-                    "-t", "png",
-                    "-"
-                ]
+                cmd = ["screencapture", "-x", "-t", "png", "-"]
 
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                check=True
-            )
+            result = subprocess.run(cmd, capture_output=True, check=True)
 
             return result.stdout
 
@@ -462,11 +392,7 @@ class macOSAutomationProvider(DesktopAutomationProvider):
             _log.error(f"Error taking screenshot: {e}")
             raise
 
-    def wait_for_user_idle(
-        self,
-        idle_seconds: float = 5.0,
-        timeout_ms: float = 30000.0
-    ) -> bool:
+    def wait_for_user_idle(self, idle_seconds: float = 5.0, timeout_ms: float = 30000.0) -> bool:
         """Wait for user idle using IOKit."""
         try:
             import Quartz
@@ -530,6 +456,7 @@ _log = logging.getLogger(__name__)
 @dataclass
 class AutomationScope:
     """Defines scope for automation coordination."""
+
     app_name: str
     window_title: str | None = None
     region: dict[str, int] | None = None
@@ -549,12 +476,7 @@ class DesktopAutomationCoordinator:
         self.active_locks: dict[str, EditLease] = {}
         self.user_activity_detector = UserActivityDetector()
 
-    def acquire_lock(
-        self,
-        scope: AutomationScope,
-        agent_id: str,
-        duration: float = 300.0
-    ) -> bool:
+    def acquire_lock(self, scope: AutomationScope, agent_id: str, duration: float = 300.0) -> bool:
         """Acquire automation lock.
 
         Args:
@@ -573,18 +495,11 @@ class DesktopAutomationCoordinator:
             return False
 
         # Acquire lease
-        acquired = self.lease_manager.acquire(
-            path=lease_path,
-            agent_id=agent_id,
-            duration=duration,
-            force=False
-        )
+        acquired = self.lease_manager.acquire(path=lease_path, agent_id=agent_id, duration=duration, force=False)
 
         if acquired:
             self.active_locks[lease_path] = EditLease(
-                path=lease_path,
-                agent_id=agent_id,
-                expires_at=time.time() + duration
+                path=lease_path, agent_id=agent_id, expires_at=time.time() + duration
             )
 
         return acquired
@@ -596,10 +511,7 @@ class DesktopAutomationCoordinator:
         self.active_locks.pop(lease_path, None)
 
     def execute_with_coordination(
-        self,
-        scope: AutomationScope,
-        agent_id: str,
-        action: AutomationAction
+        self, scope: AutomationScope, agent_id: str, action: AutomationAction
     ) -> AutomationResult:
         """Execute automation action with coordination.
 
@@ -613,55 +525,36 @@ class DesktopAutomationCoordinator:
         """
         # Acquire lock
         if not self.acquire_lock(scope, agent_id):
-            return AutomationResult(
-                success=False,
-                error="Could not acquire automation lock"
-            )
+            return AutomationResult(success=False, error="Could not acquire automation lock")
 
         try:
             # Wait for user idle if needed
             if action.wait_for_idle_seconds > 0:
                 idle = self.provider.wait_for_user_idle(
-                    idle_seconds=action.wait_for_idle_seconds,
-                    timeout_ms=action.timeout_ms
+                    idle_seconds=action.wait_for_idle_seconds, timeout_ms=action.timeout_ms
                 )
                 if not idle:
-                    return AutomationResult(
-                        success=False,
-                        error="User did not become idle"
-                    )
+                    return AutomationResult(success=False, error="User did not become idle")
 
             # Execute action
             if action.type == "click":
                 element = self.provider.find_element(action.selector, action.timeout_ms)
                 if not element:
-                    return AutomationResult(
-                        success=False,
-                        error=f"Element not found: {action.selector}"
-                    )
+                    return AutomationResult(success=False, error=f"Element not found: {action.selector}")
                 return self.provider.click(element, action.timeout_ms)
 
             elif action.type == "type_text":
                 element = self.provider.find_element(action.selector, action.timeout_ms)
                 if not element:
-                    return AutomationResult(
-                        success=False,
-                        error=f"Element not found: {action.selector}"
-                    )
+                    return AutomationResult(success=False, error=f"Element not found: {action.selector}")
                 return self.provider.type_text(element, action.text, action.timeout_ms)
 
             elif action.type == "screenshot":
                 screenshot = self.provider.screenshot(action.region)
-                return AutomationResult(
-                    success=True,
-                    screenshot=screenshot
-                )
+                return AutomationResult(success=True, screenshot=screenshot)
 
             else:
-                return AutomationResult(
-                    success=False,
-                    error=f"Unknown action type: {action.type}"
-                )
+                return AutomationResult(success=False, error=f"Unknown action type: {action.type}")
 
         finally:
             # Release lock
@@ -701,20 +594,16 @@ from fastmcp import FastMCP
 from thegent.infra.desktop_automation import get_provider, DesktopAutomationCoordinator
 from thegent.infra.desktop_automation.base import AutomationAction, AutomationScope
 
+
 # In mcp server initialization
 def register_desktop_automation_tools(mcp: FastMCP, settings: ThegentSettings):
     """Register desktop automation MCP tools."""
 
-    coordinator = DesktopAutomationCoordinator(
-        state_dir=settings.session_dir,
-        provider=get_provider()
-    )
+    coordinator = DesktopAutomationCoordinator(state_dir=settings.session_dir, provider=get_provider())
 
     @mcp.tool()
     async def desktop_automation_click(
-        selector: str,
-        wait_timeout: float = 5.0,
-        agent_id: str | None = None
+        selector: str, wait_timeout: float = 5.0, agent_id: str | None = None
     ) -> dict[str, any]:
         """Click a UI element identified by selector.
 
@@ -727,26 +616,15 @@ def register_desktop_automation_tools(mcp: FastMCP, settings: ThegentSettings):
             Result dictionary with success status
         """
         scope = AutomationScope(app_name="*")  # Global scope
-        action = AutomationAction(
-            type="click",
-            selector=selector,
-            timeout_ms=wait_timeout * 1000.0
-        )
+        action = AutomationAction(type="click", selector=selector, timeout_ms=wait_timeout * 1000.0)
 
-        result = coordinator.execute_with_coordination(
-            scope=scope,
-            agent_id=agent_id or "mcp-client",
-            action=action
-        )
+        result = coordinator.execute_with_coordination(scope=scope, agent_id=agent_id or "mcp-client", action=action)
 
         return result.to_dict()
 
     @mcp.tool()
     async def desktop_automation_type(
-        selector: str,
-        text: str,
-        wait_timeout: float = 5.0,
-        agent_id: str | None = None
+        selector: str, text: str, wait_timeout: float = 5.0, agent_id: str | None = None
     ) -> dict[str, any]:
         """Type text into a UI element.
 
@@ -760,26 +638,14 @@ def register_desktop_automation_tools(mcp: FastMCP, settings: ThegentSettings):
             Result dictionary
         """
         scope = AutomationScope(app_name="*")
-        action = AutomationAction(
-            type="type_text",
-            selector=selector,
-            text=text,
-            timeout_ms=wait_timeout * 1000.0
-        )
+        action = AutomationAction(type="type_text", selector=selector, text=text, timeout_ms=wait_timeout * 1000.0)
 
-        result = coordinator.execute_with_coordination(
-            scope=scope,
-            agent_id=agent_id or "mcp-client",
-            action=action
-        )
+        result = coordinator.execute_with_coordination(scope=scope, agent_id=agent_id or "mcp-client", action=action)
 
         return result.to_dict()
 
     @mcp.tool()
-    async def desktop_automation_find(
-        selector: str,
-        timeout: float = 5.0
-    ) -> dict[str, any]:
+    async def desktop_automation_find(selector: str, timeout: float = 5.0) -> dict[str, any]:
         """Find UI element by selector.
 
         Args:
@@ -799,16 +665,14 @@ def register_desktop_automation_tools(mcp: FastMCP, settings: ThegentSettings):
                     "selector": element.selector,
                     "name": element.name,
                     "role": element.role,
-                    "bounds": element.bounds
-                }
+                    "bounds": element.bounds,
+                },
             }
         else:
             return {"found": False}
 
     @mcp.tool()
-    async def desktop_automation_screenshot(
-        region: dict[str, int] | None = None
-    ) -> dict[str, any]:
+    async def desktop_automation_screenshot(region: dict[str, int] | None = None) -> dict[str, any]:
         """Take screenshot of desktop or region.
 
         Args:
@@ -821,16 +685,11 @@ def register_desktop_automation_tools(mcp: FastMCP, settings: ThegentSettings):
         screenshot = provider.screenshot(region)
 
         import base64
-        return {
-            "screenshot": base64.b64encode(screenshot).decode("utf-8"),
-            "format": "png"
-        }
+
+        return {"screenshot": base64.b64encode(screenshot).decode("utf-8"), "format": "png"}
 
     @mcp.tool()
-    async def desktop_automation_wait_for_user_idle(
-        idle_seconds: float = 5.0,
-        timeout: float = 30.0
-    ) -> dict[str, any]:
+    async def desktop_automation_wait_for_user_idle(idle_seconds: float = 5.0, timeout: float = 30.0) -> dict[str, any]:
         """Wait until user is idle.
 
         Args:
@@ -841,15 +700,9 @@ def register_desktop_automation_tools(mcp: FastMCP, settings: ThegentSettings):
             Result dictionary
         """
         provider = get_provider()
-        idle = provider.wait_for_user_idle(
-            idle_seconds=idle_seconds,
-            timeout_ms=timeout * 1000.0
-        )
+        idle = provider.wait_for_user_idle(idle_seconds=idle_seconds, timeout_ms=timeout * 1000.0)
 
-        return {
-            "idle": idle,
-            "idle_seconds": idle_seconds
-        }
+        return {"idle": idle, "idle_seconds": idle_seconds}
 ```
 
 ---
@@ -888,7 +741,7 @@ def mock_provider():
         name="Save",
         role="button",
         bounds={"x": 100, "y": 200, "width": 80, "height": 30},
-        attributes={}
+        attributes={},
     )
 
     # Mock screenshot
@@ -908,7 +761,7 @@ def mock_element():
         name="Save",
         role="button",
         bounds={"x": 100, "y": 200, "width": 80, "height": 30},
-        attributes={"process_name": "TextEdit"}
+        attributes={"process_name": "TextEdit"},
     )
 
 
@@ -917,10 +770,7 @@ def mock_coordinator(tmp_path, mock_provider):
     """Mock coordinator."""
     from thegent.infra.desktop_automation.coordinator import DesktopAutomationCoordinator
 
-    coordinator = DesktopAutomationCoordinator(
-        state_dir=tmp_path,
-        provider=mock_provider
-    )
+    coordinator = DesktopAutomationCoordinator(state_dir=tmp_path, provider=mock_provider)
 
     return coordinator
 ```
@@ -937,47 +787,40 @@ def mock_coordinator(tmp_path, mock_provider):
 from pydantic import Field
 from typing import Optional
 
+
 class DesktopAutomationSettings(BaseSettings):
     """Settings for desktop automation."""
 
     desktop_automation_enabled: bool = Field(
-        default=False,
-        description="Enable desktop automation (THGENT_DESKTOP_AUTOMATION_ENABLED)"
+        default=False, description="Enable desktop automation (THGENT_DESKTOP_AUTOMATION_ENABLED)"
     )
 
     desktop_automation_platform: Optional[str] = Field(
-        default=None,
-        description="Platform override (darwin, windows, linux) (THGENT_DESKTOP_AUTOMATION_PLATFORM)"
+        default=None, description="Platform override (darwin, windows, linux) (THGENT_DESKTOP_AUTOMATION_PLATFORM)"
     )
 
     desktop_automation_coordination_enabled: bool = Field(
-        default=True,
-        description="Enable multi-tenant coordination (THGENT_DESKTOP_AUTOMATION_COORDINATION_ENABLED)"
+        default=True, description="Enable multi-tenant coordination (THGENT_DESKTOP_AUTOMATION_COORDINATION_ENABLED)"
     )
 
     desktop_automation_user_idle_threshold: float = Field(
-        default=5.0,
-        description="User idle threshold in seconds (THGENT_DESKTOP_AUTOMATION_USER_IDLE_THRESHOLD)"
+        default=5.0, description="User idle threshold in seconds (THGENT_DESKTOP_AUTOMATION_USER_IDLE_THRESHOLD)"
     )
 
     desktop_automation_rate_limit_per_minute: int = Field(
-        default=100,
-        description="Global rate limit per minute (THGENT_DESKTOP_AUTOMATION_RATE_LIMIT_PER_MINUTE)"
+        default=100, description="Global rate limit per minute (THGENT_DESKTOP_AUTOMATION_RATE_LIMIT_PER_MINUTE)"
     )
 
     desktop_automation_budget_mtd: float = Field(
-        default=10.0,
-        description="Monthly budget for automation in USD (THGENT_DESKTOP_AUTOMATION_BUDGET_MTD)"
+        default=10.0, description="Monthly budget for automation in USD (THGENT_DESKTOP_AUTOMATION_BUDGET_MTD)"
     )
 
     desktop_automation_allowed_apps: list[str] = Field(
-        default_factory=list,
-        description="Allowed apps for automation (THGENT_DESKTOP_AUTOMATION_ALLOWED_APPS JSON)"
+        default_factory=list, description="Allowed apps for automation (THGENT_DESKTOP_AUTOMATION_ALLOWED_APPS JSON)"
     )
 
     desktop_automation_blocked_apps: list[str] = Field(
-        default_factory=list,
-        description="Blocked apps for automation (THGENT_DESKTOP_AUTOMATION_BLOCKED_APPS JSON)"
+        default_factory=list, description="Blocked apps for automation (THGENT_DESKTOP_AUTOMATION_BLOCKED_APPS JSON)"
     )
 ```
 
@@ -998,6 +841,7 @@ console = Console()
 
 desktop_automation_app = typer.Typer(help="Desktop automation commands")
 
+
 @desktop_automation_app.command("check-permissions")
 def check_permissions():
     """Check desktop automation permissions."""
@@ -1015,10 +859,11 @@ def check_permissions():
 
     console.print(table)
 
+
 @desktop_automation_app.command("test-click")
 def test_click(
     selector: str = typer.Argument(..., help="Element selector"),
-    timeout: float = typer.Option(5.0, "--timeout", "-t", help="Timeout in seconds")
+    timeout: float = typer.Option(5.0, "--timeout", "-t", help="Timeout in seconds"),
 ):
     """Test clicking an element."""
     from thegent.infra.desktop_automation import get_provider
@@ -1038,6 +883,7 @@ def test_click(
         console.print(f"[red]Click failed: {result.error}[/red]")
         raise typer.Exit(1)
 
+
 @desktop_automation_app.command("locks")
 def list_locks():
     """List active automation locks."""
@@ -1045,10 +891,7 @@ def list_locks():
     from thegent.config import ThegentSettings
 
     settings = ThegentSettings()
-    coordinator = DesktopAutomationCoordinator(
-        state_dir=settings.session_dir,
-        provider=get_provider()
-    )
+    coordinator = DesktopAutomationCoordinator(state_dir=settings.session_dir, provider=get_provider())
 
     table = Table(title="Active Automation Locks")
     table.add_column("Scope", style="cyan")
@@ -1056,11 +899,7 @@ def list_locks():
     table.add_column("Expires At", style="green")
 
     for lease_path, lease in coordinator.active_locks.items():
-        table.add_row(
-            lease_path,
-            lease.agent_id,
-            str(lease.expires_at)
-        )
+        table.add_row(lease_path, lease.agent_id, str(lease.expires_at))
 
     console.print(table)
 ```
@@ -1093,22 +932,12 @@ from thegent.infra.desktop_automation.coordinator import DesktopAutomationCoordi
 from thegent.infra.desktop_automation.base import AutomationAction
 
 provider = get_provider()
-coordinator = DesktopAutomationCoordinator(
-    state_dir=Path(".thegent"),
-    provider=provider
-)
+coordinator = DesktopAutomationCoordinator(state_dir=Path(".thegent"), provider=provider)
 
 scope = AutomationScope(app_name="TextEdit")
-action = AutomationAction(
-    type="click",
-    selector="button[name='Save']"
-)
+action = AutomationAction(type="click", selector="button[name='Save']")
 
-result = coordinator.execute_with_coordination(
-    scope=scope,
-    agent_id="agent-1",
-    action=action
-)
+result = coordinator.execute_with_coordination(scope=scope, agent_id="agent-1", action=action)
 ```
 
 ### Example 3: MCP Tool Usage
@@ -1116,12 +945,7 @@ result = coordinator.execute_with_coordination(
 ```python
 # Via MCP client
 result = await mcp_client.call_tool(
-    "desktop_automation_click",
-    {
-        "selector": "button[name='Save']",
-        "wait_timeout": 5.0,
-        "agent_id": "my-agent"
-    }
+    "desktop_automation_click", {"selector": "button[name='Save']", "wait_timeout": 5.0, "agent_id": "my-agent"}
 )
 ```
 

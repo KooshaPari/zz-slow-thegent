@@ -215,20 +215,24 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
+
 class IsolationMode(Enum):
     SUB_USER = "sub_user"
     OS_USER = "os_user"
     DOCKER = "docker"
 
+
 @dataclass
 class AgentUser:
     """Represents an isolated agent user."""
+
     agent_id: str
     isolation_mode: IsolationMode
     os_user_id: Optional[str] = None
     home_dir: Optional[str] = None
     uid: Optional[int] = None
     gid: Optional[int] = None
+
 
 class SystemUser(ABC):
     """Abstract base for system user management."""
@@ -248,15 +252,12 @@ class SystemUser(ABC):
         """Get agent user info."""
         pass
 
+
 class SubUserManager(SystemUser):
     """Sub-user implementation (no OS user)."""
 
     async def create_user(self, agent_id: str) -> AgentUser:
-        return AgentUser(
-            agent_id=agent_id,
-            isolation_mode=IsolationMode.SUB_USER,
-            home_dir=f"/tmp/thegent/{agent_id}"
-        )
+        return AgentUser(agent_id=agent_id, isolation_mode=IsolationMode.SUB_USER, home_dir=f"/tmp/thegent/{agent_id}")
 
     async def delete_user(self, agent_id: str):
         # Cleanup temp directory
@@ -265,6 +266,7 @@ class SubUserManager(SystemUser):
     async def get_user(self, agent_id: str) -> Optional[AgentUser]:
         # Check if temp directory exists
         pass
+
 
 class OSUserManager(SystemUser):
     """OS user implementation."""
@@ -329,25 +331,20 @@ Add-LocalGroupMember -Group "Users" -Member "thegent_agent_123"
 ```python
 from Quartz import CGEventSourceSecondsSinceLastEventType, kCGEventKeyDown
 
+
 def get_user_idle_time() -> float:
     """Get seconds since last user activity."""
-    return CGEventSourceSecondsSinceLastEventType(
-        kCGEventKeyDown,
-        kCGEventSourceStateHIDSystemState
-    )
+    return CGEventSourceSecondsSinceLastEventType(kCGEventKeyDown, kCGEventSourceStateHIDSystemState)
 ```
 
 **Linux** (X11):
 ```python
 import subprocess
 
+
 def get_user_idle_time() -> float:
     """Get seconds since last user activity."""
-    result = subprocess.run(
-        ["xssstate", "-i"],
-        capture_output=True,
-        text=True
-    )
+    result = subprocess.run(["xssstate", "-i"], capture_output=True, text=True)
     return float(result.stdout.strip())
 ```
 
@@ -355,8 +352,10 @@ def get_user_idle_time() -> float:
 ```python
 from ctypes import windll, Structure, c_uint32, byref
 
+
 class LASTINPUTINFO(Structure):
     _fields_ = [("cbSize", c_uint32), ("dwTime", c_uint32)]
+
 
 def get_user_idle_time() -> float:
     """Get seconds since last user activity."""
@@ -388,16 +387,17 @@ def get_user_idle_time() -> float:
 import subprocess
 from typing import Optional
 
+
 class MacOSAutomation:
     """macOS desktop automation via AppleScript."""
 
     def click(self, x: int, y: int) -> bool:
         """Click at coordinates."""
-        script = f'''
+        script = f"""
         tell application "System Events"
             click at {{{x}, {y}}}
         end tell
-        '''
+        """
         return self._run_applescript(script)
 
     def type_text(self, text: str) -> bool:
@@ -412,11 +412,7 @@ class MacOSAutomation:
     def screenshot(self, path: str, region: Optional[dict] = None) -> bool:
         """Take screenshot."""
         if region:
-            cmd = [
-                "screencapture",
-                "-R", f"{region['x']},{region['y']},{region['width']},{region['height']}",
-                path
-            ]
+            cmd = ["screencapture", "-R", f"{region['x']},{region['y']},{region['width']},{region['height']}", path]
         else:
             cmd = ["screencapture", path]
 
@@ -425,10 +421,7 @@ class MacOSAutomation:
 
     def _run_applescript(self, script: str) -> bool:
         """Run AppleScript."""
-        result = subprocess.run(
-            ["osascript", "-e", script],
-            capture_output=True
-        )
+        result = subprocess.run(["osascript", "-e", script], capture_output=True)
         return result.returncode == 0
 ```
 
@@ -440,6 +433,7 @@ class MacOSAutomation:
 from pywinauto import Application
 from pywinauto.findwindows import find_window
 import uiautomation as auto
+
 
 class WindowsAutomation:
     """Windows desktop automation via UIA."""
@@ -464,13 +458,7 @@ class WindowsAutomation:
         """Take screenshot."""
         try:
             if region:
-                auto.CaptureToImage(
-                    path,
-                    x=region['x'],
-                    y=region['y'],
-                    width=region['width'],
-                    height=region['height']
-                )
+                auto.CaptureToImage(path, x=region["x"], y=region["y"], width=region["width"], height=region["height"])
             else:
                 auto.CaptureToImage(path)
             return True
@@ -486,24 +474,19 @@ class WindowsAutomation:
 from pyatspi import Registry, STATE_FOCUSED
 import subprocess
 
+
 class LinuxAutomation:
     """Linux desktop automation via AT-SPI."""
 
     def click(self, x: int, y: int) -> bool:
         """Click at coordinates."""
         # Use xdotool as fallback
-        result = subprocess.run(
-            ["xdotool", "mousemove", str(x), str(y), "click", "1"],
-            capture_output=True
-        )
+        result = subprocess.run(["xdotool", "mousemove", str(x), str(y), "click", "1"], capture_output=True)
         return result.returncode == 0
 
     def type_text(self, text: str) -> bool:
         """Type text."""
-        result = subprocess.run(
-            ["xdotool", "type", text],
-            capture_output=True
-        )
+        result = subprocess.run(["xdotool", "type", text], capture_output=True)
         return result.returncode == 0
 
     def screenshot(self, path: str, region: Optional[dict] = None) -> bool:
@@ -511,9 +494,11 @@ class LinuxAutomation:
         if region:
             cmd = [
                 "import",
-                "-window", "root",
-                "-crop", f"{region['width']}x{region['height']}+{region['x']}+{region['y']}",
-                path
+                "-window",
+                "root",
+                "-crop",
+                f"{region['width']}x{region['height']}+{region['x']}+{region['y']}",
+                path,
             ]
         else:
             cmd = ["import", "-window", "root", path]
@@ -529,6 +514,7 @@ class LinuxAutomation:
 ```python
 from abc import ABC, abstractmethod
 from typing import Optional
+
 
 class DesktopAutomationProvider(ABC):
     """Abstract desktop automation provider."""
@@ -553,16 +539,20 @@ class DesktopAutomationProvider(ABC):
         """Get seconds since last user activity."""
         pass
 
+
 def get_automation_provider(platform: str) -> DesktopAutomationProvider:
     """Get platform-specific automation provider."""
     if platform == "macos":
         from thegent.automation.macos import MacOSAutomation
+
         return MacOSAutomation()
     elif platform == "windows":
         from thegent.automation.windows import WindowsAutomation
+
         return WindowsAutomation()
     elif platform == "linux":
         from thegent.automation.linux import LinuxAutomation
+
         return LinuxAutomation()
     else:
         raise ValueError(f"Unsupported platform: {platform}")
@@ -588,10 +578,8 @@ from typing import Literal
 import platform
 import subprocess
 
-def get_preferred_shell(
-    platform_name: str,
-    context: Literal["hooks", "agent", "os_admin", "desktop"]
-) -> str:
+
+def get_preferred_shell(platform_name: str, context: Literal["hooks", "agent", "os_admin", "desktop"]) -> str:
     """Return preferred shell for context."""
     if platform_name == "windows":
         if context == "os_admin":
@@ -604,14 +592,11 @@ def get_preferred_shell(
 
     return "bash"
 
+
 def _wsl_available() -> bool:
     """Check if WSL2 is available."""
     try:
-        result = subprocess.run(
-            ["wsl", "--list", "--quiet"],
-            capture_output=True,
-            timeout=2
-        )
+        result = subprocess.run(["wsl", "--list", "--quiet"], capture_output=True, timeout=2)
         return result.returncode == 0
     except Exception:
         return False
@@ -660,6 +645,7 @@ import json
 from pathlib import Path
 from typing import Optional, Dict
 
+
 class RemoteExecutor:
     """Execute commands on remote hosts."""
 
@@ -667,12 +653,7 @@ class RemoteExecutor:
         self.host = host
         self.user = user or "thegent"
 
-    async def execute(
-        self,
-        command: str,
-        cwd: Optional[str] = None,
-        env: Optional[Dict[str, str]] = None
-    ) -> dict:
+    async def execute(self, command: str, cwd: Optional[str] = None, env: Optional[Dict[str, str]] = None) -> dict:
         """Execute command on remote host."""
         # Build SSH command
         ssh_cmd = ["ssh", f"{self.user}@{self.host}"]
@@ -687,17 +668,9 @@ class RemoteExecutor:
         remote_cmd.append(command)
 
         # Execute
-        result = subprocess.run(
-            ssh_cmd + remote_cmd,
-            capture_output=True,
-            text=True
-        )
+        result = subprocess.run(ssh_cmd + remote_cmd, capture_output=True, text=True)
 
-        return {
-            "returncode": result.returncode,
-            "stdout": result.stdout,
-            "stderr": result.stderr
-        }
+        return {"returncode": result.returncode, "stdout": result.stdout, "stderr": result.stderr}
 ```
 
 ---

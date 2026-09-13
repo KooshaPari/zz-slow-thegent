@@ -138,11 +138,7 @@ tool_availability = (successful_calls / total_calls) * 100
 All tools emit `execution_time_ms` in `ToolResult.meta`:
 
 ```python
-ToolResult(
-    content=json.dumps(result),
-    structured_content=result,
-    meta={"execution_time_ms": elapsed_ms}
-)
+ToolResult(content=json.dumps(result), structured_content=result, meta={"execution_time_ms": elapsed_ms})
 ```
 
 ### Middleware Stack

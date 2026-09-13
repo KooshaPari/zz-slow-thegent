@@ -200,18 +200,21 @@ When clients don't support elicitation, implement fallback via alternative mecha
 ```python
 from enum import Enum
 
+
 class ElicitationFallbackStrategy(Enum):
     """Strategies for clients without elicitation support."""
-    ERROR = "error"                    # Raise error
-    DEFAULT = "default"                # Use default values
-    QUEUE = "queue"                    # Queue for later processing
-    PROMPT = "prompt"                  # Use CLI prompt
+
+    ERROR = "error"  # Raise error
+    DEFAULT = "default"  # Use default values
+    QUEUE = "queue"  # Queue for later processing
+    PROMPT = "prompt"  # Use CLI prompt
+
 
 async def elicit_with_fallback(
     ctx: Context,
     message: str,
     response_type: type,
-    fallback_strategy: ElicitationFallbackStrategy = ElicitationFallbackStrategy.DEFAULT
+    fallback_strategy: ElicitationFallbackStrategy = ElicitationFallbackStrategy.DEFAULT,
 ) -> any:
     """Elicit with fallback for unsupported clients."""
     try:
@@ -237,6 +240,7 @@ async def elicit_with_fallback(
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
+
 class FallbackProgressReporter:
     """Progress reporter that works without client support."""
 
@@ -245,12 +249,7 @@ class FallbackProgressReporter:
         self._total = 0
         self._current = 0
 
-    async def report(
-        self,
-        current: int,
-        total: int,
-        message: str = ""
-    ):
+    async def report(self, current: int, total: int, message: str = ""):
         """Report progress; falls back to logging if client doesn't support."""
         try:
             await self.ctx.report_progress(current, total, message)
@@ -259,11 +258,10 @@ class FallbackProgressReporter:
             percent = (current / total * 100) if total else 0
             await self.ctx.info(f"Progress: {percent:.1f}% - {message}")
 
+
 @asynccontextmanager
 async def track_progress(
-    ctx: Context,
-    total: int,
-    message: str = "Processing"
+    ctx: Context, total: int, message: str = "Processing"
 ) -> AsyncIterator[FallbackProgressReporter]:
     """Track progress with automatic cleanup."""
     reporter = FallbackProgressReporter(ctx)

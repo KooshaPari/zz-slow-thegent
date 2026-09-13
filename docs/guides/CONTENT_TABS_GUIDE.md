@@ -120,6 +120,7 @@ def hello(name: str) -> str:
     """Greet the user."""
     return f"Hello, {name}!"
 
+
 print(hello("World"))
 ```
 :::

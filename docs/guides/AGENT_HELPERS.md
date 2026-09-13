@@ -212,7 +212,7 @@ def run_quality_check(
     "tests_passed": bool,
     "tests_output": str,
     "overall_passed": bool,  # lint_passed AND tests_passed
-    "errors": list[str],     # populated on any failure
+    "errors": list[str],  # populated on any failure
 }
 ```
 

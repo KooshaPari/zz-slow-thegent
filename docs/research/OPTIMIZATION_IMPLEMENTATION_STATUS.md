@@ -264,9 +264,11 @@ toml_dump(data, "output.toml")
 from thegent.infra import watch_files
 from watchfiles import Change
 
+
 def on_change(changes):
     for change, path in changes:
         print(f"{change}: {path}")
+
 
 # Watch files (automatically uses watchfiles if available)
 watch_files("/path/to/watch", on_change, recursive=True)

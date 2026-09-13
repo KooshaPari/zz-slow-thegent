@@ -231,9 +231,7 @@ class SimulationReplay:
     ) -> ReplayResult:
         """Replay decision deterministically"""
         # Retrieve context from L3
-        context = await self.memory.get_knowledge(
-            f"session:{session_id} decision:{decision_id}"
-        )
+        context = await self.memory.get_knowledge(f"session:{session_id} decision:{decision_id}")
 
         # Retrieve artifacts from L4
         artifacts = await self.artifacts.get_artifacts(session_id)
@@ -425,7 +423,7 @@ class RetryPolicy:
             try:
                 return await func(*args, **kwargs)
             except transient_error as e:
-                wait_time = 2 ** attempt + random.uniform(0, 1)
+                wait_time = 2**attempt + random.uniform(0, 1)
                 if attempt < self.max_retries - 1:
                     await asyncio.sleep(wait_time)
                 else:

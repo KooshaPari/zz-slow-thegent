@@ -322,12 +322,7 @@ const subagentTool = tool({
 
 **Agents:**
 ```python
-agent = Agent(
-  name="triage",
-  instructions="You are a triage agent...",
-  tools=[tool1, tool2],
-  model="gpt-4"
-)
+agent = Agent(name="triage", instructions="You are a triage agent...", tools=[tool1, tool2], model="gpt-4")
 ```
 
 **Handoffs:**
@@ -345,13 +340,7 @@ agent = Agent(
 #### Context Management
 **Via Context Variables:**
 ```python
-client.run(
-  agent=root_agent,
-  context_variables={
-    "user_id": "12345",
-    "preferences": {...}
-  }
-)
+client.run(agent=root_agent, context_variables={"user_id": "12345", "preferences": {...}})
 ```
 
 - Simple dictionary-based state
@@ -1432,9 +1421,10 @@ const subagentTool = tool({
 agent_a = Agent(instructions="...", tools=[...])
 agent_b = Agent(instructions="...", tools=[...])
 
+
 # Agent A can handoff to Agent B
 def handle_escalation(context_variables):
-  return agent_b
+    return agent_b
 ```
 
 **Characteristics:**

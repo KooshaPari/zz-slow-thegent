@@ -30,19 +30,23 @@ cachetools Library
 from functools import wraps
 from cachetools import TTLCache, LRUCache, LFUCache, cached
 
+
 def get_cache_ttl(maxsize: int, ttl: int) -> TTLCache:
     """Return a TTL cache. Use with @cached decorator."""
     return TTLCache(maxsize=maxsize, ttl=ttl)
+
 
 def get_cache_lru(maxsize: int) -> LRUCache:
     """Return an LRU cache. Use with @cached decorator."""
     return LRUCache(maxsize=maxsize)
 
+
 def get_cache_lfu(maxsize: int) -> LFUCache:
     """Return an LFU cache. Use with @cached decorator."""
     return LFUCache(maxsize=maxsize)
 
-def cached_method(cache_or_factory, key=None, ttl=None, policy='lru'):
+
+def cached_method(cache_or_factory, key=None, ttl=None, policy="lru"):
     """
     Decorator for caching method results.
 
@@ -72,6 +76,7 @@ from cachetools import cached
 
 _cache = get_cache_ttl(maxsize=100, ttl=300)
 
+
 @cached(cache=_cache)
 def get_data(item_id: str) -> dict:
     # Cached for 5 minutes
@@ -82,6 +87,7 @@ def get_data(item_id: str) -> dict:
 ```python
 from src.lib.project_cache import get_cache_lru
 from cachetools import cached
+
 
 class DataManager:
     _cache = get_cache_lru(maxsize=50)
@@ -99,6 +105,7 @@ from threading import RLock
 
 _cache = get_cache_ttl(maxsize=100, ttl=300)
 _lock = RLock()
+
 
 @cached(cache=_cache, lock=_lock)
 def get_data_threadsafe(item_id: str):
@@ -166,6 +173,7 @@ For each custom cache:
 ```python
 # Old
 from src.lib.old_cache import LRUCache
+
 cache = LRUCache(maxsize=100)
 
 # New
@@ -173,6 +181,7 @@ from src.lib.project_cache import get_cache_lru
 from cachetools import cached
 
 cache = get_cache_lru(100)
+
 
 @cached(cache=cache)
 def my_func():

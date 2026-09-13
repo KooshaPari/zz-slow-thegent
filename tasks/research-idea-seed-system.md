@@ -44,16 +44,16 @@ status: in_progress
 # IdeaObject
 @dataclass
 class IdeaObject:
-    id: str                    # idea_YYYYMMDD_HHMMSS_hash
-    text: str                  # Main idea text (50-5000 chars)
-    created_at: datetime       # ISO 8601 timestamp
-    source: IdeaSource         # Session metadata
-    detection: DetectionMeta   # How it was detected
-    tags: List[str]           # Auto-detected tags
-    context: str              # Surrounding text (optional)
-    metadata: IdeaMetadata     # Project, status, etc.
-    git: GitMeta              # Git commit info
-    checksum: str             # SHA-256 hash
+    id: str  # idea_YYYYMMDD_HHMMSS_hash
+    text: str  # Main idea text (50-5000 chars)
+    created_at: datetime  # ISO 8601 timestamp
+    source: IdeaSource  # Session metadata
+    detection: DetectionMeta  # How it was detected
+    tags: List[str]  # Auto-detected tags
+    context: str  # Surrounding text (optional)
+    metadata: IdeaMetadata  # Project, status, etc.
+    git: GitMeta  # Git commit info
+    checksum: str  # SHA-256 hash
 ```
 
 **Tasks**:
@@ -143,6 +143,7 @@ class IdeaStorage:
     def load_all(self) -> List[IdeaObject]:
         """Load all ideas from JSONL."""
 
+
 class GitAudit:
     def commit(self, message: str, metadata: dict) -> str:
         """Create git commit with audit metadata."""
@@ -178,8 +179,8 @@ class GitAudit:
 **Implementation Details**:
 ```python
 @click.command()
-@click.option('--since', default='6h', help='Time range')
-@click.option('--git-commit', is_flag=True)
+@click.option("--since", default="6h", help="Time range")
+@click.option("--git-commit", is_flag=True)
 def ideas_collect(since: str, git_commit: bool):
     """Collect ideas from recent sessions."""
     # 1. Find recent prompts (from run_registry or session files)

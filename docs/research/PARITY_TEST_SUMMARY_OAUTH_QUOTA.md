@@ -176,12 +176,13 @@ class QuotaEnforcer:
         with self._lock:
             self._maybe_reset()
 
-            if (self.quota.max_tokens_per_day > 0 and
-                self.usage.tokens_used + estimated_tokens > self.quota.max_tokens_per_day):
+            if (
+                self.quota.max_tokens_per_day > 0
+                and self.usage.tokens_used + estimated_tokens > self.quota.max_tokens_per_day
+            ):
                 return False
 
-            if (self.quota.max_cost_per_day > 0 and
-                self.usage.cost_used + estimated_cost > self.quota.max_cost_per_day):
+            if self.quota.max_cost_per_day > 0 and self.usage.cost_used + estimated_cost > self.quota.max_cost_per_day:
                 return False
 
             return True

@@ -75,9 +75,11 @@ from pathlib import Path
 from typing import Dict, Optional
 from dataclasses import dataclass, field
 
+
 @dataclass
 class CostEntry:
     """Single cost entry for a token or API call."""
+
     timestamp: str
     provider: str
     model: str
@@ -86,6 +88,7 @@ class CostEntry:
     cost_usd: float
     run_id: str
     task_id: Optional[str] = None
+
 
 class CostTracker:
     """Track and aggregate costs across runs."""
@@ -120,19 +123,14 @@ class CostTracker:
             "total_input_tokens": total_input,
             "total_output_tokens": total_output,
             "providers": {},
-            "ended_at": datetime.utcnow().isoformat() + "Z"
+            "ended_at": datetime.utcnow().isoformat() + "Z",
         }
 
         # Aggregate by provider
         for entry in self.run_entries:
             provider = entry.provider
             if provider not in summary["providers"]:
-                summary["providers"][provider] = {
-                    "cost_usd": 0,
-                    "input_tokens": 0,
-                    "output_tokens": 0,
-                    "models": {}
-                }
+                summary["providers"][provider] = {"cost_usd": 0, "input_tokens": 0, "output_tokens": 0, "models": {}}
             p = summary["providers"][provider]
             p["cost_usd"] += entry.cost_usd
             p["input_tokens"] += entry.input_tokens
@@ -158,11 +156,16 @@ class CostTracker:
         # Append to aggregate
         aggregate_file = self.cost_dir / "aggregate.jsonl"
         with open(aggregate_file, "a") as f:
-            f.write(json.dumps({
-                "run_id": summary["run_id"],
-                "total_cost": summary["total_cost_usd"],
-                "ended_at": summary["ended_at"]
-            }) + "\n")
+            f.write(
+                json.dumps(
+                    {
+                        "run_id": summary["run_id"],
+                        "total_cost": summary["total_cost_usd"],
+                        "ended_at": summary["ended_at"],
+                    }
+                )
+                + "\n"
+            )
 ```
 
 ### 4.2 Budget Alert System
@@ -176,13 +179,16 @@ from pathlib import Path
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class BudgetConfig:
     """Budget configuration."""
+
     hourly_limit_usd: float = 10.0
     daily_limit_usd: float = 100.0
     run_limit_usd: float = 5.0
     warning_threshold: float = 0.8
+
 
 class BudgetAlertSystem:
     """Check budgets and emit alerts."""

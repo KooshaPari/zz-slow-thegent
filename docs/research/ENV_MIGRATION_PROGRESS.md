@@ -48,6 +48,7 @@ Added field validator to read from multiple environment variables:
 def _parse_zen_api_key(cls, v: object) -> str:
     """Read zen_api_key from THGENT_ZEN_API_KEY, OPENCODE_API_KEY, or ZEN_API_KEY."""
     import os
+
     if isinstance(v, str) and v:
         return v
     # Try multiple env vars (in order of preference)

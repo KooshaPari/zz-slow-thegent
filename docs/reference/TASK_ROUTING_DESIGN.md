@@ -263,14 +263,14 @@ When a task arrives, extract these signals:
 ```python
 @dataclass
 class TaskClassificationInput:
-    prompt: str                    # Full prompt text
-    agent: str                     # Agent name (claude, gemini, etc.)
-    mode: str                      # write, read, observe, etc.
-    lane: str                       # standard, critical, recovery
-    owner: str                      # User/team
-    confidence: float | None        # Caller's confidence (0.0–1.0)
-    provider_hint: str | None       # Preferred provider (if any)
-    token_budget_explicit: int | None # Explicit token limit (if known)
+    prompt: str  # Full prompt text
+    agent: str  # Agent name (claude, gemini, etc.)
+    mode: str  # write, read, observe, etc.
+    lane: str  # standard, critical, recovery
+    owner: str  # User/team
+    confidence: float | None  # Caller's confidence (0.0–1.0)
+    provider_hint: str | None  # Preferred provider (if any)
+    token_budget_explicit: int | None  # Explicit token limit (if known)
 ```
 
 ### Classification Logic (Pseudocode)
@@ -283,16 +283,11 @@ def classify_task(input: TaskClassificationInput) -> TaskCategory:
 
     # 2. Infer reasoning depth from prompt signals
     reasoning_depth = infer_reasoning_depth(
-        prompt=input.prompt,
-        keywords=["design", "architect", "debug", "optimize", "complex"]
+        prompt=input.prompt, keywords=["design", "architect", "debug", "optimize", "complex"]
     )  # returns 0–3
 
     # 3. Map lane to quality requirement
-    quality_bar = {
-        "critical": "critical",
-        "recovery": "excellent",
-        "standard": "good"
-    }.get(input.lane, "good")
+    quality_bar = {"critical": "critical", "recovery": "excellent", "standard": "good"}.get(input.lane, "good")
 
     # 4. Apply classification rules
     if tokens_in < 500 and tokens_out < 1_000 and reasoning_depth <= 0:
@@ -312,7 +307,7 @@ def resolve_provider(
     category: TaskCategory,
     provider_hint: str | None,
     route_policy: RoutePolicy = "prefer_direct",
-    cost_budget_remaining: float = float('inf')
+    cost_budget_remaining: float = float("inf"),
 ) -> tuple[str, str]:  # (provider, model_alias)
 
     routes = ModelCatalog.routes_for(category.preferred_model)

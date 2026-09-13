@@ -14,19 +14,19 @@
 from thegent.isolation import SubUserIsolationProvider
 
 provider = SubUserIsolationProvider(
-    base_home_dir='/tmp/thegent',
+    base_home_dir="/tmp/thegent",
     base_uid=2000,
     uid_pool_size=1000,
 )
 
 # Allocate tenant
-ctx = provider.allocate_tenant('tenant-1', 'agent-1')
+ctx = provider.allocate_tenant("tenant-1", "agent-1")
 # ctx.uid, ctx.gid, ctx.home_dir, ctx.env_vars are set
 
 # Execute in context
 result = provider.execute_in_context(
     ctx,
-    ['echo', 'hello'],
+    ["echo", "hello"],
     timeout_sec=300,
 )
 # result['returncode'], result['stdout'], result['stderr']

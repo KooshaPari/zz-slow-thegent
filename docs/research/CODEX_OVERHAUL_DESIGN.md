@@ -207,10 +207,7 @@ class CodexInstancePool:
     async def initialize(self) -> None:
         """Spawn pool_size lightweight Codex instances, ready to serve."""
         for i in range(self.pool_size):
-            instance = CodexInstance(
-                home=Path(f"/tmp/codex-warm-{i}"),
-                config={"mode": "lightweight"}
-            )
+            instance = CodexInstance(home=Path(f"/tmp/codex-warm-{i}"), config={"mode": "lightweight"})
             await instance.spawn()  # Keep alive, wait for work
             self.instances.append(instance)
 
@@ -322,12 +319,16 @@ class CodexWorker:
         env["OPENAI_API_KEY"] = ...  # or from shared keyring
 
         cmd = [
-            "codex", "exec", "-",
+            "codex",
+            "exec",
+            "-",
             "--skip-git-repo-check",
             "--dangerously-bypass-approvals-and-sandbox",
             "--json",
-            "--cd", str(task.cwd),
-            "--model", task.model,
+            "--cd",
+            str(task.cwd),
+            "--model",
+            task.model,
         ]
 
         result = await self.run_codex(cmd, task.prompt, env=env)
@@ -445,7 +446,7 @@ For a typical machine (8 CPU cores, 16 GB RAM):
 def run_codex_with_config(
     prompt: str,
     codex_config: dict[str, Any],  # {"model": "gpt-5.3-codex", "sandbox": "read-only"}
-    **kwargs
+    **kwargs,
 ) -> RunResult:
     """Run Codex with arbitrary config overrides (via -c)."""
     env = os.environ.copy()
@@ -514,7 +515,9 @@ class CodexProxyRunner(AgentRunner):
                 cmd.extend(["-c", f"{key}={json.dumps(value) if not isinstance(value, str) else value}"])
 
         # Stream events as they arrive
-        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env)
+        proc = subprocess.Popen(
+            cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env
+        )
         proc.stdin.write(prompt)
         proc.stdin.close()
 
@@ -529,6 +532,7 @@ class CodexProxyRunner(AgentRunner):
 **Usage (hierarchical spawning):**
 ```python
 runner = CodexProxyRunner("codex")
+
 
 async def parent_task():
     """Spawn 3 sub-agents to work on different modules."""
@@ -782,6 +786,7 @@ import asyncio
 from pathlib import Path
 from thegent.agents.codex_proxy import CodexProxyRunner
 
+
 async def main():
     """Example: 5 concurrent agents fixing different modules."""
 
@@ -808,14 +813,13 @@ async def main():
         return result
 
     # Run all tasks concurrently
-    results = await asyncio.gather(
-        *[process_task(tid, prompt, cwd) for tid, prompt, cwd in tasks]
-    )
+    results = await asyncio.gather(*[process_task(tid, prompt, cwd) for tid, prompt, cwd in tasks])
 
     for i, result in enumerate(results):
         print(f"Task {i}: {'OK' if result.exit_code == 0 else 'FAILED'}")
         if result.exit_code != 0:
             print(f"  Error: {result.stderr[:200]}")
+
 
 if __name__ == "__main__":
     asyncio.run(main())

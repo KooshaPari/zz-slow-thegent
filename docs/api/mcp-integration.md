@@ -82,24 +82,11 @@ search_codebase(query="...")
 ```python
 # New way (use atoms-mcp-prod)
 # Requirements operations
-entity_operation(
-    operation="search",
-    entity_type="requirement",
-    filters={"title": {"ilike": "%...%"}}
-)
-entity_operation(
-    operation="create",
-    entity_type="requirement",
-    properties={"project_id": "...", "title": "..."}
-)
+entity_operation(operation="search", entity_type="requirement", filters={"title": {"ilike": "%...%"}})
+entity_operation(operation="create", entity_type="requirement", properties={"project_id": "...", "title": "..."})
 
 # Document analysis
-data_query(
-    query_type="rag_search",
-    entities=["document"],
-    query="...",
-    document_id="..."
-)
+data_query(query_type="rag_search", entities=["document"], query="...", document_id="...")
 
 # Codebase search
 codebase_search_tool(query="...", file_pattern="*.py")

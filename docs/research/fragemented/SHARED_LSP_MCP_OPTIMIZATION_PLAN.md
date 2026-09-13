@@ -140,31 +140,30 @@ import hashlib
 from pathlib import Path
 from typing import Optional
 
+
 def get_server_scope(project_root: Optional[Path] = None) -> tuple[str, Path]:
     """
     Determine server scope (system-wide or project-scoped).
-    
+
     Returns:
         (scope_type, lockfile_path)
         scope_type: 'system' or 'project'
     """
     # Default: system-wide
     system_lockfile = Path.home() / ".cache" / "thegent" / "mcp" / "system.lock"
-    
+
     # Check if project-specific requirements exist
     if project_root:
         # Check for project-specific config
         project_config = project_root / ".thegent" / "isolate_servers"
         if project_config.exists():
             # Project requires isolation
-            project_key = hashlib.sha256(
-                str(project_root.resolve()).encode()
-            ).hexdigest()[:16]
+            project_key = hashlib.sha256(str(project_root.resolve()).encode()).hexdigest()[:16]
             project_lockfile = Path.home() / ".cache" / "thegent" / "mcp" / f"{project_key}.lock"
-            return ('project', project_lockfile)
-    
+            return ("project", project_lockfile)
+
     # Default: system-wide
-    return ('system', system_lockfile)
+    return ("system", system_lockfile)
 ```
 
 **Benefits:**
@@ -186,33 +185,33 @@ import time
 import os
 from typing import Optional, Tuple
 
+
 def get_server_scope(project_root: Optional[Path] = None) -> Tuple[str, Path]:
     """
     Determine server scope (system-wide or project-scoped).
     Default: system-wide. Scope down only if project requires isolation.
-    
+
     Returns:
         (scope_type, lockfile_path)
     """
     cache_dir = Path.home() / ".cache" / "thegent" / "mcp"
     cache_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Default: system-wide
     system_lockfile = cache_dir / "system.lock"
-    
+
     # Check if project requires isolation
     if project_root:
         project_config = project_root / ".thegent" / "isolate_servers"
         if project_config.exists():
             # Project requires isolation - scope down
-            project_key = hashlib.sha256(
-                str(project_root.resolve()).encode()
-            ).hexdigest()[:16]
+            project_key = hashlib.sha256(str(project_root.resolve()).encode()).hexdigest()[:16]
             project_lockfile = cache_dir / f"{project_key}.lock"
-            return ('project', project_lockfile)
-    
+            return ("project", project_lockfile)
+
     # Default: system-wide
-    return ('system', system_lockfile)
+    return ("system", system_lockfile)
+
 
 def ensure_shared_mcp_server(project_root: Optional[Path] = None) -> Tuple[bool, Optional[str]]:
     """
@@ -220,15 +219,15 @@ def ensure_shared_mcp_server(project_root: Optional[Path] = None) -> Tuple[bool,
     Returns: (is_new_server, server_url_or_error)
     """
     scope_type, lockfile = get_server_scope(project_root)
-    
+
     # Check if server already running
     if lockfile.exists():
         try:
-            with open(lockfile, 'r') as f:
+            with open(lockfile, "r") as f:
                 data = json.load(f)
-                pid = data.get('pid')
-                port = data.get('port', 3847)
-                
+                pid = data.get("pid")
+                port = data.get("port", 3847)
+
                 # Check if process still alive
                 try:
                     os.kill(pid, 0)  # Check if process exists
@@ -238,27 +237,32 @@ def ensure_shared_mcp_server(project_root: Optional[Path] = None) -> Tuple[bool,
                     lockfile.unlink()
         except Exception:
             lockfile.unlink()
-    
+
     # Start new server (system-wide)
     from thegent.mcp_manage import mcp_up
+
     success, message = mcp_up()
     if not success:
         return False, message
-    
+
     # Create lockfile
     import subprocess
-    
+
     # Get process-compose PID
     # (Implementation depends on how mcp_up works)
-    
-    lockfile.write_text(json.dumps({
-        'pid': os.getpid(),  # Or actual server PID
-        'port': 3847,
-        'scope': scope_type,
-        'project_root': str(project_root) if project_root else None,
-        'started_at': time.time(),
-    }))
-    
+
+    lockfile.write_text(
+        json.dumps(
+            {
+                "pid": os.getpid(),  # Or actual server PID
+                "port": 3847,
+                "scope": scope_type,
+                "project_root": str(project_root) if project_root else None,
+                "started_at": time.time(),
+            }
+        )
+    )
+
     return True, f"http://127.0.0.1:3847/mcp"
 ```
 
@@ -275,35 +279,36 @@ import os
 from typing import Optional, Dict, Tuple
 
 LSP_SERVERS = {
-    'python': {
-        'command': 'pyright-langserver',
-        'args': ['--stdio'],
-        'supports_multi_client': True,
-        'supports_multi_root': True,  # Can handle multiple project roots
+    "python": {
+        "command": "pyright-langserver",
+        "args": ["--stdio"],
+        "supports_multi_client": True,
+        "supports_multi_root": True,  # Can handle multiple project roots
     },
-    'typescript': {
-        'command': 'typescript-language-server',
-        'args': ['--stdio'],
-        'supports_multi_client': True,
-        'supports_multi_root': True,
+    "typescript": {
+        "command": "typescript-language-server",
+        "args": ["--stdio"],
+        "supports_multi_client": True,
+        "supports_multi_root": True,
     },
 }
 
-def get_lsp_server_scope(project_root: Optional[Path] = None, language: str = 'python') -> Tuple[str, Path]:
+
+def get_lsp_server_scope(project_root: Optional[Path] = None, language: str = "python") -> Tuple[str, Path]:
     """
     Determine LSP server scope (system-wide or project-scoped).
     Default: system-wide. Scope down only if project requires isolation.
-    
+
     Returns:
         (scope_type, lockfile_path)
     """
     cache_dir = Path.home() / ".cache" / "thegent" / "lsp"
     cache_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Default: system-wide
     system_lockfile = cache_dir / "system" / f"{language}.lock"
     system_lockfile.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Check if project requires isolation
     if project_root:
         # Check for project-specific requirements
@@ -312,31 +317,30 @@ def get_lsp_server_scope(project_root: Optional[Path] = None, language: str = 'p
             # Check if language version differs
             # (e.g., Python 3.11 vs 3.12 might need separate servers)
             # For now, scope down if isolation requested
-            project_key = hashlib.sha256(
-                str(project_root.resolve()).encode()
-            ).hexdigest()[:16]
+            project_key = hashlib.sha256(str(project_root.resolve()).encode()).hexdigest()[:16]
             project_lockfile = cache_dir / project_key / f"{language}.lock"
             project_lockfile.parent.mkdir(parents=True, exist_ok=True)
-            return ('project', project_lockfile)
-    
-    # Default: system-wide
-    return ('system', system_lockfile)
+            return ("project", project_lockfile)
 
-def ensure_shared_lsp_server(project_root: Optional[Path] = None, language: str = 'python') -> Optional[str]:
+    # Default: system-wide
+    return ("system", system_lockfile)
+
+
+def ensure_shared_lsp_server(project_root: Optional[Path] = None, language: str = "python") -> Optional[str]:
     """
     Ensure shared LSP server is running (system-wide by default).
     Returns: stdio pipe path or socket path or None
     """
     scope_type, lockfile = get_lsp_server_scope(project_root, language)
     socket_path = lockfile.parent / f"{language}.sock"  # Unix domain socket
-    
+
     # Check if server already running
     if lockfile.exists() and socket_path.exists():
         try:
-            with open(lockfile, 'r') as f:
+            with open(lockfile, "r") as f:
                 data = json.load(f)
-                pid = data.get('pid')
-                
+                pid = data.get("pid")
+
                 try:
                     os.kill(pid, 0)  # Check if process exists
                     return str(socket_path)
@@ -346,16 +350,16 @@ def ensure_shared_lsp_server(project_root: Optional[Path] = None, language: str 
                     socket_path.unlink(missing_ok=True)
         except Exception:
             lockfile.unlink(missing_ok=True)
-    
+
     # Start new LSP server (system-wide)
     lsp_config = LSP_SERVERS.get(language)
     if not lsp_config:
         return None
-    
+
     # Start server with Unix domain socket for multi-client support
     # (Implementation depends on LSP server capabilities)
     # System-wide server can handle multiple project roots
-    
+
     return str(socket_path)
 ```
 

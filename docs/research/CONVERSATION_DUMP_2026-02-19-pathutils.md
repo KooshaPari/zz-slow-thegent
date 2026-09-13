@@ -166,6 +166,7 @@ path = Path(user_input).expanduser().resolve()
 
 # New: Centralized (safe, consistent)
 from scripts.path_utils import normalize_path
+
 path = normalize_path(user_input)
 ```
 

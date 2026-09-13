@@ -114,19 +114,11 @@ for project in projects:
     items = session.query(Item).filter(Item.project_id == project.id).all()
 
 # ✅ GOOD: Join with eager loading
-projects = (
-    session.query(Project)
-    .options(joinedload(Project.items))
-    .all()
-)
+projects = session.query(Project).options(joinedload(Project.items)).all()
 
 # ✅ GOOD: Batch loading
 project_ids = [p.id for p in projects]
-items = (
-    session.query(Item)
-    .filter(Item.project_id.in_(project_ids))
-    .all()
-)
+items = session.query(Item).filter(Item.project_id.in_(project_ids)).all()
 ```
 
 ### 4. React Memo Patterns

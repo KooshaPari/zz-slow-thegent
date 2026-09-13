@@ -21,6 +21,7 @@ The Mesh is the "nervous system" of Thegent.
 ### Accessing SHM from Python
 ```python
 from thegent.infra.shm_manager import SHMManager
+
 shm = SHMManager()
 metrics = shm.get_provider_metrics("claude")
 ```

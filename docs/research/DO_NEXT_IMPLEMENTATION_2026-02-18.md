@@ -30,12 +30,12 @@ Implemented both functions in `src/thegent/cli_impl.py`:
             "description": "Task description",
             "source": "Source document",
             "priority": "P1",
-            "prompt_suggestion": "Complete task-id: Task description"
+            "prompt_suggestion": "Complete task-id: Task description",
         }
     ],
     "count": 3,
     "sources_checked": ["WORK_STREAM.md"],
-    "empty_reason": None  # or reason string if no items
+    "empty_reason": None,  # or reason string if no items
 }
 ```
 
@@ -57,11 +57,11 @@ Implemented both functions in `src/thegent/cli_impl.py`:
         "id": "task-id",
         "description": "Task description",
         "source": "Source document",
-        "prompt_suggestion": "Complete task-id: Task description"
+        "prompt_suggestion": "Complete task-id: Task description",
     },
     "elapsed_s": 2.5,
     "poll_count": 2,
-    "timeout": False
+    "timeout": False,
 }
 ```
 

@@ -148,15 +148,22 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-logger.info("User login attempt", extra={
-    "user_id": user_id,
-    "timestamp": datetime.now(),
-})
+logger.info(
+    "User login attempt",
+    extra={
+        "user_id": user_id,
+        "timestamp": datetime.now(),
+    },
+)
 
-logger.error("Database connection failed", exc_info=True, extra={
-    "host": db_host,
-    "port": db_port,
-})
+logger.error(
+    "Database connection failed",
+    exc_info=True,
+    extra={
+        "host": db_host,
+        "port": db_port,
+    },
+)
 ```
 
 ```python

@@ -487,36 +487,31 @@ import ast
 from typing import Dict, List
 import re
 
+
 def parse_google_docstring(docstring: str) -> Dict:
     """Parse Google-style docstring."""
-    sections = {
-        'description': '',
-        'args': {},
-        'returns': '',
-        'raises': {},
-        'examples': []
-    }
+    sections = {"description": "", "args": {}, "returns": "", "raises": {}, "examples": []}
 
     # Parse description
-    lines = docstring.split('\n')
+    lines = docstring.split("\n")
     description_lines = []
-    current_section = 'description'
+    current_section = "description"
 
     for line in lines:
-        if line.strip().startswith('Args:'):
-            current_section = 'args'
-        elif line.strip().startswith('Returns:'):
-            current_section = 'returns'
-        elif line.strip().startswith('Raises:'):
-            current_section = 'raises'
-        elif line.strip().startswith('Example:'):
-            current_section = 'examples'
+        if line.strip().startswith("Args:"):
+            current_section = "args"
+        elif line.strip().startswith("Returns:"):
+            current_section = "returns"
+        elif line.strip().startswith("Raises:"):
+            current_section = "raises"
+        elif line.strip().startswith("Example:"):
+            current_section = "examples"
         else:
-            if current_section == 'description':
+            if current_section == "description":
                 description_lines.append(line)
             # ... parse other sections
 
-    sections['description'] = '\n'.join(description_lines).strip()
+    sections["description"] = "\n".join(description_lines).strip()
     return sections
 ```
 
@@ -544,40 +539,38 @@ import re
 from pathlib import Path
 from typing import Dict, List
 
+
 def extract_jsdoc(file_path: Path) -> Dict:
     """Extract JSDoc comments from TypeScript/JavaScript file."""
     with open(file_path) as f:
         content = f.read()
 
     # Pattern for JSDoc comments
-    jsdoc_pattern = r'/\*\*\s*\n((?:\s*\*.*\n)*?)\s*\*/'
+    jsdoc_pattern = r"/\*\*\s*\n((?:\s*\*.*\n)*?)\s*\*/"
     matches = re.findall(jsdoc_pattern, content)
 
     docs = {}
     for match in matches:
         # Parse JSDoc content
-        lines = [line.strip().lstrip('*').strip() for line in match.split('\n')]
+        lines = [line.strip().lstrip("*").strip() for line in match.split("\n")]
         description = []
         params = {}
         returns = None
 
         for line in lines:
-            if line.startswith('@param'):
+            if line.startswith("@param"):
                 # Parse @param {type} name description
-                param_match = re.match(r'@param\s+\{([^}]+)\}\s+(\w+)\s+(.+)', line)
+                param_match = re.match(r"@param\s+\{([^}]+)\}\s+(\w+)\s+(.+)", line)
                 if param_match:
-                    params[param_match.group(2)] = {
-                        'type': param_match.group(1),
-                        'description': param_match.group(3)
-                    }
-            elif line.startswith('@returns'):
-                returns = line.replace('@returns', '').strip()
+                    params[param_match.group(2)] = {"type": param_match.group(1), "description": param_match.group(3)}
+            elif line.startswith("@returns"):
+                returns = line.replace("@returns", "").strip()
             else:
                 description.append(line)
 
-        docs['description'] = '\n'.join(description).strip()
-        docs['params'] = params
-        docs['returns'] = returns
+        docs["description"] = "\n".join(description).strip()
+        docs["params"] = params
+        docs["returns"] = returns
 
     return docs
 ```
@@ -901,13 +894,14 @@ export default defineConfig({
 import asyncio
 from concurrent.futures import ProcessPoolExecutor
 
+
 async def generate_parallel():
     tasks = [
         generate_api_docs(),
         generate_architecture(),
         generate_cli_examples(),
         generate_sidebar(),
-        generate_llms_docs()
+        generate_llms_docs(),
     ]
     await asyncio.gather(*tasks)
 ```
@@ -934,8 +928,10 @@ async def generate_parallel():
 import hashlib
 from pathlib import Path
 
+
 def get_file_hash(file_path: Path) -> str:
     return hashlib.md5(file_path.read_bytes()).hexdigest()
+
 
 def should_regenerate(file_path: Path, cache_dir: Path) -> bool:
     cache_file = cache_dir / f"{file_path.stem}.hash"
@@ -973,15 +969,17 @@ def should_regenerate(file_path: Path, cache_dir: Path) -> bool:
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+
 class DocsHandler(FileSystemEventHandler):
     def on_modified(self, event):
-        if event.src_path.endswith('.py'):
+        if event.src_path.endswith(".py"):
             generate_api_docs()
-        elif event.src_path.endswith('.md'):
+        elif event.src_path.endswith(".md"):
             generate_sidebar()
 
+
 observer = Observer()
-observer.schedule(DocsHandler(), path='src', recursive=True)
+observer.schedule(DocsHandler(), path="src", recursive=True)
 observer.start()
 ```
 
@@ -1011,12 +1009,13 @@ import requests
 from pathlib import Path
 import re
 
+
 def check_links(md_file: Path):
     content = md_file.read_text()
-    links = re.findall(r'\[.*?\]\((.*?)\)', content)
+    links = re.findall(r"\[.*?\]\((.*?)\)", content)
 
     for link in links:
-        if link.startswith('http'):
+        if link.startswith("http"):
             try:
                 response = requests.head(link, timeout=5)
                 if response.status_code >= 400:
@@ -1047,9 +1046,10 @@ def check_links(md_file: Path):
 import ast
 import re
 
+
 def validate_python_examples(md_file: Path):
     content = md_file.read_text()
-    code_blocks = re.findall(r'```python\n(.*?)```', content, re.DOTALL)
+    code_blocks = re.findall(r"```python\n(.*?)```", content, re.DOTALL)
 
     for code in code_blocks:
         try:

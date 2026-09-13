@@ -78,8 +78,10 @@ packages = ["src/thegent"]
 
 ```python
 """Access package resources."""
+
 from importlib import resources
 from pathlib import Path
+
 
 def get_hooks_dir() -> Path:
     """Get hooks directory from package."""
@@ -99,6 +101,7 @@ def get_hooks_dir() -> Path:
 
     # Fallback to user config
     return get_config_dir() / "hooks"
+
 
 def get_templates_dir() -> Path:
     """Get templates directory from package."""
@@ -125,7 +128,9 @@ def get_templates_dir() -> Path:
 
 ```python
 """Dynamic version management."""
+
 from importlib.metadata import version, PackageNotFoundError
+
 
 def get_version() -> str:
     """Get package version dynamically."""
@@ -134,16 +139,15 @@ def get_version() -> str:
     except PackageNotFoundError:
         # Dev mode - get from git
         import subprocess
+
         try:
             result = subprocess.run(
-                ["git", "describe", "--tags", "--always"],
-                capture_output=True,
-                text=True,
-                check=True
+                ["git", "describe", "--tags", "--always"], capture_output=True, text=True, check=True
             )
             return result.stdout.strip()
         except Exception:
             return "0.1.0-dev"
+
 
 __version__ = get_version()
 ```
@@ -317,15 +321,15 @@ end
 ```python
 # pyinstaller.spec
 a = Analysis(
-    ['src/thegent/cli.py'],
+    ["src/thegent/cli.py"],
     pathex=[],
     binaries=[],
     datas=[
-        ('hooks', 'hooks'),
-        ('templates', 'templates'),
-        ('scripts', 'scripts'),
+        ("hooks", "hooks"),
+        ("templates", "templates"),
+        ("scripts", "scripts"),
     ],
-    hiddenimports=['thegent.platform', 'thegent.platform_paths'],
+    hiddenimports=["thegent.platform", "thegent.platform_paths"],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -341,7 +345,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='thegent',
+    name="thegent",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -429,9 +433,11 @@ python3 -m pip install --root %{buildroot} dist/*.whl
 
 ```python
 """Auto-update checker."""
+
 import subprocess
 from pathlib import Path
 from packaging import version
+
 
 def check_for_updates() -> Optional[str]:
     """Check for available updates."""
@@ -439,12 +445,7 @@ def check_for_updates() -> Optional[str]:
         current_version = get_version()
 
         # Check PyPI for latest version
-        result = subprocess.run(
-            ["pip", "index", "versions", "thegent"],
-            capture_output=True,
-            text=True,
-            check=True
-        )
+        result = subprocess.run(["pip", "index", "versions", "thegent"], capture_output=True, text=True, check=True)
 
         # Parse latest version
         latest_version = parse_latest_version(result.stdout)
@@ -456,6 +457,7 @@ def check_for_updates() -> Optional[str]:
     except Exception:
         return None
 
+
 def prompt_update(available_version: str) -> None:
     """Prompt user to update."""
     console.print(f"[yellow]Update available: {available_version}[/yellow]")
@@ -466,11 +468,14 @@ def prompt_update(available_version: str) -> None:
 
 ```python
 """Background update checker."""
+
 import threading
 import time
 
+
 class UpdateChecker:
     """Background update checker."""
+
     def __init__(self, check_interval: int = 86400):  # 24 hours
         self.check_interval = check_interval
         self.thread = None
@@ -496,7 +501,9 @@ class UpdateChecker:
 
 ```python
 """Package manager update detection."""
+
 from thegent.platform import detect_platform, Platform
+
 
 def get_update_command() -> str:
     """Get update command for current package manager."""
@@ -551,7 +558,9 @@ Examples:
 
 ```python
 """Version comparison."""
+
 from packaging import version
+
 
 def is_compatible(current: str, required: str) -> bool:
     """Check if current version is compatible with required."""
@@ -666,8 +675,10 @@ osv-scanner --lockfile pyproject.toml
 
 ```python
 """First-run wizard."""
+
 from rich.prompt import Confirm, Prompt
 from thegent.platform import detect_platform
+
 
 def run_first_run_wizard() -> None:
     """Run first-run setup wizard."""
@@ -699,7 +710,7 @@ def run_first_run_wizard() -> None:
     console.print("\n[bold green]🎉 Setup complete![/bold green]")
     console.print("\n[cyan]Next steps:[/cyan]")
     console.print("  1. Start MCP server: [green]thegent serve[/green]")
-    console.print("  2. Run your first agent: [green]thegent run \"Hello!\"[/green]")
+    console.print('  2. Run your first agent: [green]thegent run "Hello!"[/green]')
 ```
 
 **Best Practices:**
@@ -714,7 +725,9 @@ def run_first_run_wizard() -> None:
 
 ```python
 """Progress indicators."""
+
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
+
 
 def install_with_progress() -> None:
     """Install with progress indication."""
@@ -746,10 +759,13 @@ def install_with_progress() -> None:
 
 ```python
 """Actionable error messages."""
+
 from thegent.platform import detect_platform
+
 
 class ThegentError(Exception):
     """Base exception with platform-aware remediation."""
+
     def __init__(self, message: str, remediation: Optional[str] = None):
         super().__init__(message)
         self.remediation = remediation or self._get_default_remediation()
@@ -758,6 +774,7 @@ class ThegentError(Exception):
         """Get default remediation based on platform."""
         plat = detect_platform().value
         return f"See https://thegent.readthedocs.io/troubleshooting/{plat}"
+
 
 def format_error(error: Exception) -> str:
     """Format error with remediation."""
@@ -933,30 +950,24 @@ jobs:
 
 ```python
 """Test package installation."""
+
 import subprocess
 import sys
+
 
 def test_installation() -> None:
     """Test package installation."""
     # Install in virtual environment
-    subprocess.run([
-        sys.executable, "-m", "venv", "test_env"
-    ], check=True)
+    subprocess.run([sys.executable, "-m", "venv", "test_env"], check=True)
 
     # Install package
-    subprocess.run([
-        "test_env/bin/pip", "install", "."
-    ], check=True)
+    subprocess.run(["test_env/bin/pip", "install", "."], check=True)
 
     # Test import
-    subprocess.run([
-        "test_env/bin/python", "-c", "import thegent; print(thegent.__version__)"
-    ], check=True)
+    subprocess.run(["test_env/bin/python", "-c", "import thegent; print(thegent.__version__)"], check=True)
 
     # Test CLI
-    subprocess.run([
-        "test_env/bin/thegent", "--version"
-    ], check=True)
+    subprocess.run(["test_env/bin/thegent", "--version"], check=True)
 ```
 
 **Cross-Platform Testing:**
@@ -1295,8 +1306,10 @@ def make_exe():
         embedded_python_extra_modules=["thegent"],
     )
 
+
 def make_embedded_resources(exe):
     return exe.to_embedded_resources()
+
 
 def make_install(exe):
     return default_python_distribution().to_embedded_resources()
@@ -1738,10 +1751,12 @@ jobs:
 # thegent/__init__.py
 """Lazy import pattern for faster startup."""
 
+
 def __getattr__(name: str):
     """Lazy import for submodules."""
     if name == "platform":
         from thegent import platform
+
         return platform
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 ```
@@ -1818,6 +1833,7 @@ import sys
 import tempfile
 from pathlib import Path
 
+
 def test_installation():
     """Test package installation."""
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -1835,7 +1851,7 @@ def test_installation():
             [str(python), "-c", "import thegent; print(thegent.__version__)"],
             capture_output=True,
             text=True,
-            check=True
+            check=True,
         )
         assert result.stdout.strip() != ""
 ```
@@ -1865,14 +1881,19 @@ def test_package_resources():
 import pytest
 from thegent.platform import detect_platform, Platform
 
-@pytest.mark.parametrize("platform_name,expected", [
-    ("Linux", Platform.LINUX),
-    ("Darwin", Platform.MACOS),
-    ("Windows", Platform.WINDOWS),
-])
+
+@pytest.mark.parametrize(
+    "platform_name,expected",
+    [
+        ("Linux", Platform.LINUX),
+        ("Darwin", Platform.MACOS),
+        ("Windows", Platform.WINDOWS),
+    ],
+)
 def test_platform_detection(monkeypatch, platform_name, expected):
     """Test platform detection."""
     import platform
+
     monkeypatch.setattr(platform, "system", lambda: platform_name)
     assert detect_platform() == expected
 ```
@@ -1936,7 +1957,7 @@ from tuf.ngclient import Updater
 updater = Updater(
     metadata_dir="./metadata",
     metadata_base_url="https://thegent.example.com/metadata/",
-    target_base_url="https://thegent.example.com/targets/"
+    target_base_url="https://thegent.example.com/targets/",
 )
 
 # Refresh metadata
@@ -2015,7 +2036,7 @@ envelope.payload = {
     "_type": "https://in-toto.io/Statement/v1",
     "subject": [{"name": "thegent.whl", "digest": {"sha256": "..."}}],
     "predicateType": "https://slsa.dev/provenance/v1",
-    "predicate": {...}
+    "predicate": {...},
 }
 
 # Sign attestation
@@ -2053,17 +2074,10 @@ envelope.sign(key)
 from dsse import DSSE
 
 # Create envelope
-envelope = DSSE.create_envelope(
-    payload=b"payload data",
-    payload_type="application/json",
-    signer=signer
-)
+envelope = DSSE.create_envelope(payload=b"payload data", payload_type="application/json", signer=signer)
 
 # Verify envelope
-is_valid = DSSE.verify_envelope(
-    envelope=envelope,
-    verifier=verifier
-)
+is_valid = DSSE.verify_envelope(envelope=envelope, verifier=verifier)
 ```
 
 **Benefits:**
@@ -2627,14 +2641,13 @@ dmypy run -- src/
 from typing import Optional, Dict, List, Union
 from pathlib import Path
 
+
 def get_config_dir() -> Path:
     """Get configuration directory."""
     ...
 
-def process_data(
-    data: Dict[str, Union[str, int]],
-    options: Optional[List[str]] = None
-) -> Dict[str, str]:
+
+def process_data(data: Dict[str, Union[str, int]], options: Optional[List[str]] = None) -> Dict[str, str]:
     """Process data with options."""
     ...
 ```
@@ -2654,6 +2667,7 @@ def process_data(
 from hypothesis import given, strategies as st
 from thegent.platform import detect_platform, Platform
 
+
 @given(st.text(min_size=1, max_size=100))
 def test_platform_detection_handles_text(platform_name: str):
     """Test platform detection handles various inputs."""
@@ -2665,10 +2679,8 @@ def test_platform_detection_handles_text(platform_name: str):
         # Acceptable if input is invalid
         pass
 
-@given(
-    st.lists(st.integers(), min_size=1, max_size=10),
-    st.integers(min_value=1, max_value=100)
-)
+
+@given(st.lists(st.integers(), min_size=1, max_size=10), st.integers(min_value=1, max_value=100))
 def test_path_operations(path_parts: List[int], max_depth: int):
     """Test path operations with various inputs."""
     # Property: path operations should be deterministic
@@ -2696,13 +2708,16 @@ def test_path_operations(path_parts: List[int], max_depth: int):
 # thegent/__init__.py
 """Lazy import pattern for faster startup."""
 
+
 def __getattr__(name: str):
     """Lazy import for submodules."""
     if name == "platform":
         from thegent import platform
+
         return platform
     if name == "cli":
         from thegent import cli
+
         return cli
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 ```
@@ -2718,9 +2733,11 @@ def main():
     # Only import heavy modules when needed
     if "--help" in sys.argv or len(sys.argv) == 1:
         from thegent.cli.help import show_help
+
         show_help()
     elif sys.argv[1] == "run":
         from thegent.cli.run import run_command
+
         run_command(sys.argv[2:])
     # ... other commands
 ```
@@ -2730,6 +2747,7 @@ def main():
 ```python
 # Cache expensive computations
 from functools import lru_cache
+
 
 @lru_cache(maxsize=1)
 def get_platform_info() -> Dict[str, Any]:
@@ -2755,14 +2773,10 @@ def get_platform_info() -> Dict[str, Any]:
 ```python
 class PlatformInfo:
     """Platform information with memory optimization."""
+
     __slots__ = ("platform", "architecture", "paths")
 
-    def __init__(
-        self,
-        platform: Platform,
-        architecture: str,
-        paths: Dict[str, Path]
-    ):
+    def __init__(self, platform: Platform, architecture: str, paths: Dict[str, Path]):
         self.platform = platform
         self.architecture = architecture
         self.paths = paths
@@ -2776,6 +2790,7 @@ def walk_hooks_dir() -> Iterator[Path]:
     hooks_dir = get_hooks_dir()
     for path in hooks_dir.rglob("*.sh"):
         yield path
+
 
 # Usage
 for hook_file in walk_hooks_dir():
@@ -2944,10 +2959,12 @@ jobs:
 from typing import Dict
 import os
 
+
 def is_feature_enabled(feature: str) -> bool:
     """Check if feature is enabled."""
     env_var = f"THGENT_FEATURE_{feature.upper()}"
     return os.getenv(env_var, "false").lower() == "true"
+
 
 # Usage
 if is_feature_enabled("new_ui"):
@@ -3032,6 +3049,7 @@ import structlog
 
 logger = structlog.get_logger()
 
+
 def track_installation():
     """Track installation events."""
     logger.info(
@@ -3053,6 +3071,7 @@ sentry_sdk.init(
     traces_sample_rate=0.1,
     environment="production",
 )
+
 
 def report_error(error: Exception, context: Dict[str, Any]):
     """Report error with context."""
@@ -3077,6 +3096,7 @@ def report_error(error: Exception, context: Dict[str, Any]):
 from typing import Dict, Any
 from thegent.platform import detect_platform
 
+
 def get_health_status() -> Dict[str, Any]:
     """Get system health status."""
     return {
@@ -3088,7 +3108,7 @@ def get_health_status() -> Dict[str, Any]:
             "dependencies": check_dependencies(),
             "paths": check_paths(),
             "permissions": check_permissions(),
-        }
+        },
     }
 ```
 
@@ -3141,6 +3161,7 @@ THIRD_PARTY_LICENSES = {
     # ... more licenses
 }
 
+
 def generate_license_file() -> str:
     """Generate LICENSE file with all attributions."""
     content = ["thegent License: MIT\n"]
@@ -3168,6 +3189,7 @@ EXPORT_CONTROL = {
     "encryption": False,
     "restricted_countries": [],
 }
+
 
 def check_export_compliance() -> bool:
     """Check export control compliance."""
@@ -3614,6 +3636,7 @@ import sys
 # Import code to fuzz
 from thegent.platform import detect_platform, Platform
 
+
 def TestOneInput(data):
     """Fuzz platform detection."""
     fdp = atheris.FuzzedDataProvider(data)
@@ -3629,9 +3652,11 @@ def TestOneInput(data):
         # Acceptable exceptions
         pass
 
+
 def main():
     atheris.Setup(sys.argv, TestOneInput)
     atheris.Fuzz()
+
 
 if __name__ == "__main__":
     main()
@@ -3831,12 +3856,10 @@ DISTRIBUTION_CHANNELS = {
     },
 }
 
+
 def distribute_all_channels(version: str):
     """Distribute to all enabled channels."""
-    channels = sorted(
-        [c for c in DISTRIBUTION_CHANNELS.items() if c[1]["enabled"]],
-        key=lambda x: x[1]["priority"]
-    )
+    channels = sorted([c for c in DISTRIBUTION_CHANNELS.items() if c[1]["enabled"]], key=lambda x: x[1]["priority"])
 
     for channel_name, config in channels:
         print(f"Distributing to {channel_name}...")
@@ -3876,6 +3899,7 @@ ROLLOUT_PHASES = {
         "duration_hours": None,  # Indefinite
     },
 }
+
 
 def should_release_to_user(user_id: str, phase: str) -> bool:
     """Determine if user should receive release."""
@@ -3919,6 +3943,7 @@ AB_TEST_CONFIG = {
     ],
 }
 
+
 def get_version_for_user(user_id: str) -> str:
     """Get version for user based on A/B test."""
     user_hash = hash(user_id) % 100
@@ -3949,16 +3974,20 @@ from enum import Enum
 from typing import Optional, Dict, Any
 from dataclasses import dataclass
 
+
 class ErrorCode(Enum):
     """Error codes for thegent."""
+
     PLATFORM_DETECTION_FAILED = "PLATFORM_001"
     PATH_RESOLUTION_FAILED = "PATH_001"
     CONFIG_LOAD_FAILED = "CONFIG_001"
     HOOK_EXECUTION_FAILED = "HOOK_001"
 
+
 @dataclass
 class ThegentError(Exception):
     """Base error class for thegent."""
+
     code: ErrorCode
     message: str
     details: Optional[Dict[str, Any]] = None
@@ -3976,8 +4005,10 @@ class ThegentError(Exception):
             "cause": str(self.cause) if self.cause else None,
         }
 
+
 class PlatformDetectionError(ThegentError):
     """Platform detection failed."""
+
     def __init__(self, cause: Optional[Exception] = None):
         super().__init__(
             code=ErrorCode.PLATFORM_DETECTION_FAILED,
@@ -4017,6 +4048,7 @@ from tenacity import (
     retry_if_exception_type,
 )
 
+
 @retry(
     stop=stop_after_attempt(3),
     wait=wait_exponential(multiplier=1, min=1, max=10),
@@ -4025,10 +4057,12 @@ from tenacity import (
 def fetch_with_retry(url: str) -> bytes:
     """Fetch URL with automatic retry."""
     import httpx
+
     with httpx.Client(timeout=5.0) as client:
         response = client.get(url)
         response.raise_for_status()
         return response.content
+
 
 def recover_from_error(error: Exception) -> bool:
     """Attempt to recover from error."""
@@ -4081,6 +4115,7 @@ ERROR_MESSAGES = {
     },
 }
 
+
 def format_user_error(error: ThegentError) -> str:
     """Format error for user display."""
     config = ERROR_MESSAGES.get(error.code, {})
@@ -4125,16 +4160,17 @@ import json
 import yaml
 import os
 
+
 class ConfigManager:
     """Manages hierarchical configuration."""
 
     CONFIG_SOURCES = [
-        "defaults",      # Built-in defaults
-        "system",        # System-wide config
-        "user",          # User config
-        "project",       # Project config
-        "environment",   # Environment variables
-        "cli",           # Command-line arguments
+        "defaults",  # Built-in defaults
+        "system",  # System-wide config
+        "user",  # User config
+        "project",  # Project config
+        "environment",  # Environment variables
+        "cli",  # Command-line arguments
     ]
 
     def __init__(self):
@@ -4211,6 +4247,7 @@ from pydantic import BaseModel, Field, validator
 from typing import Optional, List
 from pathlib import Path
 
+
 class ConfigSchema(BaseModel):
     """Configuration schema."""
 
@@ -4236,6 +4273,7 @@ class ConfigSchema(BaseModel):
 
     class Config:
         extra = "forbid"  # Reject unknown fields
+
 
 def validate_config(config_dict: Dict[str, Any]) -> ConfigSchema:
     """Validate configuration dictionary."""

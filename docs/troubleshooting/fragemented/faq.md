@@ -385,11 +385,7 @@ from crun.planning import generate_plan
 from crun.execution import execute_plan
 
 # Generate plan
-plan = generate_plan(
-    description="Build a web app",
-    use_tot=True,
-    max_tokens=4000
-)
+plan = generate_plan(description="Build a web app", use_tot=True, max_tokens=4000)
 
 # Execute plan
 results = execute_plan(plan, max_parallel=10)
@@ -440,6 +436,7 @@ curl -X POST http://localhost:8000/api/plans \
 
 ```python
 from crun.agents import BaseAgent
+
 
 class CustomAgent(BaseAgent):
     async def execute(self, task):

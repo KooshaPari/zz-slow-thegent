@@ -142,9 +142,9 @@ import subprocess
 import time
 
 start = time.time()
-result = subprocess.run(['ps', 'aux'], capture_output=True, text=True)
+result = subprocess.run(["ps", "aux"], capture_output=True, text=True)
 duration = time.time() - start
-print(f"Duration: {duration*1000:.2f}ms")
+print(f"Duration: {duration * 1000:.2f}ms")
 ```
 
 **Rust Implementation**:

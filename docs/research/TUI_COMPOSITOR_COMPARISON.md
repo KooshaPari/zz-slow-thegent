@@ -69,6 +69,7 @@ This research compares terminal UI (TUI) frameworks and compositors for building
 from textual.app import App, ComposeResult
 from textual.widgets import Button, Static
 
+
 class MyApp(App):
     CSS = """
     Button {
@@ -83,6 +84,7 @@ class MyApp(App):
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         self.notify("Button clicked!")
+
 
 if __name__ == "__main__":
     app = MyApp()
