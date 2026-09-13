@@ -169,6 +169,7 @@ trace-wtrees/
 apps/*
 !apps/landing/
 !apps/landing/**
+!apps/byteport/
 package-lock.json
 
 # ===== Standard auto-generated hygiene ignores (do not edit manually) =====

@@ -1,3 +1,6 @@
 [submodule "services/colab"]
 	path = services/colab
 	url = git@github.com:KooshaPari/colab.git
+[submodule "apps/byteport"]
+	path = apps/byteport
+	url = https://github.com/KooshaPari/BytePort.git
