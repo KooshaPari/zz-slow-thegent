@@ -7,16 +7,17 @@
 > **WORK_STREAM ID:** phase13-compliance-profile
 
 ## 1. Jurisdiction Support
+
 Mapping of policy variants to legal and audit jurisdictions (WP-13002).
 
 ## 2. Profile Definitions
 
-| Profile | Focus | Jurisdiction | Mandatory Controls |
-|---------|-------|--------------|-------------------|
-| `EU-AI-ACT` | Ethics & Safety | European Union | Mandatory Human-in-loop for High Risk. |
-| `US-SEC` | Auditability | United States | Hash-chained audit trails, 7-year retention. |
-| `SOX` | Financial Integrity | Global / Financial | Mandatory Peer Review for spend > $500. |
-| `GDPR` | Data Privacy | European Union | PII-redaction on all log egress. |
+| Profile     | Focus               | Jurisdiction       | Mandatory Controls                           |
+| ----------- | ------------------- | ------------------ | -------------------------------------------- |
+| `EU-AI-ACT` | Ethics & Safety     | European Union     | Mandatory Human-in-loop for High Risk.       |
+| `US-SEC`    | Auditability        | United States      | Hash-chained audit trails, 7-year retention. |
+| `SOX`       | Financial Integrity | Global / Financial | Mandatory Peer Review for spend > $500.      |
+| `GDPR`      | Data Privacy        | European Union     | PII-redaction on all log egress.             |
 
 ## 3. Implementation Details
 
@@ -222,11 +223,11 @@ class ComplianceAuditTrail:
 - [x] Documentation complete (this document)
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -236,15 +237,18 @@ class ComplianceAuditTrail:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

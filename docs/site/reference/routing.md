@@ -11,11 +11,11 @@ Routing decides which provider/model executes a task.
 
 ## Common Routing Modes
 
-| Mode | Behavior | Best for |
-|------|----------|----------|
-| explicit provider | direct provider selection | deterministic execution |
-| explicit model | specific model override | benchmark or quality-sensitive jobs |
-| `-R cheapest` | lowest-cost available route | bulk/background work |
+| Mode              | Behavior                    | Best for                            |
+| ----------------- | --------------------------- | ----------------------------------- |
+| explicit provider | direct provider selection   | deterministic execution             |
+| explicit model    | specific model override     | benchmark or quality-sensitive jobs |
+| `-R cheapest`     | lowest-cost available route | bulk/background work                |
 
 ## Examples
 

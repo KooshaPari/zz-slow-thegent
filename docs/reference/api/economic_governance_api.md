@@ -12,7 +12,7 @@ Economic governance for cost-aware routing.
 
 ### Methods
 
-#### EconomicGovernance.__init__
+#### EconomicGovernance.**init**
 
 ```python
 __init__(self: Any)

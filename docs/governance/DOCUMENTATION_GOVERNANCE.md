@@ -62,21 +62,26 @@ reviewed_by: [names]
 ## [1.2.3] - 2026-02-20
 
 ### Added
+
 - New feature documentation for X
 
 ### Changed
+
 - Clarified behavior of Y in Z module
 
 ### Deprecated
+
 - Old API documentation for deprecated function
 
 ### Fixed
+
 - Incorrect example code in authentication guide
 ```
 
 ### Storage & Organization
 
 **Directory Structure**:
+
 ```
 documentation/
 ├── core/                 # Core Ante concepts and architecture
@@ -118,6 +123,7 @@ Version Release
 ### Review Checklist
 
 **Technical Review** (Maintainer/SME):
+
 - [ ] Content is technically accurate
 - [ ] Examples run without errors
 - [ ] New APIs/features documented before release
@@ -126,6 +132,7 @@ Version Release
 - [ ] Code samples tested and functional
 
 **Editorial Review** (Style & Clarity):
+
 - [ ] Writing is clear and concise
 - [ ] Tone consistent with documentation standards
 - [ ] Formatting follows style guide
@@ -134,6 +141,7 @@ Version Release
 - [ ] Target audience is appropriate
 
 **Security Review** (For sensitive topics):
+
 - [ ] Security implications documented
 - [ ] Safe usage examples provided
 - [ ] Warnings about misuse included
@@ -141,12 +149,12 @@ Version Release
 
 ### Approval Authority
 
-| Change Type | Authority | Timeline |
-|---|---|---|
-| Typo/Grammar Fix | Any Maintainer | Next release |
-| Clarification | Maintainer (SME) | Next release |
-| New Section | Lead Maintainer | Release planning |
-| Breaking Change | Project Lead | Release planning |
+| Change Type         | Authority          | Timeline         |
+| ------------------- | ------------------ | ---------------- |
+| Typo/Grammar Fix    | Any Maintainer     | Next release     |
+| Clarification       | Maintainer (SME)   | Next release     |
+| New Section         | Lead Maintainer    | Release planning |
+| Breaking Change     | Project Lead       | Release planning |
 | Architecture Change | Steering Committee | Release planning |
 
 ### Review SLAs
@@ -165,6 +173,7 @@ Version Release
 **Responsibility**: Oversee the entire documentation system, set priorities, and ensure governance compliance.
 
 **Duties**:
+
 - Define documentation strategy and priorities
 - Approve major governance changes
 - Resolve conflicts between contributors
@@ -172,6 +181,7 @@ Version Release
 - Ensure release documentation is complete
 
 **Requirements**:
+
 - Deep understanding of Ante architecture
 - 2+ years documentation management experience
 - Excellent communication skills
@@ -181,6 +191,7 @@ Version Release
 **Responsibility**: Maintain documentation quality and consistency in assigned areas.
 
 **Duties**:
+
 - Review technical content in their domain
 - Ensure accuracy and completeness
 - Update documentation with new features
@@ -189,6 +200,7 @@ Version Release
 - Report quality issues to Documentation Lead
 
 **Requirements**:
+
 - Subject matter expertise in assigned domain
 - Understanding of documentation standards
 - Commit 4+ hours per week to documentation
@@ -198,6 +210,7 @@ Version Release
 **Responsibility**: Create, improve, and maintain documentation content.
 
 **Duties**:
+
 - Follow contribution guidelines
 - Submit documentation changes for review
 - Respond to reviewer feedback
@@ -205,6 +218,7 @@ Version Release
 - Maintain clarity and accuracy
 
 **Requirements**:
+
 - Understanding of contribution guidelines
 - Commitment to quality standards
 - Able to respond to review feedback
@@ -214,6 +228,7 @@ Version Release
 **Responsibility**: Ensure documentation meets quality, accuracy, and style standards.
 
 **Duties**:
+
 - Perform thorough technical reviews
 - Verify code examples work correctly
 - Check consistency with existing documentation
@@ -221,6 +236,7 @@ Version Release
 - Approve or request changes
 
 **Requirements**:
+
 - Deep knowledge of reviewed content
 - Understanding of documentation standards
 - Attention to detail and clarity
@@ -232,24 +248,28 @@ Version Release
 ### Content Standards
 
 **Accuracy**:
+
 - All information must be verified against actual Ante behavior
 - Code examples must be tested and run without errors
 - API documentation must match implementation
 - Breaking changes must be documented prominently
 
 **Completeness**:
+
 - All public APIs must be documented
 - Common use cases must have examples
 - Edge cases must be explained
 - Related concepts must be cross-referenced
 
 **Clarity**:
+
 - Language must be clear and direct
 - Technical jargon explained in context
 - Examples provided for complex concepts
 - Minimum reading level: upper undergraduate
 
 **Consistency**:
+
 - Terminology used consistently across docs
 - Formatting and structure uniform
 - Voice and tone aligned
@@ -258,6 +278,7 @@ Version Release
 ### Documentation Types
 
 #### API Reference
+
 - One entry per public function/class
 - Parameters and return types with types
 - At least one working example
@@ -265,6 +286,7 @@ Version Release
 - Note about stability (stable/experimental/deprecated)
 
 #### Guides
+
 - Clear objective stated upfront
 - Prerequisites listed
 - Step-by-step instructions
@@ -272,6 +294,7 @@ Version Release
 - Troubleshooting section (if applicable)
 
 #### How-To Articles
+
 - Specific, achievable goal
 - Assumes basic knowledge
 - Practical examples
@@ -279,6 +302,7 @@ Version Release
 - Links to deeper reference
 
 #### Conceptual Documentation
+
 - Explains the "why" not just "how"
 - Includes diagrams where helpful
 - Compares with alternatives
@@ -289,14 +313,14 @@ Version Release
 
 Documentation quality assessed on:
 
-| Metric | Target | Measurement |
-|---|---|---|
-| Technical Accuracy | 100% | Automated + Manual review |
-| Broken Links | 0% | Automated link checker |
-| Code Example Success Rate | 100% | Test execution |
-| Readability Score | 8.0+ | Flesch-Kincaid or similar |
-| Completeness | 100% of public APIs | Audit checklist |
-| Freshness | < 6 months old | Last-updated timestamp |
+| Metric                    | Target              | Measurement               |
+| ------------------------- | ------------------- | ------------------------- |
+| Technical Accuracy        | 100%                | Automated + Manual review |
+| Broken Links              | 0%                  | Automated link checker    |
+| Code Example Success Rate | 100%                | Test execution            |
+| Readability Score         | 8.0+                | Flesch-Kincaid or similar |
+| Completeness              | 100% of public APIs | Audit checklist           |
+| Freshness                 | < 6 months old      | Last-updated timestamp    |
 
 ---
 
@@ -305,18 +329,21 @@ Documentation quality assessed on:
 ### Documentation Change Categories
 
 **Type A: Low-Risk** (Typos, clarifications, minor rewording)
+
 - Single approver
 - No breaking changes
 - No new APIs documented
 - Quick turnaround acceptable
 
 **Type B: Medium-Risk** (New sections, updated examples, feature documentation)
+
 - Two approvers required
 - May affect user understanding
 - Requires coordination with releases
 - Standard review timeline
 
 **Type C: High-Risk** (Architecture changes, breaking changes, deprecations)
+
 - Lead approval required
 - Requires steering committee review
 - Must coordinate with release planning
@@ -354,17 +381,20 @@ Documentation quality assessed on:
 ### Coordination with Releases
 
 **Documentation Freeze**: 7 days before release
+
 - No new documentation accepted
 - Only critical fixes allowed
 - Breaking changes documented before code release
 
 **Release Documentation**:
+
 - Release notes prepared 2 weeks before
 - New feature documentation completed
 - Migration guides for breaking changes
 - Deprecation notices finalized
 
 **Post-Release**:
+
 - Documentation published with release
 - Changelog updated
 - Search index refreshed
@@ -377,18 +407,21 @@ Documentation quality assessed on:
 ### Deprecation Process
 
 **Step 1: Notice** (1-2 releases before deprecation)
+
 - Clearly mark as "deprecated" in documentation
 - Explain why feature is deprecated
 - Recommend alternative(s)
 - Document timeline for removal
 
 **Step 2: Maintenance** (During deprecation period)
+
 - Keep examples working and current
 - Answer questions in issues
 - Update deprecation timeline if needed
 - Track usage metrics if possible
 
 **Step 3: Archival** (When removed from codebase)
+
 - Move documentation to `deprecated/` folder
 - Add archive date to metadata
 - Maintain availability for historical reference
@@ -409,7 +442,7 @@ removal_version: X.Y.Z
 reason: [brief explanation]
 ---
 
-⚠️ **DEPRECATED** - This documentation describes a feature that has been removed from Ante as of version X.Y.Z. 
+⚠️ **DEPRECATED** - This documentation describes a feature that has been removed from Ante as of version X.Y.Z.
 
 See [Replacement Documentation](path) for current approach.
 
@@ -436,6 +469,7 @@ See [Replacement Documentation](path) for current approach.
 **Schedule**: First week of March, June, September, December
 
 **Scope**:
+
 - Review documentation completeness against current Ante features
 - Assess quality metrics
 - Identify outdated documentation
@@ -449,6 +483,7 @@ See [Replacement Documentation](path) for current approach.
 ### Release Gate
 
 **Before each Ante release**:
+
 - [ ] All new features documented
 - [ ] Breaking changes documented
 - [ ] Deprecations announced
@@ -463,6 +498,7 @@ See [Replacement Documentation](path) for current approach.
 **Schedule**: January 1-31
 
 **Scope**:
+
 - Assess governance effectiveness
 - Review and update governance policies
 - Plan major documentation improvements
@@ -535,9 +571,9 @@ Example with explanation.
 
 ## Troubleshooting
 
-| Problem | Solution |
-|---|---|
-| Issue | Resolution |
+| Problem | Solution   |
+| ------- | ---------- |
+| Issue   | Resolution |
 
 ## See Also
 
@@ -556,6 +592,7 @@ Example with explanation.
 - [ ] Links valid
 
 **Feedback**:
+
 - [Issue 1]
 - [Issue 2]
 
@@ -569,6 +606,7 @@ Example with explanation.
 - [ ] No typos/grammar issues
 
 **Feedback**:
+
 - [Issue 1]
 - [Issue 2]
 
@@ -581,30 +619,35 @@ Example with explanation.
 ## Documentation Quality Audit
 
 ### Completeness
+
 - [ ] All public APIs documented
 - [ ] All major features have guides
 - [ ] Examples provided for complex features
 - [ ] Cross-references complete
 
 ### Accuracy
+
 - [ ] Code examples tested
 - [ ] API documentation matches implementation
 - [ ] Descriptions match behavior
 - [ ] No outdated information
 
 ### Freshness
+
 - [ ] Last update < 6 months
 - [ ] Version numbers current
 - [ ] Screenshots up-to-date
 - [ ] Links functioning
 
 ### Consistency
+
 - [ ] Terminology aligned
 - [ ] Formatting uniform
 - [ ] Voice consistent
 - [ ] Structure standard
 
 ### Accessibility
+
 - [ ] Clear to target audience
 - [ ] Jargon explained
 - [ ] Examples provided
@@ -612,6 +655,7 @@ Example with explanation.
 ```
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -620,4 +664,3 @@ Example with explanation.
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

@@ -4,8 +4,8 @@
 
 Native governance scanning integration for the hook-dispatcher binary.
 
-Provides ``NativeGovernanceScanner`` which delegates to the
-``hook-dispatcher governance`` subcommand (BKM-11).  Falls back to a
+Provides `NativeGovernanceScanner` which delegates to the
+`hook-dispatcher governance` subcommand (BKM-11). Falls back to a
 pure-Python regex implementation when the binary is not found, so the module
 is always functional regardless of whether the Rust toolchain has been
 compiled.
@@ -46,11 +46,11 @@ Check a file against a specific governance contract.
 
 **Parameters**:
 
-- `contract_id`: Contract identifier (e.g. ``"P2-PRIVACY"``).
+- `contract_id`: Contract identifier (e.g. `"P2-PRIVACY"`).
 - `path`: Path to the file to check.
 
 **Returns**: List of :class:`GovernanceViolation` objects relevant to the
-specified contract.  Empty list means no violations.
+specified contract. Empty list means no violations.
 
 ---
 
@@ -60,11 +60,11 @@ specified contract.  Empty list means no violations.
 check_contract_content(self: Any, contract_id: str, content: str)
 ```
 
-Check raw *content* against a specific governance contract.
+Check raw _content_ against a specific governance contract.
 
 **Parameters**:
 
-- `contract_id`: Contract identifier (e.g. ``"P2-PRIVACY"``).
+- `contract_id`: Contract identifier (e.g. `"P2-PRIVACY"`).
 - `content`: Raw text to inspect.
 
 **Returns**: List of :class:`GovernanceViolation` objects.
@@ -77,7 +77,7 @@ Check raw *content* against a specific governance contract.
 scan_content(self: Any, content: str)
 ```
 
-Scan raw *content* for governance violations.
+Scan raw _content_ for governance violations.
 
 Delegates to the Rust binary when available; falls back to Python
 otherwise.
@@ -102,7 +102,7 @@ Scan a single file for governance violations.
 
 - `path`: Path to the file to scan.
 
-**Returns**: List of :class:`GovernanceViolation` objects.  Empty list means
+**Returns**: List of :class:`GovernanceViolation` objects. Empty list means
 no violations were detected.
 
 ---
@@ -119,11 +119,11 @@ Check a file against a specific governance contract.
 
 **Parameters**:
 
-- `contract_id`: Contract identifier (e.g. ``"P2-PRIVACY"``).
+- `contract_id`: Contract identifier (e.g. `"P2-PRIVACY"`).
 - `path`: Path to the file to check.
 
 **Returns**: List of :class:`GovernanceViolation` objects relevant to the
-specified contract.  Empty list means no violations.
+specified contract. Empty list means no violations.
 
 **Raises**:
 
@@ -137,11 +137,11 @@ specified contract.  Empty list means no violations.
 check_contract_content(self: Any, contract_id: str, content: str)
 ```
 
-Check raw *content* against a specific governance contract.
+Check raw _content_ against a specific governance contract.
 
 **Parameters**:
 
-- `contract_id`: Contract identifier (e.g. ``"P2-PRIVACY"``).
+- `contract_id`: Contract identifier (e.g. `"P2-PRIVACY"`).
 - `content`: Raw text to inspect.
 
 **Returns**: List of :class:`GovernanceViolation` objects.
@@ -154,7 +154,7 @@ Check raw *content* against a specific governance contract.
 scan_content(self: Any, content: str)
 ```
 
-Scan raw *content* for governance violations.
+Scan raw _content_ for governance violations.
 
 Delegates to the Rust binary when available; falls back to Python
 otherwise.
@@ -179,7 +179,7 @@ Scan a single file for governance violations.
 
 - `path`: Path to the file to scan.
 
-**Returns**: List of :class:`GovernanceViolation` objects.  Empty list means
+**Returns**: List of :class:`GovernanceViolation` objects. Empty list means
 no violations were detected.
 
 **Raises**:

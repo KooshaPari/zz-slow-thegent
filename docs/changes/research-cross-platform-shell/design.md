@@ -24,6 +24,7 @@
 ### Execution Flow
 
 #### POSIX Flow (bash/sh)
+
 ```
 User Command
     ↓
@@ -39,6 +40,7 @@ Dispatcher (Rust binary or Python)
 ```
 
 #### PowerShell Flow (pwsh)
+
 ```
 User Command
     ↓
@@ -105,11 +107,13 @@ thegent/
 **Implementation**: Rust binary (performance-critical path)
 
 **Inputs**:
+
 - Hook name (e.g., `qa-check`)
 - Hook event (e.g., `PostToolUse`)
 - Context (file paths, environment variables)
 
 **Logic**:
+
 ```rust
 // pseudo-code
 fn dispatch(hook_name: &str, event: &str, context: &Dict) -> Result<()> {
@@ -133,11 +137,13 @@ fn dispatch(hook_name: &str, event: &str, context: &Dict) -> Result<()> {
 ```
 
 **Error Handling**:
+
 - Graceful fallback if hook unavailable (log warning, continue)
 - Timeout handling (configurable, default 30s)
 - Stderr capture and logging
 
 **Outputs**:
+
 - Exit status (0=success, non-zero=failure)
 - Stdout/stderr logged to `~/.thegent/logs/hooks.log`
 
@@ -149,12 +155,14 @@ fn dispatch(hook_name: &str, event: &str, context: &Dict) -> Result<()> {
 **Location**: `hooks/lib/bash_lib.sh`
 
 **Responsibilities**:
+
 - Source hook file
 - Provide helper functions (logging, validation, etc.)
 - Execute hook with error handling
 - Capture and return status
 
 **Implementation Pattern**:
+
 ```bash
 #!/bin/bash
 set -euo pipefail  # Strict mode
@@ -169,6 +177,7 @@ log_info "QA check passed"
 ```
 
 **Key Features**:
+
 - Strict mode by default (`set -euo pipefail`)
 - Structured logging (timestamp, level, message)
 - Common helper functions (file checks, path resolution)
@@ -182,12 +191,14 @@ log_info "QA check passed"
 **Location**: `hooks/lib/pwsh_lib.ps1`
 
 **Responsibilities**:
+
 - Load hook module
 - Provide helper functions (equivalent to bash_lib)
 - Execute hook with error handling
 - Capture and return status
 
 **Implementation Pattern**:
+
 ```powershell
 # hooks/qa-check.ps1
 #Requires -Version 7.0
@@ -202,6 +213,7 @@ Write-Log -Level Info -Message "QA check passed"
 ```
 
 **Key Features**:
+
 - PowerShell 7+ (cross-platform; PowerShell 5.1 on Windows legacy systems)
 - Strict mode equivalent (`Set-StrictMode -Version Latest`)
 - Structured logging (PowerShell Logging Module pattern)
@@ -209,6 +221,7 @@ Write-Log -Level Info -Message "QA check passed"
 - ErrorActionPreference set to Stop (fail-fast)
 
 **Module Structure**:
+
 ```
 hooks/lib/pwsh_lib/
 ├── pwsh_lib.psd1       # Module manifest
@@ -224,23 +237,25 @@ hooks/lib/pwsh_lib/
 **Purpose**: Shared helper functions and utilities for both shells
 
 **Implementation**:
+
 - POSIX: Shell functions in `hooks/lib/bash_lib.sh`
 - PowerShell: Functions in `hooks/lib/pwsh_lib.ps1`
 - Complex logic: Python utilities invoked by both
 
 **Common Functions**:
 
-| Function | POSIX | PowerShell | Purpose |
-|----------|-------|-----------|---------|
-| `log_info` / `Write-Log` | ✓ | ✓ | Structured logging |
-| `validate_changes` | ✓ | ✓ | File change validation |
-| `check_lint` | ✓ | ✓ | Invoke linter |
-| `run_tests` | ✓ | ✓ | Invoke test runner |
-| `get_env` / `Get-ConfigValue` | ✓ | ✓ | Safe environment lookup |
-| `normalize_path` | ✓ | ✓ | Cross-platform path resolution |
-| `file_changed_since` | ✓ | ✓ | Timestamp comparison |
+| Function                      | POSIX | PowerShell | Purpose                        |
+| ----------------------------- | ----- | ---------- | ------------------------------ |
+| `log_info` / `Write-Log`      | ✓     | ✓          | Structured logging             |
+| `validate_changes`            | ✓     | ✓          | File change validation         |
+| `check_lint`                  | ✓     | ✓          | Invoke linter                  |
+| `run_tests`                   | ✓     | ✓          | Invoke test runner             |
+| `get_env` / `Get-ConfigValue` | ✓     | ✓          | Safe environment lookup        |
+| `normalize_path`              | ✓     | ✓          | Cross-platform path resolution |
+| `file_changed_since`          | ✓     | ✓          | Timestamp comparison           |
 
 **Delegation Pattern**:
+
 ```
 User Hook (shell) → Library Function (shell) → Python CLI (complex logic) → Result
 ```
@@ -248,6 +263,7 @@ User Hook (shell) → Library Function (shell) → Python CLI (complex logic) �
 Example: `validate_changes` implementation
 
 **POSIX**:
+
 ```bash
 validate_changes() {
   local files=("$@")
@@ -256,6 +272,7 @@ validate_changes() {
 ```
 
 **PowerShell**:
+
 ```powershell
 function Validate-Changes {
     param([string[]]$Files)
@@ -264,6 +281,7 @@ function Validate-Changes {
 ```
 
 **Python CLI** (`src/thegent/cli/hooks.py`):
+
 ```python
 @click.command()
 @click.argument("files", nargs=-1, required=True)
@@ -282,6 +300,7 @@ def validate_files(files):
 **Purpose**: User-facing entry points for both POSIX and PowerShell
 
 **POSIX Shim** (`scripts/thegent.sh`):
+
 ```bash
 #!/bin/bash
 # Wrapper that preserves shell environment
@@ -289,6 +308,7 @@ exec uv run thegent "$@"
 ```
 
 **PowerShell Shim** (`scripts/thegent.ps1`):
+
 ```powershell
 # PowerShell entry point
 param([string[]]$Arguments)
@@ -296,6 +316,7 @@ param([string[]]$Arguments)
 ```
 
 **Installation**:
+
 - POSIX: `~/.local/bin/thegent` → points to `scripts/thegent.sh`
 - PowerShell: Function alias in profile, or `~/.local/bin/thegent.ps1`
 
@@ -306,6 +327,7 @@ param([string[]]$Arguments)
 ### Error Handling
 
 #### POSIX Pattern
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -321,6 +343,7 @@ my_function() {
 ```
 
 #### PowerShell Pattern
+
 ```powershell
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -338,6 +361,7 @@ function My-Function {
 ### Path Handling
 
 #### POSIX Pattern
+
 ```bash
 normalize_path() {
   local path="$1"
@@ -349,6 +373,7 @@ normalize_path() {
 ```
 
 #### PowerShell Pattern
+
 ```powershell
 function Normalize-Path {
     param([string]$Path)
@@ -360,6 +385,7 @@ function Normalize-Path {
 ### Environment Variables
 
 #### POSIX Pattern
+
 ```bash
 get_env() {
   local var="$1"
@@ -372,6 +398,7 @@ LOG_LEVEL=$(get_env LOG_LEVEL "INFO")
 ```
 
 #### PowerShell Pattern
+
 ```powershell
 function Get-ConfigValue {
     param(
@@ -475,6 +502,7 @@ function Invoke-Python {
 **File**: `scripts/init-posix.sh`
 
 Appended to user's shell profile (`~/.bashrc`, `~/.zshrc`):
+
 ```bash
 # thegent initialization
 if [[ -f ~/.local/share/thegent/init.sh ]]; then
@@ -483,6 +511,7 @@ fi
 ```
 
 **Content** (`~/.local/share/thegent/init.sh`):
+
 ```bash
 #!/bin/bash
 # thegent initialization for POSIX shells
@@ -508,6 +537,7 @@ fi
 **File**: `scripts/init-pwsh.ps1`
 
 Added to user's PowerShell profile (`$PROFILE`):
+
 ```powershell
 # thegent initialization
 $thegentInitPath = "$HOME/.local/share/thegent/init.ps1"
@@ -517,6 +547,7 @@ if (Test-Path -Path $thegentInitPath) {
 ```
 
 **Content** (`~/.local/share/thegent/init.ps1`):
+
 ```powershell
 # thegent initialization for PowerShell
 
@@ -567,6 +598,7 @@ tests/
 ### Test Framework
 
 **POSIX**: BATS-Core (Bash Automated Testing System)
+
 ```bash
 # tests/shell/test_bash_lib.bats
 @test "log_info outputs to stderr" {
@@ -577,6 +609,7 @@ tests/
 ```
 
 **PowerShell**: Pester
+
 ```powershell
 # tests/shell/test_pwsh_lib.ps1
 Describe 'Write-Log' {
@@ -588,6 +621,7 @@ Describe 'Write-Log' {
 ```
 
 **Cross-Platform**: pytest + subprocess
+
 ```python
 # tests/integration/conftest.py
 @pytest.fixture(params=["bash", "pwsh"])
@@ -603,12 +637,12 @@ def shell_runner(request):
 
 ### Latency Analysis
 
-| Operation | POSIX (bash) | PowerShell | Delta | Notes |
-|-----------|-------------|-----------|-------|-------|
-| Interpreter startup | ~10ms | ~50ms | +40ms | pwsh slower on cold start |
-| Hook dispatch | <5ms | <10ms | +5ms | Negligible |
-| Python invocation | ~100ms | ~100ms | 0ms | Dominant; same across shells |
-| Total hook exec | ~115ms | ~160ms | +45ms | ~2% of total build time |
+| Operation           | POSIX (bash) | PowerShell | Delta | Notes                        |
+| ------------------- | ------------ | ---------- | ----- | ---------------------------- |
+| Interpreter startup | ~10ms        | ~50ms      | +40ms | pwsh slower on cold start    |
+| Hook dispatch       | <5ms         | <10ms      | +5ms  | Negligible                   |
+| Python invocation   | ~100ms       | ~100ms     | 0ms   | Dominant; same across shells |
+| Total hook exec     | ~115ms       | ~160ms     | +45ms | ~2% of total build time      |
 
 ### Optimization Strategies
 
@@ -624,16 +658,19 @@ def shell_runner(request):
 ### Migration Path
 
 **Phase 1**: Dual hooks (`.sh` and `.ps1` exist together)
+
 - Existing POSIX hooks unchanged
 - New PowerShell hooks added alongside
 - Dispatcher auto-detects and routes
 
 **Phase 2**: Unified library adoption
+
 - Migrate hooks to use common library
 - POSIX hooks updated incrementally
 - No breaking changes to users
 
 **Phase 3**: Deprecation (if needed)
+
 - Shell-specific versions can coexist indefinitely
 - No removal necessary; maintains backward compatibility
 

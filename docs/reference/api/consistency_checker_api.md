@@ -15,7 +15,7 @@ including version consistency, path consistency, and configuration consistency.
 
 ### Methods
 
-#### ConsistencyChecker.__init__
+#### ConsistencyChecker.**init**
 
 ```python
 __init__(self: Any)

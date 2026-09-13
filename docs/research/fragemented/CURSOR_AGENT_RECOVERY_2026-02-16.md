@@ -24,12 +24,15 @@
 ## Recovered Content (paste below)
 
 ### Session 1 — [time if known]
+
 <!-- Paste here -->
 
 ### Session 2 — [time if known]
+
 <!-- Paste here -->
 
 ### Session 3 — [time if known]
+
 <!-- Paste here -->
 
 ---

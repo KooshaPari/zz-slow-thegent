@@ -12,7 +12,7 @@ Manages hierarchical decomposition of prompts and multi-agent routing.
 
 ### Methods
 
-#### PromptOrchestrator.__init__
+#### PromptOrchestrator.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings)

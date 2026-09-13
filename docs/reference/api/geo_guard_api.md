@@ -22,7 +22,7 @@ Enforces data sovereignty policies across distributed regions.
 
 ### Methods
 
-#### GeoGuard.__init__
+#### GeoGuard.**init**
 
 ```python
 __init__(self: Any)

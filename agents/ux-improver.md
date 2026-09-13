@@ -20,72 +20,90 @@
 ## Friction Categories
 
 ### Clarity Friction
+
 - Unclear error messages → Add context and fixes
 - Vague outputs → Add specifics
 - Missing context → Add background
 
 **Example**:
+
 ```markdown
 # ❌ Unclear
+
 Error: File not found
 
 # ✅ Improved
+
 Error: File not found
-  File: docs/research/ANALYSIS.md
-  Reason: Path was relative but base path not specified
-  Fix: Use normalize_path("docs/research/ANALYSIS.md") or provide base_path
+File: docs/research/ANALYSIS.md
+Reason: Path was relative but base path not specified
+Fix: Use normalize_path("docs/research/ANALYSIS.md") or provide base_path
 ```
 
 ---
 
 ### Actionability Friction
+
 - No next steps → Add actionable steps
 - No suggested fixes → Add suggestions
 - No context → Add context
 
 **Example**:
+
 ```markdown
 # ❌ Not actionable
+
 Task completed.
 
 # ✅ Actionable
+
 Task completed: docgen-math-support
-  - KaTeX plugin installed
-  - Config updated
-  - Example page created
-Next steps:
-  1. Test math rendering: bun run docs:dev
-  2. Review examples: docs/examples/math-emoji-example.md
-  3. Update usage guide if needed
+
+- KaTeX plugin installed
+- Config updated
+- Example page created
+  Next steps:
+
+1. Test math rendering: bun run docs:dev
+2. Review examples: docs/examples/math-emoji-example.md
+3. Update usage guide if needed
 ```
 
 ---
 
 ### Cognitive Load Friction
+
 - Too much information → Summarize
 - Unorganized output → Organize
 - Missing summaries → Add summaries
 
 **Example**:
+
 ```markdown
 # ❌ High cognitive load
+
 [Long list of 50+ items with no organization]
 
 # ✅ Reduced cognitive load
+
 ## Summary
+
 - 5 items completed
 - 3 items in progress
 - 2 blockers identified
 
 ## Completed (5)
+
 - Item 1
 - Item 2
-...
+  ...
 
 ## In Progress (3)
+
 ...
 
 ## Blockers (2)
+
 ...
 ```
 
@@ -96,6 +114,7 @@ Next steps:
 ### Step 1: Detect UX Friction
 
 **During any task**, identify:
+
 - [ ] Is the output clear?
 - [ ] Are errors actionable?
 - [ ] Is there too much information?
@@ -124,6 +143,7 @@ task_id = log_friction(
 ### Step 3: Improve Output
 
 **Templates**:
+
 - Error messages: Context + Reason + Fix
 - Completion messages: Summary + Next steps
 - Progress updates: Current + Remaining + ETA
@@ -133,11 +153,13 @@ task_id = log_friction(
 ### Step 4: Embed Patterns
 
 **Add to Templates**:
+
 - Error message template
 - Completion message template
 - Progress update template
 
 **Add to Instructions**:
+
 - UX guidelines for all agents
 - Output formatting standards
 - Actionability checklist
@@ -150,6 +172,7 @@ task_id = log_friction(
 
 ```markdown
 **Error**: [Brief description]
+
 - **Location**: `[file/function]`
 - **Context**: [What was being done]
 - **Reason**: [Why it failed]
@@ -163,6 +186,7 @@ task_id = log_friction(
 
 ```markdown
 ✅ **Completed**: [Task ID]
+
 - **What**: [What was done]
 - **Files**: [Files created/modified]
 - **Impact**: [Impact/benefits]
@@ -175,6 +199,7 @@ task_id = log_friction(
 
 ```markdown
 🚧 **In Progress**: [Task ID]
+
 - **Status**: [Current status]
 - **Progress**: [X/Y] steps complete
 - **Remaining**: [What's left]
@@ -188,11 +213,13 @@ task_id = log_friction(
 ### Example 1: Error Message Improvement
 
 **Before** (Unclear):
+
 ```
 Error: File not found
 ```
 
 **After** (Improved):
+
 ```
 Error: File not found
   File: docs/research/ANALYSIS.md
@@ -209,11 +236,13 @@ Error: File not found
 ### Example 2: Completion Message Improvement
 
 **Before** (Vague):
+
 ```
 Done.
 ```
 
 **After** (Improved):
+
 ```
 ✅ Completed: docgen-math-support
   What: Added KaTeX math support to VitePress
@@ -235,11 +264,13 @@ Done.
 ### Example 3: Summary Improvement
 
 **Before** (High cognitive load):
+
 ```
 [50+ line detailed output with no summary]
 ```
 
 **After** (Reduced cognitive load):
+
 ```
 ## Summary
 - 5 tasks completed

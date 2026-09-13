@@ -13,24 +13,24 @@ The Portfolio Modernization Initiative standardized quality tooling, build syste
 
 ## Phases Executed
 
-| Phase | Name | Tasks | Status |
-|-------|------|-------|--------|
-| P1 | Shared Tooling Templates | 1 | Complete |
-| P2 | Taskfile Migration | 4 | Complete |
-| P3 | Quality Gate System | 3 | Complete |
-| P4 | Architecture Enforcement | 2 | Complete |
-| P5 | Agent Instructions | 2 | Complete |
-| P6 | Per-Project Quality Enforcement | 4 | Complete |
-| P7 | Verification + Remediation | 2 + remediation | Complete |
+| Phase | Name                            | Tasks           | Status   |
+| ----- | ------------------------------- | --------------- | -------- |
+| P1    | Shared Tooling Templates        | 1               | Complete |
+| P2    | Taskfile Migration              | 4               | Complete |
+| P3    | Quality Gate System             | 3               | Complete |
+| P4    | Architecture Enforcement        | 2               | Complete |
+| P5    | Agent Instructions              | 2               | Complete |
+| P6    | Per-Project Quality Enforcement | 4               | Complete |
+| P7    | Verification + Remediation      | 2 + remediation | Complete |
 
 ---
 
 ## Verification Scores
 
-| Check | Score | Details |
-|-------|-------|---------|
-| P7.1: Per-project quality gates | 92% | All projects pass lint, typecheck, format, security |
-| P7.2: Cross-project consistency | 86% | Consistent templates, CLAUDE.md structure, Taskfile patterns |
+| Check                           | Score | Details                                                      |
+| ------------------------------- | ----- | ------------------------------------------------------------ |
+| P7.1: Per-project quality gates | 92%   | All projects pass lint, typecheck, format, security          |
+| P7.2: Cross-project consistency | 86%   | Consistent templates, CLAUDE.md structure, Taskfile patterns |
 
 ---
 
@@ -78,14 +78,14 @@ The Portfolio Modernization Initiative standardized quality tooling, build syste
 
 ## Team Performance
 
-| Agent | Role | Tasks Completed |
-|-------|------|-----------------|
-| template-creator | Created shared tooling templates | P1.1 |
-| build-systems-engineer | Migrated all projects to Taskfile | P2.1-P2.4 |
-| quality-engineer | Implemented quality gates + hooks | P3.1-P3.3, P6.1-P6.4 |
-| architecture-specialist | Set up architecture enforcement | P4.1-P4.2 |
-| instruction-specialist | Updated CLAUDE.md files | P5.1-P5.2 |
-| completion-specialist | Verification, remediation, documentation | P7.1-P7.2, gaps, docs |
+| Agent                   | Role                                     | Tasks Completed       |
+| ----------------------- | ---------------------------------------- | --------------------- |
+| template-creator        | Created shared tooling templates         | P1.1                  |
+| build-systems-engineer  | Migrated all projects to Taskfile        | P2.1-P2.4             |
+| quality-engineer        | Implemented quality gates + hooks        | P3.1-P3.3, P6.1-P6.4  |
+| architecture-specialist | Set up architecture enforcement          | P4.1-P4.2             |
+| instruction-specialist  | Updated CLAUDE.md files                  | P5.1-P5.2             |
+| completion-specialist   | Verification, remediation, documentation | P7.1-P7.2, gaps, docs |
 
 **Coordination model:** Team lead orchestrated via task system. Agents worked in parallel where tasks had no dependencies. Sequential handoffs for dependent work.
 
@@ -93,27 +93,27 @@ The Portfolio Modernization Initiative standardized quality tooling, build syste
 
 ## Identified Gaps and Remediation
 
-| Gap | Severity | Remediation | Status |
-|-----|----------|-------------|--------|
-| ruff line-length inconsistency (120 vs 100) | Low | Standardized trace + thegent to 100 | Fixed |
-| trace CLAUDE.md missing agent instruction sections | Medium | Added Dev Philosophy, Library Prefs, Constraints | Fixed |
-| sharecli duplicate CLAUDE.md/claude.md | Low | macOS case-insensitive FS artifact; single file confirmed | Resolved |
+| Gap                                                | Severity | Remediation                                               | Status   |
+| -------------------------------------------------- | -------- | --------------------------------------------------------- | -------- |
+| ruff line-length inconsistency (120 vs 100)        | Low      | Standardized trace + thegent to 100                       | Fixed    |
+| trace CLAUDE.md missing agent instruction sections | Medium   | Added Dev Philosophy, Library Prefs, Constraints          | Fixed    |
+| sharecli duplicate CLAUDE.md/claude.md             | Low      | macOS case-insensitive FS artifact; single file confirmed | Resolved |
 
 ---
 
 ## Success Metrics
 
-| Metric | Before | After |
-|--------|--------|-------|
-| Lint errors (cross-project) | Inconsistent | 0 (all pass `task lint`) |
-| Type check coverage | Partial | All projects have ty/tsc configured |
-| Test framework | Mixed | Standardized pytest + vitest |
-| Build system | Mixed (Make/none) | Unified Taskfile with shared templates |
-| Line length | Mixed (88/100/120) | 100 across all projects |
-| Security scanning | Ad hoc | Automated via `task security` |
-| Architecture enforcement | None | import-linter/tach in place |
-| Agent instructions | Inconsistent | Standardized CLAUDE.md with required sections |
-| Quality gates | None | 9-gate system in all projects |
+| Metric                      | Before             | After                                         |
+| --------------------------- | ------------------ | --------------------------------------------- |
+| Lint errors (cross-project) | Inconsistent       | 0 (all pass `task lint`)                      |
+| Type check coverage         | Partial            | All projects have ty/tsc configured           |
+| Test framework              | Mixed              | Standardized pytest + vitest                  |
+| Build system                | Mixed (Make/none)  | Unified Taskfile with shared templates        |
+| Line length                 | Mixed (88/100/120) | 100 across all projects                       |
+| Security scanning           | Ad hoc             | Automated via `task security`                 |
+| Architecture enforcement    | None               | import-linter/tach in place                   |
+| Agent instructions          | Inconsistent       | Standardized CLAUDE.md with required sections |
+| Quality gates               | None               | 9-gate system in all projects                 |
 
 ---
 

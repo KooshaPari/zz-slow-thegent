@@ -12,7 +12,7 @@ Captures detailed system and project state snapshots.
 
 ### Methods
 
-#### ForensicSnapshotter.__init__
+#### ForensicSnapshotter.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)

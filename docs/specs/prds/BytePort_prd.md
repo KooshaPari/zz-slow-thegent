@@ -9,12 +9,9 @@
 
 ## 2. Objectives
 
-
 ## 3. Success Metrics
 
-
 ## 4. Stakeholders
-
 
 ## 5. Target Users
 
@@ -24,102 +21,45 @@
 
 ### FR-1: Development
 
-
-
-
 ### FR-2: Production
-
-
-
 
 ### FR-3: First Time Setup
 
-
-
-
 ### FR-4: Rotating Secrets
-
-
-
 
 ### FR-5: Root Configuration (.env)
 
-
-
-
 ### FR-6: Backend API Configuration (backend/.env)
-
-
-
 
 ### FR-7: Frontend Configuration (frontend/web-next/.env.local)
 
-
-
-
 ### FR-8: Development
-
-
-
 
 ### FR-9: Staging
 
-
-
-
 ### FR-10: Production
-
-
-
 
 ### FR-11: Secret Management
 
-
-
-
 ### FR-12: Access Control
-
-
-
 
 ### FR-13: Startup Validation
 
-
-
-
 ### FR-14: Manual Validation
-
-
-
 
 ### FR-15: Common Issues
 
-
-
-
 ### FR-16: From Legacy Configuration
-
-
-
 
 ### FR-17: Variable Name Changes
 
-
-
-
 ### FR-18: Documentation
-
-
-
 
 ### FR-19: Getting Help
 
-
-
-
 ### FR-20: Never Commit Secrets
 
-```bash
+````bash
 
 
 ### FR-21: Use Strong Secrets
@@ -885,3 +825,4 @@ Architecture details to be documented.
 - new
 - 9996
 - has
+````

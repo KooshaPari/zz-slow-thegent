@@ -11,7 +11,7 @@ tags: [wl-120, b90, monolith-split, cli]
 ## Problem Statement
 
 `src/thegent/cli/commands/cli.py` had grown to 6,927 lines (pre-wave-2), far exceeding
-the 500-line target for a single module.  The DAG command group (`dag_validate_cmd`,
+the 500-line target for a single module. The DAG command group (`dag_validate_cmd`,
 `dag_add_cmd`, `dag_update_cmd`, `dag_list_cmd`, `dag_run_cmd`, `dag_ready_cmd`,
 `dag_sync_cmd`, `dag_recover_cmd`, and related helpers) represented a discrete,
 testable responsibility that could be cleanly extracted without breaking the public
@@ -41,7 +41,7 @@ Keep all helper functions and business logic in `cli.py` (or `impl.py`/`dag_impl
 The new module imports the helpers it needs from `cli.py` and delegates to them.
 
 `cli.py` does **not** re-export `cli_dag.py` — the DAG sub-app wires its own
-commands by importing `cli_dag.py` directly.  This is forward-compatible with
+commands by importing `cli_dag.py` directly. This is forward-compatible with
 full monolith removal when all groups are extracted.
 
 ## Acceptance Criteria

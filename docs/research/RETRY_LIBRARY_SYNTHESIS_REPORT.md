@@ -14,6 +14,7 @@ Created a comprehensive, production-ready proposal for a **standardized retry li
 ## What Was Delivered
 
 ### 📋 Proposal Document (proposal.md)
+
 - **Problem Statement**: Scattered retry logic, no observability, code duplication
 - **Goals**: Centralize retry logic, improve observability, standardize patterns
 - **Scope**: Retry library with tenacity wrapper, pre-built strategies, OTel instrumentation
@@ -23,6 +24,7 @@ Created a comprehensive, production-ready proposal for a **standardized retry li
 ---
 
 ### 🏗️ Design Document (design.md)
+
 - **Architecture**: Application → Decorator → Strategy → Tenacity → OTel
 - **Core Components**:
   - `RetryConfig` (pydantic settings)
@@ -41,7 +43,9 @@ Created a comprehensive, production-ready proposal for a **standardized retry li
 ---
 
 ### 📊 Tasks Document (tasks.md)
+
 **13 tasks across 4 phases**:
+
 - Phase 1: Core library (T1.1–T1.4) — 8–12 min
 - Phase 2: Tests & docs (T2.1–T2.4) — 12–16 min
 - Phase 3: Migration (T3.1–T3.3) — 8–12 min
@@ -53,28 +57,28 @@ Created a comprehensive, production-ready proposal for a **standardized retry li
 
 ## Key Design Decisions
 
-| Decision | Rationale | Status |
-|----------|-----------|--------|
-| **Tenacity-based** | Already dependency, battle-tested | ✅ Approved |
-| **Library-first principle** | Thin wrapper, project conventions | ✅ Approved |
-| **Strategy pattern** | Pre-built strategies, easy extension | ✅ Approved |
-| **Exponential backoff + jitter** | Industry standard | ✅ Approved |
-| **Full OTel observability** | Every retry traced + metricated | ✅ Approved |
-| **Pydantic config** | Environment + programmatic override | ✅ Approved |
-| **3 decorator styles** | Sync, async, context manager | ✅ Approved |
-| **100% test coverage** | Quality mandate | ✅ Approved |
+| Decision                         | Rationale                            | Status      |
+| -------------------------------- | ------------------------------------ | ----------- |
+| **Tenacity-based**               | Already dependency, battle-tested    | ✅ Approved |
+| **Library-first principle**      | Thin wrapper, project conventions    | ✅ Approved |
+| **Strategy pattern**             | Pre-built strategies, easy extension | ✅ Approved |
+| **Exponential backoff + jitter** | Industry standard                    | ✅ Approved |
+| **Full OTel observability**      | Every retry traced + metricated      | ✅ Approved |
+| **Pydantic config**              | Environment + programmatic override  | ✅ Approved |
+| **3 decorator styles**           | Sync, async, context manager         | ✅ Approved |
+| **100% test coverage**           | Quality mandate                      | ✅ Approved |
 
 ---
 
 ## Success Metrics
 
-| Metric | Target |
-|--------|--------|
-| **Code coverage** | ≥95% (target 100%) |
-| **Services migrated** | 3+ |
-| **Retry success rate** | >80% |
-| **Nominal path overhead** | <1ms |
-| **Observability** | 100% traced |
+| Metric                    | Target             |
+| ------------------------- | ------------------ |
+| **Code coverage**         | ≥95% (target 100%) |
+| **Services migrated**     | 3+                 |
+| **Retry success rate**    | >80%               |
+| **Nominal path overhead** | <1ms               |
+| **Observability**         | 100% traced        |
 
 ---
 
@@ -137,6 +141,7 @@ async def fetch_data(url: str) -> dict:
 ```
 
 Environment variables:
+
 ```bash
 RETRY_STRATEGY=http
 RETRY_MAX_ATTEMPTS=5
@@ -162,6 +167,7 @@ docs/changes/research-library-retry/
 ## Dependency Status
 
 ✅ **All dependencies already in pyproject.toml**:
+
 - tenacity>=8.3.0 ✅
 - opentelemetry-api>=1.24.0 ✅
 - opentelemetry-sdk>=1.24.0 ✅
@@ -189,4 +195,4 @@ A **library-first retry solution** using tenacity + OpenTelemetry is ready for i
 
 ---
 
-*Created: 2026-02-18 | Initiative: Research Library - Retry Logic*
+_Created: 2026-02-18 | Initiative: Research Library - Retry Logic_

@@ -5,13 +5,13 @@
 
 ## 1. Config files (presence)
 
-| File | Present | Notes |
-|------|---------|--------|
-| `pyproject.toml` | Yes | Root package `pheno-sdk`; Ruff extends `ruff.toml`; pytest options |
-| `setup.cfg` | No | — |
-| `tox.ini` | No | — |
-| `Makefile` | Yes | Includes `makefiles/quality.mk`, `testing.mk`, `ci.mk`, `deps.mk` |
-| `Taskfile.yml` | No | — |
+| File             | Present | Notes                                                              |
+| ---------------- | ------- | ------------------------------------------------------------------ |
+| `pyproject.toml` | Yes     | Root package `pheno-sdk`; Ruff extends `ruff.toml`; pytest options |
+| `setup.cfg`      | No      | —                                                                  |
+| `tox.ini`        | No      | —                                                                  |
+| `Makefile`       | Yes     | Includes `makefiles/quality.mk`, `testing.mk`, `ci.mk`, `deps.mk`  |
+| `Taskfile.yml`   | No      | —                                                                  |
 
 ### 1.1 `pyproject.toml` — exact tool settings
 
@@ -44,31 +44,31 @@ testpaths = ["test"]
 
 From `makefiles/quality.mk`:
 
-| Target | Command(s) |
-|--------|------------|
-| `lint` | `ruff check . --statistics` |
-| `lint-fix` | `ruff check . --fix` |
-| `format` | `ruff format .` then `black .`, `isort . --profile black`, `docformatter --in-place --recursive src/` |
-| `format-check` | `black --check .`, `isort --check-only . --profile black`, `docformatter --check --recursive src/` |
-| `type-check` | `mypy src/ --explicit-package-bases \|\| true` |
+| Target         | Command(s)                                                                                            |
+| -------------- | ----------------------------------------------------------------------------------------------------- |
+| `lint`         | `ruff check . --statistics`                                                                           |
+| `lint-fix`     | `ruff check . --fix`                                                                                  |
+| `format`       | `ruff format .` then `black .`, `isort . --profile black`, `docformatter --in-place --recursive src/` |
+| `format-check` | `black --check .`, `isort --check-only . --profile black`, `docformatter --check --recursive src/`    |
+| `type-check`   | `mypy src/ --explicit-package-bases \|\| true`                                                        |
 
 From `makefiles/testing.mk`:
 
-| Target | Command(s) |
-|--------|------------|
-| `test` | `pytest -q` |
-| `test-verbose` | `pytest -v` |
-| `test-quick` | `pytest -x --ff` |
-| `test-cov` | `pytest --cov=src/pheno --cov-report=term-missing --cov-report=html` |
+| Target         | Command(s)                                                           |
+| -------------- | -------------------------------------------------------------------- |
+| `test`         | `pytest -q`                                                          |
+| `test-verbose` | `pytest -v`                                                          |
+| `test-quick`   | `pytest -x --ff`                                                     |
+| `test-cov`     | `pytest --cov=src/pheno --cov-report=term-missing --cov-report=html` |
 
 From `makefiles/ci.mk`:
 
-| Target | Command(s) |
-|--------|------------|
-| `ci-lint` | `ruff check . --statistics` |
-| `ci-format` | `black --check .`; `isort --check-only . --profile black` |
-| `ci-test` | `pytest --cov=src/pheno --cov-report=term-missing --cov-report=xml -v` |
-| `ci-all` | `ci-install` then `ci-check` then `ci-test` |
+| Target      | Command(s)                                                             |
+| ----------- | ---------------------------------------------------------------------- |
+| `ci-lint`   | `ruff check . --statistics`                                            |
+| `ci-format` | `black --check .`; `isort --check-only . --profile black`              |
+| `ci-test`   | `pytest --cov=src/pheno --cov-report=term-missing --cov-report=xml -v` |
+| `ci-all`    | `ci-install` then `ci-check` then `ci-test`                            |
 
 **Makefile variable caveat:** `makefiles/common.mk` defines `RUFF ?= ruff`, `PYTEST ?= pytest`, etc., but the root `Makefile` does **not** include `common.mk`. A dry-run of `make -n lint` expands to `check . --statistics` (missing `ruff`). To use Make targets as written, either include `makefiles/common.mk` from the root `Makefile` or invoke with explicit variables, e.g. `make RUFF=ruff PYTEST=pytest lint test`.
 

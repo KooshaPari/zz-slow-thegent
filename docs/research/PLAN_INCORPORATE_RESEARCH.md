@@ -17,6 +17,7 @@
 ### Expected Behavior
 
 From documentation (`CLAUDE.md:600`):
+
 - Scans `docs/plans/`, `docs/research/`, `docs/docset/` for fragments
 - Extracts work items from fragments
 - Merges into `WORK_STREAM.md`
@@ -27,6 +28,7 @@ From documentation (`CLAUDE.md:600`):
 **Status**: `incorporate_impl()` function **does not exist yet**
 
 **Evidence**:
+
 - `mcp_server.py:74` has comment: `# incorporate_impl,  # TODO: Not implemented`
 - Function is imported but not defined in `cli_impl.py`
 - Command exists but implementation is missing
@@ -69,6 +71,7 @@ From documentation (`CLAUDE.md:600`):
 **File**: `src/thegent/cli_impl.py` (new function)
 
 **Function Signature**:
+
 ```python
 def incorporate_impl(cd: Path | None = None, dry_run: bool = False) -> dict[str, Any]:
     """Merge fragments from 02-UNIFIED-WBS into WORK_STREAM.md.
@@ -94,6 +97,7 @@ def incorporate_impl(cd: Path | None = None, dry_run: bool = False) -> dict[str,
 **Implementation Steps**:
 
 1. **Resolve working directory**:
+
 ```python
 cwd = _resolve_cwd(cd)
 if cwd is None:
@@ -101,6 +105,7 @@ if cwd is None:
 ```
 
 2. **Validate task files** (NEW):
+
 ```python
 tasks_dir = cwd / "tasks"
 validation_errors = []
@@ -136,6 +141,7 @@ if validation_errors:
 ```
 
 3. **Scan sources**:
+
 ```python
 sources = []
 items_to_merge = []
@@ -166,6 +172,7 @@ if research_dir.exists():
 ```
 
 4. **Merge into WORK_STREAM.md**:
+
 ```python
 work_stream_path = cwd / "docs" / "reference" / "WORK_STREAM.md"
 
@@ -183,6 +190,7 @@ return {
 ```
 
 5. **Auto-sync tasks** (NEW):
+
 ```python
 if not dry_run and len(items_to_merge) > 0:
     try:
@@ -206,6 +214,7 @@ if not dry_run and len(items_to_merge) > 0:
 ### Step 2: Helper Functions
 
 **Extract items from WBS**:
+
 ```python
 def _extract_items_from_wbs(wbs_path: Path) -> list[dict[str, Any]]:
     """Extract work items from 02-UNIFIED-WBS.md."""
@@ -241,6 +250,7 @@ def _extract_items_from_wbs(wbs_path: Path) -> list[dict[str, Any]]:
 ```
 
 **Extract items from plan files**:
+
 ```python
 def _extract_items_from_plan(plan_path: Path) -> list[dict[str, Any]]:
     """Extract work items from plan markdown files."""
@@ -250,6 +260,7 @@ def _extract_items_from_plan(plan_path: Path) -> list[dict[str, Any]]:
 ```
 
 **Extract items from research files**:
+
 ```python
 def _extract_items_from_research(research_path: Path) -> list[dict[str, Any]]:
     """Extract work items from research markdown files."""
@@ -263,6 +274,7 @@ def _extract_items_from_research(research_path: Path) -> list[dict[str, Any]]:
 ```
 
 **Merge items to WORK_STREAM.md**:
+
 ```python
 def _merge_items_to_work_stream(work_stream_path: Path, items: list[dict[str, Any]]) -> None:
     """Merge items into WORK_STREAM.md BACKLOG section."""
@@ -333,6 +345,7 @@ def _merge_items_to_work_stream(work_stream_path: Path, items: list[dict[str, An
 ### Validation Integration
 
 **Before merging**, validate all task files:
+
 - Use `TaskValidator.validate_task_file()`
 - Collect all errors
 - Block incorporation if any errors found
@@ -341,6 +354,7 @@ def _merge_items_to_work_stream(work_stream_path: Path, items: list[dict[str, An
 ### Auto-Sync Integration
 
 **After successful merging**, sync tasks to WORK_STREAM.md:
+
 - Use `WorkStreamSync.update_work_stream_from_tasks()`
 - Update BACKLOG section with task files
 - Provide summary of synced tasks
@@ -381,9 +395,11 @@ def _merge_items_to_work_stream(work_stream_path: Path, items: list[dict[str, An
 ## Files to Create/Modify
 
 ### New Files
+
 - None (all in existing files)
 
 ### Modified Files
+
 - `src/thegent/cli_impl.py` - Add `incorporate_impl()` function and helpers
 
 ---

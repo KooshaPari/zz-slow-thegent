@@ -20,7 +20,7 @@ Manages session persistence to disk.
 
 ### Methods
 
-#### SessionPersistence.__init__
+#### SessionPersistence.**init**
 
 ```python
 __init__(self: Any, storage_dir: Any)

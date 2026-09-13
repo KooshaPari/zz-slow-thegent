@@ -8,20 +8,24 @@
 ## Critical Fixes Applied
 
 ### 1. TypeError Blocking Delegation ✅ FIXED
+
 **Issue:** `run_impl()` parameter mismatch (`live`, `routing`, `enable_search`, `debug`)
 **Impact:** Complete workflow failure - delegation completely broken
 **Fix:** Removed unsupported parameters from `run_impl()` call
 **Prevention:** Delegated agent to add function signature validation
 
 ### 2. Missing `do_next_impl` Function ✅ FIXED
+
 **Issue:** `ImportError: cannot import name 'do_next_impl'`
 **Fix:** Implemented function in `cli_impl.py` to read from WORK_STREAM.md
 
 ### 3. Missing `_is_triggered_by_agent_process` ✅ FIXED
+
 **Issue:** `ImportError: cannot import name '_is_triggered_by_agent_process'`
 **Fix:** Implemented function in `discovery.py` using psutil
 
 ### 4. CLI File Truncation ✅ FIXED
+
 **Issue:** `cli.py` was truncated (152 lines → should be 7176)
 **Fix:** Restored from git HEAD, added missing commands
 

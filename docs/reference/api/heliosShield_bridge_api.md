@@ -12,7 +12,7 @@ WP-16004: AST-aware conflict resolution using Mergiraf.
 
 ### Methods
 
-#### SmartMerge.__init__
+#### SmartMerge.**init**
 
 ```python
 __init__(self: Any)
@@ -38,7 +38,7 @@ Bridges thegent to heliosShield's Phase 11 task coordination layer.
 
 ### Methods
 
-#### heliosShieldBridge.__init__
+#### heliosShieldBridge.**init**
 
 ```python
 __init__(self: Any, settings: Any)

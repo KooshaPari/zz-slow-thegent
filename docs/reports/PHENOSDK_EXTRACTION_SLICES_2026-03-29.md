@@ -10,36 +10,36 @@
 
 ## Top packages by `.py` file count
 
-| Package | ~Files | Extraction theme |
-|---------|-------:|------------------|
-| testing | 198 | QA harness → `phenotype-evaluation`, `template-program-ops` |
-| infra | 198 | Adapters → `phenotype-infrakit`, `phenotype-ops` |
-| kits | 117 | Optional meta-packages, not core SDK |
-| mcp | 104 | MCP → `phenotype-thegent-mcp` patterns + contracts |
-| ui | 97 | Thin client; decouple from domain |
-| cli | 74 | `phenotype-cli-core` or dedicated CLI product repo |
-| dev | 71 | Dev UX → thegent/skills, not runtime SDK |
-| deployment | 66 | `phenotype-infrakit`, IaC templates |
-| quality | 64 | `phenotype-dep-guard`, shared hooks |
-| adapters | 60 | Keep pattern; move impls to infra repos |
-| shared | 54 | Dedup → `phenotype-shared` |
-| workflow | 51 | Task/agent engines |
-| domain | 50 | Smallest public “core” API |
-| database | 31 | Ports + one reference adapter per store |
-| vector | 29 | Port + optional Rust hot path later |
-| application | 26 | Migrate with domain |
-| observability | 23 | `phenotype-logging-zig`, OTel helpers |
-| credentials | 23 | Dedicated small lib |
-| clink | 23 | Optional sidecar |
-| tools | 22 | Scripts → ops templates or archive |
-| auth | 22 | Parity with `phenotype-auth-ts` / Python kits |
-| security | 21 | Align `policy-contract` |
-| patterns | 20 | Docs or `hexagonal-py` examples |
-| analytics | 20 | Split generic vs product before move |
-| ports | 19 | **SDD source of truth** — OpenAPI/Proto |
-| logging | 18 | Shared facades |
-| llm | 16 | Provider ports; adapters elsewhere |
-| cicd | 11 | Templates only |
+| Package       | ~Files | Extraction theme                                            |
+| ------------- | -----: | ----------------------------------------------------------- |
+| testing       |    198 | QA harness → `phenotype-evaluation`, `template-program-ops` |
+| infra         |    198 | Adapters → `phenotype-infrakit`, `phenotype-ops`            |
+| kits          |    117 | Optional meta-packages, not core SDK                        |
+| mcp           |    104 | MCP → `phenotype-thegent-mcp` patterns + contracts          |
+| ui            |     97 | Thin client; decouple from domain                           |
+| cli           |     74 | `phenotype-cli-core` or dedicated CLI product repo          |
+| dev           |     71 | Dev UX → thegent/skills, not runtime SDK                    |
+| deployment    |     66 | `phenotype-infrakit`, IaC templates                         |
+| quality       |     64 | `phenotype-dep-guard`, shared hooks                         |
+| adapters      |     60 | Keep pattern; move impls to infra repos                     |
+| shared        |     54 | Dedup → `phenotype-shared`                                  |
+| workflow      |     51 | Task/agent engines                                          |
+| domain        |     50 | Smallest public “core” API                                  |
+| database      |     31 | Ports + one reference adapter per store                     |
+| vector        |     29 | Port + optional Rust hot path later                         |
+| application   |     26 | Migrate with domain                                         |
+| observability |     23 | `phenotype-logging-zig`, OTel helpers                       |
+| credentials   |     23 | Dedicated small lib                                         |
+| clink         |     23 | Optional sidecar                                            |
+| tools         |     22 | Scripts → ops templates or archive                          |
+| auth          |     22 | Parity with `phenotype-auth-ts` / Python kits               |
+| security      |     21 | Align `policy-contract`                                     |
+| patterns      |     20 | Docs or `hexagonal-py` examples                             |
+| analytics     |     20 | Split generic vs product before move                        |
+| ports         |     19 | **SDD source of truth** — OpenAPI/Proto                     |
+| logging       |     18 | Shared facades                                              |
+| llm           |     16 | Provider ports; adapters elsewhere                          |
+| cicd          |     11 | Templates only                                              |
 
 **Debt:** `infra` and `infrastructure` both exist — converge naming before publish.
 

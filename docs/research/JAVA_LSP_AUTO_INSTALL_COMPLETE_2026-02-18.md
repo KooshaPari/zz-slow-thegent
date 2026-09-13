@@ -11,6 +11,7 @@ Successfully automated Java LSP (jdtls) installation and verified all LSP server
 ## Findings
 
 ### Java Installation
+
 - ✅ **Java Runtime**: OpenJDK 25.0.2 installed via Homebrew
 - ✅ **jdtls Available**: Available via `brew install jdtls`
 - ✅ **jdtls Installed**: Successfully installed via Homebrew (version 1.56.0)
@@ -19,11 +20,13 @@ Successfully automated Java LSP (jdtls) installation and verified all LSP server
 ### Installation Methods Researched
 
 1. **Homebrew (macOS)** - ✅ Implemented
+
    ```bash
    brew install jdtls
    ```
 
 2. **APT (Linux)** - ✅ Implemented
+
    ```bash
    apt-get install jdtls
    ```
@@ -62,17 +65,17 @@ Successfully automated Java LSP (jdtls) installation and verified all LSP server
 
 ### All LSP Servers Status
 
-| Language | Command | Installed | Status |
-|----------|---------|-----------|--------|
-| **python** | `pyright-langserver` | ✅ Yes | Working |
-| **typescript** | `typescript-language-server` | ✅ Yes | Working |
-| **rust** | `rust-analyzer` | ❌ No | Requires rustup |
-| **go** | `gopls` | ✅ Yes | Working |
-| **cpp** | `clangd` | ✅ Yes | Working |
-| **bash** | `bash-language-server` | ✅ Yes | Working |
-| **yaml** | `yaml-language-server` | ✅ Yes | Working |
-| **json** | `vscode-json-languageserver` | ✅ Yes | Working |
-| **java** | `jdtls` | ✅ Yes | **NEW - Working** |
+| Language       | Command                      | Installed | Status            |
+| -------------- | ---------------------------- | --------- | ----------------- |
+| **python**     | `pyright-langserver`         | ✅ Yes    | Working           |
+| **typescript** | `typescript-language-server` | ✅ Yes    | Working           |
+| **rust**       | `rust-analyzer`              | ❌ No     | Requires rustup   |
+| **go**         | `gopls`                      | ✅ Yes    | Working           |
+| **cpp**        | `clangd`                     | ✅ Yes    | Working           |
+| **bash**       | `bash-language-server`       | ✅ Yes    | Working           |
+| **yaml**       | `yaml-language-server`       | ✅ Yes    | Working           |
+| **json**       | `vscode-json-languageserver` | ✅ Yes    | Working           |
+| **java**       | `jdtls`                      | ✅ Yes    | **NEW - Working** |
 
 ### Installation Results
 
@@ -98,6 +101,7 @@ Installing all missing LSP servers...
 ## Usage
 
 ### Install Java LSP
+
 ```bash
 # Auto-install Java LSP
 thegent lsp install java
@@ -107,6 +111,7 @@ thegent lsp install
 ```
 
 ### Verify Installation
+
 ```bash
 # List all servers with status
 thegent lsp list --all
@@ -116,6 +121,7 @@ command -v jdtls && echo "✅ jdtls installed"
 ```
 
 ### Start Java LSP Server
+
 ```bash
 # Start Java LSP server
 thegent lsp start java
@@ -127,6 +133,7 @@ thegent lsp start java --auto-install
 ## Next Steps
 
 ### Completed ✅
+
 1. ✅ Researched Java LSP installation methods
 2. ✅ Implemented Homebrew installation for macOS
 3. ✅ Implemented APT installation for Linux
@@ -135,6 +142,7 @@ thegent lsp start java --auto-install
 6. ✅ Updated auto-install logic
 
 ### Future Enhancements
+
 1. **Rust Auto-Install**: Add rustup installation before rust-analyzer
 2. **Eclipse Download Fallback**: Implement automatic download from Eclipse milestones if package manager fails
 3. **Windows Support**: Add Windows installation method (Chocolatey, Scoop)

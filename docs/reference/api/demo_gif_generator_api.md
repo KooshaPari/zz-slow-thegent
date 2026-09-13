@@ -12,7 +12,7 @@ Generate demo GIFs from scripts using VHS or similar tools.
 
 ### Methods
 
-#### DemoGIFGenerator.__init__
+#### DemoGIFGenerator.**init**
 
 ```python
 __init__(self: Any, vhs_path: Any)

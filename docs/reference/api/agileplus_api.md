@@ -16,6 +16,7 @@ ledger to form a complete autonomous governance cycle.
 Orchestrates the complete 4X governance cycle.
 
 States:
+
 - IDLE: Health >= threshold, no action needed
 - SCANNING: Running dimension scans
 - ANALYZING: Prioritizing findings
@@ -26,7 +27,7 @@ States:
 
 ### Methods
 
-#### AgilePlusLoop.__init__
+#### AgilePlusLoop.**init**
 
 ```python
 __init__(self: Any, project_dir: Path, health_targets_path: Path, health_threshold: float, max_tasks_per_cycle: int, max_rerolls: int, lifecycle_mode: str)

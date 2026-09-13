@@ -18,6 +18,7 @@ WL-061: Determine whether implementing a native Python ConnectRPC Cursor client 
 **Keep binary dependency. Defer WL-054 to P3 with explicit trigger conditions.**
 
 Rationale:
+
 - WL-018 (CursorApiRunner + CursorTokenProvider) is already implemented.
 - cursor-api binary is available on all relevant platforms as pre-built static binaries.
 - Binary is NOT bundled with Cursor IDE; users must self-host — acceptable.

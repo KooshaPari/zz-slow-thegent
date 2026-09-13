@@ -12,7 +12,7 @@ MAIF (Model-Action Interface Format) signed artifact.
 
 ### Methods
 
-#### MAIFArtifact.__init__
+#### MAIFArtifact.**init**
 
 ```python
 __init__(self: Any, action: dict[(str, Any)], signature: Any)

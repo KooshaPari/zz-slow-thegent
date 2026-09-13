@@ -10,9 +10,11 @@
 ## Deliverables
 
 ### 1. **proposal.md** (403 lines, 17 KB)
+
 **Purpose**: Business case and stakeholder communication
 
 **Contents**:
+
 - Executive summary (Phase 1 findings, Phase 2 objectives)
 - Problem statement (performance, maintenance, reliability gaps)
 - Business drivers (SLA, DX, cost, reliability)
@@ -28,9 +30,11 @@
 ---
 
 ### 2. **design.md** (781 lines, 22 KB)
+
 **Purpose**: Technical architecture and implementation details
 
 **Contents**:
+
 - Architecture overview (system diagram, design principles)
 - Hook-by-hook designs for 9 hooks:
   - stop-reconcile (StateManager, git operations)
@@ -53,9 +57,11 @@
 ---
 
 ### 3. **tasks.md** (742 lines, 27 KB)
+
 **Purpose**: Execution guide and task sequencing
 
 **Contents**:
+
 - WBS with 30 tasks organized by phase:
   - Phase 2.0: Kickoff & Setup (4h)
   - Phase 2.1: Week 1 Stop Hooks (14h)
@@ -79,9 +85,11 @@
 ---
 
 ### 4. **README.md** (346 lines, 12 KB)
+
 **Purpose**: Orientation and quick-start guide
 
 **Contents**:
+
 - Overview (scope, key deliverables)
 - Quick start (different entry points for PM, engineer, ops)
 - Document guide (what each file covers, when to read)
@@ -103,27 +111,29 @@
 
 ## Quality Metrics
 
-| Aspect | Status | Details |
-|--------|--------|---------|
-| **Completeness** | ✓ | All 4 documents written, cross-linked, internally consistent |
-| **Structure** | ✓ | Mirrors Phase 1 format (proposal/design/tasks); proven pattern |
-| **Clarity** | ✓ | Executive summaries, glossaries, quick-start guides |
-| **Specificity** | ✓ | 30 specific tasks with acceptance criteria, not generic |
-| **Traceability** | ✓ | Success criteria trace to business drivers and risks |
-| **Realism** | ✓ | Based on Phase 1 PoC data and proven patterns |
-| **Actionability** | ✓ | Ready for immediate execution after Phase 1 completes |
+| Aspect            | Status | Details                                                        |
+| ----------------- | ------ | -------------------------------------------------------------- |
+| **Completeness**  | ✓      | All 4 documents written, cross-linked, internally consistent   |
+| **Structure**     | ✓      | Mirrors Phase 1 format (proposal/design/tasks); proven pattern |
+| **Clarity**       | ✓      | Executive summaries, glossaries, quick-start guides            |
+| **Specificity**   | ✓      | 30 specific tasks with acceptance criteria, not generic        |
+| **Traceability**  | ✓      | Success criteria trace to business drivers and risks           |
+| **Realism**       | ✓      | Based on Phase 1 PoC data and proven patterns                  |
+| **Actionability** | ✓      | Ready for immediate execution after Phase 1 completes          |
 
 ---
 
 ## Key Numbers
 
 ### Scope
+
 - **Hooks to migrate**: 9 (from Bash)
 - **Library modules**: 3 new (state, validation, analysis)
 - **Integration tests**: 40+
 - **Performance benchmarks**: 3+
 
 ### Effort
+
 - **Total hours**: ~65 (1.6 FTE × 4 weeks)
 - **Week 1**: 14h (stop-reconcile, spec-verifier)
 - **Week 2**: 11h (pre-write-validator, qa-policy-test)
@@ -132,12 +142,14 @@
 - **Critical path**: ~50h (parallelization reduces wall-clock)
 
 ### Performance Targets
+
 - **Stop event latency**: 700-1000ms → 150-250ms (75-80% reduction)
 - **Single hook**: 80-150ms → 20-35ms (60-75% reduction)
 - **Memory per hook**: 15-20MB → 2-5MB (75-80% reduction)
 - **Code reduction**: 2500 LOC Bash → 1200 LOC Rust (50% reduction)
 
 ### Quality Targets
+
 - **Test coverage**: ≥80% (enforced by CI)
 - **Bash ↔ Rust parity**: 100% (45 test scenarios)
 - **Cross-platform**: 3 OS (macOS, Linux, WSL)
@@ -177,11 +189,11 @@ tasks.md (Who + Sequencing)
 
 ## Phases & Timeline
 
-| Phase | Focus | Duration | Output | Owner |
-|-------|-------|----------|--------|-------|
-| **1** | Research & PoC | 1 week | Technical spec, PoC code | ✓ Complete |
-| **2** | Implementation (THIS) | 4 weeks | 9 production hooks | Proposed |
-| **3+** | Optimization & Async | 2-3 weeks | Async runtime, remaining hooks | Future |
+| Phase  | Focus                 | Duration  | Output                         | Owner      |
+| ------ | --------------------- | --------- | ------------------------------ | ---------- |
+| **1**  | Research & PoC        | 1 week    | Technical spec, PoC code       | ✓ Complete |
+| **2**  | Implementation (THIS) | 4 weeks   | 9 production hooks             | Proposed   |
+| **3+** | Optimization & Async  | 2-3 weeks | Async runtime, remaining hooks | Future     |
 
 ---
 
@@ -228,6 +240,7 @@ tasks.md (Who + Sequencing)
 ## Quality Checkpoints
 
 ### Before Sharing
+
 - [x] All 4 documents written and spell-checked
 - [x] Internal cross-references verified (no broken links)
 - [x] Numbers consistent (effort totals, performance targets)
@@ -235,12 +248,14 @@ tasks.md (Who + Sequencing)
 - [x] Success criteria are measurable
 
 ### During Execution
+
 - [ ] Task status table updated daily (tasks.md)
 - [ ] Risk register updated weekly (tasks.md)
 - [ ] Performance benchmarks captured (design.md)
 - [ ] Design decisions documented (design.md)
 
 ### At Delivery
+
 - [ ] All success criteria passed (proposal.md § "Success Criteria")
 - [ ] Performance targets met (design.md § "Success Metrics")
 - [ ] Cross-platform tests pass (design.md § "Testing & Validation")
@@ -251,6 +266,7 @@ tasks.md (Who + Sequencing)
 ## Assumptions & Dependencies
 
 ### Assumptions
+
 1. Phase 1 research is complete and approved
 2. Phase 1 technical spec and PoC code are stable
 3. Rust engineer is available full-time for 4 weeks
@@ -258,6 +274,7 @@ tasks.md (Who + Sequencing)
 5. Governance rules (policies) are well-defined
 
 ### Dependencies
+
 1. Phase 1 governance library (thegent-hooks) at 1.0.0+
 2. Phase 1 PoC hooks (quality-gate, security-pipeline) production-ready
 3. Hook dispatcher continues to work as-is (backward compatible)
@@ -268,16 +285,16 @@ tasks.md (Who + Sequencing)
 
 ## Risk Mitigation Summary
 
-| Risk | Likelihood | Mitigation | Owner |
-|------|-----------|-----------|-------|
-| Performance targets not met | Medium | Profile each hook; async available for Phase 3 | Eng |
-| Bash ↔ Rust parity issues | Medium | Run side-by-side tests early; capture edge cases | Eng+QA |
-| Cross-platform issues | Medium | Validate in Week 1; early WSL testing | Eng |
-| Dependency conflicts | Low | Pre-audit; use exact versions | Eng |
-| Integration test brittleness | Medium | Use test fixtures; mock external tools | Eng |
-| Governance expert unavailable | Low | Pre-review specs; document decisions | Lead |
-| Team learns slowly | Medium | Code review + pair programming; templates | Lead+Eng |
-| Unforeseen git complexity | Low | Use libgit2 bindings instead of shell | Eng |
+| Risk                          | Likelihood | Mitigation                                       | Owner    |
+| ----------------------------- | ---------- | ------------------------------------------------ | -------- |
+| Performance targets not met   | Medium     | Profile each hook; async available for Phase 3   | Eng      |
+| Bash ↔ Rust parity issues    | Medium     | Run side-by-side tests early; capture edge cases | Eng+QA   |
+| Cross-platform issues         | Medium     | Validate in Week 1; early WSL testing            | Eng      |
+| Dependency conflicts          | Low        | Pre-audit; use exact versions                    | Eng      |
+| Integration test brittleness  | Medium     | Use test fixtures; mock external tools           | Eng      |
+| Governance expert unavailable | Low        | Pre-review specs; document decisions             | Lead     |
+| Team learns slowly            | Medium     | Code review + pair programming; templates        | Lead+Eng |
+| Unforeseen git complexity     | Low        | Use libgit2 bindings instead of shell            | Eng      |
 
 ---
 
@@ -294,6 +311,7 @@ tasks.md (Who + Sequencing)
 ## Contact & Questions
 
 For questions about this package:
+
 - **Proposal/Scope**: Contact Project Lead
 - **Architecture/Design**: Contact Rust Engineer
 - **Execution/Timeline**: Contact Project Manager
@@ -303,10 +321,10 @@ For questions about this package:
 
 ## Version History
 
-| Version | Date | Author | Status |
-|---------|------|--------|--------|
-| 1.0 | 2026-02-18 | Research Team | ✓ Complete |
-| — | — | — | Ready for review |
+| Version | Date       | Author        | Status           |
+| ------- | ---------- | ------------- | ---------------- |
+| 1.0     | 2026-02-18 | Research Team | ✓ Complete       |
+| —       | —          | —             | Ready for review |
 
 ---
 

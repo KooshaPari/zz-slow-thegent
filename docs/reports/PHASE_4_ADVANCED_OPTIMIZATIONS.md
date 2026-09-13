@@ -51,6 +51,7 @@ process_files "PY_FILES"  # Pass variable name, not values
 ### Implementation in Quality-Gate.sh
 
 **Before** (cascading case statement):
+
 ```bash
 case "$local_ext" in
   py) PY_FILES+=("$fpath") ;;
@@ -63,6 +64,7 @@ esac
 ```
 
 **After** (dispatch + nameref in new library):
+
 ```bash
 # In lib/nameref-patterns.sh
 _classify_file_into_arrays() {
@@ -74,6 +76,7 @@ _classify_file_into_arrays() {
 ```
 
 **Usage in loop**:
+
 ```bash
 while IFS= read -r fpath; do
   local ext="${fpath##*.}"
@@ -121,6 +124,7 @@ shopt -s extglob
 ### Implementation in Quality-Gate.sh
 
 **Before**:
+
 ```bash
 case "$local_ext" in
   sh) SH_FILES+=("$fpath") ;;
@@ -133,6 +137,7 @@ esac
 ```
 
 **After**:
+
 ```bash
 case "$local_ext" in
   @(sh|bash)) SH_FILES+=("$fpath") ;;
@@ -150,6 +155,7 @@ esac
 ### Pattern Coverage
 
 Extended glob patterns now used for:
+
 - Shell scripts: `@(sh|bash)` (was 2 cases, now 1)
 - TypeScript/JS: `@(ts|tsx|js|jsx)` (was 4 cases, now 1)
 - C/C++: `@(c|h|cpp|hpp|cc|cxx)` (was 6 cases, now 1)
@@ -195,6 +201,7 @@ handler="${HANDLERS[$ext]}"
 ### Implementation
 
 **New files**:
+
 - `/hooks/lib/dispatch-patterns.sh` - Reusable dispatch arrays
   - `FILE_TYPE_MAP` - Extension to file type mapping
   - `GATE_RESULT_MAP` - Gate result status mapping
@@ -204,6 +211,7 @@ handler="${HANDLERS[$ext]}"
   - `ARCH_TOOL_MAP` - Architecture enforcement tool mapping
 
 **Functions**:
+
 - `_dispatch_file_type` - Get file type from extension
 - `_dispatch_gate_result` - Get result handler from gate result
 - `_dispatch_lint_tool` - Get linter tool from file type
@@ -223,6 +231,7 @@ done
 ```
 
 **Output**:
+
 ```
 Type: python, Linter: ruff
 Type: shell, Linter: shellcheck
@@ -276,6 +285,7 @@ exec {fd}<&-
 ### Status in Current Codebase
 
 **Recommended for future optimization**:
+
 - `spec-verifier.sh` - Multiple process substitutions in FR extraction
 - `test-maturity.sh` - Process substitutions in test file discovery
 - `governance-gates.sh` - Policy evaluation loops
@@ -288,13 +298,13 @@ exec {fd}<&-
 
 ### Feature Compatibility Matrix
 
-| Feature | Bash Version | Environment | Status |
-|---------|--------------|-------------|--------|
-| shopt -s extglob | 4.0+ | Bash 5.3 | ✓ Available |
-| nameref (local -n) | 4.3+ | Bash 5.3 | ✓ Available |
-| declare -A (assoc array) | 4.0+ | Bash 5.3 | ✓ Available |
-| exec with fd reuse | 4.1+ | Bash 5.3 | ✓ Available |
-| Process substitution | 3.0+ | Bash 5.3 | ✓ Available |
+| Feature                  | Bash Version | Environment | Status      |
+| ------------------------ | ------------ | ----------- | ----------- |
+| shopt -s extglob         | 4.0+         | Bash 5.3    | ✓ Available |
+| nameref (local -n)       | 4.3+         | Bash 5.3    | ✓ Available |
+| declare -A (assoc array) | 4.0+         | Bash 5.3    | ✓ Available |
+| exec with fd reuse       | 4.1+         | Bash 5.3    | ✓ Available |
+| Process substitution     | 3.0+         | Bash 5.3    | ✓ Available |
 
 **Minimum requirement**: Bash 4.3 (released 2014)
 **Current environment**: Bash 5.3 (full support)
@@ -375,14 +385,15 @@ bash -c '
 
 #### 6.4 Performance Comparison
 
-| Operation | Before (ms) | After (ms) | Improvement |
-|-----------|------------|-----------|------------|
-| File classification (1000 files) | 85 | 82 | 3.5% |
-| Gate result dispatch (50 gates) | 12 | 11.5 | 4.2% |
-| Array append with nameref vs copy | 45 | 41 | 8.9% |
-| **Overall per-hook speedup** | **~125ms** | **~115ms** | **~7.8%** |
+| Operation                         | Before (ms) | After (ms) | Improvement |
+| --------------------------------- | ----------- | ---------- | ----------- |
+| File classification (1000 files)  | 85          | 82         | 3.5%        |
+| Gate result dispatch (50 gates)   | 12          | 11.5       | 4.2%        |
+| Array append with nameref vs copy | 45          | 41         | 8.9%        |
+| **Overall per-hook speedup**      | **~125ms**  | **~115ms** | **~7.8%**   |
 
 **Notes**:
+
 - Measurements from test environment (Bash 5.3)
 - Actual improvement varies by file count and hook load
 - Cache hits and system load affect real-world performance
@@ -485,24 +496,27 @@ source "${BASH_SOURCE[0]%/*}/lib/common.sh"
 
 ### Per-Hook Improvements
 
-| Optimization | Scope | Improvement |
-|-------------|-------|------------|
-| Extended glob | File classification | ~2-3% |
-| Nameref patterns | Array handling | ~3-5% |
-| Dispatch arrays | Conditional logic | ~2-4% |
-| Combined effect | Overall hook execution | **5-10%** |
+| Optimization     | Scope                  | Improvement |
+| ---------------- | ---------------------- | ----------- |
+| Extended glob    | File classification    | ~2-3%       |
+| Nameref patterns | Array handling         | ~3-5%       |
+| Dispatch arrays  | Conditional logic      | ~2-4%       |
+| Combined effect  | Overall hook execution | **5-10%**   |
 
 ### Real-World Impact
 
 **quality-gate.sh**:
+
 - 1000 files → ~3.5% faster (85ms → 82ms)
 - Memory usage: 8-12% lower for large file lists
 
 **governance-gates.sh**:
+
 - 50+ gates → ~4.2% faster
 - Dispatch map lookup: O(1) vs O(n)
 
 **All hooks**:
+
 - Typical session: Save ~10-50ms per Stop event
 - Multi-hook workflows: Cumulative 50-200ms improvement
 

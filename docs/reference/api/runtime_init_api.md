@@ -19,6 +19,7 @@ Get current resource statistics.
 Initialize runtime infrastructure (resource limits and monitoring).
 
 This function:
+
 1. Sets up resource limits (FD, process count)
 2. Starts resource monitoring in background thread
 3. Registers cleanup handlers for graceful shutdown

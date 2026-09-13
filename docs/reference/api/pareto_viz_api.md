@@ -12,7 +12,7 @@ Visualizes the Pareto frontier of model/provider options.
 
 ### Methods
 
-#### ParetoViz.__init__
+#### ParetoViz.**init**
 
 ```python
 __init__(self: Any)

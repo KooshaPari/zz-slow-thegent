@@ -12,7 +12,7 @@ Plangent sub-agents integration.
 
 ### Methods
 
-#### PlangentSubagents.__init__
+#### PlangentSubagents.**init**
 
 ```python
 __init__(self: Any)

@@ -11,6 +11,7 @@ Pareto routing optimizes cost-quality trade-offs by selecting the optimal model 
 ### Why Hysteresis Matters
 
 Without hysteresis, a request at the boundary might flip between two models based on minor input variations, causing:
+
 - Inconsistent user experience
 - Increased latency from routing changes
 - Poor cache utilization
@@ -24,6 +25,7 @@ C(request) = α * token_cost + β * latency_penalty + γ * quality_score
 ```
 
 Where:
+
 - `α, β, γ`: Tunable weights
 - `token_cost`: $/1M tokens
 - `latency_penalty`: ms over baseline
@@ -131,12 +133,12 @@ class ParetoRouter:
 
 ### Boundary Conditions
 
-| Input | Expected | Reason |
-|-------|----------|---------|
-| Request at frontier edge | Model A | Clear winner |
-| Request at center | Cache hit | Hysteresis |
-| Request far from frontier | Nearest model | Extension |
-| Rapid successive requests | Consistent model | Cache hit |
+| Input                     | Expected         | Reason       |
+| ------------------------- | ---------------- | ------------ |
+| Request at frontier edge  | Model A          | Clear winner |
+| Request at center         | Cache hit        | Hysteresis   |
+| Request far from frontier | Nearest model    | Extension    |
+| Rapid successive requests | Consistent model | Cache hit    |
 
 ### Hysteresis Behavior
 
@@ -159,11 +161,11 @@ def test_hysteresis():
 
 ### Performance Benchmarks
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| Routing latency | < 1ms | P99 |
-| Cache hit rate | > 80% | Daily |
-| Oscillation rate | < 1% | Hourly |
+| Metric           | Target | Measurement |
+| ---------------- | ------ | ----------- |
+| Routing latency  | < 1ms  | P99         |
+| Cache hit rate   | > 80%  | Daily       |
+| Oscillation rate | < 1%   | Hourly      |
 
 ---
 
@@ -181,7 +183,7 @@ def test_hysteresis():
 
 ### Cross-References Added
 
-- PARETO_FRONTIER_*.md documents
+- PARETO*FRONTIER*\*.md documents
 - MODEL_ROUTING_INDEX.md
 - WP-1004, WP-5001
 

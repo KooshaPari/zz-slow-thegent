@@ -9,12 +9,12 @@
 
 Scanned all `Cargo.toml` and `pyproject.toml` files under `archive-migration/thegent-fresh`.
 
-| Pattern | Matches |
-| --- | --- |
-| HexaKit | none |
-| AuthKit | none |
-| Traceon | none |
-| stashly / Stashly | none |
+| Pattern           | Matches |
+| ----------------- | ------- |
+| HexaKit           | none    |
+| AuthKit           | none    |
+| Traceon           | none    |
+| stashly / Stashly | none    |
 
 ## Findings
 

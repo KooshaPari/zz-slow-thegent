@@ -17,23 +17,29 @@ A complete **test-driven development** roadmap for rewriting thegent's Python in
 ## Six Tasks Across Five Crates
 
 ### Part 1: thegent-policy (12,638 LOC → NEW)
+
 - **1.1** Create crate skeleton + tests
 - **1.2** PyO3 bindings
 - **1.3** Port governance functions (compliance, cost enforcement)
 
 ### Part 2: thegent-zmx extended (896 LOC → session module)
+
 - **2.1** Session lifecycle, state machine, context storage
 
 ### Part 3: thegent-jsonl extended (2,342 LOC → audit module)
+
 - **3.1** Immutable JSONL audit log, range queries, filtering
 
 ### Part 4: thegent-metrics (NEW, 80 LOC)
+
 - **4.1** Counters, gauges, histograms, Prometheus export
 
 ### Part 5: thegent-crypto extended (1,594 LOC → security module)
+
 - Similar structure to above
 
 ### Part 6: Verification & Removal
+
 - **5.1** Parity harness (Python vs Rust)
 - **5.2** Performance benchmarks (10-50x expected speedup)
 - **5.3** Remove Python modules after verification
@@ -41,24 +47,28 @@ A complete **test-driven development** roadmap for rewriting thegent's Python in
 ## Key Features of This Plan
 
 ### ✓ Every Task is Concrete
+
 - Exact file paths (absolute)
 - Full Rust source code (no pseudocode)
 - Full PyO3 binding code (buildable)
 - Complete test fixtures and data
 
 ### ✓ Test-First Throughout
+
 - Each task starts with **failing tests** (both Rust and Python)
 - Tests define acceptance criteria
 - Benchmarks measure performance gains
 - Parity tests verify 1:1 replacement
 
 ### ✓ Production-Grade
+
 - 100% coverage requirement (agent-only test level)
 - No fallbacks or legacy compatibility
 - Fail-fast error handling
 - Rust `clippy -D warnings` enforcement
 
 ### ✓ Build System Ready
+
 - maturin for PyO3 compilation
 - Workspace Cargo.toml
 - Explicit pyproject.toml updates
@@ -142,6 +152,7 @@ pytest tests/integration/test_python_rust_parity.py -v
 ## Quality Standards
 
 All code must pass:
+
 - ✓ `cargo clippy -D warnings` (zero warnings)
 - ✓ 100% test coverage (tarpaulin)
 - ✓ Parity tests (Python vs Rust match)

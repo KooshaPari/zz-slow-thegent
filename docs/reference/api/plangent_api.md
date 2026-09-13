@@ -25,7 +25,7 @@ A complete execution plan composed of a DAG of PlanNodes.
 done_ids(self: Any)
 ```
 
-Set of node IDs whose status is ``done``.
+Set of node IDs whose status is `done`.
 
 ---
 
@@ -35,7 +35,7 @@ Set of node IDs whose status is ``done``.
 failed_ids(self: Any)
 ```
 
-Set of node IDs whose status is ``failed``.
+Set of node IDs whose status is `failed`.
 
 ---
 
@@ -45,7 +45,7 @@ Set of node IDs whose status is ``failed``.
 get_node(self: Any, node_id: str)
 ```
 
-Return the node with the given ID, or ``None``.
+Return the node with the given ID, or `None`.
 
 ---
 
@@ -94,12 +94,12 @@ Serialize to a plain dict for JSON / JSONL serialisation.
 Executes a Plan by dispatching sub-tasks to thegent agents.
 
 The executor iterates over ready nodes, invokes the caller-supplied
-*runner* callback, and updates node status (``done`` / ``failed``).
+_runner_ callback, and updates node status (`done` / `failed`).
 It repeats until the plan is complete or a blocking failure is detected.
 
 ### Methods
 
-#### PlangentExecutor.__init__
+#### PlangentExecutor.**init**
 
 ```python
 __init__(self: Any, planner: Any)
@@ -110,9 +110,9 @@ Initialise the executor.
 **Parameters**:
 
 - `planner`: :class:`PlangentPlanner` instance used to inspect plan
-state.  A default ``PlangentPlanner()`` is created if not
-provided.
-- `fail_fast`: Stop on first failure when ``True``.
+  state. A default `PlangentPlanner()` is created if not
+  provided.
+- `fail_fast`: Stop on first failure when `True`.
 
 ---
 
@@ -122,7 +122,7 @@ provided.
 execute(self: Any, plan: Plan, runner: RunnerType)
 ```
 
-Execute *plan* synchronously by dispatching each ready node.
+Execute _plan_ synchronously by dispatching each ready node.
 
 The method loops until the plan is complete (all nodes done/failed)
 or until no progress can be made (deadlock — remaining pending nodes
@@ -131,11 +131,11 @@ have unsatisfied dependencies due to failures).
 **Parameters**:
 
 - `plan`: The :class:`Plan` to execute.
-- `runner`: Callable ``(PlanNode) -&gt; str`` invoked for each ready
-node.  Must return the result string on success or raise an
-exception on failure.
+- `runner`: Callable `(PlanNode) -&gt; str` invoked for each ready
+  node. Must return the result string on success or raise an
+  exception on failure.
 
-**Returns**: The mutated *plan* with updated node statuses.
+**Returns**: The mutated _plan_ with updated node statuses.
 
 ---
 
@@ -145,13 +145,13 @@ exception on failure.
 
 Decomposes a goal into a DAG of sub-tasks.
 
-The default ``decompose`` implementation produces a simple deterministic
-breakdown that requires no LLM call.  Subclass and override
-``_generate_sub_tasks`` to inject an LLM-backed decomposition strategy.
+The default `decompose` implementation produces a simple deterministic
+breakdown that requires no LLM call. Subclass and override
+`_generate_sub_tasks` to inject an LLM-backed decomposition strategy.
 
 ### Methods
 
-#### PlangentPlanner.__init__
+#### PlangentPlanner.**init**
 
 ```python
 __init__(self: Any)
@@ -162,9 +162,9 @@ Initialise the planner.
 **Parameters**:
 
 - `separator`: Character used to split compound goal strings during
-heuristic decomposition.
+  heuristic decomposition.
 - `max_nodes_per_level`: Maximum sub-tasks per depth level when
-decomposing a compound goal.
+  decomposing a compound goal.
 
 ---
 
@@ -174,20 +174,20 @@ decomposing a compound goal.
 decompose(self: Any, goal: str, max_depth: int)
 ```
 
-Break *goal* into a :class:`Plan` with a DAG of :class:`PlanNode`.
+Break _goal_ into a :class:`Plan` with a DAG of :class:`PlanNode`.
 
 Each node inherits the previous node as a dependency, forming a
-simple linear chain by default.  Override ``_generate_sub_tasks`` to
+simple linear chain by default. Override `_generate_sub_tasks` to
 produce arbitrary DAG shapes.
 
 **Parameters**:
 
 - `goal`: Natural-language goal to decompose.
-- `max_depth`: Maximum depth of the resulting DAG.  Ignored by the
-default heuristic implementation but forwarded to
-``_generate_sub_tasks``.
+- `max_depth`: Maximum depth of the resulting DAG. Ignored by the
+  default heuristic implementation but forwarded to
+  `_generate_sub_tasks`.
 
-**Returns**: A :class:`Plan` instance with all nodes in ``pending`` status.
+**Returns**: A :class:`Plan` instance with all nodes in `pending` status.
 
 ---
 
@@ -197,7 +197,7 @@ default heuristic implementation but forwarded to
 is_complete(self: Any, plan: Plan)
 ```
 
-Return ``True`` when every node is ``done`` or ``failed``.
+Return `True` when every node is `done` or `failed`.
 
 **Parameters**:
 
@@ -245,8 +245,8 @@ next_ready_tasks(self: Any, plan: Plan)
 
 Return all nodes that are ready to execute.
 
-A node is *ready* when its status is ``pending`` and every dependency
-is ``done``.
+A node is _ready_ when its status is `pending` and every dependency
+is `done`.
 
 **Parameters**:
 
@@ -264,8 +264,8 @@ to_work_stream_rows(self: Any, plan: Plan)
 
 Convert a Plan into WORK_STREAM-compatible row dicts.
 
-Each row has keys: ``id``, ``title``, ``source``, ``priority``,
-``depends``, ``status``.
+Each row has keys: `id`, `title`, `source`, `priority`,
+`depends`, `status`.
 
 **Parameters**:
 
@@ -283,20 +283,20 @@ Each row has keys: ``id``, ``title``, ``source``, ``priority``,
 decompose(self: Any, goal: str, max_depth: int)
 ```
 
-Break *goal* into a :class:`Plan` with a DAG of :class:`PlanNode`.
+Break _goal_ into a :class:`Plan` with a DAG of :class:`PlanNode`.
 
 Each node inherits the previous node as a dependency, forming a
-simple linear chain by default.  Override ``_generate_sub_tasks`` to
+simple linear chain by default. Override `_generate_sub_tasks` to
 produce arbitrary DAG shapes.
 
 **Parameters**:
 
 - `goal`: Natural-language goal to decompose.
-- `max_depth`: Maximum depth of the resulting DAG.  Ignored by the
-default heuristic implementation but forwarded to
-``_generate_sub_tasks``.
+- `max_depth`: Maximum depth of the resulting DAG. Ignored by the
+  default heuristic implementation but forwarded to
+  `_generate_sub_tasks`.
 
-**Returns**: A :class:`Plan` instance with all nodes in ``pending`` status.
+**Returns**: A :class:`Plan` instance with all nodes in `pending` status.
 
 ---
 
@@ -306,7 +306,7 @@ default heuristic implementation but forwarded to
 done_ids(self: Any)
 ```
 
-Set of node IDs whose status is ``done``.
+Set of node IDs whose status is `done`.
 
 ---
 
@@ -316,7 +316,7 @@ Set of node IDs whose status is ``done``.
 execute(self: Any, plan: Plan, runner: RunnerType)
 ```
 
-Execute *plan* synchronously by dispatching each ready node.
+Execute _plan_ synchronously by dispatching each ready node.
 
 The method loops until the plan is complete (all nodes done/failed)
 or until no progress can be made (deadlock — remaining pending nodes
@@ -325,11 +325,11 @@ have unsatisfied dependencies due to failures).
 **Parameters**:
 
 - `plan`: The :class:`Plan` to execute.
-- `runner`: Callable ``(PlanNode) -&gt; str`` invoked for each ready
-node.  Must return the result string on success or raise an
-exception on failure.
+- `runner`: Callable `(PlanNode) -&gt; str` invoked for each ready
+  node. Must return the result string on success or raise an
+  exception on failure.
 
-**Returns**: The mutated *plan* with updated node statuses.
+**Returns**: The mutated _plan_ with updated node statuses.
 
 ---
 
@@ -339,7 +339,7 @@ exception on failure.
 failed_ids(self: Any)
 ```
 
-Set of node IDs whose status is ``failed``.
+Set of node IDs whose status is `failed`.
 
 ---
 
@@ -349,7 +349,7 @@ Set of node IDs whose status is ``failed``.
 get_node(self: Any, node_id: str)
 ```
 
-Return the node with the given ID, or ``None``.
+Return the node with the given ID, or `None`.
 
 ---
 
@@ -359,7 +359,7 @@ Return the node with the given ID, or ``None``.
 is_complete(self: Any, plan: Plan)
 ```
 
-Return ``True`` when every node is ``done`` or ``failed``.
+Return `True` when every node is `done` or `failed`.
 
 **Parameters**:
 
@@ -393,7 +393,7 @@ Mark a node as successfully completed.
 
 **Raises**:
 
-- `ValueError`: If ``node_id`` is not found in the plan.
+- `ValueError`: If `node_id` is not found in the plan.
 
 ---
 
@@ -413,7 +413,7 @@ Mark a node as failed.
 
 **Raises**:
 
-- `ValueError`: If ``node_id`` is not found in the plan.
+- `ValueError`: If `node_id` is not found in the plan.
 
 ---
 
@@ -425,8 +425,8 @@ next_ready_tasks(self: Any, plan: Plan)
 
 Return all nodes that are ready to execute.
 
-A node is *ready* when its status is ``pending`` and every dependency
-is ``done``.
+A node is _ready_ when its status is `pending` and every dependency
+is `done`.
 
 **Parameters**:
 
@@ -454,8 +454,8 @@ to_work_stream_rows(self: Any, plan: Plan)
 
 Convert a Plan into WORK_STREAM-compatible row dicts.
 
-Each row has keys: ``id``, ``title``, ``source``, ``priority``,
-``depends``, ``status``.
+Each row has keys: `id`, `title`, `source`, `priority`,
+`depends`, `status`.
 
 **Parameters**:
 

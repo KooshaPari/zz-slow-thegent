@@ -22,6 +22,7 @@
 ### 1. Local Codebase Research
 
 #### 1.1 Agent Systems
+
 - [x] Search for existing agent hierarchy implementations
 - [x] Review teammate/delegation patterns
 - [x] Analyze coordination mechanisms
@@ -29,6 +30,7 @@
 - [x] Examine team/organization structures
 
 #### 1.2 Multi-Agent Frameworks
+
 - [x] CrewAI patterns and implementations
 - [x] MetaGPT architecture
 - [x] AutoGen group chat patterns
@@ -36,6 +38,7 @@
 - [x] Any custom multi-agent systems (smolgents)
 
 #### 1.3 Coordination Patterns
+
 - [x] heliosShield coordination mechanisms
 - [x] Task queue systems
 - [x] Conflict resolution strategies
@@ -43,7 +46,8 @@
 - [x] Handoff mechanisms
 
 #### 1.4 Related Research Documents
-- [x] All research/*.md files
+
+- [x] All research/\*.md files
 - [x] Architecture documents
 - [x] Implementation guides
 - [x] API documentation
@@ -52,6 +56,7 @@
 ### 2. Web Research
 
 #### 2.1 Academic Research
+
 - [x] Multi-agent systems papers (via heliosShield agent-mesh)
 - [x] Hierarchical agent architectures
 - [x] Team formation algorithms
@@ -59,6 +64,7 @@
 - [x] Agent communication patterns
 
 #### 2.2 Industry Frameworks
+
 - [x] CrewAI documentation and examples
 - [x] MetaGPT architecture
 - [x] AutoGen multi-agent patterns
@@ -67,12 +73,14 @@
 - [ ] Google A2A protocol (deferred)
 
 #### 2.3 Production Systems
+
 - [x] Claude Code teammates feature
 - [ ] GitHub Copilot Workspace teams (limited public docs)
 - [ ] Cursor multi-agent patterns (limited public docs)
 - [x] Other commercial implementations
 
 #### 2.4 Best Practices
+
 - [x] Agent delegation patterns
 - [x] Team coordination strategies
 - [x] Hierarchy design principles
@@ -84,6 +92,7 @@
 ## Research Methodology
 
 ### Phase 1: Local Audit (Depth First)
+
 1. **Systematic codebase search**
    - Search for all agent-related code
    - Find all research documents
@@ -91,7 +100,7 @@
    - Map current architecture
 
 2. **Document analysis**
-   - Read all research/*.md files
+   - Read all research/\*.md files
    - Analyze architecture documents
    - Review implementation guides
    - Extract key patterns
@@ -103,6 +112,7 @@
    - Understand current limitations
 
 ### Phase 2: Web Research (Breadth + Depth)
+
 1. **Framework documentation**
    - CrewAI: Complete architecture review
    - MetaGPT: Team patterns
@@ -127,6 +137,7 @@
    - Anti-patterns to avoid
 
 ### Phase 3: Synthesis
+
 1. **Pattern extraction**
    - Common patterns across systems
    - Unique approaches
@@ -148,6 +159,7 @@
 ## Research Outputs
 
 ### 1. Local Research Audit
+
 - **File**: `LOCAL_RESEARCH_AUDIT.md`
 - **Contents**:
   - All found patterns
@@ -156,6 +168,7 @@
   - Gaps and limitations
 
 ### 2. Web Research Audit
+
 - **File**: `WEB_RESEARCH_AUDIT.md`
 - **Contents**:
   - Framework analysis
@@ -164,6 +177,7 @@
   - Best practices
 
 ### 3. Comparative Analysis
+
 - **File**: `RESEARCH_COMPARATIVE_ANALYSIS.md`
 - **Contents**:
   - Pattern comparison
@@ -172,6 +186,7 @@
   - Risk assessment
 
 ### 4. Updated Design
+
 - **File**: `AGENT_HIERARCHY_AND_TEAM_STRUCTURE.md` (updated)
 - **Contents**:
   - Research-informed design

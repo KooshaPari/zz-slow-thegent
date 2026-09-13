@@ -15,7 +15,7 @@ including path sharing, tool registration, and configuration harmonization.
 
 ### Methods
 
-#### ManageDevkitIntegration.__init__
+#### ManageDevkitIntegration.**init**
 
 ```python
 __init__(self: Any)

@@ -9,10 +9,12 @@
 ## 📖 Documentation Map
 
 ### Getting Started
+
 - **[TUI_COMPOSITOR_QUICK_START.md](docs/reference/TUI_COMPOSITOR_QUICK_START.md)** - Quick reference and examples
 - **[PHASE1_DELIVERY_SUMMARY.md](PHASE1_DELIVERY_SUMMARY.md)** - Executive summary of what was delivered
 
 ### Implementation Details
+
 - **[TUI_COMPOSITOR_PHASE1_IMPLEMENTATION.md](docs/research/TUI_COMPOSITOR_PHASE1_IMPLEMENTATION.md)** - Complete architecture and design
 - **[TUI_COMPOSITOR_IMPLEMENTATION.md](docs/research/TUI_COMPOSITOR_IMPLEMENTATION.md)** - Original research document
 - **[TUI_COMPOSITOR_COMPARISON.md](docs/research/TUI_COMPOSITOR_COMPARISON.md)** - Framework comparison (Textual vs alternatives)
@@ -22,11 +24,13 @@
 ## 🎯 Core Components
 
 ### Layout Engine
+
 - **Module**: `src/thegent/compositor/layout_engine.py` (425 lines)
 - **Classes**: LayoutEngine, LayoutNode, Direction, Size, SizeUnit, LayoutConstraints, Padding, Margin
 - **Tests**: `tests/compositor/test_layout_engine.py` (195 lines, 20+ tests)
 
 **Quick Example**:
+
 ```python
 from thegent.compositor import LayoutEngine
 
@@ -37,6 +41,7 @@ layout = engine.calculate_layout(width=100, height=50)
 ```
 
 ### Component Library
+
 - **Module**: `src/thegent/compositor/components.py` (472 lines)
 - **Components**:
   - OutputWidget - Rich text display with timestamps
@@ -48,6 +53,7 @@ layout = engine.calculate_layout(width=100, height=50)
   - ProgressIndicator - Progress bar
 
 **Quick Example**:
+
 ```python
 from thegent.compositor import OutputWidget, StatusWidget
 
@@ -63,10 +69,12 @@ status.update_status("running", model="claude-opus", tokens=1500)
 ## 🧪 Testing
 
 ### Test Files
+
 - `tests/compositor/test_layout_engine.py` - 195 lines, 20+ tests
 - `tests/compositor/test_components.py` - 180 lines, 20+ tests
 
 ### Running Tests
+
 ```bash
 # All compositor tests
 pytest tests/compositor/ -v
@@ -79,6 +87,7 @@ pytest tests/compositor/ --cov=thegent.compositor --cov-report=html
 ```
 
 ### Import Verification
+
 ```bash
 python3 -c "from thegent.compositor import *; print('✓ All imports work')"
 ```
@@ -88,6 +97,7 @@ python3 -c "from thegent.compositor import *; print('✓ All imports work')"
 ## 📦 What's Available
 
 ### Layout Engine Classes
+
 ```python
 from thegent.compositor import (
     LayoutEngine,  # Main layout calculator
@@ -102,6 +112,7 @@ from thegent.compositor import (
 ```
 
 ### UI Components
+
 ```python
 from thegent.compositor import (
     OutputWidget,  # Rich text output
@@ -115,6 +126,7 @@ from thegent.compositor import (
 ```
 
 ### Pane Management (Existing)
+
 ```python
 from thegent.compositor import (
     CompositApp,  # Main app (unchanged)
@@ -129,12 +141,15 @@ from thegent.compositor import (
 ## 🚀 Quick Start
 
 ### 1. Install
+
 Components are already in your project. Just import:
+
 ```python
 from thegent.compositor import OutputWidget, StatusWidget
 ```
 
 ### 2. Create Simple Layout
+
 ```python
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal
@@ -153,6 +168,7 @@ app.run()
 ```
 
 ### 3. Use Components
+
 ```python
 # Get references
 output = self.query_one("#output", OutputWidget)
@@ -169,36 +185,39 @@ status.update_status("running", model="claude-opus")
 
 ## 📊 Project Statistics
 
-| Metric | Value |
-|--------|-------|
-| Implementation Lines | 897 |
-| Test Lines | 375 |
-| Total Lines | 1,272 |
-| Components | 15 |
-| Test Cases | 40+ |
-| Docs Files | 2 |
-| Docs Size | 20KB |
-| Dependencies Added | 0 |
-| Type Hints | 100% |
-| Tests Passing | 100% |
+| Metric               | Value |
+| -------------------- | ----- |
+| Implementation Lines | 897   |
+| Test Lines           | 375   |
+| Total Lines          | 1,272 |
+| Components           | 15    |
+| Test Cases           | 40+   |
+| Docs Files           | 2     |
+| Docs Size            | 20KB  |
+| Dependencies Added   | 0     |
+| Type Hints           | 100%  |
+| Tests Passing        | 100%  |
 
 ---
 
 ## 🔄 Phase Roadmap
 
 ### ✅ Phase 1 (Complete)
+
 - [x] Layout Engine (vertical, horizontal, grid)
 - [x] Basic Components (7 widgets)
 - [x] Complete Tests (40+ tests)
 - [x] Documentation
 
 ### 🔄 Phase 2 (Planned)
+
 - [ ] Interactive Input Widget
 - [ ] Table/Queue Widget
 - [ ] Timeline Widget
 - [ ] Theme System
 
 ### 🔮 Phase 3+ (Future)
+
 - [ ] Chart Widgets
 - [ ] Floating Windows
 - [ ] Mouse Support

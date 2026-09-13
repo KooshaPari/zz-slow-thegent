@@ -14,7 +14,7 @@ Enterprise SSO integration for thegent instances.
 
 ### Methods
 
-#### AuthBridge.__init__
+#### AuthBridge.**init**
 
 ```python
 __init__(self: Any, config: Any)

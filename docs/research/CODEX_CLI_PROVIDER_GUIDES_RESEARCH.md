@@ -45,7 +45,7 @@ When using CLIProxy (thegent) instead of direct MiniMax API:
 
 ### Model Metadata Warning
 
-The warning *"Model metadata for `minimax-m2.5` not found"* originates from **Codex CLI** when it queries the backend's `/v1/models` endpoint. Codex expects model objects to include metadata (e.g. `context_window`, `max_tokens`) for cost estimation and performance. If the backend returns models without this metadata, Codex falls back to defaults and warns.
+The warning _"Model metadata for `minimax-m2.5` not found"_ originates from **Codex CLI** when it queries the backend's `/v1/models` endpoint. Codex expects model objects to include metadata (e.g. `context_window`, `max_tokens`) for cost estimation and performance. If the backend returns models without this metadata, Codex falls back to defaults and warns.
 
 **Fix**: The cliproxy adapter's `_transform_models_response` should enrich each model object with metadata from `model_metadata.py` before returning to Codex.
 
@@ -73,14 +73,14 @@ The warning *"Model metadata for `minimax-m2.5` not found"* originates from **Co
 
 ## Provider Guide Comparison
 
-| Item | MiniMax | GLM (expected) |
-|------|---------|---------------|
-| Model prefix | `codex-MiniMax-M2.5` | `codex-GLM-5` or `glm-5` |
-| wire_api | `chat` | `chat` |
-| base_url (direct) | `https://api.minimax.io/v1` | `https://open.bigmodel.cn/...` |
-| base_url (proxy) | `http://127.0.0.1:8317/v1` | `http://127.0.0.1:8317/v1` |
-| env_key | `MINIMAX_API_KEY` | `ZHIPU_API_KEY` or similar |
-| requires_openai_auth | false | false |
+| Item                 | MiniMax                     | GLM (expected)                 |
+| -------------------- | --------------------------- | ------------------------------ |
+| Model prefix         | `codex-MiniMax-M2.5`        | `codex-GLM-5` or `glm-5`       |
+| wire_api             | `chat`                      | `chat`                         |
+| base_url (direct)    | `https://api.minimax.io/v1` | `https://open.bigmodel.cn/...` |
+| base_url (proxy)     | `http://127.0.0.1:8317/v1`  | `http://127.0.0.1:8317/v1`     |
+| env_key              | `MINIMAX_API_KEY`           | `ZHIPU_API_KEY` or similar     |
+| requires_openai_auth | false                       | false                          |
 
 ---
 

@@ -149,11 +149,11 @@ class ContinuityRiskResult:
 
 ## 6. Priority
 
-| Component | Priority | Effort |
-|-----------|----------|--------|
-| D1 PERT overlays | P2 | M (1–2 weeks) |
-| D2 Resource contention | P2 | M (1 week) |
-| D3 Continuity risk | P2 | S (3–5 days) |
+| Component              | Priority | Effort        |
+| ---------------------- | -------- | ------------- |
+| D1 PERT overlays       | P2       | M (1–2 weeks) |
+| D2 Resource contention | P2       | M (1 week)    |
+| D3 Continuity risk     | P2       | S (3–5 days)  |
 
 ---
 

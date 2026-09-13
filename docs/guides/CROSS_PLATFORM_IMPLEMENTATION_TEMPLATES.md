@@ -954,6 +954,7 @@ result = await mcp_client.call_tool(
 ## Implementation Checklist
 
 ### Phase 1: Foundation
+
 - [ ] Create base provider abstract class
 - [ ] Implement macOS provider
 - [ ] Implement Windows provider
@@ -961,24 +962,28 @@ result = await mcp_client.call_tool(
 - [ ] Add provider factory (`get_provider()`)
 
 ### Phase 2: Coordination
+
 - [ ] Create coordinator class
 - [ ] Integrate with EditLeaseManager
 - [ ] Add user activity detection
 - [ ] Add conflict resolution
 
 ### Phase 3: MCP Integration
+
 - [ ] Register MCP tools
 - [ ] Add tool handlers
 - [ ] Add error handling
 - [ ] Add observability
 
 ### Phase 4: Testing
+
 - [ ] Create test fixtures
 - [ ] Add unit tests
 - [ ] Add integration tests
 - [ ] Add platform-specific tests
 
 ### Phase 5: Documentation
+
 - [ ] API documentation
 - [ ] Usage examples
 - [ ] Troubleshooting guide
@@ -988,7 +993,6 @@ result = await mcp_client.call_tool(
 
 **Status:** Implementation templates complete. Ready for code generation and implementation.
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -997,15 +1001,18 @@ result = await mcp_client.call_tool(
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

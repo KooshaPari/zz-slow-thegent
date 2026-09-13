@@ -16,7 +16,7 @@ Verifies third-party plugin contracts for safe execution (WP-15003).
 
 ### Methods
 
-#### PluginVerifier.__init__
+#### PluginVerifier.**init**
 
 ```python
 __init__(self: Any, public_key_dir: Any)

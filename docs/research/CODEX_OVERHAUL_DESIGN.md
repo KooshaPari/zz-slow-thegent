@@ -31,29 +31,29 @@ OpenAI Codex CLI is a powerful but resource-heavy agent harness built on 50+ Rus
 
 ### Feature Matrix
 
-| Feature | Codex 0.104 | Claude Code | Ante | Cursor Agent |
-|---------|------------|-------------|------|--------------|
-| **CLI mode** | ✓ exec | ✓ --print | ✓ headless | ✓ agent |
-| **JSON streaming** | ✓ --json | ✓ --print | ✓ JSON output | Limited |
-| **Project memory** | ✗ | ✓ CLAUDE.md | ✓ memory/* | ✓ .cursor/ |
-| **Skill/eval mode** | ✗ | ✗ | ✓ skills/ benchmarks/ | ✗ |
-| **Sub-agent spawning** | ✗ | ✓ crew protocol | ✓ droid spawning | ✗ |
-| **Context summarization** | ✗ | ✓ compact mode | ✓ summarize | ✓ context compression |
-| **MCP ecosystem** | ✓ `codex mcp` | ✓ MCP server | ✓ MCP standard | ✓ Limited |
-| **Sandbox control** | ✓ read-only, write, danger | ✓ Limited | ✓ Fine-grained | ✓ IDE bound |
-| **Model routing/override** | ✓ --model, --oss | ✓ --model | ✓ provider catalog | ✓ --model |
-| **Benchmark/eval** | ✗ | ✗ | ✓ eval mode | ✗ |
-| **Approval bypass** | ✓ --dangerously-bypass | ✓ --print (implicit) | ✓ headless | ✓ agent (implicit) |
+| Feature                    | Codex 0.104                | Claude Code          | Ante                  | Cursor Agent          |
+| -------------------------- | -------------------------- | -------------------- | --------------------- | --------------------- |
+| **CLI mode**               | ✓ exec                     | ✓ --print            | ✓ headless            | ✓ agent               |
+| **JSON streaming**         | ✓ --json                   | ✓ --print            | ✓ JSON output         | Limited               |
+| **Project memory**         | ✗                          | ✓ CLAUDE.md          | ✓ memory/\*           | ✓ .cursor/            |
+| **Skill/eval mode**        | ✗                          | ✗                    | ✓ skills/ benchmarks/ | ✗                     |
+| **Sub-agent spawning**     | ✗                          | ✓ crew protocol      | ✓ droid spawning      | ✗                     |
+| **Context summarization**  | ✗                          | ✓ compact mode       | ✓ summarize           | ✓ context compression |
+| **MCP ecosystem**          | ✓ `codex mcp`              | ✓ MCP server         | ✓ MCP standard        | ✓ Limited             |
+| **Sandbox control**        | ✓ read-only, write, danger | ✓ Limited            | ✓ Fine-grained        | ✓ IDE bound           |
+| **Model routing/override** | ✓ --model, --oss           | ✓ --model            | ✓ provider catalog    | ✓ --model             |
+| **Benchmark/eval**         | ✗                          | ✗                    | ✓ eval mode           | ✗                     |
+| **Approval bypass**        | ✓ --dangerously-bypass     | ✓ --print (implicit) | ✓ headless            | ✓ agent (implicit)    |
 
 **Critical gaps in Codex:**
 
-| Gap | Impact | Priority | Effort |
-|-----|--------|----------|--------|
-| No CLAUDE.md / context file | Agents can't be told to read project memory; must hardcode context in prompts | High | Medium |
-| No skill/eval system | Can't compose multi-step tasks or benchmark agent quality | Medium | High |
-| No sub-agent spawning protocol | Can't create managed hierarchies of Codex instances | Medium | Medium |
-| No context summarization | Multi-agent aggregation requires custom summarization | Medium | Low |
-| No memory system | Each instance loses session context; can't learn across runs | Low | High |
+| Gap                            | Impact                                                                        | Priority | Effort |
+| ------------------------------ | ----------------------------------------------------------------------------- | -------- | ------ |
+| No CLAUDE.md / context file    | Agents can't be told to read project memory; must hardcode context in prompts | High     | Medium |
+| No skill/eval system           | Can't compose multi-step tasks or benchmark agent quality                     | Medium   | High   |
+| No sub-agent spawning protocol | Can't create managed hierarchies of Codex instances                           | Medium   | Medium |
+| No context summarization       | Multi-agent aggregation requires custom summarization                         | Medium   | Low    |
+| No memory system               | Each instance loses session context; can't learn across runs                  | Low      | High   |
 
 ---
 
@@ -62,6 +62,7 @@ OpenAI Codex CLI is a powerful but resource-heavy agent harness built on 50+ Rus
 ### 2.1 Current State (thegent Integration)
 
 **Current flags used in `codex_proxy.py`:**
+
 ```bash
 codex exec - \
   --skip-git-repo-check \
@@ -110,6 +111,7 @@ max_context_window = 50000  # shorter for multi-agent; full for single agent
 ```
 
 **Via CLI override:**
+
 ```bash
 codex exec - \
   -c agent.mode=lightweight \
@@ -152,6 +154,7 @@ def _prepare_isolated_state(agent_index: int, auth_token: str) -> Path:
 ```
 
 **Environment override:**
+
 ```python
 env = os.environ.copy()
 env["CODEX_HOME"] = str(isolated_home)
@@ -175,6 +178,7 @@ codex exec - --json
 ```
 
 **For Python orchestration:**
+
 ```python
 import resource
 
@@ -376,14 +380,14 @@ jq 'select(.exit_code != 0)' results.jsonl | jq '.task_id, .error'
 
 For a typical machine (8 CPU cores, 16 GB RAM):
 
-| Metric | Budget | Reasoning |
-|--------|--------|-----------|
-| Concurrent instances | 5–10 | 150 MB each × 10 = 1.5 GB; keep headroom for system |
-| Memory per instance | 120 MB | Lightweight config |
-| CPU per instance | 1–2 cores (burst) | Codex is mostly I/O-bound (API calls) |
-| Startup time | ~0.5 sec | Rust binary fast; bottleneck is API handshake |
-| Max task duration | 30 min | Per thegent defaults; timeout on hung processes |
-| Max idle before kill | 3 min | Activity-based detection in `codex_proxy.py` |
+| Metric               | Budget            | Reasoning                                           |
+| -------------------- | ----------------- | --------------------------------------------------- |
+| Concurrent instances | 5–10              | 150 MB each × 10 = 1.5 GB; keep headroom for system |
+| Memory per instance  | 120 MB            | Lightweight config                                  |
+| CPU per instance     | 1–2 cores (burst) | Codex is mostly I/O-bound (API calls)               |
+| Startup time         | ~0.5 sec          | Rust binary fast; bottleneck is API handshake       |
+| Max task duration    | 30 min            | Per thegent defaults; timeout on hung processes     |
+| Max idle before kill | 3 min             | Activity-based detection in `codex_proxy.py`        |
 
 ---
 
@@ -434,6 +438,7 @@ For a typical machine (8 CPU cores, 16 GB RAM):
 ```
 
 **Benefits:**
+
 - Parent orchestrator can track which tool is running
 - Token usage visible for budgeting
 - Easier filtering/aggregation
@@ -468,6 +473,7 @@ def run_codex_with_config(
 ```
 
 **Usage:**
+
 ```python
 result = run_codex_with_config(
     prompt="Fix the failing tests",
@@ -530,6 +536,7 @@ class CodexProxyRunner(AgentRunner):
 ```
 
 **Usage (hierarchical spawning):**
+
 ```python
 runner = CodexProxyRunner("codex")
 
@@ -557,45 +564,45 @@ async def parent_task():
 
 ### Phase 1: Foundation (2–3 weeks)
 
-| Task | Effort | Impact | Owner |
-|------|--------|--------|-------|
-| Implement `--codex-home` flag in Codex | Medium | High | OpenAI (upstream) |
-| Add CLAUDE.md-style context file support | Medium | High | Codex team |
-| Enhance `--json` output with event metadata | Small | Medium | Codex team |
-| Lightweight config template + docs | Small | High | thegent |
-| Multi-agent isolation in thegent proxy | Small | High | thegent |
+| Task                                        | Effort | Impact | Owner             |
+| ------------------------------------------- | ------ | ------ | ----------------- |
+| Implement `--codex-home` flag in Codex      | Medium | High   | OpenAI (upstream) |
+| Add CLAUDE.md-style context file support    | Medium | High   | Codex team        |
+| Enhance `--json` output with event metadata | Small  | Medium | Codex team        |
+| Lightweight config template + docs          | Small  | High   | thegent           |
+| Multi-agent isolation in thegent proxy      | Small  | High   | thegent           |
 
 **Milestone:** Codex can run 5–10 concurrent instances with isolated state.
 
 ### Phase 2: Context & Memory (3–4 weeks)
 
-| Task | Effort | Impact | Owner |
-|------|--------|--------|-------|
-| Implement CLAUDE.md loader (like claude-code) | Medium | High | Codex team |
+| Task                                              | Effort | Impact | Owner      |
+| ------------------------------------------------- | ------ | ------ | ---------- |
+| Implement CLAUDE.md loader (like claude-code)     | Medium | High   | Codex team |
 | Add project memory file support (`.codex/memory`) | Medium | Medium | Codex team |
-| Context summarization for multi-agent aggregation | Medium | Medium | thegent |
-| Compact mode (trim context to N% of window) | Small | Medium | Codex team |
+| Context summarization for multi-agent aggregation | Medium | Medium | thegent    |
+| Compact mode (trim context to N% of window)       | Small  | Medium | Codex team |
 
 **Milestone:** Agents can read project directives; thegent can aggregate multi-agent outputs.
 
 ### Phase 3: Skills & Eval (4–6 weeks)
 
-| Task | Effort | Impact | Owner |
-|------|--------|--------|-------|
-| Skill/task templates system (like Ante) | High | Medium | Codex team |
-| Benchmark/eval mode (test suite execution, scoring) | High | Medium | Codex team |
-| Sub-agent spawning protocol (code changes only) | Medium | High | thegent |
+| Task                                                | Effort | Impact | Owner      |
+| --------------------------------------------------- | ------ | ------ | ---------- |
+| Skill/task templates system (like Ante)             | High   | Medium | Codex team |
+| Benchmark/eval mode (test suite execution, scoring) | High   | Medium | Codex team |
+| Sub-agent spawning protocol (code changes only)     | Medium | High   | thegent    |
 
 **Milestone:** Codex feature-parity with Ante on skills; thegent can orchestrate hierarchies.
 
 ### Phase 4: Polish & Optimization (2–3 weeks)
 
-| Task | Effort | Impact | Owner |
-|------|--------|--------|-------|
-| Prewarmed instance pool (optional, if needed) | High | Low | thegent |
-| Memory/CPU profiling & tuning | Medium | Medium | Codex + thegent |
-| Documentation & examples | Small | High | both |
-| Load testing (50+ concurrent agents) | Medium | Medium | thegent |
+| Task                                          | Effort | Impact | Owner           |
+| --------------------------------------------- | ------ | ------ | --------------- |
+| Prewarmed instance pool (optional, if needed) | High   | Low    | thegent         |
+| Memory/CPU profiling & tuning                 | Medium | Medium | Codex + thegent |
+| Documentation & examples                      | Small  | High   | both            |
+| Load testing (50+ concurrent agents)          | Medium | Medium | thegent         |
 
 **Milestone:** Production-ready multi-agent Codex; feature-complete parity.
 
@@ -606,6 +613,7 @@ async def parent_task():
 ### 6.1 Single Machine (8 CPU, 16 GB RAM)
 
 **Configuration:**
+
 - **Max concurrent instances:** 8
 - **Per-instance memory:** 120 MB (lightweight mode)
 - **System overhead:** 2 GB (OS, thegent orchestrator, caches)
@@ -635,6 +643,7 @@ Result Aggregator (S3 / NFS)
 ```
 
 **For this scale, prefer Kubernetes:**
+
 - Each machine runs a Codex DaemonSet (8 pods/node)
 - Task queue is a K8s Service
 - Results collected to persistent volume
@@ -722,15 +731,15 @@ run_codex_with_limits() {
 
 ## 8. Key Decisions & Rationale
 
-| Decision | Rationale | Alternatives |
-|----------|-----------|--------------|
-| **No prewarmed pool (MVP)** | Adds complexity; direct spawning sufficient for 5–10 agents | Prewarmed pool for 100+ agents (Phase 2) |
-| **Isolated `~/.codex` per instance** | Avoids SQLite lock contention; simple symlink for auth | Connection pooling in Codex (requires upstream) |
-| **Activity-based timeouts (no wall-time)** | Prevents killing long-running but active tasks | Strict wall-time; may kill legitimate work |
-| **JSONL result format** | Standard streaming format; easy parsing with `jq` | Custom binary protocol (overkill) |
-| **Symlink auth token** — Shared token across instances | Reduces API handshake overhead | Separate tokens per instance (more secure, slower) |
-| **Sub-agent protocol in thegent, not Codex** | Codex doesn't need to know about orchestration; cleaner separation | Native Codex support (requires redesign) |
-| **Lightweight config via `-c` flags** | No config file needed; flags override `~/.codex/config.toml` | New config.toml file per instance (heavier) |
+| Decision                                               | Rationale                                                          | Alternatives                                       |
+| ------------------------------------------------------ | ------------------------------------------------------------------ | -------------------------------------------------- |
+| **No prewarmed pool (MVP)**                            | Adds complexity; direct spawning sufficient for 5–10 agents        | Prewarmed pool for 100+ agents (Phase 2)           |
+| **Isolated `~/.codex` per instance**                   | Avoids SQLite lock contention; simple symlink for auth             | Connection pooling in Codex (requires upstream)    |
+| **Activity-based timeouts (no wall-time)**             | Prevents killing long-running but active tasks                     | Strict wall-time; may kill legitimate work         |
+| **JSONL result format**                                | Standard streaming format; easy parsing with `jq`                  | Custom binary protocol (overkill)                  |
+| **Symlink auth token** — Shared token across instances | Reduces API handshake overhead                                     | Separate tokens per instance (more secure, slower) |
+| **Sub-agent protocol in thegent, not Codex**           | Codex doesn't need to know about orchestration; cleaner separation | Native Codex support (requires redesign)           |
+| **Lightweight config via `-c` flags**                  | No config file needed; flags override `~/.codex/config.toml`       | New config.toml file per instance (heavier)        |
 
 ---
 
@@ -765,15 +774,15 @@ run_codex_with_limits() {
 
 ## 10. Success Criteria
 
-| Criterion | Target | Measurement |
-|-----------|--------|-------------|
-| Concurrent instances | ≥8 | No lock contention; all instances complete tasks |
-| Memory per instance | ≤150 MB | Peak RSS under `ulimit` cap |
-| Startup time | <1 sec | Time to first output from `codex exec` |
-| Multi-agent throughput | ≥10 tasks/min | Task queue → completion across 8 instances |
-| Context isolation | 100% | No cross-instance state leakage (verified with unique markers) |
-| Feature parity (AX/UX) | ≥70% | Supports CLAUDE.md, project memory, config injection |
-| Documentation quality | ≥80% | Clear quick-start, API docs, examples |
+| Criterion              | Target        | Measurement                                                    |
+| ---------------------- | ------------- | -------------------------------------------------------------- |
+| Concurrent instances   | ≥8            | No lock contention; all instances complete tasks               |
+| Memory per instance    | ≤150 MB       | Peak RSS under `ulimit` cap                                    |
+| Startup time           | <1 sec        | Time to first output from `codex exec`                         |
+| Multi-agent throughput | ≥10 tasks/min | Task queue → completion across 8 instances                     |
+| Context isolation      | 100%          | No cross-instance state leakage (verified with unique markers) |
+| Feature parity (AX/UX) | ≥70%          | Supports CLAUDE.md, project memory, config injection           |
+| Documentation quality  | ≥80%          | Clear quick-start, API docs, examples                          |
 
 ---
 
@@ -826,6 +835,7 @@ if __name__ == "__main__":
 ```
 
 **Output:**
+
 ```
 module-auth: 0
 module-api: 0
@@ -867,6 +877,7 @@ memory_max = "100mb"
 ```
 
 **Usage:**
+
 ```bash
 codex exec - -p lightweight --json < task.txt
 ```

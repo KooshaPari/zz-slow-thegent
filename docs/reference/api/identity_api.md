@@ -20,7 +20,7 @@ WP-6004: Manages agent identity, DID, and signing keys.
 
 ### Methods
 
-#### AgentIdentity.__init__
+#### AgentIdentity.**init**
 
 ```python
 __init__(self: Any, agent_name: str, swarm_id: str)

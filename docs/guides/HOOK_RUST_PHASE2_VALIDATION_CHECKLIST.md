@@ -31,6 +31,7 @@
 - [x] Rollout strategy defined
 
 **Performance Baseline Verified**:
+
 - Hook init: 3-8ms ✅ (Target: <5ms)
 - Cache key: 0.2-0.5ms ✅ (Target: <1ms)
 - Tool detection: 0.8-1.2ms ✅ (Target: <1ms)
@@ -42,6 +43,7 @@
 **RECOMMENDATION**: ✅ **GO for Phase 2**
 
 **Rationale**:
+
 1. Performance targets met or exceeded
 2. No regressions in core functionality
 3. Cross-platform validation successful
@@ -67,16 +69,17 @@ Before starting Phase 2 implementation, verify:
 
 **4-Week Rollout** (starts after Phase 1 completion):
 
-| Week | % Adopted | Focus | Success Criteria |
-|------|-----------|-------|------------------|
-| **1** | 10% | Validation | 0% failure rate, performance verified |
-| **2** | 25% | Expansion | <0.1% failure rate, no regressions |
-| **3** | 50% | Majority | <0.05% failure rate, monitoring green |
-| **4** | 100% | Default | All hooks migrated, deprecation warnings |
+| Week  | % Adopted | Focus      | Success Criteria                         |
+| ----- | --------- | ---------- | ---------------------------------------- |
+| **1** | 10%       | Validation | 0% failure rate, performance verified    |
+| **2** | 25%       | Expansion  | <0.1% failure rate, no regressions       |
+| **3** | 50%       | Majority   | <0.05% failure rate, monitoring green    |
+| **4** | 100%      | Default    | All hooks migrated, deprecation warnings |
 
 ### 2.2 Week 1: Validation (10% Adoption)
 
 **Target Hooks** (5-7 simple hooks):
+
 1. `doc-location-guard.sh`
 2. `friction-detector.sh`
 3. `auto-checkpoint.sh`
@@ -84,6 +87,7 @@ Before starting Phase 2 implementation, verify:
 5. `harvest-pending-queue.sh`
 
 **Validation Activities**:
+
 - [ ] Update hooks to use `thegent-hooks` where applicable
 - [ ] Run real-world agent workloads (50+ hook invocations)
 - [ ] Monitor for: crashes, hangs, data corruption
@@ -91,6 +95,7 @@ Before starting Phase 2 implementation, verify:
 - [ ] Collect user feedback
 
 **Success Criteria**:
+
 - ✅ All 5 hooks execute without errors
 - ✅ Performance improvement ≥50% on average
 - ✅ No increase in error rates
@@ -102,17 +107,20 @@ Before starting Phase 2 implementation, verify:
 ### 2.3 Week 2: Expansion (25% Adoption)
 
 **Add These Hooks** (additional 10-12):
+
 - Git-related hooks (change-doc-tracker, etc.)
 - Cache-heavy hooks (complexity-ratchet)
 - File validation hooks (pre-write-validator-full)
 
 **Expansion Activities**:
+
 - [ ] Migrate additional hooks
 - [ ] Fix any issues from Week 1
 - [ ] Optimize based on real-world profiles
 - [ ] Update documentation
 
 **Success Criteria**:
+
 - ✅ <0.1% failure rate across all 25% hooks
 - ✅ Average latency reduction ≥60%
 - ✅ No tail latency (P95/P99) regressions
@@ -123,16 +131,19 @@ Before starting Phase 2 implementation, verify:
 ### 2.4 Week 3: Majority (50% Adoption)
 
 **Migrate Complex Hooks** (15+ hooks):
+
 - All remaining simple and medium hooks
 - Leave only most complex hooks for Week 4
 
 **Majority Activities**:
+
 - [ ] Bulk migration of hooks
 - [ ] Deprecation warnings in common.sh
 - [ ] Performance optimization (libgit2 integration if applicable)
 - [ ] Prepare documentation for Week 4
 
 **Success Criteria**:
+
 - ✅ <0.05% failure rate
 - ✅ Monitoring shows sustained improvement
 - ✅ No new issues from additional hooks
@@ -143,11 +154,13 @@ Before starting Phase 2 implementation, verify:
 ### 2.5 Week 4: Default (100% Adoption)
 
 **Make thegent-hooks Default**:
+
 - All remaining hooks migrated
 - common.sh becomes deprecated (still available as fallback)
 - Final integration testing
 
 **Default Activities**:
+
 - [ ] Migrate final complex hooks
 - [ ] Mark common.sh as deprecated in code
 - [ ] Add migration guide for existing hooks
@@ -155,6 +168,7 @@ Before starting Phase 2 implementation, verify:
 - [ ] Announce deprecation timeline (e.g., 3 months)
 
 **Success Criteria**:
+
 - ✅ 100% of hooks running successfully
 - ✅ Overall system performance improved 7-10x
 - ✅ Zero critical failures in production
@@ -167,24 +181,28 @@ Before starting Phase 2 implementation, verify:
 ### 3.1 Hook Categories to Test
 
 #### Category A: Simple Validation Hooks (Week 1)
+
 - **Hooks**: doc-location-guard, friction-detector, auto-checkpoint
 - **Risk Level**: 🟢 Low
 - **Test Scenarios**: 3-5 runs each, verify correct output
 - **Metrics**: Latency, error rate, output correctness
 
 #### Category B: Git-Heavy Hooks (Week 2)
+
 - **Hooks**: change-doc-tracker, gardener-spawn, async-test-runner
 - **Risk Level**: 🟡 Medium
 - **Test Scenarios**: Various repo states (clean, dirty, large), different git operations
 - **Metrics**: Git operation latency, cache hit rates, memory usage
 
 #### Category C: Cache-Heavy Hooks (Week 2)
+
 - **Hooks**: complexity-ratchet, pre-write-validator-full, quality-gate
 - **Risk Level**: 🟡 Medium
 - **Test Scenarios**: Repeated runs, cache clear/rebuild, concurrent access
 - **Metrics**: Cache key generation, cache hit rate, performance consistency
 
 #### Category D: Complex Hooks (Week 3-4)
+
 - **Hooks**: governance-gates, gardener-xp, agent-antipattern-detector
 - **Risk Level**: 🔴 High
 - **Test Scenarios**: Full end-to-end workflow, error conditions, edge cases
@@ -193,6 +211,7 @@ Before starting Phase 2 implementation, verify:
 ### 3.2 Test Workload Profile
 
 **Simulated Agent Session** (50 hook invocations):
+
 ```
 10 hook inits          (Category A)
 10 cache operations    (Category B)
@@ -207,13 +226,13 @@ Before starting Phase 2 implementation, verify:
 
 ### 3.3 Cross-Platform Testing
 
-| Platform | Test Coverage | Notes |
-|----------|---------------|-------|
-| **macOS (Apple Silicon)** | 100% | Primary development platform |
-| **macOS (Intel)** | 50% (spot check) | Performance should be similar |
-| **Linux (x86-64)** | 100% | Production deployment target |
-| **Linux (ARM64)** | 50% (if available) | Verify cross-arch compatibility |
-| **Windows (WSL2)** | 25% (basic) | Future consideration |
+| Platform                  | Test Coverage      | Notes                           |
+| ------------------------- | ------------------ | ------------------------------- |
+| **macOS (Apple Silicon)** | 100%               | Primary development platform    |
+| **macOS (Intel)**         | 50% (spot check)   | Performance should be similar   |
+| **Linux (x86-64)**        | 100%               | Production deployment target    |
+| **Linux (ARM64)**         | 50% (if available) | Verify cross-arch compatibility |
+| **Windows (WSL2)**        | 25% (basic)        | Future consideration            |
 
 ### 3.4 Concurrency Testing
 
@@ -228,6 +247,7 @@ wait
 ```
 
 **Verify**:
+
 - [ ] No cache corruption with concurrent access
 - [ ] No file lock contention
 - [ ] Performance degrades gracefully (not catastrophically)
@@ -241,19 +261,20 @@ wait
 
 **Real-Time Monitoring** (during Phase 2 rollout):
 
-| Metric | Phase 1 Baseline | Phase 2 Target | Alert Threshold |
-|--------|-----------------|----------------|-----------------|
-| **Hook init latency (mean)** | 3-8ms | <8ms | >12ms (50% regression) |
-| **Hook init latency (P95)** | 3.8ms | <10ms | >15ms |
-| **Cache key latency** | 0.2-0.5ms | <1ms | >1.5ms |
-| **Git operation latency** | 8-15ms | <20ms | >30ms |
-| **Overall hook latency** | 25-50ms | <50ms | >75ms |
-| **Cache hit rate** | 60%+ | 60%+ | <50% |
-| **Error rate** | <0.01% | <0.05% | >0.1% |
+| Metric                       | Phase 1 Baseline | Phase 2 Target | Alert Threshold        |
+| ---------------------------- | ---------------- | -------------- | ---------------------- |
+| **Hook init latency (mean)** | 3-8ms            | <8ms           | >12ms (50% regression) |
+| **Hook init latency (P95)**  | 3.8ms            | <10ms          | >15ms                  |
+| **Cache key latency**        | 0.2-0.5ms        | <1ms           | >1.5ms                 |
+| **Git operation latency**    | 8-15ms           | <20ms          | >30ms                  |
+| **Overall hook latency**     | 25-50ms          | <50ms          | >75ms                  |
+| **Cache hit rate**           | 60%+             | 60%+           | <50%                   |
+| **Error rate**               | <0.01%           | <0.05%         | >0.1%                  |
 
 ### 4.2 Monitoring Implementation
 
 **Logs & Metrics**:
+
 ```bash
 # Each hook invocation logs:
 {
@@ -269,6 +290,7 @@ wait
 ```
 
 **Aggregation** (hourly):
+
 ```json
 {
   "hour": "2026-02-20T12:00:00Z",
@@ -285,18 +307,21 @@ wait
 ### 4.3 Alert Rules
 
 **Critical** 🔴:
+
 - Error rate >0.5%
 - Any crash/hang in production
 - Data corruption detected
 - Latency regression >100ms
 
 **High** 🟠:
+
 - Error rate >0.1%
 - Latency regression >50ms
 - Cache corruption suspected
 - Git operations consistently slow
 
 **Medium** 🟡:
+
 - Cache hit rate <50%
 - Latency increase >20% from baseline
 - Individual hook >2σ slower
@@ -363,6 +388,7 @@ task bench:report  # Review performance data
 ### 6.1 Running Phase 2 Validation
 
 **Step 1: Validate Phase 1 Setup**
+
 ```bash
 # Verify thegent-hooks binary works
 thegent-hooks --version
@@ -372,6 +398,7 @@ task bench:comprehensive
 ```
 
 **Step 2: Prepare Phase 2 Environment**
+
 ```bash
 # Ensure monitoring is ready
 mkdir -p benchmarks/results
@@ -382,6 +409,7 @@ cp hooks/lib/common.sh hooks/lib/common.sh.bak  # Backup
 ```
 
 **Step 3: Run Validation (Week 1)**
+
 ```bash
 # Test one hook migration
 cd hooks
@@ -395,6 +423,7 @@ task bench:report
 ```
 
 **Step 4: Gradual Rollout (Weeks 2-4)**
+
 ```bash
 # Week 1 → Week 2
 task bench:extended
@@ -450,15 +479,19 @@ jq '.results[0].mean' benchmarks/results/latest/current/*.json
 ### 6.4 Troubleshooting
 
 **Issue**: `thegent-hooks: command not found`
+
 - **Solution**: Build with `cargo build --release` or install with `task setup`
 
 **Issue**: Benchmark execution times very slow
+
 - **Solution**: Check system load (`top`), ensure no background jobs running
 
 **Issue**: Git operations timing out
+
 - **Solution**: Check git repo integrity (`git fsck --full`)
 
 **Issue**: Cache corruption or incorrect results
+
 - **Solution**: Clear cache (`rm -rf .thegent/cache/*`) and rerun
 
 ---
@@ -506,21 +539,25 @@ jq '.results[0].mean' benchmarks/results/latest/current/*.json
 **Phase 2 is successful if**:
 
 ✅ **Performance**:
+
 - 70%+ improvement in hook latency across all categories
 - Zero latency regressions
 - Cache hit rate ≥60%
 
 ✅ **Reliability**:
+
 - <0.05% error rate throughout rollout
 - Zero data corruption incidents
 - All cross-platform tests passing
 
 ✅ **Adoption**:
+
 - 100% of hooks successfully migrated
 - Zero critical failures during rollout
 - User satisfaction ≥95%
 
 ✅ **Operational**:
+
 - Monitoring and alerts functional
 - Rollback procedure working (tested)
 - Documentation complete and accurate

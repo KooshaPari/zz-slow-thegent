@@ -23,6 +23,7 @@ This document defines 5 core communication patterns that enable agents across pr
 **Scenario**: L1 agent wants to assign work to an L2 agent.
 
 **Characteristics**:
+
 - Synchronous or asynchronous (sender's choice)
 - Parent-child relationship (L1 supervises L2)
 - Clearly defined task boundary
@@ -31,6 +32,7 @@ This document defines 5 core communication patterns that enable agents across pr
 ### Synchronous Dispatch (Real-Time)
 
 **Flow**:
+
 ```
 L1 (kush:claude-code)
   ├─ Resolves L2 endpoint: kush:runner-1
@@ -50,6 +52,7 @@ L1 (kush:claude-code)
 ```
 
 **Message Schema**:
+
 ```json
 {
   "message_type": "task_dispatch",
@@ -75,12 +78,8 @@ L1 (kush:claude-code)
     "blocking_tasks": [],
     "blocked_by_tasks": [],
     "dependencies": {
-      "code_files": [
-        "/kush/src/http_client.py"
-      ],
-      "prior_research": [
-        "docs/research/async_patterns.md"
-      ]
+      "code_files": ["/kush/src/http_client.py"],
+      "prior_research": ["docs/research/async_patterns.md"]
     }
   },
   "resource_request": {
@@ -98,6 +97,7 @@ L1 (kush:claude-code)
 ```
 
 **Response (ACK)**:
+
 ```json
 {
   "message_type": "task_dispatch_ack",
@@ -120,6 +120,7 @@ L1 (kush:claude-code)
 ```
 
 **Negative Response (Overloaded)**:
+
 ```json
 {
   "message_type": "task_dispatch_nack",
@@ -151,6 +152,7 @@ L1 (kush:claude-code)
 ### Asynchronous Dispatch (Queue-Based)
 
 **Flow**:
+
 ```
 L1 (kush:claude-code)
   ├─ Writes task to WORK_STREAM.md
@@ -171,6 +173,7 @@ L1 (kush:claude-code)
 ```
 
 **Message Format (Queue Entry)**:
+
 ```json
 {
   "message_id": "msg-8f7e6d5c4b3a-001",
@@ -184,6 +187,7 @@ L1 (kush:claude-code)
 ```
 
 **Queue File Location**:
+
 ```
 ~/.claude/civilization/queues/
 ├── kush:runner-1.mq          (queue for runner-1)
@@ -193,13 +197,13 @@ L1 (kush:claude-code)
 
 ### Comparison: Sync vs Async
 
-| Aspect | Synchronous | Asynchronous |
-|--------|-------------|-------------|
-| **Latency** | <1s (real-time) | 1-5s (poll-based) |
-| **Reliability** | High (knows immediately if failed) | High (queue persists) |
-| **Load** | Can reject if overloaded (backpressure) | Can be queued (fairness) |
-| **Use Case** | Urgent tasks, real-time response | Bulk dispatch, low latency acceptable |
-| **Fallback** | Switch to async if sync fails | N/A |
+| Aspect          | Synchronous                             | Asynchronous                          |
+| --------------- | --------------------------------------- | ------------------------------------- |
+| **Latency**     | <1s (real-time)                         | 1-5s (poll-based)                     |
+| **Reliability** | High (knows immediately if failed)      | High (queue persists)                 |
+| **Load**        | Can reject if overloaded (backpressure) | Can be queued (fairness)              |
+| **Use Case**    | Urgent tasks, real-time response        | Bulk dispatch, low latency acceptable |
+| **Fallback**    | Switch to async if sync fails           | N/A                                   |
 
 ---
 
@@ -208,6 +212,7 @@ L1 (kush:claude-code)
 **Scenario**: L2 in Project A needs work done in Project B, but doesn't want to escalate to L1.
 
 **Characteristics**:
+
 - Peer-to-peer (not hierarchical)
 - Cross-project (different git homes)
 - Negotiation-based (responder can accept/defer)
@@ -273,6 +278,7 @@ L2-A (kush:runner-1) needs research from atoms project
 ```
 
 **Message Schema (Request)**:
+
 ```json
 {
   "message_type": "cross_project_request",
@@ -304,6 +310,7 @@ L2-A (kush:runner-1) needs research from atoms project
 ```
 
 **Response (Accepted)**:
+
 ```json
 {
   "message_type": "cross_project_response",
@@ -328,6 +335,7 @@ L2-A (kush:runner-1) needs research from atoms project
 ```
 
 **Response (Deferred)**:
+
 ```json
 {
   "message_type": "cross_project_response",
@@ -347,9 +355,7 @@ L2-A (kush:runner-1) needs research from atoms project
       "tasks_queued": 3
     },
     "estimated_available_time": "2026-02-19T16:00:00Z",
-    "suggested_alternatives": [
-      "atoms:research-agent-2:L2:researcher"
-    ]
+    "suggested_alternatives": ["atoms:research-agent-2:L2:researcher"]
   }
 }
 ```
@@ -361,6 +367,7 @@ L2-A (kush:runner-1) needs research from atoms project
 **Scenario**: Two L2 agents in same project need to coordinate access to shared resource (API key, database connection).
 
 **Characteristics**:
+
 - P2P (no central authority)
 - Shared resource (scarce)
 - Fair scheduling (queue-based)
@@ -369,6 +376,7 @@ L2-A (kush:runner-1) needs research from atoms project
 ### Semaphore-Based Coordination
 
 **Flow**:
+
 ```
 Runner-1 and Researcher-1 both need GitHub API
   ├─ They compete for single API key (rate-limited)
@@ -401,6 +409,7 @@ Runner-1 and Researcher-1 both need GitHub API
 ```
 
 **Semaphore File Format**:
+
 ```json
 {
   "resource_id": "github-api-key",
@@ -426,6 +435,7 @@ Runner-1 and Researcher-1 both need GitHub API
 ```
 
 **Lock Acquisition Algorithm**:
+
 ```python
 def acquire_semaphore(resource_id: str, agent_id: str, timeout_seconds: int = 300):
     """
@@ -477,6 +487,7 @@ def acquire_semaphore(resource_id: str, agent_id: str, timeout_seconds: int = 30
 ```
 
 **Release Algorithm**:
+
 ```python
 def release_semaphore(resource_id: str, agent_id: str):
     """Release semaphore lock."""
@@ -507,6 +518,7 @@ def release_semaphore(resource_id: str, agent_id: str):
 **Scenario**: L2 agent sends periodic status updates to L1 parent and escalates if blocked.
 
 **Characteristics**:
+
 - Hierarchical (parent-child)
 - Periodic heartbeat (unidirectional)
 - On-demand escalation (problem detected)
@@ -515,6 +527,7 @@ def release_semaphore(resource_id: str, agent_id: str):
 ### Periodic Status Update
 
 **Flow**:
+
 ```
 L2 every 5 minutes sends StatusUpdateMessage to L1
   ├─ Message contains:
@@ -529,6 +542,7 @@ L2 every 5 minutes sends StatusUpdateMessage to L1
 ```
 
 **Message Schema (Status Update)**:
+
 ```json
 {
   "message_type": "status_update",
@@ -559,6 +573,7 @@ L2 every 5 minutes sends StatusUpdateMessage to L1
 ### Escalation on Blocking
 
 **Flow**:
+
 ```
 L2 is working on task-1 but blocked on atoms:task-2 (cross-project)
   ├─ T=0min: Task-1 becomes blocked, records start_time
@@ -583,6 +598,7 @@ L2 is working on task-1 but blocked on atoms:task-2 (cross-project)
 ```
 
 **Message Schema (Escalation)**:
+
 ```json
 {
   "message_type": "escalation",
@@ -616,6 +632,7 @@ L2 is working on task-1 but blocked on atoms:task-2 (cross-project)
 **Scenario**: Critical event affects all agents (resource threshold breach, deadlock detected, cascading failure).
 
 **Characteristics**:
+
 - Broadcast (all agents receive)
 - Event-driven (not periodic)
 - Time-sensitive (immediate action needed)
@@ -624,11 +641,13 @@ L2 is working on task-1 but blocked on atoms:task-2 (cross-project)
 ### Event Bus Implementation
 
 **Primary**: Git-based event log
+
 ```
 ~/.claude/civilization/event_log.ndjson
 ```
 
 **Example Events**:
+
 ```ndjson
 {"type":"civilization.resource_threshold_breach","timestamp":"2026-02-19T14:46:00Z","resource":"cpu","threshold":90,"current":92,"affected_projects":["kush","atoms"]}
 {"type":"civilization.deadlock_detected","timestamp":"2026-02-19T14:46:15Z","cycle":["kush:task-1","atoms:task-2","kush:task-3"],"recommended_resolution":"kill_kush_task_1"}
@@ -637,6 +656,7 @@ L2 is working on task-1 but blocked on atoms:task-2 (cross-project)
 ```
 
 **Secondary**: MCP Pub-Sub (for real-time delivery)
+
 ```python
 @mcp.subscription()
 async def subscribe_events(topic: str = "all"):
@@ -650,6 +670,7 @@ async def subscribe_events(topic: str = "all"):
 ### Specific Event Schemas
 
 **Resource Threshold Breach**:
+
 ```json
 {
   "type": "civilization.resource_threshold_breach",
@@ -677,6 +698,7 @@ async def subscribe_events(topic: str = "all"):
 ```
 
 **Deadlock Detected**:
+
 ```json
 {
   "type": "civilization.deadlock_detected",
@@ -709,6 +731,7 @@ async def subscribe_events(topic: str = "all"):
 ```
 
 **Agent Failure**:
+
 ```json
 {
   "type": "agent.failed",
@@ -747,17 +770,18 @@ async def subscribe_events(topic: str = "all"):
 
 ### Timeout Hierarchy
 
-| Scenario | Timeout | Action |
-|----------|---------|--------|
-| Task dispatch ACK (sync) | 5 seconds | Retry with backoff, switch to async |
-| Task execution | 30 minutes (L2) | Escalate, check if blocked |
-| Cross-project dependency | deadline - 30 min | Escalate, find alternative |
-| Semaphore acquisition | 5 minutes | Fail task, release resources |
-| Message delivery (async) | N/A (persisted) | Retry on next poll |
+| Scenario                 | Timeout           | Action                              |
+| ------------------------ | ----------------- | ----------------------------------- |
+| Task dispatch ACK (sync) | 5 seconds         | Retry with backoff, switch to async |
+| Task execution           | 30 minutes (L2)   | Escalate, check if blocked          |
+| Cross-project dependency | deadline - 30 min | Escalate, find alternative          |
+| Semaphore acquisition    | 5 minutes         | Fail task, release resources        |
+| Message delivery (async) | N/A (persisted)   | Retry on next poll                  |
 
 ### Retry Logic
 
 **Exponential Backoff with Jitter**:
+
 ```python
 def retry_with_backoff(
     operation, max_retries: int = 5, initial_backoff_seconds: float = 1.0, jitter_percent: float = 10
@@ -785,6 +809,7 @@ def retry_with_backoff(
 ### Deadlock Detection & Prevention
 
 **Detection Algorithm** (runs every 60s):
+
 ```python
 def detect_deadlock():
     """
@@ -809,6 +834,7 @@ def detect_deadlock():
 ```
 
 **Prevention** (configured in WORK_STREAM.md):
+
 ```json
 {
   "task_id": "task-1",
@@ -882,17 +908,16 @@ async def route_message(message: Message) -> Result:
 
 ## Glossary
 
-| Term | Definition |
-|------|-----------|
-| **Task Dispatch** | L1 assigns work to L2/L3 (sync or async) |
-| **Cross-Project Request** | L2 asks L2 in different project for help (negotiated) |
-| **Semaphore** | Shared lock for resource access (lease-based) |
-| **Status Update** | Periodic heartbeat from L2/L3 to L1 (5-60s interval) |
-| **Escalation** | L2 alerts L1 to problem (blocked, overloaded, failed) |
-| **Event Broadcast** | Civilization-wide notification (deadlock, resource breach) |
-| **Backpressure** | Rejecting task dispatch when overloaded |
-| **Eventual Consistency** | Agents converge to consistent state over time (not immediately) |
-
+| Term                      | Definition                                                      |
+| ------------------------- | --------------------------------------------------------------- |
+| **Task Dispatch**         | L1 assigns work to L2/L3 (sync or async)                        |
+| **Cross-Project Request** | L2 asks L2 in different project for help (negotiated)           |
+| **Semaphore**             | Shared lock for resource access (lease-based)                   |
+| **Status Update**         | Periodic heartbeat from L2/L3 to L1 (5-60s interval)            |
+| **Escalation**            | L2 alerts L1 to problem (blocked, overloaded, failed)           |
+| **Event Broadcast**       | Civilization-wide notification (deadlock, resource breach)      |
+| **Backpressure**          | Rejecting task dispatch when overloaded                         |
+| **Eventual Consistency**  | Agents converge to consistent state over time (not immediately) |
 
 ---
 
@@ -974,6 +999,7 @@ curl -H "Authorization: Bearer eyJhbGciOi..." http://localhost:8000/api/plans
 ```
 
 **Token Structure:**
+
 ```
 Header.Payload.Signature
 
@@ -988,6 +1014,7 @@ Signature: HMACSHA256(header + "." + payload, secret)
 **Cons:** Token interception risk, key management needed
 
 **Token Lifecycle:**
+
 ```bash
 # Issue token (login)
 POST /api/auth/login
@@ -1064,13 +1091,13 @@ CRUN uses Role-Based Access Control (RBAC):
 
 ### Roles
 
-| Role | Capabilities | Use Case |
-|------|--------------|----------|
-| **Admin** | All operations | System owner |
-| **Operator** | Create/monitor plans, view metrics | Production operator |
-| **Developer** | Generate plans, analyze code, execute | Developer |
-| **Viewer** | Read-only access to plans and results | Stakeholder, audit |
-| **Anonymous** | No access (unless disabled) | N/A |
+| Role          | Capabilities                          | Use Case            |
+| ------------- | ------------------------------------- | ------------------- |
+| **Admin**     | All operations                        | System owner        |
+| **Operator**  | Create/monitor plans, view metrics    | Production operator |
+| **Developer** | Generate plans, analyze code, execute | Developer           |
+| **Viewer**    | Read-only access to plans and results | Stakeholder, audit  |
+| **Anonymous** | No access (unless disabled)           | N/A                 |
 
 ### Role Permissions
 
@@ -1116,6 +1143,7 @@ curl -X POST http://localhost:8000/api/users/bob/roles \
 ### Data at Rest
 
 **Default Storage (SQLite):**
+
 ```bash
 # Data stored in local SQLite database
 .crun/crun.db
@@ -1128,6 +1156,7 @@ chmod 600 .crun/crun.db
 ```
 
 **PostgreSQL Storage (Recommended for Production):**
+
 ```bash
 # Store in production-grade database
 CRUN_DB_URL=postgresql://user:pass@server:5432/crun
@@ -1146,6 +1175,7 @@ CREATE TABLE secrets (
 ### Data in Transit
 
 **HTTP (Insecure, avoid in production):**
+
 ```bash
 # Unencrypted communication
 http://localhost:8000/api/plans
@@ -1153,6 +1183,7 @@ http://localhost:8000/api/plans
 ```
 
 **HTTPS (Recommended):**
+
 ```bash
 # Encrypted communication
 https://localhost:8000/api/plans
@@ -1164,6 +1195,7 @@ CRUN_SSL_KEY_FILE=/path/to/key.pem
 ```
 
 **TLS Version & Ciphers:**
+
 ```bash
 # Force TLS 1.2+
 CRUN_TLS_MIN_VERSION=1.2
@@ -1175,6 +1207,7 @@ CRUN_TLS_CIPHERS=HIGH:!aNULL:!MD5
 ### Sensitive Data Handling
 
 **API Keys:** Never log or expose
+
 ```bash
 # ❌ DON'T: Log API keys
 logger.info(f"API Key: {api_key}")
@@ -1184,6 +1217,7 @@ logger.info(f"API Key: ...{api_key[-4:]}")
 ```
 
 **Passwords:** Always hash, never store plaintext
+
 ```bash
 from passlib.context import CryptContext
 
@@ -1195,6 +1229,7 @@ pwd_context.verify(password, hashed)
 ```
 
 **Secrets Configuration:**
+
 ```bash
 # Use secret management systems
 # AWS Secrets Manager, HashiCorp Vault, etc.
@@ -1211,6 +1246,7 @@ pwd_context.verify(password, hashed)
 ### Network Isolation
 
 **Single Machine:**
+
 ```bash
 # Bind to localhost only (default, secure)
 CRUN_HOST=127.0.0.1
@@ -1221,6 +1257,7 @@ CRUN_PORT=8000
 ```
 
 **Cloud Deployment:**
+
 ```bash
 # Use private networks
 # AWS: VPC, Security Groups
@@ -1334,6 +1371,7 @@ curl http://localhost:8000/api/plans?token=$TOKEN
 
 **Risk:** Code execution on the machine  
 **Mitigation:**
+
 ```bash
 # Restrict workspace access to current user
 chmod 700 .crun
@@ -1346,6 +1384,7 @@ CRUN_WORKSPACE_ROOT=/mnt/external  # Mount read-only
 
 **Risk:** Agents execute arbitrary commands  
 **Mitigation:**
+
 ```bash
 # Run agents in sandboxed environment
 CRUN_AGENT_SANDBOX=true
@@ -1358,6 +1397,7 @@ CRUN_AGENT_ALLOWED_COMMANDS=python,bash,npm,pip
 
 **Risk:** DoS via large file uploads  
 **Mitigation:**
+
 ```bash
 # Limit file size
 CRUN_MAX_FILE_SIZE=100MB
@@ -1368,6 +1408,7 @@ CRUN_MAX_REQUEST_SIZE=500MB
 
 **Risk:** SSRF (Server-Side Request Forgery)  
 **Mitigation:**
+
 ```bash
 # Whitelist allowed URLs
 CRUN_ALLOWED_DOMAINS=api.openai.com,api.anthropic.com
@@ -1380,6 +1421,7 @@ CRUN_PREVENT_INTERNAL_IPS=true
 
 **Risk:** Using vulnerable packages  
 **Mitigation:**
+
 ```bash
 # Regular dependency updates
 pip install --upgrade -r requirements.txt
@@ -1397,12 +1439,14 @@ safety check
 ### For Development
 
 1. **Use Virtual Environments**
+
    ```bash
    python3 -m venv venv
    source venv/bin/activate
    ```
 
 2. **Never Commit Secrets**
+
    ```bash
    # .gitignore
    .env
@@ -1412,6 +1456,7 @@ safety check
    ```
 
 3. **Regular Updates**
+
    ```bash
    pip list --outdated
    pip install --upgrade pip
@@ -1425,6 +1470,7 @@ safety check
 ### For Production
 
 1. **Use HTTPS/TLS**
+
    ```bash
    CRUN_ENABLE_HTTPS=true
    CRUN_SSL_CERT_FILE=/etc/ssl/certs/server.crt
@@ -1437,6 +1483,7 @@ safety check
    - Rotate API keys regularly
 
 3. **Database Security**
+
    ```bash
    # Use PostgreSQL, not SQLite
    # Enable SSL for database connections
@@ -1451,21 +1498,23 @@ safety check
    - DDoS protection
 
 5. **Monitoring & Logging**
+
    ```bash
    # Enable audit logging
    CRUN_AUDIT_LOG_ENABLED=true
    CRUN_AUDIT_LOG_FILE=.crun/audit.log
-   
+
    # Monitor for suspicious activity
    # Alert on failed authentication attempts
    # Track privilege escalations
    ```
 
 6. **Regular Backups**
+
    ```bash
    # Daily backups
    pg_dump crun > backup_$(date +%Y%m%d).sql
-   
+
    # Test restore procedure
    psql crun < backup_*.sql
    ```
@@ -1522,7 +1571,6 @@ If you discover a security vulnerability:
 
 **Version:** CRUN 3.0.0 | Last Updated: 2026-02-20
 
-
 ---
 
 ## Source: swarm-architecture.md
@@ -1536,6 +1584,7 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
 ## Deliverables
 
 ### 1. Core Implementation
+
 - **File**: `scripts/swarm_controller.py` (1000+ LOC)
 - **Features**:
   - `SwarmController` main orchestrator
@@ -1549,6 +1598,7 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
   - Comprehensive logging
 
 ### 2. Configuration
+
 - **File**: `config/swarm_controller_config.yaml`
 - **Sections**:
   - Health monitoring (10s polling, 30s stale threshold)
@@ -1562,6 +1612,7 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
   - All tunable parameters
 
 ### 3. Testing
+
 - **File**: `scripts/test_swarm_controller.py` (200+ LOC)
 - **Coverage**:
   - Configuration loading
@@ -1574,6 +1625,7 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
 - **Status**: All 7 tests passing ✓
 
 ### 4. Documentation
+
 - **`docs/guides/SWARM_CONTROLLER_README.md`** (Comprehensive overview)
   - Architecture and classes
   - Quick start guide
@@ -1612,6 +1664,7 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
   - Best practices
 
 ### 5. CI/CD Integration
+
 - **File**: `.github/workflows/swarm-health.yml`
 - **Features**:
   - Scheduled health checks (every 15 min during work hours)
@@ -1622,6 +1675,7 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
   - Security-hardened for GitHub Actions
 
 ### 6. Agent Tracking
+
 - **File**: `docs/reference/AGENTS_ACTIVE.md`
 - **Contains**:
   - Agent status summary
@@ -1635,6 +1689,7 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
 ## Key Features
 
 ### Health Monitoring ✓
+
 - Polls agent status every 10 seconds
 - Detects stale agents (>30s no update)
 - Detects SLO breaches (>150% of expected time)
@@ -1642,42 +1697,49 @@ A complete, production-ready Self-Healing Swarm Controller has been implemented 
 - Tracks heartbeat, last activity, task progress
 
 ### Graceful Pause ✓
+
 - Uses SIGSTOP signal (not kill)
 - Preserves agent memory state
 - Can resume with SIGCONT
 - Prevents state loss on resource pressure
 
 ### Automatic Restart ✓
+
 - Exponential backoff: 2s, 4s, 8s, 16s
 - Max 3 automatic restart attempts
 - After max: escalate to L1 manual intervention
 - Tracks restart history per agent
 
 ### Dynamic Scaling ✓
+
 - Scale UP: pending > 5 items
 - Scale DOWN: pending < 2 items or resource pressure
 - Min: 1 agent, Max: 10 agents
 - Resource-aware (won't scale up if CPU>60% or Memory>50%)
 
 ### Resource Management ✓
+
 - Monitors system CPU and memory
 - Throttles on CPU>80% or Memory>70%
 - Pauses agents on resource pressure
 - Resumes when resources free up
 
 ### Queue Management ✓
+
 - Reads `docs/reference/WORK_STREAM.md` for queue depth
 - Prevents overload via backpressure (if claimed > 10)
 - Limits per-agent claiming (max 5 items)
 - Fair work distribution
 
 ### Persistent State ✓
+
 - Saves agent metrics to `.claude/swarm_state.json`
 - Logs all decisions to `.claude/swarm_controller.log`
 - State persists across restarts
 - JSON format for integration
 
 ### CLI Interface ✓
+
 - `--monitor`: Run continuous loop
 - `--auto-heal`: Enable auto-healing
 - `--status`: Print JSON status
@@ -1743,16 +1805,19 @@ Total:  7
 ## Quick Start
 
 ### Installation
+
 ```bash
 pip3 install psutil pyyaml
 ```
 
 ### Run Monitor
+
 ```bash
 python3 scripts/swarm_controller.py --monitor --auto-heal
 ```
 
 ### Check Status
+
 ```bash
 # JSON status
 python3 scripts/swarm_controller.py --status
@@ -1762,6 +1827,7 @@ python3 scripts/swarm_controller.py --report
 ```
 
 ### Agent Management
+
 ```bash
 # Pause agent (gracefully)
 python3 scripts/swarm_controller.py --pause-agent agent-1
@@ -1775,18 +1841,18 @@ python3 scripts/swarm_controller.py --update-metrics agent-1 task_progress=5
 
 ## File Locations
 
-| File | Purpose |
-|------|---------|
-| `scripts/swarm_controller.py` | Main controller (1000+ LOC) |
-| `scripts/test_swarm_controller.py` | Test suite (200+ LOC) |
-| `config/swarm_controller_config.yaml` | Configuration |
-| `docs/guides/SWARM_CONTROLLER_README.md` | Overview |
-| `docs/guides/SWARM_CONTROLLER_USAGE.md` | Detailed usage guide |
-| `docs/guides/SWARM_INTEGRATION_GUIDE.md` | Integration patterns |
-| `docs/reference/AGENTS_ACTIVE.md` | Agent tracking |
-| `.claude/swarm_controller.log` | Decision log |
-| `.claude/swarm_state.json` | Agent state |
-| `.github/workflows/swarm-health.yml` | CI/CD |
+| File                                     | Purpose                     |
+| ---------------------------------------- | --------------------------- |
+| `scripts/swarm_controller.py`            | Main controller (1000+ LOC) |
+| `scripts/test_swarm_controller.py`       | Test suite (200+ LOC)       |
+| `config/swarm_controller_config.yaml`    | Configuration               |
+| `docs/guides/SWARM_CONTROLLER_README.md` | Overview                    |
+| `docs/guides/SWARM_CONTROLLER_USAGE.md`  | Detailed usage guide        |
+| `docs/guides/SWARM_INTEGRATION_GUIDE.md` | Integration patterns        |
+| `docs/reference/AGENTS_ACTIVE.md`        | Agent tracking              |
+| `.claude/swarm_controller.log`           | Decision log                |
+| `.claude/swarm_state.json`               | Agent state                 |
+| `.github/workflows/swarm-health.yml`     | CI/CD                       |
 
 ## Integration Points
 
@@ -1840,6 +1906,7 @@ All behavior tunable via `config/swarm_controller_config.yaml`:
 ## Validation
 
 All code validated:
+
 - Syntax check: ✓ Passed
 - Import validation: ✓ Passed
 - Test suite: ✓ 7/7 passing
@@ -1850,6 +1917,7 @@ All code validated:
 ## Production Ready
 
 This implementation is production-ready with:
+
 - Comprehensive error handling
 - Persistent state management
 - Detailed logging
@@ -1876,7 +1944,6 @@ This implementation is production-ready with:
 **Implementation Time**: Comprehensive implementation with 1000+ LOC main code, 200+ LOC tests, 1000+ lines of documentation, and complete CI/CD integration.
 
 **Testing**: All 7 core tests passing, syntax validated, imports verified, configuration valid.
-
 
 ---
 

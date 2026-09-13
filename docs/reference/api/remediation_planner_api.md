@@ -5,9 +5,9 @@
 DAG-based remediation plan generation.
 
 Converts prioritised findings from the analyzer into an executable DAG of
-remediation tasks that the agent deployer can dispatch.  Uses
-``graphlib.TopologicalSorter`` (stdlib) for DAG resolution and reuses the
-PERT forward-pass from ``thegent.planning.simulation`` for critical-path
+remediation tasks that the agent deployer can dispatch. Uses
+`graphlib.TopologicalSorter` (stdlib) for DAG resolution and reuses the
+PERT forward-pass from `thegent.planning.simulation` for critical-path
 estimation.
 
 ---
@@ -30,7 +30,7 @@ Converts findings into an executable remediation DAG.
 
 ### Methods
 
-#### RemediationPlanner.__init__
+#### RemediationPlanner.**init**
 
 ```python
 __init__(self: Any, health_targets_path: Path)
@@ -44,7 +44,7 @@ __init__(self: Any, health_targets_path: Path)
 plan(self: Any, findings: list[Finding], budget_remaining_calls: int)
 ```
 
-Build a remediation plan from *findings* within *budget*.
+Build a remediation plan from _findings_ within _budget_.
 
 ---
 
@@ -64,6 +64,6 @@ A single task in a remediation plan.
 plan(self: Any, findings: list[Finding], budget_remaining_calls: int)
 ```
 
-Build a remediation plan from *findings* within *budget*.
+Build a remediation plan from _findings_ within _budget_.
 
 ---

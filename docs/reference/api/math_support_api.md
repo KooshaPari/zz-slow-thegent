@@ -12,7 +12,7 @@ KaTeX math rendering support.
 
 ### Methods
 
-#### MathSupport.__init__
+#### MathSupport.**init**
 
 ```python
 __init__(self: Any, auto_render: bool)

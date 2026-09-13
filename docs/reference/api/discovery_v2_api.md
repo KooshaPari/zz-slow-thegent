@@ -50,7 +50,7 @@ Manages agent heartbeats and stale detection.
 
 ### Methods
 
-#### HeartbeatMonitor.__init__
+#### HeartbeatMonitor.**init**
 
 ```python
 __init__(self: Any, heartbeat_dir: Path, failure_threshold: int)

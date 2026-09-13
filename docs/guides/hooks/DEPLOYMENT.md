@@ -6,18 +6,18 @@ The `thegent-hooks` crate provides 10 Rust binaries for governance and quality e
 
 ## Binaries
 
-| Binary | Purpose |
-|--------|---------|
-| `thegent-hooks` | Main CLI entry point |
-| `quality-gate` | Policy evaluation |
-| `security-pipeline` | Security scanning |
-| `stop-reconcile` | Git status & conflict detection |
-| `spec-verifier` | FR coverage scanning |
-| `pre-write-validator` | File validation |
-| `qa-policy-test` | Policy tests |
-| `task-completion-verifier` | Task verification |
-| `post-edit-checker` | AI slop detection |
-| `complexity-ratchet` | Complexity enforcement |
+| Binary                     | Purpose                         |
+| -------------------------- | ------------------------------- |
+| `thegent-hooks`            | Main CLI entry point            |
+| `quality-gate`             | Policy evaluation               |
+| `security-pipeline`        | Security scanning               |
+| `stop-reconcile`           | Git status & conflict detection |
+| `spec-verifier`            | FR coverage scanning            |
+| `pre-write-validator`      | File validation                 |
+| `qa-policy-test`           | Policy tests                    |
+| `task-completion-verifier` | Task verification               |
+| `post-edit-checker`        | AI slop detection               |
+| `complexity-ratchet`       | Complexity enforcement          |
 
 ## Building
 
@@ -31,11 +31,13 @@ Output binaries in `target/debug/`
 ## Installation
 
 ### Local
+
 ```bash
 cargo install --path crates/thegent-hooks --bin thegent-hooks
 ```
 
 ### Via GitHub Releases
+
 ```bash
 # Download from releases
 curl -L https://github.com/kooshapari/thegent/releases/latest/download/thegent-hooks -o thegent-hooks
@@ -47,16 +49,19 @@ chmod +x thegent-hooks
 All hooks read JSON from stdin and output JSON to stdout.
 
 ### Exit Codes
+
 - `0` - Success/pass
-- `1` - Warning/failure  
+- `1` - Warning/failure
 - `2` - Error
 
 ### Example: stop-reconcile
+
 ```bash
 echo '{"project_dir": "/path/to/repo", "session_id": "abc123"}' | ./stop-reconcile
 ```
 
 ### Example: spec-verifier
+
 ```bash
 echo '{"project_dir": ".", "threshold": 0.8}' | ./spec-verifier
 ```
@@ -90,13 +95,16 @@ Hooks accept configuration via JSON input:
 ## Troubleshooting
 
 ### Build fails
+
 - Ensure Rust 1.70+ is installed
 - Run `cargo update` to refresh dependencies
 
 ### Tests fail
+
 - Git tests require git config: `git config --global user.email "test@test.com"`
 - Some tests require clean git repo
 
 ### Binary not found
+
 - Check `target/debug/` for built binaries
 - Use `--bin <name>` to build specific binary

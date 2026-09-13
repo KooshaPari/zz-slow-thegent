@@ -19,6 +19,7 @@ status: in_progress
 **Effort**: 1-2 tool calls
 
 **Subtasks**:
+
 - [ ] Create `thegent/src/thegent/maif/models.py` with Pydantic models:
   - `ActionType` enum
   - `MAIFArtifact` dataclass
@@ -38,6 +39,7 @@ status: in_progress
 **Effort**: 1-2 tool calls
 
 **Subtasks**:
+
 - [ ] Generate RSA-2048 key pair (or use existing)
 - [ ] Create `thegent/src/thegent/maif/crypto.py`:
   - `SigningKey` class (RSA-2048 signing)
@@ -60,6 +62,7 @@ status: in_progress
 **Effort**: 2 tool calls
 
 **Subtasks**:
+
 - [ ] Implement `MAIFArtifactGenerator` class (design § 2.1):
   - `create_artifact()` method
   - Hash chain tracking per session
@@ -82,6 +85,7 @@ status: in_progress
 **Effort**: 1-2 tool calls
 
 **Subtasks**:
+
 - [ ] Implement `HashChainValidator` class (design § 2.2):
   - `verify_chain()` method
   - Signature verification per artifact
@@ -105,6 +109,7 @@ status: in_progress
 **Effort**: 2 tool calls
 
 **Subtasks**:
+
 - [ ] Implement `MAIFStorage` class (design § 2.3):
   - `store()` method (L4 with fallback to L2)
   - `retrieve()` method (L4 with fallback)
@@ -131,6 +136,7 @@ status: in_progress
 **Effort**: 1-2 tool calls
 
 **Subtasks**:
+
 - [ ] Create `hooks/maif-artifact-hooks.sh` (design § 2.4):
   - PostToolUse hook for Write/Edit/Delete
   - Conditional creation for Bash (significant calls only)
@@ -156,6 +162,7 @@ status: in_progress
 **Effort**: 1-2 tool calls
 
 **Subtasks**:
+
 - [ ] Create `thegent/src/thegent/maif/api.py`:
   - `create_artifact()` function (design § 4.1)
   - `verify_artifact_chain()` function (design § 4.2)
@@ -182,6 +189,7 @@ status: in_progress
 **Effort**: 1 tool call
 
 **Subtasks**:
+
 - [ ] Create `tests/maif/test_integration.py`:
   - End-to-end: action → artifact creation → storage → retrieval → verification
   - Concurrent artifacts (multiple sessions)
@@ -204,14 +212,14 @@ status: in_progress
 
 ### Component: `MAIFArtifactGenerator`
 
-| Subtask | Effort | Blocker? |
-|---------|--------|----------|
-| Create class skeleton | 0.5 calls | No |
-| Implement `create_artifact()` | 1 call | No |
-| Implement hash chain tracking | 0.5 calls | No |
-| Implement signature generation | 1 call | Yes (crypto) |
-| Add unit tests | 1 call | No |
-| Performance benchmarking | 0.5 calls | No |
+| Subtask                        | Effort    | Blocker?     |
+| ------------------------------ | --------- | ------------ |
+| Create class skeleton          | 0.5 calls | No           |
+| Implement `create_artifact()`  | 1 call    | No           |
+| Implement hash chain tracking  | 0.5 calls | No           |
+| Implement signature generation | 1 call    | Yes (crypto) |
+| Add unit tests                 | 1 call    | No           |
+| Performance benchmarking       | 0.5 calls | No           |
 
 **Total**: 4.5 calls
 
@@ -219,14 +227,14 @@ status: in_progress
 
 ### Component: `HashChainValidator`
 
-| Subtask | Effort | Blocker? |
-|---------|--------|----------|
-| Create class skeleton | 0.5 calls | No |
-| Implement `verify_chain()` | 1 call | No |
-| Implement signature verification | 1 call | Yes (crypto) |
-| Add unit tests (happy path) | 1 call | No |
-| Add unit tests (failure cases) | 1 call | No |
-| Performance benchmarking | 0.5 calls | No |
+| Subtask                          | Effort    | Blocker?     |
+| -------------------------------- | --------- | ------------ |
+| Create class skeleton            | 0.5 calls | No           |
+| Implement `verify_chain()`       | 1 call    | No           |
+| Implement signature verification | 1 call    | Yes (crypto) |
+| Add unit tests (happy path)      | 1 call    | No           |
+| Add unit tests (failure cases)   | 1 call    | No           |
+| Performance benchmarking         | 0.5 calls | No           |
 
 **Total**: 5 calls
 
@@ -234,14 +242,14 @@ status: in_progress
 
 ### Component: `MAIFStorage`
 
-| Subtask | Effort | Blocker? |
-|---------|--------|----------|
-| Create class skeleton | 0.5 calls | No |
-| Implement L4 store | 1 call | Yes (Supermemory) |
-| Implement L4/L2 fallback | 1 call | No |
-| Implement retrieval methods | 1.5 calls | No |
-| Add integration tests | 1 call | Yes (Supermemory mock) |
-| Performance benchmarking | 0.5 calls | No |
+| Subtask                     | Effort    | Blocker?               |
+| --------------------------- | --------- | ---------------------- |
+| Create class skeleton       | 0.5 calls | No                     |
+| Implement L4 store          | 1 call    | Yes (Supermemory)      |
+| Implement L4/L2 fallback    | 1 call    | No                     |
+| Implement retrieval methods | 1.5 calls | No                     |
+| Add integration tests       | 1 call    | Yes (Supermemory mock) |
+| Performance benchmarking    | 0.5 calls | No                     |
 
 **Total**: 5.5 calls
 
@@ -249,13 +257,13 @@ status: in_progress
 
 ### Component: Hooks & CLI
 
-| Subtask | Effort | Blocker? |
-|---------|--------|----------|
-| Create `maif-artifact-hooks.sh` | 1 call | No |
-| Create `thegent_maif_gen` CLI | 1 call | No |
-| Test hook integration | 1 call | No |
-| Add filtering logic | 0.5 calls | No |
-| Add error handling | 0.5 calls | No |
+| Subtask                         | Effort    | Blocker? |
+| ------------------------------- | --------- | -------- |
+| Create `maif-artifact-hooks.sh` | 1 call    | No       |
+| Create `thegent_maif_gen` CLI   | 1 call    | No       |
+| Test hook integration           | 1 call    | No       |
+| Add filtering logic             | 0.5 calls | No       |
+| Add error handling              | 0.5 calls | No       |
 
 **Total**: 4 calls
 
@@ -263,12 +271,12 @@ status: in_progress
 
 ### Component: APIs & Documentation
 
-| Subtask | Effort | Blocker? |
-|---------|--------|----------|
-| Create public API functions | 1 call | No |
-| Add FastAPI endpoints (optional) | 1 call | No |
-| Add docstrings & examples | 0.5 calls | No |
-| Integration tests | 1 call | No |
+| Subtask                          | Effort    | Blocker? |
+| -------------------------------- | --------- | -------- |
+| Create public API functions      | 1 call    | No       |
+| Add FastAPI endpoints (optional) | 1 call    | No       |
+| Add docstrings & examples        | 0.5 calls | No       |
+| Integration tests                | 1 call    | No       |
 
 **Total**: 3.5 calls
 
@@ -279,6 +287,7 @@ status: in_progress
 Before marking WP-3002 complete, verify:
 
 ### Code Quality
+
 - [ ] All code passes linters (ruff, type checker)
 - [ ] Coverage >90% for core modules
 - [ ] No security vulnerabilities (bandit, semgrep)
@@ -286,6 +295,7 @@ Before marking WP-3002 complete, verify:
 - [ ] Documentation complete (docstrings, API docs)
 
 ### Functional
+
 - [ ] Artifact creation with signature works
 - [ ] Hash chain verification works
 - [ ] Supermemory L4 storage works
@@ -294,12 +304,14 @@ Before marking WP-3002 complete, verify:
 - [ ] APIs functional and well-tested
 
 ### Integration
+
 - [ ] Works with Supermemory L3/L4
 - [ ] Integration with Action Dispatcher
 - [ ] Integration with Lifecycle loop
 - [ ] No regressions in existing systems
 
 ### Performance
+
 - [ ] Artifact creation <1ms
 - [ ] Hash chain verification (1000 artifacts) <100ms
 - [ ] Storage latency <200ms
@@ -307,6 +319,7 @@ Before marking WP-3002 complete, verify:
 - [ ] Load test: 1000 artifacts/second sustainable
 
 ### Security
+
 - [ ] RSA-2048 keys securely stored
 - [ ] Signatures verified correctly
 - [ ] No key leakage in logs
@@ -314,6 +327,7 @@ Before marking WP-3002 complete, verify:
 - [ ] No PII in unencrypted metadata
 
 ### Operational
+
 - [ ] Monitoring/logging in place
 - [ ] Error alerts configured
 - [ ] Fallback mechanisms tested
@@ -325,15 +339,18 @@ Before marking WP-3002 complete, verify:
 ## Related Work Items
 
 **Depends On**:
+
 - WP-5001-SM: Supermemory client library
 - WP-5001: Lifecycle loop architecture
 
 **Enables**:
+
 - WP-4007: Simulation & replay engine
 - WP-AUDIT: Audit system
 - WP-COMPLIANCE: Regulatory compliance
 
 **Preconditions**:
+
 - Supermemory L4 API available
 - RSA key pair generated
 - CI/CD pipeline functional
@@ -342,17 +359,17 @@ Before marking WP-3002 complete, verify:
 
 ## Success Metrics
 
-| Metric | Target | Pass/Fail |
-|--------|--------|-----------|
-| Code coverage | >90% | ☐ |
-| Test pass rate | 100% | ☐ |
-| Artifact creation latency | <1ms | ☐ |
-| Hash chain verification latency | <100ms (1k artifacts) | ☐ |
-| Supermemory integration | Functional | ☐ |
-| Hook integration | All significant actions captured | ☐ |
-| Fallback mechanisms | Working | ☐ |
-| Security review | Zero critical findings | ☐ |
-| Documentation | Complete | ☐ |
+| Metric                          | Target                           | Pass/Fail |
+| ------------------------------- | -------------------------------- | --------- |
+| Code coverage                   | >90%                             | ☐         |
+| Test pass rate                  | 100%                             | ☐         |
+| Artifact creation latency       | <1ms                             | ☐         |
+| Hash chain verification latency | <100ms (1k artifacts)            | ☐         |
+| Supermemory integration         | Functional                       | ☐         |
+| Hook integration                | All significant actions captured | ☐         |
+| Fallback mechanisms             | Working                          | ☐         |
+| Security review                 | Zero critical findings           | ☐         |
+| Documentation                   | Complete                         | ☐         |
 
 ---
 

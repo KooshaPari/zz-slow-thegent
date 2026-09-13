@@ -32,6 +32,7 @@ src/thegent/
 ## 2. Core Data Types
 
 ### TaskCategory Enum
+
 ```python
 # src/thegent/routing/classifier.py
 from enum import Enum, auto
@@ -107,6 +108,7 @@ class TaskCategory(str, Enum):
 ```
 
 ### TaskClassificationInput
+
 ```python
 # src/thegent/routing/signals.py
 from dataclasses import dataclass, field
@@ -139,6 +141,7 @@ class TaskClassificationInput:
 ```
 
 ### RoutingDecision
+
 ```python
 # src/thegent/routing/classifier.py
 @dataclass(frozen=True)
@@ -782,7 +785,6 @@ class Settings(BaseSettings):
   - `/src/thegent/execution.py` — RunMeta, PolicyEngine, RunRegistry
   - `/src/thegent/agents/registry.py` — Agent fallback chains
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -791,15 +793,18 @@ class Settings(BaseSettings):
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

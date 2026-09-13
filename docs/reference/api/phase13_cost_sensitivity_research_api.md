@@ -12,7 +12,7 @@ Research for cost sensitivity experiments.
 
 ### Methods
 
-#### Phase13CostSensitivityResearch.__init__
+#### Phase13CostSensitivityResearch.**init**
 
 ```python
 __init__(self: Any)

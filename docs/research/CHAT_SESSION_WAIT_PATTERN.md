@@ -21,6 +21,7 @@
 **Command:** `thegent plan wait-next --timeout 0 --poll 10`
 
 **Behavior:**
+
 - Blocks indefinitely (keeps chat session alive)
 - Polls every 10 seconds for work
 - Returns when work becomes available
@@ -33,6 +34,7 @@
 **Command:** `thegent plan loop --max 1000 --sleep 30`
 
 **Behavior:**
+
 - Processes work items continuously
 - Sleeps 30s between iterations
 - Keeps session active while processing
@@ -45,6 +47,7 @@
 **Command:** `thegent wait <session_id> --timeout 300`
 
 **Behavior:**
+
 - Blocks until specific session completes
 - Times out after specified seconds
 - Keeps session active while waiting

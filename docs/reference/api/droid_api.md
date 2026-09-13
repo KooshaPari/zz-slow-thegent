@@ -14,7 +14,7 @@ Runs droids via OpenAI Codex CLI (codex exec).
 
 ### Methods
 
-#### CodexRunner.__init__
+#### CodexRunner.**init**
 
 ```python
 __init__(self: Any, droid_name: str, droids_dir: Path, codex_cmd: str, model: str, use_litellm_router: Any)
@@ -42,7 +42,7 @@ Runs droids via a generic custom CLI (e.g. claudemax, claudeglm in ~/.local/bin)
 
 ### Methods
 
-#### CustomCliRunner.__init__
+#### CustomCliRunner.**init**
 
 ```python
 __init__(self: Any, droid_name: str, droids_dir: Path, custom_cmd: str, model: str)
@@ -70,7 +70,7 @@ Runs droids via Factory droid exec.
 
 ### Methods
 
-#### DroidRunner.__init__
+#### DroidRunner.**init**
 
 ```python
 __init__(self: Any, droid_name: str, droids_dir: Path, droid_cmd: str, model: str, use_litellm_router: Any)

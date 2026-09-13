@@ -23,13 +23,13 @@
 
 ## 3) Lane owners and responsibilities
 
-| Module | Owner | Immediate next responsibility |
-|---|---|---|
-| thegent-app | thegent-runtime | Own app-level execution orchestration and bootstrap handoff |
-| thegent-mcp | thegent-mcp | Own MCP protocol boundary and transport behavior |
-| thegent-control-plane | thegent-platform | Own control policy and orchestration sequencing |
-| thegent-execution | thegent-execution | Own run-time execution adapters and profile routing |
-| thegent-governance | thegent-governance | Own policy/quality guardrails and governance integration |
+| Module                | Owner              | Immediate next responsibility                               |
+| --------------------- | ------------------ | ----------------------------------------------------------- |
+| thegent-app           | thegent-runtime    | Own app-level execution orchestration and bootstrap handoff |
+| thegent-mcp           | thegent-mcp        | Own MCP protocol boundary and transport behavior            |
+| thegent-control-plane | thegent-platform   | Own control policy and orchestration sequencing             |
+| thegent-execution     | thegent-execution  | Own run-time execution adapters and profile routing         |
+| thegent-governance    | thegent-governance | Own policy/quality guardrails and governance integration    |
 
 ## 4) Sequencing recommendation
 
@@ -49,11 +49,11 @@
 
 ## 6) PR anchor map (provisional)
 
-- thegent-app: `lane/split-thegent-app-bootstrap` *(TBD: PR number)*
-- thegent-mcp: `lane/split-thegent-mcp-bootstrap` *(TBD: PR number)*
-- thegent-control-plane: `lane/split-thegent-control-plane-bootstrap` *(TBD: PR number)*
-- thegent-execution: `lane/split-thegent-execution-bootstrap` *(TBD: PR number)*
-- thegent-governance: `lane/split-thegent-governance-bootstrap` *(TBD: PR number)*
+- thegent-app: `lane/split-thegent-app-bootstrap` _(TBD: PR number)_
+- thegent-mcp: `lane/split-thegent-mcp-bootstrap` _(TBD: PR number)_
+- thegent-control-plane: `lane/split-thegent-control-plane-bootstrap` _(TBD: PR number)_
+- thegent-execution: `lane/split-thegent-execution-bootstrap` _(TBD: PR number)_
+- thegent-governance: `lane/split-thegent-governance-bootstrap` _(TBD: PR number)_
 
 ## 7) Merge order and blocker notes
 

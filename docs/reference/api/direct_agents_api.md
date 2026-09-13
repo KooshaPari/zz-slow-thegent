@@ -14,7 +14,7 @@ Invokes cursor, claude, copilot, codex, gemini directly via their CLIs.
 
 ### Methods
 
-#### DirectAgentRunner.__init__
+#### DirectAgentRunner.**init**
 
 ```python
 __init__(self: Any, agent_name: str, cli_cmd: Any, default_model: str, use_litellm_router: Any)

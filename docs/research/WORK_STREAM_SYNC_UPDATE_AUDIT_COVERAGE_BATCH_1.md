@@ -19,6 +19,7 @@
 **Dependencies**: None
 
 **Sync Component Needed**:
+
 - **TUICompositorSyncComponent**: Sync TUI compositor configuration, layouts, and state
 - **Sync Sources**: `.factory/tui-config.yaml`, `docs/guides/tui-*.md`
 - **Sync Targets**: TUI runtime state, compositor registry
@@ -26,6 +27,7 @@
 - **Audit Component**: Audit compositor performance, layout conflicts, plugin compatibility
 
 **Implementation Notes**:
+
 - TUI compositor state needs synchronization across sessions
 - Layout configurations should be versioned
 - Plugin registry needs audit for compatibility
@@ -40,6 +42,7 @@
 **Dependencies**: None
 
 **Sync Component Needed**:
+
 - **IsolationSyncComponent**: Sync user isolation policies, boundaries, and state
 - **Sync Sources**: `docs/research/CROSS_PLATFORM_*.md`, `.factory/isolation-policies.yaml`
 - **Sync Targets**: Isolation runtime state, boundary registry
@@ -47,6 +50,7 @@
 - **Audit Component**: Audit isolation effectiveness, boundary violations, policy compliance
 
 **Implementation Notes**:
+
 - Isolation policies need cross-platform synchronization
 - Boundary definitions should be audited for conflicts
 - Policy changes need validation before sync
@@ -61,6 +65,7 @@
 **Dependencies**: None
 
 **Sync Component Needed**:
+
 - **ShellSyncComponent**: Sync shell configurations, aliases, and environment
 - **Sync Sources**: `.zshrc`, `.bashrc`, `PowerShell/profile.ps1`, `shell/.zsh_*.zsh`
 - **Sync Targets**: Shell runtime environment, alias registry
@@ -68,6 +73,7 @@
 - **Audit Component**: Audit shell compatibility, alias conflicts, environment consistency
 
 **Implementation Notes**:
+
 - Shell configs need cross-platform synchronization
 - Aliases should be validated for conflicts
 - Environment variables need consistency checks
@@ -82,6 +88,7 @@
 **Dependencies**: None
 
 **Sync Component Needed**:
+
 - **HookRustSyncComponent**: Sync Rust hook binary, configurations, and hook registry
 - **Sync Sources**: `src/thegent-hooks/`, `hooks/hook-config.yaml`, `.factory/hooks/`
 - **Sync Targets**: Hook binary registry, hook execution state
@@ -89,6 +96,7 @@
 - **Audit Component**: Audit hook binary compatibility, hook execution performance, hook conflicts
 
 **Implementation Notes**:
+
 - Hook binary needs version synchronization
 - Hook configurations should be validated
 - Hook registry needs conflict detection
@@ -103,6 +111,7 @@
 **Dependencies**: None
 
 **Sync Component Needed**:
+
 - **LibraryHttpSyncComponent**: Sync HTTP library migration state, dependencies, and tests
 - **Sync Sources**: `pyproject.toml`, `src/thegent/**/*.py` (7 files), `tests/**/*.py`
 - **Sync Targets**: Dependency registry, migration state
@@ -110,6 +119,7 @@
 - **Audit Component**: Audit migration completeness, dependency conflicts, test coverage
 
 **Implementation Notes**:
+
 - Migration state needs tracking
 - Dependencies should be validated
 - Test coverage needs audit
@@ -124,6 +134,7 @@
 **Dependencies**: None
 
 **Sync Component Needed**:
+
 - **LibraryRetrySyncComponent**: Sync retry migration state, tenacity configurations, and retry policies
 - **Sync Sources**: `src/thegent/**/*.py` (4 files), `docs/research/TENACITY_RETRY_AUDIT_PLAN.md`
 - **Sync Targets**: Retry policy registry, migration state
@@ -131,6 +142,7 @@
 - **Audit Component**: Audit migration completeness, retry policy effectiveness, test coverage
 
 **Implementation Notes**:
+
 - Retry policies need centralization
 - Migration state should be tracked
 - Policy effectiveness needs audit
@@ -145,6 +157,7 @@
 **Dependencies**: None
 
 **Sync Component Needed**:
+
 - **LibraryWatchdogSyncComponent**: Sync watchdog migration state, file watcher configurations, and watch patterns
 - **Sync Sources**: `src/thegent/**/*.py` (1 file), `docs/research/LIBRARY_FIRST_AUDIT_AND_PLAN.md`
 - **Sync Targets**: File watcher registry, migration state
@@ -152,6 +165,7 @@
 - **Audit Component**: Audit migration completeness, watch pattern effectiveness, performance
 
 **Implementation Notes**:
+
 - Watch patterns need centralization
 - Migration state should be tracked
 - Performance needs audit
@@ -165,6 +179,7 @@
 **Dependencies**: All have no dependencies (ready to work on)
 
 **Next Steps**:
+
 1. Implement sync components for each item
 2. Implement update components for each item
 3. Implement audit components for each item

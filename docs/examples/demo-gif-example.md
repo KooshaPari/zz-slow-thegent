@@ -44,6 +44,7 @@ Sleep 2s
 ```
 
 2. Generate GIF:
+
 ```bash
 ./scripts/generate-demo-gifs.sh
 ```
@@ -53,15 +54,16 @@ Sleep 2s
 1. Create a `.ts` file in `docs/demos/web/`:
 
 ```typescript
-import { test } from '@playwright/test'
+import { test } from "@playwright/test";
 
-test('demo', async ({ page }) => {
-  await page.goto('https://example.com')
+test("demo", async ({ page }) => {
+  await page.goto("https://example.com");
   // ... record interactions
-})
+});
 ```
 
 2. Generate GIF:
+
 ```bash
 npx playwright test --gif
 ```
@@ -69,5 +71,6 @@ npx playwright test --gif
 ---
 
 **See Also**:
+
 - [VITEPRESS_USAGE_GUIDE.md](../guides/VITEPRESS_USAGE_GUIDE.md)
 - [AUTOMATED_DEMOS.md](../guides/AUTOMATED_DEMOS.md)

@@ -15,7 +15,7 @@ Controls and monitors contract version migrations (WP-7008).
 
 ### Methods
 
-#### MigrationController.__init__
+#### MigrationController.**init**
 
 ```python
 __init__(self: Any, registry: Any)

@@ -156,12 +156,14 @@ TASK 1.2 (PyO3 bindings)
 Every task must pass ALL of these before code review:
 
 ### Coverage (Checked with Tarpaulin)
+
 - [ ] Unit test coverage ≥95%
 - [ ] Integration test coverage ≥90%
 - [ ] E2E test coverage ≥80% (where applicable)
 - [ ] No untested code paths
 
 ### Correctness
+
 - [ ] All Rust tests pass: `cargo test --all`
 - [ ] All Python tests pass: `pytest tests/ -v`
 - [ ] Parity tests pass: `pytest tests/integration/test_python_rust_parity.py -v`
@@ -169,12 +171,14 @@ Every task must pass ALL of these before code review:
 - [ ] No panics on edge cases (zero cost, negative values, etc.)
 
 ### Performance
+
 - [ ] Latency meets target (e.g., compliance checks <1ms)
 - [ ] Benchmarks show ≥2x speedup vs Python
 - [ ] No memory leaks (test with valgrind for critical paths)
 - [ ] Batch operations show parallelism benefits
 
 ### Build System
+
 - [ ] PyO3 bindings compile: `maturin develop --release`
 - [ ] Python bindings importable
 - [ ] No warnings from maturin
@@ -185,6 +189,7 @@ Every task must pass ALL of these before code review:
 Before marking each task complete:
 
 ### TASK 1.1
+
 - [ ] `/crates/thegent-policy/Cargo.toml` — exists, has all deps
 - [ ] `/crates/thegent-policy/src/lib.rs` — compiles, pub exports
 - [ ] `/crates/thegent-policy/src/engine.rs` — PolicyEngine::load(), evaluate()
@@ -192,6 +197,7 @@ Before marking each task complete:
 - [ ] `/crates/thegent-policy/tests/fixtures/test-policy.toml` — valid TOML
 
 ### TASK 1.2
+
 - [ ] `/pyproject.toml` — has `maturin` build backend
 - [ ] `/Cargo.toml` — workspace root, lists all members
 - [ ] `/crates/thegent-policy/src/lib.rs` — has `#[pymodule]` macro
@@ -199,6 +205,7 @@ Before marking each task complete:
 - [ ] Bindings importable as `from thegent import policy_engine`
 
 ### TASK 1.3
+
 - [ ] `/crates/thegent-policy/src/compliance.rs` — ComplianceChecker
 - [ ] `/crates/thegent-policy/src/cost_enforcer.rs` — CostEnforcer
 - [ ] `/tests/unit/test_compliance_checker.py` — all tests pass
@@ -207,16 +214,19 @@ Before marking each task complete:
 ### [Similar verification for TASK 2.1, 3.1, 4.1, 6.1]
 
 ### TASK 5.1
+
 - [ ] `/tests/integration/test_python_rust_parity.py` — exists, passes
 - [ ] All parametrized tests pass
 - [ ] Parity report generated
 
 ### TASK 5.2
+
 - [ ] `/benchmarks/bench_governance.py` — runnable
 - [ ] Perf report in `/docs/reports/bench-results-2026-02-22.md`
 - [ ] Shows ≥2x speedup for all operations
 
 ### TASK 5.3
+
 - [ ] Python modules backed up in `.deleted-modules-backup/`
 - [ ] No remaining imports of deleted modules
 - [ ] Full test suite passes
@@ -225,6 +235,7 @@ Before marking each task complete:
 ## Commands to Run at Task Completion
 
 ### After completing Task 1.1
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-policy
 cargo test --lib
@@ -233,6 +244,7 @@ cargo tarpaulin --lib --out Html --output-dir target/coverage
 ```
 
 ### After completing Task 1.2
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush/thegent
 maturin develop --release
@@ -240,6 +252,7 @@ pytest tests/unit/test_thegent_policy_binding.py -v
 ```
 
 ### After completing Task 1.3
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush/thegent
 cargo test -p thegent-policy compliance
@@ -249,12 +262,14 @@ cargo bench -p thegent-policy compliance
 ```
 
 ### Before TASK 5.1 (Parity Check)
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush/thegent
 pytest tests/integration/test_python_rust_parity.py -v
 ```
 
 ### Before TASK 5.3 (Final Quality Gate)
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush/thegent
 cargo test --all
@@ -267,18 +282,18 @@ cargo tarpaulin --out stdout | grep Coverage
 
 ## Estimated Time Breakdown
 
-| Task | Time | Status |
-|------|------|--------|
-| 1.1 | 1.5h | Pending |
-| 1.2 | 1h | Pending |
-| 1.3 | 1.5h | Pending |
-| 2.1 | 1.5h | Pending |
-| 3.1 | 1.5h | Pending |
-| 4.1 | 0.5h | Pending |
-| 6.1 | 1.5h | Pending |
-| 5.1 | 1h | Pending |
-| 5.2 | 1h | Pending |
-| 5.3 | 1h | Pending |
+| Task      | Time    | Status  |
+| --------- | ------- | ------- |
+| 1.1       | 1.5h    | Pending |
+| 1.2       | 1h      | Pending |
+| 1.3       | 1.5h    | Pending |
+| 2.1       | 1.5h    | Pending |
+| 3.1       | 1.5h    | Pending |
+| 4.1       | 0.5h    | Pending |
+| 6.1       | 1.5h    | Pending |
+| 5.1       | 1h      | Pending |
+| 5.2       | 1h      | Pending |
+| 5.3       | 1h      | Pending |
 | **TOTAL** | **13h** | Pending |
 
 With agent parallelization (2+ agents on independent tasks): **3-5 hours wall-clock**.

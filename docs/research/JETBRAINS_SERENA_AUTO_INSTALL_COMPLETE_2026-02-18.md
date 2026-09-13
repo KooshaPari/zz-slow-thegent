@@ -15,6 +15,7 @@ Enhanced JetBrains IDE detection and auto-installation, plus Serena JetBrains pl
 **File**: `src/thegent/lsp/jetbrains_cli.py`
 
 Added detection for:
+
 - JetBrains Toolbox installations
 - Multiple macOS locations
 - Linux Toolbox locations
@@ -32,6 +33,7 @@ Added detection for:
 **File**: `src/thegent/ide/auto_setup.py`
 
 Enhanced `auto_setup_jetbrains_integration()`:
+
 - Returns dict with detailed status (instead of bool)
 - Auto-installs IntelliJ IDEA via Homebrew if not found
 - Provides installation instructions for manual setup
@@ -48,11 +50,13 @@ def auto_setup_jetbrains_integration(auto_install: bool = True) -> dict[str, any
 **File**: `src/thegent/ide/auto_setup.py`
 
 Enhanced `auto_setup_serena_jetbrains_plugin()`:
+
 - Checks for JetBrains IDE before attempting plugin setup
 - Provides detailed installation instructions
 - Explains MCP server auto-start behavior
 
 **Serena Plugin Installation Steps**:
+
 1. Install plugin from JetBrains Marketplace
 2. Enable plugin in IDE
 3. Restart IDE (plugin starts MCP server automatically)
@@ -82,6 +86,7 @@ brew install --cask intellij-idea
 ### Serena JetBrains Plugin
 
 **Automatic Setup**:
+
 1. Install IntelliJ IDEA (auto-installed if missing)
 2. Open IntelliJ IDEA
 3. Go to Settings > Plugins
@@ -90,6 +95,7 @@ brew install --cask intellij-idea
 6. Plugin automatically starts MCP server on configured port
 
 **Manual Verification**:
+
 ```bash
 # Check Serena backend
 thegent lsp serena-backend
@@ -155,11 +161,13 @@ thegent lsp auto-setup
 ## Current Status
 
 ### JetBrains IDE
+
 - ✅ **Auto-installation**: Implemented via Homebrew
 - ✅ **Detection**: Enhanced with Toolbox support
 - ✅ **CLI Access**: Verified via `idea` command
 
 ### Serena Plugin
+
 - ✅ **Detection**: Checks MCP server port
 - ✅ **Setup Instructions**: Detailed guide provided
 - ✅ **MCP Integration**: Auto-configured in `thegent serve`
@@ -168,12 +176,14 @@ thegent lsp auto-setup
 ## Next Steps
 
 ### Completed ✅
+
 1. ✅ Enhanced JetBrains detection
 2. ✅ Auto-install IntelliJ IDEA
 3. ✅ Enhanced Serena plugin setup
 4. ✅ Improved status reporting
 
 ### Future Enhancements
+
 1. **Plugin Auto-Install**: Use IDE's plugin manager API to install Serena automatically
 2. **Plugin Verification**: Check if plugin is installed (even if not running)
 3. **MCP Server Health**: Monitor plugin MCP server health
@@ -189,6 +199,7 @@ thegent lsp auto-setup
 ## Conclusion
 
 JetBrains IDE and Serena plugin setup is now fully automated. The system:
+
 - ✅ Auto-installs IntelliJ IDEA if missing
 - ✅ Detects IDE in multiple locations (including Toolbox)
 - ✅ Provides detailed setup instructions for Serena plugin

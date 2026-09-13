@@ -1,10 +1,11 @@
-<DONE>
----
+## <DONE>
+
 title: "Conversation Dump — WL-083 ResultAggregator"
 date: 2026-02-20
 status: completed
 owner: claude-sonnet-4-6
 tags: [orchestration, wl-083, result-aggregator, inter-agent-protocol]
+
 ---
 
 # Conversation Dump — WL-083 ResultAggregator
@@ -42,10 +43,10 @@ None. Greenfield implementation.
 
 ### File layout
 
-| File | Purpose |
-|------|---------|
+| File                                             | Purpose                                    |
+| ------------------------------------------------ | ------------------------------------------ |
 | `src/thegent/orchestration/result_aggregator.py` | Production code — `ResultAggregator` class |
-| `tests/test_wl083_result_aggregator.py` | 33 tests across 5 test classes |
+| `tests/test_wl083_result_aggregator.py`          | 33 tests across 5 test classes             |
 
 ### Design decisions
 
@@ -60,13 +61,13 @@ None. Greenfield implementation.
 
 33 tests, 5 classes:
 
-| Class | Count | Coverage area |
-|-------|-------|---------------|
-| `TestResultAggregatorConstruction` | 3 | Initial state |
-| `TestResultAggregatorAdd` | 6 | add() behavior |
-| `TestResultAggregatorAggregate` | 13 | aggregate() outputs |
-| `TestResultAggregatorClear` | 6 | clear() reset |
-| `TestResultAggregatorSummary` | 5 | summary() string |
+| Class                              | Count | Coverage area       |
+| ---------------------------------- | ----- | ------------------- |
+| `TestResultAggregatorConstruction` | 3     | Initial state       |
+| `TestResultAggregatorAdd`          | 6     | add() behavior      |
+| `TestResultAggregatorAggregate`    | 13    | aggregate() outputs |
+| `TestResultAggregatorClear`        | 6     | clear() reset       |
+| `TestResultAggregatorSummary`      | 5     | summary() string    |
 
 All 33 tests: **PASSED** (run with `uv run pytest tests/test_wl083_result_aggregator.py -v`).
 

@@ -14,6 +14,7 @@ Both directories contain MCP implementations, but they serve **different purpose
 **Purpose**: Standalone FastMCP server for Atoms knowledge management platform
 
 **Key Features**:
+
 - ✅ 5 consolidated MCP tools:
   1. `workspace_operation` - Manage workspace context and organization
   2. `entity_operation` - CRUD operations on entities (documents, requirements, tasks)
@@ -29,17 +30,20 @@ Both directories contain MCP implementations, but they serve **different purpose
 - ✅ Production-ready deployment configuration
 
 **Architecture**:
+
 - Package name: `atoms-mcp`
 - Entry point: `atoms_mcp.server.create_consolidated_server()`
 - ASGI app: `app.py` (for Vercel deployment)
 - CLI: `cli.py` (comprehensive development CLI)
 
 **Deployment**:
+
 - Vercel serverless functions
 - Standalone MCP server
 - HTTP transport with `/api/mcp` path
 
 **Dependencies**:
+
 - `fastmcp>=2.13.1` (latest with meta parameter support)
 - Supabase for database
 - WorkOS for authentication
@@ -50,6 +54,7 @@ Both directories contain MCP implementations, but they serve **different purpose
 ### 2. agentapi/atomsagent (FastAPI Service with MCP)
 
 **Purpose**: FastAPI service providing:
+
 1. OpenAI-compatible API endpoints (`/v1/chat/completions`)
 2. Embedded MCP server with different tools
 3. MCP server management APIs (CRUD for MCP servers)
@@ -57,6 +62,7 @@ Both directories contain MCP implementations, but they serve **different purpose
 5. Artifact storage and tool approval
 
 **Key Features**:
+
 - ✅ Embedded FastMCP server named "atoms-tools" with 8 tools:
   1. `search_requirements` - Search requirements in database
   2. `create_requirement` - Create new requirements
@@ -76,17 +82,20 @@ Both directories contain MCP implementations, but they serve **different purpose
 - ✅ User/org/project-scoped MCP server configuration
 
 **Architecture**:
+
 - Package name: `atoms-agent`
 - Entry point: `atomsAgent.main.create_app()` (FastAPI app)
 - MCP server: `atomsAgent.mcp.server.mcp` (embedded FastMCP instance)
 - CLI: `atomsAgent.cli.main:app` (Typer-based CLI)
 
 **Deployment**:
+
 - FastAPI application (not standalone MCP server)
 - Can compose and manage multiple MCP servers
 - Integrates with Claude Agent SDK
 
 **Dependencies**:
+
 - `fastapi>=0.110.0`
 - `fastmcp>=0.11.0` (older version)
 - `claude-agent-sdk>=0.1.5,<0.2.0`
@@ -97,23 +106,24 @@ Both directories contain MCP implementations, but they serve **different purpose
 
 ## Key Differences
 
-| Aspect | atoms-mcp-prod | agentapi/atomsagent |
-|--------|----------------|---------------------|
-| **Primary Purpose** | Standalone MCP server | FastAPI service + MCP management |
-| **MCP Tools** | 5 knowledge management tools | 8 agent/sandbox tools |
-| **Tool Focus** | Knowledge management (entities, relationships, workflows) | Requirements, documents, codebase, sandbox execution |
-| **Deployment** | Standalone MCP server (Vercel) | FastAPI application |
-| **MCP Management** | ❌ No | ✅ Yes (CRUD APIs) |
-| **OAuth Support** | ✅ Built-in (hybrid auth) | ✅ Management APIs + DCR |
-| **FastMCP Version** | `>=2.13.1` (latest) | `>=0.11.0` (older) |
-| **CLI** | Comprehensive npm-like CLI | Typer-based CLI |
-| **Test Coverage** | Extensive (unit, integration, e2e) | Moderate |
+| Aspect              | atoms-mcp-prod                                            | agentapi/atomsagent                                  |
+| ------------------- | --------------------------------------------------------- | ---------------------------------------------------- |
+| **Primary Purpose** | Standalone MCP server                                     | FastAPI service + MCP management                     |
+| **MCP Tools**       | 5 knowledge management tools                              | 8 agent/sandbox tools                                |
+| **Tool Focus**      | Knowledge management (entities, relationships, workflows) | Requirements, documents, codebase, sandbox execution |
+| **Deployment**      | Standalone MCP server (Vercel)                            | FastAPI application                                  |
+| **MCP Management**  | ❌ No                                                     | ✅ Yes (CRUD APIs)                                   |
+| **OAuth Support**   | ✅ Built-in (hybrid auth)                                 | ✅ Management APIs + DCR                             |
+| **FastMCP Version** | `>=2.13.1` (latest)                                       | `>=0.11.0` (older)                                   |
+| **CLI**             | Comprehensive npm-like CLI                                | Typer-based CLI                                      |
+| **Test Coverage**   | Extensive (unit, integration, e2e)                        | Moderate                                             |
 
 ---
 
 ## Overlap Analysis
 
 ### Shared Functionality
+
 1. **Both use FastMCP** - But different versions
 2. **Both integrate with Supabase** - For database operations
 3. **Both support OAuth** - But in different ways:
@@ -121,6 +131,7 @@ Both directories contain MCP implementations, but they serve **different purpose
    - `agentapi/atomsagent`: OAuth management APIs for external MCP servers
 
 ### Complementary Functionality
+
 - `atoms-mcp-prod` provides the **core Atoms platform MCP server**
 - `agentapi/atomsagent` provides **MCP server management** and can compose multiple MCP servers (including atoms-mcp-prod)
 
@@ -131,6 +142,7 @@ Both directories contain MCP implementations, but they serve **different purpose
 ### Option 1: Keep Both (Recommended) ✅
 
 **Rationale**:
+
 - They serve **different purposes**:
   - `atoms-mcp-prod` = Official Atoms platform MCP server
   - `agentapi/atomsagent` = MCP orchestration service + different toolset
@@ -140,6 +152,7 @@ Both directories contain MCP implementations, but they serve **different purpose
   - `agentapi/atomsagent`: Agent orchestration, sandbox execution, requirements management
 
 **Action Items**:
+
 1. ✅ Keep `atoms-mcp-prod` as the official MCP server
 2. ✅ Keep `agentapi/atomsagent` for MCP management and orchestration
 3. ⚠️ Consider updating `agentapi/atomsagent` to use `fastmcp>=2.13.1` to match `atoms-mcp-prod`
@@ -148,6 +161,7 @@ Both directories contain MCP implementations, but they serve **different purpose
 ### Option 2: Merge Features (Not Recommended) ❌
 
 **Why not**:
+
 - Different deployment models (standalone MCP vs FastAPI service)
 - Different tool sets (knowledge management vs agent orchestration)
 - Different primary purposes
@@ -156,6 +170,7 @@ Both directories contain MCP implementations, but they serve **different purpose
 ### Option 3: Delete agentapi/atomsagent MCP (Not Recommended) ❌
 
 **Why not**:
+
 - `agentapi/atomsagent` provides unique tools (sandbox execution, requirements management)
 - It serves as the MCP orchestration layer
 - It's integrated with Claude Agent SDK
@@ -168,12 +183,13 @@ Both directories contain MCP implementations, but they serve **different purpose
 If you want to use `atoms-mcp-prod` from `agentapi/atomsagent`:
 
 1. **Register atoms-mcp-prod in the MCP registry**:
+
    ```python
    # In agentapi/atomsagent database
    INSERT INTO mcp_servers (
-     name, 
-     namespace, 
-     transport_type, 
+     name,
+     namespace,
+     transport_type,
      transport_url,
      auth_type
    ) VALUES (
@@ -186,6 +202,7 @@ If you want to use `atoms-mcp-prod` from `agentapi/atomsagent`:
    ```
 
 2. **Compose it in agentapi/atomsagent**:
+
    ```python
    # The compose_mcp_servers() function will automatically include it
    servers = await compose_mcp_servers(user_id=user_id, org_id=org_id, additional_servers={"atoms-mcp": atoms_mcp_config})

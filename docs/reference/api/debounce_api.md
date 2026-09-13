@@ -12,7 +12,7 @@ Debounce subcommand for file-based coordination.
 
 ### Methods
 
-#### DebounceSubcommand.__init__
+#### DebounceSubcommand.**init**
 
 ```python
 __init__(self: Any, debounce_dir: Any)

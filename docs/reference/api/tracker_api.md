@@ -32,7 +32,7 @@ Track and aggregate costs across runs.
 
 ### Methods
 
-#### RunCostTracker.__init__
+#### RunCostTracker.**init**
 
 ```python
 __init__(self: Any, cost_dir: Any)

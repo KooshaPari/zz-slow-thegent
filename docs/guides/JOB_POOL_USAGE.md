@@ -11,12 +11,15 @@ Instead of running tools sequentially or launching unlimited parallel jobs, the 
 ## Basic API
 
 ### `job_pool_init()`
+
 Initialize the job pool. Must be called before using the pool.
+
 ```bash
 job_pool_init
 ```
 
 ### `job_parallel_launch <max_concurrent> <command> [args...]`
+
 Launch a command with bounded concurrency control. This function waits if max_concurrent jobs are already running.
 
 ```bash
@@ -28,17 +31,22 @@ wait
 ```
 
 ### `job_pool_add <max_concurrent> <command> [args...]`
+
 Alias for `job_parallel_launch`. Provided for backward compatibility.
 
 ### `job_pool_wait()` / `job_pool_wait_all()`
+
 Wait for all background jobs to complete.
+
 ```bash
 wait  # bash builtin - simpler than job_pool_wait
 job_pool_wait_all  # explicit wait function
 ```
 
 ### `job_pool_status()`
+
 Get the count of currently running background jobs.
+
 ```bash
 running=$(job_pool_status)
 echo "Running jobs: $running"
@@ -47,6 +55,7 @@ echo "Running jobs: $running"
 ## Common Patterns
 
 ### Pattern 1: Simple Parallel Tools
+
 Run multiple tools in parallel with bounded concurrency:
 
 ```bash
@@ -63,6 +72,7 @@ wait
 ```
 
 ### Pattern 2: Language-Grouped Parallel Tools
+
 Group tools by language, then parallelize within each group:
 
 ```bash
@@ -94,6 +104,7 @@ wait
 ```
 
 ### Pattern 3: Sequential Tool Stages with Concurrency
+
 Run tools in logical stages, with concurrency within each stage:
 
 ```bash
@@ -246,16 +257,19 @@ fi
 ## Troubleshooting
 
 ### Jobs not running concurrently
+
 **Symptom:** All jobs run sequentially despite using `job_parallel_launch`
 **Cause:** Running jobs directly instead of in background with `&`
 **Fix:** Ensure `&` is used: `job_parallel_launch 4 tool & `
 
 ### Too much memory usage
+
 **Symptom:** OOM killer triggered
 **Cause:** Max concurrency too high for available memory
 **Fix:** Reduce `max_jobs` parameter, e.g., from 8 to 4
 
 ### Tool hangs
+
 **Symptom:** Job pool waits indefinitely
 **Cause:** Tool doesn't terminate properly
 **Fix:** Use timeout: `run_with_timeout 30 tool args`
@@ -266,14 +280,12 @@ fi
 - `hooks/quality-gate.sh` - Example using job pool for linting
 - `tests/test-job-pool.sh` - Unit tests demonstrating usage
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -283,15 +295,18 @@ fi
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

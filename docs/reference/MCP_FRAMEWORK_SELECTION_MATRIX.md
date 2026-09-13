@@ -10,17 +10,17 @@ tags: [reference, MCP, FastMCP, Rust SDK, decision-tree]
 
 ## At a Glance
 
-| Criteria | FastMCP 3.x | Rust SDK | Winner |
-|----------|-------------|----------|--------|
-| **Time to Market** | 2-3 days | 2-3 weeks | FastMCP |
-| **Production-Ready** | ✅ Yes (GA Feb 2026) | ✅ Yes (v0.16.0) | Tie |
-| **Peak Throughput** | 1,200-1,600 QPS | 4,700+ QPS | Rust |
-| **Developer Experience** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | FastMCP |
-| **Observability** | Native OTel | Manual setup | FastMCP |
-| **Python Integration** | Native (trivial) | FFI (complex) | FastMCP |
-| **Community Adoption** | 70% of MCP servers | Reference impl | FastMCP (breadth) |
-| **Maintenance Burden** | Low | Medium-High | FastMCP |
-| **Team Expertise Needed** | Python | Rust + Python + FFI | FastMCP |
+| Criteria                  | FastMCP 3.x          | Rust SDK            | Winner            |
+| ------------------------- | -------------------- | ------------------- | ----------------- |
+| **Time to Market**        | 2-3 days             | 2-3 weeks           | FastMCP           |
+| **Production-Ready**      | ✅ Yes (GA Feb 2026) | ✅ Yes (v0.16.0)    | Tie               |
+| **Peak Throughput**       | 1,200-1,600 QPS      | 4,700+ QPS          | Rust              |
+| **Developer Experience**  | ⭐⭐⭐⭐⭐           | ⭐⭐⭐⭐            | FastMCP           |
+| **Observability**         | Native OTel          | Manual setup        | FastMCP           |
+| **Python Integration**    | Native (trivial)     | FFI (complex)       | FastMCP           |
+| **Community Adoption**    | 70% of MCP servers   | Reference impl      | FastMCP (breadth) |
+| **Maintenance Burden**    | Low                  | Medium-High         | FastMCP           |
+| **Team Expertise Needed** | Python               | Rust + Python + FFI | FastMCP           |
 
 ---
 
@@ -55,12 +55,12 @@ START: Do we have a performance bottleneck?
 
 ## Threshold Table: When to Migrate
 
-| Metric | FastMCP OK | Hybrid Needed | Rust Migration Required |
-|--------|-----------|---------------|------------------------|
-| **Tool calls/min** | <600 | 600-3,000 | >3,000 |
-| **Concurrent agents** | <100 | 100-500 | >500 |
-| **P99 latency** | <50ms | 50-100ms | >100ms |
-| **QPS per server** | <1,000 | 1,000-2,500 | >2,500 |
+| Metric                | FastMCP OK | Hybrid Needed | Rust Migration Required |
+| --------------------- | ---------- | ------------- | ----------------------- |
+| **Tool calls/min**    | <600       | 600-3,000     | >3,000                  |
+| **Concurrent agents** | <100       | 100-500       | >500                    |
+| **P99 latency**       | <50ms      | 50-100ms      | >100ms                  |
+| **QPS per server**    | <1,000     | 1,000-2,500   | >2,500                  |
 
 **Action:** If ANY metric exceeds the "Hybrid Needed" column, run profile; if exceeds "Rust Required," commit to Rust migration.
 
@@ -92,6 +92,7 @@ Effort (weeks)
 ## Feature Parity
 
 ### FastMCP 3.x Strengths
+
 - ✅ Hot reload (dev cycle: seconds)
 - ✅ Native OTel instrumentation (zero setup)
 - ✅ FileSystemProvider (auto-discovery)
@@ -100,6 +101,7 @@ Effort (weeks)
 - ✅ Task management (Docket integration)
 
 ### Rust SDK Strengths
+
 - ✅ Type safety (compile-time correctness)
 - ✅ Peak throughput (4,700+ QPS)
 - ✅ Lowest latency (sub-millisecond)
@@ -114,6 +116,7 @@ Effort (weeks)
 ## Integration Complexity: Python ↔ MCP Server
 
 ### FastMCP 3.x (Current)
+
 ```
 thegent (Python)
     ↓
@@ -123,9 +126,11 @@ thegent (Python)
     ↓
 [Agent logic] (thegent code)
 ```
+
 **Overhead:** Zero (same process) | **Coupling:** Tight but native
 
 ### Rust SDK (Hypothetical)
+
 ```
 thegent (Python)
     ↓
@@ -137,32 +142,33 @@ thegent (Python)
     ↓
 [Back to Python] (if agent logic needed)
 ```
+
 **Overhead:** 1-5ms per RPC (PyO3) | **Coupling:** Loose but adds latency
 
 ---
 
 ## Recommendation by Deployment Scenario
 
-| Scenario | Recommendation | Timeline | Rationale |
-|----------|------------------|----------|-----------|
-| **SaaS MVP** | FastMCP 3.x | Deploy now | Proven, <100 agents, scaling problem is luxury problem |
-| **Internal Tool** | FastMCP 3.x | Deploy now | Single-tenant, <1,000 QPS, hot reload valuable |
-| **Multi-Tenant SaaS** | Hybrid (now) → Rust (Q3) | 2.5w + 4w | Start hybrid, data-driven migration |
-| **High-Frequency Trading** | Rust SDK | 4-6w | <1ms latency SLA, cost-insensitive on compute |
-| **Enterprise Platform** | Hybrid (now) → Rust (year 2) | 2.5w + plan | Build on hybrid, migrate when scaling requires |
+| Scenario                   | Recommendation               | Timeline    | Rationale                                              |
+| -------------------------- | ---------------------------- | ----------- | ------------------------------------------------------ |
+| **SaaS MVP**               | FastMCP 3.x                  | Deploy now  | Proven, <100 agents, scaling problem is luxury problem |
+| **Internal Tool**          | FastMCP 3.x                  | Deploy now  | Single-tenant, <1,000 QPS, hot reload valuable         |
+| **Multi-Tenant SaaS**      | Hybrid (now) → Rust (Q3)     | 2.5w + 4w   | Start hybrid, data-driven migration                    |
+| **High-Frequency Trading** | Rust SDK                     | 4-6w        | <1ms latency SLA, cost-insensitive on compute          |
+| **Enterprise Platform**    | Hybrid (now) → Rust (year 2) | 2.5w + plan | Build on hybrid, migrate when scaling requires         |
 
 ---
 
 ## Performance Profile by Operation Type
 
-| Operation | FastMCP Latency | Rust Latency | When Rust Wins |
-|-----------|-----------------|--------------|----------------|
-| **API call (http)** | 200ms (I/O bound) | 200ms (same) | Never (I/O-limited) |
-| **DB query (5ms)** | 6-10ms total | 5-8ms total | Marginal (I/O-limited) |
-| **Diff (2 arrays)** | 50-100ms | 1-2ms | Always (CPU-bound) |
-| **Search (1M items)** | 200-500ms | 50-100ms | Always (CPU-bound) |
-| **Parse JSON** | 5-10ms | <1ms | Marginal (small data) |
-| **Route decision** | 1-5ms | 0.1-0.5ms | Marginal (overhead) |
+| Operation             | FastMCP Latency   | Rust Latency | When Rust Wins         |
+| --------------------- | ----------------- | ------------ | ---------------------- |
+| **API call (http)**   | 200ms (I/O bound) | 200ms (same) | Never (I/O-limited)    |
+| **DB query (5ms)**    | 6-10ms total      | 5-8ms total  | Marginal (I/O-limited) |
+| **Diff (2 arrays)**   | 50-100ms          | 1-2ms        | Always (CPU-bound)     |
+| **Search (1M items)** | 200-500ms         | 50-100ms     | Always (CPU-bound)     |
+| **Parse JSON**        | 5-10ms            | <1ms         | Marginal (small data)  |
+| **Route decision**    | 1-5ms             | 0.1-0.5ms    | Marginal (overhead)    |
 
 **Pattern:** Rust wins on CPU-bound operations (diff, search, parse large data). I/O-bound operations are network-limited regardless of framework.
 
@@ -171,22 +177,26 @@ thegent (Python)
 ## Migration Path if Needed
 
 ### Phase 1: Validate (Week 1)
+
 - Profile current server with OTel
 - Identify slowest tools
 - Establish baseline metrics
 
 ### Phase 2: Build Hybrid (Week 2-4)
+
 - Implement 3-5 hot-path tools in Rust
 - Create PyO3 bindings with maturin
 - A/B test FastMCP vs Hybrid
 - Measure throughput gain
 
 ### Phase 3: Decide (Week 5)
+
 - If gain >50%: continue hybrid approach
 - If gain <20%: bottleneck is elsewhere (database, network); Rust won't help
 - If gain 20-50%: evaluate full migration based on business need
 
 ### Phase 4: Full Migration (Optional, 4-6 weeks)
+
 - Rewrite remaining tools in Rust
 - Port governance hooks (hooks/ dir → Rust)
 - Validate parity with FastMCP version
@@ -197,18 +207,21 @@ thegent (Python)
 ## Risk Assessment
 
 ### FastMCP Risk: Low
+
 - Mature codebase (70% of MCP servers use it)
 - Active maintenance (Prefect-backed)
 - No vendor lock-in (open source)
 - Exit path: migrate to Rust if needed
 
 ### Rust SDK Risk: Low
+
 - Official implementation (Anthropic-backed)
 - Active maintenance (3,000+ stars)
 - Proven in production (4,700+ QPS benchmarks)
 - Downside: Rust expertise requirement
 
 ### Hybrid Risk: Medium (but manageable)
+
 - Increases code surface (Python + Rust)
 - PyO3/maturin complexity
 - Per-platform build complexity (wheels)
@@ -219,11 +232,13 @@ thegent (Python)
 ## Final Recommendation for thegent
 
 **NOW:** Continue with FastMCP 3.x
+
 - Current deployment works well
 - No identified bottleneck
 - Team expertise is Python
 
 **IF bottleneck appears (P99 >50ms or QPS <1,000):**
+
 1. Profile with OTel to identify CPU-bound tools
 2. Implement hybrid (FastMCP + Rust accelerators) for 3-5 hot paths
 3. Validate gains (expect 3,500+ QPS, 2-3x improvement)

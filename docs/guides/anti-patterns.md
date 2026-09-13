@@ -9,6 +9,7 @@ Hooks in `hooks/suppress-*.sh` detect and prevent common agent anti-patterns at 
 **Principle**: Prefer **library + thin wrapper** over full custom implementation. Apply from the start of development and throughout.
 
 **Before implementing**:
+
 1. Search PyPI/docs for existing libraries.
 2. Generic problems (retry, cache, file watch, circuit breaker): use a library.
 3. If custom: document rationale in ADR.
@@ -26,6 +27,7 @@ Hooks in `hooks/suppress-*.sh` detect and prevent common agent anti-patterns at 
 **Why it's bad**: tenacity is already in project deps. Manual retry loops are error-prone (missing jitter, no backoff, no configurable stop conditions).
 
 **Fix**:
+
 ```python
 from tenacity import retry, stop_after_attempt, wait_random_exponential
 
@@ -60,6 +62,7 @@ def fetch(url: str) -> httpx.Response:
 **Why it's bad**: Hardcoded providers make switching impossible without code changes. Config-driven selection enables multi-provider support.
 
 **Fix**:
+
 ```python
 from myproject.config import settings
 
@@ -77,6 +80,7 @@ provider = registry.get(settings.llm_provider)
 **Why it's bad**: print() produces unstructured output that can't be filtered, aggregated, or routed. structlog provides structured, context-rich logging.
 
 **Fix**:
+
 ```python
 import structlog
 
@@ -95,6 +99,7 @@ logger.info("message", key="value")
 **Why it's bad**: cachetools and diskcache provide battle-tested TTL, eviction, and persistence. Custom caches often miss edge cases (race conditions, memory growth).
 
 **Fix**:
+
 ```python
 from cachetools import TTLCache
 
@@ -113,6 +118,7 @@ cache = TTLCache(maxsize=1000, ttl=60)
 **Why it's bad**: Polling is CPU/I/O heavy; misses events between polls. watchdog uses inotify/FSEvents for efficient, event-driven detection.
 
 **Fix**:
+
 ```python
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -143,6 +149,7 @@ from watchdog.events import FileSystemEventHandler
 **Files to migrate**: 7 files use urllib.request — see [LIBRARY_REPLACEMENT_AUDIT_DEEP](../research/LIBRARY_REPLACEMENT_AUDIT_DEEP.md) §2.
 
 **Fix**:
+
 ```python
 import httpx
 
@@ -160,6 +167,7 @@ async with httpx.AsyncClient() as client:
 ## Hook Integration
 
 All hooks receive these environment variables from the dispatcher:
+
 - `FILE_PATH` — absolute path to the file being written/edited
 - `TOOL_CONTENT` — full file content (Write)
 - `TOOL_NEW_STRING` — replacement text (Edit)
@@ -167,22 +175,21 @@ All hooks receive these environment variables from the dispatcher:
 
 ### Blocking vs Advisory
 
-| Hook | Behavior | Exit Code |
-|------|----------|-----------|
+| Hook              | Behavior     | Exit Code     |
+| ----------------- | ------------ | ------------- |
 | suppress-v2-files | **Blocking** | 2 (with JSON) |
-| All others | Advisory | 0 (always) |
+| All others        | Advisory     | 0 (always)    |
 
 ### Consolidated Detector
 
 `agent-antipattern-detector.sh` combines all patterns into a single hook for performance. The individual `suppress-*.sh` hooks exist for targeted use or when only specific patterns should be checked.
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -193,6 +200,7 @@ All hooks receive these environment variables from the dispatcher:
 **Why it's bad**: Polling is CPU-intensive and misses events between polls. watchdog provides native filesystem events (inotify/FSEvents).
 
 **Fix**:
+
 ```python
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -222,6 +230,7 @@ observer.start()
 **Why it's bad**: Custom implementations often miss edge cases (half-open state, concurrent access). pybreaker provides battle-tested state machine.
 
 **Fix**:
+
 ```python
 from pybreaker import CircuitBreaker, CircuitBreakerError
 
@@ -247,6 +256,7 @@ def risky_call():
 **Why it's bad**: Error-prone (race conditions, memory leaks). cachetools provides thread-safe TTL caches with automatic eviction.
 
 **Fix**:
+
 ```python
 from cachetools import TTLCache
 
@@ -262,15 +272,15 @@ cache["key"] = value  # Auto-evicted after 5 minutes
 
 ## 8. Anti-Patterns Reference
 
-| # | Anti-Pattern | Fix | Severity |
-|---|--------------|-----|----------|
-| 1 | Custom retry loops | tenacity | Warning |
-| 2 | V2/duplicate files | Refactor original | **BLOCKING** |
-| 3 | Hardcoded providers | Config-driven | Warning |
-| 4 | Print statements | structlog | Warning |
-| 5 | Custom file watch | watchdog | Warning |
-| 6 | Custom circuit breaker | pybreaker | Warning |
-| 7 | Custom TTL cache | cachetools | Warning |
+| #   | Anti-Pattern           | Fix               | Severity     |
+| --- | ---------------------- | ----------------- | ------------ |
+| 1   | Custom retry loops     | tenacity          | Warning      |
+| 2   | V2/duplicate files     | Refactor original | **BLOCKING** |
+| 3   | Hardcoded providers    | Config-driven     | Warning      |
+| 4   | Print statements       | structlog         | Warning      |
+| 5   | Custom file watch      | watchdog          | Warning      |
+| 6   | Custom circuit breaker | pybreaker         | Warning      |
+| 7   | Custom TTL cache       | cachetools        | Warning      |
 
 ---
 

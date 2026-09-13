@@ -52,10 +52,10 @@ tests/test_wl128_final_dedup.py::test_pyproject_exists PASSED
 
 ## Canonical Tasks Present
 
-| Task | Status |
-|------|--------|
-| `lint` | PRESENT (`lint`, `lint:python`, `lint:strict`, `lint:dead-code`, `lint:shell`) |
-| `test` | PRESENT (`test`, `test:unit`, `test:fast-lane`, `test:fast`, `test:nightly-lane`) |
+| Task      | Status                                                                                               |
+| --------- | ---------------------------------------------------------------------------------------------------- |
+| `lint`    | PRESENT (`lint`, `lint:python`, `lint:strict`, `lint:dead-code`, `lint:shell`)                       |
+| `test`    | PRESENT (`test`, `test:unit`, `test:fast-lane`, `test:fast`, `test:nightly-lane`)                    |
 | `quality` | PRESENT (`quality:sitback-contracts`, `quality:harness-model-contracts`, `quality:list-check`, etc.) |
 
 All three canonical task categories (lint, test, quality) are confirmed present in Taskfile.yml.
@@ -63,6 +63,7 @@ All three canonical task categories (lint, test, quality) are confirmed present 
 ## Verdict: PASS
 
 All toolchain bootstrap checks pass:
+
 - test_wl128_toolchain_regression.py: 11/11 passed
 - test_wl128_final_dedup.py: 6/6 passed
 - test_sync.py: 45/45 passed

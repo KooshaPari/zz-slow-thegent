@@ -3,6 +3,7 @@
 ## What Was Implemented
 
 ### Core Isolation Infrastructure
+
 - `thegent.isolation` package with 5 core modules
 - Abstract `IsolationProvider` interface
 - `SubUserIsolationProvider` implementation (hash-based UID allocation)
@@ -10,6 +11,7 @@
 - Exceptions: `IsolationError`, `TenantAllocationError`, `LeaseConflictError`, `ExecutionContextError`
 
 ### Key Capabilities
+
 ```python
 from thegent.isolation import SubUserIsolationProvider
 
@@ -72,11 +74,13 @@ tests/isolation/
 ### Extending EditLeaseManager
 
 The Phase 1 infrastructure provides:
+
 - `TenantContext` (to add `tenant_id` field to leases)
 - `IsolationProvider` interface (to call `allocate_tenant()` / `cleanup_tenant()`)
 - `SubUserIsolationProvider` (production provider)
 
 Phase 2 will add:
+
 - `tenant_id` field to `EditLease` dataclass
 - Conflict detection: `_check_conflicts(lock_path, current_tenant_id)`
 - Tenant-aware lock paths: `/run/thegent/leases/{tenant_id}/{hash(filepath)}.lock`
@@ -118,6 +122,7 @@ class Executor:
 ## Next: Phase 2
 
 Phase 2 tasks:
+
 - [ ] Task 2.1.1: Extend EditLeaseManager with tenant awareness
 - [ ] Task 2.1.2: Implement conflict detection
 - [ ] Task 2.2.1: Tenant-aware lock paths
@@ -132,6 +137,7 @@ Phase 2 tasks:
 ### Common Issues
 
 **"Module not found" error**:
+
 ```bash
 # Ensure src/ is in PYTHONPATH
 export PYTHONPATH=/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src:$PYTHONPATH
@@ -139,10 +145,12 @@ python3 -c "from thegent.isolation import SubUserIsolationProvider"
 ```
 
 **Timeout errors in tests**:
+
 - Adjust `timeout_sec` parameter (default 300s)
 - Some systems may need longer timeouts
 
 **Directory already exists**:
+
 - Provider uses `mkdir(parents=True, exist_ok=True)` - safe to re-allocate
 
 ## References

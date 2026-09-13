@@ -4,6 +4,7 @@
 Date: February 23, 2026
 
 ## Scope
+
 - Executed manual deep-read Wave 2 across 60 repos.
 - Lane distribution: 6 lanes x 10 repos.
 - Artifacts:
@@ -15,12 +16,14 @@ Date: February 23, 2026
   - `docs/research/PHASE2_WAVE2_LANE_6_REPORT.md`
 
 ## Verdict Distribution
+
 - `adopt`: 11
 - `pilot`: 22
 - `watch`: 15
 - `avoid`: 12
 
 ## Wave 2 Strongest `adopt` Set
+
 - `https://github.com/errata-ai/vale`
 - `https://github.com/doorstop-dev/doorstop`
 - `https://github.com/ory/kratos`
@@ -34,12 +37,14 @@ Date: February 23, 2026
 - `https://github.com/LMCache/LMCache`
 
 ## Recurrent Risks
+
 - Missing `SECURITY.md` despite active code/release surface.
 - CI visibility gaps (`unknown`) caused by pending/skipped/non-obvious latest test outcomes.
 - Release/process maturity mismatch (high claims, weak rollback/release notes discipline).
 - Tooling/vendor coupling in several MCP/browser/agent orchestration projects.
 
 ## Wave 3 Queue Prepared
+
 - Remaining repos after Wave 1+2: 25.
 - Pre-split artifacts:
   - `docs/research/PHASE2_WAVE3_LANE_1.txt`
@@ -49,5 +54,6 @@ Date: February 23, 2026
   - `docs/research/PHASE2_WAVE3_LANE_5.txt`
 
 ## Decision
+
 - Phase 2.2 (Wave 2) completed.
 - Next executable phase: Phase 2.3 (Wave 3, final 25 repos).

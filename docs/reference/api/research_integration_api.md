@@ -12,7 +12,7 @@ Integrate research documents into work stream.
 
 ### Methods
 
-#### ResearchIntegration.__init__
+#### ResearchIntegration.**init**
 
 ```python
 __init__(self: Any, research_dir: Any)

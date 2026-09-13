@@ -6,11 +6,11 @@ Track the five PR anchors expected from dedicated lane worktrees before PR mecha
 
 ## Current state (2026-03-03)
 
-- **thegent-app**: `lane/split-thegent-app-bootstrap` *(TBD: PR number)*
-- **thegent-mcp**: `lane/split-thegent-mcp-bootstrap` *(TBD: PR number)*
-- **thegent-control-plane**: `lane/split-thegent-control-plane-bootstrap` *(TBD: PR number)*
-- **thegent-execution**: `lane/split-thegent-execution-bootstrap` *(TBD: PR number)*
-- **thegent-governance**: `lane/split-thegent-governance-bootstrap` *(TBD: PR number)*
+- **thegent-app**: `lane/split-thegent-app-bootstrap` _(TBD: PR number)_
+- **thegent-mcp**: `lane/split-thegent-mcp-bootstrap` _(TBD: PR number)_
+- **thegent-control-plane**: `lane/split-thegent-control-plane-bootstrap` _(TBD: PR number)_
+- **thegent-execution**: `lane/split-thegent-execution-bootstrap` _(TBD: PR number)_
+- **thegent-governance**: `lane/split-thegent-governance-bootstrap` _(TBD: PR number)_
 
 ## Planned merge sequence
 

@@ -9,6 +9,7 @@
 ## MCP SERVERS & PROTOCOLS
 
 ### Official & Major MCP Implementations
+
 - github.com/modelcontextprotocol/servers - Official MCP server implementations (77k stars)
 - github.com/github/github-mcp-server - GitHub's official MCP Server (27k stars)
 - github.com/punkpeye/awesome-mcp-servers - Curated MCP list (79.7k stars)
@@ -18,6 +19,7 @@
 - gh.io/mcp - GitHub MCP registry
 
 ### MCP Tools & Utilities
+
 - github.com/philschmid/mcp-cli - CLI for MCP servers (token efficient)
 - github.com/center2055/MinecraftDeveloperMCP - Spigot/Paper integration
 - github.com/FundamentalLabs/minecraft-mcp - Minecraft MCP server
@@ -29,6 +31,7 @@
 ## AI AGENT FRAMEWORKS
 
 ### Top Tier Frameworks
+
 - github.com/langchain/langchain - LangChain (122k+ stars)
 - github.com/langchain/langgraph - LangGraph orchestration
 - github.com/MetaGPT/MetaGPT - Multi-agent framework (61k stars)
@@ -39,6 +42,7 @@
 - github.com/openai/openai-agents-python - OpenAI Agents SDK (18.8k stars)
 
 ### Emerging Frameworks
+
 - github.com/VoltAgent/voltagent - TypeScript agent framework (5.1k stars)
 - github.com/microsoft/agent-framework - Microsoft Agent Framework (7k stars)
 - github.com/timbal-ai/timbal - Enterprise agent framework
@@ -49,6 +53,7 @@
 - github.com/RailtownAI/railtracks - Resilient agent framework
 
 ### Specialized Agents
+
 - github.com/SWE-agent/swe-agent - Software engineering agent
 - github.com/SWE-agent/SWE-ReX - Sandboxed code execution
 - github.com/block/goose - Goose agent (Block)
@@ -62,6 +67,7 @@
 ## AI CODING CLI TOOLS
 
 ### Major CLI Agents
+
 - github.com/google-gemini/gemini-cli - Gemini CLI (94k stars)
 - github.com/anthropics/claude-code - Claude Code CLI
 - github.com/openai/codex - OpenAI Codex CLI
@@ -72,6 +78,7 @@
 - github.com/paul-gauthier/aider - Aider open-source CLI
 
 ### Terminal & Local Tools
+
 - github.com/meer-ai/meer - Local-first CLI with Ollama
 - github.com/llm.datasette/llm - LLM CLI utility
 - github.com/marizmelo/llm-cli - Cloud + Local LLM CLI
@@ -80,6 +87,7 @@
 - ffmcp.org - Unified AI CLI (OpenAI/Anthropic/Gemini)
 
 ### Specialized CLI
+
 - github.com/philschmid/mcp-cli - MCP interaction CLI
 - github.com/llm.datasette/llm - Datasette LLM CLI
 - llm.datasette.io - LLM Python library/docs
@@ -89,6 +97,7 @@
 ## OBSERVABILITY & TRACING
 
 ### Open Source Observability
+
 - github.com/langfuse/langfuse - Langfuse (MIT licensed)
 - github.com/traceloop-ai/traceloop - Production observability
 - github.com/Scale3-Labs/langtrace - OpenTelemetry observability
@@ -101,6 +110,7 @@
 - github.com/tobilg/ai-observer - Local AI observability
 
 ### Enterprise & Cloud
+
 - braintrust.dev - Braintrust observability
 - helicone.ai - Helicone proxy observability
 - comet.ml - Opik observability
@@ -113,12 +123,14 @@
 ## RAG & RETRIEVAL
 
 ### Core Frameworks
+
 - github.com/llamaindex/llamaindex - LlamaIndex
 - github.com/langchain/langchain - LangChain + LangGraph
 - github.com/haystack/haystack - Haystack RAG
 - github.com/linagora/openrag - OpenRAG sovereign RAG
 
 ### RAG Tools & Utilities
+
 - github.com/DataScienceUIBK/rankify - Retrieval/Reranking toolkit
 - github.com/ictnlp/FlexRAG - Flexible RAG framework
 - arxiv.org/abs/2504.08761 - UltraRAG modular toolkit
@@ -126,6 +138,7 @@
 - firecrawl.dev - Firecrawl web scraping for RAG
 
 ### Vector & Search
+
 - meilisearch.com - Meilisearch vector search
 - qdrant.tech - Qdrant vector database
 - milvus.io - Milvus vector database
@@ -136,6 +149,7 @@
 ## CODE EXECUTION SANDBOXES
 
 ### Open Source Sandboxes
+
 - github.com/substratusai/sandboxai - Isolated sandbox execution
 - github.com/alibaba/OpenSandbox - Alibaba universal sandbox
 - github.com/agent-infra/sandbox - All-in-one agent sandbox (2.4k stars)
@@ -145,6 +159,7 @@
 - github.com/ehrlich-b/wingthing - Wingthing sandboxed execution
 
 ### Managed Platforms
+
 - e2b.dev - E2B sandbox (most popular)
 - modal.com - Modal compute platform
 - daytona.io - Daytona secure infrastructure
@@ -152,6 +167,7 @@
 - docs.laminar.sh - Laminar sandbox
 
 ### Cloud Provider Sandboxes
+
 - heroku.com - Heroku code execution sandbox
 - cloudflare.com - Cloudflare Workers sandbox
 - novita.ai - Novita sandbox for Claude
@@ -161,6 +177,7 @@
 ## AWESOME LISTS & CURATED RESOURCES
 
 ### AI Tool Collections
+
 - github.com/best-of-ai/best-of-ai - Best AI tools
 - github.com/mahseema/awesome-ai-tools - 4.3k stars
 - github.com/hemanth0525/awesome-free-ai-tools - 1010+ free tools
@@ -171,12 +188,14 @@
 - github.com/eudk/awesome-ai-tools - Large tool list
 
 ### Agent Collections
+
 - github.com/e2b-dev/awesome-ai-agents - E2B agent list
 - github.com/awesomelistsio/awesome-ai-research-tools - Research tools
 - github.com/gaolitao/awesome-cutting-edge-ai-projects - Cutting edge
 - github.com/joylarkin/Awesome-AI-Market-Maps - 400+ market maps
 
 ### Specialized Collections
+
 - github.com/githubnext/awesome-continuous-ai - Continuous AI
 - github.com/gth-ai/awesome-cs-tools - CS tools
 - github.com/best-of-ai/ai-directories - AI directories
@@ -187,18 +206,21 @@
 ## TERMINAL & SHELL TOOLS
 
 ### Modern Terminals
+
 - github.com/coder/ghostty - Ghostty terminal (zig)
 - github.com/alacritty/alacritty - Alacritty (rust)
 - github.com/ajeetdsouza/zoxide - Zoxide (rust cd)
 - github.com/atuinsh/atuin - Atuin shell history
 
 ### Shell Enhancements
+
 - github.com/ohmyzsh/ohmyzsh - Oh My Zsh
 - github.com/romkatv/zsh-bench - Zsh performance
 - github.com/chubin/cheat.sh - cheat.sh
 - github.com/jlevy/the-art-of-command-line - Command line art
 
 ### TUI Tools
+
 - github.com/Textualize/rich - Rich TUI library
 - github.com/textualize/textual - Textual TUI framework
 - github.com/tmbo/questionary - CLI prompts
@@ -208,6 +230,7 @@
 ## PYTHON AI ECOSYSTEM
 
 ### Core Libraries
+
 - github.com/pydantic/pydantic - Pydantic validation
 - github.com/pydantic/pydantic-ai - Pydantic AI agents
 - github.com/langchain/langchain - LangChain
@@ -216,6 +239,7 @@
 - github.com/crewai/crewai - CrewAI
 
 ### Data & Processing
+
 - github.com/pola-rs/polars - Polars DataFrame
 - github.com/pandas-dev/pandas - Pandas
 - github.com/numpy/numpy - NumPy
@@ -224,6 +248,7 @@
 - github.com/huggingface/transformers - HuggingFace Transformers
 
 ### Utilities
+
 - github.com/tiangolo/fastapi - FastAPI
 - github.com/tiangolo/uvicorn - Uvicorn ASGI
 - github.com/tiangolo/sqlmodel - SQLModel
@@ -236,6 +261,7 @@
 ## RUST ECOSYSTEM
 
 ### Core Crates
+
 - github.com/ast-grep/ast-grep - AST-based linting
 - github.com/BurntSushi/ripgrep - Ripgrep
 - github.com/sharkdp/bat - Bat cat clone
@@ -243,6 +269,7 @@
 - github.com/bootandy/dust - Dust disk usage
 
 ### AI-Related
+
 - github.com/candle-org/candle - Candle ML framework
 - github.com/rayon-rs/rayon - Parallelism
 - github.com/tokio-rs/tokio - Async runtime
@@ -253,6 +280,7 @@
 ## DEV TOOLS & INFRASTRUCTURE
 
 ### Container & Orchestration
+
 - kubernetes/kubernetes - Kubernetes
 - docker/cli - Docker CLI
 - containerd/containerd - Containerd
@@ -260,11 +288,13 @@
 - rancher/rancher - Rancher
 
 ### CI/CD
+
 - github.com/actions/github - GitHub Actions
 - github.com/travis-ci/travis-ci - Travis CI
 - github.com/circleci/circleci - CircleCI
 
 ### Observability
+
 - prometheus/prometheus - Prometheus
 - grafana/grafana - Grafana
 - elastic/elasticsearch - Elasticsearch
@@ -275,6 +305,7 @@
 ## LOCAL & PRIVACY AI
 
 ### Local Models
+
 - github.com/ollama/ollama - Ollama local models
 - github.com/lm-studios/impla - Impla local
 - github.com/ggerganov/llama.cpp - Llama.cpp
@@ -282,6 +313,7 @@
 - github.com/ggerganov/whisper - Whisper
 
 ### Privacy Tools
+
 - github.com/slsethical/awesome-local-ai - Local AI list
 - github.com/ollama/ollama - Ollama
 - github.com/huggingface/candle - Candle
@@ -291,12 +323,14 @@
 ## RESEARCH & ACADEMIC
 
 ### Papers & Benchmarks
+
 - arxiv.org - ArXiv preprints
 - paperswithcode.com - Papers with Code
 - openreview.net - OpenReview
 - github.com/ctuning/ck - CK benchmarking
 
 ### AI Research
+
 - github.com/huggingface/transformers - Transformers
 - github.com/facebookresearch/llama - LLaMA
 - github.com/meta-llama/llama - Meta LLaMA
@@ -308,6 +342,7 @@
 ## BLOGS & NEWS SOURCES
 
 ### Developer Blogs
+
 - github.blog - GitHub Blog
 - medium.com/@reactjsbd - Various AI content
 - opendatascience.com - ODSC Blog
@@ -315,6 +350,7 @@
 - brightdata.com/blog - Bright Data Blog
 
 ### News & Research
+
 - reddit.com/r/LocalLLaMA - Local LLaMA
 - reddit.com/r/AI_Agent - AI Agents
 - reddit.com/r/ClaudeAI - Claude AI
@@ -325,12 +361,14 @@
 ## KEY VENDORS & PLATFORMS
 
 ### Cloud AI
+
 - cloud.google.com/ai - Google AI
 - aws.amazon.com/ai - AWS AI
 - azure.microsoft.com/ai - Azure AI
 - cloudflare.com/ai - Cloudflare AI
 
 ### AI Platforms
+
 - anthropic.com - Anthropic
 - openai.com - OpenAI
 - cohere.com - Cohere
@@ -338,6 +376,7 @@
 - ai.meta.com - Meta AI
 
 ### Vector Databases
+
 - qdrant.cloud - Qdrant
 - weaviate.io - Weaviate
 - milvus.io - Milvus
@@ -347,19 +386,19 @@
 
 ## SUMMARY STATISTICS
 
-| Category | Count |
-|----------|-------|
-| MCP Servers & Tools | 15+ |
-| AI Agent Frameworks | 20+ |
-| CLI Tools | 20+ |
-| Observability Tools | 15+ |
-| RAG Frameworks | 10+ |
-| Sandbox Solutions | 15+ |
-| Awesome Lists | 15+ |
-| Python Libraries | 20+ |
-| Rust Tools | 10+ |
-| Research Papers | 10+ |
+| Category            | Count |
+| ------------------- | ----- |
+| MCP Servers & Tools | 15+   |
+| AI Agent Frameworks | 20+   |
+| CLI Tools           | 20+   |
+| Observability Tools | 15+   |
+| RAG Frameworks      | 10+   |
+| Sandbox Solutions   | 15+   |
+| Awesome Lists       | 15+   |
+| Python Libraries    | 20+   |
+| Rust Tools          | 10+   |
+| Research Papers     | 10+   |
 
 ---
 
-*This research compiled from web searches on 2026-02-23*
+_This research compiled from web searches on 2026-02-23_

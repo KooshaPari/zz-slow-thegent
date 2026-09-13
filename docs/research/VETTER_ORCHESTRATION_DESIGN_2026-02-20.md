@@ -17,12 +17,12 @@ queued, or escalated.
 The Vetter is not a new concept imported from scratch — it is the **natural integration
 layer** between four existing thegent subsystems that currently operate independently:
 
-| Existing System | Current Role | Vetter Integration |
-|---|---|---|
-| `SemanticFirewall` (WP-28002) | Blocks regex-matched output | Promoted to `SafetyVetterCheck` |
-| `HITLApprovalWorkflow` (WL-019) | Approve/reject blocked runs | Escalation target for `escalate` verdict |
-| `EvidenceStore` / `ComplianceEvidence` (WL-051) | Hash-chained audit store | Every vetting decision appended |
-| `PromptQueueManager` (WL-014) | Queues pending prompts | Revision re-queue destination |
+| Existing System                                 | Current Role                | Vetter Integration                       |
+| ----------------------------------------------- | --------------------------- | ---------------------------------------- |
+| `SemanticFirewall` (WP-28002)                   | Blocks regex-matched output | Promoted to `SafetyVetterCheck`          |
+| `HITLApprovalWorkflow` (WL-019)                 | Approve/reject blocked runs | Escalation target for `escalate` verdict |
+| `EvidenceStore` / `ComplianceEvidence` (WL-051) | Hash-chained audit store    | Every vetting decision appended          |
+| `PromptQueueManager` (WL-014)                   | Queues pending prompts      | Revision re-queue destination            |
 
 The Vetter adds three new primitives: `VetterPolicy`, `VetterCheck`, and
 `VetterResult`, plus the `VetterOrchestrator` that orchestrates them. A new
@@ -69,7 +69,7 @@ independent model to grade agent output on a rubric. Key design choices:
 - **Few-shot anchoring:** provide the judge with 2-3 reference examples (golden
   outputs) to calibrate the scale. Without anchoring, judges drift toward the middle.
 - **Confidence-weighted threshold:** `pass_verdict = True` only if `mean_score >=
-  threshold` AND `min_score >= floor`. The floor prevents a high average masking a
+threshold` AND `min_score >= floor`. The floor prevents a high average masking a
   catastrophic individual criterion failure.
 - **Cost control:** LLM-as-judge is triggered only when cheaper checks fail OR when
   the policy's `quality_score_check.always_run = True`.
@@ -144,6 +144,7 @@ All checks conform to a common interface: `run(result: RunResult) -> CheckOutcom
 `revision_hint: str`.
 
 #### SchemaVetterCheck
+
 Validates that the agent's output (parsed as JSON or a named Pydantic model)
 conforms to the expected schema.
 
@@ -154,6 +155,7 @@ conforms to the expected schema.
 - Includes validation errors in `reason`.
 
 #### DiffSizeVetterCheck
+
 Rejects diffs exceeding a lines-changed threshold.
 
 - `max_lines_changed: int` — default 500
@@ -162,6 +164,7 @@ Rejects diffs exceeding a lines-changed threshold.
 - Designed to gate massive refactors that bypass human review.
 
 #### SafetyVetterCheck
+
 Promotes the existing `SemanticFirewall` (WP-28002) into the Vetter chain. Adds
 thegent-specific patterns to the existing regex set:
 
@@ -173,6 +176,7 @@ thegent-specific patterns to the existing regex set:
 Reports violations with `action` (`block` → `reject`, `warn` → `revision_requested`).
 
 #### QualityScoreVetterCheck
+
 LLM-as-judge scoring via a configurable model.
 
 - `judge_model: str` — e.g., `"gpt-5-mini"` or `"claude-haiku-4.5"`
@@ -184,6 +188,7 @@ LLM-as-judge scoring via a configurable model.
 - Returns `passed`, `scores_by_criterion`, and `revision_hint` (judge's critique).
 
 #### TestPassVetterCheck
+
 Runs the project's test suite scoped to modified files.
 
 - `test_runner: str` — default `"pytest"`
@@ -195,6 +200,7 @@ Runs the project's test suite scoped to modified files.
 - On failure, includes pytest short output in `reason`.
 
 #### RuffVetterCheck
+
 Runs `ruff check` on files touched by the agent.
 
 - `fix_mode: bool` — default False; if True, runs `--fix` and checks if violations remain
@@ -358,7 +364,7 @@ When verdict is `revision_requested`:
 
 1. `VetterOrchestrator` constructs the revised prompt string (see Section 3.4).
 2. Calls `PromptQueueManager.enqueue(prompt=revised_prompt, project_path=...,
-   metadata={"vetter_revision": True, "original_run_id": run_id, "round": n})`.
+metadata={"vetter_revision": True, "original_run_id": run_id, "round": n})`.
 3. The revised task is picked up by the next `do_next` cycle.
 4. After the agent completes the revision, the `PostAgentRun` hook fires the vetter
    again — the revision counter increments, and on exhausting `max_revision_rounds`,
@@ -374,11 +380,13 @@ whatever models are registered in the agent registry.
 ### 4.6 FederatedPolicyManager
 
 `VetterPolicy` JSON files are stored at:
+
 ```
 contracts/vetter/<policy_id>.json
 ```
 
 For namespace-specific overrides:
+
 ```
 <base_dir>/<org>/<project>/<env>/vetter_<policy_id>.json
 ```
@@ -439,6 +447,7 @@ thegent govern vet <run_id>
 ```
 
 **Implementation path:**
+
 - New `govern_vet_impl()` in `cli/commands/impl.py`
 - Instantiates `VetterOrchestrator` with session-local deps
 - Resolves `RunResult` from `governance_events.jsonl` by `run_id`
@@ -455,6 +464,7 @@ ordering is important: deferrals inject into the queue, which is also used by th
 vetter for revision re-queues — vetting must complete first.
 
 Concrete injection points:
+
 - `src/thegent/agents/in_process_runner.py` — after `result = self.run(...)`
 - `src/thegent/agents/cursor_api_runner.py` — after subprocess completes
 - `src/thegent/agents/codex_proxy.py` — after response assembled
@@ -469,127 +479,143 @@ utility in `hooks/lib/post-agent-run.sh` (shell side) and
 ## 6. Implementation Phases
 
 ### Phase 1 — Core Vetter (WL-090, WL-091, WL-092)
+
 **Effort:** M (4-8h) | **Wall clock:** ~20 min with agent-led execution
 
-| Task | WL | File(s) |
-|---|---|---|
-| `VetterPolicy`, `VetterCheck` ABC, `VetterResult` dataclasses | WL-090 | `governance/vetter.py` |
-| `SchemaVetterCheck`, `DiffSizeVetterCheck`, `SafetyVetterCheck` | WL-091 | `governance/vetter.py` |
-| `VetterOrchestrator.evaluate()` (no HITL/queue yet, just approve/reject) | WL-092 | `governance/vetter.py` |
-| Unit tests (60+ test cases) | WL-090 | `tests/governance/test_vetter.py` |
+| Task                                                                     | WL     | File(s)                           |
+| ------------------------------------------------------------------------ | ------ | --------------------------------- |
+| `VetterPolicy`, `VetterCheck` ABC, `VetterResult` dataclasses            | WL-090 | `governance/vetter.py`            |
+| `SchemaVetterCheck`, `DiffSizeVetterCheck`, `SafetyVetterCheck`          | WL-091 | `governance/vetter.py`            |
+| `VetterOrchestrator.evaluate()` (no HITL/queue yet, just approve/reject) | WL-092 | `governance/vetter.py`            |
+| Unit tests (60+ test cases)                                              | WL-090 | `tests/governance/test_vetter.py` |
 
 ### Phase 2 — HITL + Evidence Integration (WL-093, WL-094)
+
 **Effort:** M (4-8h)
 
-| Task | WL | File(s) |
-|---|---|---|
-| Escalation path: `HITLApprovalWorkflow` integration, `vetter_escalation` event | WL-093 | `governance/vetter.py`, `governance/hitl.py` |
-| `EvidenceStore` append on every verdict, `vetter_decision` governance event | WL-094 | `governance/vetter.py`, `governance/compliance.py` |
-| Integration tests with real `EvidenceStore` | WL-094 | `tests/governance/test_vetter_integration.py` |
+| Task                                                                           | WL     | File(s)                                            |
+| ------------------------------------------------------------------------------ | ------ | -------------------------------------------------- |
+| Escalation path: `HITLApprovalWorkflow` integration, `vetter_escalation` event | WL-093 | `governance/vetter.py`, `governance/hitl.py`       |
+| `EvidenceStore` append on every verdict, `vetter_decision` governance event    | WL-094 | `governance/vetter.py`, `governance/compliance.py` |
+| Integration tests with real `EvidenceStore`                                    | WL-094 | `tests/governance/test_vetter_integration.py`      |
 
 ### Phase 3 — Quality Score + Revision Queue (WL-095, WL-096)
+
 **Effort:** M (4-8h)
 
-| Task | WL | File(s) |
-|---|---|---|
-| `QualityScoreVetterCheck` (LLM-as-judge via `thegent free`) | WL-095 | `governance/vetter.py` |
+| Task                                                         | WL     | File(s)                                        |
+| ------------------------------------------------------------ | ------ | ---------------------------------------------- |
+| `QualityScoreVetterCheck` (LLM-as-judge via `thegent free`)  | WL-095 | `governance/vetter.py`                         |
 | Revision prompt construction + `PromptQueueManager` re-queue | WL-096 | `governance/vetter.py`, `core/prompt_queue.py` |
-| Round counter / max_revision_rounds enforcement | WL-096 | `governance/vetter.py` |
+| Round counter / max_revision_rounds enforcement              | WL-096 | `governance/vetter.py`                         |
 
 ### Phase 4 — Test + Lint Checks (WL-097)
+
 **Effort:** S (1-3h)
 
-| Task | WL | File(s) |
-|---|---|---|
-| `TestPassVetterCheck` (pytest scoped to changed files) | WL-097 | `governance/vetter.py` |
-| `RuffVetterCheck` (ruff check on changed `.py` files) | WL-097 | `governance/vetter.py` |
-| 20+ tests covering pass/fail/timeout paths | WL-097 | `tests/governance/test_vetter.py` |
+| Task                                                   | WL     | File(s)                           |
+| ------------------------------------------------------ | ------ | --------------------------------- |
+| `TestPassVetterCheck` (pytest scoped to changed files) | WL-097 | `governance/vetter.py`            |
+| `RuffVetterCheck` (ruff check on changed `.py` files)  | WL-097 | `governance/vetter.py`            |
+| 20+ tests covering pass/fail/timeout paths             | WL-097 | `tests/governance/test_vetter.py` |
 
 ### Phase 5 — Hook + CLI Integration (WL-098)
+
 **Effort:** M (4-8h)
 
-| Task | WL | File(s) |
-|---|---|---|
-| `post-agent-run-vetter.sh` hook + hook-config.yaml entry | WL-098 | `hooks/post-agent-run-vetter.sh`, `hooks/hook-config.yaml` |
-| `thegent govern vet` CLI command + `govern_vet_impl()` | WL-098 | `cli/apps/govern.py`, `cli/commands/impl.py` |
-| `thegent_govern_vet` MCP tool registration | WL-098 | `mcp/server.py` |
+| Task                                                     | WL     | File(s)                                                                               |
+| -------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------- |
+| `post-agent-run-vetter.sh` hook + hook-config.yaml entry | WL-098 | `hooks/post-agent-run-vetter.sh`, `hooks/hook-config.yaml`                            |
+| `thegent govern vet` CLI command + `govern_vet_impl()`   | WL-098 | `cli/apps/govern.py`, `cli/commands/impl.py`                                          |
+| `thegent_govern_vet` MCP tool registration               | WL-098 | `mcp/server.py`                                                                       |
 | `PostAgentRun` hook dispatch wired into 3 runner classes | WL-098 | `agents/in_process_runner.py`, `agents/cursor_api_runner.py`, `agents/codex_proxy.py` |
 
 ### Phase 6 — Federated Policy + Contracts (WL-099)
+
 **Effort:** S (1-3h)
 
-| Task | WL | File(s) |
-|---|---|---|
-| `contracts/vetter/default.json` base policy | WL-099 | `contracts/vetter/default.json` |
-| `contracts/vetter/production-strict.json` (escalate on any failure) | WL-099 | `contracts/vetter/production-strict.json` |
-| `FederatedPolicyManager` integration: jurisdiction overlay application | WL-099 | `governance/vetter.py` |
-| EU-AI-ACT overlay test: critical checks force `on_fail = "escalate"` | WL-099 | `tests/governance/test_vetter_federated.py` |
+| Task                                                                   | WL     | File(s)                                     |
+| ---------------------------------------------------------------------- | ------ | ------------------------------------------- |
+| `contracts/vetter/default.json` base policy                            | WL-099 | `contracts/vetter/default.json`             |
+| `contracts/vetter/production-strict.json` (escalate on any failure)    | WL-099 | `contracts/vetter/production-strict.json`   |
+| `FederatedPolicyManager` integration: jurisdiction overlay application | WL-099 | `governance/vetter.py`                      |
+| EU-AI-ACT overlay test: critical checks force `on_fail = "escalate"`   | WL-099 | `tests/governance/test_vetter_federated.py` |
 
 ---
 
 ## 7. Proposed WL Items
 
-| WL ID | Title | Phase | Priority | Effort | Depends On |
-|---|---|---|---|---|---|
-| WL-090 | Vetter Core: VetterPolicy, VetterCheck, VetterResult dataclasses + unit tests | 1 | P1 | M | WL-019, WL-051 |
-| WL-091 | Vetter Checks Phase 1: Schema, DiffSize, Safety | 1 | P1 | S | WL-090 |
-| WL-092 | VetterOrchestrator: evaluate() — approve/reject path only | 1 | P1 | M | WL-090, WL-091 |
-| WL-093 | Vetter HITL Escalation: escalated verdict + HITL await_approval integration | 2 | P1 | M | WL-092, WL-019 |
-| WL-094 | Vetter Evidence: EvidenceStore append + vetter_decision governance event | 2 | P1 | S | WL-092, WL-051 |
-| WL-095 | QualityScoreVetterCheck: LLM-as-judge via configurable model | 3 | P2 | M | WL-092, WL-034 |
-| WL-096 | Vetter Revision Queue: revision_requested verdict + PromptQueueManager re-queue | 3 | P2 | M | WL-092, WL-014 |
-| WL-097 | Vetter Code Checks: TestPassVetterCheck + RuffVetterCheck | 4 | P1 | S | WL-092 |
-| WL-098 | Vetter Hook + CLI: post-agent-run hook, govern vet command, MCP tool, runner wiring | 5 | P1 | M | WL-092, WL-093, WL-094 |
-| WL-099 | Vetter Contracts + Federation: default/production-strict policies, FederatedPolicyManager integration | 6 | P2 | S | WL-098, WL-020 |
+| WL ID  | Title                                                                                                 | Phase | Priority | Effort | Depends On             |
+| ------ | ----------------------------------------------------------------------------------------------------- | ----- | -------- | ------ | ---------------------- |
+| WL-090 | Vetter Core: VetterPolicy, VetterCheck, VetterResult dataclasses + unit tests                         | 1     | P1       | M      | WL-019, WL-051         |
+| WL-091 | Vetter Checks Phase 1: Schema, DiffSize, Safety                                                       | 1     | P1       | S      | WL-090                 |
+| WL-092 | VetterOrchestrator: evaluate() — approve/reject path only                                             | 1     | P1       | M      | WL-090, WL-091         |
+| WL-093 | Vetter HITL Escalation: escalated verdict + HITL await_approval integration                           | 2     | P1       | M      | WL-092, WL-019         |
+| WL-094 | Vetter Evidence: EvidenceStore append + vetter_decision governance event                              | 2     | P1       | S      | WL-092, WL-051         |
+| WL-095 | QualityScoreVetterCheck: LLM-as-judge via configurable model                                          | 3     | P2       | M      | WL-092, WL-034         |
+| WL-096 | Vetter Revision Queue: revision_requested verdict + PromptQueueManager re-queue                       | 3     | P2       | M      | WL-092, WL-014         |
+| WL-097 | Vetter Code Checks: TestPassVetterCheck + RuffVetterCheck                                             | 4     | P1       | S      | WL-092                 |
+| WL-098 | Vetter Hook + CLI: post-agent-run hook, govern vet command, MCP tool, runner wiring                   | 5     | P1       | M      | WL-092, WL-093, WL-094 |
+| WL-099 | Vetter Contracts + Federation: default/production-strict policies, FederatedPolicyManager integration | 6     | P2       | S      | WL-098, WL-020         |
 
 ---
 
 ## 8. Acceptance Criteria Summary
 
 ### FR-VET-001 (WL-090)
+
 `VetterPolicy` SHALL define `checks`, `on_fail`, `escalation_lane`, and `max_revision_rounds`.
 `VetterCheck` SHALL define a `run(result: RunResult) -> CheckOutcome` interface.
 `VetterResult` SHALL carry `verdict`, `failed_checks`, `evidence`, and `revision_instructions`.
 
 ### FR-VET-002 (WL-091)
+
 `SafetyVetterCheck` SHALL detect all `SemanticFirewall` patterns PLUS secret and PII patterns.
 `DiffSizeVetterCheck` SHALL reject diffs exceeding `max_lines_changed` (configurable, default 500).
 `SchemaVetterCheck` SHALL validate agent JSON output against a Pydantic model.
 
 ### FR-VET-003 (WL-092)
+
 `VetterOrchestrator.evaluate()` SHALL run all checks in order, aggregate verdict per policy
 `on_fail`, and return a `VetterResult`. It SHALL NOT silently catch check errors.
 
 ### FR-VET-004 (WL-093)
+
 When verdict is `"escalated"`, the orchestrator SHALL emit a `vetter_escalation` event to
 `governance_events.jsonl` with `status: "pending"`. The event SHALL appear in
 `thegent govern list` output without CLI changes.
 
 ### FR-VET-005 (WL-094)
+
 Every `VetterResult` SHALL append a `ComplianceEvidence` record (kind=`"agent_decision"`)
 to the session's `EvidenceStore`. The `verify_integrity()` check SHALL pass after appending.
 
 ### FR-VET-006 (WL-095)
+
 `QualityScoreVetterCheck` SHALL call a configurable judge model, parse structured scores,
 and apply `pass_threshold` and `min_criterion_score`. It SHALL return `revision_hint` from
 the judge's critique when `passed = False`.
 
 ### FR-VET-007 (WL-096)
+
 When verdict is `"revision_requested"`, the orchestrator SHALL enqueue a revised prompt via
 `PromptQueueManager` with `metadata.vetter_revision = True` and `metadata.round = n`.
 After `max_revision_rounds` exhaustion, the orchestrator SHALL apply `policy.on_fail`.
 
 ### FR-VET-008 (WL-097)
+
 `TestPassVetterCheck` SHALL run `pytest` scoped to files changed in the agent's diff.
 `RuffVetterCheck` SHALL run `ruff check` on modified `.py` files. Both SHALL fail fast
 (non-zero exit = `passed = False`) without silent error handling.
 
 ### FR-VET-009 (WL-098)
+
 `hooks/post-agent-run-vetter.sh` SHALL fire after every `AgentRunner.run()` completes.
 `thegent govern vet <run_id>` SHALL be available as a CLI command and MCP tool.
 The hook SHALL exit non-zero on `rejected` verdict to block downstream action.
 
 ### FR-VET-010 (WL-099)
+
 `VetterPolicy` SHALL be resolvable via `FederatedPolicyManager` namespace hierarchy.
 EU-AI-ACT jurisdiction overlay SHALL force `on_fail = "escalate"` for any failed
 safety or quality check. The default policy at `contracts/vetter/default.json`

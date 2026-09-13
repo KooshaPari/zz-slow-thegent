@@ -4,22 +4,22 @@ Execution pass: locate Pheno SDK, clone canonical sources, freeze GitHub org inv
 
 ## AgilePlus features
 
-| Slug | Purpose |
-|------|---------|
-| `portfolio-audit-kooshapari-2026` | Parent portfolio program |
-| `phenosdk-wave-a-contracts` | SDD / ports extraction (research + planned) |
-| `kooshapari-stale-repo-triage` | Stale bucket decisions |
-| `codeprojects-archive-manifest` | Local archive MANIFEST |
+| Slug                              | Purpose                                     |
+| --------------------------------- | ------------------------------------------- |
+| `portfolio-audit-kooshapari-2026` | Parent portfolio program                    |
+| `phenosdk-wave-a-contracts`       | SDD / ports extraction (research + planned) |
+| `kooshapari-stale-repo-triage`    | Stale bucket decisions                      |
+| `codeprojects-archive-manifest`   | Local archive MANIFEST                      |
 
 Specs live under `apps/AgilePlus/kitty-specs/<slug>/` (gitignored in AgilePlus repo).
 
 ## Pheno SDK: canonical location
 
-| Item | Detail |
-|------|--------|
-| **GitHub (active)** | `KooshaPari/phenoSDK` — `main`, last push **2026-02-23** |
+| Item                | Detail                                                                       |
+| ------------------- | ---------------------------------------------------------------------------- |
+| **GitHub (active)** | `KooshaPari/phenoSDK` — `main`, last push **2026-02-23**                     |
 | **GitHub (legacy)** | `KooshaPari/pheno-sdk` — **archived** on GitHub; **`phenoSDK` is canonical** |
-| **Local clone** | `repos/worktrees/phenoSDK/main` |
+| **Local clone**     | `repos/worktrees/phenoSDK/main`                                              |
 
 ## Scale (phenoSDK)
 

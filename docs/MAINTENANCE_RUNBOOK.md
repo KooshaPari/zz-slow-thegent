@@ -116,12 +116,12 @@ When coverage drops below threshold:
 
 ### Coverage thresholds
 
-| Project | Threshold |
-|---------|-----------|
-| trace | 90% |
-| sharecli | 80% |
-| thegent | 80% |
-| jobhunter | 80% |
+| Project   | Threshold |
+| --------- | --------- |
+| trace     | 90%       |
+| sharecli  | 80%       |
+| thegent   | 80%       |
+| jobhunter | 80%       |
 
 ---
 
@@ -131,12 +131,12 @@ The complexity ratchet ensures complexity never increases. Baseline auto-tighten
 
 ### When a function exceeds limits
 
-| Metric | Limit | Action |
-|--------|-------|--------|
-| Cyclomatic complexity | 10 | Extract helper functions, simplify branching |
-| Cognitive complexity | 15 | Reduce nesting, extract early returns |
-| Function length | 40 lines | Split into smaller functions |
-| Max arguments | 6 | Use config/dataclass parameter object |
+| Metric                | Limit    | Action                                       |
+| --------------------- | -------- | -------------------------------------------- |
+| Cyclomatic complexity | 10       | Extract helper functions, simplify branching |
+| Cognitive complexity  | 15       | Reduce nesting, extract early returns        |
+| Function length       | 40 lines | Split into smaller functions                 |
+| Max arguments         | 6        | Use config/dataclass parameter object        |
 
 ### Adjusting the ratchet
 
@@ -168,13 +168,13 @@ The ratchet should only tighten, never loosen. If a new baseline is needed:
 
 ## Decision Matrix
 
-| Situation | Action |
-|-----------|--------|
-| Lint rule adds many violations | Fix incrementally; add per-file-ignores with justification for now |
-| Coverage drops below threshold | Block merges until coverage is restored |
-| Security CVE (high/critical) | Immediate update + test + deploy |
-| Security CVE (low/medium) | Schedule within 1 week |
-| Template change breaks a project | Fix the project, not the template (unless template is wrong) |
-| New tool version has breaking changes | Pin to working version, schedule migration |
-| Agent instruction conflict | Global CLAUDE.md wins; project CLAUDE.md overrides for domain-specific rules |
-| Complexity ratchet violation | Refactor the function; never raise the limit |
+| Situation                             | Action                                                                       |
+| ------------------------------------- | ---------------------------------------------------------------------------- |
+| Lint rule adds many violations        | Fix incrementally; add per-file-ignores with justification for now           |
+| Coverage drops below threshold        | Block merges until coverage is restored                                      |
+| Security CVE (high/critical)          | Immediate update + test + deploy                                             |
+| Security CVE (low/medium)             | Schedule within 1 week                                                       |
+| Template change breaks a project      | Fix the project, not the template (unless template is wrong)                 |
+| New tool version has breaking changes | Pin to working version, schedule migration                                   |
+| Agent instruction conflict            | Global CLAUDE.md wins; project CLAUDE.md overrides for domain-specific rules |
+| Complexity ratchet violation          | Refactor the function; never raise the limit                                 |

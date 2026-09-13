@@ -30,4 +30,4 @@ Complete setup from installation to first agent execution.
 
 ---
 
-*Generated automatically by docgen pipeline*
+_Generated automatically by docgen pipeline_

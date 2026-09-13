@@ -12,7 +12,7 @@ Research for remote compute implementation.
 
 ### Methods
 
-#### RemoteComputeImplResearch.__init__
+#### RemoteComputeImplResearch.**init**
 
 ```python
 __init__(self: Any)

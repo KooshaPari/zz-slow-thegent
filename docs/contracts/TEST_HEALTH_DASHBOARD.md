@@ -134,9 +134,10 @@ uv run python scripts/fr_trace_extractor.py \
 `requirements-promotion-criteria` and `lane-promotion` are the promotion contracts for making optional lanes required.
 
 Schema versions are:
+
 - `lane-promotion-criteria/v1` for criteria payload
 - `lane-promotion/v1` for lane-specific decision payload
-Automation must emit:
+  Automation must emit:
 - `criteria.required_stability_ratio`
 - `criteria.required_stable_runs_required`
 - `criteria.max_flake_ratio`
@@ -145,7 +146,7 @@ Automation must emit:
 - `actual.health_score_threshold_met`
 - `actual.stability_ratio`
 - `actual.observed_flake_ratio`
-Decision fields are:
+  Decision fields are:
 - `recommendation.ready_for_lane_promotion`
 - `recommendation.make_optional_lanes_required`
 - `recommendation.reasons`
@@ -157,11 +158,12 @@ Decision fields are:
 `requirements-map` can emit a one-page Mermaid diagram and `requirements-diagram` can render directly from an artifact.
 
 Diagram schema marker:
+
 - `requirements-map-diagram/v1`
-Generated artifacts:
+  Generated artifacts:
 - `artifacts/pytest/traceability/requirements-map.mdown`
 - `artifacts/pytest/traceability/requirements-map.diagram.md`
-Truncation behavior is controlled by `--diagram-max-nodes` on map and `--max-nodes` on diagram rendering; truncation is explicit with the warning line in output.
+  Truncation behavior is controlled by `--diagram-max-nodes` on map and `--max-nodes` on diagram rendering; truncation is explicit with the warning line in output.
 
 ## 99) Quarterly Traceability Cleanup Routine
 

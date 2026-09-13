@@ -36,13 +36,13 @@
 
 ### Component Responsibilities
 
-| Component | Responsibility | Language | File |
-|-----------|-----------------|----------|------|
-| **ParetoRouter** | Route selection, hysteresis orchestration | Rust | `crates/thegent-router/src/router.rs` |
-| **RiskCalculator** | Risk scoring (complexity, cost, dependencies) | Rust | `crates/thegent-router/src/risk.rs` |
-| **HysteresisManager** | Dwell time tracking, band checks | Rust | `crates/thegent-router/src/hysteresis.rs` |
-| **RouteExecutor** | Route-specific task execution | Python | `src/thegent/routing/executor.py` |
-| **AuditLogger** | Routing decisions, metrics | Python | `src/thegent/routing/audit.py` |
+| Component             | Responsibility                                | Language | File                                      |
+| --------------------- | --------------------------------------------- | -------- | ----------------------------------------- |
+| **ParetoRouter**      | Route selection, hysteresis orchestration     | Rust     | `crates/thegent-router/src/router.rs`     |
+| **RiskCalculator**    | Risk scoring (complexity, cost, dependencies) | Rust     | `crates/thegent-router/src/risk.rs`       |
+| **HysteresisManager** | Dwell time tracking, band checks              | Rust     | `crates/thegent-router/src/hysteresis.rs` |
+| **RouteExecutor**     | Route-specific task execution                 | Python   | `src/thegent/routing/executor.py`         |
+| **AuditLogger**       | Routing decisions, metrics                    | Python   | `src/thegent/routing/audit.py`            |
 
 ---
 
@@ -744,14 +744,14 @@ log_level = "info"
 
 ### Metrics to Track
 
-| Metric | Type | Alerting |
-|--------|------|----------|
-| Lifecycle % | Gauge | Alert if <75% or >85% |
-| Avg risk (Lifecycle) | Gauge | Alert if >0.3 |
-| Avg risk (TheGent) | Gauge | Alert if <0.6 |
-| Route changes/min | Counter | Alert if >10/min |
-| Hysteresis activations | Counter | Informational |
-| Routing latency p99 | Histogram | Alert if >5ms |
+| Metric                 | Type      | Alerting              |
+| ---------------------- | --------- | --------------------- |
+| Lifecycle %            | Gauge     | Alert if <75% or >85% |
+| Avg risk (Lifecycle)   | Gauge     | Alert if >0.3         |
+| Avg risk (TheGent)     | Gauge     | Alert if <0.6         |
+| Route changes/min      | Counter   | Alert if >10/min      |
+| Hysteresis activations | Counter   | Informational         |
+| Routing latency p99    | Histogram | Alert if >5ms         |
 
 ### Dashboards
 
@@ -764,12 +764,12 @@ log_level = "info"
 
 ## Error Handling
 
-| Scenario | Handling | Recovery |
-|----------|----------|----------|
-| Risk calc fails | Log error, default to TheGent | Retry with fresh assessment |
-| Executor timeout | Escalate to The Gent (from Lifecycle) | Manual review |
-| Audit log full | Rotate log file | No impact on routing |
-| Invalid task | Reject with validation error | User must fix task |
+| Scenario         | Handling                              | Recovery                    |
+| ---------------- | ------------------------------------- | --------------------------- |
+| Risk calc fails  | Log error, default to TheGent         | Retry with fresh assessment |
+| Executor timeout | Escalate to The Gent (from Lifecycle) | Manual review               |
+| Audit log full   | Rotate log file                       | No impact on routing        |
+| Invalid task     | Reject with validation error          | User must fix task          |
 
 ---
 

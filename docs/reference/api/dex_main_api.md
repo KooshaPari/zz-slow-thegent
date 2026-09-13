@@ -21,11 +21,11 @@ default_dex(ctx: typer.Context)
 Default: flash (gemini-3-flash) or model from first argument. Model-only, no provider filter.
 
 Usage:
-    dex              # Uses flash model (default)
-    dex flash        # Uses flash model (via subcommand)
-    dex max          # Uses max model (via subcommand or positional)
-    dex [model]      # Uses specified model (max, glm, haiku, opus, sonnet, ultra, flash, mini, composer, step)
-    dex [model] [prompt]  # Uses model with prompt
+dex # Uses flash model (default)
+dex flash # Uses flash model (via subcommand)
+dex max # Uses max model (via subcommand or positional)
+dex [model] # Uses specified model (max, glm, haiku, opus, sonnet, ultra, flash, mini, composer, step)
+dex [model] [prompt] # Uses model with prompt
 
 ---
 

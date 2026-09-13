@@ -79,6 +79,7 @@ Shared Library (thegent-hooks crate)
 **Purpose**: Reconcile session state with git history, handle multi-agent coordination conflicts
 
 **Bash Logic Flow**:
+
 ```bash
 1. Read session metadata from stdin
 2. Query git log for uncommitted changes
@@ -135,6 +136,7 @@ pub enum ConflictType {
 ```
 
 **Hook Binary** (`stop-reconcile/src/main.rs`):
+
 ```rust
 use thegent_hooks::state::{StateManager, SessionState};
 
@@ -161,6 +163,7 @@ fn main() -> Result<ExitCode> {
 ```
 
 **Testing Strategy**:
+
 - Unit tests for git status parsing
 - Integration tests with temp git repos (clean, dirty, conflicting states)
 - Multi-agent simulation (2 agents modifying same file)
@@ -179,6 +182,7 @@ fn main() -> Result<ExitCode> {
 **Purpose**: Verify FR → test traceability, identify coverage gaps
 
 **Bash Logic Flow**:
+
 ```bash
 1. Parse FUNCTIONAL_REQUIREMENTS.md for FR-{CAT}-{NNN} IDs
 2. Search test files for @trace, @mark.requirement(), docstring references
@@ -237,6 +241,7 @@ impl SpecVerifier {
 ```
 
 **Hook Binary** (`spec-verifier/src/main.rs`):
+
 ```rust
 use thegent_hooks::spec::{SpecVerifier, SpecCoverageReport};
 
@@ -278,6 +283,7 @@ fn main() -> Result<ExitCode> {
 ```
 
 **Testing Strategy**:
+
 - Unit tests for FR/test parsing (pytest markers, docstrings, comments)
 - Integration tests with sample projects (varying coverage %)
 - Edge cases: multi-line docstrings, complex regex, nested structures
@@ -332,6 +338,7 @@ impl FileValidator {
 ```
 
 **Hook Binary** (`pre-write-validator/src/main.rs`):
+
 ```rust
 fn main() -> Result<ExitCode> {
     let input = read_hook_input()?;
@@ -372,12 +379,12 @@ Similar patterns to above. Each hook:
 
 **Quick Reference**:
 
-| Hook | Library Component | Estimate | Key Feature |
-|------|-------------------|----------|-------------|
-| qa-policy-test | PolicyEngine (reuse) | 80 LOC | Quality gate evaluation |
-| task-completion-verifier | TaskStateManager | 100 LOC | Task state tracking |
-| post-edit-checker | AISlop + Complexity | 140 LOC | AI slop detection |
-| complexity-ratchet | ComplexityAnalyzer | 110 LOC | Enforce complexity limits |
+| Hook                     | Library Component    | Estimate | Key Feature               |
+| ------------------------ | -------------------- | -------- | ------------------------- |
+| qa-policy-test           | PolicyEngine (reuse) | 80 LOC   | Quality gate evaluation   |
+| task-completion-verifier | TaskStateManager     | 100 LOC  | Task state tracking       |
+| post-edit-checker        | AISlop + Complexity  | 140 LOC  | AI slop detection         |
+| complexity-ratchet       | ComplexityAnalyzer   | 110 LOC  | Enforce complexity limits |
 
 ---
 
@@ -473,6 +480,7 @@ spawn bash hooks/spec-verifier.sh          # Phase 2 (Rust now)
 ```
 
 **Phase 3+ Optimization** (optional):
+
 ```rust
 // Dispatcher could recognize .rs suffix and call binary directly
 // But this is not required in Phase 2
@@ -486,6 +494,7 @@ if hook_name.ends_with(".rs") {
 ### Configuration Management
 
 **Centralized Config** (~/.claude/hooks/):
+
 ```yaml
 # governance.yaml (shared by all hooks)
 policies:
@@ -501,10 +510,10 @@ policies:
 # Per-hook overrides (optional)
 hooks:
   quality-gate:
-    coverage_min: 85  # Stricter than default
+    coverage_min: 85 # Stricter than default
 
   spec-verifier:
-    coverage_min: 80  # Use default
+    coverage_min: 80 # Use default
 ```
 
 ### Backward Compatibility
@@ -532,28 +541,30 @@ For each Bash hook being replaced:
 
 ### Test Matrix (9 Hooks × 4 Dimensions)
 
-| Hook | Unit (src/lib.rs) | Integration (tests/) | Cross-Platform | Parity |
-|------|-------------------|---------------------|-----------------|--------|
-| stop-reconcile | 8 tests | 5 tests | 3 OS | ✓ |
-| spec-verifier | 10 tests | 6 tests | 3 OS | ✓ |
-| pre-write-validator | 6 tests | 4 tests | 3 OS | ✓ |
-| qa-policy-test | 5 tests | 3 tests | 3 OS | ✓ |
-| task-completion-verifier | 7 tests | 4 tests | 3 OS | ✓ |
-| post-edit-checker | 9 tests | 5 tests | 3 OS | ✓ |
-| complexity-ratchet | 6 tests | 4 tests | 3 OS | ✓ |
-| (TBD) | — | — | — | — |
-| (TBD) | — | — | — | — |
+| Hook                     | Unit (src/lib.rs) | Integration (tests/) | Cross-Platform | Parity |
+| ------------------------ | ----------------- | -------------------- | -------------- | ------ |
+| stop-reconcile           | 8 tests           | 5 tests              | 3 OS           | ✓      |
+| spec-verifier            | 10 tests          | 6 tests              | 3 OS           | ✓      |
+| pre-write-validator      | 6 tests           | 4 tests              | 3 OS           | ✓      |
+| qa-policy-test           | 5 tests           | 3 tests              | 3 OS           | ✓      |
+| task-completion-verifier | 7 tests           | 4 tests              | 3 OS           | ✓      |
+| post-edit-checker        | 9 tests           | 5 tests              | 3 OS           | ✓      |
+| complexity-ratchet       | 6 tests           | 4 tests              | 3 OS           | ✓      |
+| (TBD)                    | —                 | —                    | —              | —      |
+| (TBD)                    | —                 | —                    | —              | —      |
 
 **Coverage Target**: ≥80% on all hooks (enforced by CI)
 
 ### Cross-Platform Testing
 
 **Platforms**:
+
 1. macOS 13+ (native)
 2. Ubuntu 22.04 (Docker)
 3. Windows WSL2 (simulated via GitHub Actions)
 
 **Platform-Specific Test Cases**:
+
 - Line endings: CRLF vs LF
 - Path separators: `\` vs `/`
 - Git behavior (shallow clones, worktrees)
@@ -566,17 +577,18 @@ For each Bash hook being replaced:
 
 ### Optimization Targets (Phase 2)
 
-| Component | Current | Target | Technique |
-|-----------|---------|--------|-----------|
-| Policy loading | 20ms | 5ms | mmap + lazy parse |
-| Test indexing | 100ms | 25ms | parallel rayon + cache |
-| Git operations | 80ms | 30ms | libgit2 instead of shell |
-| Spec verification | 150ms | 40ms | DashMap caching |
-| File validation | 60ms | 15ms | memmap for large files |
+| Component         | Current | Target | Technique                |
+| ----------------- | ------- | ------ | ------------------------ |
+| Policy loading    | 20ms    | 5ms    | mmap + lazy parse        |
+| Test indexing     | 100ms   | 25ms   | parallel rayon + cache   |
+| Git operations    | 80ms    | 30ms   | libgit2 instead of shell |
+| Spec verification | 150ms   | 40ms   | DashMap caching          |
+| File validation   | 60ms    | 15ms   | memmap for large files   |
 
 ### Optimization Techniques
 
 1. **Lazy Initialization**
+
    ```rust
    lazy_static! {
        static ref POLICY_CACHE: DashMap<String, PolicyOutcome> = DashMap::new();
@@ -584,6 +596,7 @@ For each Bash hook being replaced:
    ```
 
 2. **Parallel Processing** (rayon)
+
    ```rust
    test_files.par_iter()
        .flat_map(|f| extract_fr_references(f))
@@ -591,6 +604,7 @@ For each Bash hook being replaced:
    ```
 
 3. **Memory Mapping** (for large files)
+
    ```rust
    let mmap = unsafe { Mmap::map(&file)? };
    validate_encoding(&mmap)?;
@@ -627,18 +641,22 @@ Target distribution:
 ### Rollout Strategy (Week 4)
 
 **Phase 2a (Mandatory)**: Quality-gate + security-pipeline (already PoC'd, just ship)
+
 - Risk: Very low (already validated in Phase 1)
 - Rollback: Keep Bash versions, revert dispatcher config
 
 **Phase 2b (High Priority)**: Stop-reconcile, spec-verifier
+
 - Risk: Medium (new implementations, Phase 2 specific)
 - Validation: 1 week in staging before production
 
 **Phase 2c (Final)**: Remaining 5 hooks
+
 - Risk: Low-Medium (patterns established)
 - Validation: 1 week in staging
 
 **Rollback Procedure** (<5 min):
+
 ```bash
 # If issue detected:
 cd ~/.claude/hooks/
@@ -677,6 +695,7 @@ tokio = "1.35"  # Optional, for Phase 3
 ```
 
 **Compatibility Matrix**:
+
 - `thegent-hooks 1.x`: Phase 1 (quality-gate, security-pipeline)
 - `thegent-hooks 2.x`: Phase 1 + 2 (all 9 hooks)
 - `thegent-hooks 3.x`: Phase 2 + async optimization (future)
@@ -687,14 +706,14 @@ tokio = "1.35"  # Optional, for Phase 3
 
 ### Completion Criteria
 
-| Criterion | Definition | Target | Success |
-|-----------|-----------|--------|---------|
-| All 9 hooks migrated | Rust binary for each | 9/9 | ✓ |
-| Test coverage | ≥80% on all hooks | — | ✓ |
-| Performance | ≥60% latency reduction | 150-250ms | ✓ |
-| Parity | 100% behavioral match with Bash | All tests pass | ✓ |
-| Cross-platform | Works on 3 OS | macOS + Linux + WSL | ✓ |
-| Documentation | Implementation guide + runbook | Complete | ✓ |
+| Criterion            | Definition                      | Target              | Success |
+| -------------------- | ------------------------------- | ------------------- | ------- |
+| All 9 hooks migrated | Rust binary for each            | 9/9                 | ✓       |
+| Test coverage        | ≥80% on all hooks               | —                   | ✓       |
+| Performance          | ≥60% latency reduction          | 150-250ms           | ✓       |
+| Parity               | 100% behavioral match with Bash | All tests pass      | ✓       |
+| Cross-platform       | Works on 3 OS                   | macOS + Linux + WSL | ✓       |
+| Documentation        | Implementation guide + runbook  | Complete            | ✓       |
 
 ### Quality Metrics
 

@@ -12,7 +12,7 @@ Manages multiple LSP servers in headless mode.
 
 ### Methods
 
-#### HeadlessLSPManager.__init__
+#### HeadlessLSPManager.**init**
 
 ```python
 __init__(self: Any, cache_dir: Any)
@@ -75,7 +75,7 @@ Manages a single LSP server process.
 
 ### Methods
 
-#### HeadlessLSPServer.__init__
+#### HeadlessLSPServer.**init**
 
 ```python
 __init__(self: Any, language: str, config: dict[(str, Any)])

@@ -15,7 +15,7 @@ Interactive configuration wizard.
 
 ### Methods
 
-#### ConfigWizard.__init__
+#### ConfigWizard.**init**
 
 ```python
 __init__(self: Any, config_path: Any)

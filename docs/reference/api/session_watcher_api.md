@@ -13,7 +13,7 @@ Harmonized with BackgroundTaskWatcher and NeverIdleLoop.
 
 ### Methods
 
-#### CompletionHandler.__init__
+#### CompletionHandler.**init**
 
 ```python
 __init__(self: Any, watcher: SessionEventWatcher)
@@ -39,7 +39,7 @@ Watches session directories for completion events.
 
 ### Methods
 
-#### SessionEventWatcher.__init__
+#### SessionEventWatcher.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)

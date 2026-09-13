@@ -28,7 +28,7 @@ marked failed.
 
 ### Methods
 
-#### EpisodeController.__init__
+#### EpisodeController.**init**
 
 ```python
 __init__(self: Any, project_id: str, agent_id: str, registry: ProjectRegistry, shadow: ShadowAuditGit, metadata: Any)

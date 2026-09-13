@@ -47,6 +47,7 @@ Every design doc MUST cover (scale depth to complexity):
 ### Planner Anti-Patterns
 
 Planners MUST NOT:
+
 - Write code in docs or plans (pseudocode only if essential)
 - Include human checkpoints ("schedule audit", "get approval from X")
 - Use calendar time ("2 weeks") — use agent-time ("3 subagents, 8-20 min wall clock")
@@ -173,14 +174,14 @@ metadata: TaskMetadata = Field(default_factory=lambda: TaskMetadata())
 
 ### Storage Hierarchy
 
-| Data type | Storage |
-|-----------|---------|
-| Structured, queried | SQLite |
-| Large blobs | Compressed files (zstandard) |
-| Vectors/embeddings | sqlite-vec |
-| Config | TOML (pydantic-settings) |
-| Session state | JSON files in `~/.thegent/sessions/` |
-| Audit logs | JSONL, append-only |
+| Data type           | Storage                              |
+| ------------------- | ------------------------------------ |
+| Structured, queried | SQLite                               |
+| Large blobs         | Compressed files (zstandard)         |
+| Vectors/embeddings  | sqlite-vec                           |
+| Config              | TOML (pydantic-settings)             |
+| Session state       | JSON files in `~/.thegent/sessions/` |
+| Audit logs          | JSONL, append-only                   |
 
 ---
 
@@ -203,6 +204,7 @@ thegent plan index rebuild --dry-run
 ```
 
 Every CLI command should:
+
 - Work from any directory (no `cd` required)
 - Have `--dry-run` if destructive
 - Have `--limit` if listing
@@ -228,6 +230,7 @@ async def thegent_research_query(
 ```
 
 Every MCP tool:
+
 - Has a descriptive docstring (used by LLMs for tool selection)
 - Uses typed parameters (no `**kwargs`)
 - Returns structured data (Pydantic model or list thereof)
@@ -236,6 +239,7 @@ Every MCP tool:
 ### Hook I/O Contract
 
 All hooks:
+
 - Read context from `$THGENT_*` env vars
 - Return exit 0 (pass), exit 1 (fail), exit 124 (timeout)
 - Write findings to stderr
@@ -278,13 +282,13 @@ All errors in `src/thegent/errors.py`.
 
 ### Trust Model
 
-| Layer | Trust level | Validation |
-|-------|-------------|-----------|
-| User CLI input | Untrusted | Validate at CLI boundary |
-| MCP tool input | Untrusted | Validate in tool handler |
-| Config files | Semi-trusted | Pydantic schema validation |
-| Internal module calls | Trusted | Assert + type system |
-| External API responses | Untrusted | Parse + validate |
+| Layer                  | Trust level  | Validation                 |
+| ---------------------- | ------------ | -------------------------- |
+| User CLI input         | Untrusted    | Validate at CLI boundary   |
+| MCP tool input         | Untrusted    | Validate in tool handler   |
+| Config files           | Semi-trusted | Pydantic schema validation |
+| Internal module calls  | Trusted      | Assert + type system       |
+| External API responses | Untrusted    | Parse + validate           |
 
 ### Subprocess Safety
 
@@ -364,17 +368,17 @@ def test_research_item_title_roundtrip(title: str):
 
 ## 9. Decisions Log (Key ADRs)
 
-| Decision | Rationale | Date |
-|----------|-----------|------|
-| Pyright strict mode | Zero type errors as invariant; no runtime surprises | 2026-02-21 |
-| Mandatory direct imports (no fallbacks) | Fail-loud at startup; no hidden optional deps | 2026-02-21 |
-| Static `__all__` lists | Pyright can verify exports; no dynamic slop | 2026-02-21 |
-| sqlite-vec for embeddings | No separate vector DB process; single .so | 2026-02-22 |
-| CSM for agent outputs | Canonical contract across all harnesses | 2026-02-20 |
-| CEL for policy routing | Policy in data, not code; hot-reloadable rules | 2026-02-20 |
-| tenacity for all retry | No custom retry loops; backoff guaranteed correct | 2026-02-18 |
-| structlog for logging | Structured JSON, aggregatable, no print() | 2026-02-18 |
-| FastMCP for MCP tools | Type-safe registration; auto-generates schemas | 2026-02-18 |
+| Decision                                | Rationale                                           | Date       |
+| --------------------------------------- | --------------------------------------------------- | ---------- |
+| Pyright strict mode                     | Zero type errors as invariant; no runtime surprises | 2026-02-21 |
+| Mandatory direct imports (no fallbacks) | Fail-loud at startup; no hidden optional deps       | 2026-02-21 |
+| Static `__all__` lists                  | Pyright can verify exports; no dynamic slop         | 2026-02-21 |
+| sqlite-vec for embeddings               | No separate vector DB process; single .so           | 2026-02-22 |
+| CSM for agent outputs                   | Canonical contract across all harnesses             | 2026-02-20 |
+| CEL for policy routing                  | Policy in data, not code; hot-reloadable rules      | 2026-02-20 |
+| tenacity for all retry                  | No custom retry loops; backoff guaranteed correct   | 2026-02-18 |
+| structlog for logging                   | Structured JSON, aggregatable, no print()           | 2026-02-18 |
+| FastMCP for MCP tools                   | Type-safe registration; auto-generates schemas      | 2026-02-18 |
 
 Full ADRs in `ADR.md` at project root.
 
@@ -382,17 +386,17 @@ Full ADRs in `ADR.md` at project root.
 
 ## 10. Anti-Patterns Catalog
 
-| Anti-pattern | Why forbidden | Correct alternative |
-|-------------|---------------|-------------------|
-| `try: import X; except: X = None` | Hidden optional deps, breaks at runtime unpredictably | Mandatory import; fail at startup |
-| `except E: pass` | Hides bugs | Let it propagate; fix root cause |
-| `return default` on error | Caller can't distinguish error from empty result | Raise explicit typed error |
-| `dict[str, Any]` everywhere | Type system is useless | Define Pydantic model |
-| `v2_` file copies | Codebase bloat, divergence | Refactor in place |
-| `sorted({*globals()})` for `__all__` | Pyright can't verify exports | Static literal list |
-| `callable` as type annotation | `callable` is a builtin function, not a type | `Callable[..., Any]` |
-| `any` (lowercase) as type | Same issue | `Any` from typing |
-| Manual path construction | Cross-platform bugs | `pathlib.Path` + `safe_join` |
-| `subprocess.run(cmd, shell=True)` with dynamic input | Command injection risk | `subprocess.run([cmd, arg1, arg2])` |
+| Anti-pattern                                         | Why forbidden                                         | Correct alternative                 |
+| ---------------------------------------------------- | ----------------------------------------------------- | ----------------------------------- |
+| `try: import X; except: X = None`                    | Hidden optional deps, breaks at runtime unpredictably | Mandatory import; fail at startup   |
+| `except E: pass`                                     | Hides bugs                                            | Let it propagate; fix root cause    |
+| `return default` on error                            | Caller can't distinguish error from empty result      | Raise explicit typed error          |
+| `dict[str, Any]` everywhere                          | Type system is useless                                | Define Pydantic model               |
+| `v2_` file copies                                    | Codebase bloat, divergence                            | Refactor in place                   |
+| `sorted({*globals()})` for `__all__`                 | Pyright can't verify exports                          | Static literal list                 |
+| `callable` as type annotation                        | `callable` is a builtin function, not a type          | `Callable[..., Any]`                |
+| `any` (lowercase) as type                            | Same issue                                            | `Any` from typing                   |
+| Manual path construction                             | Cross-platform bugs                                   | `pathlib.Path` + `safe_join`        |
+| `subprocess.run(cmd, shell=True)` with dynamic input | Command injection risk                                | `subprocess.run([cmd, arg1, arg2])` |
 
 Full list: `docs/guides/anti-patterns.md`

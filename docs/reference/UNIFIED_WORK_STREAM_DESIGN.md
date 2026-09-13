@@ -10,16 +10,16 @@
 
 Work items are scattered across:
 
-| Source | Location | Format |
-|--------|----------|--------|
-| Plans | `docs/plans/*.md` | WP tables, phase sections |
-| WBS | `docs/plans/02-UNIFIED-WBS.md` | WP \| Title \| Status \| Priority |
-| Research seeds | `docs/research/*.md` | Freeform, TODOs |
+| Source                    | Location                                                                                                               | Format                                                      |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Plans                     | `docs/plans/*.md`                                                                                                      | WP tables, phase sections                                   |
+| WBS                       | `docs/plans/02-UNIFIED-WBS.md`                                                                                         | WP \| Title \| Status \| Priority                           |
+| Research seeds            | `docs/research/*.md`                                                                                                   | Freeform, TODOs                                             |
 | Fragment/sprawl inventory | [RESEARCH_SEED_FRAGMENT_INVENTORY_AND_SPRAWL_TODO.md](../research/RESEARCH_SEED_FRAGMENT_INVENTORY_AND_SPRAWL_TODO.md) | Catalog of fragments, seeds, indexes; sprawl todo → BACKLOG |
-| Specs | `docs/docset/*.md`, `specs/` | PRD, FR, WBS fragments |
-| Conversation | `pending-handoff.md`, escalation | Deferred prompts |
-| PLAN_STATUS | `docs/reference/PLAN_STATUS.md` | (optional) Plan task table |
-| FR_TRACKER | `docs/reference/FR_TRACKER.md` | (optional) FR implementation table |
+| Specs                     | `docs/docset/*.md`, `specs/`                                                                                           | PRD, FR, WBS fragments                                      |
+| Conversation              | `pending-handoff.md`, escalation                                                                                       | Deferred prompts                                            |
+| PLAN_STATUS               | `docs/reference/PLAN_STATUS.md`                                                                                        | (optional) Plan task table                                  |
+| FR_TRACKER                | `docs/reference/FR_TRACKER.md`                                                                                         | (optional) FR implementation table                          |
 
 Agents must read many files to find work. Progress is fragmented. No single place to claim or update.
 
@@ -63,12 +63,12 @@ The work stream is intended as a **living backlog and product spec** that evolve
 
 ### 4X Mapping (eXplore → eXpand → eXploit → eXterminate)
 
-| 4X Phase | Dev Equivalent | Work Stream Stage | specs/ Stage | Artifact / Provenance |
-|----------|----------------|-------------------|--------------|----------------------|
-| **eXplore** | Research, discovery | Ideas, research seeds → BACKLOG | intake, breadth, depth | Raw context logs |
-| **eXpand** | Formalize, design | Specs, PRD, FR, WBS → BACKLOG | devil-advocate, synthesis, formalizing | Spec signatures |
-| **eXploit** | Build, implement | CLAIMED → COMPLETED | approved, implementing | Action trace |
-| **eXterminate** | Verify, harden, archive | COMPLETED, quality gates | verifying, archived | **MAIF Signed Artifact** |
+| 4X Phase        | Dev Equivalent          | Work Stream Stage               | specs/ Stage                           | Artifact / Provenance    |
+| --------------- | ----------------------- | ------------------------------- | -------------------------------------- | ------------------------ |
+| **eXplore**     | Research, discovery     | Ideas, research seeds → BACKLOG | intake, breadth, depth                 | Raw context logs         |
+| **eXpand**      | Formalize, design       | Specs, PRD, FR, WBS → BACKLOG   | devil-advocate, synthesis, formalizing | Spec signatures          |
+| **eXploit**     | Build, implement        | CLAIMED → COMPLETED             | approved, implementing                 | Action trace             |
+| **eXterminate** | Verify, harden, archive | COMPLETED, quality gates        | verifying, archived                    | **MAIF Signed Artifact** |
 
 Items flow through the stream as they mature: raw ideas (eXplore) → formal specs (eXpand) → implementation (eXploit) → verification (eXterminate). The incorporator merges from all stages.
 
@@ -76,14 +76,14 @@ Items flow through the stream as they mature: raw ideas (eXplore) → formal spe
 
 AgilePlus runs governance cycles that **feed into and consume** the work stream:
 
-| AgilePlus Step | Work Stream Interaction |
-|----------------|-------------------------|
-| **SCAN** | gardener-scan hunger states; fragmented_research → incorporator adds to BACKLOG |
-| **ANALYZE** | HealthAnalyzer findings → BacklogManager; incorporator can merge AgilePlus backlog into WORK_STREAM |
-| **PLAN** | RemediationPlanner picks from findings; can also read WORK_STREAM for next items |
-| **DEPLOY** | AgentDeployer executes; workers claim from WORK_STREAM |
-| **VERIFY** | Resolved items → COMPLETED; failed → back to BACKLOG or deferred |
-| **COMMIT** | Evidence ledger; WORK_STREAM COMPLETED updated; **MAIF artifact generated** |
+| AgilePlus Step | Work Stream Interaction                                                                             |
+| -------------- | --------------------------------------------------------------------------------------------------- |
+| **SCAN**       | gardener-scan hunger states; fragmented_research → incorporator adds to BACKLOG                     |
+| **ANALYZE**    | HealthAnalyzer findings → BacklogManager; incorporator can merge AgilePlus backlog into WORK_STREAM |
+| **PLAN**       | RemediationPlanner picks from findings; can also read WORK_STREAM for next items                    |
+| **DEPLOY**     | AgentDeployer executes; workers claim from WORK_STREAM                                              |
+| **VERIFY**     | Resolved items → COMPLETED; failed → back to BACKLOG or deferred                                    |
+| **COMMIT**     | Evidence ledger; WORK_STREAM COMPLETED updated; **MAIF artifact generated**                         |
 
 **Bidirectional flow**: AgilePlus backlog (`agileplus/backlog.jsonl`) and WORK_STREAM should stay aligned. Incorporator can merge AgilePlus pending findings into WORK_STREAM; AgilePlus can read WORK_STREAM for remediation planning.
 
@@ -91,27 +91,27 @@ AgilePlus runs governance cycles that **feed into and consume** the work stream:
 
 The gardener maintains work stream health:
 
-| Gardener Step | Work Stream Action |
-|---------------|-------------------|
-| **SCAN** | gardener-scan.sh detects hunger (fragmented_research, missing_specs, stale_items) |
+| Gardener Step  | Work Stream Action                                                                      |
+| -------------- | --------------------------------------------------------------------------------------- |
+| **SCAN**       | gardener-scan.sh detects hunger (fragmented_research, missing_specs, stale_items)       |
 | **PRIORITIZE** | Critical: lint, coverage, agent_failure; High: fragmented_research, doc_disorganization |
-| **ROUTE** | fragmented_research → work-stream-incorporator; missing_specs → formalization agent |
-| **EXECUTE** | Incorporator merges; agents pick from WORK_STREAM |
-| **VERIFY** | Quality gates; XP awarded (gardener-xp.sh) |
-| **REPORT** | garden-state.json, XP state, evidence ledger |
+| **ROUTE**      | fragmented_research → work-stream-incorporator; missing_specs → formalization agent     |
+| **EXECUTE**    | Incorporator merges; agents pick from WORK_STREAM                                       |
+| **VERIFY**     | Quality gates; XP awarded (gardener-xp.sh)                                              |
+| **REPORT**     | garden-state.json, XP state, evidence ledger                                            |
 
 **Hunger → Stream**: When `fragmented_research` fires, incorporator runs to move research into WORK_STREAM. When `stale_items` fires, boost priority of items in BACKLOG with no progress >7 days.
 
 ### XP and Levels (Gamification)
 
-| Action | XP | Work Stream Event |
-|--------|-----|-------------------|
-| Complete research stage | +50 | Item moves breadth→depth or synthesis→formalizing |
-| Pass quality gate | +100 | Item verified, moved to COMPLETED |
-| Fix critical bug | +75 | Remediation item COMPLETED |
-| Add test coverage | +25 | Coverage hunger resolved |
-| Complete implementation | +150 | Item CLAIMED → COMPLETED |
-| Pass code review | +50 | Verifying → archived |
+| Action                  | XP   | Work Stream Event                                 |
+| ----------------------- | ---- | ------------------------------------------------- |
+| Complete research stage | +50  | Item moves breadth→depth or synthesis→formalizing |
+| Pass quality gate       | +100 | Item verified, moved to COMPLETED                 |
+| Fix critical bug        | +75  | Remediation item COMPLETED                        |
+| Add test coverage       | +25  | Coverage hunger resolved                          |
+| Complete implementation | +150 | Item CLAIMED → COMPLETED                          |
+| Pass code review        | +50  | Verifying → archived                              |
 
 Levels (0→500→1500→5000→15000 XP) unlock parallel execution and advanced orchestration. The work stream is the **source of tasks** that earn XP.
 
@@ -132,6 +132,7 @@ Repeat (never idle; backlog converges toward empty + green)
 ```
 
 The work stream **evolves** because:
+
 1. New items enter from ideas, research, plans, specs, pending-handoff, escalation
 2. Incorporator merges fragments and resolves conflicts
 3. Gardener and AgilePlus detect hunger/health issues and spawn remediation
@@ -158,11 +159,11 @@ A **dedicated incorporator agent** merges fragments into the work stream. It doe
 
 ### Conflict Resolution Rules
 
-| Conflict | Resolution |
-|----------|-------------|
-| Same ID in BACKLOG and COMPLETED | Remove from BACKLOG; COMPLETED wins |
-| Same ID in multiple sources | Merge; highest priority wins; union of Depends |
-| Stale CLAIMED (>7 days, no activity) | Move back to BACKLOG |
+| Conflict                                      | Resolution                                                      |
+| --------------------------------------------- | --------------------------------------------------------------- |
+| Same ID in BACKLOG and COMPLETED              | Remove from BACKLOG; COMPLETED wins                             |
+| Same ID in multiple sources                   | Merge; highest priority wins; union of Depends                  |
+| Stale CLAIMED (>7 days, no activity)          | Move back to BACKLOG                                            |
 | Semantic duplicate (different IDs, same work) | Human or incorporator chooses canonical ID; other becomes alias |
 
 ### When to Run
@@ -204,29 +205,29 @@ A **dedicated incorporator agent** merges fragments into the work stream. It doe
 
 ## Source Extraction Rules
 
-| Source | Extraction |
-|--------|------------|
-| `02-UNIFIED-WBS.md` | Rows with Status ≠ DONE; ID = WP-XXXX |
-| `docs/plans/*.md` | Tables with WP \| Title \| Status \| Priority; Status ≠ DONE |
-| `PLAN_STATUS.md` | Table rows; Status ≠ Done |
-| `FR_TRACKER.md` | Table rows; Status ≠ Done |
-| `docs/research/*.md` | `- [ ]` or `TODO:` or `WP-` / `FR-` refs → research-{slug} |
-| `specs/intake/`, `specs/approved/` | Dir names or SPEC.md titles → specs-{slug} |
-| `pending-handoff.md` | Numbered list items → pending-{n} |
-| Escalation queue | run_id → escalation-{run_id} |
+| Source                             | Extraction                                                   |
+| ---------------------------------- | ------------------------------------------------------------ |
+| `02-UNIFIED-WBS.md`                | Rows with Status ≠ DONE; ID = WP-XXXX                        |
+| `docs/plans/*.md`                  | Tables with WP \| Title \| Status \| Priority; Status ≠ DONE |
+| `PLAN_STATUS.md`                   | Table rows; Status ≠ Done                                    |
+| `FR_TRACKER.md`                    | Table rows; Status ≠ Done                                    |
+| `docs/research/*.md`               | `- [ ]` or `TODO:` or `WP-` / `FR-` refs → research-{slug}   |
+| `specs/intake/`, `specs/approved/` | Dir names or SPEC.md titles → specs-{slug}                   |
+| `pending-handoff.md`               | Numbered list items → pending-{n}                            |
+| Escalation queue                   | run_id → escalation-{run_id}                                 |
 
 ---
 
 ## Implementation Status
 
-| Component | Status |
-|----------|--------|
-| WORK_STREAM.md canonical file | ✓ Created |
-| Schema and initial seed | ✓ From 02-UNIFIED-WBS |
-| Incorporator agent persona | ✓ `agents/work-stream-incorporator.md` |
-| `thegent plan incorporate` CLI | ✓ Merges WBS into WORK_STREAM |
-| do_next_impl reads WORK_STREAM | ✓ Primary source when present |
-| WBS_AGENT_PROGRESS deprecation | Optional; can coexist |
+| Component                      | Status                                 |
+| ------------------------------ | -------------------------------------- |
+| WORK_STREAM.md canonical file  | ✓ Created                              |
+| Schema and initial seed        | ✓ From 02-UNIFIED-WBS                  |
+| Incorporator agent persona     | ✓ `agents/work-stream-incorporator.md` |
+| `thegent plan incorporate` CLI | ✓ Merges WBS into WORK_STREAM          |
+| do_next_impl reads WORK_STREAM | ✓ Primary source when present          |
+| WBS_AGENT_PROGRESS deprecation | Optional; can coexist                  |
 
 ---
 
@@ -234,12 +235,12 @@ A **dedicated incorporator agent** merges fragments into the work stream. It doe
 
 For a **product spec** view, items can carry an optional `Stage` column:
 
-| Stage | 4X | specs/ | Meaning |
-|-------|-----|--------|---------|
-| explore | eXplore | intake, breadth, depth | Raw idea or research |
-| expand | eXpand | synthesis, formalizing | Spec/PRD/FR/WBS created |
-| exploit | eXploit | approved, implementing | Ready or in build |
-| exterminate | eXterminate | verifying, archived | In review or done |
+| Stage       | 4X          | specs/                 | Meaning                 |
+| ----------- | ----------- | ---------------------- | ----------------------- |
+| explore     | eXplore     | intake, breadth, depth | Raw idea or research    |
+| expand      | eXpand      | synthesis, formalizing | Spec/PRD/FR/WBS created |
+| exploit     | eXploit     | approved, implementing | Ready or in build       |
+| exterminate | eXterminate | verifying, archived    | In review or done       |
 
 This enables filtering by maturity (e.g. "show only exploit+ items for implementation") and reporting (backlog by stage).
 
@@ -255,7 +256,6 @@ This enables filtering by maturity (e.g. "show only exploit+ items for implement
 - [thegent-orchestration-optimization-prd.md](../docset/thegent-orchestration-optimization-prd.md) — "map to canonical workstream", unify fragmented program
 - [TOUCHPOINT_INTEGRATION_EVALUATION.md](./TOUCHPOINT_INTEGRATION_EVALUATION.md) — MCP/CLI/skill/CLAUDE.md/roles/headless triggers; MD vs SQLite evaluation
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -264,15 +264,18 @@ This enables filtering by maturity (e.g. "show only exploit+ items for implement
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

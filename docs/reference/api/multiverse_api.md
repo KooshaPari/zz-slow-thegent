@@ -20,7 +20,7 @@ Simulates multiple plan 'forks' simultaneously.
 
 ### Methods
 
-#### multiverseSimulator.__init__
+#### multiverseSimulator.**init**
 
 ```python
 __init__(self: Any, current_plan: Any)

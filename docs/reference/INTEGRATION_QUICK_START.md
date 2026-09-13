@@ -28,7 +28,7 @@ This is a **1-page** action checklist for integrating TaskRouter + Pareto routin
   - **Verify**: Enum values match config keys
   - **Time**: 20 min
 
-- [ ] **2. Create routing/__init__.py** (10 LOC)
+- [ ] **2. Create routing/**init**.py** (10 LOC)
   - Export TaskRouter, TaskClassifier, ConstraintValidator, TaskMetadata
   - **Verify**: `from thegent.routing import TaskRouter` works
   - **Time**: 5 min
@@ -188,8 +188,8 @@ This is a **1-page** action checklist for integrating TaskRouter + Pareto routin
 
 - [ ] **23. Update models/catalog.py — Add resolve_route_for_category()** (50 LOC)
   - Implement Pareto-aware route selection (quality > cost for COMPLEX tasks, cost > quality for FAST)
-  - Add helper: _get_route_quality_score(route) (hardcoded quality map)
-  - Add fallback: _fallback_cheapest_route(routes)
+  - Add helper: \_get_route_quality_score(route) (hardcoded quality map)
+  - Add fallback: \_fallback_cheapest_route(routes)
   - **Verify**: Route selection honors task category constraints
   - **Time**: 1.5 hours
 
@@ -290,26 +290,31 @@ This is a **1-page** action checklist for integrating TaskRouter + Pareto routin
 ## Risky Spots (Watch Out)
 
 ### Concurrent Cost Tracking
+
 **Risk**: Multiple processes writing to run_registry.jsonl simultaneously can corrupt entries or lose events.
 **Mitigation**: Use file locks (fcntl on Unix) or atomic append-only writes (already in RunRegistry).
 **Action**: Test with concurrent task dispatch during Week 3 shadow run.
 
 ### Policy Ordering
+
 **Risk**: TaskRouter runs BEFORE PolicyEngine. If policy denies based on missing task_category, task dies with confusing error.
 **Mitigation**: PolicyEngine gracefully handles missing task_category (defaults to NORMAL budget).
 **Action**: Add unit test for "missing task_category" scenario.
 
 ### Classifier Accuracy
+
 **Risk**: Token estimation can be off by 2–3x, leading to bad routing decisions (e.g., FAST task routed as HIGH_COMPLEX).
 **Mitigation**: Use word_count_div_1.3 (conservative estimate), shadow run for 2 days to collect calibration data.
 **Action**: If estimates off by >20%, retrain classifier or adjust thresholds in Week 3.
 
 ### Config Parsing
+
 **Risk**: JSON parsing in config validators can fail silently if malformed (e.g., `THGENT_ROUTING_INSTANTANEOUS_BUDGET="invalid json"`).
 **Mitigation**: Use strict JSON parsing with explicit error messages.
 **Action**: Add config validation tests (Action #8).
 
 ### Fallback Chain Management
+
 **Risk**: If route selection keeps failing, fallback_chain grows unbounded (memory leak).
 **Mitigation**: Limit fallback_chain to 10 entries; log warning if exceeded.
 **Action**: Add safeguard in cli_impl.py.
@@ -319,6 +324,7 @@ This is a **1-page** action checklist for integrating TaskRouter + Pareto routin
 ## Success Criteria by Phase
 
 ### Phase 1 (Core Routing — Week 1)
+
 - [ ] TaskRouter module 100% tested (≥90% coverage)
 - [ ] 100 test tasks classified with ≤5% misclassification
 - [ ] All constraints validated with 100% accuracy (no false positives)
@@ -328,6 +334,7 @@ This is a **1-page** action checklist for integrating TaskRouter + Pareto routin
 - **Exit Criteria**: All checkboxes above checked; code review passed
 
 ### Phase 2 (Policy + Cost Integration — Week 2)
+
 - [ ] Per-category cost tracking working (verified in tests)
 - [ ] PolicyEngine enforces per-category budgets (block at 100%, warn at 80%)
 - [ ] Integration tests pass (policy + cost + routing full flow)
@@ -336,6 +343,7 @@ This is a **1-page** action checklist for integrating TaskRouter + Pareto routin
 - **Exit Criteria**: All integration tests pass; shadow run ready
 
 ### Phase 3 (Testing + Rollout — Week 3)
+
 - [ ] Shadow run: cost estimates within 20% of actual
 - [ ] Zero false-positive constraint blocks during shadow run
 - [ ] Full enforcement: legitimate blocks only
@@ -372,6 +380,7 @@ tests/* (unit + integration tests)
 ## Debugging & Troubleshooting
 
 ### TaskRouter Produces Wrong Category
+
 ```bash
 # Check token estimation
 python -c "
@@ -390,6 +399,7 @@ export THGENT_ROUTING_CLASSIFIER_METHOD=model_specific  # Use better tokenizer (
 ```
 
 ### Budget Enforcement Not Working
+
 ```bash
 # Check cost events in registry
 grep '"event":"cost"' ~/.cache/thegent/sessions/run_registry.jsonl | head -5
@@ -407,6 +417,7 @@ export THGENT_ROUTING_CUMULATIVE_BUDGET='{"FAST":50,"NORMAL":200,"COMPLEX":150,"
 ```
 
 ### Constraint Violations Not Blocking
+
 ```bash
 # Check if constraints are enabled
 export THGENT_ROUTING_CONSTRAINTS_ENABLED=true
@@ -424,6 +435,7 @@ grep '"policy_result":"deny"' ~/.cache/thegent/sessions/run_registry.jsonl
 ## Rollback (Quick Reference)
 
 **Immediate Disable**:
+
 ```bash
 export THGENT_ROUTING_ENABLED=false
 export THGENT_ROUTING_CONSTRAINTS_ENABLED=false
@@ -431,11 +443,13 @@ export THGENT_COST_TRACKING_ENABLED=false
 ```
 
 **Restore from Backup**:
+
 ```bash
 cp ~/.cache/thegent/sessions/run_registry.jsonl.backup ~/.cache/thegent/sessions/run_registry.jsonl
 ```
 
 **Revert Code**:
+
 ```bash
 git revert <commit-hash>  # If all changes in one commit
 # OR
@@ -446,13 +460,13 @@ git checkout HEAD~1 src/thegent/routing/  # If just routing module broke
 
 ## References
 
-| Document | Purpose |
-|----------|---------|
-| INTEGRATION_ARCHITECTURE.md | Full design, data flows, constraint matrix, monitoring queries |
-| src/thegent/config.py | Config schema reference |
-| src/thegent/execution.py | RunMeta fields, RunRegistry API |
-| tests/test_unit_routing.py | Unit test examples |
-| docs/guides/TROUBLESHOOTING.md | Troubleshooting guide (create after rollout) |
+| Document                       | Purpose                                                        |
+| ------------------------------ | -------------------------------------------------------------- |
+| INTEGRATION_ARCHITECTURE.md    | Full design, data flows, constraint matrix, monitoring queries |
+| src/thegent/config.py          | Config schema reference                                        |
+| src/thegent/execution.py       | RunMeta fields, RunRegistry API                                |
+| tests/test_unit_routing.py     | Unit test examples                                             |
+| docs/guides/TROUBLESHOOTING.md | Troubleshooting guide (create after rollout)                   |
 
 ---
 
@@ -465,8 +479,6 @@ git checkout HEAD~1 src/thegent/routing/  # If just routing module broke
 - **Testing Strategy**: INTEGRATION_ARCHITECTURE.md § 8 — Unit, integration, E2E tests
 - **Monitoring**: INTEGRATION_ARCHITECTURE.md § 9 — Dashboard queries and SLOs
 
-
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -475,15 +487,18 @@ git checkout HEAD~1 src/thegent/routing/  # If just routing module broke
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

@@ -8,15 +8,15 @@ Track 2 replaces six Python infrastructure modules with production-grade Rust cr
 
 ### Migration Targets
 
-| Python Module | Target Rust Crate | LOC | Test Coverage | Priority |
-|---------------|-------------------|-----|--------|----------|
-| `src/thegent/governance/` | `crates/thegent-policy` | 12,638 | 100% | P0 |
-| `src/thegent/session/` | extend `crates/thegent-zmx` | 896 | 100% | P1 |
-| `src/thegent/verification/` | extend `crates/thegent-crypto` | 711 | 100% | P2 |
-| `src/thegent/audit/` | extend `crates/thegent-jsonl` | 2,342 | 100% | P1 |
-| `src/thegent/metrics/` | `crates/thegent-metrics` (NEW) | 80 | 100% | P3 |
-| `src/thegent/security/` | extend `crates/thegent-crypto` | 1,594 | 100% | P2 |
-| FastMCP tools | Rust PyO3 modules | ~3,000 | 100% | P0 |
+| Python Module               | Target Rust Crate              | LOC    | Test Coverage | Priority |
+| --------------------------- | ------------------------------ | ------ | ------------- | -------- |
+| `src/thegent/governance/`   | `crates/thegent-policy`        | 12,638 | 100%          | P0       |
+| `src/thegent/session/`      | extend `crates/thegent-zmx`    | 896    | 100%          | P1       |
+| `src/thegent/verification/` | extend `crates/thegent-crypto` | 711    | 100%          | P2       |
+| `src/thegent/audit/`        | extend `crates/thegent-jsonl`  | 2,342  | 100%          | P1       |
+| `src/thegent/metrics/`      | `crates/thegent-metrics` (NEW) | 80     | 100%          | P3       |
+| `src/thegent/security/`     | extend `crates/thegent-crypto` | 1,594  | 100%          | P2       |
+| FastMCP tools               | Rust PyO3 modules              | ~3,000 | 100%          | P0       |
 
 **Total scope:** ~23,261 LOC to rewrite into 5 new/extended Rust crates with PyO3 bindings.
 
@@ -31,6 +31,7 @@ The **governance module** is the largest and most critical. It drives policy eva
 **Objective:** Scaffold new crate with proper structure, dependencies, and test infrastructure.
 
 **File paths:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-policy/Cargo.toml` (NEW)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-policy/src/lib.rs` (NEW)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-policy/src/bin/policy-cli.rs` (NEW)
@@ -447,6 +448,7 @@ cargo tarpaulin --lib --out Html --output-dir target/coverage
 ```
 
 **Verification checklist:**
+
 - [ ] All Rust tests pass (`cargo test`)
 - [ ] No warnings with `cargo clippy -D warnings`
 - [ ] Test coverage ≥95% for lib code
@@ -460,6 +462,7 @@ cargo tarpaulin --lib --out Html --output-dir target/coverage
 **Objective:** Expose Rust PolicyEngine to Python via PyO3 bindings.
 
 **File paths:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/rust_wrappers.py` (EDIT)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/pyproject.toml` (EDIT — add maturin build backend)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/Cargo.toml` (NEW — workspace)
@@ -595,6 +598,7 @@ pytest tests/unit/test_thegent_policy_binding.py -v
 ```
 
 **Verification checklist:**
+
 - [ ] Bindings build without warnings (`maturin develop`)
 - [ ] All Python tests pass
 - [ ] Result dict structure matches expected schema
@@ -609,6 +613,7 @@ pytest tests/unit/test_thegent_policy_binding.py -v
 **Objective:** Port high-value governance functions (compliance checks, cost governance) to Rust.
 
 **Key functions to port (from `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/governance/compliance.py`):**
+
 - `check_compliance_rule(rule, context)`
 - `evaluate_cost_policy(call_cost, agent_limits)`
 - `validate_constitution(constitution_dict)`
@@ -953,6 +958,7 @@ cargo bench -p thegent-policy compliance
 ```
 
 **Verification checklist:**
+
 - [ ] All Rust compliance tests pass
 - [ ] All Python binding tests pass
 - [ ] Compliance checks execute in <1ms (benchmark verify)
@@ -969,6 +975,7 @@ cargo bench -p thegent-policy compliance
 **Objective:** Move session state management from Python to Rust.
 
 **File paths:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-zmx/Cargo.toml` (EDIT)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-zmx/src/session.rs` (NEW)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_zmx_session_binding.py` (NEW)
@@ -1312,6 +1319,7 @@ pytest tests/unit/test_zmx_session_binding.py -v
 ```
 
 **Verification checklist:**
+
 - [ ] All Rust session tests pass
 - [ ] All Python binding tests pass
 - [ ] State transitions enforced correctly
@@ -1328,6 +1336,7 @@ pytest tests/unit/test_zmx_session_binding.py -v
 **Objective:** Move audit logging from Python to immutable Rust-backed JSONL.
 
 **File paths:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-jsonl/src/audit.rs` (NEW)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_audit_logger.py` (NEW)
 
@@ -1720,6 +1729,7 @@ pytest tests/unit/test_audit_logger.py -v
 ```
 
 **Verification checklist:**
+
 - [ ] All Rust audit tests pass
 - [ ] All Python binding tests pass
 - [ ] JSONL entries are valid JSON per line
@@ -1737,6 +1747,7 @@ pytest tests/unit/test_audit_logger.py -v
 **Objective:** High-performance metrics collection and aggregation.
 
 **File paths:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-metrics/Cargo.toml` (NEW)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/crates/thegent-metrics/src/lib.rs` (NEW)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_metrics_binding.py` (NEW)
@@ -2185,6 +2196,7 @@ pytest tests/unit/test_metrics_binding.py -v
 ```
 
 **Verification checklist:**
+
 - [ ] All Rust metrics tests pass
 - [ ] All Python binding tests pass
 - [ ] Counter increments correctly
@@ -2201,6 +2213,7 @@ pytest tests/unit/test_metrics_binding.py -v
 **Objective:** Verify Rust implementation matches Python behavior before removal.
 
 **File paths:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/integration/test_python_rust_parity.py` (NEW)
 
 **Failing test first:**
@@ -2285,6 +2298,7 @@ pytest tests/integration/test_python_rust_parity.py -vv --tb=short
 **Objective:** Measure performance gains from Rust implementation.
 
 **File paths:**
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/benchmarks/bench_governance.py` (NEW)
 
 **Failing test first:**
@@ -2404,13 +2418,13 @@ Closes #WL-XXX"
 
 ### 6.1 Coverage Requirements
 
-| Crate | Unit | Integration | E2E | Target |
-|-------|------|-------------|-----|--------|
-| thegent-policy | 100% | 100% | 95% | 100% |
-| thegent-zmx (session) | 100% | 100% | 95% | 100% |
-| thegent-jsonl (audit) | 100% | 100% | 95% | 100% |
-| thegent-metrics | 100% | 100% | N/A | 100% |
-| thegent-crypto (extended) | 100% | 100% | 95% | 100% |
+| Crate                     | Unit | Integration | E2E | Target |
+| ------------------------- | ---- | ----------- | --- | ------ |
+| thegent-policy            | 100% | 100%        | 95% | 100%   |
+| thegent-zmx (session)     | 100% | 100%        | 95% | 100%   |
+| thegent-jsonl (audit)     | 100% | 100%        | 95% | 100%   |
+| thegent-metrics           | 100% | 100%        | N/A | 100%   |
+| thegent-crypto (extended) | 100% | 100%        | 95% | 100%   |
 
 **Verification command:**
 
@@ -2477,14 +2491,14 @@ echo "✓ All gates passed."
 
 ## Execution Order & Timeline
 
-| Phase | Tasks | Duration | Dependencies |
-|-------|-------|----------|--------------|
-| **P0: Foundation** | 1.1, 1.2, 1.3 | 4-6 hours | None |
-| **P1: Session & Audit** | 2.1, 3.1 | 3-4 hours | P0 complete |
-| **P2: Security** | Extend thegent-crypto | 2-3 hours | P0, P1 complete |
-| **P3: Metrics** | 4.1 | 1-2 hours | P0, P1 complete |
-| **Verification** | 5.1, 5.2, 5.3 | 2-3 hours | All P0-P3 complete |
-| **Cleanup & Removal** | Remove Python modules | 1 hour | Verification pass |
+| Phase                   | Tasks                 | Duration  | Dependencies       |
+| ----------------------- | --------------------- | --------- | ------------------ |
+| **P0: Foundation**      | 1.1, 1.2, 1.3         | 4-6 hours | None               |
+| **P1: Session & Audit** | 2.1, 3.1              | 3-4 hours | P0 complete        |
+| **P2: Security**        | Extend thegent-crypto | 2-3 hours | P0, P1 complete    |
+| **P3: Metrics**         | 4.1                   | 1-2 hours | P0, P1 complete    |
+| **Verification**        | 5.1, 5.2, 5.3         | 2-3 hours | All P0-P3 complete |
+| **Cleanup & Removal**   | Remove Python modules | 1 hour    | Verification pass  |
 
 **Wall-clock estimate:** 13-19 hours (with agent parallelization, 3-5 hours).
 
@@ -2503,4 +2517,3 @@ All tasks complete when:
 7. **Documentation updated** (CHANGELOG, README, API docs)
 
 ---
-

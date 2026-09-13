@@ -5,19 +5,23 @@
 I've implemented comprehensive fixes for the shell corruption issue:
 
 ### 1. **Auto-Create Fork Config** ✅
+
 - `_ensure_config()` now automatically creates fork config if fork binary exists
 - Prevents CLIProxyAPI from failing to load config.yaml
 
 ### 2. **Config Ensured Before Proxy Start** ✅
+
 - `ensure_proxy_running()` now calls `_ensure_config()` at the very beginning
 - Prevents config errors that cause shell corruption
 
 ### 3. **Script Fixes** ✅
+
 - `scripts/start_proxy.py` - Auto-creates fork config
 - `scripts/start_proxy_with_adapter.py` - Auto-creates fork config
 - `scripts/start_proxy_dev.sh` - Auto-creates fork config
 
 ### 4. **Emergency Fix Scripts** ✅
+
 - `scripts/fix_shell_corruption.py` - Python-based fix script
 - `scripts/emergency_fix_shell.sh` - Bash-based emergency fix
 
@@ -113,17 +117,20 @@ thegent mcp up
 ## If Issue Persists
 
 1. **Check shell configs** for problematic eval patterns:
+
    ```bash
    grep -n "eval.*ls\|eval.*\$(ls)" ~/.zshrc ~/.zshenv 2>/dev/null || echo "Clean"
    ```
 
 2. **Reset shell hooks**:
+
    ```bash
    unset precmd_functions chpwd_functions PROMPT_COMMAND
    unset -f precmd chpwd
    ```
 
 3. **Check Codex MCP config**:
+
    ```bash
    cat ~/.codex/mcp.json
    thegent mcp fix --client codex
@@ -138,6 +145,7 @@ thegent mcp up
 ## Summary
 
 All shell corruption issues have been fixed at the source:
+
 - ✅ Config auto-creation prevents CLIProxyAPI errors
 - ✅ Fork config auto-creation prevents fork binary errors
 - ✅ Config ensured before any proxy operations
@@ -145,14 +153,12 @@ All shell corruption issues have been fixed at the source:
 
 The corruption should not recur with these fixes in place.
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -162,15 +168,18 @@ The corruption should not recur with these fixes in place.
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

@@ -21,7 +21,7 @@ Default adapter using output_parser.extract_condensed for all providers.
 
 ### Methods
 
-#### GenericOutputAdapter.__init__
+#### GenericOutputAdapter.**init**
 
 ```python
 __init__(self: Any, provider: str)
@@ -93,7 +93,7 @@ Base adapter for XML-structured agent outputs.
 
 ### Methods
 
-#### XMLOutputAdapter.__init__
+#### XMLOutputAdapter.**init**
 
 ```python
 __init__(self: Any, provider_name: str)

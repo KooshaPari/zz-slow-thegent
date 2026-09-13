@@ -6,18 +6,18 @@
 
 ## Quick Reference
 
-| Command | Purpose |
-|---------|---------|
-| `thegent prompts harvest` | Harvest $idea and $defer/$pending from all sources into docs/research/ |
-| `thegent prompts sessions` | List sessions by source (claude, codex, cursor) and project |
-| `thegent prompts list` | List harvested idea seeds |
-| `thegent prompts dump <session_id>` | Dump full Cursor conversation to docs/research/ |
-| `thegent prompts sync` | Harvest + list in one shot |
-| **Explore (no flag filter)** | |
-| `thegent prompts explore sessions` | Discover sessions across all sources |
-| `thegent prompts explore prompts` | Discover all prompts (no $idea/$defer) |
-| `thegent prompts explore session <id>` | Session by prompt/response |
-| `thegent prompts explore chat <id>` | Full chat dump (user + assistant) |
+| Command                                | Purpose                                                                |
+| -------------------------------------- | ---------------------------------------------------------------------- |
+| `thegent prompts harvest`              | Harvest $idea and $defer/$pending from all sources into docs/research/ |
+| `thegent prompts sessions`             | List sessions by source (claude, codex, cursor) and project            |
+| `thegent prompts list`                 | List harvested idea seeds                                              |
+| `thegent prompts dump <session_id>`    | Dump full Cursor conversation to docs/research/                        |
+| `thegent prompts sync`                 | Harvest + list in one shot                                             |
+| **Explore (no flag filter)**           |                                                                        |
+| `thegent prompts explore sessions`     | Discover sessions across all sources                                   |
+| `thegent prompts explore prompts`      | Discover all prompts (no $idea/$defer)                                 |
+| `thegent prompts explore session <id>` | Session by prompt/response                                             |
+| `thegent prompts explore chat <id>`    | Full chat dump (user + assistant)                                      |
 
 ---
 
@@ -81,22 +81,22 @@ Sessions are associated with project paths when available:
 
 ### Sources
 
-| Source | Path | Schema |
-|--------|------|--------|
-| Claude | `~/.claude/history.jsonl` | `display`, `project`, `timestamp`, `sessionId` |
-| Codex | `~/.codex/history.jsonl` | `text`, `session_id`, `ts` |
-| Cursor | `~/.cursor/projects/*/agent-transcripts/*.jsonl` | `role`, `message.content[].text` |
+| Source | Path                                             | Schema                                         |
+| ------ | ------------------------------------------------ | ---------------------------------------------- |
+| Claude | `~/.claude/history.jsonl`                        | `display`, `project`, `timestamp`, `sessionId` |
+| Codex  | `~/.codex/history.jsonl`                         | `text`, `session_id`, `ts`                     |
+| Cursor | `~/.cursor/projects/*/agent-transcripts/*.jsonl` | `role`, `message.content[].text`               |
 
 ### Env Overrides
 
-| Env | Default | Purpose |
-|-----|---------|---------|
-| `CLAUDE_HISTORY` | `~/.claude/history.jsonl` | Claude history |
-| `CODEX_HISTORY` | `~/.codex/history.jsonl` | Codex history |
-| `CODEX_STATE_DB` | `~/.codex/state_5.sqlite` | Codex cwd lookup |
-| `CURSOR_PROJECTS` | `~/.cursor/projects` | Cursor projects; set `=` to skip |
-| `OUTPUT_DIR` | (unset) | Override output for harvest script |
-| `STATE_DIR` | `~/.claude` | Offset files |
+| Env               | Default                   | Purpose                            |
+| ----------------- | ------------------------- | ---------------------------------- |
+| `CLAUDE_HISTORY`  | `~/.claude/history.jsonl` | Claude history                     |
+| `CODEX_HISTORY`   | `~/.codex/history.jsonl`  | Codex history                      |
+| `CODEX_STATE_DB`  | `~/.codex/state_5.sqlite` | Codex cwd lookup                   |
+| `CURSOR_PROJECTS` | `~/.cursor/projects`      | Cursor projects; set `=` to skip   |
+| `OUTPUT_DIR`      | (unset)                   | Override output for harvest script |
+| `STATE_DIR`       | `~/.claude`               | Offset files                       |
 
 ---
 
@@ -137,14 +137,12 @@ Agents must write dumps to `docs/research/CONVERSATION_DUMP_YYYY-MM-DD.md` after
 
 Cursor chat history is stored in app state; export manually when thegent cannot access it.
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -154,15 +152,18 @@ Cursor chat history is stored in app state; export manually when thegent cannot 
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

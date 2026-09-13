@@ -15,6 +15,7 @@ Added explicit security rules to prevent agents from killing other agent process
 ### ⛔ FORBIDDEN Commands
 
 Explicitly forbidden patterns:
+
 - `ps -ao pid,command | grep "cursor-agent" | grep -v grep | grep -v 40690 | awk '{print $1}' | xargs kill -9`
 - `ps | grep cursor-agent | xargs kill -9`
 - `pkill cursor-agent`

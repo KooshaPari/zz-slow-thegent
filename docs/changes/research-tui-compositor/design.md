@@ -423,16 +423,16 @@ class CompositFooter(Footer):
 
 ## Keyboard Shortcut Map
 
-| Shortcut | Action | Description |
-|----------|--------|-------------|
-| `Ctrl+N` | `new_pane` | Create new pane |
+| Shortcut | Action             | Description                     |
+| -------- | ------------------ | ------------------------------- |
+| `Ctrl+N` | `new_pane`         | Create new pane                 |
 | `Ctrl+H` | `split_horizontal` | Split current pane horizontally |
-| `Ctrl+V` | `split_vertical` | Split current pane vertically |
-| `Ctrl+X` | `close_pane` | Close current pane |
-| `Ctrl+L` | `focus_next` | Focus next pane (rotate) |
-| `Ctrl+S` | `save_layout` | Save current layout |
-| `Ctrl+R` | `restore_layout` | Restore saved layout |
-| `Ctrl+Q` | `quit` | Quit application |
+| `Ctrl+V` | `split_vertical`   | Split current pane vertically   |
+| `Ctrl+X` | `close_pane`       | Close current pane              |
+| `Ctrl+L` | `focus_next`       | Focus next pane (rotate)        |
+| `Ctrl+S` | `save_layout`      | Save current layout             |
+| `Ctrl+R` | `restore_layout`   | Restore saved layout            |
+| `Ctrl+Q` | `quit`             | Quit application                |
 
 ---
 
@@ -530,13 +530,13 @@ async def on_resize(self):
 
 ## Performance Targets
 
-| Operation | Target | Strategy |
-|-----------|--------|----------|
-| App startup | <500ms | Lazy load layouts, defer async tasks |
-| Pane creation | <100ms | Pre-allocate PTY descriptors |
-| Layout switch | <50ms | In-memory layout tree, no disk I/O |
-| Idle memory | <100MB | Limit output buffer per pane |
-| Idle CPU | <2% | No active polling; event-driven |
+| Operation     | Target | Strategy                             |
+| ------------- | ------ | ------------------------------------ |
+| App startup   | <500ms | Lazy load layouts, defer async tasks |
+| Pane creation | <100ms | Pre-allocate PTY descriptors         |
+| Layout switch | <50ms  | In-memory layout tree, no disk I/O   |
+| Idle memory   | <100MB | Limit output buffer per pane         |
+| Idle CPU      | <2%    | No active polling; event-driven      |
 
 ---
 

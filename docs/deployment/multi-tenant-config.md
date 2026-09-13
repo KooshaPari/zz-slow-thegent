@@ -59,6 +59,7 @@ class AgentIdentity:
 ```
 
 **Testing**:
+
 ```python
 # test_agent_identity.py
 
@@ -169,6 +170,7 @@ class FileBasedRegistry:
 ```
 
 **Testing**:
+
 ```python
 def test_register_agent():
     registry = FileBasedRegistry()
@@ -192,14 +194,15 @@ def test_list_agents_by_project():
 ```markdown
 # Unified Work Stream
 
-| Task ID | Description | Status | Assigned To | Blocked By | Scope |
-|---------|-------------|--------|-------------|-----------|-------|
-| task-1 | research-http | PENDING | - | - | kush |
-| task-2 | implement-client | PENDING | - | task-1 | kush |
-| task-3 | test-suite | COMPLETED | runner-1 | - | kush |
+| Task ID | Description      | Status    | Assigned To | Blocked By | Scope |
+| ------- | ---------------- | --------- | ----------- | ---------- | ----- |
+| task-1  | research-http    | PENDING   | -           | -          | kush  |
+| task-2  | implement-client | PENDING   | -           | task-1     | kush  |
+| task-3  | test-suite       | COMPLETED | runner-1    | -          | kush  |
 ```
 
 **Implementation**:
+
 ```python
 # Code: ~/.claude/civilization/work_stream.py
 
@@ -316,6 +319,7 @@ class HeartbeatManager:
 ```
 
 **Testing**:
+
 ```python
 @pytest.mark.asyncio
 async def test_heartbeat_loop():
@@ -409,6 +413,7 @@ class SyncTaskDispatcher:
 ```
 
 **MCP Tool** (exposed by L2 agents):
+
 ```python
 @mcp.tool()
 async def task_dispatch(task_id: str, prompt: str, timeout_seconds: int):
@@ -865,6 +870,7 @@ class ResourceBorrower:
 ### Deployment Checklist
 
 **Per Phase**:
+
 - [ ] Code written & tested
 - [ ] Integrated into L1/L2 agents
 - [ ] Tested with 2-3 agents
@@ -873,8 +879,9 @@ class ResourceBorrower:
 - [ ] Monitoring added (logs, metrics)
 
 **Before Scaling**:
+
 - [ ] All phases 1-4 complete
-- [ ] >100 tasks run successfully
+- [ ] > 100 tasks run successfully
 - [ ] <1% task failure rate
 - [ ] Deadlock detector tested with synthetic deadlocks
 - [ ] Resource management tested with >90% load
@@ -929,6 +936,7 @@ If a phase introduces breaking changes:
 3. **Manual Recovery**: If agents left in bad state, manually fix WORK_STREAM.md
 
 **Example**:
+
 ```bash
 # Rollback Phase 3 (cross-project) to Phase 2 (single-project)
 git checkout phase-2-stable -- ~/.claude/civilization/
@@ -945,6 +953,7 @@ pkill -f "L1\|L2"
 ### Unit Tests (Per Phase)
 
 Each phase includes unit tests for:
+
 - Agent identity (format, persistence)
 - Registry (CRUD operations)
 - Work stream (claim, complete, fail)
@@ -953,6 +962,7 @@ Each phase includes unit tests for:
 ### Integration Tests
 
 After each phase:
+
 - 2-3 agents execute 10+ tasks
 - Tasks complete successfully
 - Registry reflects final state
@@ -961,6 +971,7 @@ After each phase:
 ### Chaos Tests (Phase 5)
 
 Before scaling:
+
 - Kill agent mid-task (verify task reassigned)
 - Network partition (verify fallback to file-based)
 - Resource exhaustion (verify backpressure works)
@@ -970,27 +981,27 @@ Before scaling:
 
 ## Success Metrics
 
-| Metric | Phase 1 | Phase 2 | Phase 3 | Phase 4 | Phase 5 |
-|--------|---------|---------|---------|---------|---------|
-| **Task Success Rate** | 95% | 98% | 98% | 99% | 99%+ |
-| **Avg Task Duration** | <10min | <10min | <15min | <15min | <15min |
-| **Agent Failure Recovery** | Manual | Manual | Automatic | Automatic | <2min |
-| **Deadlock Detection** | N/A | N/A | Manual alert | Automatic | Automatic + resolution |
-| **Resource Utilization** | N/A | N/A | N/A | 60%+ | 75%+ |
-| **Cross-Project Requests** | N/A | N/A | 80%+ success | 90%+ | 95%+ |
+| Metric                     | Phase 1 | Phase 2 | Phase 3      | Phase 4   | Phase 5                |
+| -------------------------- | ------- | ------- | ------------ | --------- | ---------------------- |
+| **Task Success Rate**      | 95%     | 98%     | 98%          | 99%       | 99%+                   |
+| **Avg Task Duration**      | <10min  | <10min  | <15min       | <15min    | <15min                 |
+| **Agent Failure Recovery** | Manual  | Manual  | Automatic    | Automatic | <2min                  |
+| **Deadlock Detection**     | N/A     | N/A     | Manual alert | Automatic | Automatic + resolution |
+| **Resource Utilization**   | N/A     | N/A     | N/A          | 60%+      | 75%+                   |
+| **Cross-Project Requests** | N/A     | N/A     | 80%+ success | 90%+      | 95%+                   |
 
 ---
 
 ## Timeline Summary
 
-| Week | Phase | Focus | Agents | Projects |
-|------|-------|-------|--------|----------|
-| 1 | Foundation | Identity, registry, heartbeat | 2-3 | 1 |
-| 2 | Single-Project | Task dispatch, execution | 3 L2s | 1 |
-| 3 | Cross-Project | Requests, global state, events | 3 L2s | 2 |
-| 4 | Observability | Metrics, deadlock, audit | 3 L2s | 2 |
-| 5 | Resilience | Failure recovery, load balance | 5-10 | 3+ |
-| 6 | Optimization | Resource borrowing, caching | 10-20 | 5-10 |
+| Week | Phase          | Focus                          | Agents | Projects |
+| ---- | -------------- | ------------------------------ | ------ | -------- |
+| 1    | Foundation     | Identity, registry, heartbeat  | 2-3    | 1        |
+| 2    | Single-Project | Task dispatch, execution       | 3 L2s  | 1        |
+| 3    | Cross-Project  | Requests, global state, events | 3 L2s  | 2        |
+| 4    | Observability  | Metrics, deadlock, audit       | 3 L2s  | 2        |
+| 5    | Resilience     | Failure recovery, load balance | 5-10   | 3+       |
+| 6    | Optimization   | Resource borrowing, caching    | 10-20  | 5-10     |
 
 **Total Effort**: 40-60 tool calls
 **Timeline**: 6 weeks (phased)
@@ -1005,4 +1016,3 @@ Before scaling:
 3. **Resource Limits**: Should we enforce hard limits (kill tasks) or soft limits (queue)?
 4. **Cross-Project Visibility**: Can agents in Project A read outputs from Project B? Any security concerns?
 5. **Scaling Beyond 20**: What's the breaking point? When do we need a dedicated service?
-

@@ -12,7 +12,7 @@ Triggers alerts when cost reaches a threshold of the budget.
 
 ### Methods
 
-#### BudgetAlert.__init__
+#### BudgetAlert.**init**
 
 ```python
 __init__(self: Any, threshold: float)
@@ -48,7 +48,7 @@ Enforces a hard limit on action or session costs.
 
 ### Methods
 
-#### CostCap.__init__
+#### CostCap.**init**
 
 ```python
 __init__(self: Any, max_cost: float)
@@ -74,7 +74,7 @@ Provides cost-based feedback loops for autonomous learning.
 
 ### Methods
 
-#### CostSensing.__init__
+#### CostSensing.**init**
 
 ```python
 __init__(self: Any, slo_regulator: Any)
@@ -110,7 +110,7 @@ Tracks real-time cost accumulation across sessions.
 
 ### Methods
 
-#### CostTracker.__init__
+#### CostTracker.**init**
 
 ```python
 __init__(self: Any)

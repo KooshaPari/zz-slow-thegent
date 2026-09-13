@@ -19,6 +19,7 @@ Respond with:
 
 Summary: <headline>
 Housekeeping:
+
 - <item>: <status + reference command>
-Escalate:
+  Escalate:
 - <follow-up> — <droid/command or ✅ None>

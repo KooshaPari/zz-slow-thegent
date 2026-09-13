@@ -13,13 +13,13 @@
 
 ### 1.1 Sitback Today
 
-| Component | Implementation |
-|-----------|----------------|
-| **Runtime** | Claude Code (via `clode`) or Codex (via `--dex`) |
-| **Launch** | `thegent sitback` → `_run_sitback_claude` / `_run_sitback_codex` |
-| **Skill** | `skills/sitback-agent/SKILL.md` → `~/.claude/skills/sitback-agent` |
-| **MCP** | `thegent serve` (prerequisite); tools: `thegent_sitback_dashboard`, `thegent_run`, `thegent_bg`, etc. |
-| **Chat surface** | Claude Code IDE or Codex IDE |
+| Component        | Implementation                                                                                        |
+| ---------------- | ----------------------------------------------------------------------------------------------------- |
+| **Runtime**      | Claude Code (via `clode`) or Codex (via `--dex`)                                                      |
+| **Launch**       | `thegent sitback` → `_run_sitback_claude` / `_run_sitback_codex`                                      |
+| **Skill**        | `skills/sitback-agent/SKILL.md` → `~/.claude/skills/sitback-agent`                                    |
+| **MCP**          | `thegent serve` (prerequisite); tools: `thegent_sitback_dashboard`, `thegent_run`, `thegent_bg`, etc. |
+| **Chat surface** | Claude Code IDE or Codex IDE                                                                          |
 
 ### 1.2 Pain Points (Implied)
 
@@ -36,19 +36,20 @@
 
 ### 2.1 Capability Mapping
 
-| Sitback capability | Claude Code / Codex | OpenClaw | Agent Zero |
-|--------------------|---------------------|----------|------------|
-| **Chat interface** | IDE chat | WebChat, CLI (`openclaw agent --message`) | Web UI, terminal |
-| **MCP client** | Native (stdio/HTTP) | Pi agent → MCP? | Native (MCP client) |
-| **Skill loading** | `~/.claude/skills/` | OpenClaw skills (ClawHub) | SKILL.md (compatible) |
-| **Tool calling** | Full | Pi agent tool streaming | Full |
-| **Always-on** | No (IDE session) | Yes (Gateway daemon) | Yes (Docker/process) |
-| **Session chat** | Per-IDE | Gateway sessions | Per-chat |
-| **Multi-channel** | No | WhatsApp, Telegram, WebChat, etc. | No (Web + terminal) |
+| Sitback capability | Claude Code / Codex | OpenClaw                                  | Agent Zero            |
+| ------------------ | ------------------- | ----------------------------------------- | --------------------- |
+| **Chat interface** | IDE chat            | WebChat, CLI (`openclaw agent --message`) | Web UI, terminal      |
+| **MCP client**     | Native (stdio/HTTP) | Pi agent → MCP?                           | Native (MCP client)   |
+| **Skill loading**  | `~/.claude/skills/` | OpenClaw skills (ClawHub)                 | SKILL.md (compatible) |
+| **Tool calling**   | Full                | Pi agent tool streaming                   | Full                  |
+| **Always-on**      | No (IDE session)    | Yes (Gateway daemon)                      | Yes (Docker/process)  |
+| **Session chat**   | Per-IDE             | Gateway sessions                          | Per-chat              |
+| **Multi-channel**  | No                  | WhatsApp, Telegram, WebChat, etc.         | No (Web + terminal)   |
 
 ### 2.2 OpenClaw as Main Agent
 
 **Architecture:**
+
 ```
 User → OpenClaw WebChat / openclaw agent --message "status"
          ↓
@@ -60,6 +61,7 @@ thegent MCP (thegent serve) — thegent_sitback_dashboard, thegent_run, etc.
 ```
 
 **Pros:**
+
 - WebChat = unified chat; no IDE
 - Gateway = always-on; survives IDE crashes
 - Multi-channel (optional): WhatsApp, Telegram for "status" from phone
@@ -67,12 +69,14 @@ thegent MCP (thegent serve) — thegent_sitback_dashboard, thegent_run, etc.
 - ClawHub = skill discovery
 
 **Cons:**
+
 - OpenClaw is Node/TypeScript; thegent is Python
 - Pi agent tool-calling semantics may differ from Claude Code
 - Skill format: OpenClaw skills vs thegent SKILL.md — need adapter
 - OpenClaw sessions ≠ thegent run_registry sessions; mapping required
 
 **Gaps to close:**
+
 1. Pi agent must call thegent MCP tools (HTTP/stdio).
 2. Sitback skill must be adapted for OpenClaw skill format.
 3. `thegent sitback` → `openclaw gateway` + `openclaw agent` (or equivalent).
@@ -80,6 +84,7 @@ thegent MCP (thegent serve) — thegent_sitback_dashboard, thegent_run, etc.
 ### 2.3 Agent Zero as Main Agent
 
 **Architecture:**
+
 ```
 User → Agent Zero Web UI / terminal
          ↓
@@ -91,6 +96,7 @@ Sitback skill (SKILL.md) loaded into Agent Zero
 ```
 
 **Pros:**
+
 - MCP client native; well-documented
 - SKILL.md compatible (same format as thegent)
 - Python stack; closer to thegent
@@ -98,11 +104,13 @@ Sitback skill (SKILL.md) loaded into Agent Zero
 - Web UI = chat; terminal = streaming
 
 **Cons:**
+
 - Agent Zero is general-purpose; sitback is specialized (dashboard, never-idle, gardening)
 - May need custom system prompt / skill to enforce sitback behavior
 - Agent Zero subagents ≠ thegent sessions; different coordination model
 
 **Gaps to close:**
+
 1. Agent Zero MCP config: add thegent server URL.
 2. Sitback skill: ensure SKILL.md works in Agent Zero context.
 3. `thegent sitback` → launch Agent Zero with sitback skill + thegent MCP.
@@ -111,15 +119,15 @@ Sitback skill (SKILL.md) loaded into Agent Zero
 
 ## 3. Comparison: OpenClaw vs Agent Zero
 
-| Criterion | OpenClaw | Agent Zero |
-|-----------|----------|------------|
-| **Skill format** | OpenClaw-specific; may need adapter | SKILL.md (compatible) |
-| **MCP** | Pi agent; MCP support TBD | MCP client native |
-| **Stack** | Node/TS | Python |
-| **Always-on** | Gateway daemon | Docker/process |
-| **Chat** | WebChat, multi-channel | Web UI, terminal |
-| **Sitback fit** | Gateway + skills; good for "chat with sessions" | MCP + skills; good for tool-heavy orchestration |
-| **Effort to integrate** | Medium–high (skill adapter, Pi↔MCP) | Low–medium (MCP config, skill load) |
+| Criterion               | OpenClaw                                        | Agent Zero                                      |
+| ----------------------- | ----------------------------------------------- | ----------------------------------------------- |
+| **Skill format**        | OpenClaw-specific; may need adapter             | SKILL.md (compatible)                           |
+| **MCP**                 | Pi agent; MCP support TBD                       | MCP client native                               |
+| **Stack**               | Node/TS                                         | Python                                          |
+| **Always-on**           | Gateway daemon                                  | Docker/process                                  |
+| **Chat**                | WebChat, multi-channel                          | Web UI, terminal                                |
+| **Sitback fit**         | Gateway + skills; good for "chat with sessions" | MCP + skills; good for tool-heavy orchestration |
+| **Effort to integrate** | Medium–high (skill adapter, Pi↔MCP)            | Low–medium (MCP config, skill load)             |
 
 **Recommendation:** Agent Zero is the lower-friction path (MCP native, SKILL.md compatible). OpenClaw offers richer UX (multi-channel, WebChat) but requires more integration work.
 
@@ -148,6 +156,7 @@ Sitback skill (SKILL.md) loaded into Agent Zero
 ### 4.3 Phase 3: Unified "Chat with Sessions"
 
 Both runtimes could support:
+
 - **Session list** — `thegent_sitback_dashboard` → sessions, terminals, cockpit
 - **Send to session** — `thegent_run`, `thegent_bg`, `thegent_loop_takeover`
 - **Wait on session** — `thegent_wait`
@@ -159,12 +168,12 @@ Both runtimes could support:
 
 ## 5. Risks and Mitigations
 
-| Risk | Mitigation |
-|------|-------------|
-| Agent Zero doesn't follow never-idle loop | Strengthen skill instructions; add periodic trigger |
-| OpenClaw Pi agent tool semantics differ | Test tool calls; add adapter if needed |
-| Session model mismatch | thegent sessions = run_registry; map to OpenClaw/Agent Zero chat sessions |
-| User prefers Claude Code | Keep `thegent sitback` default as Claude Code; add `--agent-zero` as opt-in |
+| Risk                                      | Mitigation                                                                  |
+| ----------------------------------------- | --------------------------------------------------------------------------- |
+| Agent Zero doesn't follow never-idle loop | Strengthen skill instructions; add periodic trigger                         |
+| OpenClaw Pi agent tool semantics differ   | Test tool calls; add adapter if needed                                      |
+| Session model mismatch                    | thegent sessions = run_registry; map to OpenClaw/Agent Zero chat sessions   |
+| User prefers Claude Code                  | Keep `thegent sitback` default as Claude Code; add `--agent-zero` as opt-in |
 
 ---
 
@@ -360,12 +369,12 @@ Both runtimes could support:
 **Extended on**: 2026-02-17
 **Extensions added**: Use case diagrams (§6)
 
-| Section | Added Content |
-|---------|---------------|
-| §6.1 | Agent Zero + thegent Integration Architecture (Docker container, MCP client, sitback skill) |
-| §6.2 | OpenClaw + thegent Integration Architecture (Gateway, Pi agent, sitback bridge adapter) |
-| §6.3 | Unified "Chat with Sessions" Flow (natural language → intent → session orchestrator) |
-| §6.4 | Runtime Selection Decision Tree (--runtime flag, Docker config, fallback)
+| Section | Added Content                                                                               |
+| ------- | ------------------------------------------------------------------------------------------- |
+| §6.1    | Agent Zero + thegent Integration Architecture (Docker container, MCP client, sitback skill) |
+| §6.2    | OpenClaw + thegent Integration Architecture (Gateway, Pi agent, sitback bridge adapter)     |
+| §6.3    | Unified "Chat with Sessions" Flow (natural language → intent → session orchestrator)        |
+| §6.4    | Runtime Selection Decision Tree (--runtime flag, Docker config, fallback)                   |
 
 ---
 

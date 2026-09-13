@@ -115,13 +115,13 @@ STARSHIP_CONFIG=~/.config/starship/config.toml starship module thegent
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `THEGENT_BIN` | `thegent` | thegent executable path |
-| `THEGENT_DEFAULT_TIMEOUT` | `300` | Default timeout (seconds) |
-| `THEGENT_ASYNC_ENABLE` | `1` | Enable async operations |
-| `THEGENT_WORK_STREAM` | `~/thegent/docs/reference/WORK_STREAM.md` | Work stream file |
-| `THEGENT_LOG_FILE` | `~/.thegent/logs/thegent.log` | Log file location |
+| Variable                  | Default                                   | Description               |
+| ------------------------- | ----------------------------------------- | ------------------------- |
+| `THEGENT_BIN`             | `thegent`                                 | thegent executable path   |
+| `THEGENT_DEFAULT_TIMEOUT` | `300`                                     | Default timeout (seconds) |
+| `THEGENT_ASYNC_ENABLE`    | `1`                                       | Enable async operations   |
+| `THEGENT_WORK_STREAM`     | `~/thegent/docs/reference/WORK_STREAM.md` | Work stream file          |
+| `THEGENT_LOG_FILE`        | `~/.thegent/logs/thegent.log`             | Log file location         |
 
 ### Plugin Options
 
@@ -140,11 +140,11 @@ export THEGENT_DEFAULT_TIMEOUT=600
 
 ## Key Bindings
 
-| Binding | Command | Description |
-|---------|---------|-------------|
+| Binding | Command | Description          |
+| ------- | ------- | -------------------- |
 | `Alt+G` | `tg p ` | Quick thegent prompt |
-| `Alt+F` | `tgf ` | Quick file agent |
-| `Alt+S` | `tgs ` | Skills menu |
+| `Alt+F` | `tgf `  | Quick file agent     |
+| `Alt+S` | `tgs `  | Skills menu          |
 
 ---
 
@@ -152,52 +152,52 @@ export THEGENT_DEFAULT_TIMEOUT=600
 
 ### Core Commands
 
-| Command | Description |
-|---------|-------------|
-| `tg <cmd>` | Quick thegent alias (run, free, bg, ps, skills, hooks, lsp, mcp, serve, plan) |
-| `tgf <file>` | Run agent on file |
-| `tgf <file> <prompt>` | Run agent on file with custom prompt |
-| `tgw [path]` | Watch mode for file changes |
-| `tgs <skill>` | Run skill |
-| `tgs` | List available skills |
-| `tgp <prompt>` | Quick prompt |
-| `tgmcp <cmd>` | Quick MCP commands (up, down, status, prune) |
+| Command               | Description                                                                   |
+| --------------------- | ----------------------------------------------------------------------------- |
+| `tg <cmd>`            | Quick thegent alias (run, free, bg, ps, skills, hooks, lsp, mcp, serve, plan) |
+| `tgf <file>`          | Run agent on file                                                             |
+| `tgf <file> <prompt>` | Run agent on file with custom prompt                                          |
+| `tgw [path]`          | Watch mode for file changes                                                   |
+| `tgs <skill>`         | Run skill                                                                     |
+| `tgs`                 | List available skills                                                         |
+| `tgp <prompt>`        | Quick prompt                                                                  |
+| `tgmcp <cmd>`         | Quick MCP commands (up, down, status, prune)                                  |
 
 ### Status Commands
 
-| Command | Description |
-|---------|-------------|
-| `tgwho` | Show current agent context |
-| `tgwork` | Show work stream |
-| `tgnext` | Get next item from work stream |
-| `tgstatus` | Quick status check |
-| `tglog [lines]` | View thegent logs |
+| Command         | Description                    |
+| --------------- | ------------------------------ |
+| `tgwho`         | Show current agent context     |
+| `tgwork`        | Show work stream               |
+| `tgnext`        | Get next item from work stream |
+| `tgstatus`      | Quick status check             |
+| `tglog [lines]` | View thegent logs              |
 
 ### Documentation
 
-| Command | Description |
-|---------|-------------|
-| `tgdoc` | List documentation |
+| Command         | Description                  |
+| --------------- | ---------------------------- |
+| `tgdoc`         | List documentation           |
 | `tgdoc <topic>` | Find documentation for topic |
 
 ### Async Operations
 
-| Command | Description |
-|---------|-------------|
-| `tgxa <cmd>` | Async execute |
-| `tgxj` | List all jobs |
-| `tgxj <job_id>` | Check job status |
-| `tgxl <job_id>` | View job logs |
-| `tgxk <job_id>` | Kill job |
-| `tgxw <job_id>` | Wait for job |
-| `tgxclean` | Clean up completed jobs |
+| Command         | Description             |
+| --------------- | ----------------------- |
+| `tgxa <cmd>`    | Async execute           |
+| `tgxj`          | List all jobs           |
+| `tgxj <job_id>` | Check job status        |
+| `tgxl <job_id>` | View job logs           |
+| `tgxk <job_id>` | Kill job                |
+| `tgxw <job_id>` | Wait for job            |
+| `tgxclean`      | Clean up completed jobs |
 
 ### Background Execution
 
-| Command | Description |
-|---------|-------------|
+| Command         | Description                    |
+| --------------- | ------------------------------ |
 | `tgbg <prompt>` | Run in background with polling |
-| `tgsessions` | List all sessions |
+| `tgsessions`    | List all sessions              |
 
 ---
 
@@ -315,11 +315,11 @@ export THEGENT_BIN="/full/path/to/thegent"
 
 ## Files
 
-| File | Purpose |
-|------|---------|
-| `shell/zsh-thegent-integration/thegent.plugin.zsh` | Main plugin |
-| `shell/zsh-thegent-integration/lib/functions.zsh` | Functions |
-| `shell/zsh-thegent-integration/lib/completions.zsh` | Completions |
-| `shell/zsh-thegent-integration/lib/async.zsh` | Async |
-| `shell/starship/thegent.py` | Starship module |
-| `shell/install-zsh-plugin.sh` | Installer script |
+| File                                                | Purpose          |
+| --------------------------------------------------- | ---------------- |
+| `shell/zsh-thegent-integration/thegent.plugin.zsh`  | Main plugin      |
+| `shell/zsh-thegent-integration/lib/functions.zsh`   | Functions        |
+| `shell/zsh-thegent-integration/lib/completions.zsh` | Completions      |
+| `shell/zsh-thegent-integration/lib/async.zsh`       | Async            |
+| `shell/starship/thegent.py`                         | Starship module  |
+| `shell/install-zsh-plugin.sh`                       | Installer script |

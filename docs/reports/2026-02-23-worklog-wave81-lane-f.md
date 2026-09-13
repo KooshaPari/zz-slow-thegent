@@ -15,4 +15,3 @@ This lane reviewed connector queue and throttle hardening for retry/resume behav
 1. Connect dead-letter replay to a scheduled or CLI-triggered path.
 2. Surface queue depth and retry age in telemetry.
 3. Expose throttle audit details in the autosync metrics exporter.
-

@@ -13,10 +13,10 @@
 
 The router operates at two distinct time scales:
 
-| Layer | Name | Frequency | Responsibility |
-|-------|------|-----------|----------------|
-| **Slow loop** | Monthly / Budget Allocator | Hourly/Daily | Decides enabled subscriptions/plans/providers/models; sets quotas + internal shadow prices |
-| **Fast loop** | Per-Call Router | Per request | Chooses best offer from enabled pool using hard constraints first, then Pareto / lexicographic optimization |
+| Layer         | Name                       | Frequency    | Responsibility                                                                                              |
+| ------------- | -------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------- |
+| **Slow loop** | Monthly / Budget Allocator | Hourly/Daily | Decides enabled subscriptions/plans/providers/models; sets quotas + internal shadow prices                  |
+| **Fast loop** | Per-Call Router            | Per request  | Chooses best offer from enabled pool using hard constraints first, then Pareto / lexicographic optimization |
 
 **Key insight**: This separation is what makes subscriptions + scraping + seasonal bonuses manageable.
 
@@ -64,11 +64,13 @@ Compute objective vector for each remaining offer:
 ### 1.6 Lexicographic Selection
 
 Example order:
+
 1. Maximize Quality (within ε)
 2. Minimize Cost (within ε)
 3. Minimize Speed
 
 Implementation:
+
 ```
 Take top-K by quality (or within epsilon of best)
 Among those, take cheapest (or within epsilon)
@@ -90,6 +92,7 @@ Offer = (provider endpoint, model id, region, plan/quota regime, pricing, constr
 ```
 
 Same "model" across:
+
 - OpenRouter vs direct provider
 - Different regions
 - Different subscriptions/quotas
@@ -98,13 +101,13 @@ Same "model" across:
 
 ### 2.2 Data Model: Offer Fields
 
-| Category | Fields |
-|----------|--------|
-| **Identity** | offerId (unique), provider, modelName |
+| Category         | Fields                                                                               |
+| ---------------- | ------------------------------------------------------------------------------------ |
+| **Identity**     | offerId (unique), provider, modelName                                                |
 | **Capabilities** | contextWindow, tool support (function calling, JSON mode, vision), max output tokens |
-| **Pricing** | in/out, cache read/write, batch discounts |
-| **Limits** | RPM, TPM, concurrency |
-| **Reliability** | timeouts, error rate |
+| **Pricing**      | in/out, cache read/write, batch discounts                                            |
+| **Limits**       | RPM, TPM, concurrency                                                                |
+| **Reliability**  | timeouts, error rate                                                                 |
 
 ### 2.3 Subscription / Plan Abstraction
 
@@ -122,6 +125,7 @@ swapOptions (upgrade/downgrade rules + effective start date)
 ```
 
 **Derived runtime object**:
+
 - `effectiveUnitCost(model, tokensIn, tokensOut, cacheStats) → dollars`
 - `remainingQuota(model) → tokens remaining (or "unlimited but throttled")`
 - `shadowPrice(model) → internal $/token reflecting scarcity` ← **key**
@@ -131,6 +135,7 @@ Shadow price converts "subscription scarcity" into per-call routing.
 ### 2.4 Task + Role Schema
 
 Per request:
+
 - **role**: fast_chat, high_accuracy, doc_writer, code_review, e2e_test, etc.
 - **hardConstraints**: must support tools? must be JSON? max latency? max cost?
 - **softWeights** or priority order (lexicographic)
@@ -138,12 +143,12 @@ Per request:
 
 ### 2.5 Why Offer-First Beats Model→Provider Two-Stage
 
-| Two-Stage | Offer-First |
-|-----------|-------------|
+| Two-Stage                                                     | Offer-First                              |
+| ------------------------------------------------------------- | ---------------------------------------- |
 | Select "claude-opus" without considering provider rate limits | Economics and limits baked in from start |
-| Ignores subscription quotas | Correct handling of quotas/outages |
-| Ignores region latency | Consistent scoring |
-| Must do offer-routing anyway as second step | Single routing decision |
+| Ignores subscription quotas                                   | Correct handling of quotas/outages       |
+| Ignores region latency                                        | Consistent scoring                       |
+| Must do offer-routing anyway as second step                   | Single routing decision                  |
 
 **Recommendation**: Offer-first, always.
 
@@ -156,6 +161,7 @@ Per request:
 For each model, maintain benchmarks: MMLU, HumanEval, GSM8K, doc writing eval, tool use, etc.
 
 Normalize each to 0–1:
+
 ```
 norm = (score - min) / (max - min) across candidate set
 ```
@@ -163,6 +169,7 @@ norm = (score - min) / (max - min) across candidate set
 ### 3.2 Role → Benchmark Weights
 
 Examples:
+
 - **fast_chat**: 0.5 instruction following + 0.3 safety/refusal quality + 0.2 coherence
 - **doc_writer**: 0.4 writing eval + 0.3 instruction following + 0.3 long-context
 - **code_review**: 0.5 coding + 0.3 reasoning + 0.2 tool use
@@ -175,6 +182,7 @@ quality_pred(role, model) = Σ w_i(role) * norm_benchmark_i(model)
 ### 3.3 "Your Reality" Correction
 
 Benchmarks lie. Add:
+
 - `online_success_rate(role, model)` from logs (pass/fail, user re-ask rate)
 - `penalty_for_refusal_mismatch` (some models refuse too much)
 - `format_adherence_rate` (JSON validity, schema conformance)
@@ -213,14 +221,14 @@ You'll end up with ~8–20 roles, not 200. Keep it tight.
 
 ### 5.1 Components
 
-| Component | Responsibility |
-|-----------|----------------|
-| Catalog service | Offers + capabilities + base pricing |
-| Plan service | Scrapes usage, applies plan math, publishes effectiveUnitCost + quota + shadowPrice |
-| Metrics service | Latency/error stats by offer, updates predictors |
-| Quality index service | Benchmark table + online eval, publishes quality_pred per role |
-| Router API (hot path) | chooseOffer(request, role, constraints) → offerId |
-| Execution layer | Retries/fallbacks + circuit breaker |
+| Component             | Responsibility                                                                      |
+| --------------------- | ----------------------------------------------------------------------------------- |
+| Catalog service       | Offers + capabilities + base pricing                                                |
+| Plan service          | Scrapes usage, applies plan math, publishes effectiveUnitCost + quota + shadowPrice |
+| Metrics service       | Latency/error stats by offer, updates predictors                                    |
+| Quality index service | Benchmark table + online eval, publishes quality_pred per role                      |
+| Router API (hot path) | chooseOffer(request, role, constraints) → offerId                                   |
+| Execution layer       | Retries/fallbacks + circuit breaker                                                 |
 
 ### 5.2 Hot Path Algorithm
 

@@ -12,7 +12,7 @@ Manage documentation versioning.
 
 ### Methods
 
-#### VersioningManager.__init__
+#### VersioningManager.**init**
 
 ```python
 __init__(self: Any, versions: list[str])

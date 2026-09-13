@@ -82,6 +82,7 @@ This document defines the formal contracts between thegent's four sub-projects. 
 Execute an agent task with streaming output.
 
 **Request Schema:**
+
 ```json
 {
   "agent_id": "default",
@@ -96,6 +97,7 @@ Execute an agent task with streaming output.
 ```
 
 **Response (streaming, chunked):**
+
 ```json
 {"type": "chunk", "data": "Analyzing task..."}
 {"type": "chunk", "data": "Planning steps..."}
@@ -104,6 +106,7 @@ Execute an agent task with streaming output.
 ```
 
 **Pydantic Models:**
+
 ```python
 from pydantic import BaseModel
 from typing import Optional, AsyncIterator
@@ -128,6 +131,7 @@ class AgentSession:
 ```
 
 **Error Handling:**
+
 ```json
 {
   "error": {
@@ -159,6 +163,7 @@ List available agent personas.
 **Request:** Empty
 
 **Response:**
+
 ```json
 {
   "agents": [
@@ -194,6 +199,7 @@ List available agent personas.
 Retrieve current state of a running agent.
 
 **Request:**
+
 ```json
 {
   "agent_id": "default"
@@ -201,6 +207,7 @@ Retrieve current state of a running agent.
 ```
 
 **Response:**
+
 ```json
 {
   "agent_id": "default",
@@ -220,6 +227,7 @@ Retrieve current state of a running agent.
 Stop a running agent.
 
 **Request:**
+
 ```json
 {
   "agent_id": "default"
@@ -227,6 +235,7 @@ Stop a running agent.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -243,6 +252,7 @@ Stop a running agent.
 Query agent's memory store for past interactions/decisions.
 
 **Request:**
+
 ```json
 {
   "agent_id": "default",
@@ -252,6 +262,7 @@ Query agent's memory store for past interactions/decisions.
 ```
 
 **Response:**
+
 ```json
 {
   "results": [
@@ -278,6 +289,7 @@ Query agent's memory store for past interactions/decisions.
 Store an item in agent's memory (for agents to remember decisions/learnings).
 
 **Request:**
+
 ```json
 {
   "agent_id": "default",
@@ -291,6 +303,7 @@ Store an item in agent's memory (for agents to remember decisions/learnings).
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -310,6 +323,7 @@ Read-only resource returning full agent state (JSON).
 **URI:** `agents://default/state`
 
 **Response:**
+
 ```json
 {
   "agent_id": "default",
@@ -336,6 +350,7 @@ Read agent's memory store as list of items.
 **URI:** `agents://default/memory`
 
 **Response:**
+
 ```json
 {
   "count": 127,
@@ -365,6 +380,7 @@ CLI maintains session state in `~/.thegent/sessions/`:
 **File:** `run_registry.jsonl`
 
 Each line is a JSON object:
+
 ```json
 {
   "timestamp": "2026-02-22T15:30:00Z",
@@ -399,6 +415,7 @@ thegent-mcp exposes ~500 tools across integrations. Agents invoke via standardiz
 Tools follow pattern: `{service}/{action}`
 
 Examples:
+
 - `github/list_repos`
 - `github/create_issue`
 - `slack/send_message`
@@ -410,6 +427,7 @@ Examples:
 #### Agent Tool Invocation Contract
 
 **Pydantic Model:**
+
 ```python
 from pydantic import BaseModel
 from typing import Optional, Any
@@ -435,6 +453,7 @@ class ToolResult(BaseModel):
 **Example: GitHub Tool Invocation**
 
 **Request:**
+
 ```json
 {
   "tool_name": "github/list_repos",
@@ -447,6 +466,7 @@ class ToolResult(BaseModel):
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -469,6 +489,7 @@ class ToolResult(BaseModel):
 ```
 
 **Error Response:**
+
 ```json
 {
   "success": false,
@@ -511,6 +532,7 @@ After every tool invocation, agents persist result to memory:
 thegent-mcp maintains a registry of all available tools. Agents query registry before invocation:
 
 **Registry Lookup:**
+
 ```python
 class ToolRegistry:
     def list_tools(self) -> List[ToolMetadata]:
@@ -539,15 +561,15 @@ All sub-projects have **read-only** access to shared modules. No modifications a
 
 ### Shared Module List
 
-| Module | Purpose | Status |
-|--------|---------|--------|
-| `thegent.config` | Configuration (env, secrets, settings) | Immutable |
-| `thegent.contracts` | Domain models (Agent, Task, etc.) | Immutable |
-| `thegent.models` | Pydantic models (Input/Output) | Immutable |
-| `thegent.exit_codes` | Exit codes for CLI | Immutable |
-| `thegent.observability` | Logging, tracing, metrics | Append-only |
-| `thegent.execution` | Execution primitives | Immutable |
-| `thegent.routing` | Model routing | Immutable |
+| Module                  | Purpose                                | Status      |
+| ----------------------- | -------------------------------------- | ----------- |
+| `thegent.config`        | Configuration (env, secrets, settings) | Immutable   |
+| `thegent.contracts`     | Domain models (Agent, Task, etc.)      | Immutable   |
+| `thegent.models`        | Pydantic models (Input/Output)         | Immutable   |
+| `thegent.exit_codes`    | Exit codes for CLI                     | Immutable   |
+| `thegent.observability` | Logging, tracing, metrics              | Append-only |
+| `thegent.execution`     | Execution primitives                   | Immutable   |
+| `thegent.routing`       | Model routing                          | Immutable   |
 
 ### Access Pattern
 
@@ -652,17 +674,17 @@ All sub-projects return errors in this format:
 
 ### Error Codes (Global)
 
-| Code | Meaning | Sub-Project | HTTP |
-|------|---------|-------------|------|
-| `AGENT_NOT_FOUND` | Unknown agent | agents | 404 |
-| `TOOL_NOT_FOUND` | Unknown tool | mcp | 404 |
-| `INVALID_ARGS` | Bad arguments | any | 400 |
-| `AUTHENTICATION_FAILED` | Auth required/failed | mcp, agents | 401 |
-| `PERMISSION_DENIED` | Insufficient perms | any | 403 |
-| `RESOURCE_EXHAUSTED` | Token/rate limit | agents, mcp | 429 |
-| `TIMEOUT` | Operation timeout | agents, mcp | 504 |
-| `INTERNAL_ERROR` | Server error | any | 500 |
-| `UNAVAILABLE` | Service down | any | 503 |
+| Code                    | Meaning              | Sub-Project | HTTP |
+| ----------------------- | -------------------- | ----------- | ---- |
+| `AGENT_NOT_FOUND`       | Unknown agent        | agents      | 404  |
+| `TOOL_NOT_FOUND`        | Unknown tool         | mcp         | 404  |
+| `INVALID_ARGS`          | Bad arguments        | any         | 400  |
+| `AUTHENTICATION_FAILED` | Auth required/failed | mcp, agents | 401  |
+| `PERMISSION_DENIED`     | Insufficient perms   | any         | 403  |
+| `RESOURCE_EXHAUSTED`    | Token/rate limit     | agents, mcp | 429  |
+| `TIMEOUT`               | Operation timeout    | agents, mcp | 504  |
+| `INTERNAL_ERROR`        | Server error         | any         | 500  |
+| `UNAVAILABLE`           | Service down         | any         | 503  |
 
 ### Back-Pressure
 
@@ -763,16 +785,19 @@ When changing an interface:
 ### Example: Adding Required Field
 
 Old request:
+
 ```json
-{"agent_id": "default", "prompt": "..."}
+{ "agent_id": "default", "prompt": "..." }
 ```
 
 New request (with optional field):
+
 ```json
-{"agent_id": "default", "prompt": "...", "timeout_sec": 30}
+{ "agent_id": "default", "prompt": "...", "timeout_sec": 30 }
 ```
 
 **During transition (both accepted):**
+
 ```python
 class RunAgentRequest(BaseModel):
     agent_id: str
@@ -781,6 +806,7 @@ class RunAgentRequest(BaseModel):
 ```
 
 **After migration (field required):**
+
 ```python
 class RunAgentRequest(BaseModel):
     agent_id: str
@@ -794,13 +820,13 @@ class RunAgentRequest(BaseModel):
 
 ### Service Level Objectives
 
-| Operation | Target | SLO |
-|-----------|--------|-----|
-| `list_agents` | <50ms | 99.5% |
-| `run_agent` (initiation) | <200ms | 99% |
-| Tool invocation (thegent-mcp) | <2s (p99) | 99% |
-| Agent context retrieval | <100ms | 99.5% |
-| Memory query | <500ms (p99) | 99% |
+| Operation                     | Target       | SLO   |
+| ----------------------------- | ------------ | ----- |
+| `list_agents`                 | <50ms        | 99.5% |
+| `run_agent` (initiation)      | <200ms       | 99%   |
+| Tool invocation (thegent-mcp) | <2s (p99)    | 99%   |
+| Agent context retrieval       | <100ms       | 99.5% |
+| Memory query                  | <500ms (p99) | 99%   |
 
 ### Benchmarking
 
@@ -833,12 +859,12 @@ def test_agents_server_list_agents():
 
 ## Summary
 
-| Interface | Protocol | Port | Blocking | Purpose |
-|-----------|----------|------|----------|---------|
-| **CLI → Agents** | MCP (stdio/HTTP) | 3847 | No (async) | Agent execution |
-| **Agents → MCP** | MCP (stdio/HTTP) | 3848 | No (async) | Tool invocation |
-| **Shared modules** | Direct import | N/A | N/A | Configuration, models |
-| **Session state** | JSONL files | N/A | N/A | Audit log, memory |
+| Interface          | Protocol         | Port | Blocking   | Purpose               |
+| ------------------ | ---------------- | ---- | ---------- | --------------------- |
+| **CLI → Agents**   | MCP (stdio/HTTP) | 3847 | No (async) | Agent execution       |
+| **Agents → MCP**   | MCP (stdio/HTTP) | 3848 | No (async) | Tool invocation       |
+| **Shared modules** | Direct import    | N/A  | N/A        | Configuration, models |
+| **Session state**  | JSONL files      | N/A  | N/A        | Audit log, memory     |
 
 All interfaces are **versioned**, **tested**, and **monitored** for compliance.
 

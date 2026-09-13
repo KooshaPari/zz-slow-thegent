@@ -12,7 +12,7 @@ Agent crew for coordinating multiple agents.
 
 ### Methods
 
-#### Crew.__init__
+#### Crew.**init**
 
 ```python
 __init__(self: Any, agents: list[Any])

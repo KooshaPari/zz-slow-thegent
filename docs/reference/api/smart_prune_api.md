@@ -20,7 +20,7 @@ Intelligent agent resource reclaimer.
 
 ### Methods
 
-#### SmartPruner.__init__
+#### SmartPruner.**init**
 
 ```python
 __init__(self: Any, project_root: Any)

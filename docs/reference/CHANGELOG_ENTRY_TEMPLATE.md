@@ -8,21 +8,27 @@ Use this template when adding changelog items to `CHANGELOG.md` under `## [Unrel
 ## [Unreleased]
 
 ### Added
+
 - <what was added and why it matters>
 
 ### Changed
+
 - <what behavior changed>
 
 ### Deprecated
+
 - <what is deprecated and migration note>
 
 ### Removed
+
 - <what was removed>
 
 ### Fixed
+
 - <what bug was fixed and user impact>
 
 ### Security
+
 - <security-relevant change>
 ```
 

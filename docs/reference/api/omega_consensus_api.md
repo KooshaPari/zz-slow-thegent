@@ -16,7 +16,7 @@ Enforces agreement on the project's 'Omega' (final) state across all agents.
 
 ### Methods
 
-#### OmegaConsensus.__init__
+#### OmegaConsensus.**init**
 
 ```python
 __init__(self: Any, swarm_size: int, threshold: float)

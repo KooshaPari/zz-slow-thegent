@@ -18,10 +18,12 @@
 ## Changes Made
 
 ### 1. Directory Rename ✅
+
 - `skills/agent-orchestra/` → `skills/thegent-skills/`
 - Removed conflicting symlink: `/Users/kooshapari/.cursor/skills-cursor/agent-orchestra`
 
 ### 2. Code Updates ✅
+
 - `src/thegent/install.py`:
   - `CLAUDE_CODE_FILES`: `"skills/agent-orchestra"` → `"skills/thegent-skills"`
   - `CURSOR_FILES`: `"skills/agent-orchestra"` → `"skills/thegent-skills"`
@@ -35,6 +37,7 @@
   - Example: `--skill agent-orchestra` → `--skill thegent-skills`
 
 ### 3. Remaining Updates 🔄
+
 - Documentation files (CLAUDE.md, AGENTS.md, etc.)
 - Test files
 - Factory seed directory
@@ -45,10 +48,12 @@
 ## Installation Fix
 
 The installation error was caused by:
+
 - Existing symlink/directory at `/Users/kooshapari/.cursor/skills-cursor/agent-orchestra`
 - Install trying to create symlink when directory exists
 
 **Fix Applied**:
+
 1. Removed old symlink
 2. Renamed source directory
 3. Updated mappings in install.py
@@ -81,10 +86,12 @@ The installation error was caused by:
 ## Installation Fix
 
 The installation error `[Errno 21] Is a directory` was caused by:
+
 - Existing symlink at `/Users/kooshapari/.cursor/skills-cursor/agent-orchestra` pointing to a directory
 - Install logic trying to create symlink when target already exists as directory
 
 **Fix Applied**:
+
 1. ✅ Removed conflicting symlink
 2. ✅ Renamed source directory to `thegent-skills`
 3. ✅ Updated all mappings to use new name
@@ -93,6 +100,7 @@ The installation error `[Errno 21] Is a directory` was caused by:
 ## Remaining Work (Delegated)
 
 An agent has been delegated to update:
+
 - Documentation files (CLAUDE.md, AGENTS.md, etc.)
 - Test files
 - Factory seed directory

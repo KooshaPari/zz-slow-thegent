@@ -20,7 +20,7 @@ WP-1006: Shared memory for multi-agent coordination.
 
 ### Methods
 
-#### Blackboard.__init__
+#### Blackboard.**init**
 
 ```python
 __init__(self: Any, namespace: str)
@@ -94,7 +94,7 @@ WP-1006: Handles inter-agent negotiation and Nash Equilibrium selection.
 
 ### Methods
 
-#### NegotiationEngine.__init__
+#### NegotiationEngine.**init**
 
 ```python
 __init__(self: Any, blackboard: Blackboard)

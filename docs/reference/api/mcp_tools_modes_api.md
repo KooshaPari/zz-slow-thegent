@@ -204,7 +204,7 @@ Returns team_id. Use thegent_team_delegate to assign work to teammates.
 thegent_team_delegate(teammate_id: str, prompt: str, parent_run_id: Any)
 ```
 
-Delegate a task to a teammate. Uses TeammateManager. teammate_id from agents/*.md.
+Delegate a task to a teammate. Uses TeammateManager. teammate_id from agents/\*.md.
 
 ---
 

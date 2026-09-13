@@ -12,7 +12,7 @@ Research for rich migration.
 
 ### Methods
 
-#### LibraryANSIResearch.__init__
+#### LibraryANSIResearch.**init**
 
 ```python
 __init__(self: Any)

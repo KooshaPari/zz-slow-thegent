@@ -115,18 +115,21 @@
 ## Development Setup
 
 ### Prerequisites
+
 - Node.js 18+ (via Bun 1.2.22 package manager)
 - PostgreSQL 13+ (via Supabase Cloud)
 
 ### Installation Steps
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/atoms-tech/atoms.tech.git
    cd atoms.tech
    ```
 
 2. **Install dependencies**
+
    ```bash
    bun install
    ```
@@ -142,9 +145,11 @@
    - AtomsAgent (ATOMSAGENT_BASE_URL)
 
 4. **Run development server**
+
    ```bash
    bun dev
    ```
+
    Server runs on http://localhost:3000
 
 5. **Code Quality**
@@ -156,22 +161,26 @@
 ## Available npm Scripts
 
 **Development:**
+
 - `bun run dev` - Start dev server
 - `bun run dev:clean` - Clean .next and start dev
 - `bun run dev:log` - Dev with logging to file
 
 **Building & Deployment:**
+
 - `bun run build` - Production build
 - `bun run build:analyze` - Build with bundle analysis
 - `bun run start` - Start production server
 
 **Code Quality:**
+
 - `bun run lint` - Run ESLint
 - `bun run lint:strict` - Lint with zero warnings
 - `bun run type-check` - TypeScript type checking
 - `bun run format` - Prettier formatting
 
 **Testing:**
+
 - `bun run test` - Run all tests
 - `bun run test:unit` - Unit tests with Vitest + coverage
 - `bun run test:e2e` - E2E tests with Playwright
@@ -188,21 +197,21 @@ export const useAuthStore = create((set) => ({
   permissions: [],
   setUser: (user) => set({ user }),
   // ...
-}))
+}));
 
 // ui.store.ts - UI state (modals, panels)
 export const useUIStore = create((set) => ({
   isModalOpen: false,
   activeSidebar: null,
   // ...
-}))
+}));
 
 // domain.store.ts - Business domain state
 export const useDomainStore = create((set) => ({
   currentProject: null,
   documents: [],
   // ...
-}))
+}));
 ```
 
 ## API Integration with tRPC
@@ -217,14 +226,14 @@ export const appRouter = router({
       .input(z.object({ message: z.string() }))
       .mutation(async ({ input, ctx }) => {
         // Server logic
-        return response
-      })
-  }
-})
+        return response;
+      }),
+  },
+});
 
 // Client-side usage
-const { mutate } = trpc.chat.send.useMutation()
-mutate({ message: 'Hello!' })
+const { mutate } = trpc.chat.send.useMutation();
+mutate({ message: "Hello!" });
 ```
 
 ## UI Components

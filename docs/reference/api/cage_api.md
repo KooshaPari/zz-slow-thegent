@@ -15,7 +15,7 @@ A hardened runtime environment for untrusted or black-box agents.
 
 ### Methods
 
-#### AgentCage.__init__
+#### AgentCage.**init**
 
 ```python
 __init__(self: Any, cage_id: str, base_dir: Path)

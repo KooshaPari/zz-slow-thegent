@@ -15,7 +15,7 @@ Manages document processing queue.
 
 ### Methods
 
-#### QueueManager.__init__
+#### QueueManager.**init**
 
 ```python
 __init__(self: Any, queue_file: Path, state_file: Any)

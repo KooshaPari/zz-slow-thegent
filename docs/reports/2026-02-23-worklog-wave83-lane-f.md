@@ -4,15 +4,15 @@ Scope: `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` sequential items `#144..#150
 
 ## 1) Covered items table (issue id/title/status)
 
-| Seq | QOL idx | Issue ID | Title | Status |
-|---|---:|---|---|---|
-| #144 | #65 | `UNKNOWN` | Not present in current `WORK_STREAM_CLIPROXY_ALL.md` snapshot | `blocked-source-missing` |
-| #145 | #66 | `UNKNOWN` | Not present in current `WORK_STREAM_CLIPROXY_ALL.md` snapshot | `blocked-source-missing` |
-| #146 | #67 | `UNKNOWN` | Not present in current `WORK_STREAM_CLIPROXY_ALL.md` snapshot | `blocked-source-missing` |
-| #147 | #68 | `UNKNOWN` | Not present in current `WORK_STREAM_CLIPROXY_ALL.md` snapshot | `blocked-source-missing` |
-| #148 | #69 | `UNKNOWN` | Not present in current `WORK_STREAM_CLIPROXY_ALL.md` snapshot | `blocked-source-missing` |
-| #149 | #70 | `UNKNOWN` | Not present in current `WORK_STREAM_CLIPROXY_ALL.md` snapshot | `blocked-source-missing` |
-| #150 | #71 | `UNKNOWN` | Not present in current `WORK_STREAM_CLIPROXY_ALL.md` snapshot | `blocked-source-missing` |
+| Seq  | QOL idx | Issue ID  | Title                                                         | Status                   |
+| ---- | ------: | --------- | ------------------------------------------------------------- | ------------------------ |
+| #144 |     #65 | `UNKNOWN` | Not present in current `WORK_STREAM_CLIPROXY_ALL.md` snapshot | `blocked-source-missing` |
+| #145 |     #66 | `UNKNOWN` | Not present in current `WORK_STREAM_CLIPROXY_ALL.md` snapshot | `blocked-source-missing` |
+| #146 |     #67 | `UNKNOWN` | Not present in current `WORK_STREAM_CLIPROXY_ALL.md` snapshot | `blocked-source-missing` |
+| #147 |     #68 | `UNKNOWN` | Not present in current `WORK_STREAM_CLIPROXY_ALL.md` snapshot | `blocked-source-missing` |
+| #148 |     #69 | `UNKNOWN` | Not present in current `WORK_STREAM_CLIPROXY_ALL.md` snapshot | `blocked-source-missing` |
+| #149 |     #70 | `UNKNOWN` | Not present in current `WORK_STREAM_CLIPROXY_ALL.md` snapshot | `blocked-source-missing` |
+| #150 |     #71 | `UNKNOWN` | Not present in current `WORK_STREAM_CLIPROXY_ALL.md` snapshot | `blocked-source-missing` |
 
 ## 2) thegent impact classification (direct/indirect/external)
 

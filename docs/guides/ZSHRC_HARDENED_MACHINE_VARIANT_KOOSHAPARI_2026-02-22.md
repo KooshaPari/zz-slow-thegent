@@ -1,12 +1,14 @@
 # Hardened `zsh` Variant (Kooshapari Machine)
 
 Targeted for:
+
 - macOS arm64
 - Homebrew at `/opt/homebrew`
 - Plugin layout under `~/.zsh/plugins`
 - Existing stack: `mise`, `fzf-tab`, `zsh-autosuggestions`, `fast-syntax-highlighting`, `starship`/`p10k`
 
 ## 1) `~/.zshrc` (fast boot + safe defaults)
+
 ```zsh
 # thegent hardened machine-specific zshrc
 
@@ -69,6 +71,7 @@ export THGENT_NOTIFY_COOLDOWN_SEC=8
 ```
 
 ## 2) `~/.zshrc.local` (plugins + tools + prompt)
+
 ```zsh
 # machine-specific local customizations
 
@@ -141,11 +144,13 @@ ai-cmd() {
 ```
 
 ## 3) Homebrew install set (machine-aligned)
+
 ```zsh
 brew install fzf mise starship zsh-autosuggestions zsh-syntax-highlighting
 ```
 
 ## 4) Verification
+
 ```zsh
 exec zsh
 timezsh
@@ -153,6 +158,7 @@ zsh -i -c 'echo shell_ok'
 ```
 
 ## 5) Guardrails
+
 - Keep plugin count minimal.
 - Keep AI plugins suggestion-only.
 - Prefer deferred loading over startup-time `eval` for heavy tools.

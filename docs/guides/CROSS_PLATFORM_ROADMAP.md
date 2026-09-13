@@ -19,6 +19,7 @@ This roadmap provides a clear path from research to production implementation.
 **Status:** ✅ Complete
 
 **Deliverables:**
+
 - ✅ Comprehensive research (13 documents, 12,000+ lines)
 - ✅ Architecture decisions documented
 - ✅ Implementation plan created
@@ -37,6 +38,7 @@ This roadmap provides a clear path from research to production implementation.
 ### Week 1: Core Infrastructure
 
 **Tasks:**
+
 - [ ] Create base provider abstract class (`DesktopAutomationProvider`)
 - [ ] Implement `UIElement`, `AutomationAction`, `AutomationResult` dataclasses
 - [ ] Create provider factory (`get_provider()`)
@@ -44,11 +46,13 @@ This roadmap provides a clear path from research to production implementation.
 - [ ] Set up test infrastructure
 
 **Deliverables:**
+
 - Base provider class
 - Configuration system
 - Test framework
 
 **Success Criteria:**
+
 - Base classes compile and pass type checking
 - Configuration loads from environment variables
 - Unit tests pass
@@ -56,6 +60,7 @@ This roadmap provides a clear path from research to production implementation.
 ### Week 2: Platform Implementations
 
 **Tasks:**
+
 - [ ] Implement macOS provider (`macOSAutomationProvider`)
 - [ ] Implement Windows provider (`WindowsAutomationProvider`)
 - [ ] Implement Linux provider (`LinuxAutomationProvider`)
@@ -63,11 +68,13 @@ This roadmap provides a clear path from research to production implementation.
 - [ ] Add platform-specific tests
 
 **Deliverables:**
+
 - Three platform providers
 - Permission checking
 - Platform tests
 
 **Success Criteria:**
+
 - Each provider can find elements
 - Each provider can click elements
 - Each provider can take screenshots
@@ -82,6 +89,7 @@ This roadmap provides a clear path from research to production implementation.
 ### Week 3: Coordinator Implementation
 
 **Tasks:**
+
 - [ ] Create `DesktopAutomationCoordinator` class
 - [ ] Integrate with `EditLeaseManager`
 - [ ] Implement lock acquisition/release
@@ -89,11 +97,13 @@ This roadmap provides a clear path from research to production implementation.
 - [ ] Add coordinator tests
 
 **Deliverables:**
+
 - Coordinator class
 - Lock management
 - Coordination tests
 
 **Success Criteria:**
+
 - Coordinator prevents conflicts
 - Locks expire correctly
 - Multiple agents can coordinate
@@ -101,17 +111,20 @@ This roadmap provides a clear path from research to production implementation.
 ### Week 4: User Activity Detection
 
 **Tasks:**
+
 - [ ] Implement `UserActivityDetector` for each platform
 - [ ] Add idle detection
 - [ ] Integrate with coordinator
 - [ ] Add user activity tests
 
 **Deliverables:**
+
 - User activity detection
 - Idle detection
 - Integration tests
 
 **Success Criteria:**
+
 - User activity detected correctly
 - Automation waits for idle
 - No automation during user activity
@@ -125,6 +138,7 @@ This roadmap provides a clear path from research to production implementation.
 ### Week 5: MCP Tool Registration
 
 **Tasks:**
+
 - [ ] Register `desktop_automation_click` tool
 - [ ] Register `desktop_automation_type` tool
 - [ ] Register `desktop_automation_find` tool
@@ -133,11 +147,13 @@ This roadmap provides a clear path from research to production implementation.
 - [ ] Add MCP tool tests
 
 **Deliverables:**
+
 - 5 MCP tools registered
 - Tool handlers implemented
 - MCP tests
 
 **Success Criteria:**
+
 - All tools accessible via MCP
 - Tools return correct results
 - Error handling works
@@ -145,6 +161,7 @@ This roadmap provides a clear path from research to production implementation.
 ### Week 6: MCP Tool Polish
 
 **Tasks:**
+
 - [ ] Add tool documentation
 - [ ] Add input validation
 - [ ] Add error handling
@@ -153,11 +170,13 @@ This roadmap provides a clear path from research to production implementation.
 - [ ] Add cost tracking
 
 **Deliverables:**
+
 - Polished MCP tools
 - Observability integration
 - Rate limiting
 
 **Success Criteria:**
+
 - Tools are production-ready
 - Observability works
 - Rate limiting prevents abuse
@@ -171,6 +190,7 @@ This roadmap provides a clear path from research to production implementation.
 ### Week 7: Observability & Monitoring
 
 **Tasks:**
+
 - [ ] Add OpenTelemetry instrumentation
 - [ ] Add Prometheus metrics
 - [ ] Add structured logging
@@ -178,11 +198,13 @@ This roadmap provides a clear path from research to production implementation.
 - [ ] Add alerting rules
 
 **Deliverables:**
+
 - OTel instrumentation
 - Metrics and dashboards
 - Alerting
 
 **Success Criteria:**
+
 - All actions traced
 - Metrics collected
 - Dashboards show data
@@ -191,6 +213,7 @@ This roadmap provides a clear path from research to production implementation.
 ### Week 8: Security & Performance
 
 **Tasks:**
+
 - [ ] Add input validation
 - [ ] Add app verification
 - [ ] Add screenshot security (redaction, encryption)
@@ -198,11 +221,13 @@ This roadmap provides a clear path from research to production implementation.
 - [ ] Add performance tests
 
 **Deliverables:**
+
 - Security controls
 - Performance optimizations
 - Performance tests
 
 **Success Criteria:**
+
 - Security audit passes
 - Performance meets SLAs
 - All tests pass
@@ -216,6 +241,7 @@ This roadmap provides a clear path from research to production implementation.
 ### Week 9: Comprehensive Testing
 
 **Tasks:**
+
 - [ ] Unit tests (all providers, coordinator)
 - [ ] Integration tests (multi-agent scenarios)
 - [ ] E2E tests (complete workflows)
@@ -224,11 +250,13 @@ This roadmap provides a clear path from research to production implementation.
 - [ ] Performance tests
 
 **Deliverables:**
+
 - Comprehensive test suite
 - Test coverage report
 - Performance benchmarks
 
 **Success Criteria:**
+
 - Test coverage > 80%
 - All tests pass
 - Performance meets targets
@@ -236,6 +264,7 @@ This roadmap provides a clear path from research to production implementation.
 ### Week 10: Cross-Platform Validation
 
 **Tasks:**
+
 - [ ] Test on macOS (all features)
 - [ ] Test on Windows (all features)
 - [ ] Test on Linux (all features)
@@ -243,11 +272,13 @@ This roadmap provides a clear path from research to production implementation.
 - [ ] Document platform differences
 
 **Deliverables:**
+
 - Cross-platform validation
 - Platform-specific documentation
 - Known issues list
 
 **Success Criteria:**
+
 - All platforms work correctly
 - Platform differences documented
 - No critical bugs
@@ -261,6 +292,7 @@ This roadmap provides a clear path from research to production implementation.
 ### Week 11: Documentation
 
 **Tasks:**
+
 - [ ] Update API documentation
 - [ ] Create user guides
 - [ ] Create troubleshooting guides
@@ -268,11 +300,13 @@ This roadmap provides a clear path from research to production implementation.
 - [ ] Create video tutorials
 
 **Deliverables:**
+
 - Complete documentation
 - User guides
 - Video tutorials
 
 **Success Criteria:**
+
 - Documentation complete
 - Users can follow guides
 - All examples work
@@ -280,6 +314,7 @@ This roadmap provides a clear path from research to production implementation.
 ### Week 12: Gradual Rollout
 
 **Tasks:**
+
 - [ ] Enable feature flag
 - [ ] Rollout to internal users
 - [ ] Collect feedback
@@ -287,11 +322,13 @@ This roadmap provides a clear path from research to production implementation.
 - [ ] Rollout to all users
 
 **Deliverables:**
+
 - Feature flag enabled
 - Rollout complete
 - Feedback incorporated
 
 **Success Criteria:**
+
 - Feature flag works
 - Users can use feature
 - No critical issues
@@ -321,6 +358,7 @@ This roadmap provides a clear path from research to production implementation.
 ### Risk 1: Platform-Specific Issues
 
 **Mitigation:**
+
 - Test on all platforms early
 - Document platform differences
 - Provide fallbacks
@@ -328,6 +366,7 @@ This roadmap provides a clear path from research to production implementation.
 ### Risk 2: Permission Issues
 
 **Mitigation:**
+
 - Clear permission guides
 - Automatic permission checking
 - Graceful degradation
@@ -335,6 +374,7 @@ This roadmap provides a clear path from research to production implementation.
 ### Risk 3: Performance Issues
 
 **Mitigation:**
+
 - Performance testing from day 1
 - Caching and optimization
 - Performance budgets
@@ -342,6 +382,7 @@ This roadmap provides a clear path from research to production implementation.
 ### Risk 4: Security Issues
 
 **Mitigation:**
+
 - Security review before rollout
 - Input validation
 - App verification
@@ -368,16 +409,16 @@ This roadmap provides a clear path from research to production implementation.
 
 ## Timeline Summary
 
-| Phase | Duration | Key Deliverables |
-|-------|----------|-------------------|
-| **Phase 0** | Complete | Research & planning ✅ |
-| **Phase 1** | Weeks 1-2 | Core providers |
-| **Phase 2** | Weeks 3-4 | Coordination |
-| **Phase 3** | Weeks 5-6 | MCP integration |
-| **Phase 4** | Weeks 7-8 | Production features |
-| **Phase 5** | Weeks 9-10 | Testing & validation |
-| **Phase 6** | Weeks 11-12 | Documentation & rollout |
-| **Total** | **12 weeks** | **Production-ready system** |
+| Phase       | Duration     | Key Deliverables            |
+| ----------- | ------------ | --------------------------- |
+| **Phase 0** | Complete     | Research & planning ✅      |
+| **Phase 1** | Weeks 1-2    | Core providers              |
+| **Phase 2** | Weeks 3-4    | Coordination                |
+| **Phase 3** | Weeks 5-6    | MCP integration             |
+| **Phase 4** | Weeks 7-8    | Production features         |
+| **Phase 5** | Weeks 9-10   | Testing & validation        |
+| **Phase 6** | Weeks 11-12  | Documentation & rollout     |
+| **Total**   | **12 weeks** | **Production-ready system** |
 
 ---
 
@@ -392,7 +433,6 @@ This roadmap provides a clear path from research to production implementation.
 
 **Status:** Roadmap complete. Ready for execution.
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -401,15 +441,18 @@ This roadmap provides a clear path from research to production implementation.
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

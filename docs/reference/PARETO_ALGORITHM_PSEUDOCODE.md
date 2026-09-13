@@ -3,6 +3,7 @@
 ## Overview
 
 This document provides:
+
 1. **High-level pseudocode** for Pareto frontier calculation
 2. **Low-level implementation** ready for Python/TypeScript/Go
 3. **Test cases** to verify correctness
@@ -387,55 +388,58 @@ def test_transitivity_not_assumed():
 ```typescript
 // pareto_frontier.ts
 interface Model {
-    name: string;
-    qualityPct: number;     // 0-100
-    speedScore: number;     // 0-100
-    costPerMTokens: number; // USD
+  name: string;
+  qualityPct: number; // 0-100
+  speedScore: number; // 0-100
+  costPerMTokens: number; // USD
 }
 
 interface ParetoResult {
-    model: Model;
-    isOnFrontier: boolean;
-    dominatedBy: string[];
-    dominates: string[];
+  model: Model;
+  isOnFrontier: boolean;
+  dominatedBy: string[];
+  dominates: string[];
 }
 
 function dominates(modelA: Model, modelB: Model): boolean {
-    if (modelA === modelB) return false;
+  if (modelA === modelB) return false;
 
-    const qualityOk = modelA.qualityPct >= modelB.qualityPct;
-    const speedOk = modelA.speedScore >= modelB.speedScore;
-    const costOk = modelA.costPerMTokens <= modelB.costPerMTokens;
+  const qualityOk = modelA.qualityPct >= modelB.qualityPct;
+  const speedOk = modelA.speedScore >= modelB.speedScore;
+  const costOk = modelA.costPerMTokens <= modelB.costPerMTokens;
 
-    const hasImprovement =
-        modelA.qualityPct > modelB.qualityPct ||
-        modelA.speedScore > modelB.speedScore ||
-        modelA.costPerMTokens < modelB.costPerMTokens;
+  const hasImprovement =
+    modelA.qualityPct > modelB.qualityPct ||
+    modelA.speedScore > modelB.speedScore ||
+    modelA.costPerMTokens < modelB.costPerMTokens;
 
-    return qualityOk && speedOk && costOk && hasImprovement;
+  return qualityOk && speedOk && costOk && hasImprovement;
 }
 
 function computeParetoFrontier(models: Model[]): Model[] {
-    const frontier = models.filter(candidate =>
-        !models.some(other => other !== candidate && dominates(other, candidate))
-    );
+  const frontier = models.filter(
+    (candidate) =>
+      !models.some(
+        (other) => other !== candidate && dominates(other, candidate),
+      ),
+  );
 
-    return frontier.sort((a, b) => a.costPerMTokens - b.costPerMTokens);
+  return frontier.sort((a, b) => a.costPerMTokens - b.costPerMTokens);
 }
 
 function analyzeModels(models: Model[]): ParetoResult[] {
-    const frontier = new Set(computeParetoFrontier(models));
+  const frontier = new Set(computeParetoFrontier(models));
 
-    return models.map(model => ({
-        model,
-        isOnFrontier: frontier.has(model),
-        dominatedBy: models
-            .filter(m => m !== model && dominates(m, model))
-            .map(m => m.name),
-        dominates: models
-            .filter(m => m !== model && dominates(model, m))
-            .map(m => m.name),
-    }));
+  return models.map((model) => ({
+    model,
+    isOnFrontier: frontier.has(model),
+    dominatedBy: models
+      .filter((m) => m !== model && dominates(m, model))
+      .map((m) => m.name),
+    dominates: models
+      .filter((m) => m !== model && dominates(model, m))
+      .map((m) => m.name),
+  }));
 }
 ```
 
@@ -446,12 +450,14 @@ function analyzeModels(models: Model[]): ParetoResult[] {
 ### 4.1 Where to Add Code
 
 **File:** `src/thegent/models/optimizer.py` (NEW)
+
 ```python
 # Create new file with pareto_frontier.py implementation
 # Import and expose via __init__.py
 ```
 
 **File:** `src/thegent/governance/cost.py` (UPDATE)
+
 ```python
 # Import pareto frontier module
 from thegent.models.optimizer import compute_pareto_frontier, analyze_models
@@ -465,6 +471,7 @@ class CostGovernor:
 ```
 
 **File:** `src/thegent/models/catalog.py` (UPDATE)
+
 ```python
 # Add frontier metadata to Route/Model objects
 @dataclass
@@ -477,6 +484,7 @@ class Route:
 ### 4.2 CLI Command
 
 **File:** `commands/model-optimize` (NEW)
+
 ```bash
 #!/bin/bash
 # Usage: thegent model-optimize --show-frontier --by-budget 200
@@ -549,7 +557,6 @@ class Route:
 **Complexity:** O(n²) time, O(n) space
 **Test Coverage:** 5 critical test cases defined
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -558,15 +565,18 @@ class Route:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

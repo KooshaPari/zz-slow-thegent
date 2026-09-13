@@ -17,6 +17,7 @@ Simple code analysis CLI tool.
 ## Proposed Changes (Quick Modernization)
 
 ### Phase 1: Foundation (4 hours)
+
 ```toml
 [project]
 name = "bloc"
@@ -28,6 +29,7 @@ dependencies = [
 ```
 
 ### Phase 2: Configuration (3 hours)
+
 ```python
 class BlocSettings(BaseSettings):
     debug: bool = False
@@ -35,6 +37,7 @@ class BlocSettings(BaseSettings):
 ```
 
 ### Phase 3: Quality (3 hours)
+
 - Add ruff, bandit
 - Setup pre-commit
 - Test
@@ -56,4 +59,3 @@ class BlocSettings(BaseSettings):
 - [ ] Modern setup
 - [ ] YAML config
 - [ ] Quality tools passing
-

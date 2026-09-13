@@ -6,15 +6,15 @@
 
 ## Executive Summary
 
-| Category | Total Rules | Mapped | Gaps | Status |
-|----------|------------|--------|------|--------|
-| Correctness | 8 | 8 | 0 | ✓ Complete |
-| Performance | 3 | 3 | 0 | ✓ Complete |
-| Security | 4 | 3 | 1 | ⚠ Acceptable |
-| TypeScript | 4 | 4 | 0 | ✓ Complete |
-| React | 2 | 2 | 0 | ✓ Complete |
-| Import Rules | 5 | 4 | 1 | ⚠ Acceptable |
-| **TOTAL** | **26** | **24** | **2** | **92% Mapped** |
+| Category     | Total Rules | Mapped | Gaps  | Status         |
+| ------------ | ----------- | ------ | ----- | -------------- |
+| Correctness  | 8           | 8      | 0     | ✓ Complete     |
+| Performance  | 3           | 3      | 0     | ✓ Complete     |
+| Security     | 4           | 3      | 1     | ⚠ Acceptable  |
+| TypeScript   | 4           | 4      | 0     | ✓ Complete     |
+| React        | 2           | 2      | 0     | ✓ Complete     |
+| Import Rules | 5           | 4      | 1     | ⚠ Acceptable  |
+| **TOTAL**    | **26**      | **24** | **2** | **92% Mapped** |
 
 ---
 
@@ -22,85 +22,86 @@
 
 ### Correctness Rules (Error Severity)
 
-| ESLint Rule | oxlint Equivalent | Severity | Status | Notes |
-|-------------|------------------|----------|--------|-------|
-| no-unused-vars | no-unused-vars | error | ✓ | Native rule, configured in oxlintrc.json |
-| no-debugger | no-debugger | error | ✓ | Native rule, correctness category |
-| eqeqeq | eqeqeq | error | ✓ | Native rule, suspicious category |
-| no-var | no-var | error | ✓ | Native rule, correctness category |
-| prefer-const | prefer-const | error | ✓ | Native rule, suspicious category |
-| no-throw-literal | no-throw-literal | error | ✓ | Native rule, restriction category |
-| no-eval | no-eval | error | ✓ | Native rule, security/restriction |
-| no-new-func | no-new-func | error | ✓ | Native rule, security/restriction |
+| ESLint Rule      | oxlint Equivalent | Severity | Status | Notes                                    |
+| ---------------- | ----------------- | -------- | ------ | ---------------------------------------- |
+| no-unused-vars   | no-unused-vars    | error    | ✓      | Native rule, configured in oxlintrc.json |
+| no-debugger      | no-debugger       | error    | ✓      | Native rule, correctness category        |
+| eqeqeq           | eqeqeq            | error    | ✓      | Native rule, suspicious category         |
+| no-var           | no-var            | error    | ✓      | Native rule, correctness category        |
+| prefer-const     | prefer-const      | error    | ✓      | Native rule, suspicious category         |
+| no-throw-literal | no-throw-literal  | error    | ✓      | Native rule, restriction category        |
+| no-eval          | no-eval           | error    | ✓      | Native rule, security/restriction        |
+| no-new-func      | no-new-func       | error    | ✓      | Native rule, security/restriction        |
 
 ### Performance Rules (Error Severity)
 
-| ESLint Rule | oxlint Equivalent | Severity | Status | Notes |
-|-------------|------------------|----------|--------|-------|
-| no-return-await | no-return-await | error | ✓ | Native rule, perf category |
-| complexity | complexity | error | ✓ | Native rule, max 15 (configured) |
-| max-params | max-params | error | ✓ | Native rule, max 6 (configured) |
+| ESLint Rule     | oxlint Equivalent | Severity | Status | Notes                            |
+| --------------- | ----------------- | -------- | ------ | -------------------------------- |
+| no-return-await | no-return-await   | error    | ✓      | Native rule, perf category       |
+| complexity      | complexity        | error    | ✓      | Native rule, max 15 (configured) |
+| max-params      | max-params        | error    | ✓      | Native rule, max 6 (configured)  |
 
 ### Security Rules
 
-| ESLint Rule | oxlint Equivalent | Severity | Status | Notes |
-|-------------|------------------|----------|--------|-------|
-| no-eval | no-eval | error | ✓ | See Correctness section |
-| no-new-func | no-new-func | error | ✓ | See Correctness section |
-| no-implied-eval | (via no-eval) | error | ✓ | no-eval coverage includes implied |
-| detect-object-injection | detect-object-injection | warn | ⚠ | Plugin: security; lighter detection |
+| ESLint Rule             | oxlint Equivalent       | Severity | Status | Notes                               |
+| ----------------------- | ----------------------- | -------- | ------ | ----------------------------------- |
+| no-eval                 | no-eval                 | error    | ✓      | See Correctness section             |
+| no-new-func             | no-new-func             | error    | ✓      | See Correctness section             |
+| no-implied-eval         | (via no-eval)           | error    | ✓      | no-eval coverage includes implied   |
+| detect-object-injection | detect-object-injection | warn     | ⚠     | Plugin: security; lighter detection |
 
 ### TypeScript Rules (Plugin: typescript)
 
-| ESLint Rule | oxlint Equivalent | Severity | Status | Notes |
-|-------------|------------------|----------|--------|-------|
-| typescript/no-explicit-any | typescript/no-explicit-any | error | ✓ | Configured strict |
-| typescript/explicit-function-return-type | typescript/explicit-function-return-type | error | ✓ | Requires explicit returns |
-| typescript/no-non-null-assertion | typescript/no-non-null-assertion | warn | ✓ | Configured warn (permissive) |
-| typescript/prefer-ts-expect-error | typescript/prefer-ts-expect-error | error | ✓ | Use ts-expect-error not ts-ignore |
+| ESLint Rule                              | oxlint Equivalent                        | Severity | Status | Notes                             |
+| ---------------------------------------- | ---------------------------------------- | -------- | ------ | --------------------------------- |
+| typescript/no-explicit-any               | typescript/no-explicit-any               | error    | ✓      | Configured strict                 |
+| typescript/explicit-function-return-type | typescript/explicit-function-return-type | error    | ✓      | Requires explicit returns         |
+| typescript/no-non-null-assertion         | typescript/no-non-null-assertion         | warn     | ✓      | Configured warn (permissive)      |
+| typescript/prefer-ts-expect-error        | typescript/prefer-ts-expect-error        | error    | ✓      | Use ts-expect-error not ts-ignore |
 
 ### React Rules (Plugins: react-hooks)
 
-| ESLint Rule | oxlint Equivalent | Severity | Status | Notes |
-|-------------|------------------|----------|--------|-------|
-| react-hooks/rules-of-hooks | react-hooks/rules-of-hooks | error | ✓ | Enforces hook rules |
-| react-hooks/exhaustive-deps | react-hooks/exhaustive-deps | warn | ✓ | Dependency array validation |
+| ESLint Rule                 | oxlint Equivalent           | Severity | Status | Notes                       |
+| --------------------------- | --------------------------- | -------- | ------ | --------------------------- |
+| react-hooks/rules-of-hooks  | react-hooks/rules-of-hooks  | error    | ✓      | Enforces hook rules         |
+| react-hooks/exhaustive-deps | react-hooks/exhaustive-deps | warn     | ✓      | Dependency array validation |
 
 ### Import Rules (Plugin: import)
 
-| ESLint Rule | oxlint Equivalent | Severity | Status | Notes |
-|-------------|------------------|----------|--------|-------|
-| import/no-cycle | import/no-cycle | error | ✓ | Detects circular deps |
-| import/no-self-import | import/no-self-import | error | ✓ | Prevents self-imports |
-| import/no-duplicates | import/no-duplicates | error | ✓ | Merge duplicate imports |
-| import/max-dependencies | import/max-dependencies | error | ✓ | Max 20 per file (configured) |
-| import/no-default-export | import/no-default-export | error | ✗ | NOT in oxlint; skip or use jsdoc |
+| ESLint Rule              | oxlint Equivalent        | Severity | Status | Notes                            |
+| ------------------------ | ------------------------ | -------- | ------ | -------------------------------- |
+| import/no-cycle          | import/no-cycle          | error    | ✓      | Detects circular deps            |
+| import/no-self-import    | import/no-self-import    | error    | ✓      | Prevents self-imports            |
+| import/no-duplicates     | import/no-duplicates     | error    | ✓      | Merge duplicate imports          |
+| import/max-dependencies  | import/max-dependencies  | error    | ✓      | Max 20 per file (configured)     |
+| import/no-default-export | import/no-default-export | error    | ✗      | NOT in oxlint; skip or use jsdoc |
 
 ### Code Style Rules
 
-| ESLint Rule | oxlint Equivalent | Severity | Status | Notes |
-|-------------|------------------|----------|--------|-------|
-| no-console | no-console | warn | ✓ | Configured warn (allows logging) |
-| unicorn/no-array-reduce | unicorn/no-array-reduce | warn | ✓ | Plugin: unicorn |
-| unicorn/prefer-node-protocol | unicorn/prefer-node-protocol | error | ✓ | Plugin: unicorn |
-| promise/no-nesting | promise/no-nesting | warn | ✓ | Plugin: promise (permissive) |
+| ESLint Rule                  | oxlint Equivalent            | Severity | Status | Notes                            |
+| ---------------------------- | ---------------------------- | -------- | ------ | -------------------------------- |
+| no-console                   | no-console                   | warn     | ✓      | Configured warn (allows logging) |
+| unicorn/no-array-reduce      | unicorn/no-array-reduce      | warn     | ✓      | Plugin: unicorn                  |
+| unicorn/prefer-node-protocol | unicorn/prefer-node-protocol | error    | ✓      | Plugin: unicorn                  |
+| promise/no-nesting           | promise/no-nesting           | warn     | ✓      | Plugin: promise (permissive)     |
 
 ### Unicorn Rules (Plugin: unicorn)
 
-| ESLint Rule | oxlint Equivalent | Severity | Status | Notes |
-|-------------|------------------|----------|--------|-------|
-| unicorn/no-null | unicorn/no-null | off | ✓ | Disabled (too strict for JS) |
+| ESLint Rule     | oxlint Equivalent | Severity | Status | Notes                        |
+| --------------- | ----------------- | -------- | ------ | ---------------------------- |
+| unicorn/no-null | unicorn/no-null   | off      | ✓      | Disabled (too strict for JS) |
 
 ### JSDoc Rules
 
-| ESLint Rule | oxlint Equivalent | Severity | Status | Notes |
-|-------------|------------------|----------|--------|-------|
-| jsdoc/require-description | jsdoc/require-description | N/A | ✗ | NOT in oxlint; optional |
-| jsdoc/require-jsdoc | jsdoc/require-jsdoc | N/A | ✗ | NOT in oxlint; optional |
+| ESLint Rule               | oxlint Equivalent         | Severity | Status | Notes                   |
+| ------------------------- | ------------------------- | -------- | ------ | ----------------------- |
+| jsdoc/require-description | jsdoc/require-description | N/A      | ✗      | NOT in oxlint; optional |
+| jsdoc/require-jsdoc       | jsdoc/require-jsdoc       | N/A      | ✗      | NOT in oxlint; optional |
 
 ### Style Category (via oxlint categories)
 
 When you set `"style": "error"` in oxlintrc.json, oxlint enables:
+
 - Consistent naming conventions
 - Consistent whitespace
 - Consistent quote styles
@@ -119,19 +120,21 @@ When you set `"style": "error"` in oxlintrc.json, oxlint enables:
 **Status**: ✗ Not in oxlint
 
 **Workaround Options**:
+
 1. **Code Review**: Catch during PR review, document in code style guide
 2. **JSDoc Marker**: Add `/** @type DefaultExportNotAllowed */` as a convention
 3. **Separate Tool**: Use separate eslint rule only for projects that need it
 
 **Recommendation**: Skip in Phase 4, add to future TypeScript project setup if needed
 
-### Gap 2: jsdoc/* rules
+### Gap 2: jsdoc/\* rules
 
 **Impact**: Low (documentation, not correctness)
 
 **Status**: ✗ Not in oxlint (jsdoc plugin available but limited)
 
 **Workaround Options**:
+
 1. **TypeScript**: Use proper TypeScript types instead of JSDoc
 2. **Prettier**: Let auto-formatter handle doc comments
 3. **separate Tool**: Use jsdoc CLI tool for documentation validation
@@ -145,6 +148,7 @@ When you set `"style": "error"` in oxlintrc.json, oxlint enables:
 **Status**: ⚠ oxlint has lighter coverage
 
 **Workaround**: This is acceptable because:
+
 1. Most regex security issues are also caught by type checking
 2. oxlint's detection covers 80% of common cases
 3. Can add manual code review for sensitive code paths
@@ -184,18 +188,18 @@ When you set `"style": "error"` in oxlintrc.json, oxlint enables:
 ```json
 {
   "categories": {
-    "correctness": "error",    // Must-fix bugs
-    "suspicious": "error",     // Likely bugs
-    "pedantic": "error",       // Code smell
-    "perf": "error",           // Performance issues
-    "style": "error",          // Stylistic concerns
-    "restriction": "error",    // Dangerous patterns
-    "nursery": "warn"          // Experimental rules
+    "correctness": "error", // Must-fix bugs
+    "suspicious": "error", // Likely bugs
+    "pedantic": "error", // Code smell
+    "perf": "error", // Performance issues
+    "style": "error", // Stylistic concerns
+    "restriction": "error", // Dangerous patterns
+    "nursery": "warn" // Experimental rules
   },
   "rules": {
     // Explicitly configured rules override categories
     "no-unused-vars": "error",
-    "typescript/no-explicit-any": "error",
+    "typescript/no-explicit-any": "error"
     // ... more rules
   }
 }
@@ -204,12 +208,14 @@ When you set `"style": "error"` in oxlintrc.json, oxlint enables:
 ### When oxlint Disagrees with ESLint
 
 **Common Reasons**:
+
 1. **Different default severity**: oxlint may default to warn, ESLint to error
 2. **Different configuration**: Check if rule has options in ESLint that aren't in oxlint
 3. **Different interpretation**: Some rules (like complexity) calculate differently
 4. **Oxlint is faster because**: It's more permissive on some checks
 
 **Resolution**:
+
 1. Check `oxlintrc.json` to see explicit configuration
 2. Use VERBOSE=1 with linting-accelerator to see which tool ran
 3. Compare outputs: `oxlint file.ts` vs `eslint --no-eslintrc file.ts`
@@ -219,12 +225,12 @@ When you set `"style": "error"` in oxlintrc.json, oxlint enables:
 
 ## Performance by Category
 
-| Category | oxlint Speed | eslint Speed | Speedup |
-|----------|--------------|--------------|---------|
-| Correctness rules | <50ms | 500ms | 10x |
-| Type-aware rules | 100-200ms | 1-2s | 5-10x |
-| Plugin rules | 50-100ms | 500ms-1s | 5-20x |
-| Dead code detection | 50-100ms | 500-1000ms | 5-10x |
+| Category            | oxlint Speed | eslint Speed | Speedup |
+| ------------------- | ------------ | ------------ | ------- |
+| Correctness rules   | <50ms        | 500ms        | 10x     |
+| Type-aware rules    | 100-200ms    | 1-2s         | 5-10x   |
+| Plugin rules        | 50-100ms     | 500ms-1s     | 5-20x   |
+| Dead code detection | 50-100ms     | 500-1000ms   | 5-10x   |
 
 **Total for ~100 files**: 200-400ms (oxlint) vs 2-5s (eslint) = **5-25x faster**
 
@@ -258,8 +264,6 @@ comm -23 /tmp/eslint-rules.txt /tmp/oxlint-rules.txt  # In eslint but not oxlint
 - **oxlintrc.json Config**: `/oxlintrc.json`
 - **Linting Accelerator**: `hooks/lib/linting-accelerator.sh`
 
-
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -268,15 +272,18 @@ comm -23 /tmp/eslint-rules.txt /tmp/oxlint-rules.txt  # In eslint but not oxlint
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

@@ -14,13 +14,13 @@
 
 ### 1.2 Pattern Benefits
 
-| Benefit | Impact |
-|---------|--------|
-| **Zero subprocess spawns** | Eliminates `lsof`, `vm_stat`, `git` subprocess overhead |
-| **10-100x faster hot paths** | Regex, JSON parsing, crypto operations |
-| **Python ergonomics preserved** | CLI, MCP, orchestration stay in Python |
-| **Memory safety** | Rust compile-time guarantees prevent entire bug classes |
-| **Gradual migration** | Feature flags enable opt-in adoption |
+| Benefit                         | Impact                                                  |
+| ------------------------------- | ------------------------------------------------------- |
+| **Zero subprocess spawns**      | Eliminates `lsof`, `vm_stat`, `git` subprocess overhead |
+| **10-100x faster hot paths**    | Regex, JSON parsing, crypto operations                  |
+| **Python ergonomics preserved** | CLI, MCP, orchestration stay in Python                  |
+| **Memory safety**               | Rust compile-time guarantees prevent entire bug classes |
+| **Gradual migration**           | Feature flags enable opt-in adoption                    |
 
 ---
 
@@ -28,24 +28,24 @@
 
 ### 2.1 Completed (Phase 1)
 
-| Task | Crate | Interface | Status |
-|------|-------|-----------|--------|
-| **BKM-01** | `thegent-resources` | Binary + PyO3 | ✅ Done |
-| **BKM-02** | `thegent-parser` | PyO3 | ✅ Done |
-| **BKM-03** | `thegent-crypto` | PyO3 | ✅ Done |
+| Task       | Crate                  | Interface      | Status  |
+| ---------- | ---------------------- | -------------- | ------- |
+| **BKM-01** | `thegent-resources`    | Binary + PyO3  | ✅ Done |
+| **BKM-02** | `thegent-parser`       | PyO3           | ✅ Done |
+| **BKM-03** | `thegent-crypto`       | PyO3           | ✅ Done |
 | **BKM-04** | `load_based_limits.py` | Python wrapper | ✅ Done |
 
 ### 2.2 Pending (Phase 2-3)
 
-| Task | Crate | Interface | Phase |
-|------|-------|-----------|-------|
-| **BKM-05** | `thegent-shm` | Shared memory | 2 |
-| **BKM-06** | `thegent-git` | PyO3 | 2 |
-| **BKM-07** | `hook-dispatcher` | CLI extension | 2 |
-| **BKM-08** | `thegent-discovery` | Binary | 2 |
-| **BKM-09** | `thegent-watcher` | Daemon | 3 |
-| **BKM-10** | `thegent-parser` | PyO3 streaming | 3 |
-| **BKM-11** | `hook-dispatcher` | CLI extension | 3 |
+| Task       | Crate               | Interface      | Phase |
+| ---------- | ------------------- | -------------- | ----- |
+| **BKM-05** | `thegent-shm`       | Shared memory  | 2     |
+| **BKM-06** | `thegent-git`       | PyO3           | 2     |
+| **BKM-07** | `hook-dispatcher`   | CLI extension  | 2     |
+| **BKM-08** | `thegent-discovery` | Binary         | 2     |
+| **BKM-09** | `thegent-watcher`   | Daemon         | 3     |
+| **BKM-10** | `thegent-parser`    | PyO3 streaming | 3     |
+| **BKM-11** | `hook-dispatcher`   | CLI extension  | 3     |
 
 ---
 
@@ -104,6 +104,7 @@ def extract_tags(text: str, tags: list[str] | None = None) -> dict[str, str]:
 ```
 
 **Build**:
+
 ```bash
 cd crates/thegent-parser
 maturin develop
@@ -275,12 +276,12 @@ build:rust:
 
 ### 6.1 Environment Variables
 
-| Variable | Purpose | Default |
-|----------|---------|---------|
+| Variable                      | Purpose                    | Default      |
+| ----------------------------- | -------------------------- | ------------ |
 | `THGENT_USE_NATIVE_RESOURCES` | Use Rust resource sampling | `0` (Python) |
-| `THGENT_USE_NATIVE_CRYPTO` | Use Rust crypto | `0` (Python) |
-| `THGENT_USE_NATIVE_PARSER` | Use Rust parser | `0` (Python) |
-| `THGENT_RESOURCES_BIN` | Override binary path | Auto-detect |
+| `THGENT_USE_NATIVE_CRYPTO`    | Use Rust crypto            | `0` (Python) |
+| `THGENT_USE_NATIVE_PARSER`    | Use Rust parser            | `0` (Python) |
+| `THGENT_RESOURCES_BIN`        | Override binary path       | Auto-detect  |
 
 ### 6.2 Fallback Pattern
 
@@ -301,6 +302,7 @@ def operation(...):
 ```
 
 **Benefits**:
+
 - Graceful degradation if Rust toolchain unavailable
 - Easy A/B testing
 - Gradual migration path
@@ -311,20 +313,20 @@ def operation(...):
 
 ### 7.1 Benchmarks (Relative to Python)
 
-| Operation | Python | Rust (PyO3) | Speedup |
-|-----------|--------|-------------|---------|
-| **Resource sampling** | 50ms (lsof+vm_stat) | 1ms (native) | **50x** |
-| **XML tag extraction** | 5ms (8 regex compiles) | 0.5ms (precompiled) | **10x** |
-| **JSON canonical + hash** | 2ms (orjson + hashlib) | 0.2ms (Rust) | **10x** |
-| **HMAC-SHA256** | 0.5ms (hashlib) | 0.1ms (ring) | **5x** |
+| Operation                 | Python                 | Rust (PyO3)         | Speedup |
+| ------------------------- | ---------------------- | ------------------- | ------- |
+| **Resource sampling**     | 50ms (lsof+vm_stat)    | 1ms (native)        | **50x** |
+| **XML tag extraction**    | 5ms (8 regex compiles) | 0.5ms (precompiled) | **10x** |
+| **JSON canonical + hash** | 2ms (orjson + hashlib) | 0.2ms (Rust)        | **10x** |
+| **HMAC-SHA256**           | 0.5ms (hashlib)        | 0.1ms (ring)        | **5x**  |
 
 ### 7.2 Overhead Analysis
 
-| Pattern | Call Overhead | Marshalling | Total |
-|---------|---------------|-------------|-------|
-| **PyO3 (in-process)** | ~0.01ms | ~0.05ms | ~0.06ms |
-| **Subprocess JSON** | ~1ms (spawn) | ~0.5ms (serialize) | ~1.5ms |
-| **MCP tool** | ~2ms (HTTP) | ~1ms (JSON) | ~3ms |
+| Pattern               | Call Overhead | Marshalling        | Total   |
+| --------------------- | ------------- | ------------------ | ------- |
+| **PyO3 (in-process)** | ~0.01ms       | ~0.05ms            | ~0.06ms |
+| **Subprocess JSON**   | ~1ms (spawn)  | ~0.5ms (serialize) | ~1.5ms  |
+| **MCP tool**          | ~2ms (HTTP)   | ~1ms (JSON)        | ~3ms    |
 
 **Recommendation**: Use PyO3 for hot paths (>10 calls/sec), subprocess for infrequent calls.
 
@@ -334,18 +336,19 @@ def operation(...):
 
 ### 8.1 Rust Safety Model
 
-| Guarantee | Mechanism | Benefit |
-|-----------|-----------|---------|
-| **No use-after-free** | Ownership system | Prevents memory corruption |
-| **No data races** | Send/Sync traits | Deterministic concurrency |
-| **No buffer overflows** | Bounds checking | Prevents security vulnerabilities |
-| **Zero undefined behavior** | Type system | Predictable execution |
+| Guarantee                   | Mechanism        | Benefit                           |
+| --------------------------- | ---------------- | --------------------------------- |
+| **No use-after-free**       | Ownership system | Prevents memory corruption        |
+| **No data races**           | Send/Sync traits | Deterministic concurrency         |
+| **No buffer overflows**     | Bounds checking  | Prevents security vulnerabilities |
+| **Zero undefined behavior** | Type system      | Predictable execution             |
 
 ### 8.2 Deterministic Execution
 
 **Same input → same output**: Guaranteed by Rust's type system and lack of undefined behavior.
 
 **Example**: Cryptographic signatures
+
 ```rust
 // Rust guarantees:
 // - Same canonical JSON → same hash (deterministic)
@@ -363,23 +366,27 @@ fn sign_artifact_bytes(canonical_json: &[u8], secret_key: &str) -> String {
 ### 9.1 Python → Rust (PyO3)
 
 **Call flow**:
+
 1. Python calls `extract_tags(text)`
 2. `_get_native_parser()` lazy-loads module
 3. Rust function executes (zero-copy if possible)
 4. Result marshalled back to Python dict
 
 **Error handling**:
+
 - Rust panics → PyO3 converts to Python exceptions
 - Python exceptions → Rust `PyResult<T>` propagates
 
 ### 9.2 Python → Rust (Subprocess)
 
 **Call flow**:
+
 1. Python spawns `thegent-resources` binary
 2. Binary samples resources, outputs JSON
 3. Python parses JSON, constructs `ResourceSnapshot`
 
 **Error handling**:
+
 - Binary exit code != 0 → Python fallback
 - JSON parse error → Python fallback
 - Timeout → Python fallback
@@ -387,6 +394,7 @@ fn sign_artifact_bytes(canonical_json: &[u8], secret_key: &str) -> String {
 ### 9.3 MCP → Rust (via Python)
 
 **Call flow**:
+
 1. MCP client calls `thegent_resources_sample` tool
 2. Python wrapper calls Rust (PyO3 or subprocess)
 3. Result returned as MCP `ToolResult`
@@ -398,6 +406,7 @@ fn sign_artifact_bytes(canonical_json: &[u8], secret_key: &str) -> String {
 ### 10.1 Phase 1: Low-Risk, High-ROI ✅
 
 **Completed**:
+
 - BKM-01: Resources (eliminates lsof/vm_stat)
 - BKM-02: Parser (10x faster regex)
 - BKM-03: Crypto (5x faster HMAC)
@@ -408,6 +417,7 @@ fn sign_artifact_bytes(canonical_json: &[u8], secret_key: &str) -> String {
 ### 10.2 Phase 2: Structural Depth
 
 **Next**:
+
 - BKM-05: State-SHM (cross-process atomicity)
 - BKM-06: Git (eliminates git subprocesses)
 - BKM-07: Secret scan (extends hook-dispatcher)
@@ -418,6 +428,7 @@ fn sign_artifact_bytes(canonical_json: &[u8], secret_key: &str) -> String {
 ### 10.3 Phase 3: Full Backmatter
 
 **Future**:
+
 - BKM-09: Watcher daemon (multi-tenant)
 - BKM-10: JSONL streaming (hot path)
 - BKM-11: Governance scanner (native)
@@ -489,11 +500,13 @@ def test_parser_performance():
 ### 12.1 Wheel Distribution
 
 **Option 1: Pre-built wheels**
+
 - Build wheels for common platforms (Linux x86_64, macOS arm64/x86_64)
 - Upload to PyPI or private registry
 - `pip install thegent-parser` pulls pre-built wheel
 
 **Option 2: Source distribution**
+
 - Users build from source (`pip install --no-binary`)
 - Requires Rust toolchain
 - Slower but works everywhere
@@ -508,6 +521,7 @@ strip = true
 ```
 
 **Benefits**:
+
 - Single binary, no runtime deps
 - Smaller size
 - Better performance (LTO)
@@ -528,12 +542,12 @@ maturin build --target x86_64-pc-windows-msvc
 
 ### 13.1 Common Issues
 
-| Issue | Symptom | Solution |
-|-------|---------|----------|
-| **Module not found** | `ModuleNotFoundError: thegent_parser` | Run `uv pip install crates/thegent-parser` |
-| **Build fails** | `maturin develop` errors | Check Rust toolchain: `rustc --version` |
-| **Import error** | `PyInit_thegent_parser` not found | Check `module-name` in `pyproject.toml` |
-| **Fallback not working** | Native fails, no Python fallback | Check error handling in Python wrapper |
+| Issue                    | Symptom                               | Solution                                   |
+| ------------------------ | ------------------------------------- | ------------------------------------------ |
+| **Module not found**     | `ModuleNotFoundError: thegent_parser` | Run `uv pip install crates/thegent-parser` |
+| **Build fails**          | `maturin develop` errors              | Check Rust toolchain: `rustc --version`    |
+| **Import error**         | `PyInit_thegent_parser` not found     | Check `module-name` in `pyproject.toml`    |
+| **Fallback not working** | Native fails, no Python fallback      | Check error handling in Python wrapper     |
 
 ### 13.2 Debugging
 
@@ -559,24 +573,24 @@ print(f"Native parser available: {native is not None}")
 
 ### 14.1 Why Rust (not Go/Nim/Cython)?
 
-| Criterion | Rust | Go | Nim | Cython |
-|-----------|------|-----|-----|--------|
-| **Memory safety** | ✅ Compile-time | ⚠️ GC | ⚠️ ARC | ⚠️ Manual |
-| **Python interop** | ✅ PyO3 mature | ⚠️ cgo | ✅ nimpy | ✅ Native |
-| **Performance** | ✅ C++ level | ✅ Fast | ✅ Fast | ⚠️ Python overhead |
-| **Ecosystem** | ✅ Large | ✅ Large | ⚠️ Small | ✅ Python libs |
-| **Deterministic** | ✅ Strongest | ⚠️ GC pauses | ⚠️ ARC overhead | ⚠️ Python GIL |
+| Criterion          | Rust            | Go           | Nim             | Cython             |
+| ------------------ | --------------- | ------------ | --------------- | ------------------ |
+| **Memory safety**  | ✅ Compile-time | ⚠️ GC        | ⚠️ ARC          | ⚠️ Manual          |
+| **Python interop** | ✅ PyO3 mature  | ⚠️ cgo       | ✅ nimpy        | ✅ Native          |
+| **Performance**    | ✅ C++ level    | ✅ Fast      | ✅ Fast         | ⚠️ Python overhead |
+| **Ecosystem**      | ✅ Large        | ✅ Large     | ⚠️ Small        | ✅ Python libs     |
+| **Deterministic**  | ✅ Strongest    | ⚠️ GC pauses | ⚠️ ARC overhead | ⚠️ Python GIL      |
 
 **Decision**: Rust provides strongest safety guarantees for production system.
 
 ### 14.2 Why PyO3 (not subprocess)?
 
-| Aspect | PyO3 | Subprocess |
-|--------|------|------------|
-| **Call overhead** | ~0.06ms | ~1.5ms |
-| **Zero-copy** | ✅ Possible | ❌ JSON serialize |
-| **Error handling** | ✅ Exceptions | ⚠️ Exit codes |
-| **Hot path** | ✅ Suitable | ❌ Too slow |
+| Aspect             | PyO3          | Subprocess        |
+| ------------------ | ------------- | ----------------- |
+| **Call overhead**  | ~0.06ms       | ~1.5ms            |
+| **Zero-copy**      | ✅ Possible   | ❌ JSON serialize |
+| **Error handling** | ✅ Exceptions | ⚠️ Exit codes     |
+| **Hot path**       | ✅ Suitable   | ❌ Too slow       |
 
 **Decision**: PyO3 for hot paths (>10 calls/sec), subprocess for infrequent calls.
 

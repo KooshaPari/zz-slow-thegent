@@ -45,16 +45,19 @@ thegent install --target user
 ### 1. Command Aliasing Protection
 
 **Problem**: Commands like `ls` get aliased to `lsd --tree` or similar, causing:
+
 - Recursive tree output when single-level is expected
 - Unwanted directories (node_modules, etc.) in output
 - Performance issues
 
 **Solution**:
+
 - Detects problematic aliases (containing `--tree`, `-R`, `recursive`)
 - Removes or overrides them
 - Provides safe wrapper that ensures single-level output by default
 
 **Example**:
+
 ```zsh
 # Before safeguard: ls shows tree
 $ ls
@@ -71,17 +74,20 @@ src/  file1.py  file2.py
 ### 2. Fork Explosion Prevention
 
 **Problem**: Scripts spawn too many processes, causing:
+
 - `fork: Resource temporarily unavailable` errors
 - System slowdown
 - Process limit exhaustion
 
 **Solution**:
+
 - Sets `ulimit -u 4096` (max processes per user)
 - Sets `ulimit -n 1024` (max open files)
 - Sets `ulimit -v 4194304` (4GB virtual memory)
 - Background monitor warns if process count > 3000
 
 **Configuration**:
+
 ```zsh
 # Limits are set automatically, but can be adjusted:
 ulimit -u 8192  # Increase if needed
@@ -90,16 +96,19 @@ ulimit -u 8192  # Increase if needed
 ### 3. Timeout Safeguards
 
 **Problem**: Commands hang indefinitely, especially:
+
 - `find -exec` commands
 - Network operations
 - Long-running scripts
 
 **Solution**:
+
 - Wraps `find -exec` with 30s timeout
 - Uses `gtimeout` on macOS, `timeout` on Linux
 - Prevents infinite hangs
 
 **Example**:
+
 ```zsh
 # find -exec automatically gets 30s timeout
 find . -name "*.py" -exec python {} \;
@@ -109,16 +118,19 @@ find . -name "*.py" -exec python {} \;
 ### 4. Eval Security
 
 **Problem**: `eval` executing file paths accidentally:
+
 - `eval $(find ...)` executes file paths as commands
 - `eval $(ls)` executes filenames
 - Security risk
 
 **Solution**:
+
 - Provides `_thegent_safe_eval()` helper function
 - Documents safe eval patterns
 - Detects file paths in eval arguments
 
 **Safe Pattern**:
+
 ```zsh
 # ✅ Safe: Variable assignment
 eval "$(command that outputs VAR=value)"
@@ -135,11 +147,13 @@ done
 ### 5. Resource Limits
 
 **Problem**: Resource exhaustion from:
+
 - Too many file descriptors
 - Memory leaks
 - Process accumulation
 
 **Solution**:
+
 - Sets reasonable defaults via `ulimit`
 - Monitors resource usage
 - Provides cleanup helpers
@@ -149,6 +163,7 @@ done
 thegent's shell environment works seamlessly with nix:
 
 1. **`.zshenv`** checks for nix and loads it first:
+
    ```zsh
    if has nix_direnv || has nix; then
      use flake
@@ -156,6 +171,7 @@ thegent's shell environment works seamlessly with nix:
    ```
 
 2. **PATH ordering**: thegent tools come after nix tools:
+
    ```zsh
    path=(
      "$HOME/.local/bin"  # thegent tools
@@ -239,12 +255,14 @@ ulimit -n 2048
 If you have existing shell configs:
 
 1. **Backup existing configs**:
+
    ```bash
    cp ~/.zshrc ~/.zshrc.backup
    cp ~/.zshenv ~/.zshenv.backup
    ```
 
 2. **Install thegent shell config**:
+
    ```bash
    thegent install --target all --mode smart
    ```
@@ -263,14 +281,12 @@ If you have existing shell configs:
 - [ ] Shell config versioning
 - [ ] Automatic cleanup of stale processes
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -280,15 +296,18 @@ If you have existing shell configs:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices
@@ -299,13 +318,13 @@ If you have existing shell configs:
 
 ### 10.1 Common Issues
 
-| Issue | Symptom | Solution |
-|-------|---------|----------|
-| PATH corruption | "command not found" | Check .zshenv sourcing |
-| Fork exhaustion | "cannot fork" | Restart terminal, check processes |
-| Alias conflicts | Unexpected behavior | Check `alias` output |
-| Slow startup | Long .zshrc load | Profile with `timezsh` |
-| Environment not set | Missing variables | Check .zshenv content |
+| Issue               | Symptom             | Solution                          |
+| ------------------- | ------------------- | --------------------------------- |
+| PATH corruption     | "command not found" | Check .zshenv sourcing            |
+| Fork exhaustion     | "cannot fork"       | Restart terminal, check processes |
+| Alias conflicts     | Unexpected behavior | Check `alias` output              |
+| Slow startup        | Long .zshrc load    | Profile with `timezsh`            |
+| Environment not set | Missing variables   | Check .zshenv content             |
 
 ### 10.2 Debug Commands
 

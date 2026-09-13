@@ -24,6 +24,7 @@ The Agent Hierarchy Manager (Phase 1) has been successfully implemented and is o
 - **Storage**: JSON-based persistence
 
 **Key Methods:**
+
 - `register_agent()` - Register agents with parent relationships
 - `create_team()` - Create team structures
 - `get_hierarchy_path()` - Get path from root to agent

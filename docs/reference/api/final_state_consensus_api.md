@@ -12,7 +12,7 @@ Final state consensus protocol for distributed systems.
 
 ### Methods
 
-#### FinalStateConsensusProtocol.__init__
+#### FinalStateConsensusProtocol.**init**
 
 ```python
 __init__(self: Any)

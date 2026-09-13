@@ -5,7 +5,8 @@
 CLIProxy adapter: exposes /v1/responses (HTTP + WebSocket) for Codex compatibility.
 
 cliproxyapi++ (kooshapari fork) may not implement /v1/responses. This adapter:
-- Proxies all /v1/* to the backend
+
+- Proxies all /v1/\* to the backend
 - For POST /v1/responses: tries backend first; on 404, translates to /v1/chat/completions
 - For WebSocket /v1/responses: bridges WS to HTTP streaming (SSE)
 

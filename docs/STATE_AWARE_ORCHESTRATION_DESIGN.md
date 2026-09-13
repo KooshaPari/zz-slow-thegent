@@ -14,13 +14,13 @@ Enable multi-step workflows with explicit state persistence, interruption/resume
 
 ## 2. Current State
 
-| Component | Location | Purpose |
-|-----------|----------|---------|
-| **RunRegistry** | `execution.py` | Persists run start/finish/feedback to `run_registry.jsonl`; hash chaining for audit |
-| **CheckpointRegistry** | `execution.py` | Persists DAG checkpoints (reason, dag_content, owner) to `checkpoint_registry.jsonl` |
-| **session_dir** | `.thegent/sessions` | Root for run logs, registry, checkpoints |
-| **dag checkpoint** | CLI | `thegent dag checkpoint`, `thegent dag rollback`, `thegent dag checkpoints` |
-| **Auto-checkpoint** | CLI | On DAG status change (terminal task), creates checkpoint |
+| Component              | Location            | Purpose                                                                              |
+| ---------------------- | ------------------- | ------------------------------------------------------------------------------------ |
+| **RunRegistry**        | `execution.py`      | Persists run start/finish/feedback to `run_registry.jsonl`; hash chaining for audit  |
+| **CheckpointRegistry** | `execution.py`      | Persists DAG checkpoints (reason, dag_content, owner) to `checkpoint_registry.jsonl` |
+| **session_dir**        | `.thegent/sessions` | Root for run logs, registry, checkpoints                                             |
+| **dag checkpoint**     | CLI                 | `thegent dag checkpoint`, `thegent dag rollback`, `thegent dag checkpoints`          |
+| **Auto-checkpoint**    | CLI                 | On DAG status change (terminal task), creates checkpoint                             |
 
 **Gap:** Run-level pause/resume, continuity packets, and explicit interruption semantics are not implemented.
 

@@ -18,6 +18,7 @@
 ## Welcome Contributors
 
 We appreciate contributions to Ante documentation! Whether you're:
+
 - **Fixing typos and clarifications**: Help improve clarity
 - **Adding examples**: Help other developers learn
 - **Writing guides**: Share your knowledge
@@ -40,6 +41,7 @@ You can make Ante documentation better for everyone.
 ### Before You Start
 
 **Check if contribution needed**:
+
 1. Search existing documentation for similar content
 2. Review open pull requests/issues
 3. Check the roadmap for planned documentation
@@ -131,12 +133,14 @@ npm run docs:test-examples
 #### Voice Guidelines
 
 **Do**:
+
 - Use active voice: "Open the settings menu" (not "The settings menu should be opened")
 - Use second person: "You can configure this by..." (not "The user can configure")
 - Be direct: "Click the button" (not "It is possible to click the button")
 - Use present tense: "The API returns data" (not "The API will return data")
 
 **Don't**:
+
 - Use first person plural: "We recommend" (unless representing Ante team officially)
 - Use passive voice: "The file must be created" (use "Create the file")
 - Be condescending: Assume reader intelligence
@@ -145,6 +149,7 @@ npm run docs:test-examples
 #### Tone Examples
 
 **API Reference** (Precise, technical):
+
 ```
 ✅ `authenticate(credentials: Credentials): Promise<Token>`
    Authenticates the user and returns an authentication token.
@@ -154,6 +159,7 @@ npm run docs:test-examples
 ```
 
 **How-To Guide** (Practical, encouraging):
+
 ```
 ✅ Set up authentication in three steps:
    1. [Step 1]
@@ -164,8 +170,9 @@ npm run docs:test-examples
 ```
 
 **Conceptual Guide** (Educational, exploratory):
+
 ```
-✅ Authentication is the process of verifying user identity. In Ante, we use JWT tokens 
+✅ Authentication is the process of verifying user identity. In Ante, we use JWT tokens
    because they're stateless and scalable. Here's how they work: [explanation]
 
 ❌ In this section we will discuss the concept of authentication and specifically JWT tokens.
@@ -186,20 +193,20 @@ Create and maintain a glossary of terms. Example:
 
 #### Avoid Ambiguous Terms
 
-| Avoid | Use Instead |
-|---|---|
-| "it" without clear antecedent | Repeat noun or use specific term |
-| "basically", "simply", "just" | Remove - these diminish complexity |
-| "obviously", "clearly" | These assume reader knowledge - explain instead |
-| "can be done" | Be specific: "click X" or "use function Y" |
-| "should" | Use "must" (required) or "consider" (optional) |
+| Avoid                         | Use Instead                                     |
+| ----------------------------- | ----------------------------------------------- |
+| "it" without clear antecedent | Repeat noun or use specific term                |
+| "basically", "simply", "just" | Remove - these diminish complexity              |
+| "obviously", "clearly"        | These assume reader knowledge - explain instead |
+| "can be done"                 | Be specific: "click X" or "use function Y"      |
+| "should"                      | Use "must" (required) or "consider" (optional)  |
 
 #### Explanation of Technical Terms
 
 First use of technical term:
 
 ```
-✅ This uses JSON Web Tokens (JWTs), which are encrypted tokens that contain 
+✅ This uses JSON Web Tokens (JWTs), which are encrypted tokens that contain
    user information. JWTs are stateless, meaning...
 
 ❌ This uses JWTs.
@@ -234,6 +241,7 @@ First use of technical term:
 #### Complexity Management
 
 For complex concepts:
+
 1. Start with simple explanation
 2. Add important caveats
 3. Provide concrete example
@@ -251,7 +259,8 @@ For complex concepts:
 **Example**:
 [Concrete, runnable example]
 
-**Learn more**: 
+**Learn more**:
+
 - [Link to related concept]
 - [Link to detailed reference]
 ```
@@ -272,6 +281,7 @@ Every documentation section should answer:
 ## Section Completeness Checklist
 
 ### Content
+
 - [ ] Opening explains purpose/scope
 - [ ] Prerequisites listed
 - [ ] All major points covered
@@ -281,18 +291,21 @@ Every documentation section should answer:
 - [ ] Related topics linked
 
 ### Accuracy
+
 - [ ] Information matches current behavior
 - [ ] Code examples tested
 - [ ] API signatures correct
 - [ ] Warnings/notes accurate
 
 ### Clarity
+
 - [ ] No ambiguous pronouns
 - [ ] Consistent terminology
 - [ ] Sentences clear and concise
 - [ ] Logical flow/structure
 
 ### Completeness
+
 - [ ] Answers "What/Why/How/When"
 - [ ] Addresses common questions
 - [ ] Sufficient for target audience
@@ -341,6 +354,7 @@ Use sparingly; usually prefer H3 or bullet lists.
 ```
 
 **Guidelines**:
+
 - Only one H1 per document
 - Use sequential header levels (no jumping from H2 to H4)
 - Make headers descriptive (not "Overview", but "Architecture Overview")
@@ -354,6 +368,7 @@ Use for items without order:
 
 ```markdown
 Core features:
+
 - Item 1
 - Item 2
 - Item 3
@@ -365,6 +380,7 @@ Use for sequential steps:
 
 ```markdown
 Steps to configure:
+
 1. Open settings
 2. Navigate to auth
 3. Set token expiration
@@ -375,6 +391,7 @@ Steps to configure:
 
 ```markdown
 Main features:
+
 - Feature 1
   - Subfeature 1.1
   - Subfeature 1.2
@@ -406,16 +423,20 @@ console.log(result);
 \`\`\`
 
 \`\`\`bash
+
 # For shell commands
+
 npm install
 npm run build
 \`\`\`
 
 \`\`\`yaml
+
 # For configuration files
+
 config:
-  auth: enabled
-  timeout: 30
+auth: enabled
+timeout: 30
 \`\`\`
 ```
 
@@ -437,19 +458,21 @@ For showing changes:
 
 ```markdown
 \`\`\`diff
-  function example() {
--   const old = value;
-+   const new = value;
-    return result;
+function example() {
+
+- const old = value;
+
+* const new = value;
+  return result;
   }
-\`\`\`
+  \`\`\`
 ```
 
 ### Emphasis
 
 ```markdown
 **Bold** for emphasis on words
-*Italic* for emphasis on concepts
+_Italic_ for emphasis on concepts
 
 ❌ Don't use bold for every important word
 ```
@@ -481,21 +504,26 @@ For showing changes:
 
 ```markdown
 # Internal links
+
 [Related API](./api-reference.md)
 [Getting Started Guide](../guides/getting-started.md)
 
 # External links
+
 [Ante Website](https://antigma.ai)
 
 # Auto-linking in references
+
 Use `authenticate()` (links to API reference when available)
 
 # Avoid bare URLs
+
 ✅ [Learn about authentication](https://docs.antigma.ai/auth)
 ❌ See https://docs.antigma.ai/auth
 ```
 
 **Internal Link Guidelines**:
+
 - Use relative paths: `./file.md` not absolute URLs
 - Include file extensions: `.md` not no extension
 - Link to relevant sections using anchors when helpful
@@ -504,12 +532,13 @@ Use `authenticate()` (links to API reference when available)
 
 ```markdown
 | Header 1 | Header 2 | Header 3 |
-|---|---|---|
+| -------- | -------- | -------- |
 | Data 1.1 | Data 1.2 | Data 1.3 |
 | Data 2.1 | Data 2.2 | Data 2.3 |
 ```
 
 **Guidelines**:
+
 - Keep rows under 3 columns for readability
 - For complex data, consider a code block instead
 - Use descriptive headers
@@ -520,34 +549,36 @@ Use `authenticate()` (links to API reference when available)
 
 ```markdown
 ![Alt text describing image](./path/to/image.png)
-*Caption under image if needed*
+_Caption under image if needed_
 ```
 
 **Alt Text Requirements**:
+
 - Describe what the image shows
 - Be specific: "Login form with email and password fields" not "form"
 - Include relevant context for accessibility
 
 **For Diagrams**:
+
 - Use ASCII art for simple diagrams
 - Use code blocks for better formatting
 - Consider Mermaid or PlantUML for complex diagrams
 
 ```markdown
 \`\`\`
-  ┌─────────────┐
-  │   User      │
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐
-  │  Ante API   │
-  └──────┬──────┘
-         │
-         ▼
-  ┌─────────────┐
-  │  Database   │
-  └─────────────┘
+┌─────────────┐
+│ User │
+└──────┬──────┘
+│
+▼
+┌─────────────┐
+│ Ante API │
+└──────┬──────┘
+│
+▼
+┌─────────────┐
+│ Database │
+└─────────────┘
 \`\`\`
 ```
 
@@ -583,17 +614,20 @@ documentation/
 ### File Naming Conventions
 
 **Markdown Files** (`*.md`):
+
 - Use kebab-case (lowercase with hyphens): `authentication-setup.md`
 - Be descriptive: `jwt-implementation.md` not `jwt.md`
 - Use verbs for guides: `setup-database.md`, `configure-auth.md`
 - Use nouns for reference: `api-reference.md`, `architecture.md`
 
 **Code Examples** (`*.js`, `*.py`, etc.):
+
 - Use kebab-case: `auth-with-jwt.js`
 - Include context: `stripe-integration-example.js` not `example.js`
 - Use consistent language per section
 
 **Asset Files**:
+
 - Images: `getting-started-diagram.png`
 - Data: `sample-config.json`
 - No spaces or special characters
@@ -624,6 +658,7 @@ Core concept documentation → How-to guides → Examples → API reference → 
 ### Example Requirements
 
 Every code example must:
+
 - ✅ Actually run and produce expected output
 - ✅ Be relevant and realistic
 - ✅ Not require hidden setup or prerequisites
@@ -635,36 +670,37 @@ Every code example must:
 ```javascript
 /**
  * Example: Authentication with JWT Tokens
- * 
+ *
  * This example shows how to authenticate a user
  * and use the returned JWT token for subsequent requests.
- * 
+ *
  * Prerequisites: Ante version 1.2.0+
  * Runtime: Node.js 14+
  */
 
 // 1. Create a new user session
 const session = await ante.auth.createSession({
-  email: 'user@example.com',
-  password: 'secure-password'
+  email: "user@example.com",
+  password: "secure-password",
 });
 
 // 2. The session includes a JWT token
-console.log('Token:', session.token);
+console.log("Token:", session.token);
 // Output: Token: eyJhbGc...
 
 // 3. Use the token in subsequent requests
-const data = await ante.api.get('/user/profile', {
-  headers: { Authorization: `Bearer ${session.token}` }
+const data = await ante.api.get("/user/profile", {
+  headers: { Authorization: `Bearer ${session.token}` },
 });
 
-console.log('User:', data.email);
+console.log("User:", data.email);
 // Output: User: user@example.com
 ```
 
 ### Example Variations
 
 **Complete Example** (Full, self-contained):
+
 ```javascript
 // Full working example
 // Can run as-is
@@ -672,6 +708,7 @@ console.log('User:', data.email);
 ```
 
 **Snippet Example** (Focused on one concept):
+
 ```javascript
 // Shows specific pattern
 // May require setup from guide
@@ -679,6 +716,7 @@ console.log('User:', data.email);
 ```
 
 **Comparison Example** (Show right vs. wrong):
+
 ```javascript
 // ❌ Don't do this
 const result = unsafeApproach();
@@ -720,11 +758,11 @@ const variant = ante.module.function(alternateParams);
 const config = {
   // Required settings
   apiKey: process.env.ANTE_API_KEY,
-  
+
   // Optional settings
   timeout: 30000,
   retries: 3,
-  logLevel: 'debug'
+  logLevel: "debug",
 };
 
 const ante = new Ante(config);
@@ -739,14 +777,14 @@ const ante = new Ante(config);
 
 try {
   const result = await ante.operation();
-  console.log('Success:', result);
+  console.log("Success:", result);
 } catch (error) {
-  if (error.code === 'AUTH_FAILED') {
+  if (error.code === "AUTH_FAILED") {
     // Handle authentication error
-    console.error('Authentication failed:', error.message);
+    console.error("Authentication failed:", error.message);
   } else {
     // Handle other errors
-    console.error('Operation failed:', error.message);
+    console.error("Operation failed:", error.message);
   }
 }
 ```
@@ -764,6 +802,7 @@ node examples/your-example.js
 ```
 
 **Output Requirements**:
+
 - No errors or stack traces (unless demonstrating error handling)
 - Output clearly shows what happened
 - Includes expected console output in comments
@@ -833,6 +872,7 @@ Before submitting your contribution:
 ## Pre-Submission Self-Review Checklist
 
 ### Content
+
 - [ ] Information is accurate and current
 - [ ] Code examples are tested and working
 - [ ] All claims are supported with examples
@@ -840,12 +880,14 @@ Before submitting your contribution:
 - [ ] Content is appropriate for target audience
 
 ### Completeness
+
 - [ ] Answers "What/Why/How/When"
 - [ ] Prerequisites are clear
 - [ ] Related topics are linked
 - [ ] Examples provided where appropriate
 
 ### Writing Quality
+
 - [ ] No typos or grammar errors
 - [ ] Sentence length average 15-20 words
 - [ ] Headers are clear and logical
@@ -853,6 +895,7 @@ Before submitting your contribution:
 - [ ] Voice is appropriate for section type
 
 ### Formatting
+
 - [ ] Markdown syntax valid
 - [ ] Links work and use relative paths
 - [ ] Code blocks have syntax highlighting
@@ -860,6 +903,7 @@ Before submitting your contribution:
 - [ ] File header included
 
 ### Standards Compliance
+
 - [ ] File named correctly
 - [ ] File placed in correct directory
 - [ ] All validation checks pass
@@ -867,6 +911,7 @@ Before submitting your contribution:
 - [ ] No broken links
 
 ### Readiness
+
 - [ ] Ready for technical review
 - [ ] Ready for editorial review
 - [ ] No outstanding TODOs
@@ -896,6 +941,7 @@ git commit -m "docs: add guide for feature X
 ```
 
 **Commit Message Format**:
+
 ```
 docs: [brief description]
 
@@ -917,11 +963,14 @@ Create pull request on GitHub with:
 **Title**: `docs: Brief description of change`
 
 **Description**:
+
 ```markdown
 ## Change Summary
+
 Brief description of what this PR adds or improves.
 
 ## Type of Change
+
 - [ ] Typo/grammar fix
 - [ ] Clarification
 - [ ] New documentation
@@ -929,15 +978,18 @@ Brief description of what this PR adds or improves.
 - [ ] Reorganization
 
 ## Related Issues
+
 Closes #[issue number] (if applicable)
 
 ## Testing
+
 - [x] Code examples tested
 - [x] Links verified
 - [x] Markdown validated
 - [x] No broken links
 
 ## Checklist
+
 - [x] Follows style guide
 - [x] Self-reviewed
 - [x] Ready for review
@@ -946,6 +998,7 @@ Closes #[issue number] (if applicable)
 ### Step 3: Review Process
 
 **Timeline**:
+
 - **Simple changes** (typos, small clarifications): 1-3 days
 - **Medium changes** (new sections, guides): 3-5 days
 - **Complex changes** (major reorganization): 5-10 days
@@ -982,17 +1035,18 @@ Closes #[issue number] (if applicable)
 
 **Common feedback types**:
 
-| Feedback | How to Respond |
-|---|---|
-| "Please clarify..." | Add explanation, example, or linked resource |
-| "Can you add example?" | Create working example following guidelines |
-| "Link is broken" | Test link locally, fix relative path |
-| "Code needs testing" | Test locally, confirm with output |
-| "Tone seems off" | Revise to match style guide |
+| Feedback               | How to Respond                               |
+| ---------------------- | -------------------------------------------- |
+| "Please clarify..."    | Add explanation, example, or linked resource |
+| "Can you add example?" | Create working example following guidelines  |
+| "Link is broken"       | Test link locally, fix relative path         |
+| "Code needs testing"   | Test locally, confirm with output            |
+| "Tone seems off"       | Revise to match style guide                  |
 
 ### Step 5: Approval & Merge
 
 When approved:
+
 - Maintainer will merge your PR
 - Your contribution is now part of Ante documentation
 - You'll be added to contributors list (if applicable)
@@ -1000,6 +1054,7 @@ When approved:
 ### Step 6: Post-Merge
 
 After merge:
+
 - Changes are deployed to documentation site
 - Changes included in next llms.txt generation
 - Celebrate your contribution! 🎉
@@ -1019,6 +1074,7 @@ After merge:
 5. Maintainer approves and merges
 
 **Example PR**:
+
 ```
 Title: docs: fix typo in getting-started guide
 Description: Changed "configurations" → "configure"
@@ -1035,6 +1091,7 @@ Description: Changed "configurations" → "configure"
 5. Create PR: `docs: clarify [topic] in [section]`
 
 **Example PR**:
+
 ```
 Title: docs: clarify JWT token expiration in auth guide
 Description: Added explanation of token lifecycle and refresh mechanism
@@ -1051,6 +1108,7 @@ Description: Added explanation of token lifecycle and refresh mechanism
 5. Create PR: `docs: add example for [feature]`
 
 **Checklist**:
+
 - [ ] Example runs without modification
 - [ ] Output clearly shows feature works
 - [ ] Comments explain key concepts
@@ -1068,6 +1126,7 @@ Description: Added explanation of token lifecycle and refresh mechanism
 6. Create PR: `docs: add how-to guide for [topic]`
 
 **What To Include**:
+
 - Clear objective
 - Prerequisites
 - Step-by-step instructions
@@ -1086,6 +1145,7 @@ Description: Added explanation of token lifecycle and refresh mechanism
 5. Create PR explaining changes
 
 **Example**:
+
 ```
 Title: docs: reorganize guides by skill level
 Description:
@@ -1098,6 +1158,7 @@ Description:
 ### 6. Report a Documentation Issue
 
 **When to report**:
+
 - Inaccurate information
 - Broken examples
 - Missing documentation
@@ -1111,7 +1172,8 @@ Create an issue with template:
 ```markdown
 ## Issue: [Brief Title]
 
-**Type**: 
+**Type**:
+
 - [ ] Inaccuracy
 - [ ] Broken example
 - [ ] Missing documentation
@@ -1160,6 +1222,7 @@ Section: [section name]
 ## Recognition
 
 Contributors are recognized:
+
 - In PR merge commit
 - In CONTRIBUTORS.md file
 - In release notes (for major contributions)
@@ -1168,15 +1231,18 @@ Contributors are recognized:
 ### Levels of Contribution
 
 **Level 1 - Typos & Minor Fixes** (1-5 contributions):
+
 - Fixed typos, grammar, formatting
 - Small clarifications
 
 **Level 2 - Regular Contributor** (5-20 contributions):
+
 - Added guides
 - Improved sections significantly
 - Fixed major issues
 
 **Level 3 - Core Contributor** (20+ contributions):
+
 - Multiple guides
 - Significant reorganization
 - Community leader
@@ -1186,6 +1252,7 @@ Contributors are recognized:
 ## Code of Conduct
 
 All contributors agree to:
+
 - Be respectful and inclusive
 - Provide constructive feedback
 - Accept feedback gracefully
@@ -1199,6 +1266,7 @@ All contributors agree to:
 Thank you for contributing to Ante documentation. Your work helps developers around the world use Ante more effectively. We're grateful for your time and effort!
 
 Have questions? Feel free to:
+
 - Comment on issues
 - Ask in pull requests
 - Reach out to the maintainers

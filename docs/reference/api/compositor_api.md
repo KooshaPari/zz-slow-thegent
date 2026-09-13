@@ -5,6 +5,7 @@
 TUI Compositor - Terminal-based multiplexer with pane management.
 
 Main exports:
+
 - CompositApp: Main Textual application
 - TerminalPane: PTY-based terminal widget
 - PaneManager: Pane tree management

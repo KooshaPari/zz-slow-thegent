@@ -12,7 +12,7 @@ Watch documentation source files and auto-regenerate.
 
 ### Methods
 
-#### DocumentationWatcher.__init__
+#### DocumentationWatcher.**init**
 
 ```python
 __init__(self: Any, source_dir: Path, output_dir: Path, build_func: Callable)

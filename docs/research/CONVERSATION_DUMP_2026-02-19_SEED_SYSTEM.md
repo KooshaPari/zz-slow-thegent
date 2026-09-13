@@ -105,6 +105,7 @@ Implemented a comprehensive idea seed detection and storage system for thegent w
 ### Pattern Matching System
 
 **Three confidence levels:**
+
 - **HIGH (0.9)**: Explicit seed markers ("What if", "Consider", "We should")
 - **MEDIUM (0.6)**: Code quality markers (TODO, FIXME) and design keywords
 - **LOW (0.3)**: LLM classification (future implementation)
@@ -114,6 +115,7 @@ Implemented a comprehensive idea seed detection and storage system for thegent w
 ### Automatic Tagging
 
 Extracts up to 3 tags from seed text:
+
 - architecture, performance, security, testing, documentation
 - refactor, api, database, ui, infrastructure
 
@@ -163,6 +165,7 @@ thegent_seed_export:
 **Root Cause:** pytest adds parent directory to sys.path before loading conftest.py, interfering with src/ layout discovery.
 
 **Attempted Fixes:**
+
 - Modified conftest.py to manipulate sys.path
 - Updated pyproject.toml testpaths to include "src"
 - Changed test imports to relative imports
@@ -171,6 +174,7 @@ thegent_seed_export:
 **Current Status:** Tests are valid but environment requires direct execution or external CI setup for running.
 
 **Verification:** All code can be imported and used successfully via direct Python:
+
 ```bash
 python -c "from thegent.memory import SeedDetector; print('OK')"
 # Output: OK
@@ -227,6 +231,7 @@ System: Exported 47 seeds to docs/research/seeds.md
 ### Hook Integration (Future)
 
 **UserPromptSubmit hook** can auto-detect seeds:
+
 ```bash
 # In hooks/prompt-submit-guard.sh
 if grep -q '\$idea' <<< "$user_prompt"; then
@@ -245,6 +250,7 @@ fi
 ### WORK_STREAM Integration (Future)
 
 Seed status transitions can be tracked:
+
 - `new` → `developing` (when implementing)
 - `developing` → `implemented` (when complete)
 - `archived` (obsolete ideas)
@@ -252,6 +258,7 @@ Seed status transitions can be tracked:
 ### Spec Traceability (Future)
 
 Seeds can link to:
+
 - FR (Functional Requirements) - map to requirements
 - ADR (Architecture Decision Records) - link design decisions
 - PRD (Product Requirements Document) - trace epics/stories
@@ -280,6 +287,7 @@ Seeds can link to:
   - Integration: 5 tests
 
 **Test Categories:**
+
 - ✓ Unit tests for all classes and methods
 - ✓ Integration tests for storage workflows
 - ✓ Edge cases (empty input, duplicates, malformed data)

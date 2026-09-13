@@ -11,6 +11,7 @@
 ### 1. Frontmatter
 
 **Required Format**:
+
 ```markdown
 ---
 title: Document Title
@@ -23,6 +24,7 @@ purpose: Brief purpose statement
 ```
 
 **Or Alternative** (if no frontmatter):
+
 ```markdown
 # Document Title
 
@@ -33,6 +35,7 @@ purpose: Brief purpose statement
 ### 2. Cross-Links
 
 **Required Sections**:
+
 - Link to [WORK_STREAM.md](../reference/WORK_STREAM.md) if work items exist
 - Link to [RESEARCH_SEED_FRAGMENT_INVENTORY](./RESEARCH_SEED_FRAGMENT_INVENTORY_AND_SPRAWL_TODO.md) if fragment/seed
 - Link to [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) if plan-related
@@ -41,6 +44,7 @@ purpose: Brief purpose statement
 ### 3. "See Also" Section
 
 **Required Format**:
+
 ```markdown
 ## See Also
 
@@ -53,16 +57,16 @@ purpose: Brief purpose statement
 
 ## Expanded/Consolidated Docs Status
 
-| Document | Frontmatter | See Also | Cross-Links | Status |
-|----------|------------|----------|-------------|--------|
-| SESSION_RESEARCH_FRAGMENTS_EXPANDED.md | ✅ | ✅ | ✅ | Complete |
-| CONVERSATION_DUMP_2026-02-16_EXPANDED.md | ✅ | ✅ | ✅ | Complete |
-| CROSS_PLATFORM_RESEARCH_CONSOLIDATED.md | ✅ | ✅ | ✅ | Complete |
-| HOOK_RUST_MIGRATION_RESEARCH_SYNTHESIS_EXPANDED.md | ✅ | ✅ | ✅ | Complete |
-| LIBRARY_REPLACEMENT_CONSOLIDATED.md | ✅ | ✅ | ✅ | Complete |
-| PHASE_DOCUMENTS_EXPANDED.md | ✅ | ✅ | ✅ | Complete |
-| GOVERNANCE_WP_GAPS_EXPANDED.md | ✅ | ✅ | ✅ | Complete |
-| COST_ROUTING_DEFERRED_EXPANDED.md | ✅ | ✅ | ✅ | Complete |
+| Document                                           | Frontmatter | See Also | Cross-Links | Status   |
+| -------------------------------------------------- | ----------- | -------- | ----------- | -------- |
+| SESSION_RESEARCH_FRAGMENTS_EXPANDED.md             | ✅          | ✅       | ✅          | Complete |
+| CONVERSATION_DUMP_2026-02-16_EXPANDED.md           | ✅          | ✅       | ✅          | Complete |
+| CROSS_PLATFORM_RESEARCH_CONSOLIDATED.md            | ✅          | ✅       | ✅          | Complete |
+| HOOK_RUST_MIGRATION_RESEARCH_SYNTHESIS_EXPANDED.md | ✅          | ✅       | ✅          | Complete |
+| LIBRARY_REPLACEMENT_CONSOLIDATED.md                | ✅          | ✅       | ✅          | Complete |
+| PHASE_DOCUMENTS_EXPANDED.md                        | ✅          | ✅       | ✅          | Complete |
+| GOVERNANCE_WP_GAPS_EXPANDED.md                     | ✅          | ✅       | ✅          | Complete |
+| COST_ROUTING_DEFERRED_EXPANDED.md                  | ✅          | ✅       | ✅          | Complete |
 
 **Status**: ✅ All expanded/consolidated docs normalized
 
@@ -102,11 +106,13 @@ purpose: Brief purpose statement
 **Script**: `scripts/normalize-md-docs.sh`
 
 **Usage**:
+
 ```bash
 ./scripts/normalize-md-docs.sh
 ```
 
 **Checks**:
+
 - Frontmatter presence
 - "See also" sections
 - Cross-links to WORK_STREAM
@@ -132,15 +138,18 @@ purpose: Brief purpose statement
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

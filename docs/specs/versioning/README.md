@@ -3,6 +3,7 @@
 ## Executive Summary
 
 This document specifies a comprehensive versioning system for thegent that operates at multiple granularities:
+
 - **Macro versioning**: Semantic releases, major/minor/patch
 - **Meso versioning**: Worktrees, branches, PRs
 - **Micro versioning**: Session-based, change plans, microcommits
@@ -51,12 +52,12 @@ The system addresses the core problem: **multiple AI agents running change plans
 
 ### Layer Comparison
 
-| Layer | Scope | Trigger | Persistence |
-|-------|-------|---------|-------------|
-| Macro | Release | Human decision | Git tag |
-| Meso | Feature | Branch/PR | Git branch |
-| Micro | Session | Agent run | Manifest file |
-| Nano | Microcommit | File edit | In-session |
+| Layer | Scope       | Trigger        | Persistence   |
+| ----- | ----------- | -------------- | ------------- |
+| Macro | Release     | Human decision | Git tag       |
+| Meso  | Feature     | Branch/PR      | Git branch    |
+| Micro | Session     | Agent run      | Manifest file |
+| Nano  | Microcommit | File edit      | In-session    |
 
 ---
 
@@ -83,10 +84,10 @@ MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]
 Example: 2.1.0-alpha.3+git.abc123+ci.456
 ```
 
-| Component | Description |
-|-----------|-------------|
+| Component          | Description             |
+| ------------------ | ----------------------- |
 | `git.{short_hash}` | First 7 chars of commit |
-| `build_id` | CI run identifier |
+| `build_id`         | CI run identifier       |
 
 ### Version Schemas
 
@@ -162,12 +163,12 @@ main (production)
 
 ### Worktree Integration
 
-| Scenario | Worktree | Microversion |
-|----------|----------|--------------|
-| Production hotfix | No | None |
-| Feature development | Yes | Agent session |
-| Agent parallel runs | Optional | Required |
-| Quick experiments | No | Session only |
+| Scenario            | Worktree | Microversion  |
+| ------------------- | -------- | ------------- |
+| Production hotfix   | No       | None          |
+| Feature development | Yes      | Agent session |
+| Agent parallel runs | Optional | Required      |
+| Quick experiments   | No       | Session only  |
 
 ### Worktree Naming Convention
 
@@ -203,12 +204,12 @@ Micro versioning provides **session-level traceability** without requiring workt
 
 #### Examples
 
-| Microversion | Meaning |
-|--------------|---------|
-| `sess_k8s2m.001.001` | Session `k8s2m`, Plan 1, Microcommit 1 |
+| Microversion         | Meaning                                 |
+| -------------------- | --------------------------------------- |
+| `sess_k8s2m.001.001` | Session `k8s2m`, Plan 1, Microcommit 1  |
 | `sess_k8s2m.001.017` | Session `k8s2m`, Plan 1, Microcommit 17 |
-| `sess_k8s2m.003.005` | Session `k8s2m`, Plan 3, Microcommit 5 |
-| `sess_abc.002.001` | Different session |
+| `sess_k8s2m.003.005` | Session `k8s2m`, Plan 3, Microcommit 5  |
+| `sess_abc.002.001`   | Different session                       |
 
 ### Microcommit Definition
 
@@ -316,11 +317,11 @@ SESSION CREATION
 
 ### Session ID Format
 
-| Format | Example | Use Case |
-|--------|---------|----------|
-| UUID v4 | `sess_a1b2c3d4` | Default |
+| Format    | Example              | Use Case  |
+| --------- | -------------------- | --------- |
+| UUID v4   | `sess_a1b2c3d4`      | Default   |
 | Timestamp | `sess_20260221_1030` | Debugging |
-| Human | `sess_routing-fix` | Readable |
+| Human     | `sess_routing-fix`   | Readable  |
 
 ### Session Directory Structure
 
@@ -396,12 +397,12 @@ Session: sess_abc
 
 ### Conflict Types
 
-| Type | Description | Resolution Strategy |
-|------|-------------|---------------------|
-| File-level | Same file modified | 3-way merge or agent choice |
-| Plan-level | Plans modify same files | Dependency ordering |
-| Session-level | Sessions modify same files | Manifest + git worktree |
-| Semantic | Different changes, same behavior | Preserve both |
+| Type          | Description                      | Resolution Strategy         |
+| ------------- | -------------------------------- | --------------------------- |
+| File-level    | Same file modified               | 3-way merge or agent choice |
+| Plan-level    | Plans modify same files          | Dependency ordering         |
+| Session-level | Sessions modify same files       | Manifest + git worktree     |
+| Semantic      | Different changes, same behavior | Preserve both               |
 
 ### Resolution Strategies
 
@@ -917,13 +918,13 @@ mgr.complete_session()
 
 ## Performance Considerations
 
-| Operation | Target Latency |
-|------------|----------------|
-| Session creation | <10ms |
-| Change plan creation | <5ms |
-| Microcommit record | <20ms |
-| Manifest write | <50ms |
-| Conflict detection | <100ms |
+| Operation            | Target Latency |
+| -------------------- | -------------- |
+| Session creation     | <10ms          |
+| Change plan creation | <5ms           |
+| Microcommit record   | <20ms          |
+| Manifest write       | <50ms          |
+| Conflict detection   | <100ms         |
 
 ---
 
@@ -942,17 +943,17 @@ mgr.complete_session()
 ```typescript
 interface DemoGenerator {
   // Generate from E2E test
-  fromTest(testPath: string): Promise<DemoMedia>
+  fromTest(testPath: string): Promise<DemoMedia>;
 
   // Generate from VHS tape
-  fromTape(tapePath: string): Promise<DemoMedia>
+  fromTape(tapePath: string): Promise<DemoMedia>;
 
   // Generate from user interaction
-  record(interaction: Interaction): Promise<DemoMedia>
+  record(interaction: Interaction): Promise<DemoMedia>;
 
   // Platform-specific recording
-  recordDesktop(): Promise<Media>
-  recordMobile(device: MobileDevice): Promise<Media>
+  recordDesktop(): Promise<Media>;
+  recordMobile(device: MobileDevice): Promise<Media>;
 }
 ```
 
@@ -992,14 +993,14 @@ name: Generate Demos
 on:
   push:
     paths:
-      - 'docs/demos/*.tape'
+      - "docs/demos/*.tape"
 jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
       - uses: charmantai/vhs@latest
         with:
-          args: 'docs/demos/routing.tape'
+          args: "docs/demos/routing.tape"
       - uses: actions/upload-artifact@v4
         with:
           name: demo-gifs
@@ -1016,7 +1017,7 @@ jobs:
 // Auto-generate screenshots from tests
 async function screenshotFromTest(
   test: Test,
-  options: ScreenshotOptions
+  options: ScreenshotOptions,
 ): Promise<Screenshot> {
   // Run test with recording
   const video = await browser.recordVideo(async () => {
@@ -1029,7 +1030,7 @@ async function screenshotFromTest(
   // Annotate
   return annotate(screenshots, {
     highlight: options.highlight,
-    caption: options.caption
+    caption: options.caption,
   });
 }
 ```
@@ -1040,16 +1041,16 @@ async function screenshotFromTest(
 // playwright.config.ts
 export default defineConfig({
   use: {
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
-    trace: 'on-first-retry',
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
+    trace: "on-first-retry",
   },
   // Auto-generate docs
   docs: {
-    screenshotDir: 'docs/screenshots',
-    videoDir: 'docs/videos',
-    generateOn: ['test', 'commit', 'merge']
-  }
+    screenshotDir: "docs/screenshots",
+    videoDir: "docs/videos",
+    generateOn: ["test", "commit", "merge"],
+  },
 });
 ```
 
@@ -1143,7 +1144,7 @@ auto_record:
 
 ### Feature Page Template
 
-```markdown
+````markdown
 ---
 title: Cost-Aware Routing
 version: 2.1.0
@@ -1160,6 +1161,7 @@ Cost-aware routing optimizes LLM selection based on budget.
 ## Demo
 
 <!-- Auto-generated from test -->
+
 ![Cost Routing Demo](docs/demos/routing-cost.gif)
 
 ## Code Example
@@ -1176,6 +1178,7 @@ model = await router.route(request)
 ```bash
 thegent route --cost-aware --budget 10.00
 ```
+````
 
 ---
 
@@ -1288,14 +1291,14 @@ demo:
 
 ```vue
 <DemoPlayer
-  :src="demo/routing-cost.gif"
+  :src="demo / routing - cost.gif"
   :chapters="[
     { time: 0, label: 'Initialize' },
     { time: 5, label: 'Route selection' },
-    { time: 10, label: 'Cost tracking' }
+    { time: 10, label: 'Cost tracking' },
   ]"
   :code="routingExample"
-  autoPlay={false}
+  autoPlay="{false}"
 />
 ```
 
@@ -1307,13 +1310,12 @@ demo:
 <InteractiveDemo>
   <DemoPlayer src="routing-cost.gif" />
 
-  <CodeBlock
-    language="python"
-    code={`
-router = CostAwareRouter(budget=10.00)
+<CodeBlock
+language="python"
+code={`router = CostAwareRouter(budget=10.00)
 model = await router.route(request)
-    `}
-  />
+   `}
+/>
 
   <Steps>
     <Step n="1">Initialize router</Step>
@@ -1331,15 +1333,15 @@ model = await router.route(request)
 
 ```typescript
 // .vitepress/plugins/demo.ts
-import { definePlugin } from 'vitepress'
+import { definePlugin } from "vitepress";
 
 export default definePlugin({
   enhanceApp({ app }) {
-    app.component('DemoPlayer', DemoPlayer)
-    app.component('CodeBlock', CodeBlock)
-    app.component('Steps', Steps)
-  }
-})
+    app.component("DemoPlayer", DemoPlayer);
+    app.component("CodeBlock", CodeBlock);
+    app.component("Steps", Steps);
+  },
+});
 ```
 
 ### Config
@@ -1351,17 +1353,17 @@ export default defineConfig({
     // Auto-generate from tests
     autoGenerate: {
       enabled: true,
-      testPattern: 'tests/e2e/**/*.spec.ts',
-      outputDir: 'docs/demos'
+      testPattern: "tests/e2e/**/*.spec.ts",
+      outputDir: "docs/demos",
     },
 
     // VHS integration
     vhs: {
-      theme: 'Catppuccin Mocha',
-      fontSize: 14
-    }
-  }
-})
+      theme: "Catppuccin Mocha",
+      fontSize: 14,
+    },
+  },
+});
 ```
 
 ---

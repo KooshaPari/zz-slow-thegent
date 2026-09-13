@@ -37,13 +37,13 @@ All Phase 2.1 tasks for the Provider Scoring System have been successfully imple
 
 ### Acceptance Criteria
 
-| AC | Requirement | Status | Evidence |
-|----|-----------|--------|----------|
-| 1 | Composite score correctly weighted (0.4/0.2/0.4) | ✅ | Tests verify 0.4×rel + 0.2×lat + 0.4×cost formula |
-| 2 | Latency normalization produces 0-10 range | ✅ | Exponential decay ensures 0.1-10.0 clamped range |
-| 3 | Cost normalization produces 0-10 range | ✅ | Hyperbolic decay ensures 0.1-10.0 clamped range |
-| 4 | Score inversely weighted (higher cost/latency = lower) | ✅ | Tests: high_cost→0.9, low_cost→9.3; high_latency→2.0, low_latency→8.0 |
-| 5 | Unit tests passing (>95% coverage) | ✅ | 20+ unit tests covering all normalization, weighting, validation |
+| AC  | Requirement                                            | Status | Evidence                                                              |
+| --- | ------------------------------------------------------ | ------ | --------------------------------------------------------------------- |
+| 1   | Composite score correctly weighted (0.4/0.2/0.4)       | ✅     | Tests verify 0.4×rel + 0.2×lat + 0.4×cost formula                     |
+| 2   | Latency normalization produces 0-10 range              | ✅     | Exponential decay ensures 0.1-10.0 clamped range                      |
+| 3   | Cost normalization produces 0-10 range                 | ✅     | Hyperbolic decay ensures 0.1-10.0 clamped range                       |
+| 4   | Score inversely weighted (higher cost/latency = lower) | ✅     | Tests: high_cost→0.9, low_cost→9.3; high_latency→2.0, low_latency→8.0 |
+| 5   | Unit tests passing (>95% coverage)                     | ✅     | 20+ unit tests covering all normalization, weighting, validation      |
 
 ### Validation
 
@@ -75,24 +75,24 @@ claude_opus = scorer.score("claude-opus", ProviderMetrics(0.99, 500, 15.0))
 
 ### Acceptance Criteria
 
-| AC | Requirement | Status | Evidence |
-|----|-----------|--------|----------|
-| 1 | Registry initialized with 4+ providers | ✅ | 6 built-in providers registered: gemini-flash, claude-haiku, gpt-4o-mini, claude-sonnet, claude-opus, gpt-4 |
-| 2 | Each provider has: cost, reliability, latency, fallback chain | ✅ | All 6 providers have complete configs with realistic values |
-| 3 | get(), list_providers(), get_fallback_order() work | ✅ | All methods tested and verified functional |
-| 4 | Fallback chains prioritize cost-efficiency | ✅ | Fallback chains include cheaper alternatives (e.g., Claude Opus falls back to Claude Sonnet, Haiku) |
-| 5 | Integration tests with mock providers | ✅ | 25+ integration tests including custom provider registration |
+| AC  | Requirement                                                   | Status | Evidence                                                                                                    |
+| --- | ------------------------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------- |
+| 1   | Registry initialized with 4+ providers                        | ✅     | 6 built-in providers registered: gemini-flash, claude-haiku, gpt-4o-mini, claude-sonnet, claude-opus, gpt-4 |
+| 2   | Each provider has: cost, reliability, latency, fallback chain | ✅     | All 6 providers have complete configs with realistic values                                                 |
+| 3   | get(), list_providers(), get_fallback_order() work            | ✅     | All methods tested and verified functional                                                                  |
+| 4   | Fallback chains prioritize cost-efficiency                    | ✅     | Fallback chains include cheaper alternatives (e.g., Claude Opus falls back to Claude Sonnet, Haiku)         |
+| 5   | Integration tests with mock providers                         | ✅     | 25+ integration tests including custom provider registration                                                |
 
 ### Provider Configurations
 
-| Provider | Cost | Reliability | Latency P99 | Primary Fallbacks |
-|----------|------|-------------|-------------|-------------------|
-| Gemini Flash | $0.10 | 95% | 200ms | GPT-4o-mini, Claude Haiku, Claude Opus |
-| Claude Haiku | $0.25 | 98% | 300ms | Gemini Flash, GPT-4o-mini, Claude Sonnet |
-| GPT-4o-mini | $0.15 | 97% | 250ms | Gemini Flash, Claude Haiku, GPT-4 |
-| Claude Sonnet | $3.00 | 99% | 350ms | Claude Haiku, GPT-4, Gemini Pro |
-| Claude Opus | $15.0 | 99% | 500ms | Claude Sonnet, GPT-4, Claude Haiku |
-| GPT-4 | $30.0 | 98% | 400ms | GPT-4-turbo, Claude Opus, Claude Sonnet |
+| Provider      | Cost  | Reliability | Latency P99 | Primary Fallbacks                        |
+| ------------- | ----- | ----------- | ----------- | ---------------------------------------- |
+| Gemini Flash  | $0.10 | 95%         | 200ms       | GPT-4o-mini, Claude Haiku, Claude Opus   |
+| Claude Haiku  | $0.25 | 98%         | 300ms       | Gemini Flash, GPT-4o-mini, Claude Sonnet |
+| GPT-4o-mini   | $0.15 | 97%         | 250ms       | Gemini Flash, Claude Haiku, GPT-4        |
+| Claude Sonnet | $3.00 | 99%         | 350ms       | Claude Haiku, GPT-4, Gemini Pro          |
+| Claude Opus   | $15.0 | 99%         | 500ms       | Claude Sonnet, GPT-4, Claude Haiku       |
+| GPT-4         | $30.0 | 98%         | 400ms       | GPT-4-turbo, Claude Opus, Claude Sonnet  |
 
 ### Validation
 
@@ -131,13 +131,13 @@ registry.get_cost_efficient_order()
 
 ### Acceptance Criteria
 
-| AC | Requirement | Status | Evidence |
-|----|-----------|--------|----------|
-| 1 | Metrics collection for each provider | ✅ | Tested with 5+ providers, each tracked independently |
-| 2 | Latency p99 calculation from samples | ✅ | Verified: 100 samples → p99 calculated correctly |
-| 3 | Success rate calculation | ✅ | Tested: 80 successes / 100 total = 80% success rate |
-| 4 | Storage in local cache (or fallback) | ✅ | JSONL files created in var/provider_metrics/ directory |
-| 5 | Metrics queryable within <50ms | ✅ | Performance test: 1000 results queried in <50ms |
+| AC  | Requirement                          | Status | Evidence                                               |
+| --- | ------------------------------------ | ------ | ------------------------------------------------------ |
+| 1   | Metrics collection for each provider | ✅     | Tested with 5+ providers, each tracked independently   |
+| 2   | Latency p99 calculation from samples | ✅     | Verified: 100 samples → p99 calculated correctly       |
+| 3   | Success rate calculation             | ✅     | Tested: 80 successes / 100 total = 80% success rate    |
+| 4   | Storage in local cache (or fallback) | ✅     | JSONL files created in var/provider_metrics/ directory |
+| 5   | Metrics queryable within <50ms       | ✅     | Performance test: 1000 results queried in <50ms        |
 
 ### Performance Validation
 
@@ -263,14 +263,14 @@ All Phase 2.1 dependencies are satisfied. Ready for Phase 2.2.
 
 ## Deliverables Summary
 
-| Deliverable | Type | Status |
-|------------|------|--------|
-| Provider Scorer | Python Module | ✅ 1K LOC |
-| Provider Registry | Python Module | ✅ 1.2K LOC |
-| Metrics Collector | Python Module | ✅ 1.5K LOC |
-| Unit Tests | Python Pytest | ✅ 65+ tests |
-| Documentation | Markdown | ✅ This file |
-| **Total Implementation** | **LOC** | **✅ ~3.7K** |
+| Deliverable              | Type          | Status       |
+| ------------------------ | ------------- | ------------ |
+| Provider Scorer          | Python Module | ✅ 1K LOC    |
+| Provider Registry        | Python Module | ✅ 1.2K LOC  |
+| Metrics Collector        | Python Module | ✅ 1.5K LOC  |
+| Unit Tests               | Python Pytest | ✅ 65+ tests |
+| Documentation            | Markdown      | ✅ This file |
+| **Total Implementation** | **LOC**       | **✅ ~3.7K** |
 
 ---
 
@@ -287,6 +287,7 @@ All Phase 2.1 dependencies are satisfied. Ready for Phase 2.2.
 ---
 
 See also:
+
 - [tasks.md](./tasks.md) - Full Phase 2 task breakdown
 - [proposal.md](./proposal.md) - Business case
 - [design.md](./design.md) - Architecture design

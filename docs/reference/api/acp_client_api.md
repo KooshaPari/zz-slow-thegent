@@ -9,8 +9,8 @@ Allows thegent to send tasks to remote ACP-compatible agents over HTTP.
 Complements the stdio-based ACPClientAdapter in thegent.acp.client.
 
 Config (all optional — can also be passed to constructor directly):
-    THGENT_ACP_BASE_URL  - ACP server base URL (default: http://localhost:8080)
-    THGENT_ACP_AGENT_ID  - Sender agent ID (default: "thegent")
+THGENT_ACP_BASE_URL - ACP server base URL (default: http://localhost:8080)
+THGENT_ACP_AGENT_ID - Sender agent ID (default: "thegent")
 
 # @trace FR-ACP-001
 
@@ -33,7 +33,7 @@ Example::
 
 ### Methods
 
-#### ACPClient.__init__
+#### ACPClient.**init**
 
 ```python
 __init__(self: Any, base_url: str, agent_id: str)
@@ -43,8 +43,8 @@ Initialise the client.
 
 **Parameters**:
 
-- `base_url`:  ACP server base URL, e.g. ``"http://localhost:8080"``.
-- `agent_id`:  Logical sender ID embedded in outgoing requests.
+- `base_url`: ACP server base URL, e.g. `"http://localhost:8080"`.
+- `agent_id`: Logical sender ID embedded in outgoing requests.
 
 ---
 
@@ -58,7 +58,7 @@ Raised when the ACP server returns a non-retryable error.
 
 ### Methods
 
-#### ACPClientError.__init__
+#### ACPClientError.**init**
 
 ```python
 __init__(self: Any, status_code: int, message: str)

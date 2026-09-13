@@ -9,6 +9,7 @@ This module integrates with Extism to enable secure, isolated execution of
 Zig-compiled Wasm tools.
 
 Key features:
+
 - Extism Python bindings integration
 - Plugin loading and execution
 - Resource limits (memory, CPU time)
@@ -26,7 +27,7 @@ Extism-based Wasm plugin implementation.
 
 ### Methods
 
-#### ExtismPlugin.__init__
+#### ExtismPlugin.**init**
 
 ```python
 __init__(self: Any, plugin_path: Path, metadata: WasmPluginMetadata, limits: Any, config: Any, allow_wasi: bool)
@@ -72,7 +73,7 @@ Extism runtime wrapper with resource management.
 
 ### Methods
 
-#### ExtismRuntime.__init__
+#### ExtismRuntime.**init**
 
 ```python
 __init__(self: Any)
@@ -175,7 +176,7 @@ Abstract base class for Wasm plugins.
 
 ### Methods
 
-#### WasmPlugin.__init__
+#### WasmPlugin.**init**
 
 ```python
 __init__(self: Any, plugin_path: Path, metadata: WasmPluginMetadata, limits: Any, config: Any)
@@ -241,7 +242,7 @@ Manager for Wasm plugins with lifecycle management.
 
 ### Methods
 
-#### WasmPluginManager.__init__
+#### WasmPluginManager.**init**
 
 ```python
 __init__(self: Any, plugin_dir: Any)

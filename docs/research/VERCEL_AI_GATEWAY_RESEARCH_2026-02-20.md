@@ -66,10 +66,10 @@ The gateway normalizes provider-specific request/response formats internally. Cl
 
 ### Base URLs
 
-| API Surface | Base URL |
-|-------------|----------|
-| OpenAI-compatible API | `https://ai-gateway.vercel.sh/v1` |
-| Anthropic-compatible API | `https://ai-gateway.vercel.sh` |
+| API Surface              | Base URL                          |
+| ------------------------ | --------------------------------- |
+| OpenAI-compatible API    | `https://ai-gateway.vercel.sh/v1` |
+| Anthropic-compatible API | `https://ai-gateway.vercel.sh`    |
 
 ### Authentication Methods
 
@@ -135,46 +135,46 @@ ANTHROPIC_API_KEY=""    # Must be empty string — Claude Code checks this first
 
 37 providers supported. Full slug table for use in `providerOptions.gateway.order/only`:
 
-| Slug | Provider | Website |
-|------|----------|---------|
-| `alibaba` | Alibaba Cloud | alibabacloud.com |
-| `anthropic` | Anthropic | anthropic.com |
-| `arcee-ai` | Arcee AI | arcee.ai |
-| `azure` | Azure AI | ai.azure.com |
-| `baseten` | Baseten | baseten.co |
-| `bedrock` | Amazon Bedrock | aws.amazon.com/bedrock |
-| `bfl` | Black Forest Labs | bfl.ai |
-| `bytedance` | ByteDance | byteplus.com |
-| `cerebras` | Cerebras | cerebras.net |
-| `cohere` | Cohere | cohere.com |
-| `crusoe` | Crusoe | crusoe.ai |
-| `deepinfra` | DeepInfra | deepinfra.com |
-| `deepseek` | DeepSeek | deepseek.ai |
-| `fireworks` | Fireworks | fireworks.ai |
-| `google` | Google AI Studio | ai.google.dev |
-| `groq` | Groq | groq.com |
-| `inception` | Inception | inceptionlabs.ai |
-| `klingai` | Kling AI | klingai.com |
-| `meituan` | Meituan / LongCat | longcat.ai |
-| `minimax` | MiniMax | minimax.io |
-| `mistral` | Mistral | mistral.ai |
-| `moonshotai` | Moonshot AI | moonshot.ai |
-| `morph` | Morph | morphllm.com |
-| `nebius` | Nebius | nebius.com |
-| `novita` | Novita | novita.ai |
-| `openai` | OpenAI | openai.com |
-| `parasail` | Parasail | parasail.io |
-| `perplexity` | Perplexity | perplexity.ai |
-| `prodia` | Prodia | prodia.com |
-| `recraft` | Recraft | recraft.ai |
-| `sambanova` | SambaNova | sambanova.ai |
-| `streamlake` | StreamLake | streamlake.ai |
-| `togetherai` | Together AI | together.ai |
-| `vercel` | Vercel (v0) | v0.app |
-| `vertex` | Google Vertex AI | cloud.google.com/vertex-ai |
-| `voyage` | Voyage AI | voyageai.com |
-| `xai` | xAI | x.ai |
-| `zai` | Z.ai | z.ai |
+| Slug         | Provider          | Website                    |
+| ------------ | ----------------- | -------------------------- |
+| `alibaba`    | Alibaba Cloud     | alibabacloud.com           |
+| `anthropic`  | Anthropic         | anthropic.com              |
+| `arcee-ai`   | Arcee AI          | arcee.ai                   |
+| `azure`      | Azure AI          | ai.azure.com               |
+| `baseten`    | Baseten           | baseten.co                 |
+| `bedrock`    | Amazon Bedrock    | aws.amazon.com/bedrock     |
+| `bfl`        | Black Forest Labs | bfl.ai                     |
+| `bytedance`  | ByteDance         | byteplus.com               |
+| `cerebras`   | Cerebras          | cerebras.net               |
+| `cohere`     | Cohere            | cohere.com                 |
+| `crusoe`     | Crusoe            | crusoe.ai                  |
+| `deepinfra`  | DeepInfra         | deepinfra.com              |
+| `deepseek`   | DeepSeek          | deepseek.ai                |
+| `fireworks`  | Fireworks         | fireworks.ai               |
+| `google`     | Google AI Studio  | ai.google.dev              |
+| `groq`       | Groq              | groq.com                   |
+| `inception`  | Inception         | inceptionlabs.ai           |
+| `klingai`    | Kling AI          | klingai.com                |
+| `meituan`    | Meituan / LongCat | longcat.ai                 |
+| `minimax`    | MiniMax           | minimax.io                 |
+| `mistral`    | Mistral           | mistral.ai                 |
+| `moonshotai` | Moonshot AI       | moonshot.ai                |
+| `morph`      | Morph             | morphllm.com               |
+| `nebius`     | Nebius            | nebius.com                 |
+| `novita`     | Novita            | novita.ai                  |
+| `openai`     | OpenAI            | openai.com                 |
+| `parasail`   | Parasail          | parasail.io                |
+| `perplexity` | Perplexity        | perplexity.ai              |
+| `prodia`     | Prodia            | prodia.com                 |
+| `recraft`    | Recraft           | recraft.ai                 |
+| `sambanova`  | SambaNova         | sambanova.ai               |
+| `streamlake` | StreamLake        | streamlake.ai              |
+| `togetherai` | Together AI       | together.ai                |
+| `vercel`     | Vercel (v0)       | v0.app                     |
+| `vertex`     | Google Vertex AI  | cloud.google.com/vertex-ai |
+| `voyage`     | Voyage AI         | voyageai.com               |
+| `xai`        | xAI               | x.ai                       |
+| `zai`        | Z.ai              | z.ai                       |
 
 ### Model ID Format
 
@@ -214,52 +214,66 @@ plus a set of gateway-specific extensions.
 
 ### Standard Parameters (OpenAI-compatible)
 
-| Field | Type | Notes |
-|-------|------|-------|
-| `model` | string | Required. Format: `provider/model-name` |
-| `messages` | array | Required. Standard OpenAI message objects |
-| `stream` | boolean | Default false. Enables SSE streaming |
-| `temperature` | number | Range 0-2 |
-| `max_tokens` | integer | Max output tokens |
-| `top_p` | number | Range 0-1 |
-| `frequency_penalty` | number | Range -2 to 2 |
-| `presence_penalty` | number | Range -2 to 2 |
-| `stop` | string or array | Stop sequences |
-| `tools` | array | Function calling tools (OpenAI-compatible shape) |
-| `tool_choice` | string or object | `auto`, `none`, or named function |
-| `response_format` | object | See structured outputs section |
-| `user` | string | End-user identifier |
+| Field               | Type             | Notes                                            |
+| ------------------- | ---------------- | ------------------------------------------------ |
+| `model`             | string           | Required. Format: `provider/model-name`          |
+| `messages`          | array            | Required. Standard OpenAI message objects        |
+| `stream`            | boolean          | Default false. Enables SSE streaming             |
+| `temperature`       | number           | Range 0-2                                        |
+| `max_tokens`        | integer          | Max output tokens                                |
+| `top_p`             | number           | Range 0-1                                        |
+| `frequency_penalty` | number           | Range -2 to 2                                    |
+| `presence_penalty`  | number           | Range -2 to 2                                    |
+| `stop`              | string or array  | Stop sequences                                   |
+| `tools`             | array            | Function calling tools (OpenAI-compatible shape) |
+| `tool_choice`       | string or object | `auto`, `none`, or named function                |
+| `response_format`   | object           | See structured outputs section                   |
+| `user`              | string           | End-user identifier                              |
 
 ### Message Content Types
 
 Standard text:
+
 ```json
 { "role": "user", "content": "Hello" }
 ```
 
 Multimodal with image (base64):
+
 ```json
 {
   "role": "user",
   "content": [
     { "type": "text", "text": "Describe this." },
-    { "type": "image_url", "image_url": { "url": "data:image/png;base64,...", "detail": "auto" } }
+    {
+      "type": "image_url",
+      "image_url": { "url": "data:image/png;base64,...", "detail": "auto" }
+    }
   ]
 }
 ```
 
 File attachment (PDF):
+
 ```json
 {
   "role": "user",
   "content": [
     { "type": "text", "text": "Summarize this PDF." },
-    { "type": "file", "file": { "data": "<base64>", "media_type": "application/pdf", "filename": "doc.pdf" } }
+    {
+      "type": "file",
+      "file": {
+        "data": "<base64>",
+        "media_type": "application/pdf",
+        "filename": "doc.pdf"
+      }
+    }
   ]
 }
 ```
 
 Prompt caching (Anthropic-compatible `cache_control`):
+
 ```json
 {
   "role": "user",
@@ -434,6 +448,7 @@ data: [DONE]
 ```
 
 **Key characteristics:**
+
 - Standard `data: {json}\n\n` SSE format
 - No provider field in streaming chunks (unlike OpenRouter which adds `"provider": "OpenAI"`)
 - No keep-alive comment lines (unlike OpenRouter's `": OPENROUTER PROCESSING"`)
@@ -443,20 +458,22 @@ data: [DONE]
 
 ```json
 {
-  "choices": [{
-    "delta": {
-      "reasoning": "Let me think...",
-      "reasoning_details": [
-        {
-          "type": "reasoning.text",
-          "text": "Let me think...",
-          "format": "anthropic-claude-v1",
-          "index": 0
-        }
-      ],
-      "content": null
+  "choices": [
+    {
+      "delta": {
+        "reasoning": "Let me think...",
+        "reasoning_details": [
+          {
+            "type": "reasoning.text",
+            "text": "Let me think...",
+            "format": "anthropic-claude-v1",
+            "index": 0
+          }
+        ],
+        "content": null
+      }
     }
-  }]
+  ]
 }
 ```
 
@@ -638,6 +655,7 @@ The `model` field in the response reflects which model actually served the reque
 ```
 
 This tries:
+
 1. `openai/gpt-5.2` via Azure, then OpenAI
 2. `openai/gpt-5-nano` via Azure, then OpenAI
 3. `anthropic/claude-sonnet-4.5` via available Anthropic providers
@@ -657,6 +675,7 @@ Vercel AI Gateway does not expose explicit load-balancing configuration in the A
 algorithm is an automated scoring system using recent uptime and latency data.
 
 **Implicit load balancing behaviors:**
+
 - Provider auto-selection based on uptime + latency scoring (undocumented algorithm)
 - Multi-provider retry sequence when primary fails
 
@@ -696,21 +715,27 @@ single project by selecting from the top project dropdown.
 ### Programmatic Observability
 
 **Credits endpoint:**
+
 ```
 GET https://ai-gateway.vercel.sh/v1/credits
 Authorization: Bearer <API_GATEWAY_API_KEY>
 ```
+
 Response:
+
 ```json
 { "balance": "95.50", "total_used": "4.50" }
 ```
 
 **Generation lookup endpoint:**
+
 ```
 GET https://ai-gateway.vercel.sh/v1/generation?id=gen_01ARZ3NDEKTSV4RRFFQ69G5FAV
 Authorization: Bearer <API_GATEWAY_API_KEY>
 ```
+
 Response fields:
+
 ```json
 {
   "data": {
@@ -734,9 +759,11 @@ Response fields:
 ```
 
 **Billing charges endpoint** (FOCUS v1.3 open-standard format, returns JSONL):
+
 ```
 GET /billing/charges
 ```
+
 Returns cost data with 1-day granularity. Mentioned in changelog as a new feature (2026).
 
 ---
@@ -761,6 +788,7 @@ Cost is NOT in the standard chat completion response body. It IS available:
 **In-request cost tracking (embeddings):**
 
 For embeddings, the response body includes `providerMetadata.gateway.cost` directly:
+
 ```json
 {
   "providerMetadata": {
@@ -863,6 +891,7 @@ The `@ai-sdk/gateway` package provides:
 ### 4. Provider Routing Transparency (via providerMetadata)
 
 The AI SDK response exposes the full routing decision including:
+
 - `resolvedProvider`, `resolvedProviderApiModelId`
 - `fallbacksAvailable` list
 - `internalReasoning` and `planningReasoning` (text explanations)
@@ -877,6 +906,7 @@ OpenRouter's account-level BYOK configuration.
 ### 6. Web Search Tools (Provider + Universal)
 
 Two flavors:
+
 - **Provider-native search:** Anthropic web search, OpenAI web search, Google Search grounding
 - **Universal search:** `perplexitySearch` and `parallelSearch` tools work with ANY model
 
@@ -886,6 +916,7 @@ does not have the universal provider-agnostic search tools via the gateway SDK.
 ### 7. Video and Image Generation
 
 Vercel AI Gateway explicitly supports image and video generation models:
+
 - Image: Flux 2 Flex, Recraft V3, Imagen, DALL-E (via provider-specific endpoints)
 - Video: Veo 3.1, KlingAI, Wan (Alibaba), Grok Imagine Video
 - Model type classification in `/v1/models`: `language`, `embedding`, `image`, `video`
@@ -911,11 +942,13 @@ expected parameter name automatically).
 - Payment processing fees may apply
 
 **Credit system:**
+
 - Balance visible in dashboard
 - Auto top-up configurable with threshold + amount
 - Balance viewable programmatically via `GET /v1/credits`
 
 **Billing API:**
+
 - `GET /billing/charges` — Returns FOCUS v1.3 format JSONL with 1-day granularity
 
 ---
@@ -929,6 +962,7 @@ This is the fundamental architectural difference from LiteLLM (which is self-hos
 and OpenRouter (which is also SaaS-only but positions differently).
 
 **Infrastructure considerations:**
+
 - No docker image / helm chart / terraform module for self-hosting
 - All data flows through Vercel's infrastructure
 - Observability is Vercel-dashboard-native; no OTEL export documented
@@ -940,21 +974,21 @@ and OpenRouter (which is also SaaS-only but positions differently).
 
 ### OpenAI-Compatible (`/v1` base path)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/v1/models` | List all available models (no auth required) |
-| GET | `/v1/models/{model}` | Retrieve specific model |
-| GET | `/v1/models/{creator}/{model}/endpoints` | Model provider endpoints + pricing |
-| POST | `/v1/chat/completions` | Chat completions (streaming + non-streaming) |
-| POST | `/v1/embeddings` | Generate vector embeddings |
-| GET | `/v1/credits` | Credit balance |
-| GET | `/v1/generation` | Generation lookup by ID |
+| Method | Path                                     | Description                                  |
+| ------ | ---------------------------------------- | -------------------------------------------- |
+| GET    | `/v1/models`                             | List all available models (no auth required) |
+| GET    | `/v1/models/{model}`                     | Retrieve specific model                      |
+| GET    | `/v1/models/{creator}/{model}/endpoints` | Model provider endpoints + pricing           |
+| POST   | `/v1/chat/completions`                   | Chat completions (streaming + non-streaming) |
+| POST   | `/v1/embeddings`                         | Generate vector embeddings                   |
+| GET    | `/v1/credits`                            | Credit balance                               |
+| GET    | `/v1/generation`                         | Generation lookup by ID                      |
 
 ### Anthropic-Compatible (root base path)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/v1/messages` | Anthropic Messages API (streaming + non-streaming) |
+| Method | Path           | Description                                        |
+| ------ | -------------- | -------------------------------------------------- |
+| POST   | `/v1/messages` | Anthropic Messages API (streaming + non-streaming) |
 
 ### Notable Missing Endpoints (vs OpenRouter)
 
@@ -996,6 +1030,7 @@ The following frameworks have documented integrations with Vercel AI Gateway:
 ### Context
 
 thegent's CLIProxy (`cliproxy_adapter.py`) is a Starlette ASGI app that:
+
 - Listens on port 8317, proxies to CLIProxyAPIPlus on port 8318
 - Translates OpenAI Responses API (`/v1/responses`) to Chat Completions
 - Enriches `/v1/models` with Codex-specific metadata
@@ -1004,38 +1039,38 @@ thegent's CLIProxy (`cliproxy_adapter.py`) is a Starlette ASGI app that:
 
 ### Gap Table
 
-| Feature | Vercel AI Gateway | thegent CLIProxy | Gap / Status |
-|---------|-------------------|------------------|--------------|
-| **Base URL** | `https://ai-gateway.vercel.sh/v1` | `http://127.0.0.1:8317/v1` | **GAP (P0):** No routing path to Vercel AI Gateway. Must add as backend target. |
-| **Auth method** | `Authorization: Bearer <AI_GATEWAY_API_KEY>` | Passes headers through unchanged | **GAP (P0):** No `AI_GATEWAY_API_KEY` injection. Client must supply key or middleware must inject from env. |
-| **Anthropic-compat endpoint** | `POST /v1/messages` at `ai-gateway.vercel.sh` | Not exposed | **GAP (P1):** Proxy does not expose an Anthropic-format endpoint. Tools like Claude Code using native Anthropic SDK cannot benefit from proxy routing without this. |
-| **Model ID format** | `provider/model-name` (e.g. `anthropic/claude-sonnet-4.5`) | thegent catalog IDs (e.g. `claude-sonnet-4.5`) passed through, some mapping in `harness_model_mapping.py` | **GAP (P0):** No mapping from thegent catalog IDs to Vercel AI Gateway format. Requests with bare model names will fail. |
-| **Provider routing (`providerOptions.gateway.order`)** | Per-request provider ordering | Not implemented | **GAP (P1):** No pass-through or injection of `providerOptions.gateway` routing fields. In body-reconstruction mode (transform path) these are silently dropped. |
-| **Model fallbacks (`models` array)** | Top-level `models` field and `providerOptions.gateway.models` | Not implemented | **GAP (P1):** No pass-through or injection of model fallback arrays. |
-| **Reasoning (`reasoning` object)** | Normalized cross-provider `reasoning` parameter | Not implemented | **GAP (P1):** The `reasoning` request field is not forwarded in the transform path. |
-| **BYOK per-request (`providerOptions.gateway.byok`)** | Pass per-request credentials for any provider | Not implemented | **GAP (P1):** No BYOK credential injection mechanism. |
-| **Caching (`providerOptions.gateway.caching: 'auto'`)** | Auto cache_control insertion for Anthropic | Not implemented | **GAP (P2):** No auto caching orchestration. Manual `cache_control` markers flow through if body not reconstructed. |
-| **Reasoning response fields** | `choices[].message.reasoning`, `choices[].message.reasoning_details` | Not forwarded | **GAP (P1):** Proxy's `_extract_delta_content` only reads `delta.content`; `delta.reasoning` and `delta.reasoning_details` are dropped in transform mode. |
-| **Cost in response** | `providerMetadata.gateway.cost` (AI SDK), `GET /v1/generation` | Not tracked | **GAP (P1):** No cost data returned. Would need generation lookup forwarding and/or cost metadata injection. |
-| **Generation lookup endpoint** | `GET /v1/generation?id={id}` | Not proxied | **GAP (P2):** Users cannot look up per-request cost data. |
-| **Credits endpoint** | `GET /v1/credits` | Not proxied | **GAP (P2):** No balance introspection forwarding. |
-| **Embeddings endpoint** | `POST /v1/embeddings` | Not explicitly handled (passes through to backend) | **PARTIAL:** Passes through but no Vercel AI Gateway routing awareness or cost tracking. |
-| **Models endpoint format** | OpenAI format `{"object":"list","data":[...]}` with pricing, type, tags | Codex format `{"models":[...], "fetched_at":..., "client_version":...}` | **GAP (P0 when acting as Vercel):** Format incompatible. If clients expect Vercel AI Gateway model format (with pricing, type, tags), the current Codex enrichment format is wrong. |
-| **Model metadata in /v1/models** | `type`, `tags`, `context_window`, `max_tokens`, `pricing` per model | Codex-specific fields (`slug`, `shell_type`, `supported_reasoning_levels`, etc.) | **GAP (P1):** No pricing, type, or tags in model objects. |
-| **`/v1/models/{creator}/{model}/endpoints`** | Per-model provider list with pricing and metrics | Not implemented | **GAP (P2):** Endpoint not proxied. |
-| **Anthropic `POST /v1/messages`** | Full Anthropic Messages API | Not exposed | **GAP (P1):** Proxy does not expose `/v1/messages` at all. Claude Code connecting via native Anthropic SDK cannot use the proxy. |
-| **Streaming — no provider field in chunks** | Vercel does NOT add `provider` field to SSE chunks | Proxy passes chunks through (no `provider` added either) | **OK (compatible):** Both omit `provider` from chunks. Distinct from OpenRouter which adds it. |
-| **Streaming — no SSE comments** | No keep-alive comment lines | Proxy emits no comment lines | **OK (compatible)** |
-| **SSE `data: [DONE]`** | Standard `data: [DONE]` terminator | Proxy passes through or emits | **OK** |
-| **Tool call streaming** | Standard `delta.tool_calls` | Dropped in transform mode | **GAP (P1):** Same issue as documented in OpenRouter gap analysis — applies equally here. |
-| **Error format** | Standard OpenAI format `{"error":{"message":"...","type":"...","param":"...","code":"..."}}` | Proxy emits `{"error":{"message":"..."}}` (no type/param/code) | **GAP (P1):** Missing `type`, `param`, `code` fields in error objects. |
-| **TLS verification** | HTTPS to `ai-gateway.vercel.sh` required | `_proxy_request` uses `verify=False` | **GAP (P0):** TLS verification disabled; must use `verify=True` for Vercel AI Gateway backend. |
-| **Attribution headers** | `http-referer` + `x-title` optional | Not injected | **GAP (P2):** No thegent identity headers sent. Low priority. |
-| **OIDC token authentication** | `Authorization: Bearer <VERCEL_OIDC_TOKEN>` | No OIDC awareness | **GAP (P2):** For Vercel-native deployments, OIDC is more convenient than API key. Not critical for standalone thegent use. |
-| **Automatic provider selection** | Dynamic uptime/latency scoring | No comparable mechanism | **GAP (P2):** thegent has static model routing; no dynamic provider health scoring. |
-| **Web search tools** | `perplexitySearch`, `parallelSearch`, provider-native search | Not implemented | **GAP (P2):** These are AI SDK features; not relevant to the proxy layer directly. |
-| **Image/Video generation** | Full `language`, `embedding`, `image`, `video` model types | Not typed; any model request proxied uniformly | **GAP (P2):** No model type awareness for routing image/video generation requests differently. |
-| **Self-hosting** | SaaS only | thegent is self-hosted | **N/A:** Different deployment model. thegent proxy is self-hosted, which is actually a competitive advantage for organizations that cannot use external SaaS. |
+| Feature                                                 | Vercel AI Gateway                                                                            | thegent CLIProxy                                                                                          | Gap / Status                                                                                                                                                                        |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Base URL**                                            | `https://ai-gateway.vercel.sh/v1`                                                            | `http://127.0.0.1:8317/v1`                                                                                | **GAP (P0):** No routing path to Vercel AI Gateway. Must add as backend target.                                                                                                     |
+| **Auth method**                                         | `Authorization: Bearer <AI_GATEWAY_API_KEY>`                                                 | Passes headers through unchanged                                                                          | **GAP (P0):** No `AI_GATEWAY_API_KEY` injection. Client must supply key or middleware must inject from env.                                                                         |
+| **Anthropic-compat endpoint**                           | `POST /v1/messages` at `ai-gateway.vercel.sh`                                                | Not exposed                                                                                               | **GAP (P1):** Proxy does not expose an Anthropic-format endpoint. Tools like Claude Code using native Anthropic SDK cannot benefit from proxy routing without this.                 |
+| **Model ID format**                                     | `provider/model-name` (e.g. `anthropic/claude-sonnet-4.5`)                                   | thegent catalog IDs (e.g. `claude-sonnet-4.5`) passed through, some mapping in `harness_model_mapping.py` | **GAP (P0):** No mapping from thegent catalog IDs to Vercel AI Gateway format. Requests with bare model names will fail.                                                            |
+| **Provider routing (`providerOptions.gateway.order`)**  | Per-request provider ordering                                                                | Not implemented                                                                                           | **GAP (P1):** No pass-through or injection of `providerOptions.gateway` routing fields. In body-reconstruction mode (transform path) these are silently dropped.                    |
+| **Model fallbacks (`models` array)**                    | Top-level `models` field and `providerOptions.gateway.models`                                | Not implemented                                                                                           | **GAP (P1):** No pass-through or injection of model fallback arrays.                                                                                                                |
+| **Reasoning (`reasoning` object)**                      | Normalized cross-provider `reasoning` parameter                                              | Not implemented                                                                                           | **GAP (P1):** The `reasoning` request field is not forwarded in the transform path.                                                                                                 |
+| **BYOK per-request (`providerOptions.gateway.byok`)**   | Pass per-request credentials for any provider                                                | Not implemented                                                                                           | **GAP (P1):** No BYOK credential injection mechanism.                                                                                                                               |
+| **Caching (`providerOptions.gateway.caching: 'auto'`)** | Auto cache_control insertion for Anthropic                                                   | Not implemented                                                                                           | **GAP (P2):** No auto caching orchestration. Manual `cache_control` markers flow through if body not reconstructed.                                                                 |
+| **Reasoning response fields**                           | `choices[].message.reasoning`, `choices[].message.reasoning_details`                         | Not forwarded                                                                                             | **GAP (P1):** Proxy's `_extract_delta_content` only reads `delta.content`; `delta.reasoning` and `delta.reasoning_details` are dropped in transform mode.                           |
+| **Cost in response**                                    | `providerMetadata.gateway.cost` (AI SDK), `GET /v1/generation`                               | Not tracked                                                                                               | **GAP (P1):** No cost data returned. Would need generation lookup forwarding and/or cost metadata injection.                                                                        |
+| **Generation lookup endpoint**                          | `GET /v1/generation?id={id}`                                                                 | Not proxied                                                                                               | **GAP (P2):** Users cannot look up per-request cost data.                                                                                                                           |
+| **Credits endpoint**                                    | `GET /v1/credits`                                                                            | Not proxied                                                                                               | **GAP (P2):** No balance introspection forwarding.                                                                                                                                  |
+| **Embeddings endpoint**                                 | `POST /v1/embeddings`                                                                        | Not explicitly handled (passes through to backend)                                                        | **PARTIAL:** Passes through but no Vercel AI Gateway routing awareness or cost tracking.                                                                                            |
+| **Models endpoint format**                              | OpenAI format `{"object":"list","data":[...]}` with pricing, type, tags                      | Codex format `{"models":[...], "fetched_at":..., "client_version":...}`                                   | **GAP (P0 when acting as Vercel):** Format incompatible. If clients expect Vercel AI Gateway model format (with pricing, type, tags), the current Codex enrichment format is wrong. |
+| **Model metadata in /v1/models**                        | `type`, `tags`, `context_window`, `max_tokens`, `pricing` per model                          | Codex-specific fields (`slug`, `shell_type`, `supported_reasoning_levels`, etc.)                          | **GAP (P1):** No pricing, type, or tags in model objects.                                                                                                                           |
+| **`/v1/models/{creator}/{model}/endpoints`**            | Per-model provider list with pricing and metrics                                             | Not implemented                                                                                           | **GAP (P2):** Endpoint not proxied.                                                                                                                                                 |
+| **Anthropic `POST /v1/messages`**                       | Full Anthropic Messages API                                                                  | Not exposed                                                                                               | **GAP (P1):** Proxy does not expose `/v1/messages` at all. Claude Code connecting via native Anthropic SDK cannot use the proxy.                                                    |
+| **Streaming — no provider field in chunks**             | Vercel does NOT add `provider` field to SSE chunks                                           | Proxy passes chunks through (no `provider` added either)                                                  | **OK (compatible):** Both omit `provider` from chunks. Distinct from OpenRouter which adds it.                                                                                      |
+| **Streaming — no SSE comments**                         | No keep-alive comment lines                                                                  | Proxy emits no comment lines                                                                              | **OK (compatible)**                                                                                                                                                                 |
+| **SSE `data: [DONE]`**                                  | Standard `data: [DONE]` terminator                                                           | Proxy passes through or emits                                                                             | **OK**                                                                                                                                                                              |
+| **Tool call streaming**                                 | Standard `delta.tool_calls`                                                                  | Dropped in transform mode                                                                                 | **GAP (P1):** Same issue as documented in OpenRouter gap analysis — applies equally here.                                                                                           |
+| **Error format**                                        | Standard OpenAI format `{"error":{"message":"...","type":"...","param":"...","code":"..."}}` | Proxy emits `{"error":{"message":"..."}}` (no type/param/code)                                            | **GAP (P1):** Missing `type`, `param`, `code` fields in error objects.                                                                                                              |
+| **TLS verification**                                    | HTTPS to `ai-gateway.vercel.sh` required                                                     | `_proxy_request` uses `verify=False`                                                                      | **GAP (P0):** TLS verification disabled; must use `verify=True` for Vercel AI Gateway backend.                                                                                      |
+| **Attribution headers**                                 | `http-referer` + `x-title` optional                                                          | Not injected                                                                                              | **GAP (P2):** No thegent identity headers sent. Low priority.                                                                                                                       |
+| **OIDC token authentication**                           | `Authorization: Bearer <VERCEL_OIDC_TOKEN>`                                                  | No OIDC awareness                                                                                         | **GAP (P2):** For Vercel-native deployments, OIDC is more convenient than API key. Not critical for standalone thegent use.                                                         |
+| **Automatic provider selection**                        | Dynamic uptime/latency scoring                                                               | No comparable mechanism                                                                                   | **GAP (P2):** thegent has static model routing; no dynamic provider health scoring.                                                                                                 |
+| **Web search tools**                                    | `perplexitySearch`, `parallelSearch`, provider-native search                                 | Not implemented                                                                                           | **GAP (P2):** These are AI SDK features; not relevant to the proxy layer directly.                                                                                                  |
+| **Image/Video generation**                              | Full `language`, `embedding`, `image`, `video` model types                                   | Not typed; any model request proxied uniformly                                                            | **GAP (P2):** No model type awareness for routing image/video generation requests differently.                                                                                      |
+| **Self-hosting**                                        | SaaS only                                                                                    | thegent is self-hosted                                                                                    | **N/A:** Different deployment model. thegent proxy is self-hosted, which is actually a competitive advantage for organizations that cannot use external SaaS.                       |
 
 ### Priority Summary
 

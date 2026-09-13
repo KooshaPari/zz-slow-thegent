@@ -11,6 +11,7 @@
 This document specifies the design for a **Unified Agent Registry API** that consolidates agent management across multiple projects in the kush ecosystem (thegent, kimaki, plangent, heliosShield). The API provides a single source of truth for agent registration, discovery, and coordination.
 
 **Key Goals**:
+
 - ✅ Single source of truth for agent metadata
 - ✅ Cross-project agent discovery
 - ✅ Unified agent lifecycle management
@@ -25,21 +26,25 @@ This document specifies the design for a **Unified Agent Registry API** that con
 ### 1.1 Existing Agent Registries
 
 #### **kimaki** (`discord/src/core/agent-registry.ts`)
+
 - **Features**: Agent registration, project assignments, collaboration rules, availability management, performance metrics
 - **Schema**: TypeScript interfaces with comprehensive metadata
 - **Storage**: In-memory Map (could be persisted)
 
 #### **plangent**
+
 - **Features**: Root agent + sub-agents, adapter pattern
 - **Schema**: TypeScript-based agent definitions
 - **Storage**: State manager adapter
 
 #### **thegent**
+
 - **Features**: Agent discovery, MCP integration
 - **Schema**: Python-based agent definitions
 - **Storage**: File-based, MCP server discovery
 
 #### **heliosShield**
+
 - **Features**: Agent harness, command interception
 - **Schema**: Python-based agent definitions
 - **Storage**: Runtime detection
@@ -47,6 +52,7 @@ This document specifies the design for a **Unified Agent Registry API** that con
 ### 1.2 Common Patterns
 
 **Shared Concepts**:
+
 - Agent ID (unique identifier)
 - Agent name and description
 - Agent capabilities/tools
@@ -55,6 +61,7 @@ This document specifies the design for a **Unified Agent Registry API** that con
 - Performance metrics
 
 **Differences**:
+
 - Storage mechanisms (in-memory vs. persistent)
 - Schema formats (TypeScript vs. Python)
 - Integration points (MCP vs. direct)
@@ -387,12 +394,14 @@ async def get_agent_status(agent_id: str) -> dict:
 ### 3.1 Phase 1: Core API (Week 1-2)
 
 **Deliverables**:
+
 - ✅ REST API implementation
 - ✅ PostgreSQL schema
 - ✅ Basic CRUD operations
 - ✅ Agent registration and discovery
 
 **Tech Stack**:
+
 - FastAPI for REST API
 - SQLAlchemy for ORM
 - PostgreSQL for storage
@@ -401,12 +410,14 @@ async def get_agent_status(agent_id: str) -> dict:
 ### 3.2 Phase 2: Integration (Week 3-4)
 
 **Deliverables**:
+
 - ✅ MCP server integration
 - ✅ Redis caching layer
 - ✅ Project assignment API
 - ✅ Collaboration rules API
 
 **Integration Points**:
+
 - kimaki agent registry → Unified API
 - plangent agent definitions → Unified API
 - thegent agent discovery → Unified API
@@ -414,6 +425,7 @@ async def get_agent_status(agent_id: str) -> dict:
 ### 3.3 Phase 3: Advanced Features (Week 5-6)
 
 **Deliverables**:
+
 - ✅ Performance metrics collection
 - ✅ Agent recommendation engine
 - ✅ Real-time status updates (WebSocket)
@@ -422,6 +434,7 @@ async def get_agent_status(agent_id: str) -> dict:
 ### 3.4 Phase 4: Migration (Week 7-8)
 
 **Deliverables**:
+
 - ✅ Migration scripts for existing registries
 - ✅ Backward compatibility layer
 - ✅ Documentation and examples
@@ -520,33 +533,29 @@ await client.assign_to_project(agent_id=agent.id, project_id="project-123", role
 ### 5.2 TypeScript Client
 
 ```typescript
-import { AgentRegistryClient } from '@kush/unified-agent-registry';
+import { AgentRegistryClient } from "@kush/unified-agent-registry";
 
 const client = new AgentRegistryClient({
-  baseUrl: 'http://localhost:8000',
-  apiKey: 'your-api-key'
+  baseUrl: "http://localhost:8000",
+  apiKey: "your-api-key",
 });
 
 // Register agent
 const agent = await client.registerAgent({
-  name: 'Code Review Agent',
-  capabilities: ['code_review', 'testing'],
-  tools: ['ruff', 'mypy', 'pytest']
+  name: "Code Review Agent",
+  capabilities: ["code_review", "testing"],
+  tools: ["ruff", "mypy", "pytest"],
 });
 
 // Discover agents
 const agents = await client.discoverAgents({
-  capability: 'code_review',
-  projectId: 'project-123',
-  available: true
+  capability: "code_review",
+  projectId: "project-123",
+  available: true,
 });
 
 // Assign to project
-await client.assignToProject(
-  agent.id,
-  'project-123',
-  'primary'
-);
+await client.assignToProject(agent.id, "project-123", "primary");
 ```
 
 ---
@@ -561,7 +570,7 @@ const registry = new AgentRegistry();
 registry.register(agent);
 
 // After (unified)
-import { AgentRegistryClient } from '@kush/unified-agent-registry';
+import { AgentRegistryClient } from "@kush/unified-agent-registry";
 const client = new AgentRegistryClient();
 await client.registerAgent(agent);
 ```
@@ -573,9 +582,9 @@ await client.registerAgent(agent);
 const agent = new RootAgentImpl(config);
 
 // After (unified)
-import { AgentRegistryClient } from '@kush/unified-agent-registry';
+import { AgentRegistryClient } from "@kush/unified-agent-registry";
 const client = new AgentRegistryClient();
-const agent = await client.getAgent('root-agent-id');
+const agent = await client.getAgent("root-agent-id");
 ```
 
 ### 6.3 thegent Migration

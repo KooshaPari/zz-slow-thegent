@@ -38,4 +38,3 @@ Define clear ownership boundaries for governance-related protocol surfaces.
 1. `task classifier schema` -> placement and delegation.
 2. `worktree inventory artifact` -> conformance.
 3. `governance metrics jsonl` -> policy SLOs.
-

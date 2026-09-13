@@ -12,7 +12,7 @@ Maintains audit trail for compliance verification.
 
 ### Methods
 
-#### ComplianceAuditTrail.__init__
+#### ComplianceAuditTrail.**init**
 
 ```python
 __init__(self: Any, storage_path: Path)
@@ -44,7 +44,7 @@ Enforces compliance controls based on active profile.
 
 ### Methods
 
-#### ComplianceEnforcer.__init__
+#### ComplianceEnforcer.**init**
 
 ```python
 __init__(self: Any, profile: ComplianceProfile)
@@ -80,7 +80,7 @@ Exports framework-specific evidence bundles for compliance audits (WP-15004).
 
 ### Methods
 
-#### ComplianceExporter.__init__
+#### ComplianceExporter.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)

@@ -20,14 +20,15 @@ For coding workloads, **speed = time to usable answer**, which includes:
 
 ### 1.2 Raw Observables (Per Offer)
 
-| Metric | Description |
-|--------|-------------|
-| latency_p50, latency_p95 | Request latency |
-| ttft_p50 | Time to first token |
-| tokens_per_second | Output throughput |
-| error_rate | Failure rate |
+| Metric                   | Description         |
+| ------------------------ | ------------------- |
+| latency_p50, latency_p95 | Request latency     |
+| ttft_p50                 | Time to first token |
+| tokens_per_second        | Output throughput   |
+| error_rate               | Failure rate        |
 
 **Per role**:
+
 - `expected_output_tokens(role, offer)`
 - `expected_turns(role)`
 
@@ -100,6 +101,7 @@ shadow_cost = base_cost * shadow_multiplier
 ```
 
 As quota depletes:
+
 - remaining_ratio drops
 - multiplier increases
 - model becomes "more expensive"
@@ -120,6 +122,7 @@ cost_score = shadow_cost / median_cost_across_offers
 ### 3.1 Requirements
 
 Quality must be:
+
 - Role-specific
 - Dynamic
 - Measured from your usage
@@ -133,12 +136,14 @@ normalized_benchmark = (model_score - min_score) / (max_score - min_score)
 ### 3.3 Online Performance Signals (Coding)
 
 Per role track:
+
 - test_pass_rate
 - required_escalation_rate
 - syntax_validity_rate
 - tool_success_rate
 
 Example composite:
+
 ```
 quality_score = w1 * normalized_benchmark
               + w2 * test_pass_rate
@@ -164,16 +169,16 @@ Prevents new models from being overtrusted early.
 
 ### 4.1 Plan Type Taxonomy
 
-| Plan Type | Description | EUC Calculation |
-|-----------|-------------|-----------------|
-| **payg_token** | OpenRouter payg, direct APIs | EUC_in = price_in_per_token, EUC_out = price_out_per_token |
-| **fixed_bucket_tokens** | Claude Max, Codex "~11B tokens", GLM "3× usage" | EUC_blended = monthly_fee / expected_tokens_covered |
-| **premium_request_bucket** | Copilot Pro/Pro+/Free (premium request caps) | Convert requests→tokens via observed avg; EUC = fee / (requests × avg_tokens) |
-| **prompt_rate_limited** | Minimax "300 prompts / 5 hours" | prompts_month × avg_tokens; EUC = fee / expected_tokens |
-| **volatile_free** | Promo/preview models | EUC = very_small_floor + high volatility penalty |
-| **daily_quota_bucket** | Cerebras Code (tokens/day) | day_shadow = 1 / max(remaining_today / expected_remaining_today, ε) |
-| **weighted_unit_bucket** | Copilot (multipliers + 0× models) | units consumed = multiplier; implied_cost = 0.04 * m |
-| **compute_metered** | NIM self-host | $/token = ($/hour) / (measured_tokens_per_hour) |
+| Plan Type                  | Description                                     | EUC Calculation                                                               |
+| -------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------- |
+| **payg_token**             | OpenRouter payg, direct APIs                    | EUC_in = price_in_per_token, EUC_out = price_out_per_token                    |
+| **fixed_bucket_tokens**    | Claude Max, Codex "~11B tokens", GLM "3× usage" | EUC_blended = monthly_fee / expected_tokens_covered                           |
+| **premium_request_bucket** | Copilot Pro/Pro+/Free (premium request caps)    | Convert requests→tokens via observed avg; EUC = fee / (requests × avg_tokens) |
+| **prompt_rate_limited**    | Minimax "300 prompts / 5 hours"                 | prompts_month × avg_tokens; EUC = fee / expected_tokens                       |
+| **volatile_free**          | Promo/preview models                            | EUC = very_small_floor + high volatility penalty                              |
+| **daily_quota_bucket**     | Cerebras Code (tokens/day)                      | day_shadow = 1 / max(remaining_today / expected_remaining_today, ε)           |
+| **weighted_unit_bucket**   | Copilot (multipliers + 0× models)               | units consumed = multiplier; implied_cost = 0.04 \* m                         |
+| **compute_metered**        | NIM self-host                                   | $/token = ($/hour) / (measured_tokens_per_hour)                               |
 
 ### 4.2 Fixed Bucket Example (Claude Max / Codex)
 
@@ -200,6 +205,7 @@ EUC = monthly_fee / expected_tokens_month
 ### 4.4 "Unlimited" Plans (Copilot 0×)
 
 Cannot price as $0 (would dominate every decision). Use:
+
 - EUC = very_small_floor (e.g., $0.001/MTok)
 - Add scarcity shadow to prevent degenerate always-pick
 - Apply non-cost constraints: rate limits, quality thresholds
@@ -231,12 +237,14 @@ effective_cost = base_cost * budget_shadow * plan_shadow
 ### 5.3 Cursor / Claude Max / Codex: Robust Token Estimation
 
 Usage is dynamic and includes caching. For each plan maintain:
+
 - monthly_fee
 - observed_spend_equivalent (if provider gives $ estimate)
 - observed_tokens_total (from harness logs)
 - effective_tokens_covered (latent variable)
 
 Update daily with EWMA:
+
 ```
 tokens_covered_est[today] =
   0.8 * tokens_covered_est[yesterday] +
@@ -267,12 +275,12 @@ If actual_burn > expected:
 
 ### 6.3 Role-Level Budget Allocation
 
-| Role | Allocation |
-|------|-------------|
-| code_complex | 40% |
-| doc_writer | 20% |
-| fast_chat | 15% |
-| agent_workflow | 25% |
+| Role           | Allocation |
+| -------------- | ---------- |
+| code_complex   | 40%        |
+| doc_writer     | 20%        |
+| fast_chat      | 15%        |
+| agent_workflow | 25%        |
 
 Each role has `remaining_role_budget`. Shadow pricing also applied at role level.
 
@@ -285,6 +293,7 @@ Each role has `remaining_role_budget`. Shadow pricing also applied at role level
 ### 6.5 Degraded Mode
 
 When budget burn crosses 85%:
+
 - Disable premium offers
 - Force cache-first behavior
 - Prioritize self-host / low-cost API models
@@ -297,6 +306,7 @@ When budget burn crosses 85%:
 Each offer has `(speed_score, cost_score, quality_score)`.
 
 **Pareto** keeps all non-dominated offers. An offer A dominates B if:
+
 - speed_A ≤ speed_B
 - cost_A ≤ cost_B
 - quality_A ≥ quality_B

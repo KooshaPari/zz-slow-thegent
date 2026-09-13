@@ -36,6 +36,7 @@ is_valid = await api.verify_artifact(artifact)
 ## Artifact Types at a Glance
 
 ### Code
+
 ```python
 # Code change
 CodeChangeArtifact.create(
@@ -47,6 +48,7 @@ FileOperationArtifact.create(maif, operation_type=FileOperationType.CREATE, sour
 ```
 
 ### Tool
+
 ```python
 # Generic tool
 ToolInvocationArtifact.create(
@@ -62,6 +64,7 @@ MCPCallArtifact.create(maif, mcp_server="filesystem", mcp_tool="read", call_stat
 ```
 
 ### Decision
+
 ```python
 # Decision point
 DecisionArtifact.create(
@@ -77,6 +80,7 @@ BranchingPointArtifact.create(
 ## Common Operations
 
 ### Query by Category
+
 ```python
 code_artifacts = await api.list_by_category(ArtifactCategory.CODE)
 tool_artifacts = await api.list_by_category(ArtifactCategory.TOOL)
@@ -84,28 +88,33 @@ decision_artifacts = await api.list_by_category(ArtifactCategory.DECISION)
 ```
 
 ### Query by Tag
+
 ```python
 critical = await api.list_by_tag("critical")
 security = await api.list_by_tag("security")
 ```
 
 ### Search
+
 ```python
 results = await api.search_artifacts("permission denied")
 ```
 
 ### List Session
+
 ```python
 artifacts = await api.list_session_artifacts("session-123")
 ```
 
 ### Dependency Chain
+
 ```python
 chain = await api.get_dependency_chain(artifact_id)
 related = await api.list_related_artifacts(artifact_id)
 ```
 
 ### Verify Chain
+
 ```python
 is_valid, msg = await api.verify_session_chain("session-123")
 ```
@@ -144,21 +153,27 @@ stats = await api.get_stats()
 ## Enums Reference
 
 ### CodeChangeType
+
 - EDIT, REFACTOR, BUG_FIX, FEATURE, FORMATTING
 
 ### FileOperationType
+
 - CREATE, DELETE, RENAME, MOVE, COPY
 
 ### ToolType
+
 - MCP, API, CLI, SUBPROCESS, DATABASE
 
 ### ToolResultStatus
+
 - SUCCESS, PARTIAL, FAILURE, TIMEOUT, UNKNOWN
 
 ### DecisionType
+
 - ROUTING, RESOURCE_ALLOCATION, STRATEGY_SELECTION, PARAMETER_CHOICE, ERROR_RECOVERY
 
 ### ArtifactCategory
+
 - CODE, TOOL, DECISION, SYSTEM
 
 ## Integration with MAIF
@@ -186,6 +201,7 @@ maif_back = artifact.to_maif_artifact()
 ## Phase 2 Preview
 
 Phase 2 will add:
+
 - Remote storage with Supermemory L4
 - Lifecycle hooks (auto-capture on tool use, writes)
 - Performance optimizations

@@ -17,6 +17,7 @@ Selecting an appropriate technology stack is one of the most consequential archi
 Before evaluating technologies, we established clear requirements across multiple dimensions:
 
 #### Functional Requirements
+
 - Support for core domain operations (detailed in SPEC.md)
 - Integration capabilities with existing Phenotype ecosystem components
 - Extensibility for future feature additions
@@ -24,15 +25,15 @@ Before evaluating technologies, we established clear requirements across multipl
 
 #### Non-Functional Requirements
 
-| Category | Requirement | Priority |
-|----------|-------------|----------|
-| Performance | Response time < 100ms p99 | High |
-| Throughput | Handle 10,000+ concurrent operations | High |
-| Availability | 99.9% uptime SLA | Critical |
-| Scalability | Horizontal scaling without code changes | High |
-| Security | SOC2 Type II compliance | Critical |
-| Maintainability | Clear code, comprehensive tests | High |
-| Observability | Full request tracing, metrics, logs | High |
+| Category        | Requirement                             | Priority |
+| --------------- | --------------------------------------- | -------- |
+| Performance     | Response time < 100ms p99               | High     |
+| Throughput      | Handle 10,000+ concurrent operations    | High     |
+| Availability    | 99.9% uptime SLA                        | Critical |
+| Scalability     | Horizontal scaling without code changes | High     |
+| Security        | SOC2 Type II compliance                 | Critical |
+| Maintainability | Clear code, comprehensive tests         | High     |
+| Observability   | Full request tracing, metrics, logs     | High     |
 
 ### Constraints
 
@@ -50,6 +51,7 @@ After systematic evaluation, we have selected the following technology stack:
 ### Core Implementation
 
 **Primary Language**: Determined by project requirements and ecosystem alignment
+
 - Strong type system for compile-time correctness
 - Excellent performance characteristics
 - Rich ecosystem of libraries and tools
@@ -143,16 +145,19 @@ After systematic evaluation, we have selected the following technology stack:
 ## Implementation Strategy
 
 ### Phase 1: Foundation (Weeks 1-2)
+
 - Set up project structure with selected technologies
 - Implement core abstractions and interfaces
 - Establish testing and CI/CD pipelines
 
 ### Phase 2: Core Features (Weeks 3-6)
+
 - Implement domain logic using chosen frameworks
 - Integrate with infrastructure services
 - Build out observability stack
 
 ### Phase 3: Hardening (Weeks 7-8)
+
 - Performance testing and optimization
 - Security review and hardening
 - Documentation and operational runbooks
@@ -164,6 +169,7 @@ After systematic evaluation, we have selected the following technology stack:
 ### Language and Runtime
 
 Detailed evaluation of language options considering:
+
 - Performance benchmarks
 - Ecosystem maturity
 - Team expertise
@@ -191,12 +197,11 @@ Evaluation of inter-service communication patterns detailed in ADR-005.
 
 ## Changelog
 
-| Date | Change | Author |
-|------|--------|--------|
-| $(date +%Y-%m-%d) | Initial selection | Architecture Team |
-| $(date +%Y-%m-%d) | Validated through proof of concept | Engineering Team |
-| $(date +%Y-%m-%d) | Accepted after performance testing | Tech Lead |
-
+| Date              | Change                             | Author            |
+| ----------------- | ---------------------------------- | ----------------- |
+| $(date +%Y-%m-%d) | Initial selection                  | Architecture Team |
+| $(date +%Y-%m-%d) | Validated through proof of concept | Engineering Team  |
+| $(date +%Y-%m-%d) | Accepted after performance testing | Tech Lead         |
 
 ## Additional Implementation Considerations
 
@@ -245,13 +250,13 @@ Clear documentation ensures the architecture is maintainable:
 
 The success of this architectural decision will be measured against the following criteria:
 
-| Criterion | Target | Measurement Method |
-|-----------|--------|-------------------|
-| Performance | Meet defined SLAs | Continuous benchmarking |
-| Reliability | 99.9% availability | Uptime monitoring |
-| Maintainability | < 4 hours MTTR | Incident analysis |
-| Developer Velocity | Onboard in < 2 days | Developer feedback |
-| Cost Efficiency | Within budget | Resource utilization metrics |
+| Criterion          | Target              | Measurement Method           |
+| ------------------ | ------------------- | ---------------------------- |
+| Performance        | Meet defined SLAs   | Continuous benchmarking      |
+| Reliability        | 99.9% availability  | Uptime monitoring            |
+| Maintainability    | < 4 hours MTTR      | Incident analysis            |
+| Developer Velocity | Onboard in < 2 days | Developer feedback           |
+| Cost Efficiency    | Within budget       | Resource utilization metrics |
 
 ## Future Considerations
 

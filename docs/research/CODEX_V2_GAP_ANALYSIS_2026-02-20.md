@@ -69,6 +69,7 @@ mcp/server.py  (FastMCP / Starlette, port 3847)
 ### What we have
 
 `mcp/server.py` registers the WebSocket at:
+
 ```
 /v1/responses/ws
 ```
@@ -76,25 +77,31 @@ mcp/server.py  (FastMCP / Starlette, port 3847)
 ### What Codex 0.104.0 expects
 
 From binary string analysis:
+
 - Codex opens `ws://<host>/v1/responses` (no `/ws` suffix).
 - It then sends JSON-RPC 2.0 `method: "response.create"` frames on that connection.
 
 The **adapter path** (`cliproxy_adapter.py`) uses:
+
 ```python
 WebSocketRoute("/v1/responses", websocket_responses_handler)
 ```
+
 which is **correct**. The MCP server path is the one that is wrong.
 
 ### Fix
 
 In `mcp/server.py`, change:
+
 ```python
 cast("Any", app).add_websocket_route(
     "/v1/responses/ws",
     handle_responses_websocket,
 )
 ```
+
 to:
+
 ```python
 cast("Any", app).add_websocket_route(
     "/v1/responses",
@@ -174,15 +181,15 @@ Server → Client (JSON-RPC result for the original call):
 
 Key behavioral differences:
 
-| Dimension | Our current implementation | Codex 0.104.0 expects |
-|---|---|---|
-| Protocol framing | Raw JSON objects | JSON-RPC 2.0 (`jsonrpc`, `id`, `method`, `params`) |
-| Session lifecycle | One message per connection | Persistent connection; multiple `response.create` calls |
-| On-connect notification | None | `session_configured` notification must be sent immediately |
-| Streaming events | `response.output_item.added` | `thread/started`, `turn/started`, `item/started`, `item/agentMessage/delta`, `item/completed`, `turn/completed` |
-| Completion signal | `{"type": "response.completed"}` | JSON-RPC result frame with `response_id` field |
-| Turn continuity | Not supported | `previous_response_id` links turns; `expectedTurnId must not be empty` error if missing |
-| Multi-turn | Not supported | `response.append` method for continuing turns |
+| Dimension               | Our current implementation       | Codex 0.104.0 expects                                                                                           |
+| ----------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Protocol framing        | Raw JSON objects                 | JSON-RPC 2.0 (`jsonrpc`, `id`, `method`, `params`)                                                              |
+| Session lifecycle       | One message per connection       | Persistent connection; multiple `response.create` calls                                                         |
+| On-connect notification | None                             | `session_configured` notification must be sent immediately                                                      |
+| Streaming events        | `response.output_item.added`     | `thread/started`, `turn/started`, `item/started`, `item/agentMessage/delta`, `item/completed`, `turn/completed` |
+| Completion signal       | `{"type": "response.completed"}` | JSON-RPC result frame with `response_id` field                                                                  |
+| Turn continuity         | Not supported                    | `previous_response_id` links turns; `expectedTurnId must not be empty` error if missing                         |
+| Multi-turn              | Not supported                    | `response.append` method for continuing turns                                                                   |
 
 ### Codex "reconnecting" error root cause
 
@@ -236,7 +243,7 @@ Non-streaming response from `litellm_responses_handler.handle_responses_request`
     {
       "type": "message",
       "role": "assistant",
-      "content": [{"type": "text", "text": "..."}]
+      "content": [{ "type": "text", "text": "..." }]
     }
   ]
 }
@@ -259,7 +266,7 @@ The Responses API non-streaming response requires at minimum:
       "type": "message",
       "role": "assistant",
       "status": "completed",
-      "content": [{"type": "output_text", "text": "..."}]
+      "content": [{ "type": "output_text", "text": "..." }]
     }
   ],
   "usage": {
@@ -272,17 +279,17 @@ The Responses API non-streaming response requires at minimum:
 
 Missing fields that cause "no model metadata" or silent failures:
 
-| Field | Missing from our response | Why Codex needs it |
-|---|---|---|
-| `id` (top-level `resp_*`) | Yes | Used as `previous_response_id` in next turn |
-| `object: "response"` | Yes | Codex type-checks this field |
-| `created_at` | Yes | Required by Responses API schema |
-| `model` | Yes | Echo-back for routing display |
-| `status: "completed"` | Yes | Codex state machine checks this |
-| `output[].id` (`item_*`) | Yes | Item tracking |
-| `output[].status` | Yes | Per-item completion status |
-| `content[].type: "output_text"` | Yes (we emit `"text"`) | Codex distinguishes `output_text` from `input_text` |
-| `usage` | Yes | Token accounting |
+| Field                           | Missing from our response | Why Codex needs it                                  |
+| ------------------------------- | ------------------------- | --------------------------------------------------- |
+| `id` (top-level `resp_*`)       | Yes                       | Used as `previous_response_id` in next turn         |
+| `object: "response"`            | Yes                       | Codex type-checks this field                        |
+| `created_at`                    | Yes                       | Required by Responses API schema                    |
+| `model`                         | Yes                       | Echo-back for routing display                       |
+| `status: "completed"`           | Yes                       | Codex state machine checks this                     |
+| `output[].id` (`item_*`)        | Yes                       | Item tracking                                       |
+| `output[].status`               | Yes                       | Per-item completion status                          |
+| `content[].type: "output_text"` | Yes (we emit `"text"`)    | Codex distinguishes `output_text` from `input_text` |
+| `usage`                         | Yes                       | Token accounting                                    |
 
 ### Fix
 
@@ -297,10 +304,18 @@ Add a `_build_responses_response()` function in `litellm_responses_handler.py` t
 `_chat_completions_to_responses()` emits:
 
 ```json
-{"type": "response.output_item.added", "item": {"type": "message", "role": "assistant", "content": [{"type": "text", "text": "..."}]}}
+{
+  "type": "response.output_item.added",
+  "item": {
+    "type": "message",
+    "role": "assistant",
+    "content": [{ "type": "text", "text": "..." }]
+  }
+}
 ```
 
 Completion:
+
 ```
 data: {"type": "response.completed"}
 ```
@@ -410,17 +425,17 @@ Codex 0.104.0 reads a `prefer_websockets` flag from its own config (not from us)
 
 ## Current Endpoint Inventory
 
-| Endpoint | Path A (Adapter, port 8317) | Path B (MCP Server, port 3847) |
-|---|---|---|
-| `GET /v1/models` | Exists, transforms `data`→`models`, enriches metadata | **MISSING** |
-| `POST /v1/responses` | Exists, translates to `/v1/chat/completions` | Exists, translates via LiteLLM Router |
-| `WS /v1/responses` | Exists (`websocket_responses_handler`) — single-turn, wrong protocol | **MISSING** (registered as `/v1/responses/ws`) |
-| `WS /v1/responses/ws` | Not registered | Exists (`handle_responses_websocket`) — wrong path, single-turn |
-| `x-models-etag` header | Not returned | Not returned |
-| `session_configured` notification | Not sent | Not sent |
-| JSON-RPC 2.0 framing | Not implemented | Not implemented |
-| `response_id` in responses | Not included | Not included |
-| Full SSE event sequence | Partial (`response.output_item.added` only) | Partial (`response.output_item.added` only) |
+| Endpoint                          | Path A (Adapter, port 8317)                                          | Path B (MCP Server, port 3847)                                  |
+| --------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `GET /v1/models`                  | Exists, transforms `data`→`models`, enriches metadata                | **MISSING**                                                     |
+| `POST /v1/responses`              | Exists, translates to `/v1/chat/completions`                         | Exists, translates via LiteLLM Router                           |
+| `WS /v1/responses`                | Exists (`websocket_responses_handler`) — single-turn, wrong protocol | **MISSING** (registered as `/v1/responses/ws`)                  |
+| `WS /v1/responses/ws`             | Not registered                                                       | Exists (`handle_responses_websocket`) — wrong path, single-turn |
+| `x-models-etag` header            | Not returned                                                         | Not returned                                                    |
+| `session_configured` notification | Not sent                                                             | Not sent                                                        |
+| JSON-RPC 2.0 framing              | Not implemented                                                      | Not implemented                                                 |
+| `response_id` in responses        | Not included                                                         | Not included                                                    |
+| Full SSE event sequence           | Partial (`response.output_item.added` only)                          | Partial (`response.output_item.added` only)                     |
 
 ---
 
@@ -432,6 +447,7 @@ Codex 0.104.0 reads a `prefer_websockets` flag from its own config (not from us)
 **File:** `src/thegent/routing/litellm_responses_handler.py` — `handle_responses_websocket`
 
 Add immediately after `await websocket.accept()`:
+
 ```python
 await websocket.send_json(
     {
@@ -456,6 +472,7 @@ Change `/v1/responses/ws` → `/v1/responses` in `add_websocket_route`.
 ### P3 — Implement JSON-RPC 2.0 dispatch in WebSocket handlers (makes responses work)
 
 Both WebSocket handlers need to parse `frame["method"]` and `frame["id"]` to:
+
 - Dispatch `response.create` to the completion backend.
 - Reply with a proper JSON-RPC 2.0 result frame (not just `{"type": "response.completed"}`).
 - Include `response_id` in the result for turn linking.
@@ -498,9 +515,9 @@ Implementing P1 + P2 + P3 + P5 will stop the "reconnecting" loop and restore bas
 
 ## File Map for All Changes
 
-| File | What to change |
-|---|---|
+| File                                               | What to change                                                                                                                                                                                                            |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `src/thegent/routing/litellm_responses_handler.py` | `handle_responses_websocket`: add JSON-RPC dispatch + `session_configured`; `handle_responses_request`: add `id`, `object`, `status`, `usage` to response; `_chat_completions_to_responses`: emit full SSE event sequence |
-| `src/thegent/cliproxy_adapter.py` | `websocket_responses_handler`: add JSON-RPC dispatch + `session_configured` |
-| `src/thegent/mcp/server.py` | Fix WebSocket path (`/ws` suffix → none); add `/v1/models` GET route |
-| `src/thegent/routing/model_metadata.py` | Ensure all provider aliases known to CLIProxyAPIPlus are present (prevents "no model metadata" for pass-through aliases) |
+| `src/thegent/cliproxy_adapter.py`                  | `websocket_responses_handler`: add JSON-RPC dispatch + `session_configured`                                                                                                                                               |
+| `src/thegent/mcp/server.py`                        | Fix WebSocket path (`/ws` suffix → none); add `/v1/models` GET route                                                                                                                                                      |
+| `src/thegent/routing/model_metadata.py`            | Ensure all provider aliases known to CLIProxyAPIPlus are present (prevents "no model metadata" for pass-through aliases)                                                                                                  |

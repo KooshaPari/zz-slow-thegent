@@ -3,6 +3,7 @@
 ## Overview
 
 Alert rules define when to trigger notifications and escalations. Each rule includes:
+
 - Trigger condition (metric + threshold)
 - Severity level (INFO, WARNING, CRITICAL)
 - Action (notification channels, auto-response)
@@ -12,6 +13,7 @@ Alert rules define when to trigger notifications and escalations. Each rule incl
 **Total Rules:** 12 core rules + 3 anomaly detection rules
 
 **Alert Channels:**
+
 - Slack: `#thegent-alerts` (all severity)
 - Email: Team lead (WARNING+), Manager (CRITICAL)
 - PagerDuty: CRITICAL only
@@ -24,6 +26,7 @@ Alert rules define when to trigger notifications and escalations. Each rule incl
 ### Rule 1: CATEGORY_BUDGET_WARNING
 
 **Trigger Condition:**
+
 ```
 category_budget_utilization >= 80%
 AND category_budget_utilization < 100%
@@ -32,18 +35,21 @@ AND category_budget_utilization < 100%
 **Severity:** WARNING
 
 **Applicable Categories:**
+
 - FAST: When >= $40 of $50 budget used
 - NORMAL: When >= $160 of $200 budget used
 - COMPLEX: When >= $120 of $150 budget used
 - HIGH_COMPLEX: When >= $40 of $50 budget used
 
 **Action:**
+
 1. Post to Slack `#thegent-alerts` with warning emoji
 2. Include current spend, remaining budget, and projection
 3. Tag team lead (@channel-owner)
 4. Log to monitoring system with severity=WARNING
 
 **Data Included in Alert:**
+
 ```
 Alert: CATEGORY_BUDGET_WARNING (NORMAL)
 ├─ Category: normal
@@ -63,6 +69,7 @@ Alert: CATEGORY_BUDGET_WARNING (NORMAL)
 **Escalation Path:** If still at 80%+ after 4 hours → escalate to CRITICAL
 
 **Manual Override:**
+
 - Team lead can manually increase budget via config update
 - Requires approval and note in audit log
 
@@ -71,6 +78,7 @@ Alert: CATEGORY_BUDGET_WARNING (NORMAL)
 ### Rule 2: CATEGORY_BUDGET_CRITICAL
 
 **Trigger Condition:**
+
 ```
 category_budget_utilization >= 100%
 ```
@@ -80,6 +88,7 @@ category_budget_utilization >= 100%
 **Applicable Categories:** All (FAST, NORMAL, COMPLEX, HIGH_COMPLEX)
 
 **Action:**
+
 1. Post to Slack with critical emoji and thread
 2. Page on-call manager via PagerDuty
 3. Send email to manager + team lead with context
@@ -87,6 +96,7 @@ category_budget_utilization >= 100%
 5. Log to error tracking system
 
 **Data Included in Alert:**
+
 ```
 ! CRITICAL: CATEGORY_BUDGET_CRITICAL (COMPLEX)
 ├─ Category: complex
@@ -102,6 +112,7 @@ category_budget_utilization >= 100%
 ```
 
 **Action on Triggered:**
+
 1. Page on-call (within 5 minutes)
 2. Log critical event to audit trail
 3. Block new tasks in category (set `routing_blocked = true`)
@@ -109,6 +120,7 @@ category_budget_utilization >= 100%
 5. Generate spend breakdown report
 
 **Recovery:**
+
 - Manager approves budget increase OR
 - Wait for next calendar month (reset)
 
@@ -123,6 +135,7 @@ category_budget_utilization >= 100%
 ### Rule 3: QUALITY_REGRESSION
 
 **Trigger Condition:**
+
 ```
 avg_quality_by_category < (baseline[category] - 0.05)
 ```
@@ -130,6 +143,7 @@ avg_quality_by_category < (baseline[category] - 0.05)
 **Severity:** WARNING
 
 **Trigger Examples:**
+
 - FAST: avg_quality < 0.55 (baseline 0.60 - 5%)
 - NORMAL: avg_quality < 0.65 (baseline 0.70 - 5%)
 - COMPLEX: avg_quality < 0.70 (baseline 0.75 - 5%)
@@ -138,12 +152,14 @@ avg_quality_by_category < (baseline[category] - 0.05)
 **Baseline:** 7-day rolling average
 
 **Action:**
+
 1. Post to Slack with warning: quality regression detected
 2. Alert ML/model team
 3. Include model breakdown by category
 4. Recommend: Review model selection policy or fallback to higher-quality model
 
 **Data Included in Alert:**
+
 ```
 ⚠ WARNING: QUALITY_REGRESSION (COMPLEX)
 ├─ Category: complex
@@ -167,6 +183,7 @@ avg_quality_by_category < (baseline[category] - 0.05)
 ### Rule 4: MODEL_SELECTION_ANOMALY
 
 **Trigger Condition:**
+
 ```
 ABS(model_selection_distribution[model] - expected[model]) > 10%
 ```
@@ -174,15 +191,18 @@ ABS(model_selection_distribution[model] - expected[model]) > 10%
 **Severity:** INFO (escalate to WARNING if > 20%)
 
 **Example Trigger:**
+
 - FAST expected: 99.5% minimax, actual: 85% minimax (14.5% deviation)
 - COMPLEX expected: 85% minimax, actual: 60% minimax (25% deviation) → WARNING
 
 **Action:**
+
 1. Post to Slack `#thegent-routing` (not critical channel)
 2. Include comparison table of expected vs actual
 3. Investigate: constraint violations, fallback trigger rate
 
 **Data Included in Alert:**
+
 ```
 ℹ INFO: MODEL_SELECTION_ANOMALY (COMPLEX)
 ├─ Category: complex
@@ -211,6 +231,7 @@ ABS(model_selection_distribution[model] - expected[model]) > 10%
 ### Rule 5: SLA_MISS_THRESHOLD
 
 **Trigger Condition:**
+
 ```
 sla_attainment_pct < 95%
 ```
@@ -218,6 +239,7 @@ sla_attainment_pct < 95%
 **Severity:** WARNING
 
 **Trigger Examples:**
+
 - FAST: <95% of tasks finish within 1000ms
 - NORMAL: <95% of tasks finish within 5000ms
 - COMPLEX: <95% of tasks finish within 20000ms
@@ -226,12 +248,14 @@ sla_attainment_pct < 95%
 **Measurement Window:** Past 7 days
 
 **Action:**
+
 1. Post to Slack with warning
 2. Include p50 and p99 latency metrics
 3. Alert infrastructure/performance team
 4. Recommend: Investigate model performance, retry logic, or system load
 
 **Data Included in Alert:**
+
 ```
 ⚠ WARNING: SLA_MISS_THRESHOLD (NORMAL)
 ├─ Category: normal
@@ -258,6 +282,7 @@ sla_attainment_pct < 95%
 ### Rule 6: CONSTRAINT_VIOLATION_SPIKE
 
 **Trigger Condition:**
+
 ```
 constraint_violation_rate[category] > (baseline + 3%)
 ```
@@ -267,15 +292,18 @@ constraint_violation_rate[category] > (baseline + 3%)
 **Baseline:** 7-day average (typically 2-3%)
 
 **Example Triggers:**
+
 - NORMAL: violation_rate > 5% (baseline 2%)
 - COMPLEX: violation_rate > 6% (baseline 3%)
 
 **Action:**
+
 1. Post to Slack with details on violation type
 2. Break down by violation type (performance, cost, speed)
 3. Alert routing team to investigate constraint settings
 
 **Data Included in Alert:**
+
 ```
 ⚠ WARNING: CONSTRAINT_VIOLATION_SPIKE (NORMAL)
 ├─ Category: normal
@@ -301,6 +329,7 @@ constraint_violation_rate[category] > (baseline + 3%)
 ### Rule 7: ESCALATION_QUEUE_AGING
 
 **Trigger Condition:**
+
 ```
 escalation_queue_depth > 10
 OR
@@ -310,11 +339,13 @@ MAX(escalation_age_hours) > 4
 **Severity:** WARNING
 
 **Action:**
+
 1. Post to Slack with escalation queue status
 2. Tag review team to process pending escalations
 3. Include task IDs and escalation reasons
 
 **Data Included in Alert:**
+
 ```
 ⚠ WARNING: ESCALATION_QUEUE_AGING
 ├─ Pending Escalations: 12 (threshold: 10)
@@ -342,6 +373,7 @@ MAX(escalation_age_hours) > 4
 ### Rule 8: ERROR_RATE_SPIKE
 
 **Trigger Condition:**
+
 ```
 error_rate_pct[category] > (baseline + 2%)
 ```
@@ -351,15 +383,18 @@ error_rate_pct[category] > (baseline + 2%)
 **Baseline:** 7-day average (typically 1-2%)
 
 **Example Triggers:**
+
 - FAST: error_rate > 3.5% (baseline 1.5%)
 - NORMAL: error_rate > 4.5% (baseline 2.5%)
 
 **Action:**
+
 1. Post to Slack with error distribution
 2. Include log excerpts or error types
 3. Alert engineering team to investigate
 
 **Data Included in Alert:**
+
 ```
 ⚠ WARNING: ERROR_RATE_SPIKE (COMPLEX)
 ├─ Category: complex
@@ -386,6 +421,7 @@ error_rate_pct[category] > (baseline + 2%)
 ### Rule 9: COST_ANOMALY_DETECTION
 
 **Trigger Condition:**
+
 ```
 daily_cost > (7d_avg_daily_cost * 1.5)
 ```
@@ -393,16 +429,19 @@ daily_cost > (7d_avg_daily_cost * 1.5)
 **Severity:** INFO (escalate to WARNING if > 2x)
 
 **Example:**
+
 - Average daily cost: $7.50
 - Today's cost: $12.00 (1.6x) → INFO
 - Today's cost: $15.00 (2x) → WARNING
 
 **Action:**
+
 1. Post informational message to Slack
 2. Include comparison to historical average
 3. List top-spending categories/models
 
 **Data Included in Alert:**
+
 ```
 ℹ INFO: COST_ANOMALY_DETECTION
 ├─ Today's Cost: $14.20
@@ -427,6 +466,7 @@ daily_cost > (7d_avg_daily_cost * 1.5)
 ### Rule 10: QUALITY_VARIANCE_ANOMALY
 
 **Trigger Condition:**
+
 ```
 STDDEV(quality_scores) > (baseline_stddev * 1.5)
 ```
@@ -434,11 +474,13 @@ STDDEV(quality_scores) > (baseline_stddev * 1.5)
 **Severity:** INFO
 
 **Action:**
+
 1. Post to Slack `#thegent-routing`
 2. Show quality distribution across models
 3. Recommend: Investigate model consistency
 
 **Data Included in Alert:**
+
 ```
 ℹ INFO: QUALITY_VARIANCE_ANOMALY (NORMAL)
 ├─ Category: normal
@@ -461,6 +503,7 @@ STDDEV(quality_scores) > (baseline_stddev * 1.5)
 ### Rule 11: LATENCY_DEGRADATION
 
 **Trigger Condition:**
+
 ```
 p50_latency_today > (p50_latency_7d_avg * 1.3)
 OR
@@ -470,11 +513,13 @@ p99_latency_today > (p99_latency_7d_avg * 1.2)
 **Severity:** WARNING
 
 **Action:**
+
 1. Post to Slack with latency comparison
 2. Alert infrastructure team
 3. Check system load and model availability
 
 **Data Included in Alert:**
+
 ```
 ⚠ WARNING: LATENCY_DEGRADATION (COMPLEX)
 ├─ Category: complex
@@ -506,12 +551,14 @@ p99_latency_today > (p99_latency_7d_avg * 1.2)
 ### By Severity Level
 
 **INFO** (Informational)
+
 - Post to `#thegent-alerts` Slack channel
 - Log to dashboard
 - No notification/paging
 - Example: Cost anomaly, model variance
 
 **WARNING**
+
 - Post to `#thegent-alerts` with @channel mention
 - Notify team lead via email
 - Log to dashboard with visual indicator
@@ -519,6 +566,7 @@ p99_latency_today > (p99_latency_7d_avg * 1.2)
 - Example: Budget at 80%, SLA miss, error spike
 
 **CRITICAL**
+
 - Post to `#thegent-alerts` with @channel and thread
 - Page on-call engineer via PagerDuty
 - Email manager + team lead
@@ -531,6 +579,7 @@ p99_latency_today > (p99_latency_7d_avg * 1.2)
 ## Escalation Paths
 
 ### Budget Crisis (CRITICAL)
+
 ```
 CRITICAL: Budget Exhausted
   ├─ (Immediate) Page on-call
@@ -541,6 +590,7 @@ CRITICAL: Budget Exhausted
 ```
 
 ### SLA Degradation (WARNING → CRITICAL)
+
 ```
 WARNING: SLA miss 94% (1 hour)
   ├─ Post alert
@@ -554,6 +604,7 @@ If still <95% after 1 hour:
 ```
 
 ### Constraint Violations (INFO → WARNING)
+
 ```
 INFO: Violation rate 2.5% (monitor)
   ├─ Update routing policy to tighten/loosen constraints
@@ -642,6 +693,7 @@ channels:
 ## Alert Silence/Snooping
 
 **Default Silence Periods:**
+
 - Budget warning: 60 minutes (don't spam)
 - Quality warning: 4 hours (allow time to investigate)
 - SLA warning: 2 hours (allow recovery)
@@ -649,23 +701,22 @@ channels:
 - Error spike: 2 hours (allow debugging)
 
 **Manual Silence:**
+
 - Team lead can manually silence an alert for up to 8 hours
 - Requires reason/comment in audit log
 - Auto-unsuppress if condition persists
 
 **Auto-Clear:**
+
 - Alert automatically clears 1 hour after condition resolves
 - Notification sent: "Alert resolved: budget_warning[normal] - now at 78%"
 
-
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -675,15 +726,18 @@ channels:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

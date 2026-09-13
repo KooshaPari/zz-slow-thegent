@@ -2,54 +2,54 @@
 
 ## heliosApp Family
 
-| Lane | Kind | Child lanes / notes | Status |
-|---|---|---|---|
-| `heliosApp` | standalone root | `main` | dirty (`353`) |
-| `heliosApp-wtrees` | forest container | `ci-workflow-fix`, `claude-md-standardize`, `code-reduction`, `launch-20260314`, `parity-debt-wave-20260303`, `phase2-decompose`, `sync-main-upstream-20260305`, `tech-debt-wave`, `ts-debt-parity-20260303` | mixed-layout container |
-| `heliosApp-colab-wtrees` | forest container | `oxc-migration-20260303` | mixed-layout container |
-| `heliosApp-composite-actions-wtrees` | forest container | `oxc-migration-20260303` | mixed-layout container |
-| `heliosApp-governance-wtrees` | forest container | `oxc-migration-20260303-head`, `policy-gate-rollout-20260303` | mixed-layout container |
-| `heliosApp-colab` | standalone root | `main` | dirty (`11`) |
+| Lane                                 | Kind             | Child lanes / notes                                                                                                                                                                                          | Status                 |
+| ------------------------------------ | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------- |
+| `heliosApp`                          | standalone root  | `main`                                                                                                                                                                                                       | dirty (`353`)          |
+| `heliosApp-wtrees`                   | forest container | `ci-workflow-fix`, `claude-md-standardize`, `code-reduction`, `launch-20260314`, `parity-debt-wave-20260303`, `phase2-decompose`, `sync-main-upstream-20260305`, `tech-debt-wave`, `ts-debt-parity-20260303` | mixed-layout container |
+| `heliosApp-colab-wtrees`             | forest container | `oxc-migration-20260303`                                                                                                                                                                                     | mixed-layout container |
+| `heliosApp-composite-actions-wtrees` | forest container | `oxc-migration-20260303`                                                                                                                                                                                     | mixed-layout container |
+| `heliosApp-governance-wtrees`        | forest container | `oxc-migration-20260303-head`, `policy-gate-rollout-20260303`                                                                                                                                                | mixed-layout container |
+| `heliosApp-colab`                    | standalone root  | `main`                                                                                                                                                                                                       | dirty (`11`)           |
 
 ## heliosCLI Family
 
-| Lane | Kind | Child lanes / notes | Status |
-|---|---|---|---|
-| `heliosCLI` | standalone root | `main` | dirty (`96`) |
-| `heliosCLI-composite-actions` | standalone linked worktree | detached | detached (`63` dirty) |
-| `heliosCLI-composite-actions-wtrees` | forest container | `oxc-migration-20260303` | mixed-layout container |
-| `heliosCLI-upstream` | standalone root | `stash-handling-temp` | dirty (`22`) |
-| `heliosCLI-upstream-wtrees` | forest container | `oxc-migration-20260303` | mixed-layout container |
-| `heliosCLI-wtrees` | forest container | `ascii-loader-pr`, `bazel-llvm-modules-fix`, `chore-governance-claude-fresh`, `chore-governance-claude-md-fresh`, `code-reduction`, `governance-claude-md`, `l1-realtime-protocol`, `l2-memory-state`, `l3-audio-tui`, `l4-core-runtime`, `l5-tooling-bootstrap`, `l6-assets-docs`, `l7-local-artifacts`, `merge`, `modular-arch`, `oxc-migration-20260303`, `patch-superset`, `patch-superset-v2`, `phenotype-modular-arch`, `pr346-fixes`, `release-framework`, `review-orchestrator`, `spec-docs-pr`, `wave2-lane-a-docs-unification` | mixed-layout container |
+| Lane                                 | Kind                       | Child lanes / notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Status                 |
+| ------------------------------------ | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `heliosCLI`                          | standalone root            | `main`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | dirty (`96`)           |
+| `heliosCLI-composite-actions`        | standalone linked worktree | detached                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | detached (`63` dirty)  |
+| `heliosCLI-composite-actions-wtrees` | forest container           | `oxc-migration-20260303`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | mixed-layout container |
+| `heliosCLI-upstream`                 | standalone root            | `stash-handling-temp`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | dirty (`22`)           |
+| `heliosCLI-upstream-wtrees`          | forest container           | `oxc-migration-20260303`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | mixed-layout container |
+| `heliosCLI-wtrees`                   | forest container           | `ascii-loader-pr`, `bazel-llvm-modules-fix`, `chore-governance-claude-fresh`, `chore-governance-claude-md-fresh`, `code-reduction`, `governance-claude-md`, `l1-realtime-protocol`, `l2-memory-state`, `l3-audio-tui`, `l4-core-runtime`, `l5-tooling-bootstrap`, `l6-assets-docs`, `l7-local-artifacts`, `merge`, `modular-arch`, `oxc-migration-20260303`, `patch-superset`, `patch-superset-v2`, `phenotype-modular-arch`, `pr346-fixes`, `release-framework`, `review-orchestrator`, `spec-docs-pr`, `wave2-lane-a-docs-unification` | mixed-layout container |
 
 ## helios-cli Control Slice
 
-| Lane | Kind | Child lanes / notes | Status |
-|---|---|---|---|
-| `helios-cli` | standalone root | `main` | dirty (`1`) |
-| `helios-cli-wtrees` | forest container | `absorb-prep-gh013-20260303`, `alert-sync-issues-pr3`, `audit`, `oxc-migration-20260303`, `patch-superset-sync`, `patch-superset-sync-v2`, `pr-ops-20260303b`, `pr345-base-fix`, `pr345-fixes`, `pr347-fix-fresh`, `pr347-fixes`, `pr347-gh013-replay-20260303`, `pr347-rustci-fix`, `pr349-fix`, `pr350-fix-fresh`, `pr350-replay-pr349`, `pr351-patch2`, `pr351-rebuild-clean`, `pr351-rebuild-fresh`, `pr351-replay-pr345`, `replay-helioscli-main-20260301` | mixed-layout container |
-| `helios-cli/.worktrees/helios-cli--mod-cli-task-surface-v1` | dedicated worktree | `mod/cli-task-surface-v1` | clean in this pass |
-| `helios-cli/.worktrees/helios-cli--mod-policy-gate-v1` | dedicated worktree | `codex-policy-gate-r2` | clean in this pass |
+| Lane                                                        | Kind               | Child lanes / notes                                                                                                                                                                                                                                                                                                                                                                                                                                             | Status                 |
+| ----------------------------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `helios-cli`                                                | standalone root    | `main`                                                                                                                                                                                                                                                                                                                                                                                                                                                          | dirty (`1`)            |
+| `helios-cli-wtrees`                                         | forest container   | `absorb-prep-gh013-20260303`, `alert-sync-issues-pr3`, `audit`, `oxc-migration-20260303`, `patch-superset-sync`, `patch-superset-sync-v2`, `pr-ops-20260303b`, `pr345-base-fix`, `pr345-fixes`, `pr347-fix-fresh`, `pr347-fixes`, `pr347-gh013-replay-20260303`, `pr347-rustci-fix`, `pr349-fix`, `pr350-fix-fresh`, `pr350-replay-pr349`, `pr351-patch2`, `pr351-rebuild-clean`, `pr351-rebuild-fresh`, `pr351-replay-pr345`, `replay-helioscli-main-20260301` | mixed-layout container |
+| `helios-cli/.worktrees/helios-cli--mod-cli-task-surface-v1` | dedicated worktree | `mod/cli-task-surface-v1`                                                                                                                                                                                                                                                                                                                                                                                                                                       | clean in this pass     |
+| `helios-cli/.worktrees/helios-cli--mod-policy-gate-v1`      | dedicated worktree | `codex-policy-gate-r2`                                                                                                                                                                                                                                                                                                                                                                                                                                          | clean in this pass     |
 
 ## Adjacent colab / helMo Slice
 
-| Lane | Kind | Child lanes / notes | Status |
-|---|---|---|---|
-| `colab` | standalone root | `main` | dirty (`9`) |
-| `colab-wtrees` | forest container | `helios-integration`, `parity-debt-wave-20260303`, `stabilize`, `ts-debt-parity-20260303` | mixed-layout container |
-| `colab-wtrees/helios-integration` | symlinked worktree alias | `helios-mvp` | dirty alias |
-| `colab-wtrees/parity-debt-wave-20260303` | child lane | `codex/parity-debt-wave-20260303` | clean |
-| `colab-wtrees/stabilize` | child lane | `fix/stabilize` | dirty |
-| `colab-wtrees/ts-debt-parity-20260303` | child lane | `codex/ts-debt-parity-20260303` | clean |
-| `helMo` | standalone root | `main` | dirty (`7`) |
-| `helMo-wtrees` | forest container | `stability-audit` | mixed-layout container |
-| `helMo-wtrees/stability-audit` | child lane | `codex/stability-audit` | clean |
+| Lane                                     | Kind                     | Child lanes / notes                                                                       | Status                 |
+| ---------------------------------------- | ------------------------ | ----------------------------------------------------------------------------------------- | ---------------------- |
+| `colab`                                  | standalone root          | `main`                                                                                    | dirty (`9`)            |
+| `colab-wtrees`                           | forest container         | `helios-integration`, `parity-debt-wave-20260303`, `stabilize`, `ts-debt-parity-20260303` | mixed-layout container |
+| `colab-wtrees/helios-integration`        | symlinked worktree alias | `helios-mvp`                                                                              | dirty alias            |
+| `colab-wtrees/parity-debt-wave-20260303` | child lane               | `codex/parity-debt-wave-20260303`                                                         | clean                  |
+| `colab-wtrees/stabilize`                 | child lane               | `fix/stabilize`                                                                           | dirty                  |
+| `colab-wtrees/ts-debt-parity-20260303`   | child lane               | `codex/ts-debt-parity-20260303`                                                           | clean                  |
+| `helMo`                                  | standalone root          | `main`                                                                                    | dirty (`7`)            |
+| `helMo-wtrees`                           | forest container         | `stability-audit`                                                                         | mixed-layout container |
+| `helMo-wtrees/stability-audit`           | child lane               | `codex/stability-audit`                                                                   | clean                  |
 
 ## Control Slices
 
-| Lane | Kind | Child lanes / notes | Status |
-|---|---|---|---|
-| `colab` | standalone root | `main` | dirty (`9`) |
+| Lane           | Kind             | Child lanes / notes                                                                       | Status                 |
+| -------------- | ---------------- | ----------------------------------------------------------------------------------------- | ---------------------- |
+| `colab`        | standalone root  | `main`                                                                                    | dirty (`9`)            |
 | `colab-wtrees` | forest container | `helios-integration`, `parity-debt-wave-20260303`, `stabilize`, `ts-debt-parity-20260303` | mixed-layout container |
-| `helMo` | standalone root | `main` | dirty (`7`) |
-| `helMo-wtrees` | forest container | `stability-audit` | mixed-layout container |
+| `helMo`        | standalone root  | `main`                                                                                    | dirty (`7`)            |
+| `helMo-wtrees` | forest container | `stability-audit`                                                                         | mixed-layout container |

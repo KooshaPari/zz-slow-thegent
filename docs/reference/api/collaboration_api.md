@@ -12,7 +12,7 @@ A session where multiple agents collaborate on a task.
 
 ### Methods
 
-#### CollaborativeSession.__init__
+#### CollaborativeSession.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings, task_id: str)

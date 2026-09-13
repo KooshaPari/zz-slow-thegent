@@ -11,16 +11,19 @@
 ## Quick Navigation
 
 ### 🚀 Getting Started
+
 - **[Quick Start Guide](guides/CROSS_PLATFORM_QUICK_START.md)** - Get started in 5 minutes
 - **[Quick Reference](reference/CROSS_PLATFORM_MULTI_TENANT_QUICK_REFERENCE.md)** - Quick lookup guide
 
 ### 📚 Core Documentation
+
 - **[Main Research](research/CROSS_PLATFORM_MULTI_TENANT_DESKTOP_AUTOMATION_RESEARCH.md)** - Comprehensive architecture and implementation (3000+ lines, 50+ sections)
 - **[Research Summary](research/CROSS_PLATFORM_RESEARCH_SUMMARY.md)** - Executive overview
 - **[Research Index](research/CROSS_PLATFORM_RESEARCH_INDEX.md)** - Detailed navigation guide
 - **[Research Completion Summary](research/CROSS_PLATFORM_RESEARCH_COMPLETION_SUMMARY.md)** - Final status report
 
 ### 🏗️ Implementation Guides
+
 - **[Implementation Templates](guides/CROSS_PLATFORM_IMPLEMENTATION_TEMPLATES.md)** - Code templates and scaffolding (2000+ lines)
 - **[Developer Cookbook](guides/CROSS_PLATFORM_DEVELOPER_COOKBOOK.md)** - Practical recipes and examples (1500+ lines)
 - **[API Reference](reference/CROSS_PLATFORM_API_REFERENCE.md)** - Complete API documentation (1000+ lines)
@@ -28,12 +31,14 @@
 - **[Roadmap](guides/CROSS_PLATFORM_ROADMAP.md)** - Implementation roadmap (12-week plan)
 
 ### 🔬 Deep Dives
+
 - **[Advanced Patterns](research/CROSS_PLATFORM_ADVANCED_PATTERNS.md)** - Theoretical approaches and advanced coordination (500+ lines)
 - **[Performance Benchmarks](research/CROSS_PLATFORM_PERFORMANCE_BENCHMARKS.md)** - SLAs, benchmarks, optimization (800+ lines)
 - **[Security Deep Dive](research/CROSS_PLATFORM_SECURITY_DEEP_DIVE.md)** - Threat modeling, security controls (1000+ lines)
 - **[Integration Guide](research/CROSS_PLATFORM_INTEGRATION_GUIDE.md)** - Integration with existing systems (1500+ lines)
 
 ### 📋 Planning
+
 - **[Implementation Plan](plans/CROSS_PLATFORM_MULTI_TENANT_IMPLEMENTATION_PLAN.md)** - 8-phase WBS (incl. Polish, Optimization, Extensions)
 - **[Remote Compute Detail](plans/REMOTE_COMPUTE_IMPLEMENTATION_DETAIL.md)** - `thegent run --remote`, `remote_hosts.yaml`
 - **[Hybrid Env Plan](plans/HYBRID_ENV_IMPLEMENTATION_PLAN.md)** - Mac/Windows sync + compute offload
@@ -44,45 +49,45 @@
 
 ### Research Documents (7 documents)
 
-| Document | Location | Size | Purpose |
-|----------|----------|------|---------|
-| **Main Research** | `docs/research/` | 3000+ lines | Comprehensive architecture and implementation |
-| **Advanced Patterns** | `docs/research/` | 500+ lines | Theoretical approaches |
-| **Performance Benchmarks** | `docs/research/` | 800+ lines | SLAs and optimization |
-| **Security Deep Dive** | `docs/research/` | 1000+ lines | Threat modeling and controls |
-| **Integration Guide** | `docs/research/` | 1500+ lines | Integration patterns |
-| **Research Summary** | `docs/research/` | 250+ lines | Executive overview |
-| **Research Index** | `docs/research/` | 300+ lines | Navigation guide |
-| **Gaps & Extensions** | `docs/research/` | 330+ lines | POSIX+pwsh, remote, OS primitives |
-| **Wider/Deeper/Optimization** | `docs/research/` | 250+ lines | Polish, optimization, edge cases, diagnostics |
+| Document                      | Location         | Size        | Purpose                                       |
+| ----------------------------- | ---------------- | ----------- | --------------------------------------------- |
+| **Main Research**             | `docs/research/` | 3000+ lines | Comprehensive architecture and implementation |
+| **Advanced Patterns**         | `docs/research/` | 500+ lines  | Theoretical approaches                        |
+| **Performance Benchmarks**    | `docs/research/` | 800+ lines  | SLAs and optimization                         |
+| **Security Deep Dive**        | `docs/research/` | 1000+ lines | Threat modeling and controls                  |
+| **Integration Guide**         | `docs/research/` | 1500+ lines | Integration patterns                          |
+| **Research Summary**          | `docs/research/` | 250+ lines  | Executive overview                            |
+| **Research Index**            | `docs/research/` | 300+ lines  | Navigation guide                              |
+| **Gaps & Extensions**         | `docs/research/` | 330+ lines  | POSIX+pwsh, remote, OS primitives             |
+| **Wider/Deeper/Optimization** | `docs/research/` | 250+ lines  | Polish, optimization, edge cases, diagnostics |
 
 ### Implementation Guides (5 documents)
 
-| Document | Location | Size | Purpose |
-|----------|----------|------|---------|
-| **Implementation Templates** | `docs/guides/` | 2000+ lines | Code templates and scaffolding |
-| **Developer Cookbook** | `docs/guides/` | 1500+ lines | Practical recipes |
-| **API Reference** | `docs/reference/` | 1000+ lines | Complete API docs |
-| **Migration Guide** | `docs/guides/` | 800+ lines | Migration instructions |
-| **Quick Start** | `docs/guides/` | 200+ lines | 5-minute quick start |
+| Document                     | Location          | Size        | Purpose                        |
+| ---------------------------- | ----------------- | ----------- | ------------------------------ |
+| **Implementation Templates** | `docs/guides/`    | 2000+ lines | Code templates and scaffolding |
+| **Developer Cookbook**       | `docs/guides/`    | 1500+ lines | Practical recipes              |
+| **API Reference**            | `docs/reference/` | 1000+ lines | Complete API docs              |
+| **Migration Guide**          | `docs/guides/`    | 800+ lines  | Migration instructions         |
+| **Quick Start**              | `docs/guides/`    | 200+ lines  | 5-minute quick start           |
 
 ### Planning Documents (4 documents)
 
-| Document | Location | Size | Purpose |
-|----------|----------|------|---------|
-| **Implementation Plan** | `docs/plans/` | 700+ lines | 8-phase WBS (incl. Phase 8 Polish/Optimization) |
-| **Remote Compute Detail** | `docs/plans/` | 120+ lines | `thegent run --remote` spec |
-| **Hybrid Env Plan** | `docs/plans/` | 570+ lines | Mac/Windows sync + offload |
-| **Roadmap** | `docs/guides/` | 400+ lines | 12-week roadmap |
+| Document                  | Location       | Size       | Purpose                                         |
+| ------------------------- | -------------- | ---------- | ----------------------------------------------- |
+| **Implementation Plan**   | `docs/plans/`  | 700+ lines | 8-phase WBS (incl. Phase 8 Polish/Optimization) |
+| **Remote Compute Detail** | `docs/plans/`  | 120+ lines | `thegent run --remote` spec                     |
+| **Hybrid Env Plan**       | `docs/plans/`  | 570+ lines | Mac/Windows sync + offload                      |
+| **Roadmap**               | `docs/guides/` | 400+ lines | 12-week roadmap                                 |
 
 ### Reference Documents (4 documents)
 
-| Document | Location | Size | Purpose |
-|----------|----------|------|---------|
-| **Quick Reference** | `docs/reference/` | 300+ lines | Quick lookup |
-| **POSIX + pwsh Strategy** | `docs/reference/` | 80+ lines | Shell selection matrix |
-| **Agent OS Principals** | `docs/reference/` | 80+ lines | systemd, Job Objects, PAM |
-| **Master Index** | `docs/` | This file | Document navigation |
+| Document                  | Location          | Size       | Purpose                   |
+| ------------------------- | ----------------- | ---------- | ------------------------- |
+| **Quick Reference**       | `docs/reference/` | 300+ lines | Quick lookup              |
+| **POSIX + pwsh Strategy** | `docs/reference/` | 80+ lines  | Shell selection matrix    |
+| **Agent OS Principals**   | `docs/reference/` | 80+ lines  | systemd, Job Objects, PAM |
+| **Master Index**          | `docs/`           | This file  | Document navigation       |
 
 ---
 
@@ -99,12 +104,12 @@
 
 ### Content Breakdown
 
-| Category | Documents | Lines | Code Examples |
-|----------|-----------|-------|---------------|
-| **Research** | 7 | 7,350+ | 145+ |
-| **Implementation Guides** | 5 | 5,500+ | 55+ |
-| **Planning** | 2 | 900+ | 5+ |
-| **Total** | **14** | **~13,000+** | **200+** |
+| Category                  | Documents | Lines        | Code Examples |
+| ------------------------- | --------- | ------------ | ------------- |
+| **Research**              | 7         | 7,350+       | 145+          |
+| **Implementation Guides** | 5         | 5,500+       | 55+           |
+| **Planning**              | 2         | 900+         | 5+            |
+| **Total**                 | **14**    | **~13,000+** | **200+**      |
 
 ---
 
@@ -190,25 +195,25 @@
 
 ## Document Status
 
-| Document | Status | Last Updated |
-|----------|--------|--------------|
-| **Main Research** | ✅ Complete | 2026-02-16 |
-| **Advanced Patterns** | ✅ Complete | 2026-02-16 |
-| **Performance Benchmarks** | ✅ Complete | 2026-02-16 |
-| **Security Deep Dive** | ✅ Complete | 2026-02-16 |
-| **Integration Guide** | ✅ Complete | 2026-02-16 |
-| **Implementation Plan** | ✅ Complete | 2026-02-16 |
-| **Quick Reference** | ✅ Complete | 2026-02-16 |
-| **Implementation Templates** | ✅ Complete | 2026-02-16 |
-| **Developer Cookbook** | ✅ Complete | 2026-02-16 |
-| **API Reference** | ✅ Complete | 2026-02-16 |
-| **Migration Guide** | ✅ Complete | 2026-02-16 |
-| **Quick Start** | ✅ Complete | 2026-02-16 |
-| **Roadmap** | ✅ Complete | 2026-02-16 |
-| **Research Summary** | ✅ Complete | 2026-02-16 |
-| **Research Index** | ✅ Complete | 2026-02-16 |
-| **Research Completion Summary** | ✅ Complete | 2026-02-16 |
-| **Master Index** | ✅ Complete | 2026-02-16 |
+| Document                        | Status      | Last Updated |
+| ------------------------------- | ----------- | ------------ |
+| **Main Research**               | ✅ Complete | 2026-02-16   |
+| **Advanced Patterns**           | ✅ Complete | 2026-02-16   |
+| **Performance Benchmarks**      | ✅ Complete | 2026-02-16   |
+| **Security Deep Dive**          | ✅ Complete | 2026-02-16   |
+| **Integration Guide**           | ✅ Complete | 2026-02-16   |
+| **Implementation Plan**         | ✅ Complete | 2026-02-16   |
+| **Quick Reference**             | ✅ Complete | 2026-02-16   |
+| **Implementation Templates**    | ✅ Complete | 2026-02-16   |
+| **Developer Cookbook**          | ✅ Complete | 2026-02-16   |
+| **API Reference**               | ✅ Complete | 2026-02-16   |
+| **Migration Guide**             | ✅ Complete | 2026-02-16   |
+| **Quick Start**                 | ✅ Complete | 2026-02-16   |
+| **Roadmap**                     | ✅ Complete | 2026-02-16   |
+| **Research Summary**            | ✅ Complete | 2026-02-16   |
+| **Research Index**              | ✅ Complete | 2026-02-16   |
+| **Research Completion Summary** | ✅ Complete | 2026-02-16   |
+| **Master Index**                | ✅ Complete | 2026-02-16   |
 
 ---
 
@@ -241,6 +246,7 @@
 ### Contributing
 
 When adding new documents:
+
 1. Add to appropriate category in this index
 2. Update document statistics
 3. Add to reading order if appropriate

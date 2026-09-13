@@ -1,4 +1,5 @@
 # Dependency Audit Report: Modern Multi-threaded & Performance Alternatives
+
 **Generated:** 2026-02-18  
 **Scope:** Rust, Go, Python dependencies across entire codebase
 
@@ -7,11 +8,13 @@
 ## Executive Summary
 
 This audit identifies modern, high-performance alternatives to current dependencies, with focus on:
+
 - **Multi-threaded** async runtimes and parallel processing
 - **Performance-optimized** libraries leveraging modern Rust/Go/Python features
 - **Modern alternatives** to legacy dependencies
 
 **Key Findings:**
+
 - ✅ Tokio is already modern and optimal for async runtime
 - 🔄 Several opportunities for performance improvements via specialized crates
 - ⚠️ Some dependencies have newer, faster alternatives available
@@ -24,24 +27,29 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 1.1 Async Runtime & Concurrency
 
 #### Current: `tokio` (v1.x)
+
 **Status:** ✅ **KEEP** - Already optimal  
 **Reason:** Tokio is the industry standard, actively maintained, and highly performant.
 
 **Modern Alternatives Considered:**
+
 - `monoio` - io_uring-based runtime (Linux only, experimental)
 - `compio` - io_uring/IOCP runtime (cross-platform, newer)
 - `smol` - Lightweight runtime (good for embedded/smaller apps)
 
-**Recommendation:** 
+**Recommendation:**
+
 - **Keep Tokio** for main async runtime
 - **Consider `compio`** for specific high-throughput I/O workloads (io_uring on Linux, IOCP on Windows)
 - **Consider `smol`** only if binary size is critical concern
 
 #### Current: `rayon` (implicit via usage)
+
 **Status:** ✅ **KEEP** - Best-in-class  
 **Reason:** Rayon is the gold standard for data parallelism in Rust.
 
 **Modern Alternatives:**
+
 - `orx-parallel` - Alternative parallel iterator library (smaller, simpler)
 - `pariter` - Parallel iterator utilities
 
@@ -52,8 +60,10 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 1.2 HTTP Clients
 
 #### Current: `reqwest` (v0.11/v0.12)
+
 **Status:** ⚠️ **CONSIDER UPGRADE**  
 **Current Issues:**
+
 - v0.11 is older, v0.12 has better performance
 - Uses blocking thread pool for some operations
 
@@ -77,11 +87,13 @@ This audit identifies modern, high-performance alternatives to current dependenc
    - **Migration:** Minimal effort
 
 **Recommendation:**
+
 - **Short-term:** Upgrade `reqwest` to v0.12 in `thegent-memory` and `supermemory-rs`
 - **Long-term:** Consider `hyper` for critical performance paths
 - **For blocking code:** Consider `ureq` for simple HTTP needs
 
 **Files to Update:**
+
 - `thegent/crates/thegent-memory/Cargo.toml` (v0.11 → v0.12)
 - `thegent/crates/supermemory-rs/Cargo.toml` (v0.12 - already latest)
 
@@ -90,6 +102,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 1.3 JSON Serialization
 
 #### Current: `serde_json` + `simd-json` (partial)
+
 **Status:** ⚠️ **OPTIMIZE**  
 **Current:** Using `serde_json` everywhere, `simd-json` only in `thegent-parser`
 
@@ -110,11 +123,13 @@ This audit identifies modern, high-performance alternatives to current dependenc
    - **Note:** Python-only, but shows performance potential
 
 **Recommendation:**
+
 - **Expand `simd-json` usage** to all high-throughput JSON parsing
 - **Keep `serde_json`** for compatibility/simplicity where performance isn't critical
 - **Monitor `sonic-rs`** for future adoption
 
 **Files to Update:**
+
 - `thegent/crates/thegent-memory/Cargo.toml` - Add `simd-json`
 - `thegent/crates/thegent-router/Cargo.toml` - Add `simd-json`
 - `thegent/crates/supermemory-rs/Cargo.toml` - Add `simd-json`
@@ -124,6 +139,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 1.4 Caching & Data Structures
 
 #### Current: `dashmap` (v5/v6) + `lru` (v0.12)
+
 **Status:** ✅ **GOOD** - Modern and performant  
 **Current:** Using DashMap v5 in hooks, v6 in cache
 
@@ -144,11 +160,13 @@ This audit identifies modern, high-performance alternatives to current dependenc
    - **Use Case:** When TTL is needed
 
 **Recommendation:**
+
 - **Upgrade `dashmap` v5 → v6** in `thegent-hooks`
 - **Keep current setup** - DashMap + LRU is optimal
 - **Consider `flurry`** only if lock contention becomes bottleneck
 
 **Files to Update:**
+
 - `thegent/crates/thegent-hooks/Cargo.toml` (dashmap v5 → v6)
 
 ---
@@ -156,6 +174,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 1.5 Git Operations
 
 #### Current: `git2` (v0.18)
+
 **Status:** ⚠️ **CONSIDER ALTERNATIVE**  
 **Current:** Using libgit2 bindings
 
@@ -172,10 +191,12 @@ This audit identifies modern, high-performance alternatives to current dependenc
    - **Migration:** Easy (drop-in upgrade)
 
 **Recommendation:**
+
 - **Short-term:** Upgrade `git2` to latest (v0.19+)
 - **Long-term:** Migrate to `gix` for better performance and Rust-native experience
 
 **Files to Update:**
+
 - `thegent/crates/thegent-git/Cargo.toml` (git2 v0.18 → v0.19+)
 
 ---
@@ -183,10 +204,12 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 1.6 Memory Mapping
 
 #### Current: `memmap2` (v0.9)
+
 **Status:** ✅ **KEEP** - Optimal  
 **Reason:** `memmap2` is the modern, maintained fork of `memmap`.
 
 **Modern Alternatives:**
+
 - None better - `memmap2` is the standard
 
 **Recommendation:** **Keep `memmap2`**
@@ -196,6 +219,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 1.7 Cryptography
 
 #### Current: `sha2`, `hmac`, `ed25519-dalek`, `blake3`
+
 **Status:** ✅ **GOOD** - Modern choices  
 **Current:** Using modern crypto libraries
 
@@ -213,6 +237,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 1.8 Synchronization Primitives
 
 #### Current: `parking_lot` (v0.12), `once_cell` (v1.19)
+
 **Status:** ✅ **GOOD** - Modern  
 **Current:** Using high-performance synchronization primitives
 
@@ -229,10 +254,12 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 1.9 Hashing
 
 #### Current: `xxhash-rust` (v0.8) in `harness-native`
+
 **Status:** ✅ **GOOD** - Fast non-cryptographic hash  
 **Current:** Using xxhash for fast hashing
 
 **Modern Alternatives:**
+
 - **`xxhash-rust`** - ✅ Keep (fastest non-crypto hash)
 - **`ahash`** - Alternative (faster for small keys, slower for large)
 
@@ -243,6 +270,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 1.10 Command Line Parsing
 
 #### Current: `clap` (v4)
+
 **Status:** ✅ **GOOD** - Latest version  
 **Current:** Using modern clap v4
 
@@ -255,6 +283,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 2.1 HTTP Frameworks
 
 #### Current: `labstack/echo/v4` (v4.15.0)
+
 **Status:** ⚠️ **CONSIDER ALTERNATIVE**  
 **Current:** Using Echo framework
 
@@ -281,6 +310,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
    - **Migration:** Easy
 
 **Recommendation:**
+
 - **Keep Echo** if it's working well
 - **Consider `gin`** if you need better performance/ecosystem
 - **Consider `fiber`** if you want modern API
@@ -292,6 +322,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 2.2 Database Drivers
 
 #### Current: `jackc/pgx/v5` (v5.8.0), `gorm.io/gorm` (v1.31.1)
+
 **Status:** ✅ **GOOD** - Modern choices  
 **Current:** Using pgx (fastest PostgreSQL driver) and GORM (convenient ORM)
 
@@ -309,6 +340,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
    - **Migration:** Significant effort
 
 **Recommendation:**
+
 - **Keep `pgx/v5`** - optimal choice
 - **Consider `sqlc`** for new code if type safety is priority
 - **Keep GORM** for convenience, but consider raw `pgx` for hot paths
@@ -318,6 +350,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 2.3 Redis Clients
 
 #### Current: `redis/go-redis/v9` (v9.18.0-beta.2)
+
 **Status:** ⚠️ **CONSIDER STABLE VERSION**  
 **Current:** Using beta version
 
@@ -332,6 +365,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
    - **Migration:** Moderate effort
 
 **Recommendation:**
+
 - **Upgrade to stable `redis/go-redis/v9`** (non-beta)
 - **Consider `rueidis`** if you need advanced features
 
@@ -342,6 +376,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 2.4 Message Queue
 
 #### Current: `nats-io/nats.go` (v1.48.0)
+
 **Status:** ✅ **GOOD** - Modern version  
 **Current:** Using NATS for messaging
 
@@ -352,6 +387,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 2.5 Logging
 
 #### Current: `go.uber.org/zap` (v1.27.1)
+
 **Status:** ✅ **GOOD** - Fastest structured logger  
 **Current:** Using zap (industry standard)
 
@@ -362,6 +398,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 2.6 Testing
 
 #### Current: `stretchr/testify` (v1.11.1)
+
 **Status:** ✅ **GOOD** - Standard  
 **Current:** Using testify
 
@@ -374,6 +411,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 3.1 HTTP Clients
 
 #### Current: `httpx` (>=0.27.0)
+
 **Status:** ✅ **GOOD** - Modern async HTTP  
 **Current:** Using httpx (modern, async HTTP client)
 
@@ -390,6 +428,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 3.2 JSON Serialization
 
 #### Current: `orjson` (>=3.10.0)
+
 **Status:** ✅ **EXCELLENT** - Fastest Python JSON library  
 **Current:** Using orjson (Rust-based, fastest)
 
@@ -400,6 +439,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 3.3 Async Runtime
 
 #### Current: `uvicorn` (>=0.29.0), `starlette` (>=0.37.2)
+
 **Status:** ✅ **GOOD** - Modern ASGI stack  
 **Current:** Using uvicorn + Starlette
 
@@ -413,6 +453,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
    - **Migration:** Easy (drop-in replacement)
 
 **Recommendation:**
+
 - **Keep `uvicorn`** for now
 - **Monitor `granian`** for future adoption (Rust-based, potentially faster)
 
@@ -421,6 +462,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 3.4 Caching
 
 #### Current: `cachetools` (>=5.3.3), `diskcache` (>=5.0.0)
+
 **Status:** ✅ **GOOD** - Standard libraries  
 **Current:** Using cachetools (in-memory) and diskcache (disk-backed)
 
@@ -437,6 +479,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 3.5 File Watching
 
 #### Current: `watchdog` (>=4.0.0)
+
 **Status:** ✅ **GOOD** - Standard  
 **Current:** Using watchdog for file system events
 
@@ -520,32 +563,38 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ### 6.1 Current State
 
 **Rust:**
+
 - ✅ Using `tokio` for async (optimal)
 - ✅ Using `rayon` for data parallelism (optimal)
 - ✅ Using `parking_lot` for synchronization (optimal)
 - ✅ Using `dashmap` for concurrent hashmap (optimal)
 
 **Go:**
+
 - ✅ Using goroutines (optimal)
 - ✅ Using `sync` package (optimal)
 - ⚠️ Consider worker pools for CPU-bound tasks
 
 **Python:**
+
 - ✅ Using `asyncio` (optimal)
 - ✅ Using `concurrent.futures` where needed (optimal)
 
 ### 6.2 Recommendations
 
 **Rust:**
+
 - ✅ **No changes needed** - already using optimal libraries
 - 💡 Consider `rayon` for more CPU-bound parallel work
 - 💡 Consider `tokio::task::spawn_blocking` for CPU-bound async work
 
 **Go:**
+
 - 💡 Consider `ants` or `tunny` worker pools for CPU-bound tasks
 - 💡 Use `runtime.GOMAXPROCS()` tuning if needed
 
 **Python:**
+
 - 💡 Consider `multiprocessing` for CPU-bound tasks (already using where needed)
 - 💡 Consider `joblib` for parallel NumPy/scientific computing
 
@@ -554,6 +603,7 @@ This audit identifies modern, high-performance alternatives to current dependenc
 ## 7. SUMMARY OF CHANGES
 
 ### High Priority (Do Now)
+
 1. Upgrade `reqwest` v0.11 → v0.12
 2. Expand `simd-json` usage
 3. Upgrade `dashmap` v5 → v6
@@ -561,11 +611,13 @@ This audit identifies modern, high-performance alternatives to current dependenc
 5. Upgrade `redis/go-redis` to stable
 
 ### Medium Priority (Next Sprint)
+
 1. Evaluate `gix` migration
 2. Test `compio` for I/O-heavy code
 3. Monitor `granian` for Python
 
 ### Low Priority (Future)
+
 1. Consider `hyper` for critical paths
 2. Evaluate `sqlc` for new Go code
 3. Monitor `sonic-rs` maturity
@@ -576,13 +628,13 @@ This audit identifies modern, high-performance alternatives to current dependenc
 
 ### Expected Performance Gains
 
-| Change | Estimated Gain | Effort |
-|--------|---------------|--------|
-| `simd-json` expansion | 2-5x JSON parsing | Low |
-| `reqwest` v0.11 → v0.12 | 10-20% HTTP | Low |
-| `git2` → `gix` | 1.5-2x Git ops | Medium |
-| `compio` for I/O | 2-3x I/O throughput | Medium |
-| `granian` (Python) | 30-50% server perf | Low |
+| Change                  | Estimated Gain      | Effort |
+| ----------------------- | ------------------- | ------ |
+| `simd-json` expansion   | 2-5x JSON parsing   | Low    |
+| `reqwest` v0.11 → v0.12 | 10-20% HTTP         | Low    |
+| `git2` → `gix`          | 1.5-2x Git ops      | Medium |
+| `compio` for I/O        | 2-3x I/O throughput | Medium |
+| `granian` (Python)      | 30-50% server perf  | Low    |
 
 ---
 
@@ -602,31 +654,34 @@ Your codebase is already using **modern, high-performance libraries**. The main 
 ## Appendix A: Dependency Version Matrix
 
 ### Rust Crates
-| Crate | Current | Recommended | Status |
-|-------|---------|-------------|--------|
-| `tokio` | 1.x | 1.x | ✅ Keep |
-| `reqwest` | 0.11/0.12 | 0.12 | ⚠️ Upgrade |
-| `serde_json` | 1.0 | 1.0 | ✅ Keep |
-| `simd-json` | 0.13 | 0.13 | ✅ Expand usage |
-| `dashmap` | 5/6 | 6 | ⚠️ Upgrade v5→v6 |
-| `git2` | 0.18 | 0.19+ | ⚠️ Upgrade |
-| `parking_lot` | 0.12 | 0.12 | ✅ Keep |
-| `rayon` | (implicit) | Latest | ✅ Keep |
+
+| Crate         | Current    | Recommended | Status           |
+| ------------- | ---------- | ----------- | ---------------- |
+| `tokio`       | 1.x        | 1.x         | ✅ Keep          |
+| `reqwest`     | 0.11/0.12  | 0.12        | ⚠️ Upgrade       |
+| `serde_json`  | 1.0        | 1.0         | ✅ Keep          |
+| `simd-json`   | 0.13       | 0.13        | ✅ Expand usage  |
+| `dashmap`     | 5/6        | 6           | ⚠️ Upgrade v5→v6 |
+| `git2`        | 0.18       | 0.19+       | ⚠️ Upgrade       |
+| `parking_lot` | 0.12       | 0.12        | ✅ Keep          |
+| `rayon`       | (implicit) | Latest      | ✅ Keep          |
 
 ### Go Modules
-| Module | Current | Recommended | Status |
-|-------|---------|-------------|--------|
-| `echo` | v4.15.0 | v4.15.0 | ✅ Keep |
-| `pgx` | v5.8.0 | v5.8.0 | ✅ Keep |
-| `redis/go-redis` | v9.18.0-beta | v9.18.0 | ⚠️ Stable |
-| `zap` | v1.27.1 | v1.27.1 | ✅ Keep |
+
+| Module           | Current      | Recommended | Status    |
+| ---------------- | ------------ | ----------- | --------- |
+| `echo`           | v4.15.0      | v4.15.0     | ✅ Keep   |
+| `pgx`            | v5.8.0       | v5.8.0      | ✅ Keep   |
+| `redis/go-redis` | v9.18.0-beta | v9.18.0     | ⚠️ Stable |
+| `zap`            | v1.27.1      | v1.27.1     | ✅ Keep   |
 
 ### Python Packages
-| Package | Current | Recommended | Status |
-|---------|---------|-------------|--------|
-| `httpx` | >=0.27.0 | >=0.27.0 | ✅ Keep |
-| `orjson` | >=3.10.0 | >=3.10.0 | ✅ Keep |
-| `uvicorn` | >=0.29.0 | >=0.29.0 | ✅ Keep |
+
+| Package   | Current  | Recommended | Status  |
+| --------- | -------- | ----------- | ------- |
+| `httpx`   | >=0.27.0 | >=0.27.0    | ✅ Keep |
+| `orjson`  | >=3.10.0 | >=3.10.0    | ✅ Keep |
+| `uvicorn` | >=0.29.0 | >=0.29.0    | ✅ Keep |
 
 ---
 

@@ -12,7 +12,7 @@ Metrics collection.
 
 ### Methods
 
-#### MetricsCollector.__init__
+#### MetricsCollector.**init**
 
 ```python
 __init__(self: Any)

@@ -26,6 +26,7 @@ This is a governance orchestrator contract, not a replacement for native languag
 - Lightweight local gates for LOC and naming explosion.
 
 Evidence:
+
 - `trace/.pre-commit-config.yaml:1-10`
 - `trace/.pre-commit-config.yaml:25-26`
 - `trace/.pre-commit-config.yaml:95-121`
@@ -37,6 +38,7 @@ Evidence:
 - Common layer caches tool availability and quality config reads.
 
 Evidence:
+
 - `thegent/hooks/hook-dispatcher/src/main.rs:1027-1031`
 - `thegent/hooks/hook-dispatcher/src/main.rs:2263-2297`
 - `thegent/hooks/governance-gates.sh:8-10`
@@ -48,12 +50,12 @@ Evidence:
 
 ## 3. Execution Profiles (Formal)
 
-| Profile | Target Use | Max Local Wall-Clock | Mandatory Checks |
-|---|---|---:|---|
-| `ultrafast` | tight edit loops | <= 2s | syntax/file sanity + reconcile floor |
-| `fast` | default dev loop | <= 5s | lint/format on changed files + core governance floor |
-| `standard` | pre-push/local verify | <= 15s | adds stricter type/test subsets + lifecycle gates |
-| `full` | CI/nightly/release | unbounded by local UX | full-stack lint/type/test/security/contracts/assurance |
+| Profile     | Target Use            |  Max Local Wall-Clock | Mandatory Checks                                       |
+| ----------- | --------------------- | --------------------: | ------------------------------------------------------ |
+| `ultrafast` | tight edit loops      |                 <= 2s | syntax/file sanity + reconcile floor                   |
+| `fast`      | default dev loop      |                 <= 5s | lint/format on changed files + core governance floor   |
+| `standard`  | pre-push/local verify |                <= 15s | adds stricter type/test subsets + lifecycle gates      |
+| `full`      | CI/nightly/release    | unbounded by local UX | full-stack lint/type/test/security/contracts/assurance |
 
 Rules:
 
@@ -123,6 +125,7 @@ For governance contracts/traceability/smart-contract-like checks:
 4. Persist cache for repeated unchanged policy runs.
 
 Applies to:
+
 - claim lifecycle, DAG/ledger checks, assurance case, reliability SLO, debt/playbook gates, etc.
 
 ---
@@ -191,10 +194,12 @@ A stack/surface reaches parity only when:
 The canonical lane entry points are now:
 
 1. `task test:fast-lane`
+
 - Intended cadence: default local + PR loop.
 - Includes: `test:unit` + `test:hooks:selector-fast`.
 
 2. `task test:nightly-lane`
+
 - Intended cadence: nightly/deep validation.
 - Includes: `test:hooks:governance` + `test:pyramid`.
 
@@ -204,6 +209,7 @@ Policy:
 2. Fast lane stays bounded and contract-focused.
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -212,4 +218,3 @@ Policy:
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

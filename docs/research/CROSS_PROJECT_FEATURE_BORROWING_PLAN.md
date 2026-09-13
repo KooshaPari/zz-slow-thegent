@@ -23,15 +23,17 @@ This plan details **specific features** that can be borrowed from more active/re
 **Implementation**:
 
 1. **Add Priority Definitions** to each project's work stream:
+
    ```markdown
    ## Priority Definitions
-   | Priority | Name | SLA | Description |
-   |----------|------|-----|-------------|
-   | P0 | Blocker | Immediate | Blocks all other work |
-   | P1 | Feature | 1 sprint | High-value features |
-   | P2 | Polish | 2 sprints | Quality improvements |
-   | P3 | Research | 3 sprints | Investigation needed |
-   | P4 | Icebox | No SLA | Long-term ideas |
+
+   | Priority | Name     | SLA       | Description           |
+   | -------- | -------- | --------- | --------------------- |
+   | P0       | Blocker  | Immediate | Blocks all other work |
+   | P1       | Feature  | 1 sprint  | High-value features   |
+   | P2       | Polish   | 2 sprints | Quality improvements  |
+   | P3       | Research | 3 sprints | Investigation needed  |
+   | P4       | Icebox   | No SLA    | Long-term ideas       |
    ```
 
 2. **Categorize Existing Items**:
@@ -52,22 +54,22 @@ This plan details **specific features** that can be borrowed from more active/re
 
 To close `borrow-heliosguard-priority` and `borrow-heliosguard-backlog`, this plan standardizes the minimum backlog schema borrowed from heliosShield-style governance:
 
-| Column | Required | Purpose |
-|--------|----------|---------|
-| `ID` | Yes | Stable work item identifier |
-| `Priority` | Yes | P0-P4 operational urgency |
-| `Module` | Yes | Owning subsystem/domain |
-| `SLA` | Yes | Expected response/completion window |
-| `Status` | Yes | `todo`, `claimed`, `in_progress`, `blocked`, `done` |
-| `Depends On` | Recommended | DAG predecessor IDs |
-| `Evidence` | Recommended | Validation command, artifact path, or report link |
+| Column       | Required    | Purpose                                             |
+| ------------ | ----------- | --------------------------------------------------- |
+| `ID`         | Yes         | Stable work item identifier                         |
+| `Priority`   | Yes         | P0-P4 operational urgency                           |
+| `Module`     | Yes         | Owning subsystem/domain                             |
+| `SLA`        | Yes         | Expected response/completion window                 |
+| `Status`     | Yes         | `todo`, `claimed`, `in_progress`, `blocked`, `done` |
+| `Depends On` | Recommended | DAG predecessor IDs                                 |
+| `Evidence`   | Recommended | Validation command, artifact path, or report link   |
 
 Recommended row format:
 
 ```markdown
-| ID | Priority | Module | SLA | Status | Depends On | Evidence |
-|----|----------|--------|-----|--------|------------|----------|
-| WG-001 | P1 | delegation | 1 sprint | in_progress | WG-000 | docs/reports/<report>.md |
+| ID     | Priority | Module     | SLA      | Status      | Depends On | Evidence                 |
+| ------ | -------- | ---------- | -------- | ----------- | ---------- | ------------------------ |
+| WG-001 | P1       | delegation | 1 sprint | in_progress | WG-000     | docs/reports/<report>.md |
 ```
 
 ---
@@ -83,6 +85,7 @@ Recommended row format:
 **Feature**: Enforce TDD/BDD/Contract/Property testing methodologies
 
 **Implementation**:
+
 - Add methodology gates
 - Integrate with agent workflows
 - Add validation rules
@@ -102,6 +105,7 @@ Recommended row format:
 **Feature**: Flaky test quarantine, SLO tracking
 
 **Implementation**:
+
 - Add flaky test detection
 - Implement quarantine system
 - Add SLO tracking
@@ -121,6 +125,7 @@ Recommended row format:
 **Feature**: Runtime enforcement of typed agent claims
 
 **Implementation**:
+
 - Add type checking for agent claims
 - Runtime validation
 - Error handling
@@ -142,6 +147,7 @@ Recommended row format:
 **Feature**: Route tasks to cost-optimal models
 
 **Implementation**:
+
 - Add model tier classification
 - Implement routing logic
 - Add cost tracking
@@ -161,6 +167,7 @@ Recommended row format:
 **Feature**: Track and report cost metrics
 
 **Implementation**:
+
 - Integrate with usage tracking
 - Add cost dashboards
 - Implement alerts
@@ -182,6 +189,7 @@ Recommended row format:
 **Feature**: Hierarchical agent architecture
 
 **Implementation**:
+
 - Add root agent coordinator
 - Implement sub-agent spawning
 - Add coordination logic
@@ -201,6 +209,7 @@ Recommended row format:
 **Feature**: Checkpoint-based agent resumption
 
 **Implementation**:
+
 - Add checkpoint system
 - Implement pause/resume
 - Add state persistence
@@ -220,6 +229,7 @@ Recommended row format:
 **Feature**: Rules for agent-to-agent collaboration
 
 **Implementation**:
+
 - Add rules engine
 - Implement collaboration modes
 - Add moderation
@@ -241,6 +251,7 @@ Recommended row format:
 **Feature**: Organize MCP capabilities by type
 
 **Implementation**:
+
 - Categorize existing tools
 - Add resource support
 - Add prompt templates
@@ -260,6 +271,7 @@ Recommended row format:
 **Feature**: Compose multiple MCP servers
 
 **Implementation**:
+
 - Add composition layer
 - Implement routing
 - Add health monitoring
@@ -279,6 +291,7 @@ Recommended row format:
 **Feature**: Orchestrate across multiple services
 
 **Implementation**:
+
 - Add orchestration layer
 - Implement query optimization
 - Add result synthesis
@@ -300,6 +313,7 @@ Recommended row format:
 **Feature**: Rich documentation with diagrams, code playgrounds, demos
 
 **Implementation**:
+
 - Set up VitePress
 - Add Mermaid support
 - Add CodePlayground component
@@ -320,6 +334,7 @@ Recommended row format:
 **Feature**: Auto-generate API docs from docstrings
 
 **Implementation**:
+
 - Add docstring parser
 - Generate markdown
 - Integrate with docs
@@ -341,6 +356,7 @@ Recommended row format:
 **Feature**: Link research docs to work items
 
 **Implementation**:
+
 - Add research doc references
 - Track extensions
 - Add auto-incorporation
@@ -366,6 +382,7 @@ Recommended row format:
    - Add references
 
 **Deliverables**:
+
 - Updated work streams
 - Research doc links
 - Priority categorization
@@ -385,6 +402,7 @@ Recommended row format:
    - Metrics
 
 **Deliverables**:
+
 - Governance gates implemented
 - Cost tracking integrated
 - Metrics dashboards
@@ -404,6 +422,7 @@ Recommended row format:
    - Orchestration
 
 **Deliverables**:
+
 - Multi-agent patterns implemented
 - MCP composition working
 - Cross-service orchestration
@@ -418,6 +437,7 @@ Recommended row format:
    - Examples
 
 **Deliverables**:
+
 - Documentation sites
 - API docs generated
 - Usage guides

@@ -7,77 +7,77 @@ description: Issue tracking and progress for CLIProxyAPI and CLIProxyAPIPlus
 
 ## Progress Overview
 
-| Metric | Count | Percentage |
-|--------|-------|------------|
-| Total Issues | 964 | 100% |
-| Open | 160 | 17% |
-| Closed | 804 | 83% |
+| Metric       | Count | Percentage |
+| ------------ | ----- | ---------- |
+| Total Issues | 964   | 100%       |
+| Open         | 160   | 17%        |
+| Closed       | 804   | 83%        |
 
 ## Repository Breakdown
 
-| Repo | Open | Closed | Total |
-|------|------|--------|-------|
-| CLIProxyAPI | 108 | 774 | 882 |
-| CLIProxyAPIPlus | 52 | 30 | 82 |
+| Repo            | Open | Closed | Total |
+| --------------- | ---- | ------ | ----- |
+| CLIProxyAPI     | 108  | 774    | 882   |
+| CLIProxyAPIPlus | 52   | 30     | 82    |
 
 ## Issue Status Distribution
 
 ### By Type (CLIProxyAPI)
 
-| Type | Open | Closed |
-|------|------|--------|
-| Bug | 45 | 320 |
-| Feature Request | 38 | 210 |
-| Enhancement | 15 | 120 |
-| Question | 5 | 80 |
-| Documentation | 5 | 44 |
+| Type            | Open | Closed |
+| --------------- | ---- | ------ |
+| Bug             | 45   | 320    |
+| Feature Request | 38   | 210    |
+| Enhancement     | 15   | 120    |
+| Question        | 5    | 80     |
+| Documentation   | 5    | 44     |
 
 ### By Priority (CLIProxyAPI)
 
 | Priority | Count |
-|----------|--------|
-| Critical | 8 |
-| High | 25 |
-| Medium | 180 |
-| Low | 669 |
+| -------- | ----- |
+| Critical | 8     |
+| High     | 25    |
+| Medium   | 180   |
+| Low      | 669   |
 
 ## Recent Activity
 
 ### Last 7 Days
 
-| Date | Opened | Closed |
-|------|---------|--------|
-| Feb 22 | 12 | 8 |
-| Feb 21 | 15 | 22 |
-| Feb 20 | 8 | 15 |
-| Feb 19 | 10 | 18 |
-| Feb 18 | 6 | 12 |
-| Feb 17 | 9 | 14 |
-| Feb 16 | 7 | 10 |
+| Date   | Opened | Closed |
+| ------ | ------ | ------ |
+| Feb 22 | 12     | 8      |
+| Feb 21 | 15     | 22     |
+| Feb 20 | 8      | 15     |
+| Feb 19 | 10     | 18     |
+| Feb 18 | 6      | 12     |
+| Feb 17 | 9      | 14     |
+| Feb 16 | 7      | 10     |
 
 ## Top Contributors
 
 | Contributor | Issues Resolved |
-|-------------|-----------------|
-| KooshaPari | 245 |
-| kooshapari | 180 |
-| matchch | 45 |
-| thebtf | 32 |
-| van14shu | 28 |
+| ----------- | --------------- |
+| KooshaPari  | 245             |
+| kooshapari  | 180             |
+| matchch     | 45              |
+| thebtf      | 32              |
+| van14shu    | 28              |
 
 ## Issue Categories
 
 ### Provider Issues
 
-| Provider | Open Bugs | Feature Requests |
-|----------|-----------|------------------|
-| Claude | 15 | 8 |
-| Gemini | 22 | 12 |
-| Codex | 18 | 15 |
-| Qwen | 8 | 5 |
-| Kiro | 12 | 10 |
-| Antigravity | 25 | 18 |
-| iFlow | 10 | 8 |
+| Provider    | Open Bugs | Feature Requests |
+| ----------- | --------- | ---------------- |
+| Claude      | 15        | 8                |
+| Gemini      | 22        | 12               |
+| Codex       | 18        | 15               |
+| Qwen        | 8         | 5                |
+| Kiro        | 12        | 10               |
+| Antigravity | 25        | 18               |
+| iFlow       | 10        | 8                |
 
 ### Issue Type Breakdown
 
@@ -115,22 +115,22 @@ Feb 2026: 205 issues resolved (+14%)
 
 ## Key Metrics
 
-| Metric | Value | Trend |
-|--------|-------|-------|
-| Avg Resolution Time | 3.2 days | ↓ |
-| Bug Resolution Rate | 92% | ↑ |
-| Feature Completion Rate | 78% | → |
-| Community PRs | 45 | ↑ |
+| Metric                  | Value    | Trend |
+| ----------------------- | -------- | ----- |
+| Avg Resolution Time     | 3.2 days | ↓     |
+| Bug Resolution Rate     | 92%      | ↑     |
+| Feature Completion Rate | 78%      | →     |
+| Community PRs           | 45       | ↑     |
 
 ## Open Critical Issues
 
-| # | Title | Status |
-|---|-------|--------|
-| 1674 | Function name sanitization | In Progress |
+| #    | Title                        | Status      |
+| ---- | ---------------------------- | ----------- |
+| 1674 | Function name sanitization   | In Progress |
 | 1667 | Context management stripping | In Progress |
-| 1666 | Codex 429 cooldown handling | Open |
-| 1658 | Qwen OAuth fails | Open |
-| 1655 | Claude Sonnet cooldown | Open |
+| 1666 | Codex 429 cooldown handling  | Open        |
+| 1658 | Qwen OAuth fails             | Open        |
+| 1655 | Claude Sonnet cooldown       | Open        |
 
 ## Resources
 

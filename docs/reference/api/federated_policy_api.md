@@ -16,7 +16,7 @@ Supports multi-tenant federation via namespace hierarchy.
 
 ### Methods
 
-#### FederatedPolicyEngine.__init__
+#### FederatedPolicyEngine.**init**
 
 ```python
 __init__(self: Any, default_namespace: str)
@@ -60,7 +60,7 @@ Combine two engines.
 register(self: Any, rule: PolicyRule)
 ```
 
-Add *rule* to the registry, replacing any existing rule with the same id.
+Add _rule_ to the registry, replacing any existing rule with the same id.
 
 ---
 
@@ -148,7 +148,7 @@ Combine two engines.
 register(self: Any, rule: PolicyRule)
 ```
 
-Add *rule* to the registry, replacing any existing rule with the same id.
+Add _rule_ to the registry, replacing any existing rule with the same id.
 
 ---
 

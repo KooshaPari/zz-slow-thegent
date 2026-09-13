@@ -15,12 +15,14 @@ Comprehensive governance system has been created and integrated into the work st
 ### 1. Project Governance Setup (`thegent/governance/project_setup.py`)
 
 **Features:**
+
 - Project structure analysis
 - Governance maturity assessment (None → Basic → Standard → Mature)
 - Automatic basic structure setup
 - Governance file generation (quality-gates.yaml, audit-config.yaml)
 
 **Usage:**
+
 ```python
 from thegent.governance.project_setup import ProjectGovernanceSetup
 
@@ -36,12 +38,14 @@ if structure.governance_level.value == "none":
 ### 2. Quality Matrix System (`thegent/governance/quality_matrix.py`)
 
 **Features:**
+
 - 7 quality categories (Code Quality, Documentation, Testing, Security, Performance, Maintainability, Governance)
 - Weighted scoring system (0-100)
 - Quality levels (Critical → Poor → Fair → Good → Excellent)
 - Comprehensive metric assessment
 
 **Usage:**
+
 ```python
 from thegent.governance.quality_matrix import QualityMatrixBuilder
 
@@ -56,6 +60,7 @@ matrix.save(project_path / "governance" / "quality-matrix.json")
 ### 3. Task Management System (`thegent/governance/task_manager.py`)
 
 **Features:**
+
 - Comprehensive task tracking
 - Dependency management
 - Priority and maturity levels
@@ -63,6 +68,7 @@ matrix.save(project_path / "governance" / "quality-matrix.json")
 - Acceptance criteria and definition of done
 
 **Usage:**
+
 ```python
 from thegent.governance.task_manager import TaskManager, Task, TaskStatus, TaskPriority
 
@@ -84,6 +90,7 @@ ready_tasks = task_manager.get_ready_tasks()
 ### 4. Work Stream Integration (`thegent/governance/workstream_integration.py`)
 
 **Features:**
+
 - Automated project auditing
 - Governance setup automation
 - Quality matrix generation
@@ -91,6 +98,7 @@ ready_tasks = task_manager.get_ready_tasks()
 - Task generation for all phases
 
 **Usage:**
+
 ```python
 from thegent.governance.workstream_integration import WorkStreamIntegrator
 
@@ -104,6 +112,7 @@ integrator.save_work_stream_plan(plan, output_path)
 ### Projects Audited: 192
 
 **Priority Projects (Need Governance Setup):**
+
 - Top 20 projects identified with structure scores 0-2/14
 - All projects categorized by governance maturity level
 - Recommendations generated for each project
@@ -111,6 +120,7 @@ integrator.save_work_stream_plan(plan, output_path)
 ### Research Files Identified: 4+
 
 **Files requiring completion:**
+
 - `docs/research/PROMPTS_LAST_12H.md`
 - `docs/research/CURSOR_AGENT_RECOVERY_2026-02-16.md`
 - `docs/research/MARKDOWN_SCAN_SUMMARY.md`
@@ -120,24 +130,28 @@ integrator.save_work_stream_plan(plan, output_path)
 ## Work Stream Plan
 
 ### Phase 1: Governance Setup
+
 - **Tasks**: Governance setup for all projects
 - **Estimated Hours**: ~60 hours (2 hours per project × 30 projects)
 - **Dependencies**: None
 - **Output**: Basic structure, governance framework
 
 ### Phase 2: Quality Assessment
+
 - **Tasks**: Create quality matrices for all projects
 - **Estimated Hours**: ~120 hours (4 hours per project × 30 projects)
 - **Dependencies**: Phase 1 complete
 - **Output**: Quality matrices, improvement plans
 
 ### Phase 3: Audit Setup
+
 - **Tasks**: Set up audit frameworks
 - **Estimated Hours**: ~90 hours (3 hours per project × 30 projects)
 - **Dependencies**: Phase 2 complete
 - **Output**: Audit configurations, initial audits
 
 ### Phase 4: Research Completion
+
 - **Tasks**: Complete all research/ideas at mature level
 - **Estimated Hours**: ~64 hours (16 hours per research file × 4+ files)
 - **Dependencies**: Phases 1-3 complete
@@ -148,11 +162,13 @@ integrator.save_work_stream_plan(plan, output_path)
 ## Next Steps
 
 ### 1. Review Work Stream Plan
+
 ```bash
 cat docs/research/COMPREHENSIVE_WORKSTREAM_PLAN.json
 ```
 
 ### 2. Start Governance Setup
+
 ```python
 from thegent.governance.workstream_integration import WorkStreamIntegrator
 
@@ -162,6 +178,7 @@ ready_tasks = integrator.get_next_actions()
 ```
 
 ### 3. Run Quality Assessments
+
 ```python
 from thegent.governance.quality_matrix import QualityMatrixBuilder
 
@@ -172,6 +189,7 @@ for project_path in projects:
 ```
 
 ### 4. Begin Research Completion
+
 - Each research file gets a task with:
   - Mature level implementation (not MVP)
   - Complete documentation
@@ -193,6 +211,7 @@ for project_path in projects:
 ## Integration with Agents
 
 The system is ready for agents to:
+
 1. **Discover tasks**: Use `task_manager.get_ready_tasks()`
 2. **Assess projects**: Use `ProjectGovernanceSetup` and `QualityMatrixBuilder`
 3. **Track progress**: Update task status through `TaskManager`
@@ -203,6 +222,7 @@ The system is ready for agents to:
 All governance infrastructure is in place. The work stream plan has been generated and is ready for execution. Agents can now begin systematic governance setup and research completion at mature levels.
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -211,4 +231,3 @@ All governance infrastructure is in place. The work stream plan has been generat
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

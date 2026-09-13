@@ -5,6 +5,7 @@
 Comprehensive security guardrails for AI agents.
 
 Implements multiple layers of protection:
+
 - Command validation and sanitization
 - Input/output filtering
 - Rate limiting
@@ -53,7 +54,7 @@ Main guardrails orchestrator.
 
 ### Methods
 
-#### Guardrails.__init__
+#### Guardrails.**init**
 
 ```python
 __init__(self: Any)
@@ -136,7 +137,7 @@ Rate limiter for operations.
 
 ### Methods
 
-#### RateLimiter.__init__
+#### RateLimiter.**init**
 
 ```python
 __init__(self: Any)

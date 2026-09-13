@@ -29,21 +29,25 @@ This document describes the research and implementation of a high-performance pr
 ### Performance Optimizations
 
 #### 1. Directory Scanning
+
 - **os.scandir()** vs **Path.iterdir()**: 2-3x faster
 - **os.scandir()** uses native system calls, avoids Python overhead
 - Returns file handles immediately, lazy evaluation
 
 #### 2. File Reading
+
 - **read_bytes() + decode()** vs **read_text()**: Slightly faster
 - Single syscall for entire file read
 - Batch operations where possible
 
 #### 3. Caching Strategy
+
 - 1-second TTL for process enumeration
 - Cache boot_time and clock_ticks (rarely change)
 - Lazy loading of detailed process info
 
 #### 4. FD Counting
+
 - **os.scandir(/proc/PID/fd)** vs **lsof**: 10-100x faster
 - No subprocess overhead
 - Direct directory listing
@@ -69,12 +73,12 @@ This document describes the research and implementation of a high-performance pr
 
 On a system with ~600 processes:
 
-| Method | Time | Speedup |
-|--------|------|---------|
-| psutil.process_iter() | ~500ms | 1x (baseline) |
-| Direct /proc (Path.iterdir) | ~50ms | 10x |
-| Direct /proc (os.scandir) | ~20ms | 25x |
-| procfs library | ~30ms | 16x |
+| Method                      | Time   | Speedup       |
+| --------------------------- | ------ | ------------- |
+| psutil.process_iter()       | ~500ms | 1x (baseline) |
+| Direct /proc (Path.iterdir) | ~50ms  | 10x           |
+| Direct /proc (os.scandir)   | ~20ms  | 25x           |
+| procfs library              | ~30ms  | 16x           |
 
 ### Usage Example
 

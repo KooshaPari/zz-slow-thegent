@@ -12,7 +12,7 @@ Manages a unified queue of deferred agent prompts.
 
 ### Methods
 
-#### PromptQueue.__init__
+#### PromptQueue.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)

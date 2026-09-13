@@ -10,21 +10,21 @@ tags: [b90, wave-3, execution-evidence, wl-138]
 
 ## Wave-3 Agent Assignments
 
-| Agent | Items | Focus Area |
-|-------|-------|------------|
-| agent-a | A1–A5 | Two-surface architecture, extraction hardening, SLO gate script |
-| agent-b | B1–B5 | Parity gap analysis, runtime matrix v2, Rust promotion gates |
-| agent-c | C1–C5 | Boundary compliance audit, wave retrospective |
-| agent-d | D1–D5 | Zig ABI gate validation, Mojo fallback strategy |
+| Agent   | Items | Focus Area                                                                            |
+| ------- | ----- | ------------------------------------------------------------------------------------- |
+| agent-a | A1–A5 | Two-surface architecture, extraction hardening, SLO gate script                       |
+| agent-b | B1–B5 | Parity gap analysis, runtime matrix v2, Rust promotion gates                          |
+| agent-c | C1–C5 | Boundary compliance audit, wave retrospective                                         |
+| agent-d | D1–D5 | Zig ABI gate validation, Mojo fallback strategy                                       |
 | agent-e | E1–E5 | SLO CI gate tests, lane tuning, governance sync, VS Code status, this evidence bundle |
-| agent-f | F1–F5 | Migration benchmarks, wave closeout |
+| agent-f | F1–F5 | Migration benchmarks, wave closeout                                                   |
 
 ## B90 Plan Completion Status
 
-| Wave | Status |
-|------|--------|
-| Wave-1 | COMPLETED |
-| Wave-2 | COMPLETED |
+| Wave   | Status                                          |
+| ------ | ----------------------------------------------- |
+| Wave-1 | COMPLETED                                       |
+| Wave-2 | COMPLETED                                       |
 | Wave-3 | IN PROGRESS (all agents executing concurrently) |
 
 **Total items delivered across all waves:** 90 (30 per wave)
@@ -70,17 +70,17 @@ tags: [b90, wave-3, execution-evidence, wl-138]
 
 ## Promotion Gate Status
 
-| Item | Status |
-|------|--------|
+| Item                                 | Status         |
+| ------------------------------------ | -------------- |
 | Python baseline (parse_model_suffix) | fully promoted |
-| SloMetrics governance module | fully promoted |
-| Rust parse_model_suffixes (PyO3) | in_progress |
-| Zig ABI contract v1.0.0 | in_progress |
-| Mojo deterministic kernel smoke | in_progress |
-| CLI dispatch Rust migration | in_progress |
-| Policy gate Rust migration | in_progress |
-| MCP transport split | planned |
-| Remainder | documented |
+| SloMetrics governance module         | fully promoted |
+| Rust parse_model_suffixes (PyO3)     | in_progress    |
+| Zig ABI contract v1.0.0              | in_progress    |
+| Mojo deterministic kernel smoke      | in_progress    |
+| CLI dispatch Rust migration          | in_progress    |
+| Policy gate Rust migration           | in_progress    |
+| MCP transport split                  | planned        |
+| Remainder                            | documented     |
 
 2 items fully promoted (Python baseline, SloMetrics), 8 items in-progress (Rust/Zig/Mojo), remainder documented.
 

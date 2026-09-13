@@ -12,7 +12,7 @@ Cross-platform OS user creation adapter.
 
 ### Methods
 
-#### OSUserAdapter.__init__
+#### OSUserAdapter.**init**
 
 ```python
 __init__(self: Any)

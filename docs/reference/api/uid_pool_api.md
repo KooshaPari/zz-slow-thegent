@@ -15,7 +15,7 @@ and ensures deterministic allocation for the same tenant.
 
 ### Methods
 
-#### UidPool.__init__
+#### UidPool.**init**
 
 ```python
 __init__(self: Any, base_uid: int, size: int, state_file: Any)

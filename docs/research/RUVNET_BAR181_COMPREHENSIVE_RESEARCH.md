@@ -9,6 +9,7 @@
 ## 1. ruvnet (rUv / Reuven Cohen) Ecosystem
 
 ### Profile Overview
+
 - **GitHub**: https://github.com/ruvnet
 - **Followers**: 3,200+
 - **Tagline**: "Hacking the Multiverse"
@@ -18,6 +19,7 @@
 ### Core Repositories
 
 #### 1.1 claude-flow ⭐ TOP PROJECT
+
 - **URL**: https://github.com/ruvnet/claude-flow
 - **Description**: Leading agent orchestration platform for Claude
 - **Stars**: 420+ (growing rapidly)
@@ -42,6 +44,7 @@
 | Optimizer | Performance tuning |
 
 #### 1.2 agentic-flow
+
 - **URL**: https://github.com/ruvnet/agentic-flow
 - **Description**: Near-free agent framework for Claude Code/Agent SDK
 - **Key Features**:
@@ -51,6 +54,7 @@
   - Multi-provider support (Claude, Gemini, ONNX)
 
 **Core Components**:
+
 - **Agent Booster**: Rust/WASM local code transformations
 - **AgentDB**: Advanced memory with causal reasoning
 - **ReasoningBank**: Persistent learning memory (90%+ success after learning)
@@ -58,6 +62,7 @@
 - **Swarm Optimization**: Parallel execution
 
 #### 1.3 ruvector ⭐ HIGH-PERFORMANCE VECTOR DB
+
 - **URL**: https://github.com/ruvnet/ruvector
 - **Description**: Distributed vector database with self-learning
 - **Tech**: Rust, WASM, Raft consensus, GNN
@@ -78,6 +83,7 @@
 | RVF | Binary format for embeddings |
 
 #### 1.4 AgentDB
+
 - **URL**: https://agentdb.ruv.io/
 - **Description**: Ultra-fast vector database for AI agents
 - **Key Features**:
@@ -88,6 +94,7 @@
   - ReasoningBank cognitive layer
 
 #### 1.5 SPARC Methodology
+
 - **URL**: https://github.com/ruvnet/sparc
 - **Stars**: 413+ | Forks: 85+
 - **Phases**: Specification → Pseudocode → Architecture → Refinement → Completion
@@ -96,20 +103,21 @@
 
 #### 1.6 Other Notable Projects
 
-| Repo | Description | Stars |
-|------|-------------|-------|
-| rUv-dev | AI-powered development with SPARC | 420+ |
-| reflective-engineer | Reflective agent patterns | 52+ |
-| hello_world_agent | ReACT demo agent | - |
-| sparc-ide | AI-driven IDE | - |
-| ruv-code | Fork of Roo-Code | 10+ |
-| midstream | Real-time AI conversation analysis | - |
+| Repo                | Description                        | Stars |
+| ------------------- | ---------------------------------- | ----- |
+| rUv-dev             | AI-powered development with SPARC  | 420+  |
+| reflective-engineer | Reflective agent patterns          | 52+   |
+| hello_world_agent   | ReACT demo agent                   | -     |
+| sparc-ide           | AI-driven IDE                      | -     |
+| ruv-code            | Fork of Roo-Code                   | 10+   |
+| midstream           | Real-time AI conversation analysis | -     |
 
 ---
 
 ## 2. bar181 (Bradley Ross) Ecosystem
 
 ### Profile Overview
+
 - **GitHub**: https://github.com/bar181
 - **Identity**: Agentic Engineer, Harvard CS50 Teaching Fellow
 - **Focus**: Symbolic protocols, AI cognition, agent systems
@@ -118,18 +126,21 @@
 ### Core Repositories
 
 #### 2.1 aisp-open-core ⭐ FLAGSHIP
+
 - **URL**: https://github.com/bar181/aisp-open-core
 - **Description**: AI Symbolic Programming v5.1
 - **License**: MIT
 - **Key Innovation**: Proof-carrying protocol for LLMs
 
 **Key Features**:
+
 - AI-first, specification-driven development
 - Reduces decision points from 40-65% → <2%
 - Compatible with Claude, OpenAI, Gemini, Cursor, Claude Code
 - "Assembly language for AI cognition"
 
 **Formal Verification** (Issue #4):
+
 - 40-50% coverage of AISP 5.1 spec
 - 1,086 lines of verification engine code
 - 7 verification methods (Direct Proof, SMT, etc.)
@@ -137,12 +148,14 @@
 - 32-95 microseconds verification time
 
 #### 2.2 openai-agents
+
 - **URL**: https://github.com/bar181/openai-agents
 - **Description**: OpenAI agent tutorials and modules
 - **License**: Apache-2.0
 - **Components**: Common code, modules, tutorials
 
 #### 2.3 fastapi-agents
+
 - **URL**: https://github.com/bar181/fastapi-agents
 - **Description**: FastAPI-based dynamic agent system
 - **Methodology**: ReACT
@@ -150,6 +163,7 @@
 - **License**: MIT
 
 #### 2.4 agentic-professor
+
 - **URL**: https://github.com/bar181/agentic-professor
 - **Description**: Gold-standard course design for AI-first education
 - **Target**: Course designers, instructional developers, AI agents
@@ -157,9 +171,9 @@
 
 #### 2.5 Gists & Specifications
 
-| Gist | Description |
-|------|-------------|
-| Omega-AGI-Symbolic-Language | AGI prompt engineering guide |
+| Gist                                | Description                         |
+| ----------------------------------- | ----------------------------------- |
+| Omega-AGI-Symbolic-Language         | AGI prompt engineering guide        |
 | Agentis-openai-agents-system-prompt | System prompt for OpenAI Agents SDK |
 
 ---
@@ -168,34 +182,34 @@
 
 ### 3.1 AI Agent Orchestration Frameworks Comparison
 
-| Framework | Focus | Best For |
-|-----------|-------|----------|
-| **Claude-Flow** (ruvnet) | Claude-native, MCP | Claude Code workflows |
-| **LangGraph** | Graph-based control | Complex dependencies |
-| **CrewAI** | Role-based teams | Structured collaboration |
-| **AutoGen** | Conversational | Interactive dialogue |
-| **Agno** | Orchestration | Task handoffs |
-| **OpenAI Agents SDK** | OpenAI-native | GPT workflows |
-| **Pydantic AI** | Type-safe | Production apps |
+| Framework                | Focus               | Best For                 |
+| ------------------------ | ------------------- | ------------------------ |
+| **Claude-Flow** (ruvnet) | Claude-native, MCP  | Claude Code workflows    |
+| **LangGraph**            | Graph-based control | Complex dependencies     |
+| **CrewAI**               | Role-based teams    | Structured collaboration |
+| **AutoGen**              | Conversational      | Interactive dialogue     |
+| **Agno**                 | Orchestration       | Task handoffs            |
+| **OpenAI Agents SDK**    | OpenAI-native       | GPT workflows            |
+| **Pydantic AI**          | Type-safe           | Production apps          |
 
 ### 3.2 Vector Databases Comparison
 
-| Database | Latency | Inserts/sec | Self-Learning |
-|----------|---------|-------------|---------------|
-| **ruvector** | 61μs | 52K+ | Yes (GNN) |
-| **AgentDB** | <5ms | 116K | Yes (ReasoningBank) |
-| Pinecone | ~100ms | ~10K | No |
-| Weaviate | ~50ms | ~20K | Limited |
-| Qdrant | ~10ms | ~50K | No |
+| Database     | Latency | Inserts/sec | Self-Learning       |
+| ------------ | ------- | ----------- | ------------------- |
+| **ruvector** | 61μs    | 52K+        | Yes (GNN)           |
+| **AgentDB**  | <5ms    | 116K        | Yes (ReasoningBank) |
+| Pinecone     | ~100ms  | ~10K        | No                  |
+| Weaviate     | ~50ms   | ~20K        | Limited             |
+| Qdrant       | ~10ms   | ~50K        | No                  |
 
 ### 3.3 Neurosymbolic AI Frameworks
 
-| Framework | Focus | GitHub |
-|-----------|-------|--------|
-| **PEIRCE** | LLM-driven neuro-symbolic | neuro-symbolic-ai/peirce |
-| **SymbolicAI** | Logic + generative models | ExtensityAI/symbolicai |
-| **Dolphin** | Scalable neurosymbolic | Dolphin-NeSy/Dolphin |
-| **AISP** | Proof-carrying protocols | bar181/aisp-open-core |
+| Framework      | Focus                     | GitHub                   |
+| -------------- | ------------------------- | ------------------------ |
+| **PEIRCE**     | LLM-driven neuro-symbolic | neuro-symbolic-ai/peirce |
+| **SymbolicAI** | Logic + generative models | ExtensityAI/symbolicai   |
+| **Dolphin**    | Scalable neurosymbolic    | Dolphin-NeSy/Dolphin     |
+| **AISP**       | Proof-carrying protocols  | bar181/aisp-open-core    |
 
 ---
 
@@ -203,20 +217,20 @@
 
 ### 4.1 Official Repositories
 
-| Repository | Description |
-|------------|-------------|
-| modelcontextprotocol/servers | Official MCP servers |
-| modelcontextprotocol/registry | Community registry (6.5K+ stars) |
-| microsoft/mcp | Microsoft official implementations |
+| Repository                    | Description                        |
+| ----------------------------- | ---------------------------------- |
+| modelcontextprotocol/servers  | Official MCP servers               |
+| modelcontextprotocol/registry | Community registry (6.5K+ stars)   |
+| microsoft/mcp                 | Microsoft official implementations |
 
 ### 4.2 Notable Implementations
 
-| Repo | Description |
-|------|-------------|
-| dev-assistant-ai/mcp-servers | Fork with extensions |
-| nokia/modelcontextprotocol-servers | Nokia implementation |
-| TrelisResearch/mcp | Research-focused (9,400+ forks) |
-| s2005/mcp-everything | Full protocol demo |
+| Repo                               | Description                     |
+| ---------------------------------- | ------------------------------- |
+| dev-assistant-ai/mcp-servers       | Fork with extensions            |
+| nokia/modelcontextprotocol-servers | Nokia implementation            |
+| TrelisResearch/mcp                 | Research-focused (9,400+ forks) |
+| s2005/mcp-everything               | Full protocol demo              |
 
 ---
 
@@ -224,14 +238,15 @@
 
 ### 5.1 Agent Skills Marketplaces
 
-| Platform | Skills Count | Focus |
-|----------|-------------|-------|
-| MCP Market | 50,000+ | General AI skills |
-| Claude Code Marketplace | 649+ | Coding tasks |
-| Agent Skills (VoltAgent) | 200+ | Claude Code, Codex, Cursor |
-| AI Skill Market | 27,842 users | MCP builders |
+| Platform                 | Skills Count | Focus                      |
+| ------------------------ | ------------ | -------------------------- |
+| MCP Market               | 50,000+      | General AI skills          |
+| Claude Code Marketplace  | 649+         | Coding tasks               |
+| Agent Skills (VoltAgent) | 200+         | Claude Code, Codex, Cursor |
+| AI Skill Market          | 27,842 users | MCP builders               |
 
 ### 5.2 awesome-claude-code
+
 - **URL**: https://github.com/hesreallyhim/awesome-claude-code
 - **Contents**: Skills, hooks, slash-commands, agent orchestrators, plugins
 
@@ -284,13 +299,13 @@
 
 ### 7.1 Directly Applicable
 
-| Source | Pattern | Application |
-|--------|---------|-------------|
-| ruvector | Vector DB | Semantic doc search |
-| AgentDB | Reasoning bank | Route learning |
-| AISP | Spec-driven | API contracts |
+| Source      | Pattern             | Application            |
+| ----------- | ------------------- | ---------------------- |
+| ruvector    | Vector DB           | Semantic doc search    |
+| AgentDB     | Reasoning bank      | Route learning         |
+| AISP        | Spec-driven         | API contracts          |
 | claude-flow | Agent orchestration | Multi-provider routing |
-| SPARC | Methodology | Development process |
+| SPARC       | Methodology         | Development process    |
 
 ### 7.2 Integration Opportunities
 
@@ -318,22 +333,23 @@
 
 ## 8. Summary Table
 
-| Ecosystem | Top Project | Key Innovation | Relevance |
-|-----------|-------------|----------------|-----------|
-| ruvnet | claude-flow | Agent orchestration | High |
-| ruvnet | ruvector | Self-learning vector DB | High |
-| ruvnet | agentic-flow | Cost optimization | Medium |
-| bar181 | aisp-open-core | Proof-carrying protocols | High |
-| bar181 | fastapi-agents | ReACT agents | Medium |
-| LangGraph | - | Graph orchestration | Reference |
-| PEIRCE | - | Neuro-symbolic | Research |
-| MCP | - | Protocol standard | Integration |
+| Ecosystem | Top Project    | Key Innovation           | Relevance   |
+| --------- | -------------- | ------------------------ | ----------- |
+| ruvnet    | claude-flow    | Agent orchestration      | High        |
+| ruvnet    | ruvector       | Self-learning vector DB  | High        |
+| ruvnet    | agentic-flow   | Cost optimization        | Medium      |
+| bar181    | aisp-open-core | Proof-carrying protocols | High        |
+| bar181    | fastapi-agents | ReACT agents             | Medium      |
+| LangGraph | -              | Graph orchestration      | Reference   |
+| PEIRCE    | -              | Neuro-symbolic           | Research    |
+| MCP       | -              | Protocol standard        | Integration |
 
 ---
 
 ## 9. URLs Reference
 
 ### ruvnet
+
 - https://github.com/ruvnet
 - https://github.com/ruvnet/claude-flow
 - https://github.com/ruvnet/ruvector
@@ -343,6 +359,7 @@
 - https://ruv.io/agentic-flow
 
 ### bar181
+
 - https://github.com/bar181
 - https://github.com/bar181/aisp-open-core
 - https://github.com/bar181/openai-agents
@@ -350,6 +367,7 @@
 - https://github.com/bar181/agentic-professor
 
 ### Related
+
 - https://github.com/modelcontextprotocol/servers
 - https://github.com/neuro-symbolic-ai/peirce
 - https://github.com/ExtensityAI/symbolicai

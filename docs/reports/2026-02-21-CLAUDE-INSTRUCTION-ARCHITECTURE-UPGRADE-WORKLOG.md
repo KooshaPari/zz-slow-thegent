@@ -34,12 +34,12 @@
 
 ## Roadmap (Phased DAG Continuation)
 
-| Phase | Next Task | Depends On | Target |
-|---|---|---|---|
-| Phase A | Add parity lint/check to assert instruction-doc-map links are valid | WL-139 | Completed (2026-02-21) |
-| Phase B | Add project-level CLAUDE overlay template with required sections | Phase A | Completed (2026-02-21) |
-| Phase C | Add automated stale-link and stale-section detector for instruction docs | Phase B | Completed (2026-02-21) |
-| Phase D | Integrate instruction architecture checks into quality-gate summary output | Phase C | Completed (2026-02-21) |
+| Phase   | Next Task                                                                  | Depends On | Target                 |
+| ------- | -------------------------------------------------------------------------- | ---------- | ---------------------- |
+| Phase A | Add parity lint/check to assert instruction-doc-map links are valid        | WL-139     | Completed (2026-02-21) |
+| Phase B | Add project-level CLAUDE overlay template with required sections           | Phase A    | Completed (2026-02-21) |
+| Phase C | Add automated stale-link and stale-section detector for instruction docs   | Phase B    | Completed (2026-02-21) |
+| Phase D | Integrate instruction architecture checks into quality-gate summary output | Phase C    | Completed (2026-02-21) |
 
 ### Phase Completion Evidence
 

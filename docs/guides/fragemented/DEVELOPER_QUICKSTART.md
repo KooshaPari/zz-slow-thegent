@@ -48,26 +48,26 @@ task ts:build          # production build
 
 ### Python (ruff)
 
-| Error | Meaning | Fix |
-|-------|---------|-----|
-| `E501` | Line too long | Handled by formatter -- run `task format` |
-| `F401` | Unused import | Remove the import |
-| `F841` | Unused variable | Remove or prefix with `_` |
-| `S101` | `assert` in production | Move to test files or use `raise` |
-| `UP035` | Deprecated import | Use the modern import path |
-| `B008` | Mutable default arg | Use `None` default + assign in body |
-| `ANN001` | Missing type annotation | Add type hint to parameter |
-| `C901` | Too complex | Break function into smaller pieces (max complexity: 10) |
-| `PLR0913` | Too many args | Use a config dataclass or reduce parameters (max: 6) |
-| `SIM102` | Collapsible `if` | Combine with `and` |
+| Error     | Meaning                 | Fix                                                     |
+| --------- | ----------------------- | ------------------------------------------------------- |
+| `E501`    | Line too long           | Handled by formatter -- run `task format`               |
+| `F401`    | Unused import           | Remove the import                                       |
+| `F841`    | Unused variable         | Remove or prefix with `_`                               |
+| `S101`    | `assert` in production  | Move to test files or use `raise`                       |
+| `UP035`   | Deprecated import       | Use the modern import path                              |
+| `B008`    | Mutable default arg     | Use `None` default + assign in body                     |
+| `ANN001`  | Missing type annotation | Add type hint to parameter                              |
+| `C901`    | Too complex             | Break function into smaller pieces (max complexity: 10) |
+| `PLR0913` | Too many args           | Use a config dataclass or reduce parameters (max: 6)    |
+| `SIM102`  | Collapsible `if`        | Combine with `and`                                      |
 
 ### TypeScript (oxlint)
 
-| Error | Meaning | Fix |
-|-------|---------|-----|
-| `no-unused-vars` | Unused variable | Remove or prefix with `_` |
+| Error             | Meaning         | Fix                        |
+| ----------------- | --------------- | -------------------------- |
+| `no-unused-vars`  | Unused variable | Remove or prefix with `_`  |
 | `no-explicit-any` | `any` type used | Add proper type annotation |
-| `no-console` | `console.log` | Use proper logger |
+| `no-console`      | `console.log`   | Use proper logger          |
 
 ---
 
@@ -106,41 +106,41 @@ src/
 
 When adding new functionality, prefer these libraries over custom implementations:
 
-| Need | Python | TypeScript |
-|------|--------|-----------|
-| HTTP client | httpx | fetch / ky |
-| Validation | pydantic | zod |
-| Config | pydantic-settings | -- |
-| CLI | typer | -- |
-| Logging | structlog / loguru | -- |
-| Retry | tenacity | -- |
-| Testing | pytest + hypothesis | vitest |
-| Serialization | msgspec | -- |
+| Need          | Python              | TypeScript |
+| ------------- | ------------------- | ---------- |
+| HTTP client   | httpx               | fetch / ky |
+| Validation    | pydantic            | zod        |
+| Config        | pydantic-settings   | --         |
+| CLI           | typer               | --         |
+| Logging       | structlog / loguru  | --         |
+| Retry         | tenacity            | --         |
+| Testing       | pytest + hypothesis | vitest     |
+| Serialization | msgspec             | --         |
 
 ---
 
 ## Quality Thresholds
 
-| Metric | Threshold |
-|--------|-----------|
-| Test coverage | >= 80% (90% for trace) |
-| Cyclomatic complexity | <= 10 per function |
-| Cognitive complexity | <= 15 per function |
-| Max function length | 40 lines |
-| Code duplication | < 5% |
-| Line length | 100 characters |
-| Security findings | 0 high/critical |
+| Metric                | Threshold              |
+| --------------------- | ---------------------- |
+| Test coverage         | >= 80% (90% for trace) |
+| Cyclomatic complexity | <= 10 per function     |
+| Cognitive complexity  | <= 15 per function     |
+| Max function length   | 40 lines               |
+| Code duplication      | < 5%                   |
+| Line length           | 100 characters         |
+| Security findings     | 0 high/critical        |
 
 ---
 
 ## Project Locations
 
-| Project | Path | Description |
-|---------|------|-------------|
-| trace | `trace/` | Agent-native requirements traceability system |
-| sharecli | `sharecli/` | Unified CLI for agent harness |
-| thegent | `thegent/` | Agent orchestration + governance MCP server |
-| jobhunter | `jobhunter/` | Full-stack job hunting application |
+| Project   | Path         | Description                                   |
+| --------- | ------------ | --------------------------------------------- |
+| trace     | `trace/`     | Agent-native requirements traceability system |
+| sharecli  | `sharecli/`  | Unified CLI for agent harness                 |
+| thegent   | `thegent/`   | Agent orchestration + governance MCP server   |
+| jobhunter | `jobhunter/` | Full-stack job hunting application            |
 
 ---
 

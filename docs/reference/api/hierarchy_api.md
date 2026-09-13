@@ -11,7 +11,7 @@ AgentTree — parent/child tracking for SmolGents hierarchies.
 Flat registry that tracks parent/child relationships between SmolAgents.
 
 The tree does **not** own the agents — callers are responsible for keeping
-references.  The tree only maintains a mapping of ``name -&gt; agent`` and the
+references. The tree only maintains a mapping of `name -&gt; agent` and the
 directed parent/child edges so that traversal and lookup remain O(1).
 
 Usage::
@@ -29,7 +29,7 @@ Usage::
 
 ### Methods
 
-#### AgentTree.__init__
+#### AgentTree.**init**
 
 ```python
 __init__(self: Any)
@@ -43,7 +43,7 @@ __init__(self: Any)
 get(self: Any, name: str)
 ```
 
-Return the agent registered under *name*, or *None*.
+Return the agent registered under _name_, or _None_.
 
 ---
 
@@ -63,7 +63,7 @@ Return ancestors from direct parent up to the root (inclusive).
 get_children(self: Any, name: str)
 ```
 
-Return direct children of the agent named *name*.
+Return direct children of the agent named _name_.
 
 ---
 
@@ -83,7 +83,7 @@ Return all descendants (recursive) of the named agent.
 get_parent(self: Any, name: str)
 ```
 
-Return the direct parent of the agent named *name*, or *None*.
+Return the direct parent of the agent named _name_, or _None_.
 
 ---
 
@@ -109,7 +109,7 @@ Register an agent, optionally linking it to a parent.
 
 - `agent`: The :class:`SmolAgent` to register.
 - `parent_name`: Name of the parent agent already registered in this
-tree.  Pass *None* for the root / orphan nodes.
+  tree. Pass _None_ for the root / orphan nodes.
 
 ---
 
@@ -131,7 +131,7 @@ Return a serialisable representation of the tree.
 get(self: Any, name: str)
 ```
 
-Return the agent registered under *name*, or *None*.
+Return the agent registered under _name_, or _None_.
 
 ---
 
@@ -151,7 +151,7 @@ Return ancestors from direct parent up to the root (inclusive).
 get_children(self: Any, name: str)
 ```
 
-Return direct children of the agent named *name*.
+Return direct children of the agent named _name_.
 
 ---
 
@@ -171,7 +171,7 @@ Return all descendants (recursive) of the named agent.
 get_parent(self: Any, name: str)
 ```
 
-Return the direct parent of the agent named *name*, or *None*.
+Return the direct parent of the agent named _name_, or _None_.
 
 ---
 
@@ -197,11 +197,11 @@ Register an agent, optionally linking it to a parent.
 
 - `agent`: The :class:`SmolAgent` to register.
 - `parent_name`: Name of the parent agent already registered in this
-tree.  Pass *None* for the root / orphan nodes.
+  tree. Pass _None_ for the root / orphan nodes.
 
 **Raises**:
 
-- `ValueError`: If ``parent_name`` is specified but not yet registered.
+- `ValueError`: If `parent_name` is specified but not yet registered.
 
 ---
 

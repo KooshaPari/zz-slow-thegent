@@ -15,67 +15,67 @@ The `ContentTabs` component provides tabbed content sections for switching betwe
 
 ### Vue Component
 
-```vue
+````vue
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from "vue";
 
 const tabs = [
-  { id: 'python', label: 'Python' },
-  { id: 'javascript', label: 'JavaScript' },
-  { id: 'typescript', label: 'TypeScript' },
-]
+  { id: "python", label: "Python" },
+  { id: "javascript", label: "JavaScript" },
+  { id: "typescript", label: "TypeScript" },
+];
 
-const activeTab = ref('python')
+const activeTab = ref("python");
 </script>
 
 <template>
   <ContentTabs :tabs="tabs" v-model="activeTab">
-    <template #tab-python>
-      ```python
-      print("Hello from Python!")
-      ```
-    </template>
+    <template #tab-python> ```python print("Hello from Python!") ``` </template>
     <template #tab-javascript>
-      ```javascript
-      console.log("Hello from JavaScript!");
-      ```
+      ```javascript console.log("Hello from JavaScript!"); ```
     </template>
     <template #tab-typescript>
-      ```typescript
-      console.log("Hello from TypeScript!");
-      ```
+      ```typescript console.log("Hello from TypeScript!"); ```
     </template>
   </ContentTabs>
 </template>
-```
+````
 
 ### Markdown Container Syntax
 
 Use the `::: tabs` container syntax in markdown files:
 
-```markdown
+````markdown
 ::: tabs
 
 ::: tab python
-~~~~python
+
+```python
 print("hello")
-~~~~
+```
+````
+
 :::
 
 ::: tab javascript
-~~~~javascript
-console.log("hello")
-~~~~
+
+```javascript
+console.log("hello");
+```
+
 :::
 
 ::: tab typescript
-~~~~typescript
-console.log("hello")
-~~~~
+
+```typescript
+console.log("hello");
+```
+
 :::
 
 :::
-```
+
+````
 
 ### Keyboard Navigation
 
@@ -87,26 +87,26 @@ console.log("hello")
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `tabs` | `Tab[]` | Auto-detected | Array of tab objects with `id` and `label` |
-| `modelValue` | `string` | First tab | Currently active tab ID |
+| Prop         | Type     | Default       | Description                                |
+| ------------ | -------- | ------------- | ------------------------------------------ |
+| `tabs`       | `Tab[]`  | Auto-detected | Array of tab objects with `id` and `label` |
+| `modelValue` | `string` | First tab     | Currently active tab ID                    |
 
 ### Tab Interface
 
 ```typescript
 interface Tab {
-  id: string
-  label: string
+  id: string;
+  label: string;
 }
-```
+````
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
-| `tab-{id}` | Content for each tab panel |
-| `default` | Fallback content if no named slots provided |
+| Slot       | Description                                 |
+| ---------- | ------------------------------------------- |
+| `tab-{id}` | Content for each tab panel                  |
+| `default`  | Fallback content if no named slots provided |
 
 ## Examples
 
@@ -115,6 +115,7 @@ interface Tab {
 ::: tabs
 
 ::: tab python
+
 ```python
 def hello(name: str) -> str:
     """Greet the user."""
@@ -123,9 +124,11 @@ def hello(name: str) -> str:
 
 print(hello("World"))
 ```
+
 :::
 
 ::: tab javascript
+
 ```javascript
 /**
  * Greet the user.
@@ -138,9 +141,11 @@ function hello(name) {
 
 console.log(hello("World"));
 ```
+
 :::
 
 ::: tab typescript
+
 ```typescript
 /**
  * Greet the user.
@@ -153,6 +158,7 @@ function hello(name: string): string {
 
 console.log(hello("World"));
 ```
+
 :::
 
 :::
@@ -162,6 +168,7 @@ console.log(hello("World"));
 ::: tabs
 
 ::: tab Environment Variables
+
 ```bash
 # Set API key
 export API_KEY="your-api-key"
@@ -172,9 +179,11 @@ export DEBUG=true
 # Set log level
 export LOG_LEVEL=debug
 ```
+
 :::
 
 ::: tab config.yaml
+
 ```yaml
 # thegent configuration
 api_key: ${API_KEY}
@@ -186,9 +195,11 @@ providers:
   default: claude
   fallback: gemini
 ```
+
 :::
 
 ::: tab JSON
+
 ```json
 {
   "api_key": "${API_KEY}",
@@ -200,6 +211,7 @@ providers:
   }
 }
 ```
+
 :::
 
 :::

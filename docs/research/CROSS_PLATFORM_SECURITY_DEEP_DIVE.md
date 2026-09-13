@@ -14,42 +14,48 @@
 ### 1.1 Attack Surfaces
 
 **Surface 1: Automation Input**
+
 - **Threat:** Malicious selectors, text injection
 - **Risk:** High (direct code execution potential)
 - **Mitigation:** Input validation, sandboxing
 
 **Surface 2: Screenshot Data**
+
 - **Threat:** Sensitive data leakage (passwords, personal info)
 - **Risk:** High (privacy violation)
 - **Mitigation:** Screenshot redaction, encryption
 
 **Surface 3: UI Spoofing**
+
 - **Threat:** Malicious app mimics legitimate UI
 - **Risk:** High (unauthorized actions)
 - **Mitigation:** App verification, window title validation
 
 **Surface 4: Permission Abuse**
+
 - **Threat:** Agent uses permissions for unauthorized actions
 - **Risk:** Medium (depends on permissions granted)
 - **Mitigation:** Least privilege, scope restrictions
 
 **Surface 5: Resource Exhaustion**
+
 - **Threat:** Agent spawns too many automations
 - **Risk:** Medium (DoS, system degradation)
 - **Mitigation:** Rate limiting, concurrency limits
 
 ### 1.2 Threat Actors
 
-| Actor | Capabilities | Motivation | Risk Level |
-|-------|-------------|------------|------------|
-| **Malicious Agent** | Full automation access | Unauthorized actions | High |
-| **Compromised Agent** | Partial access | Data exfiltration | High |
-| **User Error** | Accidental misuse | Unintended actions | Medium |
-| **System Compromise** | Full system access | Complete control | Critical |
+| Actor                 | Capabilities           | Motivation           | Risk Level |
+| --------------------- | ---------------------- | -------------------- | ---------- |
+| **Malicious Agent**   | Full automation access | Unauthorized actions | High       |
+| **Compromised Agent** | Partial access         | Data exfiltration    | High       |
+| **User Error**        | Accidental misuse      | Unintended actions   | Medium     |
+| **System Compromise** | Full system access     | Complete control     | Critical   |
 
 ### 1.3 Attack Scenarios
 
 **Scenario 1: Input Injection**
+
 ```
 Attacker: Malicious agent
 Action: Types shell command into terminal
@@ -58,6 +64,7 @@ Mitigation: Input validation, sandboxing
 ```
 
 **Scenario 2: Screenshot Exfiltration**
+
 ```
 Attacker: Compromised agent
 Action: Takes screenshots, sends to external server
@@ -66,6 +73,7 @@ Mitigation: Screenshot encryption, access control
 ```
 
 **Scenario 3: UI Spoofing**
+
 ```
 Attacker: Malicious app
 Action: Creates fake "Save" button, agent clicks it
@@ -74,6 +82,7 @@ Mitigation: App verification, window validation
 ```
 
 **Scenario 4: Permission Escalation**
+
 ```
 Attacker: Agent with basic permissions
 Action: Exploits permission to gain admin access
@@ -88,6 +97,7 @@ Mitigation: Least privilege, permission auditing
 ### 2.1 Input Validation
 
 **Selector Validation:**
+
 ```python
 class SelectorValidator:
     """Validate element selectors for security."""
@@ -121,6 +131,7 @@ class SelectorValidator:
 ```
 
 **Text Input Validation:**
+
 ```python
 class TextInputValidator:
     """Validate text input for security."""
@@ -148,6 +159,7 @@ class TextInputValidator:
 ### 2.2 App Verification
 
 **macOS App Verification:**
+
 ```python
 class macOSAppVerifier:
     """Verify macOS app identity."""
@@ -174,6 +186,7 @@ class macOSAppVerifier:
 ```
 
 **Windows App Verification:**
+
 ```python
 class WindowsAppVerifier:
     """Verify Windows app identity."""
@@ -195,6 +208,7 @@ class WindowsAppVerifier:
 ### 2.3 Screenshot Security
 
 **Screenshot Redaction:**
+
 ```python
 class ScreenshotRedactor:
     """Redact sensitive data from screenshots."""
@@ -226,6 +240,7 @@ class ScreenshotRedactor:
 ```
 
 **Screenshot Encryption:**
+
 ```python
 class ScreenshotEncryption:
     """Encrypt screenshots at rest."""
@@ -248,6 +263,7 @@ class ScreenshotEncryption:
 ### 2.4 Scope Restrictions
 
 **App-Level Restrictions:**
+
 ```python
 class AutomationScope:
     """Define automation scope restrictions."""
@@ -281,6 +297,7 @@ class AutomationScope:
 ```
 
 **Action-Type Restrictions:**
+
 ```python
 class ActionTypePolicy:
     """Policy for action type restrictions."""
@@ -311,6 +328,7 @@ class ActionTypePolicy:
 ### 3.1 Comprehensive Logging
 
 **Audit Log Entry:**
+
 ```python
 @dataclass
 class AutomationAuditEntry:
@@ -332,6 +350,7 @@ class AutomationAuditEntry:
 ```
 
 **Audit Logger:**
+
 ```python
 class AutomationAuditLogger:
     """Comprehensive audit logging."""
@@ -371,6 +390,7 @@ class AutomationAuditLogger:
 ### 3.2 Security Event Detection
 
 **Anomaly Detection:**
+
 ```python
 class SecurityAnomalyDetector:
     """Detect security anomalies in automation."""
@@ -408,16 +428,17 @@ class SecurityAnomalyDetector:
 
 ### 4.1 Permission Requirements Matrix
 
-| Platform | Permission | Required For | How to Grant |
-|----------|-----------|--------------|--------------|
-| **macOS** | Accessibility | UI automation | System Preferences > Security & Privacy > Accessibility |
-| **macOS** | Screen Recording | Screenshots | System Preferences > Security & Privacy > Screen Recording |
-| **Windows** | UIA Access | UI Automation | Run as admin or Group Policy |
-| **Linux** | AT-SPI | Accessibility API | Usually granted by default |
+| Platform    | Permission       | Required For      | How to Grant                                               |
+| ----------- | ---------------- | ----------------- | ---------------------------------------------------------- |
+| **macOS**   | Accessibility    | UI automation     | System Preferences > Security & Privacy > Accessibility    |
+| **macOS**   | Screen Recording | Screenshots       | System Preferences > Security & Privacy > Screen Recording |
+| **Windows** | UIA Access       | UI Automation     | Run as admin or Group Policy                               |
+| **Linux**   | AT-SPI           | Accessibility API | Usually granted by default                                 |
 
 ### 4.2 Permission Checkers
 
 **macOS Permission Checker:**
+
 ```python
 class macOSPermissionChecker:
     """Check macOS permissions."""
@@ -466,6 +487,7 @@ class macOSPermissionChecker:
 ```
 
 **Windows Permission Checker:**
+
 ```python
 class WindowsPermissionChecker:
     """Check Windows permissions."""
@@ -503,6 +525,7 @@ class WindowsPermissionChecker:
 ### 4.3 Permission Auditing
 
 **Permission Audit Report:**
+
 ```python
 class PermissionAuditor:
     """Audit permission usage."""
@@ -537,6 +560,7 @@ class PermissionAuditor:
 ### 5.1 Defense in Depth
 
 **Layers:**
+
 1. **Input Validation:** Validate all automation inputs
 2. **App Verification:** Verify app identity before automation
 3. **Scope Restrictions:** Limit automation to allowed apps/regions
@@ -551,6 +575,7 @@ class PermissionAuditor:
 **Principle:** Grant minimal permissions required for automation.
 
 **Implementation:**
+
 ```python
 class LeastPrivilegeAutomation:
     """Automation with least privilege."""
@@ -572,13 +597,14 @@ class LeastPrivilegeAutomation:
 ### 5.3 Secure Defaults
 
 **Default Configuration:**
+
 ```yaml
 desktop_automation:
   security:
     # Default: Deny all
-    allowed_apps: []  # Empty = deny all
-    allowed_actions: ["click", "type_text", "find_element"]  # Minimal set
-    blocked_actions: ["screenshot", "clipboard"]  # Sensitive actions blocked
+    allowed_apps: [] # Empty = deny all
+    allowed_actions: ["click", "type_text", "find_element"] # Minimal set
+    blocked_actions: ["screenshot", "clipboard"] # Sensitive actions blocked
 
     # Default: Require approval for sensitive actions
     requires_approval: ["screenshot", "clipboard", "file_operations"]
@@ -600,6 +626,7 @@ desktop_automation:
 ### 6.1 Penetration Testing
 
 **Test Cases:**
+
 1. **Input Injection:** Test selector and text input validation
 2. **Permission Bypass:** Test if permissions can be bypassed
 3. **UI Spoofing:** Test if fake UIs can be automated
@@ -607,6 +634,7 @@ desktop_automation:
 5. **Resource Exhaustion:** Test rate limiting effectiveness
 
 **Penetration Test Script:**
+
 ```python
 def test_input_injection():
     """Test input injection vulnerabilities."""
@@ -626,11 +654,13 @@ def test_input_injection():
 ### 6.2 Security Scanning
 
 **Static Analysis:**
+
 - Use Semgrep for security patterns
 - Use Bandit for Python security issues
 - Use SAST tools for automation code
 
 **Dynamic Analysis:**
+
 - Fuzz testing for input validation
 - Runtime security monitoring
 - Permission usage auditing
@@ -641,37 +671,42 @@ def test_input_injection():
 
 ### 7.1 Security Incident Types
 
-| Incident Type | Severity | Response Time | Actions |
-|--------------|----------|---------------|---------|
-| **Input Injection Attempt** | High | Immediate | Block agent, alert security |
-| **Unauthorized App Access** | High | < 5 min | Revoke permissions, investigate |
-| **Screenshot Leakage** | Critical | Immediate | Encrypt screenshots, audit trail |
-| **Permission Escalation** | Critical | Immediate | Revoke all permissions, isolate agent |
-| **Resource Exhaustion** | Medium | < 15 min | Rate limit, investigate cause |
+| Incident Type               | Severity | Response Time | Actions                               |
+| --------------------------- | -------- | ------------- | ------------------------------------- |
+| **Input Injection Attempt** | High     | Immediate     | Block agent, alert security           |
+| **Unauthorized App Access** | High     | < 5 min       | Revoke permissions, investigate       |
+| **Screenshot Leakage**      | Critical | Immediate     | Encrypt screenshots, audit trail      |
+| **Permission Escalation**   | Critical | Immediate     | Revoke all permissions, isolate agent |
+| **Resource Exhaustion**     | Medium   | < 15 min      | Rate limit, investigate cause         |
 
 ### 7.2 Incident Response Playbook
 
 **Step 1: Detection**
+
 - Monitor audit logs for anomalies
 - Alert on security flags
 - Automated detection via anomaly detector
 
 **Step 2: Containment**
+
 - Block affected agent
 - Revoke permissions
 - Isolate automation scope
 
 **Step 3: Investigation**
+
 - Review audit logs
 - Analyze attack vector
 - Identify root cause
 
 **Step 4: Remediation**
+
 - Fix vulnerability
 - Update security controls
 - Test fixes
 
 **Step 5: Recovery**
+
 - Restore agent (if safe)
 - Monitor for recurrence
 - Update documentation
@@ -683,12 +718,14 @@ def test_input_injection():
 ### 8.1 GDPR Compliance
 
 **Screenshot Data:**
+
 - Screenshots may contain personal data
 - Require encryption at rest
 - Require user consent for automation
 - Allow user to delete automation data
 
 **Implementation:**
+
 ```python
 class GDPRCompliantAutomation:
     """GDPR-compliant automation."""
@@ -719,12 +756,14 @@ class GDPRCompliantAutomation:
 ### 8.2 SOC 2 Compliance
 
 **Controls:**
+
 - Access controls (permission management)
 - Audit logging (comprehensive trails)
 - Encryption (sensitive data)
 - Monitoring (anomaly detection)
 
 **Evidence:**
+
 - Audit logs demonstrate access controls
 - Encryption keys managed securely
 - Monitoring alerts show detection
@@ -777,14 +816,17 @@ class GDPRCompliantAutomation:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added security patterns
 2. Added deep dive configurations
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - GOVERNANCE_POLICY_AUDIT_RESEARCH.md
 - CROSS_PLATFORM_INTEGRATION_GUIDE.md
 
 ### Practical Additions
+
 - Security templates
 - Configuration examples

@@ -31,16 +31,19 @@
 ## Integration Plan
 
 ### Phase 1: Serena JetBrains Plugin (Week 1)
+
 - Auto-detect JetBrains plugin
 - Prefer plugin over LSP backend
 - Unified configuration
 
 ### Phase 2: Ghostty Terminal (Week 2)
+
 - Terminal session management
 - Shell integration setup
 - Agent terminal workflows
 
 ### Phase 3: Unified IDE Layer (Week 3-4)
+
 - IDE abstraction
 - Multiple IDE support
 - MCP exposure
@@ -53,6 +56,7 @@
 
 1. Install plugin: https://plugins.jetbrains.com/plugin/28946-serena
 2. Configure in thegent:
+
    ```bash
    # Auto-detect (default)
    THGENT_SERENA_BACKEND=auto thegent serve

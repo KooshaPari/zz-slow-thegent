@@ -20,7 +20,7 @@ Verifies if the agent is running in a trusted execution environment.
 
 ### Methods
 
-#### TEEChecker.__init__
+#### TEEChecker.**init**
 
 ```python
 __init__(self: Any, mock_mode: bool)

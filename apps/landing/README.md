@@ -44,13 +44,13 @@ task landing:preview
 
 Per Phenotype org-pages policy, `thegent.kooshapari.com` hosts these surfaces:
 
-| Path | Status | Purpose |
-|------|--------|---------|
-| `/` | Active | theGent overview, GitHub metadata, runtime proof panel |
-| `/docs` | Active with fallback | Renders thegent `docs/` tree from GitHub |
-| `/otel` | Active, env-gated | Embeds a public PhenoObservability UI |
-| `/qa` | Active with snapshot fallback | Shows project coverage, lint, and FR trace reports |
-| `/preview/<pr#>` | Active with fallback | Canonical static redirect pages for landing PR previews |
+| Path             | Status                        | Purpose                                                 |
+| ---------------- | ----------------------------- | ------------------------------------------------------- |
+| `/`              | Active                        | theGent overview, GitHub metadata, runtime proof panel  |
+| `/docs`          | Active with fallback          | Renders thegent `docs/` tree from GitHub                |
+| `/otel`          | Active, env-gated             | Embeds a public PhenoObservability UI                   |
+| `/qa`            | Active with snapshot fallback | Shows project coverage, lint, and FR trace reports      |
+| `/preview/<pr#>` | Active with fallback          | Canonical static redirect pages for landing PR previews |
 
 ## Environment Variables
 

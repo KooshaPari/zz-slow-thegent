@@ -11,6 +11,7 @@
 **Pattern established:** `thegent install -t envrc` installs guarded `~/.envrc` from `shell/envrc.home.template`, ensuring $HOME is set up correctly. This document audits other areas that should follow the same pattern: templates in thegent → install target → user/system-wide setup.
 
 **Key findings:**
+
 - **Shell config** — now in `thegent install -t shell` ✅
 - **install-shims --system** (git wrapper for nix/direnv) — implemented ✅
 - **Git lock-cleanup daemon** is **planned** but not implemented.
@@ -21,16 +22,17 @@
 
 ## 2. Audit: What `thegent install` Covers Today
 
-| Target | Installs To | Source | Status |
-|--------|-------------|--------|--------|
-| claude-code | ~/.claude/ | skills, hooks, agents, etc. | ✅ |
-| claude-desktop | Library/Application Support/Claude | MCP config | ✅ |
-| cursor | ~/.cursor/ | skills-cursor | ✅ |
-| codex | ~/.codex/ | MCP config | ✅ |
-| droid | ~/.factory/ | hooks, skills, config | ✅ |
-| **envrc** | ~/.envrc | shell/envrc.home.template | ✅ (new) |
+| Target         | Installs To                        | Source                      | Status   |
+| -------------- | ---------------------------------- | --------------------------- | -------- |
+| claude-code    | ~/.claude/                         | skills, hooks, agents, etc. | ✅       |
+| claude-desktop | Library/Application Support/Claude | MCP config                  | ✅       |
+| cursor         | ~/.cursor/                         | skills-cursor               | ✅       |
+| codex          | ~/.codex/                          | MCP config                  | ✅       |
+| droid          | ~/.factory/                        | hooks, skills, config       | ✅       |
+| **envrc**      | ~/.envrc                           | shell/envrc.home.template   | ✅ (new) |
 
 **Also in install:**
+
 - envrc, shell, git-lock-cleanup (see §9 Quick Reference)
 
 ---
@@ -40,6 +42,7 @@
 ### 3.1 Shell Config (High Priority)
 
 **Current:** Shell files live in `thegent/shell/`. Users must manually:
+
 - Copy/symlink to ~/
 - Or source from project path via ZDOTDIR / custom wiring
 
@@ -47,15 +50,15 @@
 
 **Proposed:** Add `shell` target:
 
-| File | Source | Target | Mode |
-|------|--------|--------|------|
-| .zshenv | shell/.zshenv | ~/.zshenv | smart |
-| .zsh_bundle.zsh | shell/.zsh_bundle.zsh | ~/.zsh_bundle.zsh | smart |
-| .zsh_safeguards.zsh | shell/.zsh_safeguards.zsh | ~/.zsh_safeguards.zsh | smart |
-| .zsh_optimization.zsh | shell/.zsh_optimization.zsh | ~/.zsh_optimization.zsh | smart |
-| .zsh_advanced.zsh | shell/.zsh_advanced.zsh | ~/.zsh_advanced.zsh | smart |
-| .zshrc | shell/.zshrc | ~/.zshrc | smart |
-| zshrc.local.template | shell/zshrc.local.template | ~/.zshrc.local | **never overwrite** (only if missing) |
+| File                  | Source                      | Target                  | Mode                                  |
+| --------------------- | --------------------------- | ----------------------- | ------------------------------------- |
+| .zshenv               | shell/.zshenv               | ~/.zshenv               | smart                                 |
+| .zsh_bundle.zsh       | shell/.zsh_bundle.zsh       | ~/.zsh_bundle.zsh       | smart                                 |
+| .zsh_safeguards.zsh   | shell/.zsh_safeguards.zsh   | ~/.zsh_safeguards.zsh   | smart                                 |
+| .zsh_optimization.zsh | shell/.zsh_optimization.zsh | ~/.zsh_optimization.zsh | smart                                 |
+| .zsh_advanced.zsh     | shell/.zsh_advanced.zsh     | ~/.zsh_advanced.zsh     | smart                                 |
+| .zshrc                | shell/.zshrc                | ~/.zshrc                | smart                                 |
+| zshrc.local.template  | shell/zshrc.local.template  | ~/.zshrc.local          | **never overwrite** (only if missing) |
 
 **Guards:** Shell config has FUNCNEST, non-interactive skips, direnv guards. Installing ensures users get the optimized, guarded versions.
 
@@ -70,6 +73,7 @@
 **Gap:** `install-shims --system` (or `--prefix /usr/local`) is planned in GIT_INDEX_LOCK_OS_LEVEL_AND_AGENT_SYSTEM_USER_PLAN.md but not implemented.
 
 **Proposed:**
+
 - Add `--system` / `--prefix` to `install-shims`
 - Install git wrapper to `/usr/local/bin` (or configurable)
 - Requires admin/root; document clearly
@@ -85,6 +89,7 @@
 **Gap:** `thegent git lock-cleanup` + launchd/systemd timer is planned but not implemented.
 
 **Proposed:**
+
 - Add `thegent git lock-cleanup` command
 - Scan common repo paths; remove locks older than 60s
 - Install as launchd LaunchAgent via `thegent install -t service` or new `prune service install`
@@ -121,14 +126,14 @@
 
 ## 4. Optimization Docs Cross-Reference
 
-| Doc | Key Content | Install Integration |
-|-----|-------------|---------------------|
-| SHELL_CONFIG_AUDIT_AND_CONSOLIDATION_PLAN | Canonical configs, remove .zshrc.optimized | Add shell target |
-| SHELL_STARTUP_OPTIMIZATION_IMMEDIATE_FIXES | Lazy loading, compinit, direnv fix | envrc done; shell target for rest |
-| DIRENV_HANG_FORK_GUARD_FIX | DIRENV_IN_ENVRC, fork guard skip | In envrc template |
-| GIT_INDEX_LOCK_OS_LEVEL_AND_AGENT_SYSTEM_USER_PLAN | install-shims --system, lock-cleanup | Implement both |
-| TOOLING_AND_GLOBAL_OPTIMIZATIONS_AUDIT (sharecli) | PERF-001/002/003, QUAL-001 | Separate project |
-| SHELL_OPTIMIZATION_PLAN | zsh > bash, hooks use zsh | Hooks in ~/.claude (install target) |
+| Doc                                                | Key Content                                | Install Integration                 |
+| -------------------------------------------------- | ------------------------------------------ | ----------------------------------- |
+| SHELL_CONFIG_AUDIT_AND_CONSOLIDATION_PLAN          | Canonical configs, remove .zshrc.optimized | Add shell target                    |
+| SHELL_STARTUP_OPTIMIZATION_IMMEDIATE_FIXES         | Lazy loading, compinit, direnv fix         | envrc done; shell target for rest   |
+| DIRENV_HANG_FORK_GUARD_FIX                         | DIRENV_IN_ENVRC, fork guard skip           | In envrc template                   |
+| GIT_INDEX_LOCK_OS_LEVEL_AND_AGENT_SYSTEM_USER_PLAN | install-shims --system, lock-cleanup       | Implement both                      |
+| TOOLING_AND_GLOBAL_OPTIMIZATIONS_AUDIT (sharecli)  | PERF-001/002/003, QUAL-001                 | Separate project                    |
+| SHELL_OPTIMIZATION_PLAN                            | zsh > bash, hooks use zsh                  | Hooks in ~/.claude (install target) |
 
 ---
 
@@ -177,41 +182,41 @@
 
 ## 7. File Reference
 
-| Purpose | Path |
-|---------|------|
+| Purpose                     | Path                                                                                                  |
+| --------------------------- | ----------------------------------------------------------------------------------------------------- |
 | **Full install + Nix plan** | docs/INSTALL_SETUP_AND_NIX_COMPREHENSIVE_PLAN.md — bootstrap, Nix, auto-install, setup --hooks/skills |
-| envrc template | thegent/shell/envrc.home.template |
-| Shell configs | thegent/shell/*.zsh |
-| Install logic | thegent/src/thegent/install.py |
-| GIT index lock plan | thegent/docs/research/GIT_INDEX_LOCK_OS_LEVEL_AND_AGENT_SYSTEM_USER_PLAN.md |
-| Shell audit | thegent/docs/research/SHELL_CONFIG_AUDIT_AND_CONSOLIDATION_PLAN.md |
-| CLIProxy patch | CLIProxyAPIPlus-fork/patches/cursor-minimax-channels.patch |
+| envrc template              | thegent/shell/envrc.home.template                                                                     |
+| Shell configs               | thegent/shell/\*.zsh                                                                                  |
+| Install logic               | thegent/src/thegent/install.py                                                                        |
+| GIT index lock plan         | thegent/docs/research/GIT_INDEX_LOCK_OS_LEVEL_AND_AGENT_SYSTEM_USER_PLAN.md                           |
+| Shell audit                 | thegent/docs/research/SHELL_CONFIG_AUDIT_AND_CONSOLIDATION_PLAN.md                                    |
+| CLIProxy patch              | CLIProxyAPIPlus-fork/patches/cursor-minimax-channels.patch                                            |
 
 ---
 
 ## 8. Risks & Mitigations
 
-| Risk | Mitigation |
-|------|------------|
-| Overwriting user shell config | Use SMART mode; zshrc.local never overwrite |
-| install-shims --system requires root | Document clearly; optional for power users |
+| Risk                                       | Mitigation                                               |
+| ------------------------------------------ | -------------------------------------------------------- |
+| Overwriting user shell config              | Use SMART mode; zshrc.local never overwrite              |
+| install-shims --system requires root       | Document clearly; optional for power users               |
 | Shell target conflicts with existing setup | Check for existing files; interactive mode for conflicts |
 
 ---
 
 ## 9. Quick Reference: Patches & Configs
 
-| Item | Type | Install Target | Status |
-|------|------|----------------|--------|
-| ~/.envrc | Template | `thegent install -t envrc` | ✅ Done |
-| ~/.zshenv | Shell | `thegent install -t shell` | ✅ Done |
-| ~/.zsh_bundle.zsh | Shell | `thegent install -t shell` | ✅ Done |
-| ~/.zsh_safeguards.zsh | Shell | `thegent install -t shell` | ✅ Done |
-| ~/.zsh_optimization.zsh | Shell | `thegent install -t shell` | ✅ Done |
-| ~/.zsh_advanced.zsh | Shell | `thegent install -t shell` | ✅ Done |
-| ~/.zshrc | Shell | `thegent install -t shell` | ✅ Done |
-| ~/.zshrc.local | Template | `thegent install -t shell` (copy if missing) | ✅ Done |
-| ~/.local/bin/git | Shim | `install-shims` | ✅ Exists |
-| /usr/local/bin/git | System shim | `install-shims --system` | ✅ Done |
-| lock-cleanup daemon | Service | `thegent install -t git-lock-cleanup` | ✅ Done |
-| cursor-minimax (CLIProxy) | Patch | Manual (fork) | External |
+| Item                      | Type        | Install Target                               | Status    |
+| ------------------------- | ----------- | -------------------------------------------- | --------- |
+| ~/.envrc                  | Template    | `thegent install -t envrc`                   | ✅ Done   |
+| ~/.zshenv                 | Shell       | `thegent install -t shell`                   | ✅ Done   |
+| ~/.zsh_bundle.zsh         | Shell       | `thegent install -t shell`                   | ✅ Done   |
+| ~/.zsh_safeguards.zsh     | Shell       | `thegent install -t shell`                   | ✅ Done   |
+| ~/.zsh_optimization.zsh   | Shell       | `thegent install -t shell`                   | ✅ Done   |
+| ~/.zsh_advanced.zsh       | Shell       | `thegent install -t shell`                   | ✅ Done   |
+| ~/.zshrc                  | Shell       | `thegent install -t shell`                   | ✅ Done   |
+| ~/.zshrc.local            | Template    | `thegent install -t shell` (copy if missing) | ✅ Done   |
+| ~/.local/bin/git          | Shim        | `install-shims`                              | ✅ Exists |
+| /usr/local/bin/git        | System shim | `install-shims --system`                     | ✅ Done   |
+| lock-cleanup daemon       | Service     | `thegent install -t git-lock-cleanup`        | ✅ Done   |
+| cursor-minimax (CLIProxy) | Patch       | Manual (fork)                                | External  |

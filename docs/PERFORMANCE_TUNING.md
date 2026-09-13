@@ -6,13 +6,13 @@ This guide covers the performance optimizations implemented in thegent.
 
 The following performance features are available:
 
-| Feature | Module | Purpose |
-|---------|--------|---------|
-| Multi-Level Cache | `thegent.cache` | Reduce API calls, improve response time |
-| Dynamic Scaling | `thegent.scaling` | Adaptive concurrency control |
-| Shell Timeout | `thegent.shell` | Configurable command timeouts with retry |
-| Process Cleanup | `thegent.process` | Prevent resource leaks |
-| Teammate System | `thegent.teammates` | Parallel task delegation |
+| Feature           | Module              | Purpose                                  |
+| ----------------- | ------------------- | ---------------------------------------- |
+| Multi-Level Cache | `thegent.cache`     | Reduce API calls, improve response time  |
+| Dynamic Scaling   | `thegent.scaling`   | Adaptive concurrency control             |
+| Shell Timeout     | `thegent.shell`     | Configurable command timeouts with retry |
+| Process Cleanup   | `thegent.process`   | Prevent resource leaks                   |
+| Teammate System   | `thegent.teammates` | Parallel task delegation                 |
 
 ## Caching
 
@@ -144,13 +144,13 @@ print(f"Status: {result.status}")
 
 ## Performance Targets
 
-| Metric | Target |
-|--------|--------|
-| L1 cache hit latency | <10ms |
-| Cache hit rate | >60% |
-| Shell timeout success | >80% |
+| Metric                 | Target |
+| ---------------------- | ------ |
+| L1 cache hit latency   | <10ms  |
+| Cache hit rate         | >60%   |
+| Shell timeout success  | >80%   |
 | Delegation latency P50 | <100ms |
-| Memory per idle agent | <2MB |
+| Memory per idle agent  | <2MB   |
 
 ## Benchmarking
 

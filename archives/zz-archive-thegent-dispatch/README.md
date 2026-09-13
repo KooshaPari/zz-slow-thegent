@@ -12,7 +12,7 @@ zz-archive-thegent-dispatch — pre-deletion thegent-dispatch archive.
 
 ## Intent
 
-Archive of KooshaPari/thegent-dispatch (origin returned 404). Absorbed back into the live thegent tree under archives/ to preserve Rust crate (cli/dispatch/provider/lib/main/config), Cargo manifests, GitHub workflows (release-attestation, codeql, cargo-*), Python dispatch-mcp package, and slsa provenance doc.
+Archive of KooshaPari/thegent-dispatch (origin returned 404). Absorbed back into the live thegent tree under archives/ to preserve Rust crate (cli/dispatch/provider/lib/main/config), Cargo manifests, GitHub workflows (release-attestation, codeql, cargo-\*), Python dispatch-mcp package, and slsa provenance doc.
 
 ## Origin
 

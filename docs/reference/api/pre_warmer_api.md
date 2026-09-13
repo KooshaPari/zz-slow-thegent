@@ -35,15 +35,16 @@ FR traceability: FR-CACHE-003 (predictive pre-warming based on usage patterns)
 Predictive pre-warmer that proactively loads likely-needed data into cache.
 
 Supports multiple :class:`WarmingStrategy` instances, each providing:
-- A *predict_fn* that returns a list of keys expected to be needed soon.
-- A *load_fn* that fetches the data for a given key.
+
+- A _predict_fn_ that returns a list of keys expected to be needed soon.
+- A _load_fn_ that fetches the data for a given key.
 
 Warming can be triggered manually (:meth:`warm_all`) or automatically via
 a background daemon thread (:meth:`start_background` / :meth:`stop_background`).
 
 ### Methods
 
-#### CachePreWarmer.__init__
+#### CachePreWarmer.**init**
 
 ```python
 __init__(self: Any, cache: MultiLevelCache)
@@ -60,11 +61,12 @@ get_stats(self: Any)
 Return a snapshot of pre-warmer statistics.
 
 **Returns**: Dict with keys:
-- ``strategies``: number of registered strategies
-- ``warm_count``: total successful warm operations across all strategies
-- ``last_run``: datetime of the last :meth:`warm_all` call, or None
-- ``background_running``: bool — whether the daemon is active
-- ``strategy_stats``: list of per-strategy dicts
+
+- `strategies`: number of registered strategies
+- `warm_count`: total successful warm operations across all strategies
+- `last_run`: datetime of the last :meth:`warm_all` call, or None
+- `background_running`: bool — whether the daemon is active
+- `strategy_stats`: list of per-strategy dicts
 
 ---
 
@@ -102,9 +104,9 @@ start_background(self: Any)
 
 Start a daemon thread that periodically warms the cache.
 
-The daemon respects each strategy's *schedule_seconds*: a strategy is
-only warmed when at least *schedule_seconds* have elapsed since its
-last run.  The thread polls every second for fine-grained scheduling.
+The daemon respects each strategy's _schedule_seconds_: a strategy is
+only warmed when at least _schedule_seconds_ have elapsed since its
+last run. The thread polls every second for fine-grained scheduling.
 
 Calling this method when a daemon is already running has no effect.
 
@@ -122,7 +124,7 @@ Signal the background daemon to stop and wait for it to exit.
 
 - `timeout`: Maximum seconds to wait for the daemon thread to exit.
 
-**Returns**: True if the thread stopped within *timeout*, False if it timed out.
+**Returns**: True if the thread stopped within _timeout_, False if it timed out.
 
 ---
 
@@ -150,12 +152,12 @@ warm_all(self: Any)
 
 Run all registered strategies and warm every predicted key.
 
-Each strategy's *predict_fn* is called to obtain keys; then
-*load_fn* is called for each key.  Errors in individual keys are
+Each strategy's _predict_fn_ is called to obtain keys; then
+_load_fn_ is called for each key. Errors in individual keys are
 caught and recorded without aborting remaining keys.
 
-**Returns**: Mapping of ``key -&gt; bool`` indicating whether each key was
-successfully warmed.  The dict preserves insertion order
+**Returns**: Mapping of `key -&gt; bool` indicating whether each key was
+successfully warmed. The dict preserves insertion order
 (strategies run in registration order).
 
 ---
@@ -166,16 +168,16 @@ successfully warmed.  The dict preserves insertion order
 warm_key(self: Any, key: str, load_fn: Callable[(Any, Any)])
 ```
 
-Warm a single key by calling *load_fn* and storing the result in cache.
+Warm a single key by calling _load_fn_ and storing the result in cache.
 
 **Parameters**:
 
-- `key`:     Cache key to warm.
-- `load_fn`: Zero-argument callable that returns the value for *key*.
-Must not raise; exceptions are caught and logged.
+- `key`: Cache key to warm.
+- `load_fn`: Zero-argument callable that returns the value for _key_.
+  Must not raise; exceptions are caught and logged.
 
 **Returns**: True if the key was successfully warmed (value fetched and stored),
-False if *load_fn* raised or returned None.
+False if _load_fn_ raised or returned None.
 
 ---
 
@@ -189,7 +191,7 @@ Configuration for a single pre-warming strategy.
 
 ---
 
-## _StrategyState
+## \_StrategyState
 
 Runtime state tracked per strategy by the pre-warmer.
 
@@ -204,11 +206,12 @@ get_stats(self: Any)
 Return a snapshot of pre-warmer statistics.
 
 **Returns**: Dict with keys:
-- ``strategies``: number of registered strategies
-- ``warm_count``: total successful warm operations across all strategies
-- ``last_run``: datetime of the last :meth:`warm_all` call, or None
-- ``background_running``: bool — whether the daemon is active
-- ``strategy_stats``: list of per-strategy dicts
+
+- `strategies`: number of registered strategies
+- `warm_count`: total successful warm operations across all strategies
+- `last_run`: datetime of the last :meth:`warm_all` call, or None
+- `background_running`: bool — whether the daemon is active
+- `strategy_stats`: list of per-strategy dicts
 
 ---
 
@@ -232,12 +235,12 @@ Return a strategy that pre-warms cached model-list metadata.
 
 **Parameters**:
 
-- `load_fn`:          Function to load the value for a given model key.
-- `model_keys`:       Explicit list of model cache keys to pre-warm.
-Defaults to a standard set of common model identifiers.
+- `load_fn`: Function to load the value for a given model key.
+- `model_keys`: Explicit list of model cache keys to pre-warm.
+  Defaults to a standard set of common model identifiers.
 - `schedule_seconds`: Warming interval in seconds (default: 300).
 
-**Returns**: A configured :class:`WarmingStrategy` named ``"model_list"``.
+**Returns**: A configured :class:`WarmingStrategy` named `"model_list"`.
 
 ---
 
@@ -267,12 +270,12 @@ Return a strategy that pre-warms cached session-list metadata.
 
 **Parameters**:
 
-- `load_fn`:          Function to load the value for a given session key.
-- `session_keys`:     Explicit list of session cache keys to pre-warm.
-Defaults to a standard set of common session identifiers.
+- `load_fn`: Function to load the value for a given session key.
+- `session_keys`: Explicit list of session cache keys to pre-warm.
+  Defaults to a standard set of common session identifiers.
 - `schedule_seconds`: Warming interval in seconds (default: 300).
 
-**Returns**: A configured :class:`WarmingStrategy` named ``"session_list"``.
+**Returns**: A configured :class:`WarmingStrategy` named `"session_list"`.
 
 ---
 
@@ -284,9 +287,9 @@ start_background(self: Any)
 
 Start a daemon thread that periodically warms the cache.
 
-The daemon respects each strategy's *schedule_seconds*: a strategy is
-only warmed when at least *schedule_seconds* have elapsed since its
-last run.  The thread polls every second for fine-grained scheduling.
+The daemon respects each strategy's _schedule_seconds_: a strategy is
+only warmed when at least _schedule_seconds_ have elapsed since its
+last run. The thread polls every second for fine-grained scheduling.
 
 Calling this method when a daemon is already running has no effect.
 
@@ -304,7 +307,7 @@ Signal the background daemon to stop and wait for it to exit.
 
 - `timeout`: Maximum seconds to wait for the daemon thread to exit.
 
-**Returns**: True if the thread stopped within *timeout*, False if it timed out.
+**Returns**: True if the thread stopped within _timeout_, False if it timed out.
 
 ---
 
@@ -332,12 +335,12 @@ warm_all(self: Any)
 
 Run all registered strategies and warm every predicted key.
 
-Each strategy's *predict_fn* is called to obtain keys; then
-*load_fn* is called for each key.  Errors in individual keys are
+Each strategy's _predict_fn_ is called to obtain keys; then
+_load_fn_ is called for each key. Errors in individual keys are
 caught and recorded without aborting remaining keys.
 
-**Returns**: Mapping of ``key -&gt; bool`` indicating whether each key was
-successfully warmed.  The dict preserves insertion order
+**Returns**: Mapping of `key -&gt; bool` indicating whether each key was
+successfully warmed. The dict preserves insertion order
 (strategies run in registration order).
 
 ---
@@ -348,15 +351,15 @@ successfully warmed.  The dict preserves insertion order
 warm_key(self: Any, key: str, load_fn: Callable[(Any, Any)])
 ```
 
-Warm a single key by calling *load_fn* and storing the result in cache.
+Warm a single key by calling _load_fn_ and storing the result in cache.
 
 **Parameters**:
 
-- `key`:     Cache key to warm.
-- `load_fn`: Zero-argument callable that returns the value for *key*.
-Must not raise; exceptions are caught and logged.
+- `key`: Cache key to warm.
+- `load_fn`: Zero-argument callable that returns the value for _key_.
+  Must not raise; exceptions are caught and logged.
 
 **Returns**: True if the key was successfully warmed (value fetched and stored),
-False if *load_fn* raised or returned None.
+False if _load_fn_ raised or returned None.
 
 ---

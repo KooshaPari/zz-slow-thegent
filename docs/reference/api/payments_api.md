@@ -15,7 +15,7 @@ Bridges internal agent payments to external settlement providers.
 
 ### Methods
 
-#### PaymentBridge.__init__
+#### PaymentBridge.**init**
 
 ```python
 __init__(self: Any, provider: str)

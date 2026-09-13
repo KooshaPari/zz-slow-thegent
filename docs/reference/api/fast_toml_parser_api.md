@@ -6,11 +6,13 @@ Fast TOML parser with optimized backends.
 
 This module provides a high-performance abstraction layer for TOML parsing
 that automatically selects the fastest available backend:
+
 - rtoml (Rust-based): 10-20x faster than tomlkit
 - tomli/tomli-w (Python 3.11+): 3-5x faster for reading
 - tomlkit: Standard fallback (good for editing)
 
 Performance improvements:
+
 - rtoml uses Rust implementation (10-20x faster)
 - tomli optimized pure-Python (3-5x faster)
 - Automatic backend selection based on availability and use case
@@ -22,13 +24,14 @@ Performance improvements:
 High-performance TOML parser with automatic backend selection.
 
 Backend priority (fastest first):
+
 1. rtoml (if installed) - 10-20x faster, Rust-based
 2. tomli/tomli-w (if installed) - 3-5x faster, pure-Python
 3. tomlkit (standard fallback) - good for editing, slower for reading
 
 ### Methods
 
-#### FastTOMLParser.__init__
+#### FastTOMLParser.**init**
 
 ```python
 __init__(self: Any, edit_mode: bool)

@@ -11,15 +11,15 @@ This report captured a healthy overall snapshot with one important caveat: the r
 some localized gaps in the generated report surface and a few areas where follow-up work was still
 queued.
 
-| Metric | Value | Status |
-|--------|-------|--------|
-| Test Files | 1,216 | ✅ |
-| Source Modules | 96 | ✅ |
-| Packages | 4 | ✅ |
-| Rust Crates | 33 | ✅ |
-| Agent / Skill Definitions | 63 | ✅ |
-| Ruff Lint Errors | 0 | ✅ |
-| Pre-commit Hooks | 15+ | ✅ |
+| Metric                    | Value | Status |
+| ------------------------- | ----- | ------ |
+| Test Files                | 1,216 | ✅     |
+| Source Modules            | 96    | ✅     |
+| Packages                  | 4     | ✅     |
+| Rust Crates               | 33    | ✅     |
+| Agent / Skill Definitions | 63    | ✅     |
+| Ruff Lint Errors          | 0     | ✅     |
+| Pre-commit Hooks          | 15+   | ✅     |
 
 ## Notable gaps at the time
 

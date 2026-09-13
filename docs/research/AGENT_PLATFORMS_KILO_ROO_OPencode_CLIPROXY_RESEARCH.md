@@ -12,34 +12,34 @@ All three are **OSS platforms** with **CLI tools** and **associated search/agent
 
 ### 1.1 kilo (Kilo.ai)
 
-| Aspect | Details |
-|--------|---------|
-| **AI proxy** | `https://api.kilo.ai/v1` — OpenAI-compatible model API |
-| **OSS harness** | CLI + agent runner (like Claude Code, Codex) — runs agents with tools |
-| **CLI** | `kilo auth` — interactive wizard; credentials in `~/.kilocode/cli/` or `~/.kilo/token.json` |
-| **thegent** | Provider via CLIProxyAPIPlus; `thegent run kilo "..."`; `thegent cliproxy login kilo` |
-| **Search/features** | Model catalog, agent routing; harness provides search and tool execution |
+| Aspect              | Details                                                                                     |
+| ------------------- | ------------------------------------------------------------------------------------------- |
+| **AI proxy**        | `https://api.kilo.ai/v1` — OpenAI-compatible model API                                      |
+| **OSS harness**     | CLI + agent runner (like Claude Code, Codex) — runs agents with tools                       |
+| **CLI**             | `kilo auth` — interactive wizard; credentials in `~/.kilocode/cli/` or `~/.kilo/token.json` |
+| **thegent**         | Provider via CLIProxyAPIPlus; `thegent run kilo "..."`; `thegent cliproxy login kilo`       |
+| **Search/features** | Model catalog, agent routing; harness provides search and tool execution                    |
 
 ### 1.2 roo (Roo Code Cloud)
 
-| Aspect | Details |
-|--------|---------|
-| **AI proxy** | `https://api.roocode.com/v1` — OpenAI-compatible model API |
-| **OSS harness** | CLI + agent runner — runs agents with tools |
-| **CLI** | `roo auth login` — OAuth flow; credentials in `~/.config/roo/credentials.json` |
-| **thegent** | Provider via CLIProxyAPIPlus; `thegent run roo "..."`; `thegent cliproxy login roo` |
-| **Search/features** | Model catalog, agent routing; harness provides search and tool execution |
+| Aspect              | Details                                                                             |
+| ------------------- | ----------------------------------------------------------------------------------- |
+| **AI proxy**        | `https://api.roocode.com/v1` — OpenAI-compatible model API                          |
+| **OSS harness**     | CLI + agent runner — runs agents with tools                                         |
+| **CLI**             | `roo auth login` — OAuth flow; credentials in `~/.config/roo/credentials.json`      |
+| **thegent**         | Provider via CLIProxyAPIPlus; `thegent run roo "..."`; `thegent cliproxy login roo` |
+| **Search/features** | Model catalog, agent routing; harness provides search and tool execution            |
 
 ### 1.3 OpenCode (opencode.ai)
 
-| Aspect | Details |
-|--------|---------|
-| **Type** | OSS AI coding agent (terminal, IDE, desktop) |
-| **CLI** | `opencode` — `npm install -g opencode`; similar to Claude Code |
-| **Zen** | Curated free/paid models for coding agents; pay-per-request; works with any agent |
-| **Config** | `.opencode/` — commands, instructions, plugins, prompts, tools |
+| Aspect          | Details                                                                                    |
+| --------------- | ------------------------------------------------------------------------------------------ |
+| **Type**        | OSS AI coding agent (terminal, IDE, desktop)                                               |
+| **CLI**         | `opencode` — `npm install -g opencode`; similar to Claude Code                             |
+| **Zen**         | Curated free/paid models for coding agents; pay-per-request; works with any agent          |
+| **Config**      | `.opencode/` — commands, instructions, plugins, prompts, tools                             |
 | **ECC support** | everything-claude-code has `.opencode/` plugin (v1.3.0); 12 agents, 24 commands, 16 skills |
-| **API** | OpenCode SDK; server on port 4096; supports Anthropic, OpenAI, Google, etc. |
+| **API**         | OpenCode SDK; server on port 4096; supports Anthropic, OpenAI, Google, etc.                |
 
 **OpenCode Zen** — Handpicked models for coding agents; transparent pricing; can be used with OpenCode or any agent. Zen is a **model routing layer**, not a separate CLI.
 
@@ -47,16 +47,16 @@ All three are **OSS platforms** with **CLI tools** and **associated search/agent
 
 ## 2. Agent Platforms — Comparative Research
 
-| Platform | CLI | AI Proxy | OSS Harness | Search/Features |
-|----------|-----|----------|-------------|-----------------|
-| **Claude Code** | `claude` | Anthropic | ✓ | read_file, list_dir, codebase_search, MCP |
-| **Codex** | `codex` | OpenAI | ✓ | Responses API; tools server-side |
-| **Cursor Agent** | IDE | cursor-api | Partial | @codebase, semantic search |
-| **OpenCode** | `opencode` | Zen, multi-provider | ✓ | plugins; .opencode/ |
-| **kilo** | `kilo auth` | api.kilo.ai | ✓ | Model catalog; harness runs agents |
-| **roo** | `roo auth login` | api.roocode.com | ✓ | Model catalog; harness runs agents |
-| **augment** | (research) | — | — | — |
-| **amp** | (research) | — | — | — |
+| Platform         | CLI              | AI Proxy            | OSS Harness | Search/Features                           |
+| ---------------- | ---------------- | ------------------- | ----------- | ----------------------------------------- |
+| **Claude Code**  | `claude`         | Anthropic           | ✓           | read_file, list_dir, codebase_search, MCP |
+| **Codex**        | `codex`          | OpenAI              | ✓           | Responses API; tools server-side          |
+| **Cursor Agent** | IDE              | cursor-api          | Partial     | @codebase, semantic search                |
+| **OpenCode**     | `opencode`       | Zen, multi-provider | ✓           | plugins; .opencode/                       |
+| **kilo**         | `kilo auth`      | api.kilo.ai         | ✓           | Model catalog; harness runs agents        |
+| **roo**          | `roo auth login` | api.roocode.com     | ✓           | Model catalog; harness runs agents        |
+| **augment**      | (research)       | —                   | —           | —                                         |
+| **amp**          | (research)       | —                   | —           | —                                         |
 
 ### 2.1 augment
 
@@ -106,12 +106,12 @@ thegent      → CLIProxyAPIPlus (port 8317) → minimax, glm, kilo, roo, ...
 
 ### 3.3 Integration Options
 
-| Option | Description | Effort |
-|--------|-------------|--------|
-| **A. OpenCode custom provider** | Configure OpenCode to use `OPENAI_BASE_URL=http://127.0.0.1:8317/v1` + `OPENAI_API_KEY=sk-dummy` | Low — config only |
-| **B. Zen bypass** | Use OpenCode with custom provider URL pointing to CLIProxy; Zen becomes optional | Low |
-| **C. CLIProxy Zen block** | Add Zen as a provider block in CLIProxy config (if Zen exposes OpenAI-compatible API) | Medium — depends on Zen API |
-| **D. thegent OpenCode runner** | thegent `run opencode "..."` that launches OpenCode with env pointing to proxy | Medium |
+| Option                          | Description                                                                                      | Effort                      |
+| ------------------------------- | ------------------------------------------------------------------------------------------------ | --------------------------- |
+| **A. OpenCode custom provider** | Configure OpenCode to use `OPENAI_BASE_URL=http://127.0.0.1:8317/v1` + `OPENAI_API_KEY=sk-dummy` | Low — config only           |
+| **B. Zen bypass**               | Use OpenCode with custom provider URL pointing to CLIProxy; Zen becomes optional                 | Low                         |
+| **C. CLIProxy Zen block**       | Add Zen as a provider block in CLIProxy config (if Zen exposes OpenAI-compatible API)            | Medium — depends on Zen API |
+| **D. thegent OpenCode runner**  | thegent `run opencode "..."` that launches OpenCode with env pointing to proxy                   | Medium                      |
 
 ### 3.4 Recommended: Option A (Config)
 
@@ -135,6 +135,7 @@ Or via OpenCode config (`.opencode/opencode.json` or equivalent) — add provide
 ### 3.5 GoZen Relevance
 
 **GoZen** (dopejs/GoZen) — Multi-CLI switcher for Claude Code, Codex, OpenCode with API proxy auto-failover. Supports:
+
 - `zen --cli opencode` — Launch OpenCode
 - Provider config with `base_url` — Can point to CLIProxy
 - Scenario routing (think, image, longContext, webSearch)
@@ -143,26 +144,26 @@ Or via OpenCode config (`.opencode/opencode.json` or equivalent) — add provide
 
 ### 3.6 Implementation Tasks
 
-| Task | Effort | Owner |
-|------|--------|-------|
-| Document OpenCode + CLIProxy in PROVIDER_SETUP_GUIDE | 1–2 edits | — |
-| Add OpenCode Zen section: when to use Zen vs CLIProxy | 1–2 edits | — |
-| Optional: thegent opencode runner (launch with proxy env) | 8–12 tool calls | — |
-| Optional: GoZen profile for thegent/CLIProxy | 2–4 edits | — |
+| Task                                                      | Effort          | Owner |
+| --------------------------------------------------------- | --------------- | ----- |
+| Document OpenCode + CLIProxy in PROVIDER_SETUP_GUIDE      | 1–2 edits       | —     |
+| Add OpenCode Zen section: when to use Zen vs CLIProxy     | 1–2 edits       | —     |
+| Optional: thegent opencode runner (launch with proxy env) | 8–12 tool calls | —     |
+| Optional: GoZen profile for thegent/CLIProxy              | 2–4 edits       | —     |
 
 ---
 
 ## 4. Cross-Platform Parity Matrix
 
-| Feature | Claude Code | Codex | Cursor | OpenCode | kilo | roo |
-|---------|-------------|-------|--------|----------|------|-----|
-| AI proxy | Anthropic | OpenAI | cursor-api | Zen, multi | api.kilo.ai | api.roocode.com |
-| OSS harness | ✓ | ✓ | Partial | ✓ | ✓ | ✓ |
-| CLI | ✓ | ✓ | IDE | ✓ | ✓ | ✓ |
-| MCP | ✓ | ✓ | ✓ | ✓ | — | — |
-| CLIProxy | ✓ | ✓ (adapter) | — | Proposed | ✓ | ✓ |
-| Zen | — | — | — | ✓ | — | — |
-| Session parsing | ✓ | ✓ | ✓ | ✓ | — | — |
+| Feature         | Claude Code | Codex       | Cursor     | OpenCode   | kilo        | roo             |
+| --------------- | ----------- | ----------- | ---------- | ---------- | ----------- | --------------- |
+| AI proxy        | Anthropic   | OpenAI      | cursor-api | Zen, multi | api.kilo.ai | api.roocode.com |
+| OSS harness     | ✓           | ✓           | Partial    | ✓          | ✓           | ✓               |
+| CLI             | ✓           | ✓           | IDE        | ✓          | ✓           | ✓               |
+| MCP             | ✓           | ✓           | ✓          | ✓          | —           | —               |
+| CLIProxy        | ✓           | ✓ (adapter) | —          | Proposed   | ✓           | ✓               |
+| Zen             | —           | —           | —          | ✓          | —           | —               |
+| Session parsing | ✓           | ✓           | ✓          | ✓          | —           | —               |
 
 ---
 
@@ -171,6 +172,7 @@ Or via OpenCode config (`.opencode/opencode.json` or equivalent) — add provide
 The prior audit stated "kilo and roo are AI proxy providers" — **corrected**: they are OSS platforms with CLI tools and agent features. OpenCode is an OSS agent (like Claude Code) with Zen as a model layer.
 
 **Action**: Update AGENT_ACCESS_AND_OPTIMIZATION_AUDIT_PLAN.md §5 to reflect:
+
 - kilo, roo: OSS platforms with CLI (`kilo auth`, `roo auth login`), model catalog, search/routing
 - OpenCode: OSS agent with Zen; .opencode/ config; ECC plugin support
 - OpenCode Zen + CLIProxy: Document config for using CLIProxy as OpenCode backend
@@ -179,12 +181,12 @@ The prior audit stated "kilo and roo are AI proxy providers" — **corrected**: 
 
 ## 6. Cross-References
 
-| Doc | Purpose |
-|-----|---------|
-| [PROVIDER_SETUP_GUIDE.md](../guides/PROVIDER_SETUP_GUIDE.md) | kilo, roo, CLIProxy login |
-| [AGENT_ACCESS_AND_OPTIMIZATION_AUDIT_PLAN.md](./AGENT_ACCESS_AND_OPTIMIZATION_AUDIT_PLAN.md) | File/web/batch audit |
-| [CODEX_MINIMAX_CLIPROXY_RESEARCH_AND_PLAN.md](./CODEX_MINIMAX_CLIPROXY_RESEARCH_AND_PLAN.md) | Codex + CLIProxy adapter |
-| [SETUP_PROPOSED_ITEMS.md](../plans/SETUP_PROPOSED_ITEMS.md) | MCP ecosystem, oh-my-opencode |
+| Doc                                                                                          | Purpose                       |
+| -------------------------------------------------------------------------------------------- | ----------------------------- |
+| [PROVIDER_SETUP_GUIDE.md](../guides/PROVIDER_SETUP_GUIDE.md)                                 | kilo, roo, CLIProxy login     |
+| [AGENT_ACCESS_AND_OPTIMIZATION_AUDIT_PLAN.md](./AGENT_ACCESS_AND_OPTIMIZATION_AUDIT_PLAN.md) | File/web/batch audit          |
+| [CODEX_MINIMAX_CLIPROXY_RESEARCH_AND_PLAN.md](./CODEX_MINIMAX_CLIPROXY_RESEARCH_AND_PLAN.md) | Codex + CLIProxy adapter      |
+| [SETUP_PROPOSED_ITEMS.md](../plans/SETUP_PROPOSED_ITEMS.md)                                  | MCP ecosystem, oh-my-opencode |
 
 ---
 
@@ -194,15 +196,18 @@ The prior audit stated "kilo and roo are AI proxy providers" — **corrected**: 
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added platform integration patterns
 2. Added CLIProxy examples
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - MCP_FULL_PARITY_AND_FASTMCP_AUDIT.md
 - AGENT_PROCESS_ARCHITECTURE_RESEARCH.md
 
 ### Practical Additions
+
 - Platform templates
 - CLIProxy configurations
 

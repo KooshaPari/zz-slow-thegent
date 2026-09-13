@@ -10,12 +10,14 @@
 ## 1. System Overview
 
 ### Design Goals
+
 1. **Cost efficiency**: Route tasks to best cost-to-value provider
 2. **Quality preservation**: Maintain >95% reliability through scoring
 3. **Transparency**: Audit trail for all routing decisions
 4. **Extensibility**: Add new providers/metrics without changes
 
 ### Key Design Patterns
+
 - **Provider Strategy**: Pluggable provider scoring
 - **Fallback Chain**: Graceful degradation on provider failure
 - **Circuit Breaker**: Protect against cascading failures
@@ -28,6 +30,7 @@
 ### 2.1 Provider Scoring System
 
 #### Location
+
 ```
 thegent/src/thegent/governance/
 ├── scoring.py          # Core scoring logic
@@ -220,6 +223,7 @@ for provider_config in _BUILTIN_PROVIDERS:
 ### 2.2 Value Estimator
 
 #### Location
+
 ```
 thegent/src/thegent/governance/
 ├── value.py  # Value estimation
@@ -347,6 +351,7 @@ class ValueEstimator:
 ### 2.3 Cost Estimator
 
 #### Location
+
 ```
 thegent/src/thegent/governance/cost.py
 ```
@@ -444,6 +449,7 @@ class CostEstimator:
 ### 2.4 Cost-Aware Router
 
 #### Location
+
 ```
 thegent/src/thegent/governance/router.py
 ```
@@ -736,13 +742,13 @@ async def execute_with_fallback(
 
 ### 4.2 Failure Modes
 
-| Failure | Detection | Recovery |
-|---------|-----------|----------|
-| Cost estimation fails | Try/catch | Use default estimate |
-| Value estimation fails | Confidence check | Use default value |
-| Provider unavailable | HTTP error | Fallback to next provider |
-| Rate limit hit | 429 response | Retry with backoff |
-| Metric lookup fails | Exception | Use cached metrics |
+| Failure                | Detection        | Recovery                  |
+| ---------------------- | ---------------- | ------------------------- |
+| Cost estimation fails  | Try/catch        | Use default estimate      |
+| Value estimation fails | Confidence check | Use default value         |
+| Provider unavailable   | HTTP error       | Fallback to next provider |
+| Rate limit hit         | 429 response     | Retry with backoff        |
+| Metric lookup fails    | Exception        | Use cached metrics        |
 
 ---
 

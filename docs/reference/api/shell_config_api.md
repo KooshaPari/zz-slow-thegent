@@ -5,6 +5,7 @@
 Shell configuration manager: audit and consolidate shell scripts.
 
 Audits Zsh configuration files across a project to identify:
+
 - Duplicate function definitions across files
 - Source relationships between files
 - Alias definitions
@@ -54,6 +55,7 @@ check_sourcing_order(self: Any, configs: list[ShellConfigFile])
 Detect potential sourcing issues among the config files.
 
 Checks:
+
 - Files that source other files not present in the discovered set.
 - Circular sourcing chains.
 - Files that are sourced but have no functions or aliases.
@@ -190,6 +192,7 @@ check_sourcing_order(self: Any, configs: list[ShellConfigFile])
 Detect potential sourcing issues among the config files.
 
 Checks:
+
 - Files that source other files not present in the discovered set.
 - Circular sourcing chains.
 - Files that are sourced but have no functions or aliases.

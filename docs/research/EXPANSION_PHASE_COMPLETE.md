@@ -11,6 +11,7 @@
 ### Priority 0 (P0) - Critical Fragments ✅
 
 **Completed**:
+
 - ✅ SESSION_RESEARCH_FRAGMENTS.md → Expanded (5 concepts)
 - ✅ CONVERSATION_DUMP_2026-02-16.md → Expanded (structured work items)
 - ✅ idea-seeds (4 files) → Expanded (merged duplicates)
@@ -20,10 +21,11 @@
 ### Priority 1 (P1) - High-Value Expansions ✅
 
 **Completed**:
+
 - ✅ CROSS_PLATFORM research consolidation
 - ✅ HOOK_RUST_MIGRATION expansion
 - ✅ LIBRARY_REPLACEMENT consolidation
-- ✅ Phase documents expansion (phase13-*, phase14-*, phase15-*)
+- ✅ Phase documents expansion (phase13-_, phase14-_, phase15-\*)
 - ✅ GOVERNANCE_WP_GAPS conversion
 - ✅ COST_ROUTING_DEFERRED formalization
 
@@ -43,11 +45,13 @@
 ## Documents Created
 
 ### P0 Expansions
+
 1. `SESSION_RESEARCH_FRAGMENTS_EXPANDED.md` - 5 concepts expanded
 2. `CONVERSATION_DUMP_2026-02-16_EXPANDED.md` - Structured work items
 3. `IDEA_SEED_EXPANSION_COMPLETE.md` - Seed expansion summary
 
 ### P1 Expansions
+
 4. `CROSS_PLATFORM_RESEARCH_CONSOLIDATED.md` - Unified cross-platform guide
 5. `HOOK_RUST_MIGRATION_RESEARCH_SYNTHESIS_EXPANDED.md` - Complete migration strategy
 6. `LIBRARY_REPLACEMENT_CONSOLIDATED.md` - Unified library replacement plan
@@ -56,6 +60,7 @@
 9. `COST_ROUTING_DEFERRED_EXPANDED.md` - Formal decision record
 
 ### Summary Documents
+
 10. `MASTER_EXPANSION_TODO.md` - Master expansion tracking
 11. `P1_EXPANSION_COMPLETE.md` - P1 phase summary
 12. `EXPANSION_PHASE_COMPLETE.md` - This document
@@ -110,14 +115,17 @@
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added planning patterns
 2. Added implementation roadmap
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - WORK_STREAM.md
 - Implementation guides
 
 ### Practical Additions
+
 - Planning templates
 - Roadmap configurations

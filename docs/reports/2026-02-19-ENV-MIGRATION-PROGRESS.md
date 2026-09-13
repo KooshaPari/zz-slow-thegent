@@ -16,21 +16,25 @@
 ## ✅ Completed Migrations
 
 ### 1. `src/thegent/dex_main.py` ✅
+
 - **Before:** `os.environ["THGENT_DEX_FORCE_YOLO"] = "1"`
 - **After:** `settings.dex_force_yolo = True`
 - **Settings added:** `dex_force_yolo: bool`
 
 ### 2. `src/thegent/governance/sharecli_bridge.py` ✅
+
 - **Before:** `os.getenv("HARNESS_ROOT")`
 - **After:** `settings.harness_root`
 - **Settings added:** `harness_root: Path`
 
 ### 3. `src/thegent/main.py` ✅
+
 - **Before:** `os.environ.get("THGENT_CONTROL_PLANE_URL", "http://127.0.0.1:3848")`
 - **After:** `settings.control_plane_url`
 - **Settings added:** `control_plane_url: str`
 
 ### 4. `src/thegent/execution.py` ✅ (partial)
+
 - **Before:** `os.environ.get("THGENT_CRITICAL_LANE_SLOTS")`
 - **After:** `settings.critical_lane_slots`
 - **Note:** `critical_lane_slots` already existed in ThegentSettings
@@ -58,7 +62,7 @@
 
 ### Categories of Usage
 
-1. **THGENT_* configuration variables** (~30-40 files)
+1. **THGENT\_\* configuration variables** (~30-40 files)
    - Should be migrated to ThegentSettings
    - Most already have corresponding settings
 
@@ -82,7 +86,7 @@
 ### High Priority Files to Migrate
 
 1. **`src/thegent/cli/legacy/cli_impl.py`** (7 occurrences)
-   - Likely has multiple THGENT_* vars
+   - Likely has multiple THGENT\_\* vars
 
 2. **`src/thegent/clode_main.py`** (7 occurrences)
    - Main CLI entry point, likely has important config
@@ -98,7 +102,7 @@
 
 ### Migration Strategy
 
-1. **Analyze each file** to identify THGENT_* vars
+1. **Analyze each file** to identify THGENT\_\* vars
 2. **Check if setting exists** in ThegentSettings
 3. **Add missing settings** if needed
 4. **Migrate the code** to use `ThegentSettings()`
@@ -114,12 +118,12 @@
 
 ## 📊 Progress Tracking
 
-| Category | Total | Migrated | Remaining |
-|----------|-------|----------|-----------|
-| Configuration vars | ~40 | 4 | ~36 |
-| Runtime values | ~15 | 0 | ~15 (skip) |
-| System vars | ~30 | 0 | ~30 (skip) |
-| **Total** | **~85** | **4** | **~81** |
+| Category           | Total   | Migrated | Remaining  |
+| ------------------ | ------- | -------- | ---------- |
+| Configuration vars | ~40     | 4        | ~36        |
+| Runtime values     | ~15     | 0        | ~15 (skip) |
+| System vars        | ~30     | 0        | ~30 (skip) |
+| **Total**          | **~85** | **4**    | **~81**    |
 
 ---
 

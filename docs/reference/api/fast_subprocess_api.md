@@ -5,12 +5,14 @@
 Fast subprocess execution with async support and optimizations.
 
 This module provides optimized subprocess execution with:
+
 - Async subprocess support for concurrent execution
 - Optimized process creation and management
 - Better resource usage for concurrent operations
 - Platform-specific optimizations
 
 Performance improvements:
+
 - Async execution for concurrent subprocesses (non-blocking)
 - Optimized process creation flags
 - Better resource management

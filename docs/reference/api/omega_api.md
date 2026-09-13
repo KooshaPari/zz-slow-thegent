@@ -24,7 +24,7 @@ Focuses on minimizing entropy (wasted effort, redundant plans, and uncertainty).
 
 ### Methods
 
-#### OmegaLoop.__init__
+#### OmegaLoop.**init**
 
 ```python
 __init__(self: Any, agent_id: str)

@@ -30,6 +30,7 @@ git add flake.nix      # Add flake.nix to git
 ### 2. Fixed .envrc to Avoid Nested Function Issues
 
 **Before:**
+
 ```bash
 if [ -n "$local_flake" ]; then
   cd "$local_flake" && use flake && cd - >/dev/null 2>&1
@@ -37,6 +38,7 @@ fi
 ```
 
 **After:**
+
 ```bash
 if [ -n "$local_flake" ] && [ -f "$local_flake/flake.nix" ]; then
   # Use subshell to avoid nested function issues with cd
@@ -48,6 +50,7 @@ fi
 ```
 
 **Key changes:**
+
 - Use subshell `(...)` instead of `cd` and `cd -` pattern
 - Subshell isolates the directory change, preventing nested function calls
 - Added explicit check for `flake.nix` existence before using it
@@ -83,6 +86,7 @@ fi
 ## Verification
 
 After the fix:
+
 - ✅ `flake.nix` is tracked by git
 - ✅ `.envrc` uses subshell to avoid nested function calls
 - ✅ Non-interactive shells skip flake evaluation
@@ -98,6 +102,7 @@ exec zsh  # Should now work without FUNCNEST errors
 ```
 
 Expected behavior:
+
 - direnv loads without errors
 - FUNCNEST error should not occur
 - Flake evaluation should work (if nix is available)
@@ -138,6 +143,7 @@ Another git process seems to be running...
 ### Final Fix
 
 `kush/.envrc` was simplified to **venv-only**. No flake evaluation in direnv. This avoids:
+
 - Nix + git index.lock contention
 - FUNCNEST / nested function issues
 - Slow direnv startup
@@ -158,5 +164,5 @@ See **[GIT_INDEX_LOCK_OS_LEVEL_AND_AGENT_SYSTEM_USER_PLAN.md](./GIT_INDEX_LOCK_O
 
 ---
 
-*Fix Date: 2026-02-18*
-*Status: ✅ Fixed (venv-only)*
+_Fix Date: 2026-02-18_
+_Status: ✅ Fixed (venv-only)_

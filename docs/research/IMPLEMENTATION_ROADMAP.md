@@ -15,6 +15,7 @@ This document provides a step-by-step implementation roadmap for integrating Lit
 ## Phase 1: LiteLLM Router Responses API Handler
 
 ### Goal
+
 Enable Codex CLI to work with LiteLLM Router by creating a Responses API handler.
 
 ### Step 1.1: Create `litellm_responses_handler.py`
@@ -234,6 +235,7 @@ async def handle_responses_websocket(websocket: WebSocket) -> None:
 ```
 
 **Checklist**:
+
 - [ ] Create file
 - [ ] Implement translation functions
 - [ ] Implement HTTP POST handler
@@ -249,11 +251,13 @@ async def handle_responses_websocket(websocket: WebSocket) -> None:
 **Changes**:
 
 1. Add import at top:
+
 ```python
 import os
 ```
 
 2. Modify `proxy_handler` function:
+
 ```python
 async def proxy_handler(request: Request) -> Response:
     """Proxy /v1/* to backend. Transform /v1/responses to /v1/chat/completions."""
@@ -285,6 +289,7 @@ async def proxy_handler(request: Request) -> Response:
 ```
 
 3. Update `websocket_responses_handler`:
+
 ```python
 async def websocket_responses_handler(websocket: Any) -> None:
     """Bridge WebSocket /v1/responses to HTTP streaming. Buffers SSE by line."""
@@ -309,6 +314,7 @@ async def websocket_responses_handler(websocket: Any) -> None:
 ```
 
 **Checklist**:
+
 - [ ] Add environment variable check
 - [ ] Route `/v1/responses` to LiteLLM handler
 - [ ] Update WebSocket handler
@@ -322,6 +328,7 @@ async def websocket_responses_handler(websocket: Any) -> None:
 **Changes**:
 
 1. Ensure router instance can be accessed:
+
 ```python
 # Add global router instance (lazy initialization)
 _router_instance: Router | None = None
@@ -339,12 +346,14 @@ def get_litellm_router_instance(policy: str | None = None) -> Router:
 ```
 
 2. Export function for handler:
+
 ```python
 # At module level, export get_litellm_router for handler
 # (get_litellm_router already exists, just ensure it's accessible)
 ```
 
 **Checklist**:
+
 - [ ] Ensure router can be accessed from handler
 - [ ] Add singleton pattern if needed
 - [ ] Verify model list includes Codex CLI models
@@ -354,6 +363,7 @@ def get_litellm_router_instance(policy: str | None = None) -> Router:
 **Test Cases**:
 
 1. **HTTP POST `/v1/responses` (non-streaming)**:
+
 ```bash
 curl -X POST http://localhost:8765/v1/responses \
   -H "Content-Type: application/json" \
@@ -366,6 +376,7 @@ curl -X POST http://localhost:8765/v1/responses \
 ```
 
 2. **HTTP POST `/v1/responses` (streaming)**:
+
 ```bash
 curl -X POST http://localhost:8765/v1/responses \
   -H "Content-Type: application/json" \
@@ -378,6 +389,7 @@ curl -X POST http://localhost:8765/v1/responses \
 ```
 
 3. **Codex CLI**:
+
 ```bash
 export OPENAI_BASE_URL=http://localhost:8765
 export OPENAI_API_KEY=sk-dummy
@@ -386,6 +398,7 @@ codex exec - --model gpt-5-mini <<< "Hello"
 ```
 
 **Checklist**:
+
 - [ ] Test HTTP POST non-streaming
 - [ ] Test HTTP POST streaming
 - [ ] Test WebSocket
@@ -398,6 +411,7 @@ codex exec - --model gpt-5-mini <<< "Hello"
 ## Phase 2: Claude Code Integration
 
 ### Goal
+
 Route Claude Code (`clode`) through LiteLLM Router.
 
 ### Step 2.1: Update `CodexProxyRunner`
@@ -407,6 +421,7 @@ Route Claude Code (`clode`) through LiteLLM Router.
 **Changes**:
 
 1. Add `use_litellm_router` parameter to `__init__`:
+
 ```python
 def __init__(
     self,
@@ -424,6 +439,7 @@ def __init__(
 ```
 
 2. Add LiteLLM Router path in `run` method:
+
 ```python
 def run(
     self,
@@ -453,6 +469,7 @@ def run(
 ```
 
 3. Add `_run_via_litellm_router` method:
+
 ```python
 def _run_via_litellm_router(
     self,
@@ -537,6 +554,7 @@ def _run_via_litellm_router(
 ```
 
 **Checklist**:
+
 - [ ] Add `use_litellm_router` parameter
 - [ ] Implement `_run_via_litellm_router`
 - [ ] Update `run` method
@@ -549,6 +567,7 @@ def _run_via_litellm_router(
 **Changes**:
 
 1. Check for LiteLLM Router option:
+
 ```python
 # In _run_model_interactive or similar function
 use_litellm = os.environ.get("THGENT_USE_LITELLM_ROUTER", "0") == "1"
@@ -563,6 +582,7 @@ runner = CodexProxyRunner(
 ```
 
 **Checklist**:
+
 - [ ] Add LiteLLM Router option
 - [ ] Update runner creation
 - [ ] Test integration
@@ -574,6 +594,7 @@ runner = CodexProxyRunner(
 **Changes**:
 
 1. Ensure Claude Code models are in model list:
+
 ```python
 # In build_litellm_model_list()
 # Verify these models are included:
@@ -588,6 +609,7 @@ claude_models = [
 ```
 
 **Checklist**:
+
 - [ ] Verify model list includes Claude Code models
 - [ ] Configure fallback chains
 - [ ] Set up cost tracking
@@ -597,6 +619,7 @@ claude_models = [
 ## Phase 3: Factory Droid Integration
 
 ### Goal
+
 Route Factory Droid through LiteLLM Router.
 
 ### Step 3.1: Update `DroidRunner`
@@ -606,6 +629,7 @@ Route Factory Droid through LiteLLM Router.
 **Changes**:
 
 1. Add LiteLLM Router option:
+
 ```python
 def __init__(
     self,
@@ -623,6 +647,7 @@ def __init__(
 ```
 
 2. Update `run` method to use LiteLLM Router endpoint:
+
 ```python
 def run(...) -> RunResult:
     if self._use_litellm_router:
@@ -641,6 +666,7 @@ def run(...) -> RunResult:
 ```
 
 3. Add model mapping function:
+
 ```python
 def _map_droid_model_to_litellm(self, droid_model: str) -> str:
     """Map Factory Droid model names to LiteLLM model aliases."""
@@ -654,6 +680,7 @@ def _map_droid_model_to_litellm(self, droid_model: str) -> str:
 ```
 
 **Checklist**:
+
 - [ ] Add `use_litellm_router` parameter
 - [ ] Update `run` method
 - [ ] Add model mapping
@@ -664,6 +691,7 @@ def _map_droid_model_to_litellm(self, droid_model: str) -> str:
 ## Phase 4: Plan Incorporate Enhancement
 
 ### Goal
+
 Add task validation during `plan incorporate` command.
 
 ### Step 4.1: Find `incorporate_impl`
@@ -675,6 +703,7 @@ Add task validation during `plan incorporate` command.
 **Expected Location**: `src/thegent/cli_impl.py`
 
 **Search**:
+
 ```bash
 grep -n "def incorporate_impl" src/thegent/cli_impl.py
 ```
@@ -684,12 +713,14 @@ grep -n "def incorporate_impl" src/thegent/cli_impl.py
 **Changes**:
 
 1. Import validators:
+
 ```python
 from thegent.task import validate_task_file, WorkStreamSync
 from pathlib import Path
 ```
 
 2. Add validation before merging:
+
 ```python
 def incorporate_impl(cd: Path | None = None, dry_run: bool = False) -> dict[str, Any]:
     """Merge fragments from 02-UNIFIED-WBS into WORK_STREAM.md."""
@@ -747,6 +778,7 @@ def incorporate_impl(cd: Path | None = None, dry_run: bool = False) -> dict[str,
 ```
 
 **Checklist**:
+
 - [ ] Find `incorporate_impl` function
 - [ ] Add task validation
 - [ ] Add auto-sync to WORK_STREAM.md
@@ -760,18 +792,21 @@ def incorporate_impl(cd: Path | None = None, dry_run: bool = False) -> dict[str,
 ### Testing Checklist
 
 #### Unit Tests
+
 - [ ] Test Responses API translation functions
 - [ ] Test LiteLLM Router integration
 - [ ] Test error handling
 - [ ] Test model routing
 
 #### Integration Tests
+
 - [ ] Test Codex CLI end-to-end
 - [ ] Test Claude Code end-to-end
 - [ ] Test Factory Droid end-to-end
 - [ ] Test plan incorporate validation
 
 #### Performance Tests
+
 - [ ] Measure routing latency
 - [ ] Test caching effectiveness
 - [ ] Test load balancing

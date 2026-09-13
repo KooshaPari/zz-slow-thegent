@@ -8,6 +8,7 @@ Detects the calling terminal and sends keepalive input (Enter key) periodically
 to prevent timeout (e.g., Cursor's 4-minute guard).
 
 This module provides a robust keepalive mechanism that:
+
 - Detects parent terminal processes using multiple methods
 - Sends keepalive signals via stdin or tmux
 - Handles errors gracefully without affecting the main process
@@ -25,7 +26,7 @@ method based on the environment.
 
 ### Methods
 
-#### TerminalKeepalive.__init__
+#### TerminalKeepalive.**init**
 
 ```python
 __init__(self: Any, interval: float, enabled: bool, max_failures: int)
@@ -62,6 +63,7 @@ should_enable(self: Any)
 Check if keepalive should be enabled based on environment.
 
 Uses multiple detection methods for robustness:
+
 1. Environment variable detection (fastest)
 2. Process inspection (most accurate)
 3. TTY detection (fallback)
@@ -153,6 +155,7 @@ should_enable(self: Any)
 Check if keepalive should be enabled based on environment.
 
 Uses multiple detection methods for robustness:
+
 1. Environment variable detection (fastest)
 2. Process inspection (most accurate)
 3. TTY detection (fallback)

@@ -14,7 +14,7 @@ inotify-based cache invalidation.
 
 ### Methods
 
-#### CacheInvalidator.__init__
+#### CacheInvalidator.**init**
 
 ```python
 __init__(self: Any, cache: Any)
@@ -46,7 +46,7 @@ Implementation of Singleflight pattern across processes using file locks.
 
 ### Methods
 
-#### CrossProcessSingleflight.__init__
+#### CrossProcessSingleflight.**init**
 
 ```python
 __init__(self: Any, coordination_dir: Path)
@@ -72,7 +72,7 @@ Execute func for key, coalescing concurrent calls across processes.
 
 ### Methods
 
-#### Handler.__init__
+#### Handler.**init**
 
 ```python
 __init__(self: Any, cache: Any)
@@ -96,7 +96,7 @@ LRU cache with heat-based eviction (frequency + decay).
 
 ### Methods
 
-#### HeatBasedLRU.__init__
+#### HeatBasedLRU.**init**
 
 ```python
 __init__(self: Any, capacity: int, decay_factor: float)
@@ -128,7 +128,7 @@ Implementation of Singleflight pattern to prevent duplicate requests.
 
 ### Methods
 
-#### Singleflight.__init__
+#### Singleflight.**init**
 
 ```python
 __init__(self: Any)

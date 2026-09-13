@@ -20,19 +20,21 @@
 ### Status: ✅ Effectively Complete
 
 **Current Implementation**:
+
 - Override flag: `--override "reason"` on run/bg
 - OverrideRegistry: Stores `(owner, reason, expires_at)`
 - TTL config: `override_ttl_seconds` (default 24h)
 - Policy bypass: Re-evaluates on expiry
 
 **Optional Enhancement**:
+
 - Emit `governance.override.expired` event when cached override is used but record has expired
 
 ### BACKLOG Item
 
-| ID | Title | Priority | Depends | Options |
-|----|-------|----------|---------|---------|
-| **research-governance-override-events** | Add override expiry event emission | P3 | WP-3003 | Option A: Add event emission<br>Option B: Defer (low priority) |
+| ID                                      | Title                              | Priority | Depends | Options                                                        |
+| --------------------------------------- | ---------------------------------- | -------- | ------- | -------------------------------------------------------------- |
+| **research-governance-override-events** | Add override expiry event emission | P3       | WP-3003 | Option A: Add event emission<br>Option B: Defer (low priority) |
 
 **Recommendation**: Option B (Defer) - Current implementation is sufficient
 
@@ -43,6 +45,7 @@
 ### Status: ✅ Complete
 
 **Current Implementation**:
+
 - Domain tagging: ✓ Done (`run --domain`, `bg --domain`)
 - Tiered storage: ✓ Done (`--tier hot/cold`)
 - Retention by domain: ✓ Done (`THGENT_RETENTION_BY_DOMAIN`)
@@ -56,18 +59,20 @@
 ### Status: ✅ Mostly Complete
 
 **Current Implementation**:
+
 - EscalationQueue: ✓ Done
 - SLA tracking: ✓ Done (`--past-sla`)
 - Priority dispatch: ✓ Done (sorted by priority)
 
 **Remaining Gap**:
+
 - Integrate with DLQ: When recovery exhausted, add to escalation queue
 
 ### BACKLOG Item
 
-| ID | Title | Priority | Depends | Options |
-|----|-------|----------|---------|---------|
-| **research-governance-escalation-dlq** | Integrate escalation queue with DLQ | P2 | WP-3008, WP-2002 | Option A: Auto-add to escalation when DLQ exhausted<br>Option B: Manual escalation only<br>Option C: Defer integration |
+| ID                                     | Title                               | Priority | Depends          | Options                                                                                                                |
+| -------------------------------------- | ----------------------------------- | -------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **research-governance-escalation-dlq** | Integrate escalation queue with DLQ | P2       | WP-3008, WP-2002 | Option A: Auto-add to escalation when DLQ exhausted<br>Option B: Manual escalation only<br>Option C: Defer integration |
 
 **Recommendation**: Option A (Auto-add) - Improves automation
 
@@ -163,6 +168,7 @@ class DLQEscalationIntegration:
 ## Summary
 
 **Total BACKLOG Items Created**: 4
+
 - research-governance-override-events (P3, optional)
 - research-governance-escalation-dlq (P2)
 - research-governance-policy-federation (P1)
@@ -173,17 +179,17 @@ class DLQEscalationIntegration:
 ---
 
 **See Also**:
+
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) - Unified work stream
 - [GOVERNANCE_WP_GAPS.md](./GOVERNANCE_WP_GAPS.md) - Original gaps document
 - [02-UNIFIED-WBS.md](../plans/02-UNIFIED-WBS.md) - Work breakdown structure
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -193,15 +199,18 @@ class DLQEscalationIntegration:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices
@@ -216,6 +225,7 @@ class DLQEscalationIntegration:
 - [RESEARCH_SEED_FRAGMENT_INVENTORY](./RESEARCH_SEED_FRAGMENT_INVENTORY_AND_SPRAWL_TODO.md) - Fragment inventory
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -224,4 +234,3 @@ class DLQEscalationIntegration:
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

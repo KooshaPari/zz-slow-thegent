@@ -14,11 +14,13 @@ status: in_progress
 ## Phase 1: Foundation (Week 1)
 
 ### Goal
+
 Basic Textual app with menubar, statusbar, and single terminal pane.
 
 ### Tasks
 
 #### P1.1: Project Setup & Dependencies
+
 **Depends on**: None
 **Effort**: 1-2 hours
 
@@ -29,11 +31,13 @@ Basic Textual app with menubar, statusbar, and single terminal pane.
 - [ ] Set up pytest fixtures for testing
 
 **Acceptance Criteria**:
+
 - All files created and importable
 - `pytest` finds test directory
 - No import errors
 
 **Checklist**:
+
 - [ ] `pyproject.toml` updated
 - [ ] Module structure created
 - [ ] Tests discoverable
@@ -42,6 +46,7 @@ Basic Textual app with menubar, statusbar, and single terminal pane.
 ---
 
 #### P1.2: CompositApp Skeleton
+
 **Depends on**: P1.1
 **Effort**: 2-3 hours
 
@@ -51,6 +56,7 @@ Basic Textual app with menubar, statusbar, and single terminal pane.
 - [ ] Add logging and debug output
 
 **Code**:
+
 ```python
 # thegent/src/thegent/ui/compositor/app.py
 class CompositApp(App):
@@ -67,11 +73,13 @@ class CompositApp(App):
 ```
 
 **Acceptance Criteria**:
+
 - App starts without errors
 - Header/Footer render correctly
 - Quit binding works (Ctrl+Q)
 
 **Checklist**:
+
 - [ ] CompositApp renders
 - [ ] Header displays "Thegent Compositor"
 - [ ] Ctrl+Q quits cleanly
@@ -80,6 +88,7 @@ class CompositApp(App):
 ---
 
 #### P1.3: TerminalPane Widget
+
 **Depends on**: P1.1
 **Effort**: 3-4 hours
 
@@ -89,6 +98,7 @@ class CompositApp(App):
 - [ ] Add cleanup on pane close
 
 **Code**:
+
 ```python
 # thegent/src/thegent/ui/compositor/terminal_pane.py
 class TerminalPane(Static):
@@ -103,12 +113,14 @@ class TerminalPane(Static):
 ```
 
 **Acceptance Criteria**:
+
 - PTY allocation succeeds
 - Shell spawns and renders in pane
 - Input echoes to terminal
 - Pane closes cleanly
 
 **Checklist**:
+
 - [ ] PTY allocated
 - [ ] Shell runs in pane
 - [ ] Input/output working
@@ -118,6 +130,7 @@ class TerminalPane(Static):
 ---
 
 #### P1.4: Basic Integration & Single-Pane Demo
+
 **Depends on**: P1.2, P1.3
 **Effort**: 2-3 hours
 
@@ -127,11 +140,13 @@ class TerminalPane(Static):
 - [ ] Add logging and debug output
 
 **Acceptance Criteria**:
+
 - App starts with one terminal pane
 - Pane is interactive (can type, execute commands)
 - Pane renders output correctly
 
 **Checklist**:
+
 - [ ] CompositApp displays TerminalPane
 - [ ] Terminal is interactive
 - [ ] Commands execute in pane
@@ -173,11 +188,13 @@ class TerminalPane(Static):
 ## Phase 2: Compositor Integration (Week 2)
 
 ### Goal
+
 Implement pane splitting, merging, layout management, and session persistence.
 
 ### Tasks
 
 #### P2.1: PaneManager Foundation
+
 **Depends on**: P1.4
 **Effort**: 3-4 hours
 
@@ -187,6 +204,7 @@ Implement pane splitting, merging, layout management, and session persistence.
 - [ ] Implement pane focus tracking
 
 **Code**:
+
 ```python
 # thegent/src/thegent/ui/compositor/pane_manager.py
 class PaneManager:
@@ -204,11 +222,13 @@ class PaneManager:
 ```
 
 **Acceptance Criteria**:
+
 - Split operations create correct tree structure
 - Close operations remove panes and rebalance
 - Focus rotation works correctly
 
 **Checklist**:
+
 - [ ] Tree structure correct
 - [ ] Split operations tested
 - [ ] Close operations tested
@@ -218,6 +238,7 @@ class PaneManager:
 ---
 
 #### P2.2: UI Integration for Pane Operations
+
 **Depends on**: P2.1, P1.4
 **Effort**: 2-3 hours
 
@@ -227,11 +248,13 @@ class PaneManager:
 - [ ] Update statusbar to show pane count
 
 **Acceptance Criteria**:
+
 - All split/merge/close/focus actions work
 - Statusbar updates correctly
 - Layout renders properly after operations
 
 **Checklist**:
+
 - [ ] Ctrl+H/V split correctly
 - [ ] Ctrl+X closes pane
 - [ ] Ctrl+L focuses next pane
@@ -241,6 +264,7 @@ class PaneManager:
 ---
 
 #### P2.3: Layout Serialization
+
 **Depends on**: P2.1
 **Effort**: 2-3 hours
 
@@ -250,6 +274,7 @@ class PaneManager:
 - [ ] Test YAML compatibility
 
 **Code**:
+
 ```python
 # thegent/src/thegent/ui/compositor/pane_manager.py
 def save_layout(self) -> dict:
@@ -261,11 +286,13 @@ def restore_layout(self, layout_data: dict) -> None:
 ```
 
 **Acceptance Criteria**:
+
 - Tree serialization produces valid dict
 - Deserialization reconstructs identical tree
 - YAML round-trip preserves structure
 
 **Checklist**:
+
 - [ ] Serialization implemented
 - [ ] Deserialization implemented
 - [ ] Round-trip tests written
@@ -274,6 +301,7 @@ def restore_layout(self, layout_data: dict) -> None:
 ---
 
 #### P2.4: Session Persistence
+
 **Depends on**: P2.3
 **Effort**: 2-3 hours
 
@@ -283,11 +311,13 @@ def restore_layout(self, layout_data: dict) -> None:
 - [ ] Integrate into `CompositApp.on_mount()`
 
 **Acceptance Criteria**:
+
 - Sessions save to YAML successfully
 - Sessions load from disk correctly
 - App restores previous layout on restart
 
 **Checklist**:
+
 - [ ] SessionState class implemented
 - [ ] Session dir created (`~/.config/thegent/sessions/`)
 - [ ] Save/load round-trip tested
@@ -297,6 +327,7 @@ def restore_layout(self, layout_data: dict) -> None:
 ---
 
 #### P2.5: Layout Management UI
+
 **Depends on**: P2.4
 **Effort**: 2-3 hours
 
@@ -306,11 +337,13 @@ def restore_layout(self, layout_data: dict) -> None:
 - [ ] Add Ctrl+S/Ctrl+R shortcuts
 
 **Acceptance Criteria**:
+
 - Named layouts can be saved and restored
 - Layout menu displays available layouts
 - Shortcuts work correctly
 
 **Checklist**:
+
 - [ ] Save layout action implemented
 - [ ] Restore layout action implemented
 - [ ] Layout menu implemented
@@ -354,11 +387,13 @@ def restore_layout(self, layout_data: dict) -> None:
 ## Phase 3: Advanced Features (Week 3)
 
 ### Goal
+
 Add floating windows, plugin system, themes, and optional web export.
 
 ### Tasks
 
 #### P3.1: Floating Windows & Dialogs
+
 **Depends on**: P2.5
 **Effort**: 3-4 hours
 
@@ -368,11 +403,13 @@ Add floating windows, plugin system, themes, and optional web export.
 - [ ] Add info/error message popups
 
 **Acceptance Criteria**:
+
 - Dialogs render correctly
 - Dialog actions work (confirm/cancel)
 - Input dialogs capture text
 
 **Checklist**:
+
 - [ ] FloatingWindow implemented
 - [ ] Confirmation dialogs working
 - [ ] Input dialogs working
@@ -381,6 +418,7 @@ Add floating windows, plugin system, themes, and optional web export.
 ---
 
 #### P3.2: Theme Support
+
 **Depends on**: P1.2
 **Effort**: 2-3 hours
 
@@ -390,11 +428,13 @@ Add floating windows, plugin system, themes, and optional web export.
 - [ ] Store theme preference in session
 
 **Acceptance Criteria**:
+
 - Light and dark themes display correctly
 - Theme switching works
 - Theme preference persists
 
 **Checklist**:
+
 - [ ] CSS styles created
 - [ ] Light/dark themes working
 - [ ] Theme switching implemented
@@ -403,6 +443,7 @@ Add floating windows, plugin system, themes, and optional web export.
 ---
 
 #### P3.3: Real-Time Process Monitoring (Optional)
+
 **Depends on**: P1.3
 **Effort**: 2-3 hours
 
@@ -411,11 +452,13 @@ Add floating windows, plugin system, themes, and optional web export.
 - [ ] Add process tree view (optional)
 
 **Acceptance Criteria**:
+
 - Process stats display in statusbar
 - Stats update in real-time
 - No significant performance impact
 
 **Checklist**:
+
 - [ ] Process monitoring implemented
 - [ ] Statusbar displays stats
 - [ ] Performance acceptable
@@ -423,6 +466,7 @@ Add floating windows, plugin system, themes, and optional web export.
 ---
 
 #### P3.4: Web Export (Optional)
+
 **Depends on**: P3.1
 **Effort**: 2-3 hours
 
@@ -431,10 +475,12 @@ Add floating windows, plugin system, themes, and optional web export.
 - [ ] Test web version functionality
 
 **Acceptance Criteria**:
+
 - `textual serve` exports app successfully
 - Web version is functional
 
 **Checklist**:
+
 - [ ] Web export working
 - [ ] Web UI functional
 

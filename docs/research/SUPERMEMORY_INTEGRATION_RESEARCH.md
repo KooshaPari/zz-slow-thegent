@@ -18,30 +18,30 @@ Supermemory.ai is a cloud-scale RAG + Knowledge Graph solution that can serve as
 
 ### Knowledge Graph API (L3)
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/knowledge/graph` | POST | Store entity with relationships |
-| `/api/knowledge/query` | POST | Query knowledge graph |
-| `/api/knowledge/search` | GET | Semantic search |
+| Endpoint                | Method | Description                     |
+| ----------------------- | ------ | ------------------------------- |
+| `/api/knowledge/graph`  | POST   | Store entity with relationships |
+| `/api/knowledge/query`  | POST   | Query knowledge graph           |
+| `/api/knowledge/search` | GET    | Semantic search                 |
 
 ### Documents API (L4)
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/documents` | POST | Store immutable document |
-| `/api/documents/{id}` | GET | Retrieve document |
-| `/api/documents/search` | GET | Full-text search |
+| Endpoint                | Method | Description              |
+| ----------------------- | ------ | ------------------------ |
+| `/api/documents`        | POST   | Store immutable document |
+| `/api/documents/{id}`   | GET    | Retrieve document        |
+| `/api/documents/search` | GET    | Full-text search         |
 
 ## Integration Architecture
 
 ### Memory Layers
 
-| Layer | Purpose | Provider |
-|-------|---------|----------|
-| L1 | Hot cache | Local LRU |
-| L2 | Warm cache | Local file |
-| L3 | Long-term | Supermemory KG |
-| L4 | Archival | Supermemory Docs |
+| Layer | Purpose    | Provider         |
+| ----- | ---------- | ---------------- |
+| L1    | Hot cache  | Local LRU        |
+| L2    | Warm cache | Local file       |
+| L3    | Long-term  | Supermemory KG   |
+| L4    | Archival   | Supermemory Docs |
 
 ### Data Flow
 
@@ -52,16 +52,19 @@ Request → L1 (cache hit?) → L2 (cache hit?) → L3 (query KG) → L4 (fallba
 ## Implementation Plan
 
 ### Phase 1: Read-only Sync
+
 - Query Supermemory for context
 - No write operations
 - Validate data quality
 
 ### Phase 2: Bidirectional Sync
+
 - Write to Supermemory
 - Handle conflicts
 - Sync back to local
 
 ### Phase 3: Auto-learning
+
 - Automatic context extraction
 - Relationship inference
 - Knowledge consolidation

@@ -82,16 +82,19 @@ Comprehensive documentation work has been completed across the kush ecosystem, i
 ## Next Steps
 
 ### Immediate
+
 - Test Phase 1 features in production
 - Gather user feedback
 - Fix any issues
 
 ### Short-Term
+
 - Implement Phase 2 (search, API docs)
 - Begin unified agent registry implementation
 - Begin shared MCP tool library implementation
 
 ### Long-Term
+
 - Complete all improvement plan phases
 - Implement unified integration hub
 - Expand ecosystem documentation

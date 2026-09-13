@@ -11,6 +11,7 @@
 This document specifies the design for a **Shared MCP Tool Library** that consolidates common MCP tools across multiple servers (atoms-mcp-prod, morph, task-tool, task2, 4sgm). The library provides reusable, well-tested tools that can be imported and used by any MCP server.
 
 **Key Goals**:
+
 - ✅ Reduce code duplication across MCP servers
 - ✅ Standardize tool interfaces and behaviors
 - ✅ Provide comprehensive tool testing
@@ -24,26 +25,31 @@ This document specifies the design for a **Shared MCP Tool Library** that consol
 ### 1.1 Existing MCP Tools
 
 #### **atoms-mcp-prod**
+
 - **Tools**: 5 consolidated tools (workspace_operation, entity_operation, relationship_operation, etc.)
 - **Pattern**: FastMCP with comprehensive tool definitions
 - **Scope**: Knowledge management, entity tracking, workflow automation
 
 #### **morph**
+
 - **Tools**: workspace_ops, research_hub
 - **Pattern**: FastMCP with hexagonal architecture
 - **Scope**: Workspace operations, research tooling
 
 #### **task-tool**
+
 - **Tools**: Task management tools
 - **Pattern**: FastMCP with telemetry
 - **Scope**: Task creation, execution, monitoring
 
 #### **task2**
+
 - **Tools**: Advanced task tools with DAG planning
 - **Pattern**: FastMCP with agent delegation
 - **Scope**: Batch execution, DAG planning, async/sync modes
 
 #### **4sgm**
+
 - **Tools**: 25+ MCP tools
 - **Pattern**: LangGraph + FastMCP
 - **Scope**: Various domain tools
@@ -51,6 +57,7 @@ This document specifies the design for a **Shared MCP Tool Library** that consol
 ### 1.2 Common Tool Patterns
 
 **Shared Tool Categories**:
+
 - File operations (read, write, list, search)
 - Workspace operations (status, diff, commit)
 - Code operations (lint, format, test)
@@ -58,6 +65,7 @@ This document specifies the design for a **Shared MCP Tool Library** that consol
 - Task operations (create, execute, monitor)
 
 **Duplication Areas**:
+
 - File I/O operations (multiple implementations)
 - Workspace status checks (similar logic)
 - Code quality tools (duplicated across servers)
@@ -394,6 +402,7 @@ shared-mcp-tools/
 ### 3.2 Tool Categories
 
 #### **Core Tools** (`core/`)
+
 - `read_file` - Read file contents
 - `write_file` - Write file contents
 - `list_files` - List directory contents
@@ -405,18 +414,21 @@ shared-mcp-tools/
 - `run_tests` - Run tests
 
 #### **Research Tools** (`research/`)
+
 - `web_search` - Web search
 - `synthesize_content` - Content synthesis
 - `extract_key_points` - Extract key points
 - `summarize` - Summarize content
 
 #### **Task Tools** (`tasks/`)
+
 - `create_task` - Create task
 - `execute_task` - Execute task
 - `monitor_task` - Monitor task status
 - `cancel_task` - Cancel task
 
 #### **Integration Tools** (`integrations/`)
+
 - `github_create_issue` - Create GitHub issue
 - `github_create_pr` - Create GitHub PR
 - `slack_send_message` - Send Slack message

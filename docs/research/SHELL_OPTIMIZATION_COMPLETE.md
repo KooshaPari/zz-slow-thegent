@@ -76,6 +76,7 @@ run_shell_command(cmd)
 ## Configuration
 
 Can be configured via environment variable:
+
 ```bash
 THGENT_SHELL=/bin/zsh  # Override shell preference
 ```

@@ -13,42 +13,52 @@
 ## Delivered in this lane
 
 ### CPB-0701
+
 - Status: claimed and operationalized in lane notes.
 - Delivery: alias/model-id verification and collision-prevention checklist.
 
 ### CPB-0702
+
 - Status: claimed and operationalized in lane notes.
 - Delivery: callback-port conflict triage and validation commands.
 
 ### CPB-0703
+
 - Status: claimed and operationalized in lane notes.
 - Delivery: `tool_use_id` mismatch diagnostics checklist with search-based verification.
 
 ### CPB-0704
+
 - Status: claimed and operationalized in lane notes.
 - Delivery: provider-agnostic reasoning normalization guidance.
 
 ### CPB-0705
+
 - Status: claimed and operationalized in lane notes.
 - Delivery: thinking-mode propagation checks from handler to executor.
 
 ### CPB-0706
+
 - Status: claimed and operationalized in lane notes.
 - Delivery: GPT-5.2 quickstart/troubleshooting validation pointers.
 
 ### CPB-0707
+
 - Status: claimed and operationalized in lane notes.
 - Delivery: stream/non-stream parity test checklist.
 
 ### CPB-0708
+
 - Status: claimed and operationalized in lane notes.
 - Delivery: compatibility drift and fixture-based regression guidance.
 
 ### CPB-0709
+
 - Status: claimed and operationalized in lane notes.
 - Delivery: model discovery/registry refresh checks.
 
 ### CPB-0710
+
 - Status: claimed and operationalized in lane notes.
 - Delivery: tool-calling naming parity checks for thinking-capable models.
 

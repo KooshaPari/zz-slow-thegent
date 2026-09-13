@@ -12,7 +12,7 @@ Enhanced git subcommand with caching and lock detection.
 
 ### Methods
 
-#### GitEnhance.__init__
+#### GitEnhance.**init**
 
 ```python
 __init__(self: Any, ttl_seconds: int)

@@ -6,13 +6,13 @@
 
 ## Likely Culprits
 
-| Process | Language | Single-threaded | Memory-heavy | Notes |
-|---------|----------|-----------------|--------------|-------|
-| **pylsp** (python-lsp-server) | Python | Yes (Jedi) | Yes | Default LSP when Pylance disabled |
-| **jedi-language-server** | Python | Yes | Yes | Jedi-based completion |
-| **Jedi** (in pylsp) | Python | Yes | Yes | Builds full symbol table |
-| **mypy** (dmypy daemon) | Python | Yes | Yes | Full type-check indexing |
-| **Pylance/Pyright** | TypeScript | Yes | Yes | **Not Python** – would show as Node |
+| Process                       | Language   | Single-threaded | Memory-heavy | Notes                               |
+| ----------------------------- | ---------- | --------------- | ------------ | ----------------------------------- |
+| **pylsp** (python-lsp-server) | Python     | Yes (Jedi)      | Yes          | Default LSP when Pylance disabled   |
+| **jedi-language-server**      | Python     | Yes             | Yes          | Jedi-based completion               |
+| **Jedi** (in pylsp)           | Python     | Yes             | Yes          | Builds full symbol table            |
+| **mypy** (dmypy daemon)       | Python     | Yes             | Yes          | Full type-check indexing            |
+| **Pylance/Pyright**           | TypeScript | Yes             | Yes          | **Not Python** – would show as Node |
 
 **Conclusion:** A 22GB **Python** process is almost certainly **pylsp** or **jedi-language-server** (or mypy daemon). Pylance uses Pyright (TypeScript/Node), so it would appear as a Node process, not Python.
 
@@ -29,11 +29,11 @@ The workspace root (`kush`) contains:
 
 When the IDE opens the full workspace, the Python language server indexes **everything** unless explicitly excluded:
 
-| Config | Excludes | Gap |
-|--------|----------|-----|
+| Config                         | Excludes                      | Gap                                      |
+| ------------------------------ | ----------------------------- | ---------------------------------------- |
 | **thegent/pyrightconfig.json** | `node_modules`, `__pycache__` | No `.venv`, `.worktrees`, other projects |
-| **trace/pyrightconfig.json** | Better (venv, etc.) | Only applies when analyzing trace |
-| **agentapi/atomsAgent** | Good excludes | Only applies in that subdir |
+| **trace/pyrightconfig.json**   | Better (venv, etc.)           | Only applies when analyzing trace        |
+| **agentapi/atomsAgent**        | Good excludes                 | Only applies in that subdir              |
 
 **Missing excludes** that cause bloat:
 
@@ -149,12 +149,10 @@ In `.vscode/settings.json` or Cursor settings:
    ```
 
 2. **Check which Python LSP is active:**
-
    - Cursor: Settings → search "python language server"
    - Or: Command Palette → "Python: Select Language Server"
 
 3. **After applying excludes:**
-
    - Restart IDE
    - Expect memory to drop to roughly 1–4GB for typical usage
 
@@ -162,20 +160,20 @@ In `.vscode/settings.json` or Cursor settings:
 
 ## Quick Fix Summary
 
-| Action | Effect |
-|--------|--------|
+| Action                                                 | Effect                                     |
+| ------------------------------------------------------ | ------------------------------------------ |
 | Add root `pyrightconfig.json` with aggressive excludes | Stops indexing venv and other project dirs |
-| Set `python.languageServer` to `Pylance` | Uses more efficient Node-based LSP |
-| Open `thegent` only instead of full `kush` | Limits analysis scope |
-| Add `**/.venv` to all pyrightconfigs | Avoids indexing site-packages |
+| Set `python.languageServer` to `Pylance`               | Uses more efficient Node-based LSP         |
+| Open `thegent` only instead of full `kush`             | Limits analysis scope                      |
+| Add `**/.venv` to all pyrightconfigs                   | Avoids indexing site-packages              |
 
 ---
 
 ## Files to Update
 
-| File | Change |
-|------|--------|
-| `kush/pyrightconfig.json` (create) | Root-level excludes |
-| `thegent/pyrightconfig.json` | Add `**/.venv`, `**/.worktrees` |
-| `trace/pyrightconfig.json` | Already has venv; ensure consistent |
-| `.vscode/settings.json` or Cursor settings | `python.languageServer: Pylance` |
+| File                                       | Change                              |
+| ------------------------------------------ | ----------------------------------- |
+| `kush/pyrightconfig.json` (create)         | Root-level excludes                 |
+| `thegent/pyrightconfig.json`               | Add `**/.venv`, `**/.worktrees`     |
+| `trace/pyrightconfig.json`                 | Already has venv; ensure consistent |
+| `.vscode/settings.json` or Cursor settings | `python.languageServer: Pylance`    |

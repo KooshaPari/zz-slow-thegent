@@ -5,6 +5,7 @@
 MCP tools for idea seed detection and storage.
 
 Provides tools for:
+
 - Detecting seeds in text using pattern matching
 - Storing seeds persistently in JSONL format
 - Querying and managing seed ideas
@@ -34,6 +35,7 @@ Seed ideas are nascent concepts, half-formed requirements, design sketches,
 or problem statements that could grow into full features.
 
 Pattern detection:
+
 - Explicit markers: "What if...", "Consider...", "We should..."
 - Code quality: TODO, FIXME, XXX comments
 - Design keywords: architecture, refactor, optimize, performance, security

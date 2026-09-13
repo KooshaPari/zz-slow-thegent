@@ -1,4 +1,5 @@
 ### [WL-5610] idea line 12 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -8,6 +9,7 @@
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5611] idea line 13 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -17,6 +19,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5612] kb_extract line 1 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -26,6 +29,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5613] kb_extract line 3 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -35,6 +39,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5614] kb_extract line 5 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -44,6 +49,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5615] adr line 1 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -53,6 +59,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5616] kb_extract line 7 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -62,6 +69,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5617] kb_extract line 9 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -71,6 +79,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5618] research line 1 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -80,6 +89,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5619] research line 3 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -89,6 +99,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5620] research line 4 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -98,6 +109,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5621] research line 6 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -107,6 +119,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5622] research line 7 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -116,6 +129,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5623] research line 9 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -125,6 +139,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5624] research line 10 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -134,6 +149,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5625] research line 12 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -143,6 +159,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5626] adr line 3 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -152,6 +169,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5627] research line 13 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -161,6 +179,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5628] research line 15 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -170,6 +189,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5629] research line 16 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -179,6 +199,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5630] sprint_retro line 1 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -188,6 +209,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5631] sprint_retro line 3 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -197,6 +219,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5632] sprint_retro line 5 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -206,6 +229,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5633] sprint_retro line 7 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -215,6 +239,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5634] sprint_retro line 9 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -224,6 +249,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5635] sprint_retro line 10 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -233,6 +259,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5636] sprint_retro line 12 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -242,6 +269,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5637] adr line 4 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -251,6 +279,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5638] sprint_retro line 13 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal
@@ -260,6 +289,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5639] test_log line 1 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk,personal

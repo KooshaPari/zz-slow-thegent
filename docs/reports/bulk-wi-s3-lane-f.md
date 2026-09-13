@@ -1,4 +1,5 @@
 ### [WL-5330] adr line 25 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -8,6 +9,7 @@
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5331] adr line 26 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -17,6 +19,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5332] adr line 28 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -26,6 +29,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5333] adr line 29 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -35,6 +39,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5334] adr line 31 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -44,6 +49,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5335] adr line 32 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -53,6 +59,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5336] completion_report line 1 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -62,6 +69,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5337] completion_report line 3 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -71,6 +79,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5338] completion_report line 4 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -80,6 +89,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5339] completion_report line 6 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk

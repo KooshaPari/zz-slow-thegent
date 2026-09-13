@@ -6,6 +6,7 @@
 **Date:** 2026-02-16
 **Status:** Research & Planning | **P3 Polish**: Summary table, cross-links, next actions added
 **Related:**
+
 - [CROSS_PLATFORM_RESEARCH_CONSOLIDATED.md](./CROSS_PLATFORM_RESEARCH_CONSOLIDATED.md) - Consolidated comprehensive guide
 - [SANDBOXING_DESIGN.md](../plans/SANDBOXING_DESIGN.md) - Sandboxing architecture
 - [MULTI_PLATFORM_PARITY_MASTER_PLAN.md](../plans/MULTI_PLATFORM_PARITY_MASTER_PLAN.md) - Platform parity plan
@@ -16,31 +17,31 @@
 
 ## Document Summary
 
-| Aspect | Details |
-|--------|---------|
-| **Document Type** | Comprehensive research & implementation plan |
-| **Lines** | ~3,956 lines |
-| **Sections** | 50+ sections covering architecture, implementation, testing |
-| **Status** | Research complete, ready for implementation |
-| **Consolidated Version** | See [CROSS_PLATFORM_RESEARCH_CONSOLIDATED.md](./CROSS_PLATFORM_RESEARCH_CONSOLIDATED.md) for unified guide |
-| **Key Decisions** | Hybrid user isolation, user priority + FIFO coordination, native desktop automation |
-| **Implementation Phases** | 5 phases (9 weeks) |
-| **Performance Targets** | <100ms latency (p95), >95% success rate |
-| **BACKLOG Items** | 7 items extracted (see Section 12) |
+| Aspect                    | Details                                                                                                    |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Document Type**         | Comprehensive research & implementation plan                                                               |
+| **Lines**                 | ~3,956 lines                                                                                               |
+| **Sections**              | 50+ sections covering architecture, implementation, testing                                                |
+| **Status**                | Research complete, ready for implementation                                                                |
+| **Consolidated Version**  | See [CROSS_PLATFORM_RESEARCH_CONSOLIDATED.md](./CROSS_PLATFORM_RESEARCH_CONSOLIDATED.md) for unified guide |
+| **Key Decisions**         | Hybrid user isolation, user priority + FIFO coordination, native desktop automation                        |
+| **Implementation Phases** | 5 phases (9 weeks)                                                                                         |
+| **Performance Targets**   | <100ms latency (p95), >95% success rate                                                                    |
+| **BACKLOG Items**         | 7 items extracted (see Section 12)                                                                         |
 
 ---
 
 ## Next Actions (WORK_STREAM IDs)
 
-| ID | Action | Priority | Depends | Status |
-|----|--------|----------|---------|--------|
-| `research-cross-platform-user-isolation` | Implement SystemUser abstraction + AgentUser subclass | P1 | - | BACKLOG |
-| `research-cross-platform-desktop-automation` | Implement native desktop automation providers (macOS/Windows/Linux) | P1 | research-cross-platform-user-isolation | BACKLOG |
-| `research-cross-platform-multi-tenant-coord` | Implement multi-tenant coordination (user priority + FIFO) | P1 | research-cross-platform-user-isolation | BACKLOG |
-| `research-cross-platform-mcp-integration` | Add MCP tools for desktop automation | P2 | research-cross-platform-desktop-automation | BACKLOG |
-| `research-cross-platform-testing` | Create cross-platform test suite | P2 | research-cross-platform-desktop-automation | BACKLOG |
-| `research-cross-platform-security-audit` | Security audit for desktop automation permissions | P2 | research-cross-platform-desktop-automation | BACKLOG |
-| `research-cross-platform-performance-benchmarks` | Performance benchmarking across platforms | P3 | research-cross-platform-desktop-automation | BACKLOG |
+| ID                                               | Action                                                              | Priority | Depends                                    | Status  |
+| ------------------------------------------------ | ------------------------------------------------------------------- | -------- | ------------------------------------------ | ------- |
+| `research-cross-platform-user-isolation`         | Implement SystemUser abstraction + AgentUser subclass               | P1       | -                                          | BACKLOG |
+| `research-cross-platform-desktop-automation`     | Implement native desktop automation providers (macOS/Windows/Linux) | P1       | research-cross-platform-user-isolation     | BACKLOG |
+| `research-cross-platform-multi-tenant-coord`     | Implement multi-tenant coordination (user priority + FIFO)          | P1       | research-cross-platform-user-isolation     | BACKLOG |
+| `research-cross-platform-mcp-integration`        | Add MCP tools for desktop automation                                | P2       | research-cross-platform-desktop-automation | BACKLOG |
+| `research-cross-platform-testing`                | Create cross-platform test suite                                    | P2       | research-cross-platform-desktop-automation | BACKLOG |
+| `research-cross-platform-security-audit`         | Security audit for desktop automation permissions                   | P2       | research-cross-platform-desktop-automation | BACKLOG |
+| `research-cross-platform-performance-benchmarks` | Performance benchmarking across platforms                           | P3       | research-cross-platform-desktop-automation | BACKLOG |
 
 **See Also**: [WORK_STREAM.md](../reference/WORK_STREAM.md) for full backlog
 
@@ -51,6 +52,7 @@
 **Goal:** Architect thegent for cross-platform (Windows/Linux/macOS) with proper multi-tenant agent-user isolation and desktop automation capabilities, enabling concurrent real-time usage without conflicts.
 
 **Key Challenges:**
+
 1. **OS User Model:** Structure agents as sub-users, proper OS users, or agent users
 2. **Multi-Tenancy:** Concurrent user + agent(s) working without conflicts
 3. **Desktop Automation:** Integrate ARMs (Automated Robotic Mechanisms) for UI automation
@@ -64,20 +66,22 @@
 
 ### 1.1 Platform Support Status
 
-| Platform | Current Support | Gaps |
-|----------|----------------|------|
-| **macOS** | ✓ launchd services, Spotlight exclusion, vm_stat memory | Process isolation, user separation |
-| **Linux** | ✓ systemd timers, /proc filesystem, cgroups (planned) | Desktop automation (AT-SPI), user separation |
-| **Windows** | ✗ No native support | Everything: services, UI automation, user separation |
+| Platform    | Current Support                                         | Gaps                                                 |
+| ----------- | ------------------------------------------------------- | ---------------------------------------------------- |
+| **macOS**   | ✓ launchd services, Spotlight exclusion, vm_stat memory | Process isolation, user separation                   |
+| **Linux**   | ✓ systemd timers, /proc filesystem, cgroups (planned)   | Desktop automation (AT-SPI), user separation         |
+| **Windows** | ✗ No native support                                     | Everything: services, UI automation, user separation |
 
 ### 1.2 Agent Execution Model
 
 **Current:** Agents run as subprocesses under the host user:
+
 - `DirectAgentRunner`: Executes via `subprocess.run()` with filtered env
 - `CodexProxyRunner`: HTTP proxy to CLIProxyAPIPlus
 - `AgentCage`: Basic sandboxing (CWD restriction, env filtering)
 
 **Gaps:**
+
 - No OS-level user separation
 - No desktop automation integration
 - No multi-tenant conflict resolution
@@ -86,6 +90,7 @@
 ### 1.3 Existing Sandboxing
 
 **From SANDBOXING_DESIGN.md:**
+
 - Phase 1: Env + CWD restriction (partial)
 - Phase 2: Docker runner (planned)
 - Phase 3: Firecracker (future)
@@ -121,12 +126,14 @@ class AgentUser(SystemUser):
 ```
 
 **Pros:**
+
 - No OS user creation overhead
 - Fast agent spawning
 - Works on all platforms
 - Easy to implement
 
 **Cons:**
+
 - No true isolation (same process tree)
 - File permissions still under host user
 - Desktop automation may require host user permissions
@@ -138,6 +145,7 @@ class AgentUser(SystemUser):
 **Approach:** Create actual OS users for each agent (or agent class).
 
 **macOS/Linux:**
+
 ```bash
 # Create agent user
 sudo useradd -r -s /bin/false -d /var/lib/thegent/agents/agent-1 agent-1
@@ -146,6 +154,7 @@ sudo chown agent-1:agent-1 /var/lib/thegent/agents/agent-1
 ```
 
 **Windows:**
+
 ```powershell
 # Create agent user
 New-LocalUser -Name "thegent-agent-1" -Description "thegent Agent User" -NoPassword
@@ -153,12 +162,14 @@ Add-LocalGroupMember -Group "Users" -Member "thegent-agent-1"
 ```
 
 **Pros:**
+
 - True OS-level isolation
 - File permissions enforced by OS
 - Process tree separation
 - Audit trail (who did what)
 
 **Cons:**
+
 - Requires admin/root privileges
 - User creation overhead
 - Desktop automation may need special permissions (Accessibility on macOS)
@@ -186,11 +197,13 @@ class AgentUserPool:
 ```
 
 **Pros:**
+
 - Faster than per-agent creation
 - Still provides OS-level isolation
 - Predictable resource usage
 
 **Cons:**
+
 - Requires pre-setup
 - Pool exhaustion (need overflow)
 - User cleanup complexity
@@ -215,11 +228,13 @@ class AgentRunner:
 ```
 
 **Pros:**
+
 - Flexible (dev vs production)
 - Backward compatible
 - Progressive enhancement
 
 **Cons:**
+
 - More complex code paths
 - Testing matrix grows
 
@@ -231,14 +246,14 @@ class AgentRunner:
 
 ### 3.1 Conflict Scenarios
 
-| Scenario | Conflict Type | Impact |
-|----------|--------------|---------|
-| **File writes** | Two agents modify same file | Data corruption, lost changes |
-| **UI automation** | Agent clicks while user typing | Input interference, errors |
-| **Resource locks** | Agent holds lock user needs | Deadlock, user blocked |
-| **Process spawn** | Agent spawns process user kills | Agent failure, orphaned processes |
-| **Network ports** | Agent binds port user needs | Port conflict, service failure |
-| **Desktop focus** | Agent steals focus from user | UX disruption |
+| Scenario           | Conflict Type                   | Impact                            |
+| ------------------ | ------------------------------- | --------------------------------- |
+| **File writes**    | Two agents modify same file     | Data corruption, lost changes     |
+| **UI automation**  | Agent clicks while user typing  | Input interference, errors        |
+| **Resource locks** | Agent holds lock user needs     | Deadlock, user blocked            |
+| **Process spawn**  | Agent spawns process user kills | Agent failure, orphaned processes |
+| **Network ports**  | Agent binds port user needs     | Port conflict, service failure    |
+| **Desktop focus**  | Agent steals focus from user    | UX disruption                     |
 
 ### 3.2 Coordination Mechanisms
 
@@ -267,6 +282,7 @@ class MultiTenantEditLease:
 ```
 
 **Strategy:**
+
 - User always wins (user can break agent leases)
 - Agents coordinate via lease registry
 - Read leases allow multiple readers
@@ -300,6 +316,7 @@ class DesktopAutomationCoordinator:
 ```
 
 **Platform APIs:**
+
 - **macOS:** `CGEventSourceSecondsSinceLastEventType()` (CoreGraphics)
 - **Linux:** `XScreenSaverQueryInfo()` (X11) or `loginctl show-user` (systemd)
 - **Windows:** `GetLastInputInfo()` (User32.dll)
@@ -331,12 +348,12 @@ class TenantAwareConcurrencyController:
 
 ### 3.3 Conflict Resolution Policies
 
-| Policy | When Applied | Action |
-|--------|--------------|--------|
-| **User Priority** | User vs Agent conflict | Agent defers, user proceeds |
-| **FIFO** | Agent vs Agent conflict | First agent wins, second waits |
-| **Resource Limits** | Resource exhaustion | Reject new requests, queue |
-| **Graceful Degradation** | Partial failure | Agent falls back to non-conflicting operations |
+| Policy                   | When Applied            | Action                                         |
+| ------------------------ | ----------------------- | ---------------------------------------------- |
+| **User Priority**        | User vs Agent conflict  | Agent defers, user proceeds                    |
+| **FIFO**                 | Agent vs Agent conflict | First agent wins, second waits                 |
+| **Resource Limits**      | Resource exhaustion     | Reject new requests, queue                     |
+| **Graceful Degradation** | Partial failure         | Agent falls back to non-conflicting operations |
 
 ---
 
@@ -347,12 +364,14 @@ class TenantAwareConcurrencyController:
 #### 4.1.1 macOS: AppleScript & Apple Events
 
 **APIs:**
+
 - **AppleScript:** High-level scripting language
 - **Apple Events:** Low-level IPC for app control
 - **Accessibility API:** UI element inspection and control
 - **System Events:** System-level automation
 
 **Example:**
+
 ```applescript
 tell application "System Events"
     tell process "Finder"
@@ -362,6 +381,7 @@ end tell
 ```
 
 **Python Integration:**
+
 ```python
 import subprocess
 
@@ -380,10 +400,12 @@ script.run()
 ```
 
 **MCP Integration:**
+
 - **Existing:** No macOS-specific MCP servers found
 - **Opportunity:** Create `mcp-applescript` server
 
 **Libraries:**
+
 - `py-applescript` (Python)
 - `applescript` (Node.js)
 - `ruby-applescript` (Ruby)
@@ -391,11 +413,13 @@ script.run()
 #### 4.1.2 Windows: UI Automation (UIA)
 
 **APIs:**
+
 - **UI Automation (UIA):** Modern accessibility API (Windows 7+)
 - **MSAA (Legacy):** Microsoft Active Accessibility
 - **Windows API:** SendInput, PostMessage for low-level control
 
 **Example (Python via pywinauto):**
+
 ```python
 from pywinauto import Application
 
@@ -405,23 +429,27 @@ app.Notepad.Edit.type_keys("Hello, World!")
 ```
 
 **Libraries:**
+
 - `pywinauto` (Python, UIA + Win32)
 - `pyautogui` (Cross-platform, image-based)
 - `uiautomation` (Python, pure UIA)
 - `FlaUI` (.NET)
 
 **MCP Integration:**
+
 - **Existing:** No Windows-specific MCP servers found
 - **Opportunity:** Create `mcp-uiautomation` server
 
 #### 4.1.3 Linux: AT-SPI & D-Bus
 
 **APIs:**
+
 - **AT-SPI (Assistive Technology Service Provider Interface):** Accessibility API
 - **D-Bus:** IPC for desktop integration
 - **X11:** XTest extension for low-level input
 
 **Example (Python via pyatspi):**
+
 ```python
 import pyatspi
 
@@ -443,12 +471,14 @@ button.doAction(0)  # Click
 ```
 
 **Libraries:**
+
 - `pyatspi` (Python, AT-SPI)
 - `dogtail` (Python, AT-SPI wrapper)
 - `python-xlib` (Python, X11)
 - `at-spi2-core` (C library)
 
 **MCP Integration:**
+
 - **Existing:** No Linux-specific MCP servers found
 - **Opportunity:** Create `mcp-atspi` server
 
@@ -508,16 +538,19 @@ class LinuxAutomationProvider(DesktopAutomationProvider):
 **Strategy:** Create or integrate MCP servers for desktop automation.
 
 **Option 1: Create New MCP Servers**
+
 - `mcp-applescript` (macOS)
 - `mcp-uiautomation` (Windows)
 - `mcp-atspi` (Linux)
 
 **Option 2: Integrate Existing Tools**
+
 - **Playwright:** Already integrated, but browser-only
 - **PyAutoGUI:** Cross-platform, image-based (less reliable)
 - **SikuliX:** Image-based automation (Java-based)
 
 **Option 3: Wrap Existing Libraries**
+
 - Create MCP wrappers around `pywinauto`, `pyatspi`, `applescript`
 
 **Recommendation:** **Option 1** — Create platform-specific MCP servers for native APIs, use Playwright for browser automation.
@@ -564,16 +597,17 @@ def desktop_automation_wait_for_user_idle(idle_seconds: float = 5.0) -> dict:
 
 ### 5.1 Browser Automation (Already Integrated)
 
-| MCP Server | Platform | Status | Notes |
-|------------|----------|--------|-------|
-| **@playwright/mcp** | Cross-platform | ✓ Integrated | Browser automation only |
-| **Browserbase** | Cloud | Available | Remote browser automation |
-| **Hyperbrowser** | Cloud | Available | Next-gen browser automation |
-| **Cua (Computer-Use Agent)** | Cross-platform | Available | Browser + desktop automation |
+| MCP Server                   | Platform       | Status       | Notes                        |
+| ---------------------------- | -------------- | ------------ | ---------------------------- |
+| **@playwright/mcp**          | Cross-platform | ✓ Integrated | Browser automation only      |
+| **Browserbase**              | Cloud          | Available    | Remote browser automation    |
+| **Hyperbrowser**             | Cloud          | Available    | Next-gen browser automation  |
+| **Cua (Computer-Use Agent)** | Cross-platform | Available    | Browser + desktop automation |
 
 ### 5.2 Desktop Automation Gaps
 
 **Finding:** No native desktop automation MCP servers exist for:
+
 - macOS AppleScript/Apple Events
 - Windows UI Automation
 - Linux AT-SPI
@@ -589,6 +623,7 @@ def desktop_automation_wait_for_user_idle(idle_seconds: float = 5.0) -> dict:
 **Goal:** Implement hybrid user model (sub-user + optional OS users).
 
 **Tasks:**
+
 1. Create `SystemUser` abstraction class
 2. Implement `AgentUser` (sub-user model)
 3. Add OS user creation (macOS/Linux/Windows)
@@ -597,6 +632,7 @@ def desktop_automation_wait_for_user_idle(idle_seconds: float = 5.0) -> dict:
 6. Add configuration: `THGENT_ISOLATION_MODE=subuser|osuser|docker`
 
 **Deliverables:**
+
 - `src/thegent/infra/user_isolation.py`
 - `src/thegent/infra/user_pool.py`
 - Tests for all platforms
@@ -609,6 +645,7 @@ def desktop_automation_wait_for_user_idle(idle_seconds: float = 5.0) -> dict:
 **Goal:** Add conflict detection and resolution.
 
 **Tasks:**
+
 1. Extend `EditLeaseManager` with tenant awareness
 2. Implement `DesktopAutomationCoordinator`
 3. Add user activity detection (all platforms)
@@ -617,6 +654,7 @@ def desktop_automation_wait_for_user_idle(idle_seconds: float = 5.0) -> dict:
 6. Create conflict event logging
 
 **Deliverables:**
+
 - `src/thegent/infra/tenant_coordinator.py`
 - `src/thegent/infra/user_activity.py`
 - `src/thegent/infra/conflict_resolver.py`
@@ -629,6 +667,7 @@ def desktop_automation_wait_for_user_idle(idle_seconds: float = 5.0) -> dict:
 **Goal:** Implement platform-specific desktop automation.
 
 **Tasks:**
+
 1. Create `DesktopAutomationProvider` abstraction
 2. Implement macOS provider (AppleScript/Apple Events)
 3. Implement Windows provider (UI Automation)
@@ -637,6 +676,7 @@ def desktop_automation_wait_for_user_idle(idle_seconds: float = 5.0) -> dict:
 6. Create MCP server wrappers
 
 **Deliverables:**
+
 - `src/thegent/infra/desktop_automation/`
   - `__init__.py`
   - `base.py`
@@ -653,6 +693,7 @@ def desktop_automation_wait_for_user_idle(idle_seconds: float = 5.0) -> dict:
 **Goal:** Expose desktop automation via MCP.
 
 **Tasks:**
+
 1. Register desktop automation MCP tools
 2. Add coordination hooks (user activity checks)
 3. Integrate with conflict resolver
@@ -660,6 +701,7 @@ def desktop_automation_wait_for_user_idle(idle_seconds: float = 5.0) -> dict:
 5. Create example workflows
 
 **Deliverables:**
+
 - MCP tools in `src/thegent/mcp_server.py`
 - MCP resources for automation state
 - Example agent workflows
@@ -672,6 +714,7 @@ def desktop_automation_wait_for_user_idle(idle_seconds: float = 5.0) -> dict:
 **Goal:** Cross-platform testing and documentation.
 
 **Tasks:**
+
 1. Test on macOS, Linux, Windows
 2. Test multi-tenant scenarios
 3. Test desktop automation workflows
@@ -679,6 +722,7 @@ def desktop_automation_wait_for_user_idle(idle_seconds: float = 5.0) -> dict:
 5. Documentation updates
 
 **Deliverables:**
+
 - Test suite
 - Performance benchmarks
 - Updated documentation
@@ -781,14 +825,14 @@ User Action          Agent Action
 # .thegent/config.yaml or ~/.thegent/config.yaml
 
 isolation:
-  mode: "subuser"  # subuser | osuser | docker
+  mode: "subuser" # subuser | osuser | docker
   osuser_pool_size: 10
-  osuser_base_path: "/var/lib/thegent/agents"  # Linux/macOS
+  osuser_base_path: "/var/lib/thegent/agents" # Linux/macOS
   # Windows: C:\ProgramData\thegent\agents
 
 multi_tenant:
   user_priority: true
-  conflict_resolution: "user_priority"  # user_priority | fifo | resource_limits
+  conflict_resolution: "user_priority" # user_priority | fifo | resource_limits
   user_idle_threshold_seconds: 5.0
   max_user_processes: 5
   max_agent_processes: 10
@@ -798,12 +842,12 @@ desktop_automation:
   enabled: true
   platforms:
     macos:
-      provider: "applescript"  # applescript | accessibility
+      provider: "applescript" # applescript | accessibility
       require_accessibility_permission: true
     windows:
-      provider: "uiautomation"  # uiautomation | pyautogui
+      provider: "uiautomation" # uiautomation | pyautogui
     linux:
-      provider: "atspi"  # atspi | x11
+      provider: "atspi" # atspi | x11
   coordination:
     check_user_activity: true
     wait_for_idle: true
@@ -816,11 +860,11 @@ desktop_automation:
 
 ### 9.1 Permission Requirements
 
-| Platform | Permission | Purpose | How to Grant |
-|----------|-----------|---------|--------------|
-| **macOS** | Accessibility | UI automation | System Preferences > Security & Privacy > Accessibility |
-| **Windows** | UIA Access | UI Automation | Run as admin or grant via Group Policy |
-| **Linux** | AT-SPI | Accessibility API | Usually granted by default |
+| Platform    | Permission    | Purpose           | How to Grant                                            |
+| ----------- | ------------- | ----------------- | ------------------------------------------------------- |
+| **macOS**   | Accessibility | UI automation     | System Preferences > Security & Privacy > Accessibility |
+| **Windows** | UIA Access    | UI Automation     | Run as admin or grant via Group Policy                  |
+| **Linux**   | AT-SPI        | Accessibility API | Usually granted by default                              |
 
 ### 9.2 Isolation Boundaries
 
@@ -856,10 +900,10 @@ desktop_automation:
 ### 10.3 Manual Testing Matrix
 
 | Platform | Isolation Mode | Desktop Automation | Multi-Tenant |
-|----------|---------------|-------------------|--------------|
-| macOS | ✓ | ✓ | ✓ |
-| Linux | ✓ | ✓ | ✓ |
-| Windows | ✓ | ✓ | ✓ |
+| -------- | -------------- | ------------------ | ------------ |
+| macOS    | ✓              | ✓                  | ✓            |
+| Linux    | ✓              | ✓                  | ✓            |
+| Windows  | ✓              | ✓                  | ✓            |
 
 ---
 
@@ -867,28 +911,31 @@ desktop_automation:
 
 ### 11.1 Failure Modes
 
-| Failure Mode | Impact | Mitigation |
-|--------------|--------|------------|
-| **Desktop automation API unavailable** | Actions fail silently | Fallback to manual instructions, retry with exponential backoff |
+| Failure Mode                                | Impact                  | Mitigation                                                        |
+| ------------------------------------------- | ----------------------- | ----------------------------------------------------------------- |
+| **Desktop automation API unavailable**      | Actions fail silently   | Fallback to manual instructions, retry with exponential backoff   |
 | **Permission denied (macOS Accessibility)** | Cannot interact with UI | Clear error message with setup instructions, graceful degradation |
-| **Multi-tenant conflict (user active)** | Agent action blocked | Queue action, wait for user idle, notify user |
-| **Platform detection failure** | Wrong provider selected | Explicit platform config override, detection logging |
-| **Element not found** | Action timeout | Retry with longer timeout, suggest alternative selectors |
-| **Process spawn failure (OS user)** | Agent cannot start | Fallback to sub-user mode, log error for admin |
+| **Multi-tenant conflict (user active)**     | Agent action blocked    | Queue action, wait for user idle, notify user                     |
+| **Platform detection failure**              | Wrong provider selected | Explicit platform config override, detection logging              |
+| **Element not found**                       | Action timeout          | Retry with longer timeout, suggest alternative selectors          |
+| **Process spawn failure (OS user)**         | Agent cannot start      | Fallback to sub-user mode, log error for admin                    |
 
 ### 11.2 Error Handling Strategy
 
 **Retry Logic:**
+
 - Transient failures: 3 retries with exponential backoff (1s, 2s, 4s)
 - Permission errors: No retry, clear error message
 - Conflict errors: Queue and retry when condition met
 
 **Validation:**
+
 - Pre-flight checks: Verify permissions, platform, element existence
 - Post-action verification: Confirm action succeeded
 - Timeout handling: Configurable per-action (default 30s)
 
 **Error Messages:**
+
 - Actionable: Include setup steps, troubleshooting links
 - Contextual: Platform, app, element, action details
 - User-friendly: Avoid technical jargon where possible
@@ -898,6 +945,7 @@ desktop_automation:
 ## 12. References
 
 ### 12.1 Existing thegent Documentation
+
 - `docs/governance/SANDBOXING_DESIGN.md` — Sandboxing design
 - `docs/research/SWARM_PROCESS_AUTOMATION_DEEP_RESEARCH.md` — Process optimization
 - `docs/plans/MULTI_PLATFORM_PARITY_MASTER_PLAN.md` — Platform parity
@@ -905,21 +953,25 @@ desktop_automation:
 ### 11.2 External Resources
 
 **macOS:**
+
 - [AppleScript Language Guide](https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/)
 - [Apple Events Programming Guide](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ScriptingBridgeConcepts/)
 - [Accessibility Programming Guide](https://developer.apple.com/library/archive/documentation/Accessibility/Conceptual/AccessibilityMacOSX/)
 
 **Windows:**
+
 - [UI Automation Overview](https://docs.microsoft.com/en-us/windows/win32/winauto/entry-uiauto-win32)
 - [pywinauto Documentation](https://pywinauto.readthedocs.io/)
 - [Windows Accessibility](https://docs.microsoft.com/en-us/windows/win32/winauto/windows-accessibility-overview)
 
 **Linux:**
+
 - [AT-SPI Documentation](https://developer.gnome.org/libatspi/)
 - [D-Bus Tutorial](https://dbus.freedesktop.org/doc/dbus-tutorial.html)
 - [Linux Accessibility](https://wiki.linuxfoundation.org/accessibility/)
 
 **MCP:**
+
 - [MCP Specification](https://modelcontextprotocol.io/)
 - [MCP Servers Registry](https://registry.modelcontextprotocol.io/)
 - [FastMCP Documentation](https://gofastmcp.com/)
@@ -931,6 +983,7 @@ desktop_automation:
 ### 12.1 CUA (Computer-Use Agent) Integration
 
 **Discovery:** [CUA](https://github.com/trycua/cua) is a comprehensive open-source framework for computer-use agents with:
+
 - Cross-platform support (macOS, Linux, Windows)
 - MCP server integration (`libs/mcp-server`)
 - Sandboxed execution environments
@@ -938,6 +991,7 @@ desktop_automation:
 - Agent SDK (`cua-agent`) and Computer SDK (`cua-computer`)
 
 **Integration Strategy:**
+
 - **Option A:** Use CUA as underlying provider for desktop automation
   - Pros: Battle-tested, comprehensive, MCP support already exists
   - Cons: Additional dependency, may be overkill for simple automation
@@ -951,6 +1005,7 @@ desktop_automation:
 **Recommendation:** **Option C (Hybrid)** — Start with native providers, add CUA integration for advanced use cases.
 
 **CUA MCP Server:**
+
 ```bash
 # CUA provides MCP server at libs/mcp-server
 # Can be integrated directly into thegent MCP server
@@ -959,29 +1014,34 @@ desktop_automation:
 ### 12.2 Existing thegent Systems Integration
 
 **ConcurrencyController (WP-5001):**
+
 - Already implements load-based limits (FD, memory, CPU)
 - Can be extended with tenant-aware limits
 - Hysteresis controller prevents thrashing
 - Location: `src/thegent/execution.py:ConcurrencyController`
 
 **Edit Lease Manager (MTSP-14):**
+
 - Already provides file-level coordination
 - Can be extended with tenant awareness
 - Location: `src/thegent/orchestration/edit_lease.py`
 
 **Retry & Fallback (WP-2002):**
+
 - Failure classification (rate_limit, transient, usage_limit)
 - Retry with exponential backoff
 - Fallback to alternate providers
 - Location: `src/thegent/agents/resilience.py`
 
 **Monitoring & Observability:**
+
 - Run registry (`run_registry.jsonl`) tracks all executions
 - OpenTelemetry GenAI instrumentation (WP-Y6)
 - Structured logging with run_id, provider, latency
 - Location: `src/thegent/observability/otel_instrumentation.py`
 
 **Integration Points:**
+
 - Desktop automation failures → retry with fallback
 - Desktop automation conflicts → edit lease manager
 - Desktop automation resource usage → concurrency controller
@@ -997,6 +1057,7 @@ desktop_automation:
 **Enhancement:** Predictive (learn user patterns, predict idle windows)
 
 **Implementation:**
+
 ```python
 class PredictiveUserActivityDetector:
     """Learn user activity patterns and predict idle windows."""
@@ -1104,18 +1165,19 @@ class AutomationRegistry:
 
 ### 14.1 Desktop Automation Failure Taxonomy
 
-| Failure Type | Detection | Recovery Strategy | Retry Policy |
-|--------------|-----------|-------------------|--------------|
-| **Element Not Found** | Timeout waiting for element | Retry with longer timeout, try alternate selector | 3 retries, exponential backoff |
-| **Permission Denied** | OS permission error | Request permission, fallback to manual | No retry, escalate to user |
-| **User Interrupted** | User activity detected | Pause automation, queue for later | Resume when idle |
-| **App Crashed** | Process not responding | Restart app, retry from checkpoint | 1 retry, then escalate |
-| **Network Timeout** | Remote automation timeout | Retry with backoff | 3 retries, exponential |
-| **Invalid State** | UI state doesn't match expectation | Validate state, retry or abort | 1 retry, then abort |
+| Failure Type          | Detection                          | Recovery Strategy                                 | Retry Policy                   |
+| --------------------- | ---------------------------------- | ------------------------------------------------- | ------------------------------ |
+| **Element Not Found** | Timeout waiting for element        | Retry with longer timeout, try alternate selector | 3 retries, exponential backoff |
+| **Permission Denied** | OS permission error                | Request permission, fallback to manual            | No retry, escalate to user     |
+| **User Interrupted**  | User activity detected             | Pause automation, queue for later                 | Resume when idle               |
+| **App Crashed**       | Process not responding             | Restart app, retry from checkpoint                | 1 retry, then escalate         |
+| **Network Timeout**   | Remote automation timeout          | Retry with backoff                                | 3 retries, exponential         |
+| **Invalid State**     | UI state doesn't match expectation | Validate state, retry or abort                    | 1 retry, then abort            |
 
 ### 14.2 Error Recovery Patterns
 
 **Pattern 1: Graceful Degradation**
+
 ```python
 def execute_with_fallback(action: AutomationAction) -> AutomationResult:
     """Try native automation, fallback to image-based if needed."""
@@ -1127,6 +1189,7 @@ def execute_with_fallback(action: AutomationAction) -> AutomationResult:
 ```
 
 **Pattern 2: State Validation**
+
 ```python
 def execute_with_validation(action: AutomationAction) -> AutomationResult:
     """Validate UI state before and after automation."""
@@ -1142,6 +1205,7 @@ def execute_with_validation(action: AutomationAction) -> AutomationResult:
 ```
 
 **Pattern 3: Checkpoint & Rollback**
+
 ```python
 def execute_with_rollback(action: AutomationAction) -> AutomationResult:
     """Execute with ability to rollback on failure."""
@@ -1156,6 +1220,7 @@ def execute_with_rollback(action: AutomationAction) -> AutomationResult:
 ### 14.3 Failure Escalation
 
 **Escalation Levels:**
+
 1. **Retry:** Automatic retry with backoff
 2. **Fallback:** Try alternate automation method
 3. **Queue:** Queue for later execution (user idle)
@@ -1163,6 +1228,7 @@ def execute_with_rollback(action: AutomationAction) -> AutomationResult:
 5. **Abort:** Abort automation, log failure
 
 **Escalation Triggers:**
+
 - Permission denied → Manual escalation
 - Element not found after 3 retries → Fallback or Manual
 - User interrupted → Queue for later
@@ -1176,11 +1242,13 @@ def execute_with_rollback(action: AutomationAction) -> AutomationResult:
 ### 15.1 Automation Latency Optimization
 
 **Bottlenecks:**
+
 - Element finding (traverse accessibility tree)
 - Screenshot capture (full screen vs region)
 - Network round-trips (remote automation)
 
 **Optimizations:**
+
 1. **Element Caching:** Cache frequently accessed elements
 2. **Incremental Screenshots:** Only capture changed regions
 3. **Parallel Automation:** Execute independent actions in parallel
@@ -1209,16 +1277,19 @@ class OptimizedAutomationProvider:
 ### 15.2 Resource Usage Optimization
 
 **Memory:**
+
 - Screenshot compression (JPEG quality tuning)
 - Element tree pruning (only cache visible elements)
 - Cache eviction (LRU for element cache)
 
 **CPU:**
+
 - Lazy element finding (only when needed)
 - Background screenshot processing
 - Parallel element validation
 
 **Network:**
+
 - Compression for remote automation
 - Connection pooling
 - Request batching
@@ -1226,6 +1297,7 @@ class OptimizedAutomationProvider:
 ### 15.3 Load-Based Throttling
 
 **Integration with ConcurrencyController:**
+
 - Desktop automation counts toward concurrency limits
 - Throttle automation when system load is high
 - Prioritize user actions over automation
@@ -1259,6 +1331,7 @@ class LoadAwareAutomationCoordinator:
 ### 16.1 Desktop Automation Metrics
 
 **Key Metrics:**
+
 - Automation success rate (by provider, by action type)
 - Automation latency (p50, p95, p99)
 - User interruption rate
@@ -1267,6 +1340,7 @@ class LoadAwareAutomationCoordinator:
 - Permission denial rate
 
 **Integration with Run Registry:**
+
 ```python
 # Add to RunMeta
 class RunMeta(BaseModel):
@@ -1277,6 +1351,7 @@ class RunMeta(BaseModel):
 ```
 
 **OpenTelemetry Spans:**
+
 ```python
 # Add spans for desktop automation
 with tracer.start_as_current_span("desktop_automation.click") as span:
@@ -1289,12 +1364,14 @@ with tracer.start_as_current_span("desktop_automation.click") as span:
 ### 16.2 Alerting & Dashboards
 
 **Alerts:**
+
 - High automation failure rate (>10% in 5 minutes)
 - Permission denial spike
 - User interruption rate spike
 - Automation latency degradation (p95 > 5s)
 
 **Dashboards:**
+
 - Automation success rate over time
 - Automation latency distribution
 - User activity vs automation activity
@@ -1303,6 +1380,7 @@ with tracer.start_as_current_span("desktop_automation.click") as span:
 ### 16.3 Debugging & Troubleshooting
 
 **Debug Tools:**
+
 - Automation replay (record actions, replay for debugging)
 - UI state inspector (capture and inspect UI tree)
 - Screenshot diff (compare before/after screenshots)
@@ -1332,19 +1410,23 @@ class AutomationDebugger:
 ### 17.1 Permission Management
 
 **macOS:**
+
 - Accessibility permission (required for UI automation)
 - Screen recording permission (required for screenshots)
 - Automation via System Preferences > Security & Privacy
 
 **Windows:**
+
 - UIA Access (requires admin or Group Policy)
 - Screen capture permission
 
 **Linux:**
+
 - AT-SPI access (usually granted by default)
 - X11 display access
 
 **Implementation:**
+
 ```python
 class PermissionManager:
     """Manage desktop automation permissions."""
@@ -1368,16 +1450,19 @@ class PermissionManager:
 ### 17.2 Privacy Protection
 
 **Screenshot Privacy:**
+
 - Blur sensitive regions (passwords, personal info)
 - Redact clipboard contents
 - Exclude certain apps from automation
 
 **Audit Logging:**
+
 - Log all automation actions
 - Include screenshots (with privacy filters)
 - Track which agent performed which action
 
 **Access Control:**
+
 - Restrict automation to specific apps
 - Restrict automation to specific windows
 - Require user approval for sensitive actions
@@ -1385,12 +1470,14 @@ class PermissionManager:
 ### 17.3 Sandboxing Desktop Automation
 
 **Isolation Levels:**
+
 1. **App-Level:** Only automate specific apps
 2. **Window-Level:** Only automate specific windows
 3. **Region-Level:** Only automate specific screen regions
 4. **Action-Level:** Restrict specific action types (e.g., no clipboard access)
 
 **Implementation:**
+
 ```python
 class AutomationSandbox:
     """Sandbox for desktop automation."""
@@ -1424,6 +1511,7 @@ class AutomationSandbox:
 **Scenario:** Agent automates IDE operations while developer codes.
 
 **Example:**
+
 ```python
 # Agent runs tests in background
 agent.run(
@@ -1439,6 +1527,7 @@ agent.run(
 ```
 
 **Coordination:**
+
 - Agent waits for user idle (developer not typing)
 - Agent uses non-overlapping screen region
 - Agent releases automation when user returns
@@ -1448,6 +1537,7 @@ agent.run(
 **Scenario:** Multiple agents automate different apps simultaneously.
 
 **Example:**
+
 ```python
 # Agent 1: Browser automation (Chrome)
 agent1.run(
@@ -1469,6 +1559,7 @@ agent2.run(
 ```
 
 **Coordination:**
+
 - App-level isolation (each agent claims different app)
 - Window-level coordination (agents coordinate via registry)
 - No conflicts (different screen regions)
@@ -1478,6 +1569,7 @@ agent2.run(
 **Scenario:** Agent performs multi-step automation workflow.
 
 **Example:**
+
 ```python
 # Agent automates deployment workflow
 agent.run(
@@ -1493,6 +1585,7 @@ agent.run(
 ```
 
 **Coordination:**
+
 - Checkpointing (save state between steps)
 - Preemption (pause if user interrupts)
 - Resume (continue from checkpoint)
@@ -1506,6 +1599,7 @@ agent.run(
 **Problem:** UI changes while automation is executing.
 
 **Solution:**
+
 - Validate UI state before each action
 - Retry with updated selectors if element moved
 - Use stable selectors (accessibility names, not coordinates)
@@ -1515,6 +1609,7 @@ agent.run(
 **Problem:** User has multiple monitors, automation targets wrong screen.
 
 **Solution:**
+
 - Specify monitor in automation scope
 - Detect primary monitor
 - Allow user to specify target monitor
@@ -1524,6 +1619,7 @@ agent.run(
 **Problem:** macOS Spaces, Windows Virtual Desktops, Linux Workspaces.
 
 **Solution:**
+
 - Detect current desktop/space
 - Switch to target desktop if needed
 - Coordinate with desktop switching
@@ -1533,6 +1629,7 @@ agent.run(
 **Problem:** UI coordinates change with display scaling.
 
 **Solution:**
+
 - Use DPI-aware coordinates
 - Use accessibility APIs (not screen coordinates)
 - Detect and adapt to scaling factor
@@ -1542,6 +1639,7 @@ agent.run(
 **Problem:** Automation fails on remote desktop sessions.
 
 **Solution:**
+
 - Detect remote desktop environment
 - Use alternative automation methods
 - Fallback to image-based automation
@@ -1553,11 +1651,13 @@ agent.run(
 ### 20.1 Hook System Integration
 
 **New Hooks:**
+
 - `pre-desktop-automation`: Validate automation request
 - `post-desktop-automation`: Log automation result
 - `desktop-automation-conflict`: Handle conflicts
 
 **Implementation:**
+
 ```python
 # In hooks/pre-desktop-automation.sh
 #!/bin/bash
@@ -1571,11 +1671,13 @@ fi
 ### 20.2 Governance Integration
 
 **Policy Rules:**
+
 - Allow/deny automation by agent
 - Allow/deny automation by app
 - Rate limits for automation
 
 **Implementation:**
+
 ```python
 # In contracts/desktop-automation-policy.json
 {"rules": [{"agent": "test-agent", "allowed_apps": ["Chrome", "VS Code"], "max_automations_per_hour": 100}]}
@@ -1584,11 +1686,13 @@ fi
 ### 20.3 Team Coordination Integration
 
 **Multi-Agent Coordination:**
+
 - Agents claim automation rights
 - Agents coordinate via team protocol
 - Agents share automation results
 
 **Implementation:**
+
 ```python
 # Use existing team coordination
 from thegent.governance.teammates import TeammateManager
@@ -1615,17 +1719,20 @@ tm.broadcast({"type": "automation_claim", "agent_id": "agent-1", "app": "Chrome"
 ## 22. References & Further Reading
 
 ### 22.1 External Projects
+
 - [CUA (Computer-Use Agent)](https://github.com/trycua/cua) — Comprehensive desktop automation framework
 - [Playwright](https://playwright.dev/) — Browser automation (already integrated)
 - [PyAutoGUI](https://pyautogui.readthedocs.io/) — Cross-platform GUI automation
 - [SikuliX](http://sikulix.com/) — Image-based automation
 
 ### 22.2 Platform Documentation
+
 - [macOS Accessibility Programming Guide](https://developer.apple.com/library/archive/documentation/Accessibility/Conceptual/AccessibilityMacOSX/)
 - [Windows UI Automation](https://docs.microsoft.com/en-us/windows/win32/winauto/entry-uiauto-win32)
 - [Linux AT-SPI](https://developer.gnome.org/libatspi/)
 
 ### 22.3 thegent Internal References
+
 - `docs/governance/SANDBOXING_DESIGN.md` — Sandboxing design
 - `docs/research/SWARM_PROCESS_AUTOMATION_DEEP_RESEARCH.md` — Process optimization
 - `docs/plans/MULTI_PLATFORM_PARITY_MASTER_PLAN.md` — Platform parity
@@ -1643,11 +1750,13 @@ tm.broadcast({"type": "automation_claim", "agent_id": "agent-1", "app": "Chrome"
 **Challenge:** Desktop automation actions don't directly consume LLM tokens, but they consume system resources and time.
 
 **Cost Model:**
+
 - **Resource Cost:** CPU, memory, I/O during automation
 - **Time Cost:** Opportunity cost (could be running LLM calls instead)
 - **Indirect Cost:** Automation failures leading to retries/LLM calls
 
 **Implementation:**
+
 ```python
 class DesktopAutomationCostTracker:
     """Track costs for desktop automation actions."""
@@ -1671,6 +1780,7 @@ class DesktopAutomationCostTracker:
 ```
 
 **Integration with Cost Budget:**
+
 - Desktop automation costs count toward automation budget category
 - Separate from LLM cost budgets
 - Configurable: `desktop_automation_budget_mtd: float = 10.0`
@@ -1678,6 +1788,7 @@ class DesktopAutomationCostTracker:
 ### 23.2 Rate Limiting for Desktop Automation
 
 **Integration with TokenBucket:**
+
 ```python
 class AutomationRateLimiter:
     """Rate limiting for desktop automation."""
@@ -1708,6 +1819,7 @@ class AutomationRateLimiter:
 ```
 
 **Rate Limit Configuration:**
+
 ```yaml
 desktop_automation:
   rate_limits:
@@ -1722,6 +1834,7 @@ desktop_automation:
 ### 23.3 Cost Budget Integration
 
 **Extend CostAggregator:**
+
 ```python
 class CostAggregator:
     # ... existing methods ...
@@ -1739,6 +1852,7 @@ class CostAggregator:
 ```
 
 **Policy Integration:**
+
 ```python
 # In PolicyEngine.evaluate()
 if action_type == "desktop_automation":
@@ -1758,25 +1872,26 @@ if action_type == "desktop_automation":
 
 **SLA Targets (from SLO_CERTIFICATION_MATRIX.md pattern):**
 
-| Action Type | Target Latency (p95) | Warning | Critical | Window |
-|-------------|---------------------|---------|----------|--------|
-| **Click** | < 100ms | > 150ms | > 200ms | 5m |
-| **Type Text** | < 200ms | > 300ms | > 500ms | 5m |
-| **Find Element** | < 500ms | > 750ms | > 1000ms | 5m |
-| **Screenshot** | < 500ms | > 1000ms | > 2000ms | 5m |
-| **Wait for Idle** | < 5s | > 10s | > 15s | 5m |
+| Action Type       | Target Latency (p95) | Warning  | Critical | Window |
+| ----------------- | -------------------- | -------- | -------- | ------ |
+| **Click**         | < 100ms              | > 150ms  | > 200ms  | 5m     |
+| **Type Text**     | < 200ms              | > 300ms  | > 500ms  | 5m     |
+| **Find Element**  | < 500ms              | > 750ms  | > 1000ms | 5m     |
+| **Screenshot**    | < 500ms              | > 1000ms | > 2000ms | 5m     |
+| **Wait for Idle** | < 5s                 | > 10s    | > 15s    | 5m     |
 
 **Success Rate Targets:**
 
-| Metric | Target | Warning | Critical |
-|--------|--------|---------|----------|
-| **Automation Success Rate** | > 95% | 90-95% | < 90% |
-| **Element Finding Success** | > 98% | 95-98% | < 95% |
-| **User Interruption Rate** | < 5% | 5-10% | > 10% |
+| Metric                      | Target | Warning | Critical |
+| --------------------------- | ------ | ------- | -------- |
+| **Automation Success Rate** | > 95%  | 90-95%  | < 90%    |
+| **Element Finding Success** | > 98%  | 95-98%  | < 95%    |
+| **User Interruption Rate**  | < 5%   | 5-10%   | > 10%    |
 
 ### 24.2 Performance Monitoring
 
 **Metrics to Track:**
+
 ```python
 class AutomationMetrics:
     """Performance metrics for desktop automation."""
@@ -1794,6 +1909,7 @@ class AutomationMetrics:
 ```
 
 **OpenTelemetry Spans:**
+
 ```python
 with tracer.start_as_current_span("desktop_automation.click") as span:
     span.set_attribute("automation.action", "click")
@@ -1815,14 +1931,14 @@ with tracer.start_as_current_span("desktop_automation.click") as span:
 
 **Baseline vs Optimized:**
 
-| Operation | Baseline | Optimized Target | Optimization |
-|-----------|----------|------------------|--------------|
-| **Element Find (cached)** | 500ms | 10ms | Element caching |
-| **Element Find (uncached)** | 500ms | 200ms | Optimized tree traversal |
-| **Screenshot (full)** | 1000ms | 200ms | Incremental screenshots |
-| **Screenshot (region)** | 500ms | 50ms | Region-only capture |
-| **Click** | 100ms | 50ms | Direct API calls |
-| **Type Text (10 chars)** | 200ms | 100ms | Batch keystrokes |
+| Operation                   | Baseline | Optimized Target | Optimization             |
+| --------------------------- | -------- | ---------------- | ------------------------ |
+| **Element Find (cached)**   | 500ms    | 10ms             | Element caching          |
+| **Element Find (uncached)** | 500ms    | 200ms            | Optimized tree traversal |
+| **Screenshot (full)**       | 1000ms   | 200ms            | Incremental screenshots  |
+| **Screenshot (region)**     | 500ms    | 50ms             | Region-only capture      |
+| **Click**                   | 100ms    | 50ms             | Direct API calls         |
+| **Type Text (10 chars)**    | 200ms    | 100ms            | Batch keystrokes         |
 
 ---
 
@@ -1832,17 +1948,18 @@ with tracer.start_as_current_span("desktop_automation.click") as span:
 
 **Attack Vectors:**
 
-| Vector | Description | Risk Level | Mitigation |
-|--------|-------------|------------|------------|
-| **UI Spoofing** | Malicious app mimics legitimate UI | High | Verify app signature, window title |
-| **Input Injection** | Agent types malicious commands | High | Input validation, sandboxing |
-| **Screenshot Leakage** | Sensitive data in screenshots | Medium | Screenshot redaction, encryption |
-| **Focus Theft** | Agent steals focus from user | Low | User activity detection |
-| **Resource Exhaustion** | Agent spawns too many automations | Medium | Rate limiting, concurrency limits |
+| Vector                  | Description                        | Risk Level | Mitigation                         |
+| ----------------------- | ---------------------------------- | ---------- | ---------------------------------- |
+| **UI Spoofing**         | Malicious app mimics legitimate UI | High       | Verify app signature, window title |
+| **Input Injection**     | Agent types malicious commands     | High       | Input validation, sandboxing       |
+| **Screenshot Leakage**  | Sensitive data in screenshots      | Medium     | Screenshot redaction, encryption   |
+| **Focus Theft**         | Agent steals focus from user       | Low        | User activity detection            |
+| **Resource Exhaustion** | Agent spawns too many automations  | Medium     | Rate limiting, concurrency limits  |
 
 ### 25.2 Security Controls
 
 **Input Validation:**
+
 ```python
 class AutomationInputValidator:
     """Validate automation inputs for security."""
@@ -1874,6 +1991,7 @@ class AutomationInputValidator:
 ```
 
 **Screenshot Redaction:**
+
 ```python
 class ScreenshotRedactor:
     """Redact sensitive data from screenshots."""
@@ -1896,6 +2014,7 @@ class ScreenshotRedactor:
 ```
 
 **App Verification:**
+
 ```python
 class AppVerifier:
     """Verify app identity before automation."""
@@ -1914,6 +2033,7 @@ class AppVerifier:
 ### 25.3 Security Audit Trail
 
 **Comprehensive Logging:**
+
 ```python
 class AutomationAuditLogger:
     """Audit logging for desktop automation."""
@@ -1954,6 +2074,7 @@ class AutomationAuditLogger:
 **Use Case:** Agent runs test suite in IDE while developer codes.
 
 **Flow:**
+
 ```
 1. Developer types code
 2. Agent detects idle (5s threshold)
@@ -1966,11 +2087,13 @@ class AutomationAuditLogger:
 ```
 
 **Coordination:**
+
 - User activity detection: Wait for 5s idle
 - Automation lock: Exclusive during test run
 - Conflict resolution: User can interrupt (breaks lock)
 
 **Performance:**
+
 - Click latency: < 100ms
 - Test execution: Variable (depends on tests)
 - Total overhead: < 200ms
@@ -1980,6 +2103,7 @@ class AutomationAuditLogger:
 **Use Case:** Multiple agents automate different browser tabs.
 
 **Flow:**
+
 ```
 Agent 1: Chrome Tab 1 (Documentation search)
   ├─ Claims Chrome window 1
@@ -1996,6 +2120,7 @@ User: Chrome Tab 3 (Active development)
 ```
 
 **Coordination:**
+
 - Window-level isolation
 - No conflicts (different windows)
 - Parallel execution
@@ -2005,6 +2130,7 @@ User: Chrome Tab 3 (Active development)
 **Use Case:** Agent automates multi-step deployment.
 
 **Flow:**
+
 ```
 1. Agent opens deployment tool
 2. Agent fills deployment form
@@ -2017,6 +2143,7 @@ User: Chrome Tab 3 (Active development)
 ```
 
 **Coordination:**
+
 - Checkpointing: Save state between steps
 - Preemption: User can interrupt
 - Resume: Continue from checkpoint
@@ -2028,18 +2155,21 @@ User: Chrome Tab 3 (Active development)
 ### 27.1 Platform-Specific Benchmarks
 
 **macOS (AppleScript):**
+
 - Element find: 200-500ms (depends on tree depth)
 - Click: 50-100ms
 - Type text (10 chars): 100-200ms
 - Screenshot (full): 200-500ms
 
 **Windows (UI Automation):**
+
 - Element find: 100-300ms (UIA is fast)
 - Click: 50-100ms
 - Type text (10 chars): 100-150ms
 - Screenshot (full): 300-800ms
 
 **Linux (AT-SPI):**
+
 - Element find: 300-800ms (depends on desktop environment)
 - Click: 100-200ms
 - Type text (10 chars): 150-250ms
@@ -2048,14 +2178,17 @@ User: Chrome Tab 3 (Active development)
 ### 27.2 Optimization Opportunities
 
 **Caching:**
+
 - Element cache hit: 10-20ms (vs 200-500ms uncached)
 - Screenshot cache: 5-10ms (vs 200-500ms fresh)
 
 **Parallelization:**
+
 - Independent actions: 2-3x speedup
 - Batch operations: 1.5-2x speedup
 
 **Incremental Updates:**
+
 - Incremental screenshot: 50-100ms (vs 200-500ms full)
 - Delta element tree: 50-150ms (vs 200-500ms full)
 
@@ -2066,21 +2199,25 @@ User: Chrome Tab 3 (Active development)
 ### 28.1 Phased Rollout
 
 **Phase 1: Development (Weeks 1-4)**
+
 - Implement core functionality
 - Unit tests only
 - No production usage
 
 **Phase 2: Alpha (Weeks 5-6)**
+
 - Internal testing
 - Single user, single agent
 - Monitor performance and errors
 
 **Phase 3: Beta (Weeks 7-8)**
+
 - Limited production usage
 - Multiple users, multiple agents
 - Collect metrics and feedback
 
 **Phase 4: General Availability (Week 9+)**
+
 - Full production rollout
 - All users, all agents
 - Continuous monitoring
@@ -2088,6 +2225,7 @@ User: Chrome Tab 3 (Active development)
 ### 28.2 Feature Flags
 
 **Gradual Rollout:**
+
 ```python
 class DesktopAutomationFeatureFlags:
     """Feature flags for desktop automation."""
@@ -2103,6 +2241,7 @@ class DesktopAutomationFeatureFlags:
 ```
 
 **Rollout Plan:**
+
 - Week 1: 10% of users
 - Week 2: 25% of users
 - Week 3: 50% of users
@@ -2111,11 +2250,13 @@ class DesktopAutomationFeatureFlags:
 ### 28.3 Backward Compatibility
 
 **Legacy Support:**
+
 - Existing agents continue to work without desktop automation
 - Desktop automation is opt-in (feature flag)
 - Graceful degradation if automation unavailable
 
 **Migration Path:**
+
 1. Deploy new code (automation disabled by default)
 2. Enable for test users
 3. Monitor and fix issues
@@ -2128,29 +2269,29 @@ class DesktopAutomationFeatureFlags:
 
 ### 29.1 Feature Comparison
 
-| Feature | Native Providers | CUA Framework |
-|---------|------------------|---------------|
-| **macOS Support** | ✓ AppleScript | ✓ Full |
-| **Windows Support** | ✓ UI Automation | ✓ Full |
-| **Linux Support** | ✓ AT-SPI | ✓ Full |
-| **MCP Integration** | ✗ Need to build | ✓ Existing |
-| **Sandboxing** | ✗ Need to build | ✓ Built-in |
-| **Screenshot** | ✓ Basic | ✓ Advanced (H.265) |
-| **Video Recording** | ✗ | ✓ |
-| **Multi-Monitor** | ✓ Basic | ✓ Full |
-| **Performance** | Fast (native APIs) | Fast (optimized) |
-| **Dependencies** | Light (platform libs) | Heavy (full framework) |
-| **Learning Curve** | Medium | Low (well-documented) |
+| Feature             | Native Providers      | CUA Framework          |
+| ------------------- | --------------------- | ---------------------- |
+| **macOS Support**   | ✓ AppleScript         | ✓ Full                 |
+| **Windows Support** | ✓ UI Automation       | ✓ Full                 |
+| **Linux Support**   | ✓ AT-SPI              | ✓ Full                 |
+| **MCP Integration** | ✗ Need to build       | ✓ Existing             |
+| **Sandboxing**      | ✗ Need to build       | ✓ Built-in             |
+| **Screenshot**      | ✓ Basic               | ✓ Advanced (H.265)     |
+| **Video Recording** | ✗                     | ✓                      |
+| **Multi-Monitor**   | ✓ Basic               | ✓ Full                 |
+| **Performance**     | Fast (native APIs)    | Fast (optimized)       |
+| **Dependencies**    | Light (platform libs) | Heavy (full framework) |
+| **Learning Curve**  | Medium                | Low (well-documented)  |
 
 ### 29.2 Recommendation Matrix
 
-| Use Case | Recommendation | Rationale |
-|----------|---------------|-----------|
-| **Simple automation** | Native | Lightweight, fast |
-| **Complex workflows** | CUA | Better tooling, sandboxing |
-| **Multi-agent coordination** | Native + CUA | Native for coordination, CUA for execution |
-| **Production critical** | CUA | Battle-tested, comprehensive |
-| **Development/testing** | Native | Faster iteration |
+| Use Case                     | Recommendation | Rationale                                  |
+| ---------------------------- | -------------- | ------------------------------------------ |
+| **Simple automation**        | Native         | Lightweight, fast                          |
+| **Complex workflows**        | CUA            | Better tooling, sandboxing                 |
+| **Multi-agent coordination** | Native + CUA   | Native for coordination, CUA for execution |
+| **Production critical**      | CUA            | Battle-tested, comprehensive               |
+| **Development/testing**      | Native         | Faster iteration                           |
 
 ---
 
@@ -2243,6 +2384,7 @@ class DesktopAutomationProvider(ABC):
 ### 30.2 MCP Tool Specifications
 
 **Tool: `desktop_automation_click`**
+
 ```json
 {
   "name": "desktop_automation_click",
@@ -2266,6 +2408,7 @@ class DesktopAutomationProvider(ABC):
 ```
 
 **Tool: `desktop_automation_type`**
+
 ```json
 {
   "name": "desktop_automation_type",
@@ -2292,6 +2435,7 @@ class DesktopAutomationProvider(ABC):
 ```
 
 **Tool: `desktop_automation_find`**
+
 ```json
 {
   "name": "desktop_automation_find",
@@ -2314,6 +2458,7 @@ class DesktopAutomationProvider(ABC):
 ```
 
 **Tool: `desktop_automation_screenshot`**
+
 ```json
 {
   "name": "desktop_automation_screenshot",
@@ -2325,10 +2470,10 @@ class DesktopAutomationProvider(ABC):
         "type": "object",
         "description": "Optional region {x, y, width, height}",
         "properties": {
-          "x": {"type": "integer"},
-          "y": {"type": "integer"},
-          "width": {"type": "integer"},
-          "height": {"type": "integer"}
+          "x": { "type": "integer" },
+          "y": { "type": "integer" },
+          "width": { "type": "integer" },
+          "height": { "type": "integer" }
         }
       }
     }
@@ -2337,6 +2482,7 @@ class DesktopAutomationProvider(ABC):
 ```
 
 **Tool: `desktop_automation_wait_for_user_idle`**
+
 ```json
 {
   "name": "desktop_automation_wait_for_user_idle",
@@ -2367,6 +2513,7 @@ class DesktopAutomationProvider(ABC):
 ### 31.1 TokenBucket Integration
 
 **Extend TokenBucket for Automation:**
+
 ```python
 class AutomationTokenBucket(TokenBucket):
     """Token bucket specifically for desktop automation."""
@@ -2395,6 +2542,7 @@ class AutomationTokenBucket(TokenBucket):
 ### 31.2 Retry Budget Integration
 
 **Extend RetryBudgetPerMinute:**
+
 ```python
 class AutomationRetryBudget(RetryBudgetPerMinute):
     """Retry budget for desktop automation failures."""
@@ -2408,6 +2556,7 @@ class AutomationRetryBudget(RetryBudgetPerMinute):
 ```
 
 **Integration:**
+
 ```python
 # In automation provider
 def click_with_retry(self, element: UIElement, max_retries: int = 3) -> AutomationResult:
@@ -2434,12 +2583,14 @@ def click_with_retry(self, element: UIElement, max_retries: int = 3) -> Automati
 ### 32.1 Desktop Automation Cost Categories
 
 **Cost Categories:**
+
 - **Automation Actions:** Base cost per action
 - **Resource Usage:** CPU/memory during automation
 - **Failure Overhead:** Retry costs
 - **Indirect Costs:** LLM calls triggered by automation failures
 
 **Cost Model:**
+
 ```python
 class AutomationCostModel:
     """Cost model for desktop automation."""
@@ -2469,6 +2620,7 @@ class AutomationCostModel:
 ### 32.2 Budget Enforcement
 
 **Extend CostAggregator:**
+
 ```python
 class CostAggregator:
     # ... existing methods ...
@@ -2495,6 +2647,7 @@ class CostAggregator:
 ```
 
 **Policy Integration:**
+
 ```python
 # In PolicyEngine.evaluate()
 if run.mode == "desktop_automation":
@@ -2520,16 +2673,19 @@ if run.mode == "desktop_automation":
 ### 33.1 Element Not Found Scenarios
 
 **Scenario A: Element Exists But Selector Wrong**
+
 - **Detection:** Timeout waiting for element
 - **Recovery:** Try alternate selectors (accessibility name, role, coordinates)
 - **Fallback:** Screenshot + image-based finding
 
 **Scenario B: Element Not Yet Loaded**
+
 - **Detection:** Element not in accessibility tree
 - **Recovery:** Wait with exponential backoff (1s, 2s, 4s)
 - **Fallback:** Timeout after max wait
 
 **Scenario C: Element Moved/Changed**
+
 - **Detection:** Element found but bounds changed
 - **Recovery:** Re-find element with updated selector
 - **Fallback:** Use coordinates (less reliable)
@@ -2537,16 +2693,19 @@ if run.mode == "desktop_automation":
 ### 33.2 Permission Denied Scenarios
 
 **Scenario A: Accessibility Permission Not Granted**
+
 - **Detection:** OS permission error
 - **Recovery:** Request permission, guide user
 - **Fallback:** Manual intervention required
 
 **Scenario B: App Not Trusted**
+
 - **Detection:** macOS Gatekeeper blocks automation
 - **Recovery:** Add app to trusted list
 - **Fallback:** Manual approval
 
 **Scenario C: Insufficient Privileges**
+
 - **Detection:** Windows UIA Access denied
 - **Recovery:** Run as administrator or grant via Group Policy
 - **Fallback:** Manual intervention
@@ -2554,16 +2713,19 @@ if run.mode == "desktop_automation":
 ### 33.3 User Interruption Scenarios
 
 **Scenario A: User Starts Typing During Automation**
+
 - **Detection:** User activity detected
 - **Recovery:** Pause automation, queue for later
 - **Fallback:** Cancel automation, notify agent
 
 **Scenario B: User Clicks Different Window**
+
 - **Detection:** Active window changed
 - **Recovery:** Switch to correct window, continue
 - **Fallback:** Abort if window not found
 
 **Scenario C: User Closes Target App**
+
 - **Detection:** App process not found
 - **Recovery:** Restart app, retry from checkpoint
 - **Fallback:** Abort automation, notify agent
@@ -2575,11 +2737,13 @@ if run.mode == "desktop_automation":
 ### 34.1 macOS Implementation Details
 
 **AppleScript Performance:**
+
 - **Fast:** Simple commands (click, keystroke) < 100ms
 - **Slow:** Complex queries (find all buttons) 200-500ms
 - **Optimization:** Cache element trees, use direct Apple Events
 
 **Accessibility API:**
+
 ```python
 import Quartz
 
@@ -2593,6 +2757,7 @@ def get_accessibility_element(selector: str) -> Optional[Any]:
 ```
 
 **Permission Handling:**
+
 ```python
 def check_accessibility_permission() -> bool:
     """Check if Accessibility permission is granted."""
@@ -2613,11 +2778,13 @@ def request_accessibility_permission():
 ### 34.2 Windows Implementation Details
 
 **UI Automation Performance:**
+
 - **Fast:** Element finding 100-300ms (UIA is optimized)
 - **Fast:** Click/type 50-100ms
 - **Optimization:** Use cached element references
 
 **UIA Implementation:**
+
 ```python
 import comtypes.client
 from comtypes.gen.UIAutomationClient import *
@@ -2634,6 +2801,7 @@ def get_uia_element(selector: str) -> Optional[IUIAutomationElement]:
 ```
 
 **Permission Handling:**
+
 ```python
 def check_uia_access() -> bool:
     """Check if UIA Access is enabled."""
@@ -2648,10 +2816,12 @@ def check_uia_access() -> bool:
 ### 34.3 Linux Implementation Details
 
 **AT-SPI Performance:**
+
 - **Variable:** Depends on desktop environment (GNOME fast, KDE slower)
 - **Optimization:** Cache accessibility trees, use D-Bus directly
 
 **AT-SPI Implementation:**
+
 ```python
 import pyatspi
 
@@ -2671,6 +2841,7 @@ def get_atspi_element(selector: str) -> Optional[pyatspi.Accessible]:
 ```
 
 **D-Bus Direct Access:**
+
 ```python
 import dbus
 
@@ -2690,6 +2861,7 @@ def get_dbus_element(selector: str) -> Optional[Any]:
 ### 35.1 Unit Testing
 
 **Mock Providers:**
+
 ```python
 class MockAutomationProvider(DesktopAutomationProvider):
     """Mock provider for unit tests."""
@@ -2715,6 +2887,7 @@ class MockAutomationProvider(DesktopAutomationProvider):
 ```
 
 **Test Cases:**
+
 ```python
 def test_click_success():
     """Test successful click."""
@@ -2739,6 +2912,7 @@ def test_element_not_found():
 ### 35.2 Integration Testing
 
 **Real Provider Tests (Require Permissions):**
+
 ```python
 @pytest.mark.skipif(platform.system() != "Darwin", reason="macOS-specific test")
 @pytest.mark.requires_permissions
@@ -2762,6 +2936,7 @@ def test_macos_click_real():
 ### 35.3 Property-Based Testing
 
 **Hypothesis Tests:**
+
 ```python
 from hypothesis import given, strategies as st
 
@@ -2788,6 +2963,7 @@ def test_find_element_properties(selector: str, timeout: float):
 ### 36.1 Feature Flag Strategy
 
 **Flags:**
+
 ```python
 class DesktopAutomationFlags:
     """Feature flags for desktop automation rollout."""
@@ -2812,6 +2988,7 @@ class DesktopAutomationFlags:
 ```
 
 **Rollout Schedule:**
+
 - Week 1: 0% (development)
 - Week 2: 10% (alpha testers)
 - Week 3: 25% (beta testers)
@@ -2821,6 +2998,7 @@ class DesktopAutomationFlags:
 ### 36.2 Backward Compatibility
 
 **Graceful Degradation:**
+
 ```python
 def get_provider() -> Optional[DesktopAutomationProvider]:
     """Get provider with graceful degradation."""
@@ -2854,6 +3032,7 @@ def get_provider() -> Optional[DesktopAutomationProvider]:
 ### 36.3 Monitoring During Rollout
 
 **Key Metrics:**
+
 - Automation success rate (by platform, by action type)
 - Automation latency (p50, p95, p99)
 - User interruption rate
@@ -2861,6 +3040,7 @@ def get_provider() -> Optional[DesktopAutomationProvider]:
 - Cost per automation action
 
 **Alert Thresholds:**
+
 - Success rate < 90% → Rollback
 - Latency p95 > 500ms → Investigate
 - User interruption rate > 10% → Tune thresholds
@@ -2873,6 +3053,7 @@ def get_provider() -> Optional[DesktopAutomationProvider]:
 ### 37.1 Development Cost
 
 **Implementation Effort:**
+
 - Phase 1 (User Isolation): 15-25 tool calls, ~8-12 min
 - Phase 2 (Multi-Tenant): 20-30 tool calls, ~12-18 min
 - Phase 3 (Desktop Automation): 30-45 tool calls, ~18-25 min
@@ -2884,11 +3065,13 @@ def get_provider() -> Optional[DesktopAutomationProvider]:
 ### 37.2 Operational Cost
 
 **Infrastructure:**
+
 - Minimal (runs on user's machine)
 - No cloud costs
 - No additional services
 
 **Maintenance:**
+
 - Platform API changes (low frequency)
 - Bug fixes (estimated 2-4 hours/month)
 - Documentation updates (1 hour/month)
@@ -2896,16 +3079,19 @@ def get_provider() -> Optional[DesktopAutomationProvider]:
 ### 37.3 Benefits
 
 **User Experience:**
+
 - Seamless agent-user collaboration
 - No conflicts between user and agents
 - Improved productivity
 
 **Agent Capabilities:**
+
 - Desktop automation unlocks new use cases
 - IDE integration, browser automation, etc.
 - Multi-agent coordination
 
 **Cost Savings:**
+
 - Reduced manual intervention
 - Faster task completion
 - Better resource utilization
@@ -2916,36 +3102,39 @@ def get_provider() -> Optional[DesktopAutomationProvider]:
 
 ### 38.1 Technical Risks
 
-| Risk | Probability | Impact | Mitigation |
-|------|------------|--------|------------|
-| **Platform API Changes** | Low | High | Abstract layer, version detection |
-| **Performance Degradation** | Medium | Medium | Benchmarking, optimization, caching |
-| **Permission Issues** | High | High | Clear documentation, permission checkers |
-| **Element Finding Failures** | Medium | Medium | Multiple selector strategies, fallbacks |
-| **User Experience Disruption** | Low | High | User activity detection, coordination |
+| Risk                           | Probability | Impact | Mitigation                               |
+| ------------------------------ | ----------- | ------ | ---------------------------------------- |
+| **Platform API Changes**       | Low         | High   | Abstract layer, version detection        |
+| **Performance Degradation**    | Medium      | Medium | Benchmarking, optimization, caching      |
+| **Permission Issues**          | High        | High   | Clear documentation, permission checkers |
+| **Element Finding Failures**   | Medium      | Medium | Multiple selector strategies, fallbacks  |
+| **User Experience Disruption** | Low         | High   | User activity detection, coordination    |
 
 ### 38.2 Operational Risks
 
-| Risk | Probability | Impact | Mitigation |
-|------|------------|--------|------------|
-| **Support Burden** | Medium | Medium | Comprehensive documentation, troubleshooting guides |
-| **Security Vulnerabilities** | Low | High | Security audit, input validation, sandboxing |
-| **Cost Overruns** | Low | Low | Budget enforcement, monitoring |
-| **Adoption Resistance** | Low | Low | Feature flags, opt-in, clear benefits |
+| Risk                         | Probability | Impact | Mitigation                                          |
+| ---------------------------- | ----------- | ------ | --------------------------------------------------- |
+| **Support Burden**           | Medium      | Medium | Comprehensive documentation, troubleshooting guides |
+| **Security Vulnerabilities** | Low         | High   | Security audit, input validation, sandboxing        |
+| **Cost Overruns**            | Low         | Low    | Budget enforcement, monitoring                      |
+| **Adoption Resistance**      | Low         | Low    | Feature flags, opt-in, clear benefits               |
 
 ### 38.3 Mitigation Strategies
 
 **Platform API Changes:**
+
 - Version detection and compatibility layers
 - Fallback to older APIs if new APIs unavailable
 - Regular testing on platform updates
 
 **Performance:**
+
 - Continuous benchmarking
 - Performance regression tests
 - Optimization sprints
 
 **Security:**
+
 - Regular security audits
 - Input validation on all automation inputs
 - Sandboxing for untrusted agents
@@ -2957,35 +3146,35 @@ def get_provider() -> Optional[DesktopAutomationProvider]:
 
 ### 39.1 Adoption Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **Users Enabled** | 50% in first month | Feature flag rollout |
-| **Agents Using Automation** | 30% of agents | Usage tracking |
-| **Automation Actions/Day** | 1000+ | Run registry |
+| Metric                      | Target             | Measurement          |
+| --------------------------- | ------------------ | -------------------- |
+| **Users Enabled**           | 50% in first month | Feature flag rollout |
+| **Agents Using Automation** | 30% of agents      | Usage tracking       |
+| **Automation Actions/Day**  | 1000+              | Run registry         |
 
 ### 39.2 Performance Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **Click Latency (p95)** | < 100ms | OTel spans |
-| **Success Rate** | > 95% | Run registry |
-| **User Interruption Rate** | < 5% | Activity tracking |
+| Metric                     | Target  | Measurement       |
+| -------------------------- | ------- | ----------------- |
+| **Click Latency (p95)**    | < 100ms | OTel spans        |
+| **Success Rate**           | > 95%   | Run registry      |
+| **User Interruption Rate** | < 5%    | Activity tracking |
 
 ### 39.3 Cost Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **Automation Cost/Action** | < $0.001 | Cost ledger |
-| **Automation Budget Utilization** | < 80% | Cost aggregator |
+| Metric                             | Target   | Measurement                |
+| ---------------------------------- | -------- | -------------------------- |
+| **Automation Cost/Action**         | < $0.001 | Cost ledger                |
+| **Automation Budget Utilization**  | < 80%    | Cost aggregator            |
 | **Cost per Successful Automation** | < $0.002 | Cost ledger + success rate |
 
 ### 39.4 Quality Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **Element Finding Success** | > 98% | Run registry |
-| **Permission Denial Rate** | < 1% | Error tracking |
-| **User Satisfaction** | > 4/5 | User surveys |
+| Metric                      | Target | Measurement    |
+| --------------------------- | ------ | -------------- |
+| **Element Finding Success** | > 98%  | Run registry   |
+| **Permission Denial Rate**  | < 1%   | Error tracking |
+| **User Satisfaction**       | > 4/5  | User surveys   |
 
 ---
 
@@ -3013,24 +3202,28 @@ def get_provider() -> Optional[DesktopAutomationProvider]:
 ### 40.2 Implementation Priorities
 
 **P0 (Critical):**
+
 - User isolation (sub-user model)
 - Basic desktop automation (click, type, find)
 - User activity detection
 - Conflict resolution
 
 **P1 (High):**
+
 - OS user isolation (opt-in)
 - Multi-tenant coordination
 - MCP integration
 - Performance optimization
 
 **P2 (Medium):**
+
 - CUA integration
 - Advanced coordination (predictive, queue)
 - Cost tracking
 - Advanced error handling
 
 **P3 (Low):**
+
 - Distributed coordination
 - Consensus-based coordination
 - Advanced security features
@@ -3052,17 +3245,20 @@ def get_provider() -> Optional[DesktopAutomationProvider]:
 ### 41.1 Race Conditions
 
 **Scenario: Two Agents Click Same Button Simultaneously**
+
 ```
 Agent A: Acquires lock → Finds element → Clicks
 Agent B: Waits for lock → Acquires lock → Finds element → Clicks (duplicate)
 ```
 
 **Mitigation:**
+
 - Atomic lock acquisition with element state check
 - Element state validation before action
 - Idempotent actions (check if already clicked)
 
 **Implementation:**
+
 ```python
 def click_with_atomic_check(self, element: UIElement) -> AutomationResult:
     """Click with atomic state check."""
@@ -3084,16 +3280,19 @@ def click_with_atomic_check(self, element: UIElement) -> AutomationResult:
 ### 41.2 Window State Changes
 
 **Scenario: Window Minimized During Automation**
+
 ```
 Agent: Finds element → Window minimized by user → Click fails
 ```
 
 **Mitigation:**
+
 - Window state monitoring
 - Automatic window restoration
 - Graceful failure with retry
 
 **Implementation:**
+
 ```python
 def click_with_window_check(self, element: UIElement) -> AutomationResult:
     """Click with window state check."""
@@ -3117,16 +3316,19 @@ def click_with_window_check(self, element: UIElement) -> AutomationResult:
 ### 41.3 Dynamic UI Changes
 
 **Scenario: Element Moved During Automation**
+
 ```
 Agent: Finds element at (100, 200) → UI updates → Element now at (150, 250) → Click misses
 ```
 
 **Mitigation:**
+
 - Re-find element before action
 - Use relative selectors (not coordinates)
 - Wait for UI stability
 
 **Implementation:**
+
 ```python
 def click_with_stability_check(self, selector: str) -> AutomationResult:
     """Click with UI stability check."""
@@ -3146,16 +3348,19 @@ def click_with_stability_check(self, selector: str) -> AutomationResult:
 ### 41.4 Permission Revocation
 
 **Scenario: User Revokes Permissions During Automation**
+
 ```
 Agent: Has permissions → Starts automation → User revokes → Automation fails mid-action
 ```
 
 **Mitigation:**
+
 - Permission check before each action
 - Graceful degradation
 - User notification
 
 **Implementation:**
+
 ```python
 def click_with_permission_check(self, element: UIElement) -> AutomationResult:
     """Click with permission check."""
@@ -3170,16 +3375,19 @@ def click_with_permission_check(self, element: UIElement) -> AutomationResult:
 ### 41.5 Network Interruption (Remote Automation)
 
 **Scenario: Network Drops During Remote Automation**
+
 ```
 Agent: Remote automation via network → Network drops → Automation hangs
 ```
 
 **Mitigation:**
+
 - Connection health checks
 - Automatic reconnection
 - Timeout handling
 
 **Implementation:**
+
 ```python
 def click_with_connection_check(self, element: UIElement) -> AutomationResult:
     """Click with connection health check."""
@@ -3200,6 +3408,7 @@ def click_with_connection_check(self, element: UIElement) -> AutomationResult:
 **Purpose:** Predict when user will be active to preemptively pause automation.
 
 **Pattern:**
+
 ```python
 class PredictiveUserActivityDetector:
     """Predict user activity based on historical patterns."""
@@ -3237,6 +3446,7 @@ class PredictiveUserActivityDetector:
 **Purpose:** Coordinate automation actions by priority.
 
 **Pattern:**
+
 ```python
 from queue import PriorityQueue
 
@@ -3273,6 +3483,7 @@ class PriorityAutomationQueue:
 **Purpose:** Use swarm consensus for conflict resolution.
 
 **Pattern:**
+
 ```python
 from thegent.orchestration.swarm_consensus import SwarmConsensus
 
@@ -3306,6 +3517,7 @@ class ConsensusConflictResolver:
 **Purpose:** Cache element trees with smart invalidation.
 
 **Pattern:**
+
 ```python
 class SmartElementCache:
     """Element cache with smart invalidation."""
@@ -3353,6 +3565,7 @@ class SmartElementCache:
 **Purpose:** Defer element finding until needed.
 
 **Pattern:**
+
 ```python
 class LazyElementFinder:
     """Lazy element finding with memoization."""
@@ -3402,6 +3615,7 @@ class LazyElement:
 **Purpose:** Optimize batch operations.
 
 **Pattern:**
+
 ```python
 class BatchOptimizer:
     """Optimize batch automation operations."""
@@ -3445,6 +3659,7 @@ class BatchOptimizer:
 ### 44.1 Diagnostic Checklist
 
 **Before Automation:**
+
 - [ ] Permissions granted (Accessibility, Screen Recording)
 - [ ] Target app running and visible
 - [ ] No other automation active (check locks)
@@ -3452,6 +3667,7 @@ class BatchOptimizer:
 - [ ] Sufficient resources (CPU, memory)
 
 **During Automation:**
+
 - [ ] Monitor OTel traces for latency spikes
 - [ ] Check Prometheus metrics for error rates
 - [ ] Review run registry for automation events
@@ -3459,6 +3675,7 @@ class BatchOptimizer:
 - [ ] Monitor cost budget utilization
 
 **After Automation:**
+
 - [ ] Verify automation succeeded (check results)
 - [ ] Review audit logs for security issues
 - [ ] Analyze performance metrics
@@ -3468,6 +3685,7 @@ class BatchOptimizer:
 ### 44.2 Debugging Workflow
 
 **Step 1: Reproduce Issue**
+
 ```bash
 # Enable debug logging
 export THGENT_DEBUG=1
@@ -3478,6 +3696,7 @@ thegent run "automation test" --debug
 ```
 
 **Step 2: Collect Diagnostics**
+
 ```bash
 # Check automation locks
 thegent automation locks
@@ -3490,6 +3709,7 @@ thegent observe metrics --category automation
 ```
 
 **Step 3: Analyze Traces**
+
 ```bash
 # Query OTel traces
 # Filter by: automation.action, automation.platform
@@ -3497,6 +3717,7 @@ thegent observe metrics --category automation
 ```
 
 **Step 4: Review Logs**
+
 ```bash
 # Check run registry
 cat .thegent/sessions/*/run_registry.jsonl | grep automation
@@ -3508,18 +3729,22 @@ cat .thegent/sessions/*/automation_audit_*.jsonl | jq '.'
 ### 44.3 Common Error Patterns
 
 **Pattern: Element Not Found (High Frequency)**
+
 - **Cause:** Selector too specific, element not loaded, UI changed
 - **Fix:** Use more flexible selectors, add wait logic, cache elements
 
 **Pattern: Permission Denied (Intermittent)**
+
 - **Cause:** Permissions revoked, app not trusted, insufficient privileges
 - **Fix:** Re-grant permissions, add to trusted apps, run as admin
 
 **Pattern: Timeout (Frequent)**
+
 - **Cause:** Slow UI, network latency, resource exhaustion
 - **Fix:** Increase timeout, optimize selectors, reduce concurrency
 
 **Pattern: Race Condition (Rare)**
+
 - **Cause:** Concurrent automation, lock contention, state changes
 - **Fix:** Use atomic operations, improve locking, add state validation
 
@@ -3534,6 +3759,7 @@ cat .thegent/sessions/*/automation_audit_*.jsonl | jq '.'
 **Challenge:** Coordinate automation across displays.
 
 **Solution:**
+
 ```python
 class MultiMonitorAutomationCoordinator:
     """Coordinate automation across multiple monitors."""
@@ -3566,11 +3792,13 @@ class MultiMonitorAutomationCoordinator:
 **Challenge:** No GUI available for automation.
 
 **Solution:**
+
 - Use virtual display (Xvfb on Linux)
 - Remote automation via VNC/RDP
 - Image-based automation (OCR, computer vision)
 
 **Implementation:**
+
 ```python
 class HeadlessAutomationProvider(DesktopAutomationProvider):
     """Automation provider for headless environments."""
@@ -3600,6 +3828,7 @@ class HeadlessAutomationProvider(DesktopAutomationProvider):
 **Challenge:** Coordinate state across applications.
 
 **Solution:**
+
 ```python
 class CrossAppAutomationWorkflow:
     """Automation workflow across multiple applications."""
@@ -3641,6 +3870,7 @@ class CrossAppAutomationWorkflow:
 **Purpose:** Verify every automation action.
 
 **Pattern:**
+
 ```python
 class ZeroTrustAutomationProvider(DesktopAutomationProvider):
     """Zero-trust automation with verification."""
@@ -3674,6 +3904,7 @@ class ZeroTrustAutomationProvider(DesktopAutomationProvider):
 **Purpose:** Execute automation in isolated sandbox.
 
 **Pattern:**
+
 ```python
 class SandboxedAutomationProvider(DesktopAutomationProvider):
     """Automation provider with sandboxing."""
@@ -3702,16 +3933,19 @@ class SandboxedAutomationProvider(DesktopAutomationProvider):
 ### 47.1 Micro-Benchmarks
 
 **Element Finding:**
+
 - Cached: 10-20ms
 - Uncached (simple): 200-500ms
 - Uncached (complex): 500-1000ms
 
 **Click Operations:**
+
 - Direct API: 50-100ms
 - Via wrapper: 100-150ms
 - With validation: 150-200ms
 
 **Screenshot Operations:**
+
 - Full screen: 300-500ms
 - Region: 100-200ms
 - Incremental: 50-100ms
@@ -3719,16 +3953,19 @@ class SandboxedAutomationProvider(DesktopAutomationProvider):
 ### 47.2 Load Testing Scenarios
 
 **Scenario 1: High-Frequency Clicks**
+
 - **Setup:** 1000 clicks in sequence
 - **Target:** < 100ms per click (p95)
 - **Measurement:** Latency distribution
 
 **Scenario 2: Concurrent Automation**
+
 - **Setup:** 10 agents automating simultaneously
 - **Target:** No conflicts, < 200ms overhead
 - **Measurement:** Conflict rate, latency increase
 
 **Scenario 3: Long-Running Workflow**
+
 - **Setup:** 100-step workflow
 - **Target:** < 5% failure rate, < 10s total
 - **Measurement:** Success rate, total duration
@@ -3740,6 +3977,7 @@ class SandboxedAutomationProvider(DesktopAutomationProvider):
 ### 48.1 Custom Alert Rules
 
 **Automation Failure Spike:**
+
 ```yaml
 alert: AutomationFailureSpike
 expr: |
@@ -3751,6 +3989,7 @@ annotations:
 ```
 
 **Permission Denial Rate:**
+
 ```yaml
 alert: HighPermissionDenialRate
 expr: |
@@ -3763,6 +4002,7 @@ annotations:
 ### 48.2 Dashboard Panels
 
 **Automation Health Dashboard:**
+
 - Success rate over time
 - Latency percentiles (p50, p95, p99)
 - Error breakdown by type
@@ -3770,6 +4010,7 @@ annotations:
 - Cost per action
 
 **Coordination Dashboard:**
+
 - Active locks by agent
 - Lock contention rate
 - Conflict resolution rate
@@ -3784,6 +4025,7 @@ annotations:
 **Purpose:** Record automation sessions and replay for testing.
 
 **Pattern:**
+
 ```python
 class RecordReplayAutomationProvider(DesktopAutomationProvider):
     """Provider with record/replay capability."""
@@ -3814,6 +4056,7 @@ class RecordReplayAutomationProvider(DesktopAutomationProvider):
 **Purpose:** Test automation properties with Hypothesis.
 
 **Pattern:**
+
 ```python
 from hypothesis import given, strategies as st
 
@@ -3847,6 +4090,7 @@ def test_automation_properties(selector: str, timeout: float, platform: str):
 ### 50.1 Code Organization
 
 **Recommended Structure:**
+
 ```
 src/thegent/infra/desktop_automation/
 ├── __init__.py
@@ -3875,12 +4119,14 @@ src/thegent/infra/desktop_automation/
 ### 50.2 Documentation Standards
 
 **Code Documentation:**
+
 - Docstrings for all public methods
 - Type hints for all parameters
 - Examples in docstrings
 - Error handling documented
 
 **API Documentation:**
+
 - OpenAPI/Swagger specs for MCP tools
 - Usage examples
 - Error codes and meanings
@@ -3889,12 +4135,14 @@ src/thegent/infra/desktop_automation/
 ### 50.3 Error Messages
 
 **Best Practices:**
+
 - Clear, actionable error messages
 - Include context (element, app, platform)
 - Suggest solutions
 - Reference documentation
 
 **Example:**
+
 ```python
 raise AutomationError(
     f"Element '{selector}' not found in app '{app_name}'. "
@@ -3911,6 +4159,7 @@ raise AutomationError(
 **Status:** Comprehensive research complete with deep technical details, advanced patterns, edge cases, troubleshooting guides, integration patterns, and best practices. Ready for implementation planning and execution.
 
 **Documentation Coverage:**
+
 - ✅ Main research (50+ sections)
 - ✅ Advanced patterns
 - ✅ Performance benchmarks & SLAs
@@ -3964,23 +4213,23 @@ raise AutomationError(
 
 ### Practical Examples Added
 
-| Example | File | Purpose |
-|---------|------|---------|
-| `UserIsolationManager` | `src/thegent/infra/user_isolation.py` | Hybrid user isolation with sub-user, OS user, Docker support |
-| `SystemUser` / `AgentUser` | `src/thegent/infra/user_isolation.py` | User abstraction classes |
-| `DesktopAutomationCoordinator` | `src/thegent/infra/desktop_automation/coordinator.py` | Multi-tenant coordination with user activity detection |
-| `DesktopAutomationProvider` | `src/thegent/infra/desktop_automation/coordinator.py` | Abstract base for platform providers |
-| `DesktopAutomationProvider` | `src/thegent/infra/desktop_automation/providers/` | Platform-specific implementations (macOS, Windows, Linux) |
-| MCP Server Tools | `src/thegent/mcp_server_desktop.py` | MCP tool definitions for desktop automation |
+| Example                        | File                                                  | Purpose                                                      |
+| ------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------ |
+| `UserIsolationManager`         | `src/thegent/infra/user_isolation.py`                 | Hybrid user isolation with sub-user, OS user, Docker support |
+| `SystemUser` / `AgentUser`     | `src/thegent/infra/user_isolation.py`                 | User abstraction classes                                     |
+| `DesktopAutomationCoordinator` | `src/thegent/infra/desktop_automation/coordinator.py` | Multi-tenant coordination with user activity detection       |
+| `DesktopAutomationProvider`    | `src/thegent/infra/desktop_automation/coordinator.py` | Abstract base for platform providers                         |
+| `DesktopAutomationProvider`    | `src/thegent/infra/desktop_automation/providers/`     | Platform-specific implementations (macOS, Windows, Linux)    |
+| MCP Server Tools               | `src/thegent/mcp_server_desktop.py`                   | MCP tool definitions for desktop automation                  |
 
 ### Decision Matrices Added
 
-| Matrix | Purpose | Selection Criteria |
-|--------|---------|-------------------|
-| User Isolation Mode Selection | Guide selection of isolation mode | Isolation level, setup complexity, performance, cross-platform support, use case |
-| Desktop Automation Provider Selection | Guide platform-specific provider selection | Reliability, permissions, UI access, performance, scripting support |
-| Conflict Resolution Policy Selection | Guide conflict resolution strategy | Scenario type, priority requirements, resource constraints |
-| Automation Scope Selection | Guide scope selection | Isolation level, use case complexity |
+| Matrix                                | Purpose                                    | Selection Criteria                                                               |
+| ------------------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------- |
+| User Isolation Mode Selection         | Guide selection of isolation mode          | Isolation level, setup complexity, performance, cross-platform support, use case |
+| Desktop Automation Provider Selection | Guide platform-specific provider selection | Reliability, permissions, UI access, performance, scripting support              |
+| Conflict Resolution Policy Selection  | Guide conflict resolution strategy         | Scenario type, priority requirements, resource constraints                       |
+| Automation Scope Selection            | Guide scope selection                      | Isolation level, use case complexity                                             |
 
 ### Cross-References Added
 

@@ -12,7 +12,7 @@ Generate edit-on-GitHub links for markdown files.
 
 ### Methods
 
-#### EditLinksGenerator.__init__
+#### EditLinksGenerator.**init**
 
 ```python
 __init__(self: Any, repo_url: str, branch: str, base_dir: Any)

@@ -12,7 +12,7 @@ Federated policy engine for multi-tenant coordination.
 
 ### Methods
 
-#### FederatedPolicyEngine.__init__
+#### FederatedPolicyEngine.**init**
 
 ```python
 __init__(self: Any, namespace: str)

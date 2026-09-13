@@ -12,7 +12,7 @@ Manages deferral of non-critical tasks under high load.
 
 ### Methods
 
-#### DeferralManager.__init__
+#### DeferralManager.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings)
@@ -60,7 +60,7 @@ Rule for deferring non-critical tasks.
 
 ### Methods
 
-#### DeferralRule.__init__
+#### DeferralRule.**init**
 
 ```python
 __init__(self: Any, id: str, condition: str, action: str)

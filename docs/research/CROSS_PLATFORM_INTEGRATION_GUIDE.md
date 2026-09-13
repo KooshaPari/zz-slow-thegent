@@ -31,6 +31,7 @@
 **Purpose:** Use existing `EditLeaseManager` for file-level coordination during desktop automation.
 
 **Integration Pattern:**
+
 ```python
 from thegent.orchestration.leasing import get_lease_manager, EditLeaseManager
 
@@ -70,6 +71,7 @@ class DesktopAutomationCoordinator:
 ```
 
 **Benefits:**
+
 - Reuses existing coordination infrastructure
 - Zero-latency in-memory coordination (MTSP-14)
 - Automatic expiration prevents deadlocks
@@ -80,6 +82,7 @@ class DesktopAutomationCoordinator:
 **Purpose:** Extend to Redis for multi-machine coordination.
 
 **Integration Pattern:**
+
 ```python
 import redis
 from redis.lock import Lock
@@ -115,6 +118,7 @@ class DistributedAutomationCoordinator:
 ```
 
 **Redis Patterns:**
+
 - **Pub/Sub:** Real-time event notifications (`thegent:automation:{scope}:events`)
 - **Streams:** Persistent automation event log
 - **Redlock:** Distributed mutual exclusion for critical operations
@@ -124,6 +128,7 @@ class DistributedAutomationCoordinator:
 **Purpose:** Use `SwarmConsensus` for multi-agent automation decisions.
 
 **Integration Pattern:**
+
 ```python
 from thegent.orchestration.swarm_consensus import SwarmConsensus, SwarmVote
 
@@ -150,6 +155,7 @@ class ConsensusBasedAutomation:
 ```
 
 **Use Cases:**
+
 - Multi-agent approval for sensitive actions (screenshot, clipboard)
 - Conflict resolution when agents disagree
 - High-confidence automation decisions
@@ -163,6 +169,7 @@ class ConsensusBasedAutomation:
 **Purpose:** Integrate desktop automation with existing OTel instrumentation.
 
 **Integration Pattern:**
+
 ```python
 from opentelemetry import trace
 from opentelemetry.trace import Status, StatusCode
@@ -212,6 +219,7 @@ class ObservableDesktopAutomationProvider(DesktopAutomationProvider):
 ```
 
 **OTel Semantic Conventions:**
+
 ```python
 # Map to OTel GenAI conventions
 span.set_attribute("gen_ai.system", "desktop_automation")
@@ -227,6 +235,7 @@ span.set_attribute("thegent.agent_id", agent_id)
 **Purpose:** Expose desktop automation metrics via Prometheus.
 
 **Integration Pattern:**
+
 ```python
 from prometheus_client import Counter, Histogram, Gauge
 
@@ -278,6 +287,7 @@ class MetricsDesktopAutomationProvider(DesktopAutomationProvider):
 **Purpose:** Log automation events to `run_registry.jsonl`.
 
 **Integration Pattern:**
+
 ```python
 from thegent.execution import RunRegistry
 
@@ -310,6 +320,7 @@ class RegistryDesktopAutomationProvider(DesktopAutomationProvider):
 ```
 
 **Registry Event Format:**
+
 ```json
 {
   "event": "automation_action",
@@ -341,6 +352,7 @@ class RegistryDesktopAutomationProvider(DesktopAutomationProvider):
 **Purpose:** Integrate automation state with `CheckpointRegistry`.
 
 **Integration Pattern:**
+
 ```python
 from thegent.execution import CheckpointRegistry
 
@@ -394,6 +406,7 @@ class CheckpointableAutomationWorkflow:
 **Purpose:** Use continuity packets for automation handoff.
 
 **Integration Pattern:**
+
 ```python
 @dataclass
 class AutomationContinuityPacket:
@@ -459,6 +472,7 @@ class ContinuityAutomationWorkflow:
 **Purpose:** Use existing test infrastructure for automation tests.
 
 **Integration Pattern:**
+
 ```python
 import pytest
 from unittest.mock import Mock, patch
@@ -505,6 +519,7 @@ def test_element_not_found(mock_automation_provider):
 **Purpose:** Use existing integration test patterns.
 
 **Integration Pattern:**
+
 ```python
 @pytest.mark.integration
 @pytest.mark.slow
@@ -535,6 +550,7 @@ def test_macos_automation_integration():
 **Purpose:** Use existing chaos testing patterns.
 
 **Integration Pattern:**
+
 ```python
 @pytest.mark.chaos
 def test_automation_timeout_chaos(mock_automation_provider):
@@ -567,6 +583,7 @@ def test_permission_denied_chaos():
 **Purpose:** Use Hypothesis for property-based testing.
 
 **Integration Pattern:**
+
 ```python
 from hypothesis import given, strategies as st
 
@@ -595,6 +612,7 @@ def test_find_element_properties(selector: str, timeout: float):
 **Purpose:** Use existing retry/fallback patterns.
 
 **Integration Pattern:**
+
 ```python
 from thegent.agents.resilience import classify_failure, is_retryable, FailureKind, retry_with_backoff
 
@@ -624,6 +642,7 @@ class ResilientDesktopAutomationProvider(DesktopAutomationProvider):
 **Purpose:** Use existing circuit breaker patterns.
 
 **Integration Pattern:**
+
 ```python
 from thegent.agents.resilience import ToolCircuitBreaker
 
@@ -663,6 +682,7 @@ class CircuitBreakerAutomationProvider(DesktopAutomationProvider):
 **Purpose:** Integrate with existing cost tracking.
 
 **Integration Pattern:**
+
 ```python
 from thegent.governance.cost import CostAggregator, CostEstimator
 
@@ -698,6 +718,7 @@ class CostAwareAutomationProvider(DesktopAutomationProvider):
 **Purpose:** Integrate with existing rate limiting.
 
 **Integration Pattern:**
+
 ```python
 from thegent.agents.resilience import TokenBucket, get_token_bucket
 
@@ -732,6 +753,7 @@ class RateLimitedAutomationProvider(DesktopAutomationProvider):
 **Purpose:** Integrate with existing policy engine.
 
 **Integration Pattern:**
+
 ```python
 from thegent.execution import PolicyEngine
 
@@ -770,6 +792,7 @@ class PolicyEnforcedAutomationProvider(DesktopAutomationProvider):
 **Purpose:** Integrate with existing concurrency control.
 
 **Integration Pattern:**
+
 ```python
 from thegent.execution import ConcurrencyController
 
@@ -808,21 +831,25 @@ class ConcurrencyControlledAutomationProvider(DesktopAutomationProvider):
 ### 9.1 Common Issues
 
 **Issue: Permission Denied**
+
 - **Symptoms:** Automation fails with permission error
 - **Diagnosis:** Check accessibility permissions
 - **Solution:** Grant permissions via System Preferences (macOS) or Group Policy (Windows)
 
 **Issue: Element Not Found**
+
 - **Symptoms:** `find_element` returns None
 - **Diagnosis:** Check selector, wait for element to load
 - **Solution:** Use cached elements, add wait logic, try alternate selectors
 
 **Issue: Rate Limit Exceeded**
+
 - **Symptoms:** Automation fails with rate limit error
 - **Diagnosis:** Check token bucket capacity
 - **Solution:** Increase rate limit, reduce automation frequency
 
 **Issue: Cost Budget Exceeded**
+
 - **Symptoms:** Automation blocked due to budget
 - **Diagnosis:** Check automation budget utilization
 - **Solution:** Increase budget, optimize automation actions
@@ -830,16 +857,19 @@ class ConcurrencyControlledAutomationProvider(DesktopAutomationProvider):
 ### 9.2 Debugging Tools
 
 **OTel Trace Viewer:**
+
 - View automation traces in Jaeger/Tempo
 - Filter by `automation.action`, `automation.platform`
 - Analyze latency distributions
 
 **Prometheus Metrics:**
+
 - Query `desktop_automation_actions_total`
 - Query `desktop_automation_latency_seconds`
 - Set up Grafana dashboards
 
 **Run Registry:**
+
 - Query `run_registry.jsonl` for automation events
 - Filter by `event=automation_action`
 - Analyze success rates, error patterns
@@ -849,24 +879,28 @@ class ConcurrencyControlledAutomationProvider(DesktopAutomationProvider):
 ## 10. Migration Path
 
 ### 10.1 Phase 1: Basic Integration (Week 1-2)
+
 - [ ] Integrate with EditLeaseManager
 - [ ] Add OTel instrumentation
 - [ ] Add Prometheus metrics
 - [ ] Log to run registry
 
 ### 10.2 Phase 2: Advanced Integration (Week 3-4)
+
 - [ ] Integrate with CheckpointRegistry
 - [ ] Add continuity packet support
 - [ ] Integrate with PolicyEngine
 - [ ] Add cost tracking
 
 ### 10.3 Phase 3: Distributed Integration (Week 5-6)
+
 - [ ] Add Redis-based coordination
 - [ ] Integrate with SwarmConsensus
 - [ ] Add distributed locking
 - [ ] Add event-driven coordination
 
 ### 10.4 Phase 4: Testing Integration (Week 7-8)
+
 - [ ] Add unit tests
 - [ ] Add integration tests
 - [ ] Add chaos tests
@@ -917,18 +951,18 @@ class ConcurrencyControlledAutomationProvider(DesktopAutomationProvider):
 
 ### Practical Examples Added
 
-| Example | File | Purpose |
-|---------|------|---------|
-| OTel Tracing | `otel_integration.py` | Instrument automation with OpenTelemetry |
-| Prometheus Metrics | `metrics_integration.py` | Expose automation metrics |
-| Run Registry Logging | `registry_integration.py` | Log automation events |
-| Checkpoint Integration | `checkpoint_integration.py` | Workflow recovery with checkpoints |
-| Continuity Packet | `continuity_integration.py` | Agent handoff with continuity |
-| Resilience Integration | `resilience_integration.py` | Retry/fallback patterns |
-| Circuit Breaker Integration | `circuit_breaker_integration.py` | Failure protection |
-| Cost Tracking | `cost_integration.py` | Automation cost attribution |
-| Rate Limiting | `rate_limit_integration.py` | Token bucket rate limiting |
-| Policy Engine Integration | `policy_integration.py` | Policy enforcement |
+| Example                     | File                             | Purpose                                  |
+| --------------------------- | -------------------------------- | ---------------------------------------- |
+| OTel Tracing                | `otel_integration.py`            | Instrument automation with OpenTelemetry |
+| Prometheus Metrics          | `metrics_integration.py`         | Expose automation metrics                |
+| Run Registry Logging        | `registry_integration.py`        | Log automation events                    |
+| Checkpoint Integration      | `checkpoint_integration.py`      | Workflow recovery with checkpoints       |
+| Continuity Packet           | `continuity_integration.py`      | Agent handoff with continuity            |
+| Resilience Integration      | `resilience_integration.py`      | Retry/fallback patterns                  |
+| Circuit Breaker Integration | `circuit_breaker_integration.py` | Failure protection                       |
+| Cost Tracking               | `cost_integration.py`            | Automation cost attribution              |
+| Rate Limiting               | `rate_limit_integration.py`      | Token bucket rate limiting               |
+| Policy Engine Integration   | `policy_integration.py`          | Policy enforcement                       |
 
 ### Cross-References Added
 

@@ -11,10 +11,12 @@
 ## Current State Analysis
 
 ### Strengths
+
 ✅ Code generation CLI  
 ✅ Vercel deployment
 
 ### Issues
+
 ❌ No modern pyproject.toml  
 ❌ No uv configuration  
 ❌ Uses .env only  
@@ -25,13 +27,16 @@
 ## Proposed Changes
 
 ### Phase 1: Foundation (8 hours)
+
 - Create modern pyproject.toml
 - Install uv, create uv.lock
 - Configure ruff, mypy
 - Remove requirements.txt
 
 ### Phase 2: Hybrid Configuration (8 hours)
+
 **Like atoms-mcp-prod:**
+
 ```python
 class AtomsAgentSettings(BaseSettings):
     @classmethod
@@ -47,6 +52,7 @@ class AtomsAgentSettings(BaseSettings):
 - Implement pydantic-settings
 
 ### Phase 3: Code Quality (4 hours)
+
 - Add bandit, vulture
 - Setup pre-commit hooks
 - Run quality checks
@@ -56,6 +62,7 @@ class AtomsAgentSettings(BaseSettings):
 ## Key Configuration
 
 **config.yml:**
+
 ```yaml
 app:
   name: "atoms-agent"
@@ -68,6 +75,7 @@ generation:
 ```
 
 **secrets.yml:**
+
 ```yaml
 api_keys:
   openai: "sk-..."
@@ -108,4 +116,3 @@ api_keys:
 ## Dependencies
 
 None
-

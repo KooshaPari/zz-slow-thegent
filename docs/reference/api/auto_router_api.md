@@ -5,6 +5,7 @@
 Auto router: uses headless Gemini Flash to classify task complexity, then Pareto routing.
 
 Flow:
+
 1. Classify prompt via Gemini Flash (simple | moderate | complex)
 2. Select (provider, model) from Pareto frontier based on complexity
 3. Return resolved agent + model for run_impl

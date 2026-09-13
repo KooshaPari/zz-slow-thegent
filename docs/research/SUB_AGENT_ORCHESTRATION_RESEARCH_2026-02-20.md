@@ -32,6 +32,7 @@ The proposed design layers a `SubAgentDispatcher`, `ResultAggregator`, `InterAge
 **File**: `src/thegent/agents/plangent.py` (WL: `borrow-plangent-subagents`)
 
 The planner decomposes a goal into a `Plan` (a DAG of `PlanNode` objects). Each `PlanNode` has:
+
 - `id`, `task` (natural-language description), `depends_on` (list of prerequisite node IDs)
 - `status`: `pending | running | done | failed`
 - `result`, `error`, `metadata` (arbitrary dict)
@@ -39,6 +40,7 @@ The planner decomposes a goal into a `Plan` (a DAG of `PlanNode` objects). Each 
 `PlangentExecutor.execute()` (sync) and `execute_async()` (async) iterate waves of `is_ready()` nodes, invoke a caller-supplied `runner(node) -> str` callback, and advance node status. The async path uses `asyncio.gather` to dispatch parallel-ready nodes concurrently.
 
 **Gaps in the existing planner**:
+
 - `_generate_sub_tasks` is a heuristic string-split by default. No LLM-backed decomposition.
 - The `runner` callback is untyped and receives no budget, timeout, or model-routing hints from the plan.
 - There is no mechanism to propagate a parent run ID or correlation ID through the plan to child executions.
@@ -97,6 +99,7 @@ HITL approval is available but not integrated into the sub-agent dispatch loop. 
 **Source**: `docs/context/claude-code.md` (fetched 2026-02-20)
 
 **Sub-agent mechanism**: Claude Code spawns up to 7 parallel subagents via the internal `Task` tool. The orchestrating Claude instance:
+
 1. Decomposes the goal into subtasks in its reasoning.
 2. Emits `Task` tool calls (up to `--max-parallel` concurrently).
 3. Each `Task` invocation spawns a child Claude process, isolated to a workspace, with its own tool permissions.
@@ -104,10 +107,12 @@ HITL approval is available but not integrated into the sub-agent dispatch loop. 
 5. The parent merges results and continues.
 
 **Controlled via**:
+
 - `--allow-subagents true/false`
 - `--max-parallel N` (default 7)
 
 **Key properties**:
+
 - Subagent dispatch is **model-native**: the orchestrating LLM decides when to spawn.
 - Each subagent is isolated (separate process, separate tool sandbox).
 - Results are typed JSONL events, not raw strings.
@@ -123,6 +128,7 @@ HITL approval is available but not integrated into the sub-agent dispatch loop. 
 
 **a) App Server Protocol** (`codex app-server`):
 The App Server is a bidirectional JSONL-over-stdio daemon. The client can:
+
 - Create threads (`thread/start`) and fork them (`thread/fork`) for parallel subtasks.
 - Submit turns (`turn/start`) concurrently on different threads.
 - Register **dynamic tools** in `ThreadStartParams.dynamic_tools` — tool call routing flows back to the client for client-side execution (the ultimate sub-agent primitive).
@@ -135,6 +141,7 @@ The SDK wraps `codex exec --experimental-json` as a subprocess. `thread.run()` (
 Exposes two tools: `codex` (start session) and `codex_thread_continue` (resume thread). These allow an LLM to invoke Codex as a tool — the ultimate sub-agent pattern from the MCP perspective.
 
 **Key properties**:
+
 - Thread fork/resume enables stateful multi-agent: a parent thread can fork a child thread, get results, and merge.
 - Typed `ThreadItem` events (agent_message, command_execution, file_change, mcp_tool_call, etc.) give structured per-item results.
 - Approval flows are client-side: the server blocks and waits for the client to respond to `requestApproval`.
@@ -145,6 +152,7 @@ Exposes two tools: `codex` (start session) and `codex_thread_continue` (resume t
 **Source**: `docs/context/gemini-cli.md` (fetched 2026-02-20)
 
 Gemini CLI does not have a native sub-agent protocol. Sub-agent patterns are implemented via:
+
 - **MCP**: Gemini CLI can call tools registered on an MCP server. If that server itself invokes agents (e.g., calls `codex mcp server` tools or thegent MCP tools), Gemini CLI functions as an orchestrator.
 - **YOLO mode + sandbox**: Automated, non-interactive execution with sandboxed tool calls. Suitable as a sub-agent target from a parent orchestrator.
 - **No native thread fork/resume**: Each `gemini --prompt` invocation is stateless.
@@ -153,22 +161,22 @@ Gemini CLI does not have a native sub-agent protocol. Sub-agent patterns are imp
 
 ## 4. Gap Analysis
 
-| Capability | Claude Code | Codex | Gemini CLI | thegent (current) |
-|---|---|---|---|---|
-| Parallel sub-agent dispatch | Yes (Task tool, up to 7) | Yes (thread fork, concurrent SDK) | Via MCP only | Partial (asyncio.gather in PlangentExecutor) |
-| Typed inter-agent message protocol | JSONL events (stream-json) | ThreadItem/ThreadEvent union | None native | None — plain `str` result in PlanNode |
-| DAG-based plan execution | None (model-native) | None native (client responsibility) | None | Yes (PlangentPlanner+Executor, linear default) |
-| Capability-based agent selection | Model-native | None explicit | None | Yes (CapabilityIndex TF-IDF) |
-| Budget/cost cap per sub-agent | --max-turns, token tracking | turn.usage per thread | None | None |
-| HITL approval in dispatch loop | Yes (permissionMode) | Yes (requestApproval server→client) | None native | Exists (WL-019) but not wired to planner |
-| Streaming results to orchestrator | Yes (stream-json JSONL) | Yes (ThreadEvent async gen) | None | None — blocking collect |
-| Sub-agent failure isolation | Per-process isolation | Per-thread isolation | N/A | None (exception propagated) |
-| Sub-agent sandboxing | Yes (separate permissions) | Yes (per-thread sandbox policy) | YOLO+sandbox | None — same process env |
-| Retry per sub-agent | Adaptive retry (harness) | on-failure approval + retry | None | Yes (with_retry in runners) |
-| Result aggregation | Model-native in context | Client responsibility | N/A | None — PlanNode.result is last string |
-| Correlation/parent run ID | Session ID | Thread ID | None | None — PlanNode.metadata is freeform |
-| Cost accounting across wave | None explicit | Per-turn usage | None | None |
-| Remote node dispatch | None | None (local binary) | None | Yes (ComputePoolManager/Tailscale) |
+| Capability                         | Claude Code                 | Codex                               | Gemini CLI   | thegent (current)                              |
+| ---------------------------------- | --------------------------- | ----------------------------------- | ------------ | ---------------------------------------------- |
+| Parallel sub-agent dispatch        | Yes (Task tool, up to 7)    | Yes (thread fork, concurrent SDK)   | Via MCP only | Partial (asyncio.gather in PlangentExecutor)   |
+| Typed inter-agent message protocol | JSONL events (stream-json)  | ThreadItem/ThreadEvent union        | None native  | None — plain `str` result in PlanNode          |
+| DAG-based plan execution           | None (model-native)         | None native (client responsibility) | None         | Yes (PlangentPlanner+Executor, linear default) |
+| Capability-based agent selection   | Model-native                | None explicit                       | None         | Yes (CapabilityIndex TF-IDF)                   |
+| Budget/cost cap per sub-agent      | --max-turns, token tracking | turn.usage per thread               | None         | None                                           |
+| HITL approval in dispatch loop     | Yes (permissionMode)        | Yes (requestApproval server→client) | None native  | Exists (WL-019) but not wired to planner       |
+| Streaming results to orchestrator  | Yes (stream-json JSONL)     | Yes (ThreadEvent async gen)         | None         | None — blocking collect                        |
+| Sub-agent failure isolation        | Per-process isolation       | Per-thread isolation                | N/A          | None (exception propagated)                    |
+| Sub-agent sandboxing               | Yes (separate permissions)  | Yes (per-thread sandbox policy)     | YOLO+sandbox | None — same process env                        |
+| Retry per sub-agent                | Adaptive retry (harness)    | on-failure approval + retry         | None         | Yes (with_retry in runners)                    |
+| Result aggregation                 | Model-native in context     | Client responsibility               | N/A          | None — PlanNode.result is last string          |
+| Correlation/parent run ID          | Session ID                  | Thread ID                           | None         | None — PlanNode.metadata is freeform           |
+| Cost accounting across wave        | None explicit               | Per-turn usage                      | None         | None                                           |
+| Remote node dispatch               | None                        | None (local binary)                 | None         | Yes (ComputePoolManager/Tailscale)             |
 
 ### 4.1 Summary of Critical Gaps
 
@@ -451,25 +459,26 @@ Next wave or plan complete
 
 ## 6. Integration Points with Existing Components
 
-| Existing Component | Integration Point |
-|---|---|
-| `PlangentPlanner` + `PlangentExecutor` | `OrchestrationPlan` extends `Plan`; `dispatch_wave()` replaces the inline `runner()` callback |
-| `CapabilityIndex` | Called by `SubAgentDispatcher._resolve_runner()` to select best agent |
-| `FlashAgent` | Registered in `runner_registry` as `"flash"` for short-lived sub-tasks |
-| `CodexProxyRunner.run_lightweight()` | Used when `agent_hint == "codex"` and `budget_time_s < 600` |
-| `ComputePoolManager` | Optional: `SubAgentDispatcher` can delegate to `ComputePoolManager.submit()` for remote node dispatch |
-| `PolicyEngine.await_approval()` (WL-019) | Called for nodes with `require_hitl=True` before execution |
-| `TaskWorkerPool` (MTSP-03) | Used as the local dispatch backend for non-agent subprocess tasks |
-| `$defer` injection (`deferral.py`, WL-038) | `SubAgentResult.output` is scanned for `$defer` directives post-execution |
-| `OTel instrumentation` | Each `_dispatch_node()` wrapped in `instrument_genai_call()` span with `parent_run_id` context |
-| `PromptQueueManager` (WL-014) | Completed `OrchestrationPlan` results injected as next items when plan produces deferred tasks |
-| `UnifiedWorkerDaemon` (MTSP-05) | `SubAgentDispatcher` can be hosted inside the unified daemon for persistent orchestration |
+| Existing Component                         | Integration Point                                                                                     |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `PlangentPlanner` + `PlangentExecutor`     | `OrchestrationPlan` extends `Plan`; `dispatch_wave()` replaces the inline `runner()` callback         |
+| `CapabilityIndex`                          | Called by `SubAgentDispatcher._resolve_runner()` to select best agent                                 |
+| `FlashAgent`                               | Registered in `runner_registry` as `"flash"` for short-lived sub-tasks                                |
+| `CodexProxyRunner.run_lightweight()`       | Used when `agent_hint == "codex"` and `budget_time_s < 600`                                           |
+| `ComputePoolManager`                       | Optional: `SubAgentDispatcher` can delegate to `ComputePoolManager.submit()` for remote node dispatch |
+| `PolicyEngine.await_approval()` (WL-019)   | Called for nodes with `require_hitl=True` before execution                                            |
+| `TaskWorkerPool` (MTSP-03)                 | Used as the local dispatch backend for non-agent subprocess tasks                                     |
+| `$defer` injection (`deferral.py`, WL-038) | `SubAgentResult.output` is scanned for `$defer` directives post-execution                             |
+| `OTel instrumentation`                     | Each `_dispatch_node()` wrapped in `instrument_genai_call()` span with `parent_run_id` context        |
+| `PromptQueueManager` (WL-014)              | Completed `OrchestrationPlan` results injected as next items when plan produces deferred tasks        |
+| `UnifiedWorkerDaemon` (MTSP-05)            | `SubAgentDispatcher` can be hosted inside the unified daemon for persistent orchestration             |
 
 ---
 
 ## 7. Proposed WL Items (WL-080 through WL-089)
 
 ### [WL-080] InterAgentProtocol: Typed Message Schema
+
 **Status:** pending
 **Priority:** P1
 **Area:** orchestration
@@ -481,6 +490,7 @@ Implement `SubAgentRequest`, `SubAgentResult`, `SubAgentEvent` pydantic models i
 ---
 
 ### [WL-081] OrchestrationPlan: Extended PlanNode Metadata + Convenience Factory
+
 **Status:** pending
 **Priority:** P1
 **Area:** orchestration
@@ -492,6 +502,7 @@ Implement `OrchestrationPlan(Plan)` subclass with `add_task()` factory, `from_go
 ---
 
 ### [WL-082] SubAgentDispatcher: CapabilityIndex-Backed Dispatch with Budget + HITL
+
 **Status:** pending
 **Priority:** P1
 **Area:** orchestration
@@ -503,6 +514,7 @@ Implement `SubAgentDispatcher` in `src/thegent/orchestration/dispatcher.py`. Use
 ---
 
 ### [WL-083] ResultAggregator: Merge Sub-Agent Outputs with Cost Tracking
+
 **Status:** pending
 **Priority:** P1
 **Area:** orchestration
@@ -514,6 +526,7 @@ Implement `ResultAggregator` + `AggregationResult` in `src/thegent/orchestration
 ---
 
 ### [WL-084] PlangentExecutor Integration: Wire Dispatcher into execute_async()
+
 **Status:** pending
 **Priority:** P1
 **Area:** orchestration
@@ -525,6 +538,7 @@ Add `SubAgentDispatcher`-backed execution path to `PlangentExecutor.execute_asyn
 ---
 
 ### [WL-085] SubAgentEvent Streaming: asyncio.Queue + MCP Tool
+
 **Status:** pending
 **Priority:** P2
 **Area:** orchestration
@@ -536,6 +550,7 @@ Wire `SubAgentEvent` emission from `SubAgentDispatcher` to an `asyncio.Queue`. E
 ---
 
 ### [WL-086] BudgetTracker: Per-Node Token Budget Enforcement
+
 **Status:** pending
 **Priority:** P2
 **Area:** orchestration
@@ -546,7 +561,8 @@ Implement `BudgetTracker` that wraps JSONL output from `CodexProxyRunner`/`Direc
 
 ---
 
-### [WL-087] LLM-Backed Plan Decomposition: Override _generate_sub_tasks()
+### [WL-087] LLM-Backed Plan Decomposition: Override \_generate_sub_tasks()
+
 **Status:** pending
 **Priority:** P2
 **Area:** orchestration
@@ -558,6 +574,7 @@ Implement `LLMPlangentPlanner(PlangentPlanner)` that overrides `_generate_sub_ta
 ---
 
 ### [WL-088] CLI: thegent orchestrate plan + thegent orchestrate run
+
 **Status:** pending
 **Priority:** P2
 **Area:** cli, orchestration
@@ -569,6 +586,7 @@ Add `thegent orchestrate plan <goal>` (decompose and print plan DAG) and `thegen
 ---
 
 ### [WL-089] ComputePoolManager Integration: Remote Sub-Agent Dispatch
+
 **Status:** pending
 **Priority:** P3
 **Area:** orchestration, compute
@@ -581,20 +599,20 @@ Wire `ComputePoolManager.submit()` into `SubAgentDispatcher` as an optional remo
 
 ## 8. References
 
-| Component | File |
-|---|---|
-| PlangentPlanner/Executor | `src/thegent/agents/plangent.py` |
-| FlashAgent | `src/thegent/agents/flash_agent.py` |
-| CapabilityIndex | `src/thegent/agents/capability_index.py` |
-| TaskWorkerPool | `src/thegent/orchestration/worker_pool.py` |
-| ComputePoolManager | `src/thegent/compute/offload.py` |
-| DirectAgentRunner | `src/thegent/agents/direct_agents.py` |
-| CodexProxyRunner | `src/thegent/agents/codex_proxy.py` |
-| AgentRunner base | `src/thegent/agents/base.py` |
-| ExecutionEngine | `src/thegent/orchestration/execution/engine.py` |
-| $defer injection | `src/thegent/orchestration/resilience/deferral.py` |
-| HITL governance | `src/thegent/orchestration/oversight.py` |
-| Claude Code context | `docs/context/claude-code.md` |
-| Codex context | `docs/context/codex.md` |
-| Gemini CLI context | `docs/context/gemini-cli.md` |
-| Harness Parity Matrix | `docs/reference/HARNESS_PARITY_MATRIX.md` |
+| Component                | File                                               |
+| ------------------------ | -------------------------------------------------- |
+| PlangentPlanner/Executor | `src/thegent/agents/plangent.py`                   |
+| FlashAgent               | `src/thegent/agents/flash_agent.py`                |
+| CapabilityIndex          | `src/thegent/agents/capability_index.py`           |
+| TaskWorkerPool           | `src/thegent/orchestration/worker_pool.py`         |
+| ComputePoolManager       | `src/thegent/compute/offload.py`                   |
+| DirectAgentRunner        | `src/thegent/agents/direct_agents.py`              |
+| CodexProxyRunner         | `src/thegent/agents/codex_proxy.py`                |
+| AgentRunner base         | `src/thegent/agents/base.py`                       |
+| ExecutionEngine          | `src/thegent/orchestration/execution/engine.py`    |
+| $defer injection         | `src/thegent/orchestration/resilience/deferral.py` |
+| HITL governance          | `src/thegent/orchestration/oversight.py`           |
+| Claude Code context      | `docs/context/claude-code.md`                      |
+| Codex context            | `docs/context/codex.md`                            |
+| Gemini CLI context       | `docs/context/gemini-cli.md`                       |
+| Harness Parity Matrix    | `docs/reference/HARNESS_PARITY_MATRIX.md`          |

@@ -12,7 +12,7 @@ MCP tools borrowed from thegent for other projects.
 
 ### Methods
 
-#### BorrowedMCPTools.__init__
+#### BorrowedMCPTools.**init**
 
 ```python
 __init__(self: Any)

@@ -43,12 +43,12 @@ Run end
 
 ## 4. Implementation Phases
 
-| Phase | Deliverable | Effort |
-|-------|-------------|--------|
-| P1 | Design doc (this) | Done |
-| P2 | Escalation SLA config; SLA breach alert | 1–2 days |
-| P3 | HITL checkpoint enum; optional pause before run | 2–3 days |
-| P4 | Approval workflow (CLI: govern approve/reject) | 2–3 days |
+| Phase | Deliverable                                     | Effort   |
+| ----- | ----------------------------------------------- | -------- |
+| P1    | Design doc (this)                               | Done     |
+| P2    | Escalation SLA config; SLA breach alert         | 1–2 days |
+| P3    | HITL checkpoint enum; optional pause before run | 2–3 days |
+| P4    | Approval workflow (CLI: govern approve/reject)  | 2–3 days |
 
 ---
 

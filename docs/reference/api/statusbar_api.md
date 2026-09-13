@@ -12,7 +12,7 @@ Represents a status indicator.
 
 ### Methods
 
-#### StatusItem.__init__
+#### StatusItem.**init**
 
 ```python
 __init__(self: Any, label: str, value: str, active: bool, color: str)
@@ -30,7 +30,7 @@ Status bar showing session and agent status.
 
 ### Methods
 
-#### StatusbarWidget.__init__
+#### StatusbarWidget.**init**
 
 ```python
 __init__(self: Any)

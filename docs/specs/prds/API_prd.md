@@ -9,12 +9,9 @@ Argis is a production-grade, intelligent LLM orchestration platform that unifies
 
 ## 2. Objectives
 
-
 ## 3. Success Metrics
 
-
 ## 4. Stakeholders
-
 
 ## 5. Target Users
 
@@ -28,1705 +25,1027 @@ Argis is a production-grade, intelligent LLM orchestration platform that unifies
 
 Byzantine ensemble voting (10 diverse voters)
 
-
 ### FR-2: Cost Savings
 
 Semantic caching + smart provider selection = 85% cost reduction
-
 
 ### FR-3: Speed
 
 Sub-5ms cache lookups via ModernBERT embeddings + HNSW indices
 
-
 ### FR-4: Reliability
 
 Automatic provider failover and distributed request handling
-
 
 ### FR-5: Tool Integration
 
 1000+ MCP tools with automatic semantic discovery
 
-
 ### FR-6: Multi-LLM Support
 
 18+ language model providers unified under one API
-
 
 ### FR-7: Type
 
 HTTP Gateway
 
-
 ### FR-8: Features
 
 OpenAI-compatible API, semantic cache, provider routing, GraphQL API
-
 
 ### FR-9: Performance
 
 <100ms p99 response time
 
-
 ### FR-10: Providers
 
 18+ LLM providers integrated
-
 
 ### FR-11: Docs
 
 See `../argisroute/README.md`
 
-
 ### FR-12: Type
 
 MCP Server
-
 
 ### FR-13: Features
 
 Byzantine ensemble, tool registry, state hierarchy
 
-
 ### FR-14: Testing
 
 78% unit test coverage (283/310 tests passing)
-
 
 ### FR-15: Async
 
 Full async/await support
 
-
 ### FR-16: Docs
 
 See `/argisexec/README.md`
-
 
 ### FR-17: Type
 
 Monitoring & control API
 
-
 ### FR-18: Features
 
 Configuration management, deployment orchestration, metrics
-
 
 ### FR-19: API
 
 GraphQL + REST endpoints
 
-
 ### FR-20: Docs
 
 See `/argisgate/docs/API_REFERENCE.md`
-
 
 ### FR-21: Type
 
 macOS menu bar application
 
-
 ### FR-22: Features
 
 Service lifecycle management, local request forwarding, configuration
-
 
 ### FR-23: Platform
 
 macOS 10.15+
 
-
 ### FR-24: Docs
 
 See `/argisagent/README.md`
-
 
 ### FR-25: Python
 
 PEP 8, type hints, docstrings (Sphinx format)
 
-
 ### FR-26: Go
 
 Effective Go, gofmt, golint
-
 
 ### FR-27: Rust
 
 clippy, rustfmt
 
-
 ### FR-28: Test Coverage
 
->80% for critical paths
-
+> 80% for critical paths
 
 ### FR-29: File Size
 
 ≤500 lines per module (target ≤350)
 
-
 ### FR-30: Documentation
 
 Update docs/ for all changes
-
 
 ### FR-31: Documentation
 
 https://docs.argis.io
 
-
 ### FR-32: GitHub Issues
 
 https://github.com/argis-io/argis/issues
-
 
 ### FR-33: Discord Community
 
 https://discord.gg/argis
 
-
 ### FR-34: Email Support
 
 support@argis.io
-
 
 ### FR-35: Office Hours
 
 Every Wednesday at 10am PT
 
-
 ### FR-36: What is Argis?
-
-
-
 
 ### FR-37: Key Benefits
 
-
-
-
 ### FR-38: Prerequisites
-
-
-
 
 ### FR-39: Installation (5 minutes)
 
-
-
-
 ### FR-40: Verify Setup (Optional but Recommended)
-
-
-
 
 ### FR-41: First Request (30 seconds)
 
-
-
-
 ### FR-42: 4-Tier Architecture Diagram
-
-
-
 
 ### FR-43: Data Flow: Request Processing
 
-
-
-
 ### FR-44: 10+ Sub-Projects Overview
-
-
-
 
 ### FR-45: Component Details
 
-
-
-
 ### FR-46: Intelligent Routing
-
-
-
 
 ### FR-47: Semantic Caching
 
-
-
-
 ### FR-48: Tool Discovery
-
-
-
 
 ### FR-49: State Management
 
-
-
-
 ### FR-50: 1. Environment Setup
-
-
-
 
 ### FR-51: 2. Python Services (ArgisExec, ArgisGate)
 
-
-
-
 ### FR-52: 3. Go Services (ArgisRoute, ArgisHub)
-
-
-
 
 ### FR-53: 4. Rust Library (ArgisCores)
 
-
-
-
 ### FR-54: 5. Dashboard & Wizard
-
-
-
 
 ### FR-55: 6. Docker Deployment
 
-
-
-
 ### FR-56: Request Processing Pipeline
-
-
-
 
 ### FR-57: State Hierarchy Flow
 
-
-
-
 ### FR-58: Environment Variables
-
-
-
 
 ### FR-59: Service Configuration Files
 
-
-
-
 ### FR-60: Health Checks
-
-
-
 
 ### FR-61: Monitoring Dashboards
 
-
-
-
 ### FR-62: Metrics Available
-
-
-
 
 ### FR-63: OpenAI-Compatible Endpoints
 
-
-
-
 ### FR-64: GraphQL API (Advanced)
-
-
-
 
 ### FR-65: Setting Up Development Environment
 
-
-
-
 ### FR-66: Testing Strategy
-
-
-
 
 ### FR-67: Contribution Workflow
 
-
-
-
 ### FR-68: Code Standards
-
-
-
 
 ### FR-69: Common Issues
 
-
-
-
 ### FR-70: Debug Commands
-
-
-
 
 ### FR-71: Development Roadmap
 
-
-
-
 ### FR-72: Getting Help
-
-
-
 
 ### FR-73: Quick Links
 
-
-
-
 ### FR-74: License
 
-
-
-
 ### FR-75: Acknowledgments
-
-
-
 
 ### FR-76: Fork
 
 the repository
 
-
 ### FR-77: Create
 
 feature branch: `git checkout -b feature/xyz`
-
 
 ### FR-78: Make
 
 changes following code style
 
-
 ### FR-79: Test
 
 thoroughly: `pytest tests/`
-
 
 ### FR-80: Commit
 
 with clear messages: `git commit -m "Add feature xyz"`
 
-
 ### FR-81: Push
 
 to fork: `git push origin feature/xyz`
-
 
 ### FR-82: Create
 
 pull request to main branch
 
-
 ### FR-83: Agent Management
 
 Register, monitor, and control distributed host agents
-
 
 ### FR-84: Service Monitoring
 
 Real-time health tracking and performance metrics
 
-
 ### FR-85: Alert System
 
 Rule-based anomaly detection with multi-channel notifications
-
 
 ### FR-86: SLA Tracking
 
 Uptime and availability monitoring for critical services
 
-
 ### FR-87: Authentication & Authorization
 
 JWT-based auth with RBAC
-
 
 ### FR-88: WebSocket Support
 
 Real-time status updates and log streaming
 
-
 ### FR-89: Infrastructure Health
 
 Database, cache, and service dependency monitoring
-
 
 ### FR-90: Kubernetes Probes
 
 Liveness (`/health/live`) and readiness (`/health/ready`)
 
-
 ### FR-91: Detailed Health
 
 `/health` endpoint with database, cache, and service status
-
 
 ### FR-92: Service-Level Monitoring
 
 Per-service health status and error rates
 
-
 ### FR-93: Email
 
 SMTP-based notifications
-
 
 ### FR-94: Slack
 
 Channel and direct message integration
 
-
 ### FR-95: Webhooks
 
 Custom HTTP endpoints
-
 
 ### FR-96: System
 
 In-app notifications
 
-
 ### FR-97: PostgreSQL
 
 Persistent data storage (agents, alerts, configurations)
-
 
 ### FR-98: Redis
 
 Session cache, service registry, pub/sub messaging
 
-
 ### FR-99: Prometheus
 
 Metrics collection and monitoring
-
 
 ### FR-100: OpenTelemetry
 
 Distributed tracing and observability
 
-
 ### FR-101: Slack
 
 Alert notifications
-
 
 ### FR-102: DataDog
 
 Log aggregation and APM
 
-
 ### FR-103: Line length
 
 100 characters
-
 
 ### FR-104: Formatter
 
 Black
 
-
 ### FR-105: Linter
 
 Ruff
-
 
 ### FR-106: Type checker
 
 mypy
 
-
 ### FR-107: Docstrings
 
 Google style (see examples below)
-
 
 ### FR-108: [API Reference](docs/API_REFERENCE.md)
 
 - Complete endpoint documentation
 
-
 ### FR-109: [Architecture Guide](docs/ARCHITECTURE.md)
 
 - System design and patterns
-
 
 ### FR-110: [Deployment Guide](docs/DEPLOYMENT.md)
 
 - Production deployment steps
 
-
 ### FR-111: [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
 
 - Common issues and solutions
-
 
 ### FR-112: Issues
 
 Report bugs and request features on GitHub
 
-
 ### FR-113: Discussions
 
 Ask questions and discuss ideas
-
 
 ### FR-114: Email
 
 team@argisgate.dev
 
-
 ### FR-115: Key Capabilities
-
-
-
 
 ### FR-116: Prerequisites
 
-
-
-
 ### FR-117: Local Development Setup
-
-
-
 
 ### FR-118: Quick Verification
 
-
-
-
 ### FR-119: 1. Agent Management
-
-
-
 
 ### FR-120: 2. Health Monitoring
 
-
-
-
 ### FR-121: 3. Alert System
-
-
-
 
 ### FR-122: 4. Anomaly Detection
 
-
-
-
 ### FR-123: 5. SLA Tracking
-
-
-
 
 ### FR-124: 6. Real-Time Updates via WebSocket
 
-
-
-
 ### FR-125: 7. Notification Channels
-
-
-
 
 ### FR-126: Three-Layer Design
 
-
-
-
 ### FR-127: Data Flow
-
-
-
 
 ### FR-128: Component Diagram
 
-
-
-
 ### FR-129: Health & Status
-
-
-
 
 ### FR-130: Agent Management
 
-
-
-
 ### FR-131: Metrics & Performance
-
-
-
 
 ### FR-132: Alerts & Monitoring
 
-
-
-
 ### FR-133: SLA & Compliance
-
-
-
 
 ### FR-134: Authentication
 
-
-
-
 ### FR-135: Infrastructure
-
-
-
 
 ### FR-136: WebSocket (Real-Time)
 
-
-
-
 ### FR-137: Environment Variables
-
-
-
 
 ### FR-138: Loading Configuration
 
-
-
-
 ### FR-139: Quick Test Run
-
-
-
 
 ### FR-140: Test Categories
 
-
-
-
 ### FR-141: Test Coverage
-
-
-
 
 ### FR-142: Writing Tests
 
-
-
-
 ### FR-143: Docker
-
-
-
 
 ### FR-144: Kubernetes
 
-
-
-
 ### FR-145: Production Checklist
-
-
-
 
 ### FR-146: Common Issues
 
-
-
-
 ### FR-147: Debugging
-
-
-
 
 ### FR-148: Key Integrations
 
-
-
-
 ### FR-149: Development Workflow
-
-
-
 
 ### FR-150: Code Style
 
-
-
-
 ### FR-151: Test Requirements
-
-
-
 
 ### FR-152: Pull Request Process
 
-
-
-
 ### FR-153: Documentation
-
-
-
 
 ### FR-154: Community
 
-
-
-
 ### FR-155: Performance Targets
 
-
-
-
 ### FR-156: Current Version: 0.1.0
-
-
-
 
 ### FR-157: Fork and clone
 
 the repository
 
-
 ### FR-158: Create a feature branch
 
 `git checkout -b feature/your-feature`
-
 
 ### FR-159: Install dev dependencies
 
 `uv pip install -e ".[dev]"`
 
-
 ### FR-160: Make changes
 
 following code style (see below)
-
 
 ### FR-161: Run tests
 
 `pytest --cov=argisgate`
 
-
 ### FR-162: Run linting
 
 `ruff check src/` and `mypy src/`
-
 
 ### FR-163: Format code
 
 `black src/` and `ruff format src/`
 
-
 ### FR-164: Commit with clear message
 
 `git commit -m "feat: description"`
-
 
 ### FR-165: Push and create PR
 
 Target `main` branch
 
-
 ### FR-166: System Requirements Validation
 
 - Detects OS, CPU cores, RAM, and validates compatibility
-
 
 ### FR-167: Host Registration
 
 - Hostname input, agent type selection, and service configuration
 
-
 ### FR-168: Local Service Detection
 
 - Automatically detects installed services (Ollama, PostgreSQL, Redis, etc.)
-
 
 ### FR-169: Cloud Provider Configuration
 
 - Optional secure credential management for Supabase, Neo4j Aura, Upstash Redis, and Synadia NATS
 
-
 ### FR-170: Gateway Connection
 
 - Gateway URL configuration with API key/OAuth/local-only authentication
-
 
 ### FR-171: Verification & Summary
 
 - Final review and agent creation on the gateway
 
-
 ### FR-172: File Size
 
 All components < 350 lines (target 300)
-
 
 ### FR-173: Initial Load
 
 < 2 seconds on 4G
 
-
 ### FR-174: Step Navigation
 
 Instant (client-side state)
-
 
 ### FR-175: API Calls
 
 2 async operations (gateway health check, agent creation)
 
-
 ### FR-176: Memory
 
 < 50MB footprint
 
-
 ### FR-177: Directory Structure
-
-
-
 
 ### FR-178: Type System
 
-
-
-
 ### FR-179: State Management
-
-
-
 
 ### FR-180: Basic Setup
 
-
-
-
 ### FR-181: API Integration
-
-
-
 
 ### FR-182: Design Tokens
 
-
-
-
 ### FR-183: Credential Encryption
-
-
-
 
 ### FR-184: Best Practices
 
-
-
-
 ### FR-185: Port Already in Use
-
-
-
 
 ### FR-186: Build Issues
 
-
-
-
 ### FR-187: Type Errors
-
-
-
 
 ### FR-188: 🎛️ Real-Time Agent Monitoring
 
 - Live status updates, metrics visualization, and service lifecycle management
 
-
 ### FR-189: 📊 Advanced Analytics
 
 - Uptime trends, service reliability scoring, resource heatmaps, cost estimation
-
 
 ### FR-190: 🚨 Intelligent Alerting System
 
 - Rule-based alerts with channels, routing, deduplication, and throttling
 
-
 ### FR-191: 🎨 Custom Dashboard Widgets
 
 - Drag-and-drop dashboard builder with 12+ widget types
-
 
 ### FR-192: 👥 RBAC (Role-Based Access Control)
 
 - 4 roles (Admin, Viewer, Member, Guest) with 16 fine-grained permissions
 
-
 ### FR-193: 🌐 Workspace Management
 
 - Create isolated workspaces with templates, layout customization, and state preservation
-
 
 ### FR-194: ⚡ Performance Optimized
 
 - IndexedDB caching, request batching (70-90% reduction), virtual scrolling, WebSocket real-time updates
 
-
 ### FR-195: 🌓 Theme Support
 
 - Dark and light mode with CSS variable-based customization
-
 
 ### FR-196: Node.js
 
 18.0+
 
-
 ### FR-197: TypeScript
 
 4.9+
-
 
 ### FR-198: React
 
 18.0+
 
-
 ### FR-199: Python 3.10+
 
 (for backend API)
-
 
 ### FR-200: Line Limit
 
 500 lines per file (target 350)
 
-
 ### FR-201: TypeScript
 
 Strict mode enforced
-
 
 ### FR-202: Browser Support
 
 Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
 
-
 ### FR-203: Performance
 
 <500ms initial load, <100MB memory usage
-
 
 ### FR-204: Quick Start
 
 `QUICK_START.md` - Phase 1 quick start
 
-
 ### FR-205: Phase 2 Guide
 
 `PHASE2_QUICK_START.md` - Phase 2 features
-
 
 ### FR-206: Implementation Details
 
 `DASHBOARD_IMPLEMENTATION.md` - Phase 1 architecture
 
-
 ### FR-207: Phase 2 Summary
 
 `PHASE2_IMPLEMENTATION_SUMMARY.md` - Complete Phase 2 documentation
-
 
 ### FR-208: Main README
 
 See `/Users/kooshapari/temp-PRODVERCEL/485/API/README.md`
 
-
 ### FR-209: API Reference
 
 See `argisgate/docs/API_REFERENCE.md`
-
 
 ### FR-210: Backend Docs
 
 See `argisexec/docs/`
 
-
 ### FR-211: [argisexec](/argisexec/)
 
 - Python MCP server with Byzantine routing
-
 
 ### FR-212: [argisgate](/argisgate/)
 
 - Python FastAPI gateway with monitoring
 
-
 ### FR-213: [argisroute](../argisroute/README.md)
 
 - Go cloud API gateway (100K LOC)
-
 
 ### FR-214: [argisagent](/argisagent/)
 
 - Swift macOS menu bar app
 
-
 ### FR-215: [argis-wizard](/argis-wizard/)
 
 - Next.js setup wizard
-
 
 ### FR-216: Website
 
 https://argis.io
 
-
 ### FR-217: Documentation
 
 https://docs.argis.io
-
 
 ### FR-218: Email
 
 support@argis.io
 
-
 ### FR-219: GitHub
 
 https://github.com/argis-io/argis
 
-
 ### FR-220: Core Capabilities
-
-
-
 
 ### FR-221: Phase Breakdown
 
-
-
-
 ### FR-222: Prerequisites
-
-
-
 
 ### FR-223: Setup
 
-
-
-
 ### FR-224: Environment Variables
-
-
-
 
 ### FR-225: 1. Initialize Dashboard Service
 
-
-
-
 ### FR-226: 2. Use the Dashboard Component
-
-
-
 
 ### FR-227: 3. Or Use Components Individually
 
-
-
-
 ### FR-228: AgentGrid
-
-
-
 
 ### FR-229: AgentDetailPanel
 
-
-
-
 ### FR-230: MetricsChart
-
-
-
 
 ### FR-231: LogsViewer
 
-
-
-
 ### FR-232: ServiceControls
-
-
-
 
 ### FR-233: SettingsPanel
 
-
-
-
 ### FR-234: Workspace Management
-
-
-
 
 ### FR-235: Advanced Analytics
 
-
-
-
 ### FR-236: Intelligent Alerting
-
-
-
 
 ### FR-237: Custom Dashboard Widgets
 
-
-
-
 ### FR-238: Role-Based Access Control (RBAC)
-
-
-
 
 ### FR-239: IndexedDB Caching
 
-
-
-
 ### FR-240: Request Batching
-
-
-
 
 ### FR-241: Request Deduplication
 
-
-
-
 ### FR-242: Virtual Scrolling
-
-
-
 
 ### FR-243: Performance Targets
 
-
-
-
 ### FR-244: Key API Endpoints
-
-
-
 
 ### FR-245: Key Slices
 
-
-
-
 ### FR-246: Redux Hooks
-
-
-
 
 ### FR-247: Theme Variables
 
-
-
-
 ### FR-248: Switch Themes
-
-
-
 
 ### FR-249: useAgentData
 
-
-
-
 ### FR-250: useMetrics
-
-
-
 
 ### FR-251: useLogs
 
-
-
-
 ### FR-252: useOptimizedWebSocket
-
-
-
 
 ### FR-253: Run Tests
 
-
-
-
 ### FR-254: Test Structure
-
-
-
 
 ### FR-255: Code Quality
 
-
-
-
 ### FR-256: Project Constraints
-
-
-
 
 ### FR-257: Code Organization
 
-
-
-
 ### FR-258: Security Features
-
-
-
 
 ### FR-259: Building Desktop
 
-
-
-
 ### FR-260: Quick References
-
-
-
 
 ### FR-261: External Documentation
 
-
-
-
 ### FR-262: WebSocket Connection Issues
-
-
-
 
 ### FR-263: Metrics Not Loading
 
-
-
-
 ### FR-264: Performance Problems
 
-
-
-
 ### FR-265: Redux DevTools
-
-
-
 
 ### FR-266: Follow TypeScript
 
 Use strict types, no `any`
 
-
 ### FR-267: Keep Files Small
 
 Target 350 lines, max 500
-
 
 ### FR-268: Test Coverage
 
 Aim for >80% on critical paths
 
-
 ### FR-269: Component Memoization
 
 Use React.memo for performance
-
 
 ### FR-270: Redux Patterns
 
 Use Redux Toolkit, avoid mutations
 
-
 ### FR-271: Type Safety
 
 Leverage type system fully
-
 
 ### FR-272: Accessibility
 
 Follow WCAG 2.1 AA standards
 
-
 ### FR-273: Service modules
 
-(argis*, separated by domain)
-
+(argis\*, separated by domain)
 
 ### FR-274: Documentation
 
 (docs/, with good subdirectory structure)
 
-
 ### FR-275: Research/references
 
 (research/, isolated by project)
-
 
 ### FR-276: Infrastructure
 
 (infrastructure configs scattered)
 
-
 ### FR-277: Delete
 
 `Makefile.bak` (use git history)
-
 
 ### FR-278: Move
 
 `smartcp-docs-archive.tar.gz` → `docs/archive/`
 
-
 ### FR-279: Remove
 
 all three (not needed)
-
 
 ### FR-280: Start here:
 
 `docs/getting-started/`
 
-
 ### FR-281: Understand architecture:
 
 `docs/architecture/`
-
 
 ### FR-282: Run project:
 
 Root `Makefile` and `README.md`
 
-
 ### FR-283: Build guides:
 
 `docs/guides/`
-
 
 ### FR-284: API reference:
 
 `docs/api/`
 
-
 ### FR-285: Service code:
 
 `argis<service>/src/`
-
 
 ### FR-286: Deployment:
 
 `docs/operations/`
 
-
 ### FR-287: Infrastructure code:
 
 `config/` (Docker, Postgres, Prometheus)
-
 
 ### FR-288: Monitoring:
 
 `monitoring/` and `config/prometheus/`
 
-
 ### FR-289: Design docs:
 
 `docs/design-docs/`
-
 
 ### FR-290: Reference implementations:
 
 `research/`
 
-
 ### FR-291: Session tracking:
 
 `docs/sessions/`
-
 
 ### FR-292: Agent patterns:
 
 `docs/agent-guide/`
 
-
 ### FR-293: Session tracking:
 
 `docs/sessions/<YYYYMMDD-name>/`
-
 
 ### FR-294: Codebase structure:
 
 This report + `README.md`
 
-
 ### FR-295: Size:
 
 20,787 files, 728MB
-
 
 ### FR-296: Cause:
 
 Includes node_modules and build artifacts
 
-
 ### FR-297: Recommendation:
 
 Add `.gitignore` patterns; consider separate build process
-
 
 ### FR-298: Size:
 
 21,620 files, 6.5GB
 
-
 ### FR-299: Cause:
 
 Multiple full reference implementations
-
 
 ### FR-300: Options:
 
 1. Keep as reference (current)
 
-
 ### FR-301: Status:
 
 Good separation by directory
-
 
 ### FR-302: Concern:
 
 Cross-service dependencies need documentation
 
-
 ### FR-303: Recommendation:
 
 Create dependency matrix in docs/
-
 
 ### FR-304: mypy_cache:
 
 195MB
 
-
 ### FR-305: Recommendation:
 
 Verify .gitignore; rebuild on clone
-
 
 ### FR-306: Note:
 
 These are development-only, should not be committed
 
-
 ### FR-307: Immediate (Phase 1):
 
 Cleanup (few hours)
-
 
 ### FR-308: Short-term (Phase 2):
 
 Configuration organization (1-2 days)
 
-
 ### FR-309: Medium-term (Phase 3):
 
 Documentation consolidation (2-3 days)
-
 
 ### FR-310: Ongoing (Phase 4):
 
 Maintenance and governance
 
-
 ### FR-311: Current State (As of Jan 31, 2026)
-
-
-
 
 ### FR-312: Root Level Inventory
 
-
-
-
 ### FR-313: 2.1 Service Modules (Primary Components)
-
-
-
 
 ### FR-314: 2.2 Documentation & Knowledge
 
-
-
-
 ### FR-315: 2.3 Infrastructure & Configuration
-
-
-
 
 ### FR-316: 2.4 Cache & Build Artifacts (TO BE EXCLUDED)
 
-
-
-
 ### FR-317: 2.5 Empty/Stale Directories
-
-
-
 
 ### FR-318: 3.1 Current Organization Status
 
-
-
-
 ### FR-319: 3.2 Identified Organizational Improvements
-
-
-
 
 ### FR-320: 4.1 Root-Level Empty Directories
 
-
-
-
 ### FR-321: 4.2 Cache Directories (Should Be .gitignored)
-
-
-
 
 ### FR-322: 4.3 Build Artifacts
 
-
-
-
 ### FR-323: 4.4 Documentation Archives
-
-
-
 
 ### FR-324: Phase 1: Immediate Cleanup (Low Risk)
 
-
-
-
 ### FR-325: Phase 2: Configuration Organization (Medium Risk)
-
-
-
 
 ### FR-326: Phase 3: Documentation Consolidation (Medium-High Risk)
 
-
-
-
 ### FR-327: Phase 4: Research Organization (Low Priority)
-
-
-
 
 ### FR-328: 6.1 File Placement Guidelines
 
-
-
-
 ### FR-329: 6.2 Governance Policies
-
-
-
 
 ### FR-330: 6.3 Git Commit Strategy
 
-
-
-
 ### FR-331: 6.4 Documentation Updates Needed
-
-
-
 
 ### FR-332: For Different User Types
 
-
-
-
 ### FR-333: Common Navigation Paths
-
-
-
 
 ### FR-334: Final Metrics
 
-
-
-
 ### FR-335: Service Distribution
-
-
-
 
 ### FR-336: Documentation Distribution
 
-
-
-
 ### FR-337: Issue: Documentation Site Too Large
-
-
-
 
 ### FR-338: Issue: Research Directory Very Large
 
-
-
-
 ### FR-339: Issue: Service Isolation
-
-
-
 
 ### FR-340: Issue: Cache Directory Size
 
-
-
-
 ### FR-341: Remove empty directories:
 
-```bash
+````bash
 
 
 ### FR-342: Remove backup files:
@@ -21079,3 +20398,4 @@ Architecture details to be documented.
 - Install
 - Verify Installation
 - Help
+````

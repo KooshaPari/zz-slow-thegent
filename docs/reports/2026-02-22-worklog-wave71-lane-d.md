@@ -1,7 +1,9 @@
 # Wave 71 Lane D Evidence Report (2026-02-22)
 
 ## Scope
+
 Lane D ownership for:
+
 - WL-184: WL header normalization pass
 - WL-185: reflection rollback command
 - WL-186: human-readable dry-run diffs
@@ -13,6 +15,7 @@ Constraint honored: did not modify `docs/reference/WORK_STREAM.md`.
 ## Implemented Changes
 
 ### WL-184 — WL Header Normalization Pass
+
 Implemented normalization in sync parsing path so malformed WL headers are parsed deterministically before board reflection parsing.
 
 - `src/thegent/commands/sync.py`
@@ -20,6 +23,7 @@ Implemented normalization in sync parsing path so malformed WL headers are parse
   - `_parse_work_stream_items()` now normalizes content before extracting items/status.
 
 ### WL-185 — Reflection Rollback Command
+
 Expanded CLI rollback workflow to include create and restore-latest operations.
 
 - `src/thegent/cli/apps/sync.py`
@@ -31,6 +35,7 @@ Expanded CLI rollback workflow to include create and restore-latest operations.
   - `take_snapshot()` now accepts `cycle_id` and persists it.
 
 ### WL-186 — Human-Readable Dry-Run Diffs
+
 Dry-run output now emits field-level local->remote intent deltas.
 
 - `src/thegent/commands/sync.py`
@@ -38,6 +43,7 @@ Dry-run output now emits field-level local->remote intent deltas.
   - `sync_board(..., dry_run=True)` now returns readable diff lines in `changes` and `details` context.
 
 ### WL-187 — External Write Batching
+
 Board sync writes are now partitioned into deterministic batches with aggregated results.
 
 - `src/thegent/commands/sync.py`
@@ -46,6 +52,7 @@ Board sync writes are now partitioned into deterministic batches with aggregated
   - `_perform_board_sync()` now iterates batches and aggregates `synced/failed/errors/updated_items/batches`.
 
 ### WL-188 — WL-Range Partitioned Sync
+
 Added inclusive WL range filtering to sync execution.
 
 - `src/thegent/commands/sync.py`
@@ -79,22 +86,29 @@ Added inclusive WL range filtering to sync execution.
 ## Command Evidence
 
 ### Targeted validation
+
 ```bash
 uv run python -m pytest -q tests/integrations/test_wl185_reflection_rollback.py tests/test_wl159_board_sync.py tests/commands/test_sync_board_autopilot_cli.py tests/commands/test_sync_rollback_cli.py
 ```
+
 Result: `43 passed in 132.95s`
 
 ### Compile sanity
+
 ```bash
 python -m py_compile src/thegent/commands/sync.py src/thegent/cli/apps/sync.py src/thegent/integrations/workstream_autosync.py src/thegent/integrations/reflection_rollback.py
 ```
+
 Result: success
 
 ### Full quality gate
+
 ```bash
 task quality
 ```
+
 Result: failed at max-lines gate due unrelated concurrent file state:
+
 - `[FAIL] src/thegent/integrations/workstream_autosync.py: 2888 lines (max 2500)`
 
 ## Gaps / Blockers

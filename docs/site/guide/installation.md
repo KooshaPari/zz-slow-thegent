@@ -2,11 +2,11 @@
 
 ## Requirements
 
-| Requirement | Version | Notes |
-|-------------|---------|-------|
-| Python | 3.12+ | Required |
-| Rust | stable | Required for native extensions |
-| Bun | latest | Needed for docsite dev/build |
+| Requirement | Version | Notes                          |
+| ----------- | ------- | ------------------------------ |
+| Python      | 3.12+   | Required                       |
+| Rust        | stable  | Required for native extensions |
+| Bun         | latest  | Needed for docsite dev/build   |
 
 ## Install Methods
 

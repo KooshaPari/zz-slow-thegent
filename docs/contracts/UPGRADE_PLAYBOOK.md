@@ -27,12 +27,12 @@ Use this pattern when introducing a new contract version that coexists with the 
 
 ### 3.1 Phases
 
-| Phase | Read | Write | Duration |
-|-------|------|-------|----------|
-| **Dual-read** | Accept old + new formats | Emit old only | Until adapters support new |
-| **Dual-write** | Accept old + new | Emit both old and new | Adoption ramp |
-| **Cutover** | Accept new only | Emit new only | After adoption threshold |
-| **Deprecation** | Reject old | Emit new only | After migration window |
+| Phase           | Read                     | Write                 | Duration                   |
+| --------------- | ------------------------ | --------------------- | -------------------------- |
+| **Dual-read**   | Accept old + new formats | Emit old only         | Until adapters support new |
+| **Dual-write**  | Accept old + new         | Emit both old and new | Adoption ramp              |
+| **Cutover**     | Accept new only          | Emit new only         | After adoption threshold   |
+| **Deprecation** | Reject old               | Emit new only         | After migration window     |
 
 ### 3.2 Implementation
 
@@ -67,13 +67,13 @@ Progressive traffic ramp for new contract versions.
 
 ### 4.1 Stages
 
-| Stage | Traffic % | Observation | Promotion Criteria |
-|-------|-----------|-------------|--------------------|
-| **Shadow** | 0% (log only) | Compare old vs new output | No errors in shadow |
-| **Canary 1** | 1–5% | Monitor drift, fallback rate | Drift within budget |
-| **Canary 2** | 10–25% | Same | No regression |
-| **Canary 3** | 50% | Same | SLO met |
-| **Full** | 100% | Same | — |
+| Stage        | Traffic %     | Observation                  | Promotion Criteria  |
+| ------------ | ------------- | ---------------------------- | ------------------- |
+| **Shadow**   | 0% (log only) | Compare old vs new output    | No errors in shadow |
+| **Canary 1** | 1–5%          | Monitor drift, fallback rate | Drift within budget |
+| **Canary 2** | 10–25%        | Same                         | No regression       |
+| **Canary 3** | 50%           | Same                         | SLO met             |
+| **Full**     | 100%          | Same                         | —                   |
 
 ### 4.2 Configuration
 
@@ -94,13 +94,13 @@ Use environment or config to control canary percentage:
 
 ### 5.1 Rollback Triggers
 
-| Trigger | Action |
-|---------|--------|
-| Structural drift rate > budget | Pause canary, revert to old version |
-| Semantic drift rate > budget | Pause canary, investigate |
-| Fallback rate spike | Revert, check adapter |
-| Conformance suite failure | Block promotion, fix adapter |
-| Migration window expired | Old version rejected; ensure cutover complete |
+| Trigger                        | Action                                        |
+| ------------------------------ | --------------------------------------------- |
+| Structural drift rate > budget | Pause canary, revert to old version           |
+| Semantic drift rate > budget   | Pause canary, investigate                     |
+| Fallback rate spike            | Revert, check adapter                         |
+| Conformance suite failure      | Block promotion, fix adapter                  |
+| Migration window expired       | Old version rejected; ensure cutover complete |
 
 ### 5.2 Rollback Procedure
 
@@ -123,13 +123,13 @@ If production is impacted:
 
 ## 6. CLI Reference
 
-| Command | Purpose |
-|---------|---------|
+| Command                                            | Purpose                                 |
+| -------------------------------------------------- | --------------------------------------- |
 | `thegent govern migration <contract_id> <version>` | Evaluate migration status for a version |
-| `thegent govern migration --format json` | JSON output for automation |
-| `thegent govern contracts` | List all contract versions |
-| `thegent observe drift` | Check drift and alert budgets |
-| `thegent govern conformance` | Run adapter conformance suite |
+| `thegent govern migration --format json`           | JSON output for automation              |
+| `thegent govern contracts`                         | List all contract versions              |
+| `thegent observe drift`                            | Check drift and alert budgets           |
+| `thegent govern conformance`                       | Run adapter conformance suite           |
 
 ---
 

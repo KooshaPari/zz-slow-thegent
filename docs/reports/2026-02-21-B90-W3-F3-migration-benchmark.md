@@ -35,12 +35,12 @@ The re-run result is within normal variance of the recorded baseline (0.1487 us 
 
 ## Current Implementation Gap
 
-| Layer | Status |
-|-------|--------|
-| Python impl | ACTIVE — currently serving all calls |
-| Rust PyO3 wrapper | WRITTEN — `crates/thegent-parser/src/lib.rs` |
+| Layer                    | Status                                        |
+| ------------------------ | --------------------------------------------- |
+| Python impl              | ACTIVE — currently serving all calls          |
+| Rust PyO3 wrapper        | WRITTEN — `crates/thegent-parser/src/lib.rs`  |
 | Python extension (`.so`) | NOT COMPILED — maturin build not yet executed |
-| CI integration | NOT YET WIRED |
+| CI integration           | NOT YET WIRED                                 |
 
 The Rust implementation has been authored but is not yet compiled as a Python extension module. The PyO3 wrapper in `crates/thegent-parser/src/lib.rs` implements the same parsing logic in Rust and is ready for compilation.
 
@@ -61,11 +61,13 @@ cd crates/thegent-parser && maturin develop --release
 ## Expected Speedup Analysis
 
 `parse_model_suffix` is a string parsing function performing:
+
 1. `str.split('/', 1)` — O(n) linear scan
 2. String slice operations — O(1)
 3. Struct construction — O(1)
 
 Rust string parsing (using `str::splitn`) will benefit from:
+
 - Zero GIL overhead (no Python object allocation per call)
 - Cache-line-aligned string representation (Rust `&str` vs Python `str` object header)
 - No refcount operations during intermediate slices

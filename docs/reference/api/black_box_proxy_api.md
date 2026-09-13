@@ -8,7 +8,7 @@ Universal proxy for external agents.
 
 ### Methods
 
-#### BlackBoxProxy.__init__
+#### BlackBoxProxy.**init**
 
 ```python
 __init__(self: Any, agent_cmd: list[str], policy_enforcer: Any)

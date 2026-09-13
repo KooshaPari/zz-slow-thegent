@@ -8,8 +8,8 @@ Provides async CRUD operations and semantic search over the Supermemory REST API
 Uses httpx for HTTP, tenacity for retry on transient errors (429/503).
 
 Config:
-    THGENT_SUPERMEMORY_API_KEY  - Required. API key (x-sm-api-key header).
-    THGENT_SUPERMEMORY_BASE_URL - Optional. Defaults to https://api.supermemory.ai/v3.
+THGENT_SUPERMEMORY_API_KEY - Required. API key (x-sm-api-key header).
+THGENT_SUPERMEMORY_BASE_URL - Optional. Defaults to https://api.supermemory.ai/v3.
 
 ---
 
@@ -39,7 +39,7 @@ Raised on unrecoverable API errors (4xx excluding 429, 5xx excluding 503).
 
 ### Methods
 
-#### SupermemoryAPIError.__init__
+#### SupermemoryAPIError.**init**
 
 ```python
 __init__(self: Any, status_code: int, message: str)
@@ -67,7 +67,7 @@ Example::
 
 ### Methods
 
-#### SupermemoryClient.__init__
+#### SupermemoryClient.**init**
 
 ```python
 __init__(self: Any, api_key: Any, base_url: Any)
@@ -79,7 +79,7 @@ Initialise the client.
 
 - `api_key`: Supermemory API key. Falls back to THGENT_SUPERMEMORY_API_KEY.
 - `base_url`: Override the API base URL. Falls back to THGENT_SUPERMEMORY_BASE_URL
-or https://api.supermemory.ai/v3.
+  or https://api.supermemory.ai/v3.
 
 ---
 

@@ -12,7 +12,7 @@ Manages federated policy resolution and health.
 
 ### Methods
 
-#### FederatedPolicyManager.__init__
+#### FederatedPolicyManager.**init**
 
 ```python
 __init__(self: Any, base_dir: Path)
@@ -98,7 +98,7 @@ Manages policy federation across multiple organizations.
 
 ### Methods
 
-#### FederationManager.__init__
+#### FederationManager.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)
@@ -134,7 +134,7 @@ Namespace identifier for org/project/env.
 
 ### Methods
 
-#### PolicyNamespace.__init__
+#### PolicyNamespace.**init**
 
 ```python
 __init__(self: Any, org: str, project: str, environment: str)

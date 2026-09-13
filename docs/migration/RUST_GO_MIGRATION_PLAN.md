@@ -3,6 +3,7 @@
 ## Problem Statement
 
 Shell scripts are causing performance issues:
+
 - `which` command timing out (2m 43s)
 - Shell initialization overhead from wrapper functions
 - Expensive operations in hot paths (PATH resolution, process scanning)
@@ -82,6 +83,7 @@ maturin develop --release --features python
 ### Step 2: Create Fast Tool Detection Binary
 
 Create `thegent/crates/thegent-tool-detect/src/main.rs`:
+
 - Single binary that detects all tools
 - Caches results in `/tmp/thegent-tools-{uid}.cache`
 - Returns JSON with tool paths
@@ -90,6 +92,7 @@ Create `thegent/crates/thegent-tool-detect/src/main.rs`:
 ### Step 3: Migrate PATH Resolution
 
 Move `resolve_real_binary()` to Rust:
+
 - Add to `thegent-discovery` crate
 - Expose as Python function
 - Update `common.sh` to call Python function (temporary)
@@ -98,6 +101,7 @@ Move `resolve_real_binary()` to Rust:
 ### Step 4: Replace Shell Wrappers
 
 Gradually replace bash wrappers:
+
 1. Keep bash wrappers as fallback
 2. Add Rust/Go binaries that do the same work
 3. Update hooks to prefer binaries
@@ -105,14 +109,14 @@ Gradually replace bash wrappers:
 
 ## Expected Performance Improvements
 
-| Operation | Current (bash) | Target (Rust/Go) | Speedup |
-|-----------|---------------|------------------|---------|
-| Tool detection | 60ms | 1ms | 60x |
-| PATH resolution | 20ms | 0.5ms | 40x |
-| Process scanning | 50ms | 0.5ms | 100x |
-| Git operations | 100ms | 10ms | 10x |
-| File discovery | 30ms | 2ms | 15x |
-| Hook dispatch | 200ms | 50ms | 4x |
+| Operation        | Current (bash) | Target (Rust/Go) | Speedup |
+| ---------------- | -------------- | ---------------- | ------- |
+| Tool detection   | 60ms           | 1ms              | 60x     |
+| PATH resolution  | 20ms           | 0.5ms            | 40x     |
+| Process scanning | 50ms           | 0.5ms            | 100x    |
+| Git operations   | 100ms          | 10ms             | 10x     |
+| File discovery   | 30ms           | 2ms              | 15x     |
+| Hook dispatch    | 200ms          | 50ms             | 4x      |
 
 ## Migration Checklist
 
@@ -131,6 +135,7 @@ Gradually replace bash wrappers:
 ### Fix `which` Timeout
 
 1. **Skip shell initialization for `which`**:
+
    ```bash
    # In .zshrc or .bashrc
    which() {
@@ -149,22 +154,25 @@ Gradually replace bash wrappers:
 ## Files to Migrate
 
 ### High Priority (Performance Critical)
+
 - `hooks/lib/common.sh` → Rust library + Python bindings
 - `hooks/lib/fd-wrapper.sh` → Rust binary
 - `hooks/lib/git-cache.sh` → Rust binary (use `thegent-git`)
 - `hooks/lib/git-wrapper.sh` → Rust binary (use `thegent-git`)
 
 ### Medium Priority (Frequently Called)
+
 - `hooks/pretool-dispatcher.sh` → Go binary
 - `hooks/posttool-dispatcher.sh` → Go binary
 - `hooks/lib/procs-wrapper.sh` → Rust binary
 
 ### Low Priority (Less Critical)
+
 - Individual hook scripts (keep as bash for flexibility)
 - Utility scripts (migration scripts, etc.)
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog

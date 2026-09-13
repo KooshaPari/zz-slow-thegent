@@ -12,13 +12,13 @@ This policy standardizes:
 
 ## Runtime and Coverage Matrix
 
-| Language | Primary Runtime | Required Matrix | Fallback | Gate Policy |
-|---|---|---|---|---|
-| Python | `uv` + CPython 3.14 | CPython 3.14 + PyPy 3.11 | CPython 3.13 only when dependency/tooling blocks primary matrix | Must pass primary runtime + at least one alternate runtime in CI |
-| Rust | stable toolchain | `cargo test`, `clippy -D warnings`, `fmt --check` | nightly only for explicitly gated features | Stable must remain green; nightly may be non-blocking unless feature requires it |
-| Zig | pinned Zig stable | `zig test`, build in release-safe mode | next Zig as preview lane | Stable lane blocking; preview lane advisory |
-| Go | latest two supported Go minors | `go test ./...`, `go vet`, race lane for critical pkgs | previous minor as compatibility lane | Latest lane blocking; compatibility lane soft-block until green for release branch |
-| Mojo | pinned Mojo version | smoke + integration tests against Python interop boundary | Python/Rust reference implementation for parity checks | Mojo lane can start advisory; becomes blocking once parity SLO achieved |
+| Language | Primary Runtime                | Required Matrix                                           | Fallback                                                        | Gate Policy                                                                        |
+| -------- | ------------------------------ | --------------------------------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Python   | `uv` + CPython 3.14            | CPython 3.14 + PyPy 3.11                                  | CPython 3.13 only when dependency/tooling blocks primary matrix | Must pass primary runtime + at least one alternate runtime in CI                   |
+| Rust     | stable toolchain               | `cargo test`, `clippy -D warnings`, `fmt --check`         | nightly only for explicitly gated features                      | Stable must remain green; nightly may be non-blocking unless feature requires it   |
+| Zig      | pinned Zig stable              | `zig test`, build in release-safe mode                    | next Zig as preview lane                                        | Stable lane blocking; preview lane advisory                                        |
+| Go       | latest two supported Go minors | `go test ./...`, `go vet`, race lane for critical pkgs    | previous minor as compatibility lane                            | Latest lane blocking; compatibility lane soft-block until green for release branch |
+| Mojo     | pinned Mojo version            | smoke + integration tests against Python interop boundary | Python/Rust reference implementation for parity checks          | Mojo lane can start advisory; becomes blocking once parity SLO achieved            |
 
 ## Frontmatter and Backmatter Defaults
 
@@ -47,13 +47,13 @@ Append:
 
 ## Conversion and Refactor Decision Matrix
 
-| Condition | Keep Current Stack | Refactor in Place | Convert Language |
-|---|---|---|---|
-| Team/runtime maturity high, perf acceptable | Yes | Optional cleanup only | No |
-| Perf pain in hot path, architecture otherwise healthy | No | Yes: isolate hotspots and optimize | Convert hotspot module only |
-| Tooling/governance friction high but domain logic stable | No | Yes: improve build/test ergonomics first | Convert only if friction persists after 2 governance cycles |
-| Ecosystem/library mismatch blocks core roadmap | No | Temporary adapters only | Yes: convert to language with strong library support |
-| Operational latency/cost SLO repeatedly missed | No | First profile + tune | Convert critical path after failed tuning attempts |
+| Condition                                                | Keep Current Stack | Refactor in Place                        | Convert Language                                            |
+| -------------------------------------------------------- | ------------------ | ---------------------------------------- | ----------------------------------------------------------- |
+| Team/runtime maturity high, perf acceptable              | Yes                | Optional cleanup only                    | No                                                          |
+| Perf pain in hot path, architecture otherwise healthy    | No                 | Yes: isolate hotspots and optimize       | Convert hotspot module only                                 |
+| Tooling/governance friction high but domain logic stable | No                 | Yes: improve build/test ergonomics first | Convert only if friction persists after 2 governance cycles |
+| Ecosystem/library mismatch blocks core roadmap           | No                 | Temporary adapters only                  | Yes: convert to language with strong library support        |
+| Operational latency/cost SLO repeatedly missed           | No                 | First profile + tune                     | Convert critical path after failed tuning attempts          |
 
 ## Conversion Triggers (must meet at least two)
 

@@ -20,7 +20,7 @@ Central registry for managing and querying system capabilities.
 
 ### Methods
 
-#### CapabilityRegistry.__init__
+#### CapabilityRegistry.**init**
 
 ```python
 __init__(self: Any)

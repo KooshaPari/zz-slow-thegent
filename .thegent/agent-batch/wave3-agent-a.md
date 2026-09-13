@@ -1,6 +1,7 @@
 # Wave 3 Agent A (2026-02-21)
 
 ## Completed slices
+
 - WL-103
   - Integrated `ContextCompactor` into a real runner path in `CodexProxyRunner` LiteLLM API execution.
   - Added `_prepare_litellm_messages(...)` to build message turns, compact oversized context, and propagate context usage telemetry (`context_tokens_used`, `context_window_max`) into `RunResult`.
@@ -36,6 +37,7 @@
   - Added focused tests for skill injection behavior and missing-skill failure path.
 
 ## Validation
+
 - `uv run python -m py_compile src/thegent/agents/codex_proxy.py src/thegent/mcp/server/tools_sessions.py src/thegent/cli/commands/cli.py src/thegent/cli/apps/run.py src/thegent/cli/apps/skills.py packages/thegent-sdk/src/thegent_sdk/client.py packages/thegent-sdk/src/thegent_sdk/types.py scripts/check_python_benchmark_regression.py`
   - Passed.
 
@@ -46,11 +48,13 @@
   - Passed: `{"ok": true, "max_regression_pct": 15.0}`.
 
 ## Blockers
+
 - `task bench:smoke:ci` cannot currently be executed in this workspace due a pre-existing Task parser failure unrelated to this slice:
   - `Taskfile.yml:121:9 invalid keys in command`
   - This parser error occurs before task execution and predates this wave’s edits.
 
 ## Exact files touched
+
 - `.thegent/agent-batch/wave3-agent-a.md`
 - `.github/workflows/ci.yml`
 - `Taskfile.yml`

@@ -5,6 +5,7 @@
 Condensed output extraction for agent streams.
 
 Supports:
+
 - JSONL / stream-json: Extract last assistant message (type=message, role=assistant).
 - Plain text: Extract last meaningful block, stripping trailing noise.
 - Structural validation: ParseResult with error_class for downstream routing/fallback.
@@ -19,6 +20,7 @@ for strip_think_blocks. Falls back to Python regex otherwise.
 Structured parse result with error classification for routing/fallback.
 
 Use error_class to decide retry, fallback, or alert:
+
 - parse_ok: extraction succeeded
 - parse_truncated: output likely truncated (streaming)
 - parse_malformed: JSON/XML parse failure
@@ -35,6 +37,7 @@ condense_stream_to_display(stdout: str)
 Produce Cursor-style condensed output from agent stream JSON.
 
 Parses JSONL stream and formats:
+
 - User answers: "User answered questions:" + bullets (Q → A)
 - Agent turns: "agent(task)" + first tool + "+N more tool uses"
 

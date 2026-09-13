@@ -43,12 +43,12 @@ Sleep 2s
 Create `.ts` files in `web/` directory:
 
 ```typescript
-import { test } from '@playwright/test'
+import { test } from "@playwright/test";
 
-test('demo', async ({ page }) => {
-  await page.goto('https://example.com')
+test("demo", async ({ page }) => {
+  await page.goto("https://example.com");
   // ... record interactions
-})
+});
 ```
 
 ---

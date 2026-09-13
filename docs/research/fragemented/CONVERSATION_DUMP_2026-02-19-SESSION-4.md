@@ -18,26 +18,28 @@
 
 Dispatched 8 agents in parallel — one per phase group — each targeting a disjoint set of source files:
 
-| Agent | Phases | Source files | Tests written |
-|---|---|---|---|
-| agent-merge | 7.3+7.4 | merge.py | 30 |
-| agent-conflict | 7.2 | coordination.py | 36 (+ new impl) |
-| agent-filecoord | 8.1-8.4 | coordination.py + file_coordination.py | 34 |
-| agent-cache | 9.1-9.3 | cache.py | 20 |
-| agent-isolation | 10.1-10.3 | isolation.py | 14 |
-| agent-process | 12.1-12.4 | process_detection.py | 17 |
-| agent-injection | 13.1-13.3 | injection.py | 15 (+ bug fix) |
-| agent-worktree | 15.1-15.3 | worktree.py | 23 (+ new impl) |
+| Agent           | Phases    | Source files                           | Tests written   |
+| --------------- | --------- | -------------------------------------- | --------------- |
+| agent-merge     | 7.3+7.4   | merge.py                               | 30              |
+| agent-conflict  | 7.2       | coordination.py                        | 36 (+ new impl) |
+| agent-filecoord | 8.1-8.4   | coordination.py + file_coordination.py | 34              |
+| agent-cache     | 9.1-9.3   | cache.py                               | 20              |
+| agent-isolation | 10.1-10.3 | isolation.py                           | 14              |
+| agent-process   | 12.1-12.4 | process_detection.py                   | 17              |
+| agent-injection | 13.1-13.3 | injection.py                           | 15 (+ bug fix)  |
+| agent-worktree  | 15.1-15.3 | worktree.py                            | 23 (+ new impl) |
 
 ## Implementations Added
 
 ### Phase 7.2 — Conflict Prediction (`coordination.py`)
+
 - `EditIntent` dataclass — agent's planned edit (file, operation, line_ranges)
 - `ConflictPrediction` dataclass — trial merge result (has_conflict, files, details)
 - `IntentRegistry` class — disk-based JSON intent registry per agent
 - `predict_merge_conflicts(intent_a, intent_b)` — 7 conflict scenarios covered
 
 ### Phase 15.2 — Branch Coordination (`worktree.py`)
+
 - `BranchCollisionError` exception class
 - JSON-based branch registry: `_load/_save/_register/_unregister/_check_collision`
 - `get_branch_status()` — per-branch status tracking
@@ -74,6 +76,7 @@ Final mesh total:           282 tests  ✅ (282/282 passing)
 ## WORK_STREAM.md — 25 Items Closed
 
 Moved from PENDING → COMPLETED:
+
 - TGNT-P7.1, P7.2, P7.3, P7.4 (Smart Merge)
 - TGNT-P8.1, P8.2, P8.3, P8.4 (File Coordination)
 - TGNT-P9.1, P9.2, P9.3 (Request Coalescing v2)

@@ -30,12 +30,14 @@
 ### Implementation Steps
 
 1. **Create crate structure**:
+
 ```bash
 mkdir -p crates/thegent-resources/src
 cd crates/thegent-resources
 ```
 
 2. **Cargo.toml**:
+
 ```toml
 [package]
 name = "thegent-resources"
@@ -57,6 +59,7 @@ libc = "0.2"
 ```
 
 3. **lib.rs** (core logic):
+
 ```rust
 use serde::Serialize;
 use std::fs;
@@ -110,6 +113,7 @@ fn get_load_avg() -> (f64, f64, f64) {
 ```
 
 4. **bin.rs** (standalone binary):
+
 ```rust
 use thegent_resources::sample;
 use serde_json;
@@ -121,6 +125,7 @@ fn main() {
 ```
 
 5. **Python integration** (see `load_based_limits.py`):
+
 ```python
 def _sample_resources_native() -> ResourceSnapshot | None:
     """BKM-01: Sample via thegent-resources Rust binary."""
@@ -156,12 +161,14 @@ print(sample_resources())
 ### Implementation Steps
 
 1. **Create crate structure**:
+
 ```bash
 mkdir -p crates/thegent-parser/src
 cd crates/thegent-parser
 ```
 
 2. **Cargo.toml**:
+
 ```toml
 [package]
 name = "thegent-parser"
@@ -178,6 +185,7 @@ lazy_static = "1"
 ```
 
 3. **pyproject.toml**:
+
 ```toml
 [project]
 name = "thegent-parser"
@@ -190,6 +198,7 @@ module-name = "thegent_parser"
 4. **lib.rs** (see existing implementation)
 
 5. **Python integration**:
+
 ```python
 # contracts/parser.py
 def _get_native_parser():
@@ -229,12 +238,14 @@ print(extract_tags('<TASK>test</TASK>'))
 ### Implementation Steps
 
 1. **Create crate structure**:
+
 ```bash
 mkdir -p crates/thegent-crypto/src
 cd crates/thegent-crypto
 ```
 
 2. **Cargo.toml**:
+
 ```toml
 [package]
 name = "thegent-crypto"
@@ -255,6 +266,7 @@ subtle = "2.5"
 3. **lib.rs** (see existing implementation)
 
 4. **Python integration**:
+
 ```python
 # governance/signatures.py
 def _get_native_crypto():
@@ -281,6 +293,7 @@ def sign_artifact(artifact: dict, secret_key: str) -> str:
 ### Implementation Steps
 
 1. **Modify `load_based_limits.py`**:
+
 ```python
 def sample_resources() -> ResourceSnapshot:
     """Sample system resources with native fallback."""
@@ -302,12 +315,14 @@ def sample_resources() -> ResourceSnapshot:
 ### Implementation Steps
 
 1. **Create crate structure**:
+
 ```bash
 mkdir -p crates/thegent-shm/src
 cd crates/thegent-shm
 ```
 
 2. **Cargo.toml**:
+
 ```toml
 [package]
 name = "thegent-shm"
@@ -326,6 +341,7 @@ serde_json = "1"
 ```
 
 3. **lib.rs** (shared memory region):
+
 ```rust
 use pyo3::prelude::*;
 use shared_memory::{Shmem, ShmemConf};
@@ -373,6 +389,7 @@ fn thegent_shm(m: &Bound<'_, PyModule>) -> PyResult<()> {
 ```
 
 4. **Python integration**:
+
 ```python
 # orchestration/circuit_breaker.py
 def _get_native_shm():
@@ -402,12 +419,14 @@ class CircuitBreakerRegistry:
 ### Implementation Steps
 
 1. **Create crate structure**:
+
 ```bash
 mkdir -p crates/thegent-git/src
 cd crates/thegent-git
 ```
 
 2. **Cargo.toml**:
+
 ```toml
 [package]
 name = "thegent-git"
@@ -425,6 +444,7 @@ serde_json = "1"
 ```
 
 3. **lib.rs**:
+
 ```rust
 use pyo3::prelude::*;
 use gix::{Repository, repository::open};
@@ -481,6 +501,7 @@ fn thegent_git(m: &Bound<'_, PyModule>) -> PyResult<()> {
 ```
 
 4. **Python integration**:
+
 ```python
 # forensics/snapshot.py
 def _get_native_git():
@@ -514,12 +535,14 @@ def _get_git_branch(self, root: Path) -> str:
 ### Implementation Steps
 
 1. **Create crate structure**:
+
 ```bash
 mkdir -p crates/thegent-discovery/src
 cd crates/thegent-discovery
 ```
 
 2. **Cargo.toml**:
+
 ```toml
 [package]
 name = "thegent-discovery"
@@ -537,6 +560,7 @@ sysinfo = "0.30"
 ```
 
 3. **bin.rs**:
+
 ```rust
 use serde::Serialize;
 use sysinfo::{System, SystemExt, ProcessExt, Pid};
@@ -577,6 +601,7 @@ fn main() {
 ```
 
 4. **Python integration**:
+
 ```python
 # discovery.py
 def _discover_agents_native() -> list[DiscoveredAgent]:
@@ -612,6 +637,7 @@ def _discover_agents_native() -> list[DiscoveredAgent]:
 ### Implementation Steps
 
 1. **Extend `thegent-parser` crate**:
+
 ```rust
 use pyo3::prelude::*;
 use simd_json;
@@ -643,6 +669,7 @@ fn parse_jsonl_stream(stream: &[u8]) -> PyResult<Vec<PyObject>> {
 ### Implementation Steps
 
 1. **Extend `hooks/hook-dispatcher/src/`**:
+
 ```rust
 // Add governance scanning functions
 pub fn scan_secrets(content: &str) -> Vec<SecretMatch> {
@@ -655,6 +682,7 @@ pub fn scan_lint(content: &str, rules: &[LintRule]) -> Vec<LintIssue> {
 ```
 
 2. **Expose via CLI**:
+
 ```rust
 // hooks/hook-dispatcher/src/bin.rs
 match args.command {
@@ -669,6 +697,7 @@ match args.command {
 ```
 
 3. **Python integration**:
+
 ```python
 # governance/scanner.py
 def scan_native(path: Path) -> list[Issue]:
@@ -777,7 +806,6 @@ uv run pytest tests/test_native_backmatter.py
 - [PyO3 User Guide](https://pyo3.rs/)
 - [maturin Documentation](https://www.maturin.rs/)
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -786,15 +814,18 @@ uv run pytest tests/test_native_backmatter.py
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

@@ -44,6 +44,7 @@
 **What it is**: A Model Context Protocol server that orchestrates 7+ AI models (Gemini, OpenAI, Grok, Azure, Ollama, OpenRouter, DIAL) to enable multi-model workflows.
 
 **Core innovations**:
+
 - **Consensus debates** — Multi-model perspective gathering with assigned stances
 - **CLI subagent spawning** — Isolated processes (Codex, Gemini CLI) for specialized tasks
 - **Context revival** — Cross-session continuity via Redis + summarizer
@@ -61,10 +62,10 @@
 
 ### Tertiary: Coder Projects
 
-| Project | URL | Purpose | Relevance |
-|---------|-----|---------|-----------|
-| **Mux** | https://github.com/coder/mux | Parallel agent orchestration | Plan/exec mode, agent coordination |
-| **Coder-MCP** | https://github.com/coder-mcp/coder-mcp | Persistent code memory | AST analysis, semantic search |
+| Project       | URL                                    | Purpose                      | Relevance                          |
+| ------------- | -------------------------------------- | ---------------------------- | ---------------------------------- |
+| **Mux**       | https://github.com/coder/mux           | Parallel agent orchestration | Plan/exec mode, agent coordination |
+| **Coder-MCP** | https://github.com/coder-mcp/coder-mcp | Persistent code memory       | AST analysis, semantic search      |
 
 ---
 
@@ -80,7 +81,7 @@
 
 2. **System Prompts Framework**
    - 10+ specialized prompts (consensus, codereview, planner, refactor, secaudit, testgen, debug, etc.)
-   - Files: PAL-MCP/systemprompts/*.py
+   - Files: PAL-MCP/systemprompts/\*.py
    - Target: `docs/reference/system_prompts/` (new directory)
    - Effort: 2-3 hours
 
@@ -102,7 +103,7 @@
 
 5. **Provider Extensions**
    - Grok, Ollama, OpenRouter providers + auto-selector
-   - Files: PAL-MCP/infrastructure/providers/*.py
+   - Files: PAL-MCP/infrastructure/providers/\*.py
    - Target: `src/thegent/infrastructure/providers/{grok,ollama,openrouter,auto_selector}.py`
    - Effort: 3-4 hours
 
@@ -113,6 +114,7 @@
 ### BEEHIVE_RESEARCH_SUMMARY.md
 
 **Sections**:
+
 1. Quick Reference (what we found)
 2. Repositories Discovered (URLs, status, relevance)
 3. Core Concepts Extracted (consensus, clink, context-revival, auto-selector)
@@ -131,6 +133,7 @@
 ### PAL_MCP_AND_BEEHIVE_INNOVATIONS_DEEP_DIVE.md
 
 **Sections**:
+
 1. Executive Summary
 2. PAL-MCP Architecture (1.1-1.8)
    - Core architecture
@@ -164,6 +167,7 @@
 ### PAL_MCP_ABSORPTION_MAPPING.md
 
 **Sections**:
+
 1. File Extraction Matrix (source → target, effort)
 2. Domain Model Additions
    - ConsensusRequest / ConsensusResult
@@ -248,12 +252,12 @@
 
 ### Effort Estimates
 
-| Phase | Duration | Tasks |
-|-------|----------|-------|
-| **Phase 1: Foundation** | Week 1 | Setup, provider skeletons, prompt framework |
-| **Phase 2: Core Workflows** | Week 2 | Consensus, subagent, context-revival (core logic) |
-| **Phase 3: Integration** | Week 3 | MCP tools, integration tests, cost tracking |
-| **Phase 4: Polish** | Week 4 | E2E tests, docs, optimization, personas |
+| Phase                       | Duration | Tasks                                             |
+| --------------------------- | -------- | ------------------------------------------------- |
+| **Phase 1: Foundation**     | Week 1   | Setup, provider skeletons, prompt framework       |
+| **Phase 2: Core Workflows** | Week 2   | Consensus, subagent, context-revival (core logic) |
+| **Phase 3: Integration**    | Week 3   | MCP tools, integration tests, cost tracking       |
+| **Phase 4: Polish**         | Week 4   | E2E tests, docs, optimization, personas           |
 
 **Total**: 4 weeks, parallel work possible
 
@@ -320,13 +324,13 @@
 
 ## Risk Summary
 
-| Risk | Severity | Status |
-|------|----------|--------|
-| PAL-MCP license unclear | High | Needs confirmation |
-| Context revival requires Redis | Medium | Can make optional |
-| Subagent spawning platform-specific | Medium | Needs cross-platform testing |
-| Multi-model consensus cost | Medium | Configurable depth + tracking |
-| Provider integration complexity | Low | PAL-MCP modular, reusable |
+| Risk                                | Severity | Status                        |
+| ----------------------------------- | -------- | ----------------------------- |
+| PAL-MCP license unclear             | High     | Needs confirmation            |
+| Context revival requires Redis      | Medium   | Can make optional             |
+| Subagent spawning platform-specific | Medium   | Needs cross-platform testing  |
+| Multi-model consensus cost          | Medium   | Configurable depth + tracking |
+| Provider integration complexity     | Low      | PAL-MCP modular, reusable     |
 
 ---
 
@@ -451,6 +455,7 @@ docs/reference/
 This index provides **comprehensive reference material** for absorbing PAL-MCP's multi-model orchestration patterns into thegent's hexagonal architecture.
 
 **Three documents cover**:
+
 1. **Deep technical dive** — Full architecture, patterns, code
 2. **Implementation mapping** — File-by-file extraction, code examples, testing
 3. **Quick reference** — Summary, concepts, roadmap
@@ -460,4 +465,3 @@ This index provides **comprehensive reference material** for absorbing PAL-MCP's
 **Expected value**: Multi-model consensus, context revival, isolated subagents
 
 **Next step**: Read BEEHIVE_RESEARCH_SUMMARY.md (5 min) for orientation.
-

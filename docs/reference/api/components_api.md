@@ -14,6 +14,7 @@ Provides reusable Textual widgets for displaying agent output, status, and navig
 Footer status bar with quick info and bindings.
 
 Features:
+
 - Current focus info
 - Keyboard shortcuts
 - Connection status
@@ -54,6 +55,7 @@ Update pane information.
 Main header with title and version.
 
 Features:
+
 - Application title
 - Version display
 - Status indicator
@@ -62,7 +64,7 @@ Features:
 
 ### Methods
 
-#### HeaderWidget.__init__
+#### HeaderWidget.**init**
 
 ```python
 __init__(self: Any, title: str, version: str)
@@ -94,6 +96,7 @@ Render the header.
 Display performance metrics and statistics.
 
 Features:
+
 - CPU/Memory usage (Phase 2+)
 - Request/response times
 - Success/error rates
@@ -103,7 +106,7 @@ Features:
 
 ### Methods
 
-#### MetricsPanel.__init__
+#### MetricsPanel.**init**
 
 ```python
 __init__(self: Any)
@@ -159,6 +162,7 @@ Update multiple metrics.
 Display agent output with auto-scrolling and syntax highlighting.
 
 Features:
+
 - Rich text rendering with syntax highlighting
 - Auto-scroll on new messages
 - Search and filter capabilities (Phase 2+)
@@ -168,7 +172,7 @@ Features:
 
 ### Methods
 
-#### OutputWidget.__init__
+#### OutputWidget.**init**
 
 ```python
 __init__(self: Any, title: str)
@@ -235,6 +239,7 @@ Write text to the output widget.
 Display progress and status indicator.
 
 Features:
+
 - Progress bar
 - Percentage display
 - ETA
@@ -277,6 +282,7 @@ Update progress.
 Display agent list, session info, and quick actions.
 
 Features:
+
 - Agent list with status indicators
 - Session information
 - Quick action buttons
@@ -286,7 +292,7 @@ Features:
 
 ### Methods
 
-#### SidebarWidget.__init__
+#### SidebarWidget.**init**
 
 ```python
 __init__(self: Any)
@@ -360,6 +366,7 @@ Update session information.
 Display agent status, model info, and metrics.
 
 Features:
+
 - Real-time status updates
 - Model information display
 - Token counter
@@ -369,7 +376,7 @@ Features:
 
 ### Methods
 
-#### StatusWidget.__init__
+#### StatusWidget.**init**
 
 ```python
 __init__(self: Any)

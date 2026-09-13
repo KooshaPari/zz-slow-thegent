@@ -12,7 +12,7 @@ Coordinates team activities and cross-team collaboration.
 
 ### Methods
 
-#### TeamCoordinator.__init__
+#### TeamCoordinator.**init**
 
 ```python
 __init__(self: Any, hierarchy_manager: AgentHierarchyManager)

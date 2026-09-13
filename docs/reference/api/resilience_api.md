@@ -5,6 +5,7 @@
 Retry and fallback logic for agent runs.
 
 Distinguishes:
+
 - rate_limit / transient: retry same provider (429, 502/503/504, etc.)
 - usage_limit: subscription/quota exhausted; fallback to different provider.
 
@@ -56,7 +57,7 @@ WP-2003: Circuit breaker for individual tools and models. Uses pybreaker.
 
 ### Methods
 
-#### ToolCircuitBreaker.__init__
+#### ToolCircuitBreaker.**init**
 
 ```python
 __init__(self: Any, name: str, threshold: int, window_s: int)
@@ -102,7 +103,7 @@ Raised when agent failed due to retryable condition (rate limit, 502, etc.).
 
 ### Methods
 
-#### TransientAgentError.__init__
+#### TransientAgentError.**init**
 
 ```python
 __init__(self: Any, result: RunResult)
@@ -120,7 +121,7 @@ Raised when provider hit usage/quota limit; caller should fallback to different 
 
 ### Methods
 
-#### UsageLimitError.__init__
+#### UsageLimitError.**init**
 
 ```python
 __init__(self: Any, result: RunResult, agent: str)

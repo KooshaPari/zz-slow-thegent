@@ -11,6 +11,7 @@ source ~/.zshrc  # or ~/.bashrc
 ```
 
 **Verify:**
+
 ```bash
 time which codex  # Should be instant (<10ms)
 ```
@@ -22,6 +23,7 @@ bash scripts/build-all-rust-extensions.sh
 ```
 
 **Verify:**
+
 ```python
 python3 -c "from thegent_discovery import DiscoveryInterface; print('✅ OK')"
 ```
@@ -49,11 +51,13 @@ hyperfine 'which codex'  # Should be <10ms
 ### `which` Still Slow?
 
 1. **Restart shell:**
+
    ```bash
    exec zsh  # or exec bash
    ```
 
 2. **Check process count:**
+
    ```bash
    ps aux | wc -l  # Should be <200
    ```
@@ -66,11 +70,13 @@ hyperfine 'which codex'  # Should be <10ms
 ### Build Fails?
 
 1. **Install Rust:**
+
    ```bash
    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
    ```
 
 2. **Install maturin:**
+
    ```bash
    cargo install maturin
    ```
@@ -92,8 +98,8 @@ hyperfine 'which codex'  # Should be <10ms
 
 **That's it!** You're now running a faster, more reliable thegent. 🎉
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog

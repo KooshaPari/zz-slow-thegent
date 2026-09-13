@@ -48,7 +48,7 @@ Manages the governance escalation queue.
 
 ### Methods
 
-#### EscalationQueue.__init__
+#### EscalationQueue.**init**
 
 ```python
 __init__(self: Any, settings: Any)

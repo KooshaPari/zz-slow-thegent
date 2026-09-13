@@ -9,6 +9,7 @@ Transform thegent from a shell-based system with performance bottlenecks into a 
 ## 📚 Complete Documentation Index
 
 ### Core Documents
+
 1. **[SUMMARY.md](./SUMMARY.md)** - Executive overview and quick reference
 2. **[QUICK_START.md](./QUICK_START.md)** - 5-minute quick fixes
 3. **[USER_GUIDE.md](./USER_GUIDE.md)** - How to use thegent
@@ -18,6 +19,7 @@ Transform thegent from a shell-based system with performance bottlenecks into a 
 7. **[RUST_GO_MIGRATION_PLAN.md](./RUST_GO_MIGRATION_PLAN.md)** - Detailed migration strategy
 
 ### Specialized Documents
+
 8. **[FORK_FAILURE_ANALYSIS.md](./FORK_FAILURE_ANALYSIS.md)** - EAGAIN error solutions
 9. **[ADVANCED_PATTERNS.md](./ADVANCED_PATTERNS.md)** - Advanced Rust patterns
 10. **[COMPREHENSIVE_BENCHMARKING.md](./COMPREHENSIVE_BENCHMARKING.md)** - Benchmarking strategy
@@ -50,12 +52,12 @@ python3 -c "from thegent_discovery import DiscoveryInterface; print('✅ OK')"
 
 ### Performance Improvements
 
-| Operation | Before | After | Speedup |
-|-----------|--------|-------|---------|
-| Tool detection | 60ms | 1ms | **60x** |
-| PATH resolution | 20ms | 0.5ms | **40x** |
-| Process scanning | 50ms | 0.5ms | **100x** |
-| Hook execution | 200ms | 20ms | **10x** |
+| Operation        | Before | After | Speedup  |
+| ---------------- | ------ | ----- | -------- |
+| Tool detection   | 60ms   | 1ms   | **60x**  |
+| PATH resolution  | 20ms   | 0.5ms | **40x**  |
+| Process scanning | 50ms   | 0.5ms | **100x** |
+| Hook execution   | 200ms  | 20ms  | **10x**  |
 
 ### Reliability Improvements
 
@@ -143,12 +145,14 @@ System APIs (sysinfo, walkdir, git2) - Cross-platform
 ## 🎓 Key Learnings
 
 ### Performance
+
 - Subprocess overhead: 5-20ms per spawn
 - Native Rust: 10-100x faster
 - Caching: Critical for performance
 - Parallel processing: 10-100x improvements
 
 ### Design
+
 - Simplicity over cleverness
 - Intuitive APIs with sensible defaults
 - Fail gracefully, monitor everything
@@ -159,12 +163,14 @@ System APIs (sysinfo, walkdir, git2) - Cross-platform
 ## 📞 Support
 
 ### Quick Reference
+
 - **Quick Start**: [QUICK_START.md](./QUICK_START.md)
 - **User Guide**: [USER_GUIDE.md](./USER_GUIDE.md)
 - **Examples**: [EXAMPLES.md](./EXAMPLES.md)
 - **Troubleshooting**: [FORK_FAILURE_ANALYSIS.md](./FORK_FAILURE_ANALYSIS.md)
 
 ### Tools
+
 - **Build**: `make build` or `bash scripts/build-all-rust-extensions.sh`
 - **Test**: `make test`
 - **Benchmark**: `make benchmark`
@@ -185,8 +191,8 @@ System APIs (sysinfo, walkdir, git2) - Cross-platform
 **Status**: Production-ready
 **Next Step**: Build and deploy Rust extensions
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog

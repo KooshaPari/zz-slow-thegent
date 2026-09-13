@@ -24,7 +24,7 @@ Enforces 'Omega' invariants which are universal and cannot be overridden.
 
 ### Methods
 
-#### OmegaSafetyGuard.__init__
+#### OmegaSafetyGuard.**init**
 
 ```python
 __init__(self: Any)

@@ -44,9 +44,9 @@ choice_with_retry(options: list[str], prompt: str, max_retries: int)
 Decorator: present choices via elicit_choice and retry on None/invalid selection.
 
 Before calling the wrapped function, this decorator asks the user to
-select from ``options``. The chosen value is injected into kwargs as
-``user_choice``. If the user declines or the response is not in ``options``,
-up to ``max_retries`` additional prompts are shown. After exhausting retries,
+select from `options`. The chosen value is injected into kwargs as
+`user_choice`. If the user declines or the response is not in `options`,
+up to `max_retries` additional prompts are shown. After exhausting retries,
 ToolAborted is raised.
 
 **Parameters**:
@@ -77,7 +77,7 @@ arguments of the wrapped function (e.g. "Delete session {session_id}?").
 If the user confirms, the wrapped function runs normally. If the user
 declines or cancels, ToolAborted is raised instead of calling the function.
 
-The decorator expects the wrapped function to accept a ``ctx`` keyword
+The decorator expects the wrapped function to accept a `ctx` keyword
 argument (FastMCP Context). If ctx is None or elicitation is unavailable,
 the wrapped function runs without confirmation (fail-open behaviour keeps
 non-interactive clients working).
@@ -85,7 +85,7 @@ non-interactive clients working).
 **Parameters**:
 
 - `action_description`: Format string describing the action. May reference
-keyword arguments of the wrapped function by name.
+  keyword arguments of the wrapped function by name.
 
 **Returns**: Decorator that wraps an async tool function with confirmation flow.
 
@@ -111,8 +111,8 @@ progress_with_fallback(total_steps: int, fallback_result: Any)
 
 Decorator: report progress via ctx.report_progress at each step.
 
-Wraps an async tool function and injects a ``report_step`` async callable
-into the function's kwargs. Tool authors call ``await report_step(step, label)``
+Wraps an async tool function and injects a `report_step` async callable
+into the function's kwargs. Tool authors call `await report_step(step, label)`
 to emit progress. If ctx or report_progress is unavailable, progress calls
 are silently swallowed.
 
@@ -122,8 +122,8 @@ of raising, so clients receive a degraded but non-error response.
 **Parameters**:
 
 - `total_steps`: Denominator for progress fraction (used in report_progress).
-- `fallback_result`: Value returned (as ``{"result": fallback_result,
-"fallback": true}``) when the function raises an unexpected exception.
+- `fallback_result`: Value returned (as `{"result": fallback_result,
+"fallback": true}`) when the function raises an unexpected exception.
 
 **Returns**: Decorator that wraps an async tool function with progress reporting.
 
@@ -138,6 +138,7 @@ register_tool_pattern_tools(mcp: Any)
 Register example tools demonstrating the FastMCP tool patterns.
 
 Registers:
+
 - thegent_delete_session: uses @confirm_before_action
 - thegent_bulk_operation: uses @progress_with_fallback
 
@@ -156,8 +157,8 @@ retry_on_error(max_attempts: int, exceptions: tuple[(type[BaseException], Ellips
 Decorator: retry tool on specified exceptions with exponential backoff.
 
 Uses tenacity's wait_random_exponential for jitter-aware retries. Only
-exceptions in ``exceptions`` tuple trigger a retry; others propagate
-immediately. After ``max_attempts`` total attempts, the last exception
+exceptions in `exceptions` tuple trigger a retry; others propagate
+immediately. After `max_attempts` total attempts, the last exception
 is re-raised.
 
 **Parameters**:

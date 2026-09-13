@@ -68,6 +68,7 @@ Implement policy-driven multi-agent governance that avoids rigid `1 agent = 1 wo
 10. F1.2 + E1.3 -> G1.1 -> G1.2 -> G1.3
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -76,4 +77,3 @@ Implement policy-driven multi-agent governance that avoids rigid `1 agent = 1 wo
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

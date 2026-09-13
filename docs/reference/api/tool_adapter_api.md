@@ -15,7 +15,7 @@ Adapts foreign tool interfaces to thegent's canonical tool protocol.
 
 ### Methods
 
-#### ToolAdapter.__init__
+#### ToolAdapter.**init**
 
 ```python
 __init__(self: Any, agent_id: str)

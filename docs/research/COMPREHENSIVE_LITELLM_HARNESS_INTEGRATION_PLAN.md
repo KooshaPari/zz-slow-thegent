@@ -11,6 +11,7 @@
 ## Executive Summary
 
 **Key Insight**: If LiteLLM Router is correctly configured as front matter over individually wrapped OAI+Anth compatible provider services, separate proxies like codex-proxy are unnecessary. LiteLLM Router provides:
+
 - Unified routing across 100+ providers
 - Load balancing, fallback chains, caching
 - Cost optimization and budget tracking
@@ -18,6 +19,7 @@
 - WebSocket support for streaming
 
 **Target Harnesses**:
+
 1. **Codex CLI** (`@openai/codex`) - Uses Responses API format
 2. **Claude Code** (`clode`) - Uses Chat Completions format
 3. **Factory Droid** (`droid exec`) - Uses Chat Completions format
@@ -128,6 +130,7 @@
 ### Responses API Support
 
 LiteLLM Router doesn't natively support Responses API format, but:
+
 - Can be added via adapter layer (Responses API → Chat Completions)
 - Router handles Chat Completions natively
 - Responses API adapter translates back to Responses format
@@ -141,6 +144,7 @@ LiteLLM Router doesn't natively support Responses API format, but:
 **Goal**: Enable Codex CLI to work with LiteLLM Router
 
 **Tasks**:
+
 1. **Create `litellm_responses_handler.py`**:
    - Accept Responses API requests (`/v1/responses`)
    - Translate `input` array → `messages` array
@@ -159,11 +163,13 @@ LiteLLM Router doesn't natively support Responses API format, but:
    - Translate Chat Completions SSE → Responses API events
 
 **Files**:
+
 - `src/thegent/routing/litellm_responses_handler.py` (new)
 - `src/thegent/cliproxy_adapter.py` (modify)
 - `src/thegent/routing/litellm_router.py` (enhance)
 
 **Key Code**:
+
 ```python
 # litellm_responses_handler.py
 async def handle_responses_request(request: Request) -> Response:
@@ -194,6 +200,7 @@ async def handle_responses_request(request: Request) -> Response:
 **Current**: Claude Code uses `CodexProxyRunner` which routes through CLIProxyAPIPlus
 
 **Tasks**:
+
 1. **Update `CodexProxyRunner`**:
    - Add option to use LiteLLM Router directly
    - Route Chat Completions requests through LiteLLM Router
@@ -205,10 +212,12 @@ async def handle_responses_request(request: Request) -> Response:
    - Set up cost tracking for Claude provider
 
 **Files**:
+
 - `src/thegent/agents/codex_proxy.py` (modify)
 - `src/thegent/clode_main.py` (verify)
 
 **Key Code**:
+
 ```python
 # In CodexProxyRunner.run()
 if use_litellm_router:
@@ -226,6 +235,7 @@ if use_litellm_router:
 **Current**: Droid uses Factory's native API, but can be configured to use OpenAI-compatible endpoints
 
 **Tasks**:
+
 1. **Update `DroidRunner`**:
    - Add option to route through LiteLLM Router
    - Configure droid to use LiteLLM Router endpoint
@@ -237,10 +247,12 @@ if use_litellm_router:
    - Set up authentication (API keys)
 
 **Files**:
+
 - `src/thegent/agents/droid.py` (modify)
 - Factory config generation (enhance)
 
 **Key Code**:
+
 ```python
 # In DroidRunner.run()
 if use_litellm_router:
@@ -255,6 +267,7 @@ if use_litellm_router:
 **Goal**: Add task validation during `plan incorporate` command
 
 **Tasks**:
+
 1. **Update `plan incorporate` implementation**:
    - Validate task files before merging
    - Use `TaskValidator` to check schema compliance
@@ -268,11 +281,13 @@ if use_litellm_router:
    - Provide summary of incorporated tasks
 
 **Files**:
+
 - `src/thegent/cli_impl.py` (modify `plan_incorporate_impl`)
 - `src/thegent/task/validator.py` (use existing)
 - `src/thegent/task/sync.py` (use existing)
 
 **Key Code**:
+
 ```python
 # In plan_incorporate_impl()
 from thegent.task import validate_task_file, WorkStreamSync
@@ -319,6 +334,7 @@ droid_models = ["Qwen3 Coder [CEREBRAS]", "GLM-4.6 [Z.AI]", "MiniMax-M2.5", "cla
 ### Fallback Chains
 
 **Configuration**:
+
 ```python
 fallbacks = [
     {"gpt-5-mini": ["gpt-4o-mini", "deepseek-v3.2", "glm-5"]},
@@ -331,11 +347,13 @@ fallbacks = [
 ### Routing Policy
 
 **Recommended**: `simple-shuffle` (default) for best performance
+
 - Weighted random selection based on RPM/TPM limits
 - Minimal latency overhead
 - Good for production use
 
 **Alternative**: `cost-based-routing` for cost optimization
+
 - Routes to cheapest available model
 - Useful for budget-conscious deployments
 
@@ -358,6 +376,7 @@ fallbacks = [
 ### Integration Tests
 
 1. **Codex CLI**:
+
    ```bash
    export OPENAI_BASE_URL=http://localhost:8765
    export OPENAI_API_KEY=sk-dummy
@@ -366,6 +385,7 @@ fallbacks = [
    ```
 
 2. **Claude Code**:
+
    ```bash
    export THGENT_USE_LITELLM_ROUTER=1
    thegent clode flash "Hello"
@@ -394,26 +414,31 @@ fallbacks = [
 ## Migration Path
 
 ### Phase 1: Implementation (Week 1)
+
 - ✅ Create LiteLLM Responses API handler
 - ✅ Update adapter to support LiteLLM Router backend
 - ✅ Add WebSocket support
 
 ### Phase 2: Integration (Week 2)
+
 - ✅ Integrate Claude Code with LiteLLM Router
 - ✅ Integrate Factory Droid with LiteLLM Router
 - ✅ Update model configuration
 
 ### Phase 3: Plan Incorporate (Week 2)
+
 - ✅ Add task validation to `plan incorporate`
 - ✅ Auto-sync to WORK_STREAM.md
 - ✅ Error reporting
 
 ### Phase 4: Testing & Optimization (Week 3)
+
 - ✅ Comprehensive testing
 - ✅ Performance optimization
 - ✅ Cost tracking verification
 
 ### Phase 5: Rollout (Week 4)
+
 - ✅ Enable LiteLLM Router by default
 - ✅ Deprecate CLIProxyAPIPlus path (optional)
 - ✅ Documentation updates

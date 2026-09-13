@@ -83,4 +83,3 @@ Scope: Worktree governance, Ln delegation, enforcement, migration, CI parity.
 5. W78-E01
 6. W78-F01
 7. W78-G01
-

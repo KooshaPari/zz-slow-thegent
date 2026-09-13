@@ -3,7 +3,9 @@
 Date: February 23, 2026
 
 ## Overview
+
 Spike Batch C covers three more adopt-repos:
+
 - **kratos** (ory/kratos) - Identity/auth middleware
 - **pocketbase** (pocketbase/pocketbase) - Lightweight embedded backend
 - **browser-use** (browser-use/browser-use) - Browser automation adapter
@@ -11,6 +13,7 @@ Spike Batch C covers three more adopt-repos:
 ## Smoke Tests
 
 ### Kratos (Ory Kratos)
+
 ```bash
 # Required env vars:
 export THEGENT_AUTH_PROVIDER=kratos
@@ -23,6 +26,7 @@ uv run python scripts/kratos_contract_smoke.py
 ```
 
 ### PocketBase
+
 ```bash
 # Required env vars:
 export THEGENT_POCKETBASE_ENABLED=1
@@ -35,6 +39,7 @@ uv run python scripts/pocketbase_contract_smoke.py
 ```
 
 ### Browser-Use
+
 ```bash
 # Required env vars:
 export THEGENT_BROWSER_USE_ENABLED=1
@@ -49,6 +54,7 @@ uv run python scripts/browser_use_contract_smoke.py
 ## Integration Details
 
 ### Kratos Integration
+
 - **Module**: `src/thegent/integrations/kratos_auth.py`
 - **Feature Flag**: `THEGENT_AUTH_PROVIDER=kratos`
 - **Config Env Vars**:
@@ -59,6 +65,7 @@ uv run python scripts/browser_use_contract_smoke.py
   - `KRATOS_SESSION_TTL` - Session TTL in seconds (default: 3600)
 
 ### PocketBase Integration
+
 - **Module**: `src/thegent/integrations/pocketbase_storage.py`
 - **Feature Flag**: `THEGENT_POCKETBASE_ENABLED`
 - **Config Env Vars**:
@@ -70,6 +77,7 @@ uv run python scripts/browser_use_contract_smoke.py
 - **Collections**: `agent_sessions`, `proxy_events`
 
 ### Browser-Use Integration
+
 - **Module**: `src/thegent/integrations/browser_use_adapter.py`
 - **Feature Flag**: `THEGENT_BROWSER_USE_ENABLED`
 - **Config Env Vars**:
@@ -77,7 +85,7 @@ uv run python scripts/browser_use_contract_smoke.py
   - `BROWSER_USE_BROWSER` - Browser (default: chromium)
   - `BROWSER_USE_HEADLESS` - Headless mode (default: true)
   - `BROWSER_USE_TIMEOUT` - Timeout in seconds (default: 60)
-  - `BROWSER_USE_ALLOWED_URLS` - URL allowlist (default: https://*)
+  - `BROWSER_USE_ALLOWED_URLS` - URL allowlist (default: https://\*)
   - `BROWSER_USE_API_KEY` - Optional API key for cloud features
 
 ## Rollback Procedure
@@ -85,6 +93,7 @@ uv run python scripts/browser_use_contract_smoke.py
 If any integration fails:
 
 1. **Disable the feature flag**:
+
    ```bash
    export THEGENT_AUTH_PROVIDER=local  # or unset
    export THEGENT_POCKETBASE_ENABLED=0
@@ -92,6 +101,7 @@ If any integration fails:
    ```
 
 2. **Verify baseline behavior**:
+
    ```bash
    task quality
    task test

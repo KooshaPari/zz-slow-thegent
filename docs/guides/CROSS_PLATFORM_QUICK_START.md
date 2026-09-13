@@ -26,16 +26,19 @@ pip install pyatspi
 ### Step 2: Grant Permissions (2 min)
 
 **macOS:**
+
 1. System Preferences > Security & Privacy > Accessibility
 2. Add Terminal (or your Python interpreter)
 3. System Preferences > Security & Privacy > Screen Recording (for screenshots)
 4. Add Terminal
 
 **Windows:**
+
 - Run as Administrator, OR
 - Configure Group Policy (see Quick Reference)
 
 **Linux:**
+
 - Usually granted by default
 
 ### Step 3: Write Your First Automation (2 min)
@@ -127,7 +130,6 @@ screenshot = provider.screenshot(region=region)
 
 **Status:** Quick start guide complete. Ready for immediate use.
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -136,15 +138,18 @@ screenshot = provider.screenshot(region=region)
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

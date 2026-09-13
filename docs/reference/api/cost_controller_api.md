@@ -20,7 +20,7 @@ types may be spawned, ultimately halting all spawns at 95%+ utilization.
 
 ### Methods
 
-#### CostController.__init__
+#### CostController.**init**
 
 ```python
 __init__(self: Any, session_dir: Path, health_targets_path: Path)

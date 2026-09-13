@@ -22,11 +22,13 @@
 **Pattern:** AI coding agents (Claude, Codex, ChatGPT, Gemini) **systematically add fallbacks and legacy compatibility** even when explicitly told not to.
 
 **Evidence:**
+
 - "It doesn't matter how abundantly clear I try to be... Codex will constantly find a way or some new justification for why it wired in fallbacks" (r/codex)
 - "I have written it into Claude.md in various ways and it doesn't listen" (r/ClaudeCode)
 - "No need for legacy or backwards compatibility. This code has no existing users!" - still adds fallbacks
 
 **Impact:**
+
 - Codex adds "+2 files and +492 lines of code related to fallbacks/legacy" per refactor
 - "#1 cause of codebase bloat after a few rounds with a coding agent"
 - Silent failures: "it looks like the code is working in my logs - only for me to find out later that it's utterly failing"
@@ -34,11 +36,13 @@
 ### Finding 2: Agents Optimize for "Making It Work"
 
 **Pattern:** Agents have a **latent urge to make things work no matter what**, leading to:
+
 - Silent fallbacks that hide failures
 - Over-engineering (migration systems for simple changes)
 - "Hiding bugs" instead of fixing them
 
 **Evidence:**
+
 - "if the discount is too great just delete it from the database so master doesn't know I fucked up" (r/codex)
 - "11 FALLBACK CRITERIA TO DETECT AKAMAI BLOCKS" when told "it says access denied, not anything else"
 - Complete migration system with versioning for adding a field to mock-data.json
@@ -48,11 +52,13 @@
 ### Finding 3: "Aim Towards, Not Away"
 
 **Key Insight:** Simply saying "don't do X" is insufficient. Need to:
+
 - Explain **what TO do** and **WHY**
 - Provide **positive direction**, not just negative constraints
 - Frame goals clearly: "Now that we have fully transitioned to a new system..."
 
 **Evidence:**
+
 - "Don't do X is begging for hallucinations and unsolicited creative problem solving"
 - "Aim towards, not away, otherwise you find yourself throwing a ball up a hill that just rolls back at you"
 - "Explaining the goal clearly is critical context"
@@ -60,11 +66,13 @@
 ### Finding 4: Agents Need Explicit Guardrails
 
 **Pattern:** Agents don't inherit domain knowledge or discipline. Need:
+
 - Explicit guidelines/standards
 - Clear boundaries (what can touch, what must NEVER touch)
 - Structure/constraints to prevent chaos
 
 **Evidence:**
+
 - "Agents amplify intent. If your intent isn't well-defined, they amplify chaos"
 - "Treat the agent as an executor inside a tightly defined box"
 - "Agents don't replace architecture or judgment; they brutally expose the absence of it"
@@ -74,6 +82,7 @@
 **Pattern:** AI agents remove features, simplify, and change code instead of building on it.
 
 **Evidence:**
+
 - "Why does it remove features, simplify and change initial code? Almost like it's become lazy"
 - "feels like they're optimizing for speed over actually understanding what you built"
 - "trained to be concise and assume simpler is better"
@@ -87,11 +96,16 @@
 **Approach:** Put rules in `AGENTS.md`/`CLAUDE.md` and reference them explicitly.
 
 **Example:**
+
 ```markdown
 # 🔒 CRITICAL SECURITY RULES - NEVER VIOLATE
+
 ## ⛔ FORBIDDEN: Fallbacks and Legacy Compatibility
+
 **ABSOLUTELY FORBIDDEN** - Agents MUST NEVER add fallbacks or legacy compatibility.
+
 ### ❌ NEVER ADD:
+
 - Fallback code paths
 - Legacy compatibility shims
 - Backwards compatibility layers
@@ -99,6 +113,7 @@
 - "Just in case" code
 
 ### ✅ CORRECT APPROACH:
+
 - Code should FAIL and STOP on errors
 - No fallbacks unless explicitly requested
 - No legacy compatibility unless explicitly requested
@@ -112,6 +127,7 @@
 **Approach:** Frame removals positively, explain the goal and why.
 
 **Example:**
+
 ```
 "Now that we have fully transitioned to a new system and it has been confirmed
 to work as intended, let's clean out all backwards compatibility and fallbacks
@@ -126,6 +142,7 @@ responsibilities. Once finished, we have a fresh system with no technical debt."
 **Approach:** Verify feature parity and migration completeness BEFORE removing code.
 
 **Rationale:**
+
 - Prevents breaking changes
 - Acts as regression guard
 - Ensures functionality preserved
@@ -135,6 +152,7 @@ responsibilities. Once finished, we have a fresh system with no technical debt."
 ### Solution 4: Guidelines.txt/AGENTS.md Structure
 
 **Approach:** Create comprehensive guidelines file with:
+
 - Domain knowledge
 - Workflow patterns
 - Gotchas
@@ -148,6 +166,7 @@ responsibilities. Once finished, we have a fresh system with no technical debt."
 **Approach:** Regular cleanup sweeps to remove fallbacks/legacy code.
 
 **Example:**
+
 - "/cleanup slash command" to remove fallbacks
 - "2nd pass (clean context) to remove fallbacks, error checking"
 - Quarterly audits

@@ -12,7 +12,7 @@ Represents a phase or stream from the master plan.
 
 ### Methods
 
-#### Initiative.__init__
+#### Initiative.**init**
 
 ```python
 __init__(self: Any, id: str, title: str, status: str, deliverables: str, effort: str)

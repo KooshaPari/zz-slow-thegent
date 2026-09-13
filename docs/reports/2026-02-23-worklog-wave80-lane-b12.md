@@ -8,6 +8,7 @@
 ## Claimed Slice
 
 `WL-11070..WL-11079` is already claimed/completed in existing lane `C12`; next unclaimed slice after `WL-11069` is:
+
 - `WL-11080..WL-11089`
 
 ## Implemented Items

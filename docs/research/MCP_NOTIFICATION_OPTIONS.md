@@ -8,18 +8,18 @@
 
 ## Summary of MCP Notification Capabilities
 
-| Notification | Purpose | Server-initiated? | Client support |
-|--------------|---------|-------------------|----------------|
-| `notifications/tools/list_changed` | Tool list changed | Yes | Standard; clients refresh tools |
-| `notifications/tasks/status` | Task status change | Yes | Optional; clients MUST NOT rely |
-| `notifications/elicitation/complete` | URL mode elicitation done | Yes | For elicitation flows only |
-| `notifications/progress` | Progress within request | Yes (or client) | Tied to `progressToken` |
+| Notification                         | Purpose                   | Server-initiated? | Client support                  |
+| ------------------------------------ | ------------------------- | ----------------- | ------------------------------- |
+| `notifications/tools/list_changed`   | Tool list changed         | Yes               | Standard; clients refresh tools |
+| `notifications/tasks/status`         | Task status change        | Yes               | Optional; clients MUST NOT rely |
+| `notifications/elicitation/complete` | URL mode elicitation done | Yes               | For elicitation flows only      |
+| `notifications/progress`             | Progress within request   | Yes (or client)   | Tied to `progressToken`         |
 
 ---
 
 ## 1. MCP Elicitation
 
-**What it is:** Servers request structured input from users *during* tool execution (form mode or URL mode). Used for cwd/owner disambiguation, OAuth, etc.
+**What it is:** Servers request structured input from users _during_ tool execution (form mode or URL mode). Used for cwd/owner disambiguation, OAuth, etc.
 
 **Relevance to notifications:** Elicitation is **request-scoped** — it pauses a tool call until the user responds. It does **not** provide a generic notification channel. The only elicitation-related notification is `notifications/elicitation/complete`, which is for URL mode out-of-band flows (e.g. OAuth callback). Not applicable to "session X finished."
 
@@ -59,7 +59,7 @@
 
 **Relevance:** Progress is request-scoped. When `thegent_bg` returns, there is no active request for the background session. Progress does not apply to "session X finished" events that occur after the tool returns.
 
-**Exception:** `thegent_wait(session_id)` blocks until the session finishes. That call *could* include a `progressToken` and receive progress updates during the wait (e.g. "still running... 45s elapsed"). thegent_run already uses `ctx.report_progress()` for long runs.
+**Exception:** `thegent_wait(session_id)` blocks until the session finishes. That call _could_ include a `progressToken` and receive progress updates during the wait (e.g. "still running... 45s elapsed"). thegent_run already uses `ctx.report_progress()` for long runs.
 
 ---
 
@@ -81,12 +81,12 @@
 
 ## 6. Out-of-Band Options (Non-MCP)
 
-| Approach | Description | Pros | Cons |
-|----------|-------------|------|------|
-| **File watcher** | Sitback Agent watches `run_registry.jsonl` via `inotify`/`watchdog` | No MCP changes; works today | Agent must run a watcher; not push from server |
-| **Socket/queue** | Hook dispatcher or session observer writes to a socket/Redis when session ends; Sitback listener connects | True push | New infra; outside MCP |
-| **Webhook** | thegent HTTP endpoint that clients POST to on session end | Decoupled | Requires client to run a local receiver; complex |
-| **Polling** | Current approach: Sitback polls `thegent_sitback_dashboard` / `thegent_ps` every 60–90s | Simple; works | Latency; no true push |
+| Approach         | Description                                                                                               | Pros                        | Cons                                             |
+| ---------------- | --------------------------------------------------------------------------------------------------------- | --------------------------- | ------------------------------------------------ |
+| **File watcher** | Sitback Agent watches `run_registry.jsonl` via `inotify`/`watchdog`                                       | No MCP changes; works today | Agent must run a watcher; not push from server   |
+| **Socket/queue** | Hook dispatcher or session observer writes to a socket/Redis when session ends; Sitback listener connects | True push                   | New infra; outside MCP                           |
+| **Webhook**      | thegent HTTP endpoint that clients POST to on session end                                                 | Decoupled                   | Requires client to run a local receiver; complex |
+| **Polling**      | Current approach: Sitback polls `thegent_sitback_dashboard` / `thegent_ps` every 60–90s                   | Simple; works               | Latency; no true push                            |
 
 ---
 
@@ -130,15 +130,18 @@
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added notification patterns
 2. Added MCP configurations
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - MCP_FULL_PARITY_AND_FASTMCP_AUDIT.md
 - CODEX_HOOKS_AND_EXTENSION_OPTIONS.md
 
 ### Practical Additions
+
 - Notification templates
 - MCP configurations
 

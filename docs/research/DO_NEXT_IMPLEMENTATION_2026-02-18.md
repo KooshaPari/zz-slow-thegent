@@ -14,6 +14,7 @@ Implemented both functions in `src/thegent/cli_impl.py`:
 ### `do_next_impl(cd: Path | None = None, limit: int = 5) -> dict[str, Any]`
 
 **Functionality:**
+
 - Parses `docs/reference/WORK_STREAM.md`
 - Reads BACKLOG section (table format)
 - Filters out items in CLAIMED section
@@ -22,6 +23,7 @@ Implemented both functions in `src/thegent/cli_impl.py`:
 - Returns top N items (limit parameter)
 
 **Returns:**
+
 ```python
 {
     "next_items": [
@@ -40,17 +42,20 @@ Implemented both functions in `src/thegent/cli_impl.py`:
 ```
 
 **Fallback Behavior:**
+
 - If `WORK_STREAM.md` doesn't exist, falls back to `tasks/example-task.md` (for backward compatibility)
 - If neither exists, returns error
 
 ### `wait_next_impl(cd: Path | None = None, poll_interval: float = 2.0, timeout: float = 0.0, sources: tuple[str, ...] = ("do_next",)) -> dict[str, Any]`
 
 **Functionality:**
+
 - Continuously calls `do_next_impl` at specified `poll_interval`
 - Blocks until a work item is found or `timeout` is reached
 - Returns first available work item
 
 **Returns:**
+
 ```python
 {
     "action": {
@@ -66,47 +71,56 @@ Implemented both functions in `src/thegent/cli_impl.py`:
 ```
 
 **Timeout Behavior:**
+
 - If `timeout > 0` and elapsed time >= timeout, returns `{"action": None, "timeout": True}`
 - If `timeout = 0` (default), waits indefinitely
 
 ### Helper Functions
 
 **`_parse_work_stream_md(work_stream_path: Path) -> dict[str, Any]`**
+
 - Parses WORK_STREAM.md markdown file
 - Extracts BACKLOG, CLAIMED, and COMPLETED sections
 - Returns structured data
 
 **`_check_dependencies_satisfied(item: dict[str, Any], completed: set[str], claimed: set[str]) -> bool`**
+
 - Checks if all dependencies for an item are satisfied
 - Dependencies must be in COMPLETED (not just CLAIMED)
 
 **`_priority_sort_key(priority: str) -> int`**
+
 - Converts priority string (P1, P2, P3) to sortable integer
 - Lower number = higher priority
 
 ### Wrapper Functions
 
 **`work_stream_claim_impl(item_id: str, agent_id: str, cd: Path | None = None) -> dict[str, Any]`**
+
 - Wrapper around `WorkStreamManager.claim()`
 - Moves item from BACKLOG to CLAIMED
 
 **`work_stream_complete_impl(item_id: str, agent_id: str, cd: Path | None = None) -> dict[str, Any]`**
+
 - Wrapper around `WorkStreamManager.complete()`
 - Moves item from CLAIMED to COMPLETED
 
 **`incorporate_impl(cd: Path | None = None) -> dict[str, Any]`**
+
 - Placeholder for merging fragments from 02-UNIFIED-WBS into WORK_STREAM.md
 - Returns stub response (full implementation pending)
 
 ## Testing
 
 **Test Command:**
+
 ```bash
 uv run python -c "import json; from thegent.cli_impl import do_next_impl; result = do_next_impl(limit=3); print(json.dumps(result, indent=2))"
 ```
 
 **Result:**
 ✅ Successfully returns real work items from WORK_STREAM.md:
+
 - Parses BACKLOG section correctly
 - Filters out CLAIMED items
 - Checks dependencies
@@ -116,12 +130,14 @@ uv run python -c "import json; from thegent.cli_impl import do_next_impl; result
 ## Integration Points
 
 **CLI Commands:**
+
 - `thegent plan do-next` → calls `do_next_impl()`
 - `thegent plan wait-next` → calls `wait_next_impl()`
 - `thegent plan get-next` → calls `do_next_impl(limit=1)`
 - `thegent plan loop` → calls `do_next_impl()` in loop
 
 **MCP Tools:**
+
 - `thegent_do_next` → calls `do_next_impl()`
 - `thegent_plan_wait_next` → calls `wait_next_impl()`
 
@@ -150,5 +166,5 @@ uv run python -c "import json; from thegent.cli_impl import do_next_impl; result
 
 ---
 
-*Implementation Date: 2026-02-18*
-*Status: ✅ Complete and tested*
+_Implementation Date: 2026-02-18_
+_Status: ✅ Complete and tested_

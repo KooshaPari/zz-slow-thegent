@@ -8,17 +8,17 @@
 
 ## 1. Summary
 
-| G-GP | WP | Item | Status | Implementation |
-|------|-----|------|--------|----------------|
-| G-GP-01 | WP-3001 | OPA integration | □ In plan | PolicyEngine exists; OPA/Rego not wired |
-| G-GP-02 | — | NeMo Guardrails | □ In plan | Input rails before OPA; not implemented |
-| G-GP-03 | WP-3004 | Audit trail hash chain | ✓ Done | RunRegistry prev_hash/hash; Auditor.verify_registry |
-| G-GP-04 | WP-2003 | Circuit breakers | ✓ Partial | CircuitBreakerRegistry; per-agent; config threshold/window |
-| G-GP-05 | WP-3008, 4004 | HITL patterns | ⚠ Partial | Override with reason; escalation path; no formal HITL flow |
-| G-GP-06 | WP-5003 | Cost governance | □ In plan | No per-run cost tracking |
-| G-GP-07 | WP-3006, 6002 | Compliance evidence | ⚠ Partial | closure_pack_cmd; history verify; retention TBD |
-| G-GP-08 | WP-3007, FR-014 | Sandboxing | □ In plan | No sandbox isolation; trust boundary checks TBD |
-| G-GP-09 | WP-0004, 4008 | Trust scoring | ⚠ Partial | trust_score_threshold; feedback; calibration TBD |
+| G-GP    | WP              | Item                   | Status     | Implementation                                             |
+| ------- | --------------- | ---------------------- | ---------- | ---------------------------------------------------------- |
+| G-GP-01 | WP-3001         | OPA integration        | □ In plan  | PolicyEngine exists; OPA/Rego not wired                    |
+| G-GP-02 | —               | NeMo Guardrails        | □ In plan  | Input rails before OPA; not implemented                    |
+| G-GP-03 | WP-3004         | Audit trail hash chain | ✓ Done     | RunRegistry prev_hash/hash; Auditor.verify_registry        |
+| G-GP-04 | WP-2003         | Circuit breakers       | ✓ Partial  | CircuitBreakerRegistry; per-agent; config threshold/window |
+| G-GP-05 | WP-3008, 4004   | HITL patterns          | ⚠ Partial | Override with reason; escalation path; no formal HITL flow |
+| G-GP-06 | WP-5003         | Cost governance        | □ In plan  | No per-run cost tracking                                   |
+| G-GP-07 | WP-3006, 6002   | Compliance evidence    | ⚠ Partial | closure_pack_cmd; history verify; retention TBD            |
+| G-GP-08 | WP-3007, FR-014 | Sandboxing             | □ In plan  | No sandbox isolation; trust boundary checks TBD            |
+| G-GP-09 | WP-0004, 4008   | Trust scoring          | ⚠ Partial | trust_score_threshold; feedback; calibration TBD           |
 
 Legend: ✓ Done | ⚠ Partial | □ In plan / Not done
 
@@ -118,16 +118,16 @@ Legend: ✓ Done | ⚠ Partial | □ In plan / Not done
 
 ## 3. Recommended Next Steps
 
-| Priority | Action | Status |
-|----------|--------|--------|
-| P1 | Document PolicyEngine as Phase 1 PDP; OPA as Phase 2 option | Done — `docs/governance/OPA_INTEGRATION_DESIGN.md` |
-| P1 | Verify circuit breaker used for all agent invocations | In progress |
-| P2 | Add retention policy config; domain tagging for audit events | TBD |
-| P2 | Expand closure pack with retention/evidence matrix | TBD |
-| P3 | OPA integration design doc | Done |
-| P3 | Sandboxing design doc (Firecracker/gVisor) | Done — `docs/governance/SANDBOXING_DESIGN.md` |
-| P3 | Cost tracking design | Done — `docs/governance/COST_GOVERNANCE_DESIGN.md` |
-| P3 | NeMo Guardrails design | Done — `docs/governance/NEMO_GUARDRAILS_DESIGN.md` |
+| Priority | Action                                                       | Status                                             |
+| -------- | ------------------------------------------------------------ | -------------------------------------------------- |
+| P1       | Document PolicyEngine as Phase 1 PDP; OPA as Phase 2 option  | Done — `docs/governance/OPA_INTEGRATION_DESIGN.md` |
+| P1       | Verify circuit breaker used for all agent invocations        | In progress                                        |
+| P2       | Add retention policy config; domain tagging for audit events | TBD                                                |
+| P2       | Expand closure pack with retention/evidence matrix           | TBD                                                |
+| P3       | OPA integration design doc                                   | Done                                               |
+| P3       | Sandboxing design doc (Firecracker/gVisor)                   | Done — `docs/governance/SANDBOXING_DESIGN.md`      |
+| P3       | Cost tracking design                                         | Done — `docs/governance/COST_GOVERNANCE_DESIGN.md` |
+| P3       | NeMo Guardrails design                                       | Done — `docs/governance/NEMO_GUARDRAILS_DESIGN.md` |
 
 ---
 
@@ -139,6 +139,7 @@ Legend: ✓ Done | ⚠ Partial | □ In plan / Not done
 - **Design docs:** `docs/governance/OPA_INTEGRATION_DESIGN.md`, `NEMO_GUARDRAILS_DESIGN.md`, `COST_GOVERNANCE_DESIGN.md`, `SANDBOXING_DESIGN.md`
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -147,4 +148,3 @@ Legend: ✓ Done | ⚠ Partial | □ In plan / Not done
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

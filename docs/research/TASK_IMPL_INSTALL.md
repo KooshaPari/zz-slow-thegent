@@ -11,6 +11,7 @@
 ## Summary
 
 Replace 5 occurrences of `os.environ` access in `src/thegent/install.py`:
+
 1. Line 251: PATH mutation for installer
 2. Line 309: SHELL detection
 3. Line 397: SHELL detection
@@ -25,6 +26,7 @@ Replace 5 occurrences of `os.environ` access in `src/thegent/install.py`:
 **Lines**: 251, 309, 397, 437, 1686
 
 ### Line 251: PATH Mutation
+
 ```python
 # BEFORE
 os.environ["PATH"] = f"{brew_path}:{os.environ.get('PATH', '')}"
@@ -37,6 +39,7 @@ env["PATH"] = f"{brew_path}:{os.environ.get('PATH', '')}"
 ```
 
 ### Lines 309, 397, 437: SHELL Detection
+
 ```python
 # BEFORE (3x)
 shell = os.environ.get("SHELL", "/bin/zsh")
@@ -46,6 +49,7 @@ shell = settings.shell_path  # Auto-detected from SHELL env var
 ```
 
 ### Line 1686: APPDATA Detection (Windows)
+
 ```python
 # BEFORE
 p = Path(os.environ.get("APPDATA", "")) / "Claude" / "claude_desktop_config.json"
@@ -62,13 +66,16 @@ else:
 ## Step-by-Step Instructions
 
 ### 1. Identify Function/Method Scope
+
 - Find each occurrence and understand its context
 - Line 251: Inside installer setup function (PATH for brew)
 - Lines 309, 397, 437: Multiple shell detection calls
 - Line 1686: Windows config path setup
 
 ### 2. Add Settings Parameter
+
 If `settings` not already in function scope:
+
 ```python
 def install_xyz(settings: ThegentSettings, ...):
     # Function body
@@ -77,6 +84,7 @@ def install_xyz(settings: ThegentSettings, ...):
 ### 3. Replace Each Occurrence
 
 **Line 251 (PATH mutation)**:
+
 ```python
 # Option A: Avoid mutation, use env dict for subprocess
 env = os.environ.copy()
@@ -95,6 +103,7 @@ env["PATH"] = f"{brew_path}:{os.environ.get('PATH', '')}"
 ```
 
 **Lines 309, 397, 437 (SHELL detection)** - Straightforward:
+
 ```python
 # BEFORE
 shell = os.environ.get("SHELL", "/bin/zsh")
@@ -104,6 +113,7 @@ shell = settings.shell_path
 ```
 
 **Line 1686 (APPDATA detection)** - Windows-specific:
+
 ```python
 # BEFORE
 p = Path(os.environ.get("APPDATA", "")) / "Claude" / "claude_desktop_config.json"
@@ -117,11 +127,13 @@ else:
 ```
 
 ### 4. Verify Settings Availability
+
 - Check if settings is injected at function entry point
 - Install.py may have an `install()` or `main()` function that creates settings
 - Ensure settings is passed through call chain
 
 ### 5. Test (CRITICAL for installer)
+
 - **macOS**: Verify shell detection works (`/bin/zsh` or `/bin/bash`)
 - **Windows**: Verify APPDATA path resolution
 - **Linux**: Verify shell detection works
@@ -150,6 +162,7 @@ else:
 ## Verification
 
 After completion:
+
 ```bash
 # Should return ZERO matches
 grep "os\.environ\|os\.getenv" src/thegent/install.py
@@ -178,8 +191,8 @@ thegent install --dry-run
 
 ## Platform-Specific Considerations
 
-| Platform | Env Var | Field | Notes |
-|----------|---------|-------|-------|
-| macOS | SHELL | shell_path | Usually `/bin/zsh` or `/bin/bash` |
-| Windows | APPDATA | appdata_path | Required for Claude config paths |
-| Linux | SHELL | shell_path | Usually `/bin/bash` or `/bin/zsh` |
+| Platform | Env Var | Field        | Notes                             |
+| -------- | ------- | ------------ | --------------------------------- |
+| macOS    | SHELL   | shell_path   | Usually `/bin/zsh` or `/bin/bash` |
+| Windows  | APPDATA | appdata_path | Required for Claude config paths  |
+| Linux    | SHELL   | shell_path   | Usually `/bin/bash` or `/bin/zsh` |

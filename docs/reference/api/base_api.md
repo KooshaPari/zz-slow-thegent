@@ -12,7 +12,7 @@ Base class for layout managers.
 
 ### Methods
 
-#### BaseLayout.__init__
+#### BaseLayout.**init**
 
 ```python
 __init__(self: Any, config: Any)
@@ -140,7 +140,7 @@ Manages multiple layouts and transitions.
 
 ### Methods
 
-#### LayoutManager.__init__
+#### LayoutManager.**init**
 
 ```python
 __init__(self: Any)

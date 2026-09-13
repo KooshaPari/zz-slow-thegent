@@ -111,6 +111,7 @@ python3 scripts/migrate_memory_jsonl_to_sqlite.py
 ```
 
 The tool will:
+
 1. Scan `~/.claude/civilization/agents/*/memory.jsonl` for JSONL files
 2. Create the SQLite database at `~/.claude/civilization/memories.db`
 3. Initialize the schema (memories table, indexes, relationships table)
@@ -405,15 +406,15 @@ python3 scripts/migrate_memory_jsonl_to_sqlite.py --source-dir /actual/path/to/a
 
 Expected improvements after migrating to SQLite:
 
-| Operation | Before (JSONL) | After (SQLite) | Notes |
-|-----------|----------------|----------------|-------|
-| Query agent memories | File scan O(n) | Index lookup O(log n) | 2.4x faster |
-| Filter by type + time | Full scan + filter | Compound index | ~3x faster |
-| Full-text search | Substring scan | Keyword index | ~5x faster |
-| Aggregate statistics | Load all + compute | SQL COUNT/AVG/GROUP BY | ~2x faster |
-| Dashboard rendering | Multiple file reads | Single SQL query | Reduced I/O |
-| Memory purge | Rewrite entire file | DELETE by index | ~2x faster |
-| Single store | File append | INSERT + index | ~0.8x (slightly slower) |
+| Operation             | Before (JSONL)      | After (SQLite)         | Notes                   |
+| --------------------- | ------------------- | ---------------------- | ----------------------- |
+| Query agent memories  | File scan O(n)      | Index lookup O(log n)  | 2.4x faster             |
+| Filter by type + time | Full scan + filter  | Compound index         | ~3x faster              |
+| Full-text search      | Substring scan      | Keyword index          | ~5x faster              |
+| Aggregate statistics  | Load all + compute  | SQL COUNT/AVG/GROUP BY | ~2x faster              |
+| Dashboard rendering   | Multiple file reads | Single SQL query       | Reduced I/O             |
+| Memory purge          | Rewrite entire file | DELETE by index        | ~2x faster              |
+| Single store          | File append         | INSERT + index         | ~0.8x (slightly slower) |
 
 The single-store overhead is minimal (~20% slower per write) and is offset by the read-heavy nature of memory workloads. Dashboards, analytics, search, and query operations all benefit significantly from indexed storage.
 

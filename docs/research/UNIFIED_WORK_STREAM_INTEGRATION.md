@@ -12,21 +12,21 @@ The following items have been added to [WORK_STREAM.md](../reference/WORK_STREAM
 
 ### From SESSION_RESEARCH_FRAGMENTS_EXPANDED.md
 
-| ID | Title | Priority | Depends |
-|----|-------|----------|---------|
-| research-supermemory-integration | Supermemory.ai Universal Memory (L3/L4) | P1 | WP-5001-SM |
-| research-pareto-routing | Pareto Routing & Hysteresis | P1 | WP-1004, WP-5001 |
-| research-economic-governance | Economic Governance (Cost-Aware Routing) | P1 | WP-5003 |
-| research-maif-artifacts | MAIF Action Artifacts (Signed Artifacts) | P1 | WP-3002 |
-| research-simulation-replay | Simulation & Sandbox (Deterministic Replay) | P2 | WP-4007 |
+| ID                               | Title                                       | Priority | Depends          |
+| -------------------------------- | ------------------------------------------- | -------- | ---------------- |
+| research-supermemory-integration | Supermemory.ai Universal Memory (L3/L4)     | P1       | WP-5001-SM       |
+| research-pareto-routing          | Pareto Routing & Hysteresis                 | P1       | WP-1004, WP-5001 |
+| research-economic-governance     | Economic Governance (Cost-Aware Routing)    | P1       | WP-5003          |
+| research-maif-artifacts          | MAIF Action Artifacts (Signed Artifacts)    | P1       | WP-3002          |
+| research-simulation-replay       | Simulation & Sandbox (Deterministic Replay) | P2       | WP-4007          |
 
 ### From CONVERSATION_DUMP_2026-02-16_EXPANDED.md
 
-| ID | Title | Priority | Depends |
-|----|-------|----------|---------|
-| research-tui-compositor | TUI Compositor Implementation | P1 | - |
-| research-compute-offload | Compute Offloading Mac↔PC | P2 | HYBRID_ENV |
-| research-idea-seed-system | Idea Seed Detection & Storage System | P1 | PROMPT_HISTORY |
+| ID                        | Title                                | Priority | Depends        |
+| ------------------------- | ------------------------------------ | -------- | -------------- |
+| research-tui-compositor   | TUI Compositor Implementation        | P1       | -              |
+| research-compute-offload  | Compute Offloading Mac↔PC           | P2       | HYBRID_ENV     |
+| research-idea-seed-system | Idea Seed Detection & Storage System | P1       | PROMPT_HISTORY |
 
 ---
 
@@ -58,18 +58,18 @@ The following items have been added to [WORK_STREAM.md](../reference/WORK_STREAM
 ---
 
 **See Also**:
+
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) - Unified work stream
 - [SESSION_RESEARCH_FRAGMENTS_EXPANDED.md](./SESSION_RESEARCH_FRAGMENTS_EXPANDED.md)
 - [CONVERSATION_DUMP_2026-02-16_EXPANDED.md](./CONVERSATION_DUMP_2026-02-16_EXPANDED.md)
 - [MASTER_EXPANSION_TODO.md](./MASTER_EXPANSION_TODO.md)
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -79,15 +79,18 @@ The following items have been added to [WORK_STREAM.md](../reference/WORK_STREAM
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added planning patterns
 2. Added implementation roadmap
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - WORK_STREAM.md
 - Implementation guides
 
 ### Practical Additions
+
 - Planning templates
 - Roadmap configurations
 

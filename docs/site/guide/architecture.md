@@ -4,11 +4,11 @@
 
 ## Layer Overview
 
-| Layer | Responsibility | Typical artifacts |
-|------|----------------|-------------------|
-| Execution | Run agent personas and workflows | `thegent run`, loop commands |
-| Governance | Apply policy, quality, and budget controls | contracts, QA hooks, policy engine |
-| Interface | Expose CLI + MCP tools | CLI commands, MCP server resources/tools |
+| Layer      | Responsibility                             | Typical artifacts                        |
+| ---------- | ------------------------------------------ | ---------------------------------------- |
+| Execution  | Run agent personas and workflows           | `thegent run`, loop commands             |
+| Governance | Apply policy, quality, and budget controls | contracts, QA hooks, policy engine       |
+| Interface  | Expose CLI + MCP tools                     | CLI commands, MCP server resources/tools |
 
 ## Runtime Flow
 

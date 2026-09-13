@@ -28,7 +28,7 @@ to_dict(self: Any)
 
 ### Methods
 
-#### AuditRegistry.__init__
+#### AuditRegistry.**init**
 
 ```python
 __init__(self: Any)
@@ -248,7 +248,7 @@ name(self: Any)
 
 ### Methods
 
-#### SystemAuditFramework.__init__
+#### SystemAuditFramework.**init**
 
 ```python
 __init__(self: Any, registry: Any)

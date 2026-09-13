@@ -116,27 +116,27 @@ Files are opened in append mode (`"a"`) exclusively. No record is ever overwritt
 
 ## Implementation Reference
 
-| Component | File | Role |
-|-----------|------|------|
-| `EvidenceLedger` (canonical) | `src/thegent/governance/evidence_ledger.py` | AgilePlus cycle evidence; `record()`, `query()`, `verify_chain()` |
-| `EvidenceEvent` (Pydantic model) | `src/thegent/governance/evidence_ledger.py` | Schema for each ledger entry |
-| `IncidentLedger` | `src/thegent/governance/ledger.py` | Governance/omega-safety incident records; `record_artifact()`, `verify_integrity()` |
-| `LedgerVerifier` | `src/thegent/governance/ledger.py` | Standalone chain verification for arbitrary ledger paths |
-| `AgilePlusRunner` | `src/thegent/governance/agileplus.py` | Primary consumer of `EvidenceLedger`; records all cycle lifecycle events |
-| `omega_safety` | `src/thegent/verification/omega_safety.py` | References `evidence_ledger` for safety gate evidence |
-| `artifacts/api.py` | `src/thegent/artifacts/api.py` | Uses `verify_hash_chain()` for artifact integrity at ingest |
+| Component                        | File                                        | Role                                                                                |
+| -------------------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `EvidenceLedger` (canonical)     | `src/thegent/governance/evidence_ledger.py` | AgilePlus cycle evidence; `record()`, `query()`, `verify_chain()`                   |
+| `EvidenceEvent` (Pydantic model) | `src/thegent/governance/evidence_ledger.py` | Schema for each ledger entry                                                        |
+| `IncidentLedger`                 | `src/thegent/governance/ledger.py`          | Governance/omega-safety incident records; `record_artifact()`, `verify_integrity()` |
+| `LedgerVerifier`                 | `src/thegent/governance/ledger.py`          | Standalone chain verification for arbitrary ledger paths                            |
+| `AgilePlusRunner`                | `src/thegent/governance/agileplus.py`       | Primary consumer of `EvidenceLedger`; records all cycle lifecycle events            |
+| `omega_safety`                   | `src/thegent/verification/omega_safety.py`  | References `evidence_ledger` for safety gate evidence                               |
+| `artifacts/api.py`               | `src/thegent/artifacts/api.py`              | Uses `verify_hash_chain()` for artifact integrity at ingest                         |
 
 ### Event Types Recorded by EvidenceLedger
 
-| Constant | Value | When Emitted |
-|----------|-------|--------------|
-| `CYCLE_STARTED` | `"cycle_started"` | AgilePlus cycle begins |
-| `SCAN_COMPLETED` | `"scan_completed"` | Work stream scan finishes |
-| `PLAN_CREATED` | `"plan_created"` | Planning phase produces a plan |
-| `TASK_DISPATCHED` | `"task_dispatched"` | Task sent to an agent |
-| `TASK_COMPLETED` | `"task_completed"` | Agent reports task completion |
+| Constant                 | Value                      | When Emitted                   |
+| ------------------------ | -------------------------- | ------------------------------ |
+| `CYCLE_STARTED`          | `"cycle_started"`          | AgilePlus cycle begins         |
+| `SCAN_COMPLETED`         | `"scan_completed"`         | Work stream scan finishes      |
+| `PLAN_CREATED`           | `"plan_created"`           | Planning phase produces a plan |
+| `TASK_DISPATCHED`        | `"task_dispatched"`        | Task sent to an agent          |
+| `TASK_COMPLETED`         | `"task_completed"`         | Agent reports task completion  |
 | `VERIFICATION_COMPLETED` | `"verification_completed"` | Verification gate passes/fails |
-| `CYCLE_COMPLETED` | `"cycle_completed"` | Full AgilePlus cycle finishes |
+| `CYCLE_COMPLETED`        | `"cycle_completed"`        | Full AgilePlus cycle finishes  |
 
 ---
 

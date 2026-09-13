@@ -25,18 +25,18 @@ This document covers all data categories handled by this repo: source code, buil
 
 ## Retention table
 
-| Data category | Storage location | Retention period | Deletion method | Access control | PII? |
-|---------------|------------------|------------------|------------------|----------------|------|
-| Source code | GitHub repo | Indefinite (or "until repo archived") | Repo archival | Public (or per repo settings) | No |
-| Build artifacts | GitHub Actions artifacts | 90 days | Auto-purged by GitHub | Repo maintainers | No |
-| Release artifacts (binaries, SBOMs) | GitHub Releases | Indefinite | Manual (or "until repo archived") | Public | No |
-| CI logs | GitHub Actions logs | 90 days | Auto-purged by GitHub | Repo maintainers | No |
-| Issue tracker | GitHub Issues | Indefinite | Manual | Public (or per repo settings) | Optional (user may post PII) |
-| Pull request comments | GitHub PRs | Indefinite | Manual | Public (or per repo settings) | Optional |
-| User accounts | GitHub user database | Indefinite (until user deletes) | User-initiated | User | Yes (email) |
-| Telemetry / metrics | (if any, list here) | 30 days | Auto-purged | Maintainers | Depends |
-| Logs (production) | (if any, list here) | 30 days | Auto-purged | Maintainers | Depends |
-| Backups | (if any, list here) | 1 year | Manual rotation | Maintainers | Depends |
+| Data category                       | Storage location         | Retention period                      | Deletion method                   | Access control                | PII?                         |
+| ----------------------------------- | ------------------------ | ------------------------------------- | --------------------------------- | ----------------------------- | ---------------------------- |
+| Source code                         | GitHub repo              | Indefinite (or "until repo archived") | Repo archival                     | Public (or per repo settings) | No                           |
+| Build artifacts                     | GitHub Actions artifacts | 90 days                               | Auto-purged by GitHub             | Repo maintainers              | No                           |
+| Release artifacts (binaries, SBOMs) | GitHub Releases          | Indefinite                            | Manual (or "until repo archived") | Public                        | No                           |
+| CI logs                             | GitHub Actions logs      | 90 days                               | Auto-purged by GitHub             | Repo maintainers              | No                           |
+| Issue tracker                       | GitHub Issues            | Indefinite                            | Manual                            | Public (or per repo settings) | Optional (user may post PII) |
+| Pull request comments               | GitHub PRs               | Indefinite                            | Manual                            | Public (or per repo settings) | Optional                     |
+| User accounts                       | GitHub user database     | Indefinite (until user deletes)       | User-initiated                    | User                          | Yes (email)                  |
+| Telemetry / metrics                 | (if any, list here)      | 30 days                               | Auto-purged                       | Maintainers                   | Depends                      |
+| Logs (production)                   | (if any, list here)      | 30 days                               | Auto-purged                       | Maintainers                   | Depends                      |
+| Backups                             | (if any, list here)      | 1 year                                | Manual rotation                   | Maintainers                   | Depends                      |
 
 ## Procedures
 
@@ -96,6 +96,7 @@ OmniRoute is the reference repo for PR2 (PR2=1, partial). It has a retention pol
 ## How to validate
 
 After applying:
+
 1. `grep -r "retention" docs/` — should find the new file
 2. `grep "retention" README.md SECURITY.md` — should find references in both
 3. The table has at least 5 rows (source code, build artifacts, issues, user data, backups)

@@ -23,6 +23,7 @@ Additionally, the handler did **not** set the `x-models-etag` header, causing Co
 ### `_transform_models_response` (`cliproxy_adapter.py`, line 231)
 
 **Before:**
+
 ```python
 def _transform_models_response(content: bytes) -> bytes | None:
     # ...
@@ -32,6 +33,7 @@ def _transform_models_response(content: bytes) -> bytes | None:
 ```
 
 **After:**
+
 ```python
 def _transform_models_response(content: bytes) -> tuple[bytes, str] | None:
     # ...
@@ -55,6 +57,7 @@ Produces a deterministic, order-independent SHA256 hex digest of sorted model ID
 ### `proxy_handler` models branch (`cliproxy_adapter.py`, line 331)
 
 **Before:**
+
 ```python
 transformed = _transform_models_response(resp.body)
 if transformed is not None:
@@ -62,6 +65,7 @@ if transformed is not None:
 ```
 
 **After:**
+
 ```python
 result = _transform_models_response(resp.body)
 if result is not None:
@@ -79,32 +83,37 @@ if result is not None:
 ## Verification
 
 Live proxy at `http://127.0.0.1:8317/v1/models` before the fix returned:
+
 ```json
 {"object": "list", "models": [...]}  // wrong key
 ```
+
 Missing headers: `x-models-etag` was absent.
 
 After the fix, the response will be:
+
 ```json
 {"object": "list", "data": [...]}  // correct key
 ```
+
 With header: `x-models-etag: <sha256-hex>`
 
 ## Test Coverage
 
 Tests at `tests/routing/test_models_endpoint.py` (27 tests, all passing):
 
-| Class | Coverage |
-|-------|----------|
-| `TestComputeModelsEtag` | ETag determinism, order-independence, change detection |
-| `TestTransformModelsResponseFormat` | `data` key (not `models`), `object: list`, field preservation |
-| `TestTransformModelsResponseEtag` | ETag returned, matches compute function, changes with model list |
-| `TestTransformModelsResponseMetadata` | Metadata enrichment, no-overwrite, slug assignment |
-| `TestTransformModelsResponseEdgeCases` | Malformed input, empty list, missing id, slash-id suffix lookup |
+| Class                                  | Coverage                                                         |
+| -------------------------------------- | ---------------------------------------------------------------- |
+| `TestComputeModelsEtag`                | ETag determinism, order-independence, change detection           |
+| `TestTransformModelsResponseFormat`    | `data` key (not `models`), `object: list`, field preservation    |
+| `TestTransformModelsResponseEtag`      | ETag returned, matches compute function, changes with model list |
+| `TestTransformModelsResponseMetadata`  | Metadata enrichment, no-overwrite, slug assignment               |
+| `TestTransformModelsResponseEdgeCases` | Malformed input, empty list, missing id, slash-id suffix lookup  |
 
 ## Codex 0.104.0 Binary Analysis Notes
 
 From binary string extraction:
+
 - `x-models-etag` - response header Codex checks for cache invalidation
 - `models_etag` - OTEL span attribute recording the etag value
 - `prefer_websockets` - config key (separate concern; no change needed)

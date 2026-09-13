@@ -23,16 +23,17 @@
 
 Prevents single requests from consuming disproportionate budget.
 
-| Category | Per-Call Limit | Typical Request Cost | Safety Margin |
-|---|---|---|---|
-| **FAST** | $0.002 | $0.0005–0.001 | 2–4x headroom |
-| **NORMAL** | $0.05 | $0.015–0.03 | 1.5–3x headroom |
-| **COMPLEX** | $0.15 | $0.05–0.08 | 1.8–3x headroom |
-| **HIGH_COMPLEX** | $0.85 | $0.14–0.25 | 3–6x headroom |
+| Category         | Per-Call Limit | Typical Request Cost | Safety Margin   |
+| ---------------- | -------------- | -------------------- | --------------- |
+| **FAST**         | $0.002         | $0.0005–0.001        | 2–4x headroom   |
+| **NORMAL**       | $0.05          | $0.015–0.03          | 1.5–3x headroom |
+| **COMPLEX**      | $0.15          | $0.05–0.08           | 1.8–3x headroom |
+| **HIGH_COMPLEX** | $0.85          | $0.14–0.25           | 3–6x headroom   |
 
 **Enforcement:** Before routing, validate `cost_estimate ≤ per_call_limit`. If exceeded, escalate to higher category or reject with error.
 
 **Example Enforcement (Pseudocode):**
+
 ```python
 def validate_cost_estimate(category, model, tokens):
     estimated_cost = tokens / 1M * MODEL_COSTS[model]
@@ -49,16 +50,17 @@ def validate_cost_estimate(category, model, tokens):
 
 Prevents category from exceeding monthly budget allocation.
 
-| Category | Monthly Budget | Alert Threshold (80%) | Hard Block (100%) | Expected Volume |
-|---|---|---|---|---|
-| **FAST** | $50 | $40 | $50 | ~25,000 calls |
-| **NORMAL** | $200 | $160 | $200 | ~4,000 calls |
-| **COMPLEX** | $150 | $120 | $150 | ~1,000 calls |
-| **HIGH_COMPLEX** | $50 | $40 | $50 | ~60 calls |
+| Category         | Monthly Budget | Alert Threshold (80%) | Hard Block (100%) | Expected Volume |
+| ---------------- | -------------- | --------------------- | ----------------- | --------------- |
+| **FAST**         | $50            | $40                   | $50               | ~25,000 calls   |
+| **NORMAL**       | $200           | $160                  | $200              | ~4,000 calls    |
+| **COMPLEX**      | $150           | $120                  | $150              | ~1,000 calls    |
+| **HIGH_COMPLEX** | $50            | $40                   | $50               | ~60 calls       |
 
 **Enforcement:** Track cumulative cost per category. Fire alerts at 80%, hard-block new requests at 100%.
 
 **Example Enforcement (Pseudocode):**
+
 ```python
 def check_cumulative_budget(category):
     cumulative = sum_costs_this_month(category)
@@ -99,16 +101,17 @@ Maintain a ledger file (JSON or CSV) with entries for every routed request:
 
 ### Alert Levels
 
-| Alert Level | Trigger | Response | Audience |
-|---|---|---|---|
-| **INFORMATIONAL** | New routing decision | Log to audit trail; no action | Automated logs |
-| **WARNING** | Category at 80% cumulative | Email ops; prepare to escalate | Operations team |
-| **CRITICAL** | Category at 100% cumulative | Email ops + manager; all new requests blocked | Ops + Manager |
-| **EMERGENCY** | Single request would exceed instantaneous limit | Reject request immediately; suggest escalation | Automated system |
+| Alert Level       | Trigger                                         | Response                                       | Audience         |
+| ----------------- | ----------------------------------------------- | ---------------------------------------------- | ---------------- |
+| **INFORMATIONAL** | New routing decision                            | Log to audit trail; no action                  | Automated logs   |
+| **WARNING**       | Category at 80% cumulative                      | Email ops; prepare to escalate                 | Operations team  |
+| **CRITICAL**      | Category at 100% cumulative                     | Email ops + manager; all new requests blocked  | Ops + Manager    |
+| **EMERGENCY**     | Single request would exceed instantaneous limit | Reject request immediately; suggest escalation | Automated system |
 
 ### Example Alert Messages
 
 **80% Warning (Cumulative):**
+
 ```
 ALERT [2026-02-15 14:45]: NORMAL category at 80% budget
   Current: $160.00 / $200.00
@@ -117,6 +120,7 @@ ALERT [2026-02-15 14:45]: NORMAL category at 80% budget
 ```
 
 **100% Block (Cumulative):**
+
 ```
 CRITICAL [2026-02-15 16:30]: NORMAL category BUDGET EXHAUSTED
   Current: $200.00 / $200.00
@@ -129,6 +133,7 @@ CRITICAL [2026-02-15 16:30]: NORMAL category BUDGET EXHAUSTED
 ```
 
 **Instantaneous Block (Per-Call):**
+
 ```
 ERROR [2026-02-15 12:15]: HIGH_COMPLEX request exceeds per-call limit
   Estimated cost: $1.20 (for 12K tokens × Opus)
@@ -297,6 +302,7 @@ NOTES:
 ### Anti-Pattern: Graceful Degradation
 
 **DO NOT DO:**
+
 ```python
 # BAD: Silently falls back to cheaper model without alerting user
 if cost > budget:
@@ -308,6 +314,7 @@ if cost > budget:
 ### Pattern: Loud, Deterministic Failures
 
 **DO THIS:**
+
 ```python
 # GOOD: Explicit failure with clear options
 if cost > budget:
@@ -324,13 +331,13 @@ if cost > budget:
 
 ### Guardrails
 
-| Scenario | Behavior | Rationale |
-|---|---|---|
-| Per-call cost exceeds limit | **REJECT** immediately with error | Prevents runaway single requests |
-| Cumulative approaches 80% | **WARN** ops team | Gives time to reallocate or escalate |
-| Cumulative at 100% | **BLOCK** all new requests in category | No overflow; hard stop |
-| All categories exhausted | **QUEUE** request; alert manager | Visible escalation queue |
-| Overflow detected | **ALERT** + **LOG** all details | Audit trail for post-mortem |
+| Scenario                    | Behavior                               | Rationale                            |
+| --------------------------- | -------------------------------------- | ------------------------------------ |
+| Per-call cost exceeds limit | **REJECT** immediately with error      | Prevents runaway single requests     |
+| Cumulative approaches 80%   | **WARN** ops team                      | Gives time to reallocate or escalate |
+| Cumulative at 100%          | **BLOCK** all new requests in category | No overflow; hard stop               |
+| All categories exhausted    | **QUEUE** request; alert manager       | Visible escalation queue             |
+| Overflow detected           | **ALERT** + **LOG** all details        | Audit trail for post-mortem          |
 
 ---
 
@@ -338,13 +345,13 @@ if cost > budget:
 
 ### When Manual Approval Is Required
 
-| Scenario | Trigger | Approver | Process |
-|---|---|---|---|
-| Request exceeds per-call limit | Cost > instantaneous limit | Manager | Review task justification; approve or deny |
-| Request would use last 10% of monthly budget | Cumulative > 90% of limit | Operations | Quick check; approve if legitimate |
-| Multiple requests queue simultaneously | Escalation queue size > 5 | Manager | Prioritize queue; reallocate budget if possible |
-| Cross-month escalation | Task queued end-of-month | Operations | Decide: bump priority next month, de-scope, or defer |
-| Budget reallocation | Need to shift $ between categories | Finance + Manager | Document rationale; update routing rules |
+| Scenario                                     | Trigger                            | Approver          | Process                                              |
+| -------------------------------------------- | ---------------------------------- | ----------------- | ---------------------------------------------------- |
+| Request exceeds per-call limit               | Cost > instantaneous limit         | Manager           | Review task justification; approve or deny           |
+| Request would use last 10% of monthly budget | Cumulative > 90% of limit          | Operations        | Quick check; approve if legitimate                   |
+| Multiple requests queue simultaneously       | Escalation queue size > 5          | Manager           | Prioritize queue; reallocate budget if possible      |
+| Cross-month escalation                       | Task queued end-of-month           | Operations        | Decide: bump priority next month, de-scope, or defer |
+| Budget reallocation                          | Need to shift $ between categories | Finance + Manager | Document rationale; update routing rules             |
 
 ### Approval Request Template
 
@@ -377,18 +384,19 @@ Signed: [Timestamp]
 
 ### KPIs to Track (Real-Time)
 
-| Metric | Update Freq | Alert Threshold | Audience |
-|---|---|---|---|
-| Cumulative cost by category | Per request | 80%, 100% | Ops, Manager |
-| Cost burn rate per category | Hourly | >10% ahead of linear pace | Ops |
-| Requests queued (escalation) | Per event | >0 | Ops, Manager |
-| Model mix by category (%) | Daily | Shift >10% vs. baseline | Ops |
-| Error rate (cost-related) | Per request | >1% | Ops |
-| Avg cost per call by category | Daily | >10% variance | Operations |
+| Metric                        | Update Freq | Alert Threshold           | Audience     |
+| ----------------------------- | ----------- | ------------------------- | ------------ |
+| Cumulative cost by category   | Per request | 80%, 100%                 | Ops, Manager |
+| Cost burn rate per category   | Hourly      | >10% ahead of linear pace | Ops          |
+| Requests queued (escalation)  | Per event   | >0                        | Ops, Manager |
+| Model mix by category (%)     | Daily       | Shift >10% vs. baseline   | Ops          |
+| Error rate (cost-related)     | Per request | >1%                       | Ops          |
+| Avg cost per call by category | Daily       | >10% variance             | Operations   |
 
 ### Dashboard Views (Mock)
 
 **View 1: Budget Health**
+
 ```
 ╔════════════════════════════════════════════════════════════════╗
 ║ MONTHLY BUDGET HEALTH (as of 2026-02-15 16:00 UTC)             ║
@@ -407,6 +415,7 @@ Signed: [Timestamp]
 ```
 
 **View 2: Routing Decisions (Last 24h)**
+
 ```
 ╔════════════════════════════════════════════════════════════════╗
 ║ ROUTING DECISIONS (Last 24 Hours)                               ║
@@ -426,6 +435,7 @@ Signed: [Timestamp]
 ```
 
 **View 3: Alerts**
+
 ```
 ╔════════════════════════════════════════════════════════════════╗
 ║ ACTIVE ALERTS                                                   ║
@@ -447,16 +457,16 @@ Signed: [Timestamp]
 
 ## Implementation Roadmap
 
-| Phase | Task | Owner | Timeline |
-|---|---|---|---|
-| **Phase 1** | Build cost ledger + real-time tracking | Eng | Week 1 |
-| **Phase 2** | Implement per-call limit checks | Eng | Week 1 |
-| **Phase 3** | Implement cumulative limit checks + alerts | Eng | Week 2 |
-| **Phase 4** | Build escalation paths + decision trees | Eng | Week 2 |
-| **Phase 5** | Deploy monitoring dashboard | DevOps | Week 3 |
-| **Phase 6** | Manual approval workflow | Ops | Week 3 |
-| **Phase 7** | Testing + shadow run (log only, no enforcement) | QA | Week 3 |
-| **Phase 8** | Go live with enforcement | Ops | Week 4 |
+| Phase       | Task                                            | Owner  | Timeline |
+| ----------- | ----------------------------------------------- | ------ | -------- |
+| **Phase 1** | Build cost ledger + real-time tracking          | Eng    | Week 1   |
+| **Phase 2** | Implement per-call limit checks                 | Eng    | Week 1   |
+| **Phase 3** | Implement cumulative limit checks + alerts      | Eng    | Week 2   |
+| **Phase 4** | Build escalation paths + decision trees         | Eng    | Week 2   |
+| **Phase 5** | Deploy monitoring dashboard                     | DevOps | Week 3   |
+| **Phase 6** | Manual approval workflow                        | Ops    | Week 3   |
+| **Phase 7** | Testing + shadow run (log only, no enforcement) | QA     | Week 3   |
+| **Phase 8** | Go live with enforcement                        | Ops    | Week 4   |
 
 ---
 
@@ -467,6 +477,7 @@ A: Yes, via manual approval. File an APPROVAL_REQUEST with manager sign-off. Doc
 
 **Q: The burn rate is 20% faster than expected. What do we do?**
 A: Investigate: Are tasks larger than expected? Is routing choosing expensive models? Then:
+
 1. Reduce scope (split large requests into smaller ones)
 2. Shift expensive categories to cheaper models
 3. Request budget reallocation (with VP approval)
@@ -480,15 +491,12 @@ A: Actual costs are recorded in ledger. If cumulative overflows, the hard block 
 **Q: Should we alert the user when we escalate their request to a more expensive model?**
 A: Yes, always. Include cost note: "Your request was escalated from NORMAL to COMPLEX; estimated cost +$0.04. Proceed? Y/N"
 
-
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -498,15 +506,18 @@ A: Yes, always. Include cost note: "Your request was escalated from NORMAL to CO
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

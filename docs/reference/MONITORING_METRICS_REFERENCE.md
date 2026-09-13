@@ -3,6 +3,7 @@
 ## Overview
 
 This document defines all metrics used in the routing system dashboards. Each metric includes:
+
 - Definition (what it measures)
 - Calculation formula
 - Data source
@@ -21,6 +22,7 @@ This document defines all metrics used in the routing system dashboards. Each me
 **Definition:** Sum of actual costs incurred for each task category on a given day.
 
 **Formula:**
+
 ```
 daily_cost_by_category[category][date] =
   SUM(actual_cost_usd) WHERE task_category = category AND DATE(ended_at_utc) = date AND event = 'finish'
@@ -35,6 +37,7 @@ daily_cost_by_category[category][date] =
 **Alert Threshold:** None (informational only)
 
 **Example:**
+
 ```
 date       | fast  | normal | complex | high_complex | total
 -----------|-------|--------|---------|--------------|-------
@@ -48,6 +51,7 @@ date       | fast  | normal | complex | high_complex | total
 **Definition:** Month-to-date total cost across all categories.
 
 **Formula:**
+
 ```
 mtd_cost = SUM(actual_cost_usd)
   WHERE STRFTIME('%Y-%m', ended_at_utc) = STRFTIME('%Y-%m', NOW())
@@ -71,12 +75,14 @@ mtd_cost = SUM(actual_cost_usd)
 **Definition:** Budget remaining for a category after subtracting month-to-date spend.
 
 **Formula:**
+
 ```
 category_budget_remaining[category] =
   category_budget[category] - SUM(actual_cost_usd) WHERE task_category = category AND STRFTIME('%Y-%m', ended_at_utc) = STRFTIME('%Y-%m', NOW())
 ```
 
 **Category Budgets:**
+
 - FAST: $50
 - NORMAL: $200
 - COMPLEX: $150
@@ -91,6 +97,7 @@ category_budget_remaining[category] =
 **Alert Threshold:** Warn if < 20% of budget remaining
 
 **Example:**
+
 ```
 category     | budget | mtd_cost | remaining
 -------------|--------|----------|----------
@@ -107,6 +114,7 @@ high_complex | 50.00  | 15.00    | 35.00
 **Definition:** Percentage of category monthly budget consumed.
 
 **Formula:**
+
 ```
 budget_utilization_pct[category] =
   (category_mtd_cost[category] / category_budget[category]) * 100
@@ -119,10 +127,12 @@ budget_utilization_pct[category] =
 **Refresh Frequency:** Hourly
 
 **Alert Threshold:**
+
 - WARNING: >= 80%
 - CRITICAL: >= 100%
 
 **Example:**
+
 ```
 category     | utilization_pct | status
 -------------|-----------------|----------
@@ -139,6 +149,7 @@ high_complex | 30.0%           | WARNING
 **Definition:** Average cost per task, calculated per category.
 
 **Formula:**
+
 ```
 cost_per_task[category] =
   SUM(actual_cost_usd) / COUNT(*)
@@ -148,6 +159,7 @@ cost_per_task[category] =
 **Data Source:** `run_registry.jsonl`
 
 **Typical Range:**
+
 - FAST: $0.008-0.015 per task
 - NORMAL: $0.14-0.20 per task
 - COMPLEX: $0.40-0.50 per task
@@ -158,6 +170,7 @@ cost_per_task[category] =
 **Alert Threshold:** Deviation > 20% from baseline indicates anomaly
 
 **Example:**
+
 ```
 category     | cost_per_task | trend
 -------------|---------------|-------
@@ -174,6 +187,7 @@ high_complex | 1.0667        | ↑ +5%
 **Definition:** Linear projection of month-end cost based on daily burn rate.
 
 **Formula:**
+
 ```
 daily_burn_rate = mtd_cost / days_elapsed
 cost_forecast_mtd = daily_burn_rate * 30
@@ -188,6 +202,7 @@ cost_forecast_mtd = daily_burn_rate * 30
 **Alert Threshold:** Warn if forecast >= $360, Critical if forecast > $450
 
 **Example:**
+
 - MTD Cost: $111.00
 - Days Elapsed: 14
 - Daily Burn: $7.93
@@ -202,6 +217,7 @@ cost_forecast_mtd = daily_burn_rate * 30
 **Definition:** Average quality score achieved by models selected for a category.
 
 **Formula:**
+
 ```
 avg_quality_by_category[category] =
   AVG(quality_score)
@@ -217,12 +233,14 @@ avg_quality_by_category[category] =
 **Alert Threshold:** Regression > 5% below baseline per category
 
 **Quality Baseline by Category:**
+
 - FAST: 0.60 (minimum acceptable)
 - NORMAL: 0.70
 - COMPLEX: 0.75
 - HIGH_COMPLEX: 0.80
 
 **Example:**
+
 ```
 category     | avg_quality | baseline | status
 -------------|------------|----------|--------
@@ -239,6 +257,7 @@ high_complex | 0.85       | 0.80     | OK (+6%)
 **Definition:** Percentage of tasks in a category that meet the quality threshold.
 
 **Formula:**
+
 ```
 quality_threshold_attainment[category] =
   (COUNT(tasks WHERE quality >= threshold[category]) / COUNT(*)) * 100
@@ -253,6 +272,7 @@ quality_threshold_attainment[category] =
 **Alert Threshold:** < 95% for any category indicates quality regression
 
 **Example:**
+
 ```
 category     | meets_threshold_pct | status
 -------------|---------------------|--------
@@ -269,6 +289,7 @@ high_complex | 100.0%              | OK
 **Definition:** Percentage of tasks routed to each model, by category.
 
 **Formula:**
+
 ```
 model_selection_distribution[category][model] =
   (COUNT(tasks WHERE selected_model = model AND task_category = category) / COUNT(tasks WHERE task_category = category)) * 100
@@ -277,6 +298,7 @@ model_selection_distribution[category][model] =
 **Data Source:** `run_registry.jsonl`, field `selected_model`
 
 **Typical Range:** Varies by category:
+
 - FAST/NORMAL/COMPLEX: ~98% minimax-m2.5, ~2% fallback (claude-sonnet)
 - HIGH_COMPLEX: 100% claude-opus
 
@@ -285,6 +307,7 @@ model_selection_distribution[category][model] =
 **Alert Threshold:** Deviation > 10% from expected distribution indicates routing anomaly
 
 **Example:**
+
 ```
 category     | model              | percentage | trend
 -------------|-------------------|------------|------
@@ -302,6 +325,7 @@ high_complex | claude-opus-4.6    | 100.0%     | → stable
 **Definition:** Percentage of tasks that used a fallback model (not the primary choice for their category).
 
 **Formula:**
+
 ```
 fallback_rate[category] =
   (COUNT(tasks WHERE used_fallback_model = true AND task_category = category) / COUNT(tasks WHERE task_category = category)) * 100
@@ -310,6 +334,7 @@ fallback_rate[category] =
 **Data Source:** `run_registry.jsonl`, field `used_fallback_model`
 
 **Typical Range:**
+
 - FAST: 0.5-2% (rare, primary is cost-optimized)
 - NORMAL: 1-2%
 - COMPLEX: 5-15% (higher due to quality variability)
@@ -320,6 +345,7 @@ fallback_rate[category] =
 **Alert Threshold:** > 20% for any category indicates constraint issues
 
 **Example:**
+
 ```
 category     | total_tasks | fallback_tasks | fallback_rate_pct
 -------------|------------|----------------|------------------
@@ -336,6 +362,7 @@ high_complex | 45         | 0              | 0.0%
 **Definition:** Percentage of tasks that failed at least one constraint.
 
 **Formula:**
+
 ```
 constraint_violation_rate[category] =
   (COUNT(tasks WHERE constraint_violations IS NOT EMPTY) / COUNT(*)) * 100
@@ -350,12 +377,14 @@ constraint_violation_rate[category] =
 **Alert Threshold:** > 10% for any category indicates routing problems
 
 **Violation Types:**
+
 - `performance`: Quality score below category threshold
 - `instantaneous_cost`: Single task cost exceeds per-task budget
 - `cumulative_cost`: Monthly cost would exceed budget
 - `speed`: Estimated execution time exceeds SLA
 
 **Example:**
+
 ```
 category     | total_tasks | violations | rate_pct | top_violation
 -------------|------------|-----------|----------|------------------
@@ -374,6 +403,7 @@ high_complex | 45         | 2         | 4.4%     | performance (2)
 **Definition:** 50th percentile (median) task completion time in milliseconds.
 
 **Formula:**
+
 ```
 p50_latency_ms[category] =
   PERCENTILE(duration_s * 1000, 0.5)
@@ -383,6 +413,7 @@ p50_latency_ms[category] =
 **Data Source:** `run_registry.jsonl`, field `duration_s`
 
 **Typical Range:**
+
 - FAST: 300-600ms
 - NORMAL: 2000-4000ms
 - COMPLEX: 10000-15000ms
@@ -393,12 +424,14 @@ p50_latency_ms[category] =
 **Alert Threshold:** > 1.5x category SLA (e.g., >1500ms for FAST) indicates degradation
 
 **SLA Targets:**
+
 - FAST: 1000ms (1s)
 - NORMAL: 5000ms (5s)
 - COMPLEX: 20000ms (20s)
 - HIGH_COMPLEX: 60000ms (60s)
 
 **Example:**
+
 ```
 category     | p50_ms | sla_ms | utilization
 -------------|--------|--------|------------
@@ -415,6 +448,7 @@ high_complex | 35000  | 60000  | 58%
 **Definition:** 99th percentile task completion time in milliseconds (worst-case latency).
 
 **Formula:**
+
 ```
 p99_latency_ms[category] =
   PERCENTILE(duration_s * 1000, 0.99)
@@ -424,6 +458,7 @@ p99_latency_ms[category] =
 **Data Source:** `run_registry.jsonl`, field `duration_s`
 
 **Typical Range:**
+
 - FAST: 700-1200ms
 - NORMAL: 4000-6000ms
 - COMPLEX: 15000-25000ms
@@ -434,6 +469,7 @@ p99_latency_ms[category] =
 **Alert Threshold:** > SLA target (e.g., >1000ms for FAST p99)
 
 **Example:**
+
 ```
 category     | p99_ms | sla_ms | breach_pct
 -------------|--------|--------|----------
@@ -450,6 +486,7 @@ high_complex | 55000  | 60000  | 5.2%
 **Definition:** Percentage of tasks completing within their category's SLA target.
 
 **Formula:**
+
 ```
 sla_attainment_pct[category] =
   (COUNT(tasks WHERE duration_s * 1000 <= sla[category]) / COUNT(*)) * 100
@@ -465,6 +502,7 @@ sla_attainment_pct[category] =
 **Alert Threshold:** < 95% for any category
 
 **Example:**
+
 ```
 category     | sla_met | sla_missed | total | attainment_pct
 -------------|---------|-----------|-------|---------------
@@ -481,6 +519,7 @@ high_complex | 43      | 2         | 45    | 95.6%
 **Definition:** Average time taken by TaskRouter.classify() to categorize a task.
 
 **Formula:**
+
 ```
 avg_classification_time_ms =
   AVG(routing_time_ms)
@@ -506,6 +545,7 @@ avg_classification_time_ms =
 **Definition:** End-to-end execution time from task start to finish.
 
 **Formula:**
+
 ```
 total_duration_s =
   (ended_at_utc - started_at_utc) in seconds
@@ -528,6 +568,7 @@ total_duration_s =
 **Definition:** Total number of tasks processed, by category and in aggregate.
 
 **Formula:**
+
 ```
 task_volume[category][date] =
   COUNT(*)
@@ -545,6 +586,7 @@ task_volume[date] = COUNT(*) WHERE event = 'finish' AND DATE(ended_at_utc) = dat
 **Alert Threshold:** None (informational only)
 
 **Example:**
+
 ```
 date       | fast  | normal | complex | high_complex | total
 -----------|-------|--------|---------|--------------|-------
@@ -559,6 +601,7 @@ date       | fast  | normal | complex | high_complex | total
 **Definition:** Percentage of tasks with non-zero exit code (failures/errors).
 
 **Formula:**
+
 ```
 error_rate_pct[category] =
   (COUNT(tasks WHERE exit_code != 0) / COUNT(*)) * 100
@@ -574,6 +617,7 @@ error_rate_pct[category] =
 **Alert Threshold:** > 5% for any category
 
 **Example:**
+
 ```
 category     | total_tasks | errors | error_rate_pct | status
 -------------|------------|--------|--------------|--------
@@ -590,6 +634,7 @@ high_complex | 45         | 2      | 4.4%         | OK
 **Definition:** Number of tasks currently pending escalation review.
 
 **Formula:**
+
 ```
 escalation_queue_depth =
   COUNT(*) WHERE event = 'escalate' AND escalation_status IN ('pending', 'in_progress')
@@ -612,6 +657,7 @@ escalation_queue_depth =
 **Definition:** Age of oldest escalation in the queue, and average age.
 
 **Formula:**
+
 ```
 escalation_age_hours_max =
   MAX((NOW() - started_at_utc) in hours)
@@ -631,6 +677,7 @@ escalation_age_hours_avg =
 **Alert Threshold:** max > 4 hours OR avg > 2 hours
 
 **Example:**
+
 ```
 status      | count | min_age_h | max_age_h | avg_age_h
 ------------|-------|-----------|-----------|----------
@@ -645,6 +692,7 @@ in_progress | 1     | 0.1       | 0.1       | 0.1
 **Definition:** Constraint violation type that occurs most frequently.
 
 **Formula:**
+
 ```
 most_common_violation =
   MODE(constraint_violations[0])
@@ -660,6 +708,7 @@ most_common_violation =
 **Alert Threshold:** Change in most common violation type
 
 **Example:**
+
 ```
 violation_type      | count | trend
 --------------------|-------|-------
@@ -678,6 +727,7 @@ cumulative_cost     | 2     | ↓ -1
 **Definition:** Month-to-date cost for FAST category only.
 
 **Formula:**
+
 ```
 fast_mtd_cost =
   SUM(actual_cost_usd)
@@ -703,6 +753,7 @@ fast_mtd_cost =
 **Definition:** Month-to-date cost for NORMAL category only.
 
 **Formula:**
+
 ```
 normal_mtd_cost =
   SUM(actual_cost_usd)
@@ -728,6 +779,7 @@ normal_mtd_cost =
 **Definition:** Month-to-date cost for COMPLEX category only.
 
 **Formula:**
+
 ```
 complex_mtd_cost =
   SUM(actual_cost_usd)
@@ -753,6 +805,7 @@ complex_mtd_cost =
 **Definition:** Month-to-date cost for HIGH_COMPLEX category only.
 
 **Formula:**
+
 ```
 high_complex_mtd_cost =
   SUM(actual_cost_usd)
@@ -778,6 +831,7 @@ high_complex_mtd_cost =
 **Definition:** Total budget across all categories for the month.
 
 **Formula:**
+
 ```
 total_monthly_budget =
   fast_budget + normal_budget + complex_budget + high_complex_budget
@@ -797,6 +851,7 @@ total_monthly_budget =
 **Definition:** Projected days until monthly budget is fully consumed at current burn rate.
 
 **Formula:**
+
 ```
 daily_burn_rate = mtd_cost / days_elapsed
 days_until_budget_exhausted = (total_monthly_budget - mtd_cost) / daily_burn_rate
@@ -813,6 +868,7 @@ If daily_burn_rate <= 0: days_until_budget_exhausted = infinite (or capped at 30
 **Alert Threshold:** < 3 days (critical shortage)
 
 **Example:**
+
 - Days Elapsed: 14
 - MTD Cost: $111
 - Daily Burn: $7.93
@@ -823,38 +879,39 @@ If daily_burn_rate <= 0: days_until_budget_exhausted = infinite (or capped at 30
 
 ## Metric Summary Table
 
-| Metric | Category | Type | Range | Refresh | Alert |
-|--------|----------|------|-------|---------|-------|
-| daily_cost_by_category | Cost | USD | $5-20/day | 5min | None |
-| mtd_cost | Cost | USD | $0-450 | 1h | Warn@$360, Crit@$450 |
-| category_budget_remaining | Cost | USD | $0-{budget} | 1h | Warn@<20% |
-| budget_utilization_pct | Cost | % | 0-100%+ | 1h | Warn@80%, Crit@100% |
-| cost_per_task | Cost | USD | Varies | 1d | Deviation>20% |
-| cost_forecast_mtd | Cost | USD | $0-600 | 1d | Warn@$360, Crit>$450 |
-| avg_quality_by_category | Perf | 0.0-1.0 | 0.6-0.9 | 1h | Regression>5% |
-| quality_threshold_attainment | Perf | % | 90-100% | 1h | <95% |
-| model_selection_distribution | Perf | % | Varies | 1d | Deviation>10% |
-| fallback_rate | Perf | % | 0-20% | 1d | >20% |
-| constraint_violation_rate | Perf | % | 2-5% | 1h | >10% |
-| p50_latency_ms | Speed | ms | Varies | 1h | >1.5xSLA |
-| p99_latency_ms | Speed | ms | Varies | 1h | >SLA |
-| sla_attainment_pct | Speed | % | 94-99% | 1h | <95% |
-| avg_classification_time_ms | Speed | ms | 10-50 | 1d | >100 |
-| total_duration_s | Speed | s | Varies | RT | >SLA |
-| task_volume | Ops | count | 300-700/d | RT | None |
-| error_rate_pct | Ops | % | 0.5-3% | 1h | >5% |
-| escalation_queue_depth | Ops | count | 0-5 | RT | >10 |
-| escalation_age_hours | Ops | hours | 0-2 avg | RT | Max>4h, Avg>2h |
-| most_common_violation | Ops | type | 1 of 4 | 1d | Change |
-| *_mtd_cost (by category) | Budget | USD | Varies | 1h | Warn@80% |
-| total_monthly_budget | Budget | USD | 450 | Static | N/A |
-| days_until_budget_exhausted | Budget | days | 10-30 | 1d | <3 |
+| Metric                       | Category | Type    | Range       | Refresh | Alert                |
+| ---------------------------- | -------- | ------- | ----------- | ------- | -------------------- |
+| daily_cost_by_category       | Cost     | USD     | $5-20/day   | 5min    | None                 |
+| mtd_cost                     | Cost     | USD     | $0-450      | 1h      | Warn@$360, Crit@$450 |
+| category_budget_remaining    | Cost     | USD     | $0-{budget} | 1h      | Warn@<20%            |
+| budget_utilization_pct       | Cost     | %       | 0-100%+     | 1h      | Warn@80%, Crit@100%  |
+| cost_per_task                | Cost     | USD     | Varies      | 1d      | Deviation>20%        |
+| cost_forecast_mtd            | Cost     | USD     | $0-600      | 1d      | Warn@$360, Crit>$450 |
+| avg_quality_by_category      | Perf     | 0.0-1.0 | 0.6-0.9     | 1h      | Regression>5%        |
+| quality_threshold_attainment | Perf     | %       | 90-100%     | 1h      | <95%                 |
+| model_selection_distribution | Perf     | %       | Varies      | 1d      | Deviation>10%        |
+| fallback_rate                | Perf     | %       | 0-20%       | 1d      | >20%                 |
+| constraint_violation_rate    | Perf     | %       | 2-5%        | 1h      | >10%                 |
+| p50_latency_ms               | Speed    | ms      | Varies      | 1h      | >1.5xSLA             |
+| p99_latency_ms               | Speed    | ms      | Varies      | 1h      | >SLA                 |
+| sla_attainment_pct           | Speed    | %       | 94-99%      | 1h      | <95%                 |
+| avg_classification_time_ms   | Speed    | ms      | 10-50       | 1d      | >100                 |
+| total_duration_s             | Speed    | s       | Varies      | RT      | >SLA                 |
+| task_volume                  | Ops      | count   | 300-700/d   | RT      | None                 |
+| error_rate_pct               | Ops      | %       | 0.5-3%      | 1h      | >5%                  |
+| escalation_queue_depth       | Ops      | count   | 0-5         | RT      | >10                  |
+| escalation_age_hours         | Ops      | hours   | 0-2 avg     | RT      | Max>4h, Avg>2h       |
+| most_common_violation        | Ops      | type    | 1 of 4      | 1d      | Change               |
+| \*\_mtd_cost (by category)   | Budget   | USD     | Varies      | 1h      | Warn@80%             |
+| total_monthly_budget         | Budget   | USD     | 450         | Static  | N/A                  |
+| days_until_budget_exhausted  | Budget   | days    | 10-30       | 1d      | <3                   |
 
 ---
 
 ## Baseline Values by Category
 
 ### FAST Category
+
 - Budget: $50/month
 - Quality Threshold: 0.60
 - SLA: 1000ms
@@ -864,6 +921,7 @@ If daily_burn_rate <= 0: days_until_budget_exhausted = infinite (or capped at 30
 - Expected Cost/Task: $0.009
 
 ### NORMAL Category
+
 - Budget: $200/month
 - Quality Threshold: 0.70
 - SLA: 5000ms
@@ -873,6 +931,7 @@ If daily_burn_rate <= 0: days_until_budget_exhausted = infinite (or capped at 30
 - Expected Cost/Task: $0.15
 
 ### COMPLEX Category
+
 - Budget: $150/month
 - Quality Threshold: 0.75
 - SLA: 20000ms
@@ -882,6 +941,7 @@ If daily_burn_rate <= 0: days_until_budget_exhausted = infinite (or capped at 30
 - Expected Cost/Task: $0.44
 
 ### HIGH_COMPLEX Category
+
 - Budget: $50/month
 - Quality Threshold: 0.80
 - SLA: 60000ms
@@ -890,15 +950,12 @@ If daily_burn_rate <= 0: days_until_budget_exhausted = infinite (or capped at 30
 - Expected Tasks: 40-60/month
 - Expected Cost/Task: $1.07
 
-
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -908,15 +965,18 @@ If daily_burn_rate <= 0: days_until_budget_exhausted = infinite (or capped at 30
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

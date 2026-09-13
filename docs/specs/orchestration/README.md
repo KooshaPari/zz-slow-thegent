@@ -8,29 +8,29 @@ The Orchestration domain manages task execution, state, and resource allocation.
 
 ### Execution Engine
 
-| Component | Purpose | Files |
-|-----------|---------|-------|
-| Engine | Task execution | `execution/engine.py` |
-| Worker Pool | Parallel workers | `execution/worker_pool.py` |
-| DAG | Task dependencies | `execution/dag.py` |
-| Checkpoint | State recovery | `state/checkpoint.py` |
+| Component   | Purpose           | Files                      |
+| ----------- | ----------------- | -------------------------- |
+| Engine      | Task execution    | `execution/engine.py`      |
+| Worker Pool | Parallel workers  | `execution/worker_pool.py` |
+| DAG         | Task dependencies | `execution/dag.py`         |
+| Checkpoint  | State recovery    | `state/checkpoint.py`      |
 
 ### State Management
 
-| Store | Purpose | Backend |
-|--------|---------|---------|
-| Memory | In-memory | `state/memory.py` |
-| SHM | Shared memory | `state/shm.py` |
-| Disk | Persistence | `state/transactions.py` |
-| Redis | Distributed | `state/redis.py` |
+| Store  | Purpose       | Backend                 |
+| ------ | ------------- | ----------------------- |
+| Memory | In-memory     | `state/memory.py`       |
+| SHM    | Shared memory | `state/shm.py`          |
+| Disk   | Persistence   | `state/transactions.py` |
+| Redis  | Distributed   | `state/redis.py`        |
 
 ### Resource Management
 
-| Resource | Management | Files |
-|----------|------------|--------|
-| CPU | Limits | `resource/load_based_limits.py` |
-| Memory | Tracking | `resource/resource_management.py` |
-| Concurrency | Semaphores | `resource/leasing.py` |
+| Resource    | Management | Files                             |
+| ----------- | ---------- | --------------------------------- |
+| CPU         | Limits     | `resource/load_based_limits.py`   |
+| Memory      | Tracking   | `resource/resource_management.py` |
+| Concurrency | Semaphores | `resource/leasing.py`             |
 
 ## Task Lifecycle
 
@@ -50,37 +50,37 @@ Task → Queue → Worker Pool → Agent Execution → Result
 
 ## Consensus & Coordination
 
-| Mechanism | Use Case | Implementation |
-|-----------|---------|-----------------|
-| Lock-free | High throughput | `execution/lock_free.py` |
-| Atomic | Transactions | `state/transactions.py` |
-| Leader election | Single writer | `consensus/*.py` |
+| Mechanism       | Use Case        | Implementation           |
+| --------------- | --------------- | ------------------------ |
+| Lock-free       | High throughput | `execution/lock_free.py` |
+| Atomic          | Transactions    | `state/transactions.py`  |
+| Leader election | Single writer   | `consensus/*.py`         |
 
 ## Performance
 
-| Metric | Target |
-|--------|--------|
-| Task dispatch | <10ms |
-| Worker spawn | <100ms |
-| Checkpoint | <50ms |
-| Recovery | <1s |
+| Metric        | Target |
+| ------------- | ------ |
+| Task dispatch | <10ms  |
+| Worker spawn  | <100ms |
+| Checkpoint    | <50ms  |
+| Recovery      | <1s    |
 
 ## Scaling
 
-| Mode | Workers | Latency |
-|------|---------|----------|
-| Local | 1-10 | <10ms |
-| Distributed | 10-100 | <100ms |
-| Cloud | 100+ | <500ms |
+| Mode        | Workers | Latency |
+| ----------- | ------- | ------- |
+| Local       | 1-10    | <10ms   |
+| Distributed | 10-100  | <100ms  |
+| Cloud       | 100+    | <500ms  |
 
 ## Error Handling
 
-| Strategy | Implementation |
-|----------|----------------|
-| Retry | Exponential backoff |
-| Circuit breaker | Fast fail |
-| Dead letter | Failed task queue |
-| Compensating | Rollback actions |
+| Strategy        | Implementation      |
+| --------------- | ------------------- |
+| Retry           | Exponential backoff |
+| Circuit breaker | Fast fail           |
+| Dead letter     | Failed task queue   |
+| Compensating    | Rollback actions    |
 
 ## Dependencies
 

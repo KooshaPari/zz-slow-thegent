@@ -58,12 +58,12 @@
 
 ### Layer Responsibilities
 
-| Layer | Purpose | Latency | Capacity | Provider |
-|-------|---------|---------|----------|----------|
-| **L1** | Hot cache | <1ms | 16 MB | LRU in-memory |
-| **L2** | Warm cache | <10ms | 1 GB | Disk file storage |
-| **L3** | Knowledge Graph | <50ms | Unlimited | Supermemory Knowledge API |
-| **L4** | Immutable documents | <200ms | Unlimited | Supermemory Documents API |
+| Layer  | Purpose             | Latency | Capacity  | Provider                  |
+| ------ | ------------------- | ------- | --------- | ------------------------- |
+| **L1** | Hot cache           | <1ms    | 16 MB     | LRU in-memory             |
+| **L2** | Warm cache          | <10ms   | 1 GB      | Disk file storage         |
+| **L3** | Knowledge Graph     | <50ms   | Unlimited | Supermemory Knowledge API |
+| **L4** | Immutable documents | <200ms  | Unlimited | Supermemory Documents API |
 
 ---
 
@@ -109,6 +109,7 @@ impl SupermemoryClient {
 ```
 
 **Features**:
+
 - Automatic retry with exponential backoff
 - Circuit breaker (fail after 3 consecutive failures)
 - Multi-tenant project scoping via header
@@ -164,6 +165,7 @@ class MemoryManager:
 ```
 
 **Features**:
+
 - Automatic layering with fallback
 - TTL-based eviction from L1
 - Consistency between layers
@@ -203,12 +205,14 @@ impl MAIFArtifact {
 ```
 
 **Hash Chain**:
+
 ```
 artifact_hash = SHA256(input_hash || output_hash || previous_hash)
 signature = Sign(artifact_hash, agent_private_key)
 ```
 
 **Properties**:
+
 - Immutable once signed
 - Tampering detection via hash chain
 - Agent identity verification via signature
@@ -250,6 +254,7 @@ class SimulationReplay:
 ```
 
 **Deterministic Guarantees**:
+
 - Same random seed
 - Mocked external APIs
 - Isolated execution
@@ -432,12 +437,12 @@ class RetryPolicy:
 
 ### Fallback Strategy
 
-| Failure | Fallback |
-|---------|----------|
-| L3 query fails | Return from L2 (if available) |
-| L3 store fails | Queue write to L2; retry later |
-| L4 retrieve fails | Return from L2 backup |
-| L4 store fails | Queue to L2; block write with timeout |
+| Failure           | Fallback                              |
+| ----------------- | ------------------------------------- |
+| L3 query fails    | Return from L2 (if available)         |
+| L3 store fails    | Queue write to L2; retry later        |
+| L4 retrieve fails | Return from L2 backup                 |
+| L4 store fails    | Queue to L2; block write with timeout |
 
 ---
 
@@ -445,34 +450,34 @@ class RetryPolicy:
 
 ### Latency Targets
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| L1 hit | <0.1ms | <0.5ms | <1ms |
-| L2 hit | <5ms | <10ms | <20ms |
-| L3 query | <30ms | <50ms | <100ms |
-| L3 store | <50ms | <100ms | <200ms |
-| L4 store | <100ms | <200ms | <500ms |
-| Artifact verify | <5ms | <10ms | <20ms |
+| Operation       | P50    | P95    | P99    |
+| --------------- | ------ | ------ | ------ |
+| L1 hit          | <0.1ms | <0.5ms | <1ms   |
+| L2 hit          | <5ms   | <10ms  | <20ms  |
+| L3 query        | <30ms  | <50ms  | <100ms |
+| L3 store        | <50ms  | <100ms | <200ms |
+| L4 store        | <100ms | <200ms | <500ms |
+| Artifact verify | <5ms   | <10ms  | <20ms  |
 
 ### Throughput Targets
 
-| Operation | Throughput | Unit |
-|-----------|-----------|------|
-| L1 reads | 1M | req/s |
-| L1 writes | 100K | req/s |
-| L3 queries | 1000 | req/s |
-| L3 stores | 500 | req/s |
-| L4 stores | 500 | req/s |
-| Verify chain | 5000 | req/s |
+| Operation    | Throughput | Unit  |
+| ------------ | ---------- | ----- |
+| L1 reads     | 1M         | req/s |
+| L1 writes    | 100K       | req/s |
+| L3 queries   | 1000       | req/s |
+| L3 stores    | 500        | req/s |
+| L4 stores    | 500        | req/s |
+| Verify chain | 5000       | req/s |
 
 ### Resource Usage
 
-| Resource | Target | Notes |
-|----------|--------|-------|
-| L1 memory | 16 MB | LRU cache |
-| L2 disk | 1 GB | FileDB |
+| Resource        | Target      | Notes                   |
+| --------------- | ----------- | ----------------------- |
+| L1 memory       | 16 MB       | LRU cache               |
+| L2 disk         | 1 GB        | FileDB                  |
 | Network (L3/L4) | <1 Mbps avg | Bursty during batch ops |
-| CPU | <5% | Crypto ops, hashing |
+| CPU             | <5%         | Crypto ops, hashing     |
 
 ---
 
@@ -579,6 +584,7 @@ MEMORY_CB_TIMEOUT_SEC=30
 ### Monitoring
 
 **Key Metrics**:
+
 - `memory_layer_hit_rate` — L1/L2/L3 hit rates
 - `memory_latency_p95` — Query latency (by layer)
 - `memory_circuit_breaker_state` — CB status
@@ -586,6 +592,7 @@ MEMORY_CB_TIMEOUT_SEC=30
 - `memory_hash_chain_errors` — Hash chain failures
 
 **Dashboards**:
+
 - Memory operations overview
 - Layer hit rates
 - Error rates and failures
@@ -594,12 +601,14 @@ MEMORY_CB_TIMEOUT_SEC=30
 ### Runbooks
 
 **Runbook: Circuit Breaker Stuck Open**
+
 1. Check Supermemory API status
 2. Manually reset circuit breaker: `thegent memory reset-cb`
 3. Monitor L3 queries for recovery
 4. If not recovered: open incident
 
 **Runbook: L2 Cache Corruption**
+
 1. Identify corrupted keys in logs
 2. Remove corrupted entries: `thegent memory clean-l2`
 3. Force L3 refresh: `thegent memory refresh-cache`

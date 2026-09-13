@@ -15,7 +15,7 @@ Deploys remediation tasks from a DAG, respecting dependencies and budget.
 
 ### Methods
 
-#### AgentDeployer.__init__
+#### AgentDeployer.**init**
 
 ```python
 __init__(self: Any, cost_controller: CostControllerProtocol, verification_gate: Any, max_concurrent: int, lifecycle_mode: str, checker_agent_name: str)

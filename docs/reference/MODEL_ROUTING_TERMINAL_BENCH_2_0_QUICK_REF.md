@@ -35,12 +35,12 @@
 
 ## Task Category Routing (Terminal Bench 2.0)
 
-| Task Type | Budget | Primary | Quality | Cost | Speed | Why |
-|-----------|--------|---------|---------|------|-------|-----|
-| **FAST** | $0.002 | **MiniMax M2.5** | 51.7% | $0.0004/call | very-fast | Cheapest; adequate for simple tasks |
-| **NORMAL** | $0.05 | **GPT-5.3-Codex** | 64.7% | $0.0016/call | fast | Best terminal quality; fits budget easily |
-| **COMPLEX** | $0.15 | **GPT-5.3-Codex** | 64.7% | $0.0048/call | fast | Reliable for multi-step shell work |
-| **HIGH_COMPLEX** | $0.85 | **GPT-5.3-Codex** | 64.7% | $0.0048/call | fast | Top terminal performer; well under budget |
+| Task Type        | Budget | Primary           | Quality | Cost         | Speed     | Why                                       |
+| ---------------- | ------ | ----------------- | ------- | ------------ | --------- | ----------------------------------------- |
+| **FAST**         | $0.002 | **MiniMax M2.5**  | 51.7%   | $0.0004/call | very-fast | Cheapest; adequate for simple tasks       |
+| **NORMAL**       | $0.05  | **GPT-5.3-Codex** | 64.7%   | $0.0016/call | fast      | Best terminal quality; fits budget easily |
+| **COMPLEX**      | $0.15  | **GPT-5.3-Codex** | 64.7%   | $0.0048/call | fast      | Reliable for multi-step shell work        |
+| **HIGH_COMPLEX** | $0.85  | **GPT-5.3-Codex** | 64.7%   | $0.0048/call | fast      | Top terminal performer; well under budget |
 
 ---
 
@@ -69,14 +69,14 @@ Claude Opus 4.6 (use only if reasoning is critical AND cost is irrelevant)
 
 ## What Changed from SWE-Bench
 
-| Metric | SWE-Bench | Terminal Bench 2.0 | Impact |
-|--------|-----------|-------------------|--------|
-| **Primary Model** | MiniMax (80.2%) | GPT-5.3-Codex (64.7%) | Switch to Codex for terminal/CLI tasks |
-| **Claude Haiku** | 73.3% (good) | 28.3% (poor) | -61% drop; avoid for terminal work |
-| **Claude Sonnet** | 77.2% (good) | 42.8% (poor) | -35% drop; avoid for terminal work |
-| **Claude Opus** | 80.8% (best) | 62.9% (good) | -18% drop; no longer top choice |
-| **GPT-5.3-Codex** | 56.8% (poor) | 64.7% (best) | +13.6% gain; now top choice |
-| **MiniMax M2.5** | 80.2% (best value) | 51.7% (budget) | Drops to budget tier; not primary |
+| Metric            | SWE-Bench          | Terminal Bench 2.0    | Impact                                 |
+| ----------------- | ------------------ | --------------------- | -------------------------------------- |
+| **Primary Model** | MiniMax (80.2%)    | GPT-5.3-Codex (64.7%) | Switch to Codex for terminal/CLI tasks |
+| **Claude Haiku**  | 73.3% (good)       | 28.3% (poor)          | -61% drop; avoid for terminal work     |
+| **Claude Sonnet** | 77.2% (good)       | 42.8% (poor)          | -35% drop; avoid for terminal work     |
+| **Claude Opus**   | 80.8% (best)       | 62.9% (good)          | -18% drop; no longer top choice        |
+| **GPT-5.3-Codex** | 56.8% (poor)       | 64.7% (best)          | +13.6% gain; now top choice            |
+| **MiniMax M2.5**  | 80.2% (best value) | 51.7% (budget)        | Drops to budget tier; not primary      |
 
 **Why?** Terminal Bench 2.0 tests CLI/shell expertise, not code editing. Codex excels at tool dispatch; Claude excels at reasoning (penalized on terminal tasks).
 
@@ -86,11 +86,11 @@ Claude Opus 4.6 (use only if reasoning is critical AND cost is irrelevant)
 
 ### Terminal Bench 2.0
 
-| Model | Cost | Quality | Cost per 1% Quality |
-|-------|------|---------|-------------------|
-| MiniMax M2.5 | $0.79 | 51.7% | $0.0153 (best ratio) |
-| Codex-Spark | $1.00 | 58.4% | $0.0171 |
-| GPT-5.3-Codex | $1.25 | 64.7% | $0.0193 |
+| Model           | Cost       | Quality   | Cost per 1% Quality     |
+| --------------- | ---------- | --------- | ----------------------- |
+| MiniMax M2.5    | $0.79      | 51.7%     | $0.0153 (best ratio)    |
+| Codex-Spark     | $1.00      | 58.4%     | $0.0171                 |
+| GPT-5.3-Codex   | $1.25      | 64.7%     | $0.0193                 |
 | **Claude Opus** | **$17.50** | **62.9%** | **$0.2779 (18x worse)** |
 
 **Key finding:** Opus costs 14x more than Codex for **1.8% LESS** quality on terminal tasks.
@@ -100,20 +100,21 @@ Claude Opus 4.6 (use only if reasoning is critical AND cost is irrelevant)
 ## Monthly Budget Projection
 
 **Assumptions:**
+
 - 5K FAST calls (500 tok avg)
 - 2K NORMAL calls (1.3K tok avg)
 - 500 COMPLEX calls (3.8K tok avg)
 - 100 HIGH_COMPLEX calls (5K tok avg)
 - Contingency: 35%
 
-| Category | Calls | Avg Tokens | Primary Model | Cost |
-|----------|-------|-----------|---------------|------|
-| FAST | 5000 | 500 | MiniMax | $1.98 |
-| NORMAL | 2000 | 1300 | Codex | $32.50 |
-| COMPLEX | 500 | 3800 | Codex | $23.75 |
-| HIGH_COMPLEX | 100 | 5000 | Codex | $6.25 |
-| Contingency | — | — | — | $35 |
-| **TOTAL** | **7600** | — | — | **$100.48** |
+| Category     | Calls    | Avg Tokens | Primary Model | Cost        |
+| ------------ | -------- | ---------- | ------------- | ----------- |
+| FAST         | 5000     | 500        | MiniMax       | $1.98       |
+| NORMAL       | 2000     | 1300       | Codex         | $32.50      |
+| COMPLEX      | 500      | 3800       | Codex         | $23.75      |
+| HIGH_COMPLEX | 100      | 5000       | Codex         | $6.25       |
+| Contingency  | —        | —          | —             | $35         |
+| **TOTAL**    | **7600** | —          | —             | **$100.48** |
 
 **Cost change vs SWE-Bench:** Neutral (~$101), but **better quality for terminal tasks**.
 
@@ -174,7 +175,6 @@ Is this a TERMINAL TASK? (CLI, MCP, hooks, shell scripts)
 **Status**: Corrected Analysis, Ready for Implementation
 **Date**: 2026-02-15
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -183,15 +183,18 @@ Is this a TERMINAL TASK? (CLI, MCP, hooks, shell scripts)
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

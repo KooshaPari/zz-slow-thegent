@@ -54,26 +54,26 @@ task ts:build          # production build
 
 ### Python (ruff)
 
-| Error | Meaning | Fix |
-|-------|---------|-----|
-| `E501` | Line too long | Handled by formatter -- run `task format` |
-| `F401` | Unused import | Remove the import |
-| `F841` | Unused variable | Remove or prefix with `_` |
-| `S101` | `assert` in production | Move to test files or use `raise` |
-| `UP035` | Deprecated import | Use the modern import path |
-| `B008` | Mutable default arg | Use `None` default + assign in body |
-| `ANN001` | Missing type annotation | Add type hint to parameter |
-| `C901` | Too complex | Break function into smaller pieces (max complexity: 10) |
-| `PLR0913` | Too many args | Use a config dataclass or reduce parameters (max: 6) |
-| `SIM102` | Collapsible `if` | Combine with `and` |
+| Error     | Meaning                 | Fix                                                     |
+| --------- | ----------------------- | ------------------------------------------------------- |
+| `E501`    | Line too long           | Handled by formatter -- run `task format`               |
+| `F401`    | Unused import           | Remove the import                                       |
+| `F841`    | Unused variable         | Remove or prefix with `_`                               |
+| `S101`    | `assert` in production  | Move to test files or use `raise`                       |
+| `UP035`   | Deprecated import       | Use the modern import path                              |
+| `B008`    | Mutable default arg     | Use `None` default + assign in body                     |
+| `ANN001`  | Missing type annotation | Add type hint to parameter                              |
+| `C901`    | Too complex             | Break function into smaller pieces (max complexity: 10) |
+| `PLR0913` | Too many args           | Use a config dataclass or reduce parameters (max: 6)    |
+| `SIM102`  | Collapsible `if`        | Combine with `and`                                      |
 
 ### TypeScript (oxlint)
 
-| Error | Meaning | Fix |
-|-------|---------|-----|
-| `no-unused-vars` | Unused variable | Remove or prefix with `_` |
+| Error             | Meaning         | Fix                        |
+| ----------------- | --------------- | -------------------------- |
+| `no-unused-vars`  | Unused variable | Remove or prefix with `_`  |
 | `no-explicit-any` | `any` type used | Add proper type annotation |
-| `no-console` | `console.log` | Use proper logger |
+| `no-console`      | `console.log`   | Use proper logger          |
 
 ---
 
@@ -112,41 +112,41 @@ src/
 
 When adding new functionality, prefer these libraries over custom implementations:
 
-| Need | Python | TypeScript |
-|------|--------|-----------|
-| HTTP client | httpx | fetch / ky |
-| Validation | pydantic | zod |
-| Config | pydantic-settings | -- |
-| CLI | typer | -- |
-| Logging | structlog / loguru | -- |
-| Retry | tenacity | -- |
-| Testing | pytest + hypothesis | vitest |
-| Serialization | msgspec | -- |
+| Need          | Python              | TypeScript |
+| ------------- | ------------------- | ---------- |
+| HTTP client   | httpx               | fetch / ky |
+| Validation    | pydantic            | zod        |
+| Config        | pydantic-settings   | --         |
+| CLI           | typer               | --         |
+| Logging       | structlog / loguru  | --         |
+| Retry         | tenacity            | --         |
+| Testing       | pytest + hypothesis | vitest     |
+| Serialization | msgspec             | --         |
 
 ---
 
 ## Quality Thresholds
 
-| Metric | Threshold |
-|--------|-----------|
-| Test coverage | >= 80% (90% for trace) |
-| Cyclomatic complexity | <= 10 per function |
-| Cognitive complexity | <= 15 per function |
-| Max function length | 40 lines |
-| Code duplication | < 5% |
-| Line length | 100 characters |
-| Security findings | 0 high/critical |
+| Metric                | Threshold              |
+| --------------------- | ---------------------- |
+| Test coverage         | >= 80% (90% for trace) |
+| Cyclomatic complexity | <= 10 per function     |
+| Cognitive complexity  | <= 15 per function     |
+| Max function length   | 40 lines               |
+| Code duplication      | < 5%                   |
+| Line length           | 100 characters         |
+| Security findings     | 0 high/critical        |
 
 ---
 
 ## Project Locations
 
-| Project | Path | Description |
-|---------|------|-------------|
-| trace | `trace/` | Agent-native requirements traceability system |
-| sharecli | `sharecli/` | Unified CLI for agent harness |
-| thegent | `thegent/` | Agent orchestration + governance MCP server |
-| jobhunter | `jobhunter/` | Full-stack job hunting application |
+| Project   | Path         | Description                                   |
+| --------- | ------------ | --------------------------------------------- |
+| trace     | `trace/`     | Agent-native requirements traceability system |
+| sharecli  | `sharecli/`  | Unified CLI for agent harness                 |
+| thegent   | `thegent/`   | Agent orchestration + governance MCP server   |
+| jobhunter | `jobhunter/` | Full-stack job hunting application            |
 
 ---
 
@@ -156,7 +156,6 @@ When adding new functionality, prefer these libraries over custom implementation
 - Check project `CLAUDE.md` for project-specific rules
 - Check `docs/guides/MODERNIZATION_IMPLEMENTATION_GUIDE.md` for ecosystem maintenance
 - Architecture questions: consult the team lead
-
 
 ---
 
@@ -175,12 +174,14 @@ When adding new functionality, prefer these libraries over custom implementation
 ### Swarm Controller (swarm_controller.py)
 
 **Current Tracking:**
+
 - Agent metrics (CPU, memory, PID, restarts)
 - Health status (healthy, paused, unhealthy, dead)
 - Local queue and scaling decisions
 - State persistence to `.claude/swarm_state.json`
 
 **Missing:**
+
 - Global awareness across projects
 - Cross-project communication paths
 - Unique identity persistence
@@ -189,12 +190,14 @@ When adding new functionality, prefer these libraries over custom implementation
 ### Agent Identity System (agent_identity_system.py)
 
 **Current Capabilities:**
+
 - Global registry at `~/.claude/civilization/registry.json`
 - Unique agent IDs: `{project}:{uuid}:L{1-3}:{role}`
 - Parent-child relationships
 - Service discovery
 
 **Missing Integration:**
+
 - Heartbeat updates to registry
 - Initial agent registration
 - Stale agent cleanup
@@ -208,6 +211,7 @@ When adding new functionality, prefer these libraries over custom implementation
 Add registry awareness to SwarmController without changing core logic:
 
 **In swarm_controller.py, imports:**
+
 ```python
 from agent_identity_system import (
     GlobalAgentRegistry,
@@ -217,7 +221,8 @@ from agent_identity_system import (
 )
 ```
 
-**In SwarmController.__init__():**
+**In SwarmController.**init**():**
+
 ```python
 def __init__(self, config_path: str = "config/swarm_controller_config.yaml"):
     # ... existing init ...
@@ -230,6 +235,7 @@ def __init__(self, config_path: str = "config/swarm_controller_config.yaml"):
 ```
 
 **Add method to detect project:**
+
 ```python
 def _detect_project_name(self) -> str:
     """Detect project name from config or current directory."""
@@ -245,6 +251,7 @@ def _detect_project_name(self) -> str:
 When SwarmController starts, register itself as L1:
 
 **In SwarmController.start():**
+
 ```python
 def start(self):
     """Start monitoring loop with registry integration."""
@@ -269,6 +276,7 @@ def start(self):
 Update agent tracking to include registry:
 
 **Modify monitor_agents() to register discovered agents:**
+
 ```python
 def monitor_agents(self):
     """Monitor agent health with registry integration."""
@@ -326,6 +334,7 @@ def _register_agent_to_registry(self, agent_id: str, metrics: AgentMetrics):
 Keep agents alive in registry:
 
 **In monitor_agents() health check loop:**
+
 ```python
 # Update heartbeat in registry for active agents
 for agent_id in self.agent_metrics:
@@ -339,6 +348,7 @@ for agent_id in self.agent_metrics:
 Handle agents that disappear from monitoring:
 
 **Add periodic cleanup task:**
+
 ```python
 def cleanup_stale_agents(self):
     """Remove stale agents from both monitoring and registry."""
@@ -366,14 +376,14 @@ def _try_recover_agent(self, agent_id: str) -> bool:
 
 ## Integration Timeline
 
-| Step | Task | Duration | Priority |
-|------|------|----------|----------|
-| 1 | Minimal integration (imports, registry creation) | 30 min | HIGH |
-| 2 | Register L1 on start | 30 min | HIGH |
-| 3 | Auto-register discovered L2/L3 agents | 1 hour | MEDIUM |
-| 4 | Heartbeat updates | 15 min | MEDIUM |
-| 5 | Stale agent cleanup | 20 min | LOW |
-| 6 | Cross-project communication tests | 1 hour | LOW |
+| Step | Task                                             | Duration | Priority |
+| ---- | ------------------------------------------------ | -------- | -------- |
+| 1    | Minimal integration (imports, registry creation) | 30 min   | HIGH     |
+| 2    | Register L1 on start                             | 30 min   | HIGH     |
+| 3    | Auto-register discovered L2/L3 agents            | 1 hour   | MEDIUM   |
+| 4    | Heartbeat updates                                | 15 min   | MEDIUM   |
+| 5    | Stale agent cleanup                              | 20 min   | LOW      |
+| 6    | Cross-project communication tests                | 1 hour   | LOW      |
 
 **Total estimated: 3.5 hours for basic integration**
 
@@ -498,8 +508,8 @@ registry:
   enabled: true
   path: ~/.claude/civilization/registry.json
   auto_register: true
-  heartbeat_interval: 10  # seconds
-  stale_ttl: 300  # seconds
+  heartbeat_interval: 10 # seconds
+  stale_ttl: 300 # seconds
 ```
 
 ---
@@ -511,6 +521,7 @@ registry:
 **Problem:** Local agent ID (`thegent-researcher-1`) != registry ID (`thegent:abc123:L2:researcher`)
 
 **Solution:** Maintain mapping dictionary:
+
 ```python
 self.agent_id_map = {
     "thegent-researcher-1": "thegent:abc123:L2:researcher",
@@ -522,6 +533,7 @@ self.agent_id_map = {
 **Problem:** Multiple processes write registry simultaneously
 
 **Solution:** Add file locking:
+
 ```python
 import fcntl
 
@@ -538,6 +550,7 @@ def _save_to_disk_locked(self):
 **Problem:** Registry slows down as agents scale to 100+
 
 **Solution:** Implement in-memory caching + periodic sync:
+
 ```python
 class CachedRegistry(GlobalAgentRegistry):
     def get_agents_by_project(self, project):
@@ -597,7 +610,6 @@ A: Use: `cat ~/.claude/civilization/registry.json | jq '.["by_project"]'`
 **Last Updated:** 2026-02-19
 **Author:** Claude Code (L1)
 
-
 ---
 
 ## Source: MODERNIZATION_IMPLEMENTATION_GUIDE.md
@@ -612,18 +624,18 @@ Guide for agents maintaining and extending the cross-project quality modernizati
 
 Every project uses `task` (go-task) with shared templates from `thegent/templates/`. Available targets:
 
-| Target | What it does |
-|--------|-------------|
-| `task lint` | Run all linters (ruff for Python, oxlint for TS, shellcheck for Bash) |
-| `task test` | Run all test suites |
-| `task format` | Auto-format all source files |
-| `task typecheck` | Run type checkers (ty for Python, tsc for TS) |
-| `task quality` | Run lint + typecheck + test:cov + security |
-| `task gate` | Run full 9-gate quality system |
-| `task security` | Run security scanners (bandit, pip-audit, npm audit) |
-| `task complexity` | Check cyclomatic/cognitive complexity |
-| `task format:check` | Check formatting without modifying files |
-| `task test:cov` | Run tests with coverage reporting |
+| Target              | What it does                                                          |
+| ------------------- | --------------------------------------------------------------------- |
+| `task lint`         | Run all linters (ruff for Python, oxlint for TS, shellcheck for Bash) |
+| `task test`         | Run all test suites                                                   |
+| `task format`       | Auto-format all source files                                          |
+| `task typecheck`    | Run type checkers (ty for Python, tsc for TS)                         |
+| `task quality`      | Run lint + typecheck + test:cov + security                            |
+| `task gate`         | Run full 9-gate quality system                                        |
+| `task security`     | Run security scanners (bandit, pip-audit, npm audit)                  |
+| `task complexity`   | Check cyclomatic/cognitive complexity                                 |
+| `task format:check` | Check formatting without modifying files                              |
+| `task test:cov`     | Run tests with coverage reporting                                     |
 
 Run `task --list` in any project for the full target list.
 
@@ -636,14 +648,15 @@ Run `task --list` in any project for the full target list.
 1. **Create project Taskfile.yml** in the project root. Use `jobhunter/Taskfile.yml` as the reference template.
 
 2. **Include shared templates** from thegent:
+
    ```yaml
    includes:
      py:
        taskfile: ../thegent/templates/python/Taskfile.python.yml
        optional: true
        vars:
-         PYTHON_SRC: 'src'
-         PYTHON_TESTS: 'tests'
+         PYTHON_SRC: "src"
+         PYTHON_TESTS: "tests"
      quality:
        taskfile: ../thegent/templates/shared/Taskfile.quality.yml
        optional: true
@@ -671,17 +684,17 @@ Run `task --list` in any project for the full target list.
 
 The gate system runs sequentially. Each gate must pass before the next runs.
 
-| Gate | Check | Tool |
-|------|-------|------|
-| 1 | Formatting | `ruff format --check` / `prettier --check` |
-| 2 | Linting | `ruff check` / `oxlint` / `shellcheck` |
-| 3 | Type checking | `ty check` / `tsc --noEmit` |
-| 4 | Unit tests | `pytest -m unit` / `vitest` |
-| 5 | Integration tests | `pytest -m integration` |
-| 6 | Coverage threshold | `pytest --cov --cov-fail-under=80` |
-| 7 | Security scanning | `bandit` / `pip-audit` / `npm audit` |
-| 8 | Complexity check | `radon` / cyclomatic + cognitive limits |
-| 9 | Architecture enforcement | `import-linter` / `tach check` |
+| Gate | Check                    | Tool                                       |
+| ---- | ------------------------ | ------------------------------------------ |
+| 1    | Formatting               | `ruff format --check` / `prettier --check` |
+| 2    | Linting                  | `ruff check` / `oxlint` / `shellcheck`     |
+| 3    | Type checking            | `ty check` / `tsc --noEmit`                |
+| 4    | Unit tests               | `pytest -m unit` / `vitest`                |
+| 5    | Integration tests        | `pytest -m integration`                    |
+| 6    | Coverage threshold       | `pytest --cov --cov-fail-under=80`         |
+| 7    | Security scanning        | `bandit` / `pip-audit` / `npm audit`       |
+| 8    | Complexity check         | `radon` / cyclomatic + cognitive limits    |
+| 9    | Architecture enforcement | `import-linter` / `tach check`             |
 
 ### Extending the gate system
 
@@ -810,7 +823,6 @@ templates/
 2. All projects that include the template pick up changes automatically
 3. Run `task gate` in each project to verify no regressions
 
-
 ---
 
 ## Source: PHASE_6_MEMORY_MIGRATION_GUIDE.md
@@ -928,6 +940,7 @@ python3 scripts/migrate_memory_jsonl_to_sqlite.py
 ```
 
 The tool will:
+
 1. Scan `~/.claude/civilization/agents/*/memory.jsonl` for JSONL files
 2. Create the SQLite database at `~/.claude/civilization/memories.db`
 3. Initialize the schema (memories table, indexes, relationships table)
@@ -1222,15 +1235,15 @@ python3 scripts/migrate_memory_jsonl_to_sqlite.py --source-dir /actual/path/to/a
 
 Expected improvements after migrating to SQLite:
 
-| Operation | Before (JSONL) | After (SQLite) | Notes |
-|-----------|----------------|----------------|-------|
-| Query agent memories | File scan O(n) | Index lookup O(log n) | 2.4x faster |
-| Filter by type + time | Full scan + filter | Compound index | ~3x faster |
-| Full-text search | Substring scan | Keyword index | ~5x faster |
-| Aggregate statistics | Load all + compute | SQL COUNT/AVG/GROUP BY | ~2x faster |
-| Dashboard rendering | Multiple file reads | Single SQL query | Reduced I/O |
-| Memory purge | Rewrite entire file | DELETE by index | ~2x faster |
-| Single store | File append | INSERT + index | ~0.8x (slightly slower) |
+| Operation             | Before (JSONL)      | After (SQLite)         | Notes                   |
+| --------------------- | ------------------- | ---------------------- | ----------------------- |
+| Query agent memories  | File scan O(n)      | Index lookup O(log n)  | 2.4x faster             |
+| Filter by type + time | Full scan + filter  | Compound index         | ~3x faster              |
+| Full-text search      | Substring scan      | Keyword index          | ~5x faster              |
+| Aggregate statistics  | Load all + compute  | SQL COUNT/AVG/GROUP BY | ~2x faster              |
+| Dashboard rendering   | Multiple file reads | Single SQL query       | Reduced I/O             |
+| Memory purge          | Rewrite entire file | DELETE by index        | ~2x faster              |
+| Single store          | File append         | INSERT + index         | ~0.8x (slightly slower) |
 
 The single-store overhead is minimal (~20% slower per write) and is offset by the read-heavy nature of memory workloads. Dashboards, analytics, search, and query operations all benefit significantly from indexed storage.
 
@@ -1240,7 +1253,6 @@ The SQLite database is typically comparable in size to the combined JSONL files,
 
 - JSONL total: ~5 MB (across 20 files)
 - SQLite database: ~6 MB (single file, with indexes)
-
 
 ---
 
@@ -1414,6 +1426,7 @@ CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0"]
 ```
 
 **That's it!** You now have:
+
 - ✅ Retry with exponential backoff
 - ✅ Circuit breaker protection
 - ✅ Health checks
@@ -1579,6 +1592,7 @@ class Service:
 **Problem**: External API is flaky; occasional timeouts and errors.
 
 **Solution**:
+
 ```python
 class ExternalAPIClient:
     def __init__(self):
@@ -1620,6 +1634,7 @@ class ExternalAPIClient:
 **Problem**: Too many concurrent DB connections cause pool exhaustion.
 
 **Solution**:
+
 ```python
 from sqlalchemy.ext.asyncio import create_async_engine
 
@@ -1652,6 +1667,7 @@ async def get_user_with_timeout(user_id: int):
 **Problem**: Long-running tasks fail silently; need automatic retry and monitoring.
 
 **Solution**:
+
 ```python
 from celery import Celery
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -1685,6 +1701,7 @@ def process_batch(self, batch_id: str):
 **Problem**: System overloaded; need to reject requests gracefully.
 
 **Solution**:
+
 ```python
 from fastapi import FastAPI, Response
 from fastapi.responses import JSONResponse
@@ -1739,6 +1756,7 @@ async def process_request(response: Response):
 **Problem**: Load balancer doesn't know agent health; sends requests to slow/unhealthy agents.
 
 **Solution**:
+
 ```python
 import httpx
 import asyncio
@@ -1801,6 +1819,7 @@ class AgentPool:
 **Symptom**: Circuit breaker transitions to OPEN but never recovers.
 
 **Diagnosis**:
+
 ```python
 # Check circuit breaker state
 print(f"State: {breaker.state}")
@@ -1809,6 +1828,7 @@ print(f"Last failure: {breaker.last_failure_time}")
 ```
 
 **Fix**:
+
 ```python
 # Increase timeout or reset failures
 breaker = CircuitBreaker(
@@ -1826,6 +1846,7 @@ breaker.fail_counter = 0
 **Symptom**: Logs full of retry attempts; system hammering failing service.
 
 **Diagnosis**:
+
 ```python
 # Log retry attempts
 import logging
@@ -1837,6 +1858,7 @@ logging.getLogger("tenacity").setLevel(logging.DEBUG)
 ```
 
 **Fix**:
+
 ```python
 @retry(
     stop=stop_after_attempt(2),  # Reduce from 3
@@ -1852,6 +1874,7 @@ async def api_call():
 **Symptom**: `sqlite3.OperationalError: database is locked` or connection pool timeout.
 
 **Diagnosis**:
+
 ```python
 # Check pool status
 from sqlalchemy import event
@@ -1869,6 +1892,7 @@ def receive_checkout(dbapi_conn, connection_record, connection_proxy):
 ```
 
 **Fix**:
+
 ```python
 # Increase pool size
 engine = create_async_engine(
@@ -1888,6 +1912,7 @@ pool = AioPool(min_size=10, max_size=50)
 **Symptom**: Tasks timing out even though they're fast; false alarms.
 
 **Diagnosis**:
+
 ```python
 # Measure actual latency
 import time
@@ -1899,6 +1924,7 @@ print(f"Took {elapsed}s")
 ```
 
 **Fix**:
+
 ```python
 # Set timeout to P99 latency + buffer
 # If P99 is 3s, set timeout to 5-6s
@@ -2019,7 +2045,6 @@ resilience:
 
 **Need help?** See the full reference guide for detailed explanations and advanced patterns.
 
-
 ---
 
 ## Source: SWARM_CONTROLLER_README.md
@@ -2031,6 +2056,7 @@ A production-ready Python orchestration system for managing agent health, auto-h
 ## Overview
 
 The Swarm Controller monitors agent execution, detects failures, and automatically heals issues via:
+
 - **Graceful Pausing**: SIGSTOP-based state preservation
 - **Intelligent Restarting**: Exponential backoff with max retry limits
 - **Dynamic Scaling**: Queue-driven scaling up/down
@@ -2103,20 +2129,21 @@ python3 scripts/swarm_controller.py --update-metrics agent-1 task_progress=5
 
 ## Files
 
-| File | Purpose |
-|------|---------|
-| `scripts/swarm_controller.py` | Main controller implementation (1000+ LOC) |
-| `scripts/test_swarm_controller.py` | Comprehensive test suite (200+ LOC) |
-| `config/swarm_controller_config.yaml` | Configuration (all tunable parameters) |
-| `docs/guides/SWARM_CONTROLLER_USAGE.md` | Detailed usage guide (400+ lines) |
-| `docs/reference/AGENTS_ACTIVE.md` | Active agent tracking (auto-published) |
-| `.claude/swarm_controller.log` | Detailed decision log |
-| `.claude/swarm_state.json` | Agent state snapshot |
-| `.github/workflows/swarm-health.yml` | CI/CD health checks |
+| File                                    | Purpose                                    |
+| --------------------------------------- | ------------------------------------------ |
+| `scripts/swarm_controller.py`           | Main controller implementation (1000+ LOC) |
+| `scripts/test_swarm_controller.py`      | Comprehensive test suite (200+ LOC)        |
+| `config/swarm_controller_config.yaml`   | Configuration (all tunable parameters)     |
+| `docs/guides/SWARM_CONTROLLER_USAGE.md` | Detailed usage guide (400+ lines)          |
+| `docs/reference/AGENTS_ACTIVE.md`       | Active agent tracking (auto-published)     |
+| `.claude/swarm_controller.log`          | Detailed decision log                      |
+| `.claude/swarm_state.json`              | Agent state snapshot                       |
+| `.github/workflows/swarm-health.yml`    | CI/CD health checks                        |
 
 ## Core Classes
 
 ### SwarmController
+
 Main orchestrator. Handles monitoring, healing, and scaling decisions.
 
 ```python
@@ -2128,6 +2155,7 @@ controller.resume_agent(agent_id)  # Resume agent
 ```
 
 ### AgentHealthMonitor
+
 Detects unhealthy agents via stale detection, SLO breaches, and error counts.
 
 ```python
@@ -2137,6 +2165,7 @@ monitor.monitor_all_agents(metrics_dict)  # Update all agents
 ```
 
 ### ResourceManager
+
 Monitors system CPU, memory, and per-agent file descriptors.
 
 ```python
@@ -2147,6 +2176,7 @@ is_pressure = rm.is_resource_pressure()  # Check threshold
 ```
 
 ### QueueManager
+
 Tracks work queue depth and applies backpressure.
 
 ```python
@@ -2156,6 +2186,7 @@ has_backpressure = qm.is_backpressure_active()
 ```
 
 ### RestartPolicy
+
 Manages restart backoff and max retry limits.
 
 ```python
@@ -2165,6 +2196,7 @@ should_restart = rp.should_restart(metrics)  # Check if should auto-restart
 ```
 
 ### ScalingDecision
+
 Determines scaling up/down based on queue depth and resources.
 
 ```python
@@ -2178,35 +2210,39 @@ target_count = sd.get_target_agent_count(...)
 All behavior is controlled via `config/swarm_controller_config.yaml`. Key sections:
 
 ### Health Monitoring
+
 ```yaml
 config:
-  health_check_interval: 10          # Check every 10 seconds
-  stale_threshold: 30                # Alert if >30s no update
-  slo_time_multiplier: 1.5           # Alert if >150% expected time
+  health_check_interval: 10 # Check every 10 seconds
+  stale_threshold: 30 # Alert if >30s no update
+  slo_time_multiplier: 1.5 # Alert if >150% expected time
 ```
 
 ### Scaling
+
 ```yaml
 config:
-  scale_up_queue_threshold: 5        # Scale up when pending>5
-  scale_down_queue_threshold: 2      # Scale down when pending<2
-  max_concurrent_agents: 10          # Never >10 agents
-  min_concurrent_agents: 1           # Always >=1 agent
+  scale_up_queue_threshold: 5 # Scale up when pending>5
+  scale_down_queue_threshold: 2 # Scale down when pending<2
+  max_concurrent_agents: 10 # Never >10 agents
+  min_concurrent_agents: 1 # Always >=1 agent
 ```
 
 ### Resource Management
+
 ```yaml
 config:
-  cpu_threshold: 80.0                # Throttle if CPU>80%
-  memory_threshold: 70.0             # Throttle if Memory>70%
-  max_open_files_threshold: 1000     # Alert if >1000 files
+  cpu_threshold: 80.0 # Throttle if CPU>80%
+  memory_threshold: 70.0 # Throttle if Memory>70%
+  max_open_files_threshold: 1000 # Alert if >1000 files
 ```
 
 ### Restart Policy
+
 ```yaml
 config:
-  max_restart_attempts: 3            # Max 3 auto-restarts
-  restart_backoff: [2, 4, 8, 16]    # Exponential backoff delays
+  max_restart_attempts: 3 # Max 3 auto-restarts
+  restart_backoff: [2, 4, 8, 16] # Exponential backoff delays
 ```
 
 See `config/swarm_controller_config.yaml` for all options.
@@ -2241,6 +2277,7 @@ Each 10-second cycle performs:
 ## State Files
 
 ### `.claude/swarm_state.json`
+
 Snapshot of all agent metrics (updated each cycle).
 
 ```json
@@ -2257,6 +2294,7 @@ Snapshot of all agent metrics (updated each cycle).
 ```
 
 ### `.claude/swarm_controller.log`
+
 Detailed log of all controller decisions.
 
 ```
@@ -2296,30 +2334,38 @@ python3 scripts/swarm_controller.py --monitor --verbose
 
 ### Agent Status States
 
-| Status | Meaning | Action |
-|--------|---------|--------|
-| `healthy` | Operating normally | Continue monitoring |
-| `paused` | Gracefully paused (SIGSTOP) | Can resume with SIGCONT |
-| `unhealthy` | Issue detected | Auto-restart with backoff |
-| `restarting` | Mid-restart | Monitor during delay |
-| `dead` | Failed all restarts | Escalate to L1 |
+| Status       | Meaning                     | Action                    |
+| ------------ | --------------------------- | ------------------------- |
+| `healthy`    | Operating normally          | Continue monitoring       |
+| `paused`     | Gracefully paused (SIGSTOP) | Can resume with SIGCONT   |
+| `unhealthy`  | Issue detected              | Auto-restart with backoff |
+| `restarting` | Mid-restart                 | Monitor during delay      |
+| `dead`       | Failed all restarts         | Escalate to L1            |
 
 ### Stale Detection
+
 Agent has no heartbeat for >30 seconds:
+
 - Indicates process crash or freeze
 - Action: Attempt restart with 2s backoff
 
 ### SLO Breach
+
 Activity taking >150% of expected time:
-- Expected time ≈ task_progress * 10 seconds
+
+- Expected time ≈ task_progress \* 10 seconds
 - Action: Log warning, track breaches
 
 ### High Error Count
+
 Agent logged >5 errors:
+
 - Action: Mark unhealthy, attempt restart
 
 ### Resource Pressure
+
 System CPU>80% or Memory>70%:
+
 - Action: Pause lowest-priority agents
 
 ## Restart Logic
@@ -2334,7 +2380,9 @@ After 3 failed attempts, agent is marked `dead` and L1 team is notified.
 ## Scaling Logic
 
 ### Scale UP
+
 Triggered when:
+
 - Pending queue > 5 AND
 - System resources available (CPU<60%, Memory<50%) AND
 - Current agents < max (10)
@@ -2342,7 +2390,9 @@ Triggered when:
 Action: Spawn 1 new agent
 
 ### Scale DOWN
+
 Triggered when:
+
 - Pending queue < 2 OR
 - Resource pressure (CPU>80% or Memory>70%) AND
 - Current agents > min (1)
@@ -2358,6 +2408,7 @@ python3 scripts/test_swarm_controller.py
 ```
 
 Tests cover:
+
 - Configuration loading
 - Agent metrics serialization
 - Resource monitoring
@@ -2367,6 +2418,7 @@ Tests cover:
 - Full controller workflow
 
 All tests passing:
+
 ```
 ✓ ALL TESTS PASSED (7/7)
 ```
@@ -2396,6 +2448,7 @@ python3 scripts/swarm_controller.py --resume-agent agent-1
 ## CI/CD Integration
 
 GitHub Actions workflow (`.github/workflows/swarm-health.yml`) provides:
+
 - **Scheduled health checks** (every 15 min during work hours)
 - **JSON status snapshots** (stored in `.github/swarm-metrics/`)
 - **Automated escalation** (creates issues for dead agents)
@@ -2476,7 +2529,6 @@ python3 scripts/swarm_controller.py --resume-agent agent-1
 
 Part of the agent orchestration system.
 
-
 ---
 
 ## Source: SWARM_CONTROLLER_USAGE.md
@@ -2488,6 +2540,7 @@ Part of the agent orchestration system.
 The Self-Healing Swarm Controller is a Python-based orchestration system that monitors agent health, detects issues, and automatically heals via graceful pausing, intelligent restarting, and dynamic scaling.
 
 **Key Features:**
+
 - **Health Monitoring**: Polls agent status every 10 seconds
 - **Graceful Pause**: SIGSTOP-based pausing preserves agent state
 - **Automatic Restart**: Exponential backoff with max retry limits
@@ -2509,6 +2562,7 @@ pip install psutil pyyaml
 ```
 
 Or install via project requirements:
+
 ```bash
 cd /Users/kooshapari/temp-PRODVERCEL/485/kush
 pip install -r requirements.txt
@@ -2524,6 +2578,7 @@ python scripts/swarm_controller.py --monitor --auto-heal --config config/swarm_c
 ```
 
 This will:
+
 - Poll agent status every 10 seconds
 - Detect stale agents (>30s no update), SLO breaches, and errors
 - Pause unhealthy agents gracefully
@@ -2540,6 +2595,7 @@ python scripts/swarm_controller.py --status
 ```
 
 Output:
+
 ```json
 {
   "timestamp": "2026-02-19T10:30:45.123456",
@@ -2580,6 +2636,7 @@ python scripts/swarm_controller.py --report
 ```
 
 Output:
+
 ```
 Swarm Controller Health Report - 2026-02-19T10:30:45.123456
 ======================================================================
@@ -2604,45 +2661,50 @@ Agent Details:
 All behavior is controlled via YAML configuration. Key sections:
 
 #### Health Monitoring
+
 ```yaml
 config:
-  health_check_interval: 10          # Check every 10 seconds
-  stale_threshold: 30                # Alert if no update for 30s
-  slo_time_multiplier: 1.5           # Alert if >150% of expected time
+  health_check_interval: 10 # Check every 10 seconds
+  stale_threshold: 30 # Alert if no update for 30s
+  slo_time_multiplier: 1.5 # Alert if >150% of expected time
 ```
 
 #### Scaling
+
 ```yaml
 config:
-  scale_up_queue_threshold: 5        # Scale up when pending > 5
-  scale_down_queue_threshold: 2      # Scale down when pending < 2
-  max_concurrent_agents: 10          # Never run >10 agents
-  min_concurrent_agents: 1           # Always run >=1 agent
+  scale_up_queue_threshold: 5 # Scale up when pending > 5
+  scale_down_queue_threshold: 2 # Scale down when pending < 2
+  max_concurrent_agents: 10 # Never run >10 agents
+  min_concurrent_agents: 1 # Always run >=1 agent
 ```
 
 #### Resource Management
+
 ```yaml
 config:
-  cpu_threshold: 80.0                # Throttle if CPU >80%
-  memory_threshold: 70.0             # Throttle if Memory >70%
-  max_open_files_threshold: 1000     # Alert if >1000 open files
+  cpu_threshold: 80.0 # Throttle if CPU >80%
+  memory_threshold: 70.0 # Throttle if Memory >70%
+  max_open_files_threshold: 1000 # Alert if >1000 open files
 ```
 
 #### Restart Policy
+
 ```yaml
 config:
-  max_restart_attempts: 3            # Max 3 auto-restarts
-  restart_backoff:                   # Exponential backoff delays
-    - 2    # Attempt 1: wait 2s
-    - 4    # Attempt 2: wait 4s
-    - 8    # Attempt 3: wait 8s
-    - 16   # Attempt 4+: wait 16s
+  max_restart_attempts: 3 # Max 3 auto-restarts
+  restart_backoff: # Exponential backoff delays
+    - 2 # Attempt 1: wait 2s
+    - 4 # Attempt 2: wait 4s
+    - 8 # Attempt 3: wait 8s
+    - 16 # Attempt 4+: wait 16s
 ```
 
 #### Queue Management
+
 ```yaml
 config:
-  max_claimed_per_agent: 5           # Agent can claim max 5 items
+  max_claimed_per_agent: 5 # Agent can claim max 5 items
   backpressure_claimed_threshold: 10 # Stop accepting work if >10 claimed
 ```
 
@@ -2653,18 +2715,19 @@ Edit `config/swarm_controller_config.yaml` to adjust behavior:
 ```yaml
 config:
   # More aggressive scaling
-  scale_up_queue_threshold: 3        # Scale up sooner
-  max_concurrent_agents: 20          # Allow more agents
+  scale_up_queue_threshold: 3 # Scale up sooner
+  max_concurrent_agents: 20 # Allow more agents
 
   # Stricter resource management
-  cpu_threshold: 70.0                # More sensitive
-  memory_threshold: 60.0             # More sensitive
+  cpu_threshold: 70.0 # More sensitive
+  memory_threshold: 60.0 # More sensitive
 
   # Faster restart backoff
-  restart_backoff: [1, 2, 4, 8]      # Restart sooner
+  restart_backoff: [1, 2, 4, 8] # Restart sooner
 ```
 
 Then restart the controller:
+
 ```bash
 python scripts/swarm_controller.py --monitor --auto-heal --config config/swarm_controller_config.yaml
 ```
@@ -2682,6 +2745,7 @@ python scripts/swarm_controller.py --pause-agent agent-id
 ```
 
 The agent will:
+
 1. Receive SIGSTOP signal
 2. Stop executing (but retain memory state)
 3. Be marked as `paused` in state
@@ -2696,6 +2760,7 @@ python scripts/swarm_controller.py --resume-agent agent-id
 ```
 
 The agent will:
+
 1. Receive SIGCONT signal
 2. Resume execution from where it paused
 3. Be marked as `healthy` in state
@@ -2709,6 +2774,7 @@ python scripts/swarm_controller.py --update-metrics agent-id task_progress=5 err
 ```
 
 This updates:
+
 - `task_progress`: Progress counter
 - `error_count`: Number of errors
 - `cpu_percent`: CPU usage
@@ -2766,13 +2832,13 @@ Text log file with all controller decisions and events.
 
 ### Agent Status States
 
-| Status | Meaning | Action |
-|--------|---------|--------|
-| `healthy` | Operating normally | Continue monitoring |
-| `paused` | Gracefully paused (SIGSTOP) | Can resume with SIGCONT |
-| `unhealthy` | Detection issue detected | Attempt restart or escalate |
-| `restarting` | In middle of restart | Monitor during restart delay |
-| `dead` | Failed all restart attempts | Escalate to L1 manual intervention |
+| Status       | Meaning                     | Action                             |
+| ------------ | --------------------------- | ---------------------------------- |
+| `healthy`    | Operating normally          | Continue monitoring                |
+| `paused`     | Gracefully paused (SIGSTOP) | Can resume with SIGCONT            |
+| `unhealthy`  | Detection issue detected    | Attempt restart or escalate        |
+| `restarting` | In middle of restart        | Monitor during restart delay       |
+| `dead`       | Failed all restart attempts | Escalate to L1 manual intervention |
 
 ### Health Checks
 
@@ -2785,7 +2851,7 @@ The controller detects unhealthy agents via:
 
 2. **SLO Breach** (>150% of expected time)
    - Task taking longer than expected
-   - Rough estimate: expected_time = task_progress * 10 seconds
+   - Rough estimate: expected_time = task_progress \* 10 seconds
    - Action: Log warning, track breaches
 
 3. **High Error Count** (>5 errors)
@@ -2806,6 +2872,7 @@ When an agent becomes unhealthy:
 4. **Max Exceeded**: Mark as `dead`, escalate to L1
 
 If max retries exceeded after 3 failed restarts:
+
 - Agent status set to `DEAD`
 - Log message indicates escalation needed
 - L1 team must investigate and manually restart
@@ -2817,6 +2884,7 @@ If max retries exceeded after 3 failed restarts:
 ### Scale UP
 
 Triggered when:
+
 - **Condition 1**: Pending queue items > 5 AND
 - **Condition 2**: System resources available (CPU <60%, Memory <50%) AND
 - **Condition 3**: Current agents < max (10)
@@ -2828,6 +2896,7 @@ Triggered when:
 ### Scale DOWN
 
 Triggered when:
+
 - **Condition 1**: Pending queue items < 2 OR
 - **Condition 2**: Resource pressure detected (CPU >80% or Memory >70%) AND
 - **Condition 3**: Current agents > min (1)
@@ -2843,6 +2912,7 @@ Triggered when:
 ### CPU Throttling
 
 If system CPU >80%:
+
 1. Log warning with current CPU%
 2. Pause lowest-priority agent
 3. Wait for resources to free up
@@ -2851,6 +2921,7 @@ If system CPU >80%:
 ### Memory Throttling
 
 If system memory >70%:
+
 1. Log warning with current memory%
 2. Pause lowest-priority agent
 3. Wait for resources to free up
@@ -2859,6 +2930,7 @@ If system memory >70%:
 ### Open File Limits
 
 If agent has >1000 open files:
+
 1. Log warning
 2. Alert may indicate file descriptor leak
 3. Monitor closely, may need restart
@@ -2870,6 +2942,7 @@ If agent has >1000 open files:
 ### Backpressure
 
 If claimed items > 10:
+
 1. Stop accepting new work
 2. Log backpressure warning
 3. Wait for agents to complete claimed items
@@ -2878,6 +2951,7 @@ If claimed items > 10:
 ### Per-Agent Claiming
 
 Each agent can claim max 5 items per phase:
+
 - Prevents single agent from hoarding work
 - Ensures fair distribution
 - Can be configured via `max_claimed_per_agent`
@@ -2909,10 +2983,10 @@ The controller can publish status to `docs/reference/AGENTS_ACTIVE.md`:
 ```markdown
 # AGENTS_ACTIVE
 
-| Agent ID | Status | PID | Restarts | CPU % | Memory % | Errors | Last Activity |
-|----------|--------|-----|----------|-------|----------|--------|---------------|
-| agent-1  | healthy | 12345 | 0 | 45.2 | 32.1 | 0 | 2026-02-19 10:30:00 |
-| agent-2  | paused | 12346 | 1 | 0.0 | 0.0 | 2 | 2026-02-19 10:30:00 |
+| Agent ID | Status  | PID   | Restarts | CPU % | Memory % | Errors | Last Activity       |
+| -------- | ------- | ----- | -------- | ----- | -------- | ------ | ------------------- |
+| agent-1  | healthy | 12345 | 0        | 45.2  | 32.1     | 0      | 2026-02-19 10:30:00 |
+| agent-2  | paused  | 12346 | 1        | 0.0   | 0.0      | 2      | 2026-02-19 10:30:00 |
 ```
 
 (TODO: Implement auto-publishing)
@@ -2926,6 +3000,7 @@ The controller can publish status to `docs/reference/AGENTS_ACTIVE.md`:
 **Symptoms**: Agent status shows `paused` but should be running
 
 **Diagnosis**:
+
 ```bash
 # Check log for pause/resume events
 tail -100 .claude/swarm_controller.log | grep "agent-id"
@@ -2936,6 +3011,7 @@ ps aux | grep agent-id
 ```
 
 **Fix**:
+
 ```bash
 # Manually resume agent
 python scripts/swarm_controller.py --resume-agent agent-id
@@ -2949,6 +3025,7 @@ python scripts/swarm_controller.py --status
 **Symptoms**: Agent in `restarting` state, restart_count keeps incrementing
 
 **Diagnosis**:
+
 ```bash
 # Check for restart pattern in log
 grep "Restarting agent agent-id" .claude/swarm_controller.log
@@ -2958,6 +3035,7 @@ grep "agent-id" .claude/swarm_controller.log | grep ERROR
 ```
 
 **Fix**:
+
 1. Check agent logs for root cause
 2. Update configuration (increase restart backoff delays)
 3. Pause agent and investigate
@@ -2969,6 +3047,7 @@ grep "agent-id" .claude/swarm_controller.log | grep ERROR
 **Symptoms**: Log shows repeated "Resource pressure detected" messages
 
 **Diagnosis**:
+
 ```bash
 # Check CPU/memory trends
 tail -100 .claude/swarm_controller.log | grep "Resource pressure"
@@ -2978,6 +3057,7 @@ python scripts/swarm_controller.py --report
 ```
 
 **Fix**:
+
 1. Pause some agents manually: `--pause-agent`
 2. Investigate what's using resources (top, Activity Monitor, etc.)
 3. Scale down queue by pausing new work intake
@@ -2988,6 +3068,7 @@ python scripts/swarm_controller.py --report
 **Symptoms**: Controller stops logging, status checking fails
 
 **Diagnosis**:
+
 ```bash
 # Check if process still running
 ps aux | grep swarm_controller
@@ -2997,6 +3078,7 @@ tail -50 .claude/swarm_controller.log
 ```
 
 **Fix**:
+
 1. Restart controller: `python scripts/swarm_controller.py --monitor`
 2. Check for errors in logs
 3. Ensure config file exists and is valid YAML
@@ -3054,7 +3136,7 @@ Always prefer pausing over killing:
 
 ```yaml
 config:
-  graceful_pause_enabled: true  # Enable SIGSTOP-based pausing
+  graceful_pause_enabled: true # Enable SIGSTOP-based pausing
 ```
 
 This preserves agent state and allows recovery.
@@ -3083,7 +3165,7 @@ If controller CPU usage is high:
 ```yaml
 config:
   # Check less frequently
-  health_check_interval: 20  # was 10 seconds
+  health_check_interval: 20 # was 10 seconds
 ```
 
 ### Reduce Memory Footprint
@@ -3093,7 +3175,7 @@ If controller memory usage is high:
 ```yaml
 config:
   # Store less history
-  restart_backoff: [2, 4, 8]  # was [2, 4, 8, 16]
+  restart_backoff: [2, 4, 8] # was [2, 4, 8, 16]
 ```
 
 ### Optimize Log File
@@ -3138,17 +3220,17 @@ controller.update_agent_metrics("agent-id", task_progress=5, error_count=0)
 
 ### CLI Commands
 
-| Command | Purpose |
-|---------|---------|
-| `--monitor` | Run continuous monitoring loop |
-| `--auto-heal` | Enable automatic healing |
-| `--config PATH` | Specify config file |
-| `--status` | Print JSON status |
-| `--report` | Print health report |
-| `--pause-agent ID` | Pause agent |
-| `--resume-agent ID` | Resume agent |
-| `--update-metrics ID k=v ...` | Update metrics |
-| `-v, --verbose` | Enable verbose logging |
+| Command                       | Purpose                        |
+| ----------------------------- | ------------------------------ |
+| `--monitor`                   | Run continuous monitoring loop |
+| `--auto-heal`                 | Enable automatic healing       |
+| `--config PATH`               | Specify config file            |
+| `--status`                    | Print JSON status              |
+| `--report`                    | Print health report            |
+| `--pause-agent ID`            | Pause agent                    |
+| `--resume-agent ID`           | Resume agent                   |
+| `--update-metrics ID k=v ...` | Update metrics                 |
+| `-v, --verbose`               | Enable verbose logging         |
 
 ---
 
@@ -3171,7 +3253,6 @@ controller.update_agent_metrics("agent-id", task_progress=5, error_count=0)
 - `.claude/swarm_controller.log` - Detailed decision log
 - `docs/reference/AGENTS_ACTIVE.md` - Active agent status (TODO: auto-publish)
 
-
 ---
 
 ## Source: SWARM_INTEGRATION_GUIDE.md
@@ -3183,12 +3264,14 @@ Guide for integrating the Self-Healing Swarm Controller with your agent executio
 ## Overview
 
 The Swarm Controller provides a standardized interface for:
+
 - Monitoring agent health and metrics
 - Detecting and auto-healing failures
 - Dynamic scaling based on queue depth
 - Resource-aware throttling
 
 Integration points:
+
 1. **Agent Metrics API**: Update agent status via CLI
 2. **Work Stream**: Read `docs/reference/WORK_STREAM.md` for queue depth
 3. **State File**: Read `.claude/swarm_state.json` for agent status
@@ -3233,24 +3316,27 @@ python3 scripts/swarm_controller.py --update-metrics $AGENT_ID \
 ### 2. Work Stream Integration
 
 The controller reads `docs/reference/WORK_STREAM.md` to:
+
 - Get queue depth (pending items)
 - Apply backpressure (if claimed > 10)
 - Scale agents based on demand
 
 **Your system should:**
+
 1. Update `docs/reference/WORK_STREAM.md` with work items
 2. Mark items as `CLAIMED` when agent takes them
 3. Mark items as `COMPLETED` when finished
 
 **Example work stream format:**
+
 ```markdown
 # WORK_STREAM
 
-| ID | Status | Agent | Description |
-|----|--------|-------|-------------|
-| WI-001 | PENDING | - | Task A |
-| WI-002 | CLAIMED | agent-1 | Task B |
-| WI-003 | COMPLETED | agent-1 | Task C |
+| ID     | Status    | Agent   | Description |
+| ------ | --------- | ------- | ----------- |
+| WI-001 | PENDING   | -       | Task A      |
+| WI-002 | CLAIMED   | agent-1 | Task B      |
+| WI-003 | COMPLETED | agent-1 | Task C      |
 ```
 
 ### 3. Metrics Update Pattern
@@ -3585,6 +3671,7 @@ if __name__ == "__main__":
 Adjust controller behavior for your workload:
 
 ### CPU-Bound Agents
+
 ```yaml
 config:
   # Tighter SLO, less aggressive scaling
@@ -3594,6 +3681,7 @@ config:
 ```
 
 ### I/O-Bound Agents
+
 ```yaml
 config:
   # Looser SLO, more aggressive scaling
@@ -3603,6 +3691,7 @@ config:
 ```
 
 ### High Reliability
+
 ```yaml
 config:
   # Conservative scaling, quick detection
@@ -3695,7 +3784,6 @@ python3 scripts/swarm_controller.py --status | python3 -c \
 - `config/swarm_controller_config.yaml` - Configuration reference
 - `.claude/swarm_controller.log` - Controller decision log
 
-
 ---
 
 ## Source: data-migration.md
@@ -3744,6 +3832,7 @@ Data migrations transform how information is stored or structured without losing
 **To:** Unified SQLite database with indexes
 
 **Benefits:**
+
 - 2.4x faster queries through indexing
 - Full-text search capability
 - Reduced disk I/O
@@ -3757,6 +3846,7 @@ Data migrations transform how information is stored or structured without losing
 **To:** YAML with validation
 
 **Benefits:**
+
 - More human-readable
 - Comments supported
 - Smaller file size
@@ -3768,12 +3858,14 @@ Data migrations transform how information is stored or structured without losing
 **To:** Modern schema with relationships
 
 **Benefits:**
+
 - Enforced data integrity
 - Better query performance
 - Improved data relationships
 - Normalized structure
 
 **Characteristics:**
+
 - May require versioning
 - Backward compatibility periods
 - Migration scripts for each version
@@ -3784,6 +3876,7 @@ Data migrations transform how information is stored or structured without losing
 **To:** MessagePack/custom format
 
 **Benefits:**
+
 - Faster serialization
 - Smaller memory footprint
 - Better for large datasets
@@ -3821,6 +3914,7 @@ sqlite3 source.db ".backup backup.db"
 #### Step 1.3: Plan Validation
 
 Document what success looks like:
+
 - Record count should match
 - Specific field values to spot-check
 - Performance metrics to verify
@@ -3850,6 +3944,7 @@ ROLLBACK;  -- Don't commit changes
 #### Step 2.3: Make Adjustments
 
 If dry-run reveals issues:
+
 - Fix transformation logic
 - Adjust mapping rules
 - Update field handling
@@ -4058,9 +4153,10 @@ pytest tests/ -k "backward_compat" -v
 **Symptom:** Migrated record count < Source record count
 
 **Diagnosis:**
+
 ```sql
 -- Find missing records
-SELECT id FROM source 
+SELECT id FROM source
 WHERE id NOT IN (SELECT id FROM target);
 
 -- Check for filtering issues
@@ -4069,6 +4165,7 @@ SELECT COUNT(*) FROM target WHERE condition = 'expected';
 ```
 
 **Solution:**
+
 1. Investigate missing records
 2. Fix transformation logic
 3. Restore from backup
@@ -4079,6 +4176,7 @@ SELECT COUNT(*) FROM target WHERE condition = 'expected';
 **Symptom:** Data looks wrong after migration
 
 **Diagnosis:**
+
 ```python
 # Compare samples
 source_record = source.get("record_id")
@@ -4090,6 +4188,7 @@ if source_record != target_record:
 ```
 
 **Solution:**
+
 1. Check transformation functions
 2. Validate data types
 3. Restore from backup if needed
@@ -4099,6 +4198,7 @@ if source_record != target_record:
 **Symptom:** Queries slower after migration
 
 **Diagnosis:**
+
 ```sql
 -- Check indexes
 SELECT * FROM sqlite_master WHERE type='index';
@@ -4111,6 +4211,7 @@ EXPLAIN QUERY PLAN SELECT * FROM table WHERE id = 123;
 ```
 
 **Solution:**
+
 1. Create missing indexes
 2. Rebuild statistics
 3. Optimize schema design
@@ -4125,21 +4226,25 @@ EXPLAIN QUERY PLAN SELECT * FROM table WHERE id = 123;
 **Scenario:** Migrating agent memory from JSONL files to SQLite
 
 **Step 1: Backup**
+
 ```bash
 cp -r ~/.claude/civilization/agents ~/.claude/civilization/agents.backup.$(date +%Y%m%d)
 ```
 
 **Step 2: Dry-run**
+
 ```bash
 python3 scripts/migrate_memory_jsonl_to_sqlite.py --dry-run
 ```
 
 **Step 3: Execute**
+
 ```bash
 python3 scripts/migrate_memory_jsonl_to_sqlite.py
 ```
 
 **Step 4: Verify**
+
 ```bash
 # Count verification
 JSONL_COUNT=$(find ~/.claude/civilization/agents -name "memory.jsonl" -exec wc -l {} + | tail -1 | awk '{print $1}')
@@ -4151,6 +4256,7 @@ python3 scripts/verify_migration.py
 ```
 
 **Step 5: Switch**
+
 ```python
 # Update application config
 from data_storage import SQLiteMemoryStorage
@@ -4163,6 +4269,7 @@ storage = SQLiteMemoryStorage()
 **Scenario:** Upgrading from schema v1.0 to v2.0
 
 **Step 1: Create new schema**
+
 ```sql
 BEGIN TRANSACTION;
 
@@ -4188,6 +4295,7 @@ ROLLBACK;
 ```
 
 **Step 2: Switch tables**
+
 ```sql
 BEGIN TRANSACTION;
 
@@ -4203,6 +4311,7 @@ COMMIT;
 ```
 
 **Step 3: Cleanup** (after verification)
+
 ```sql
 DROP TABLE users_v1;
 ```
@@ -4239,7 +4348,6 @@ DROP TABLE users_v1;
 **Generated:** 2026-02-20  
 **Consolidated from:** Data migration procedures across crun, trace, thegent, pheno-sdk, zen-mcp-server, and memory storage systems
 
-
 ---
 
 ## Source: dependency-updates.md
@@ -4253,13 +4361,15 @@ This guide documents the dependency upgrades implemented and how to use the new 
 ### 1. Rust Dependencies
 
 #### reqwest v0.11 → v0.12
+
 - **File:** `thegent/crates/thegent-memory/Cargo.toml`
 - **Impact:** Better performance, improved async handling
 - **Breaking Changes:** Minimal - mostly drop-in replacement
 - **Action Required:** None - code should work as-is
 
 #### simd-json Added
-- **Files:** 
+
+- **Files:**
   - `thegent/crates/thegent-memory/Cargo.toml`
   - `thegent/crates/thegent-router/Cargo.toml`
   - `thegent/crates/supermemory-rs/Cargo.toml`
@@ -4270,24 +4380,28 @@ This guide documents the dependency upgrades implemented and how to use the new 
 - **Usage:** See "Using simd-json" section below
 
 #### dashmap v5 → v6
+
 - **File:** `thegent/crates/thegent-hooks/Cargo.toml`
 - **Impact:** Better performance, improved API
 - **Breaking Changes:** Minimal API changes
 - **Action Required:** Review code for any deprecated methods
 
 #### git2 v0.18 → v0.21
+
 - **File:** `thegent/crates/thegent-git/Cargo.toml`
 - **Impact:** Bug fixes, performance improvements
 - **Breaking Changes:** Some API changes - see git2 changelog
 - **Action Required:** Test Git operations thoroughly
 
 #### gix Added (Optional)
+
 - **File:** `thegent/crates/thegent-git/Cargo.toml`
 - **Impact:** Pure Rust Git implementation, 1.5-2x faster
 - **Usage:** Enable with `--features gix` flag
 - **Action Required:** Migrate gradually - see migration guide below
 
 #### compio Added (Optional)
+
 - **File:** `thegent/crates/thegent-memory/Cargo.toml`
 - **Impact:** io_uring/IOCP-based async I/O, 2-3x faster
 - **Usage:** Enable with `--features compio` flag
@@ -4296,6 +4410,7 @@ This guide documents the dependency upgrades implemented and how to use the new 
 ### 2. Go Dependencies
 
 #### redis/go-redis v9.18.0-beta.2 → v9.18.0
+
 - **File:** `trace/backend/go.mod`
 - **Impact:** Stable release, bug fixes
 - **Breaking Changes:** None
@@ -4304,6 +4419,7 @@ This guide documents the dependency upgrades implemented and how to use the new 
 ### 3. Python Dependencies
 
 #### granian Added
+
 - **File:** `thegent/pyproject.toml`
 - **Impact:** Rust-based ASGI server, 30-50% faster than uvicorn
 - **Usage:** Replace `uvicorn` with `granian` in startup scripts
@@ -4471,6 +4587,7 @@ Expected performance improvements:
 If issues occur, you can rollback:
 
 ### Rust
+
 ```bash
 # Revert Cargo.toml changes
 git checkout -- thegent/crates/*/Cargo.toml
@@ -4478,6 +4595,7 @@ cargo update
 ```
 
 ### Go
+
 ```bash
 # Revert go.mod
 git checkout -- trace/backend/go.mod
@@ -4485,6 +4603,7 @@ go mod tidy
 ```
 
 ### Python
+
 ```bash
 # Remove granian from pyproject.toml
 # Or just don't use it - uvicorn is still available
@@ -4493,7 +4612,6 @@ go mod tidy
 ## Questions?
 
 See `DEPENDENCY_AUDIT_REPORT.md` for detailed analysis and rationale.
-
 
 ---
 
@@ -4616,18 +4734,21 @@ See `DEPENDENCY_AUDIT_REPORT.md` for detailed analysis and rationale.
 ## Development Setup
 
 ### Prerequisites
+
 - Node.js 18+ (via Bun 1.2.22 package manager)
 - PostgreSQL 13+ (via Supabase Cloud)
 
 ### Installation Steps
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/atoms-tech/atoms.tech.git
    cd atoms.tech
    ```
 
 2. **Install dependencies**
+
    ```bash
    bun install
    ```
@@ -4643,9 +4764,11 @@ See `DEPENDENCY_AUDIT_REPORT.md` for detailed analysis and rationale.
    - AtomsAgent (ATOMSAGENT_BASE_URL)
 
 4. **Run development server**
+
    ```bash
    bun dev
    ```
+
    Server runs on http://localhost:3000
 
 5. **Code Quality**
@@ -4657,22 +4780,26 @@ See `DEPENDENCY_AUDIT_REPORT.md` for detailed analysis and rationale.
 ## Available npm Scripts
 
 **Development:**
+
 - `bun run dev` - Start dev server
 - `bun run dev:clean` - Clean .next and start dev
 - `bun run dev:log` - Dev with logging to file
 
 **Building & Deployment:**
+
 - `bun run build` - Production build
 - `bun run build:analyze` - Build with bundle analysis
 - `bun run start` - Start production server
 
 **Code Quality:**
+
 - `bun run lint` - Run ESLint
 - `bun run lint:strict` - Lint with zero warnings
 - `bun run type-check` - TypeScript type checking
 - `bun run format` - Prettier formatting
 
 **Testing:**
+
 - `bun run test` - Run all tests
 - `bun run test:unit` - Unit tests with Vitest + coverage
 - `bun run test:e2e` - E2E tests with Playwright
@@ -4689,21 +4816,21 @@ export const useAuthStore = create((set) => ({
   permissions: [],
   setUser: (user) => set({ user }),
   // ...
-}))
+}));
 
 // ui.store.ts - UI state (modals, panels)
 export const useUIStore = create((set) => ({
   isModalOpen: false,
   activeSidebar: null,
   // ...
-}))
+}));
 
 // domain.store.ts - Business domain state
 export const useDomainStore = create((set) => ({
   currentProject: null,
   documents: [],
   // ...
-}))
+}));
 ```
 
 ## API Integration with tRPC
@@ -4718,14 +4845,14 @@ export const appRouter = router({
       .input(z.object({ message: z.string() }))
       .mutation(async ({ input, ctx }) => {
         // Server logic
-        return response
-      })
-  }
-})
+        return response;
+      }),
+  },
+});
 
 // Client-side usage
-const { mutate } = trpc.chat.send.useMutation()
-mutate({ message: 'Hello!' })
+const { mutate } = trpc.chat.send.useMutation();
+mutate({ message: "Hello!" });
 ```
 
 ## UI Components
@@ -4750,7 +4877,6 @@ Deployed on Vercel with automatic deployments from Git:
 
 **Content merged from:** technical-documentation-frontend.md
 
-
 ---
 
 ## Source: legacy-alternatives.md
@@ -4769,16 +4895,19 @@ Found **3 HIGH priority** legacy dependencies that should be replaced immediatel
 ### 1. **Rust: `lazy_static` → `std::sync::OnceLock`**
 
 **Current Status:**
+
 - Found in: `thegent-hooks/Cargo.toml`
 - Version: 1.4.x
 
 **Why Replace:**
+
 - `lazy_static` is **deprecated** in favor of `std::sync::OnceLock` (Rust 1.70+)
 - No external dependency needed
 - Better performance (no macro overhead)
 - Standard library support
 
 **Migration:**
+
 ```rust
 // Old (lazy_static)
 use lazy_static::lazy_static;
@@ -4802,15 +4931,18 @@ fn get_config() -> &'static HashMap<String, String> {
 ### 2. **Rust: `md5` → `sha2` or `blake3`**
 
 **Current Status:**
+
 - Found in: `thegent-runtime/Cargo.toml`
 - Version: 0.7.x
 
 **Why Replace:**
+
 - **MD5 is cryptographically broken** (collision attacks)
 - Security vulnerability
 - Use SHA-256 (`sha2`) or BLAKE3 for better security
 
 **Migration:**
+
 ```rust
 // Old (md5)
 use md5::{Md5, Digest};
@@ -4833,16 +4965,19 @@ let hash = blake3::hash(data);
 ### 3. **Go: `github.com/lib/pq` → `github.com/jackc/pgx/v5`**
 
 **Current Status:**
+
 - Found in: `trace/backend/go.mod` (4 files)
 - Version: v1.11.1
 
 **Why Replace:**
+
 - `lib/pq` is **unmaintained** (last update 2023)
 - `pgx/v5` is faster, more modern, actively maintained
 - Better type safety and error handling
 - Native support for PostgreSQL features
 
 **Migration:**
+
 ```go
 // Old (lib/pq)
 import "github.com/lib/pq"
@@ -4863,10 +4998,12 @@ conn, err := pgx.Connect(context.Background(), connStr)
 ### 4. **Rust: `thiserror 1.0` → `thiserror 2.0`**
 
 **Current Status:**
+
 - Found in: 4 crates
 - Version: 1.0.x
 
 **Why Upgrade:**
+
 - Better error handling with const generics
 - Improved performance
 - Better diagnostics
@@ -4881,15 +5018,18 @@ conn, err := pgx.Connect(context.Background(), connStr)
 ### 5. **Rust: `hex 0.4` → `base16ct` or `base16`**
 
 **Current Status:**
+
 - Found in: 4 crates
 - Version: 0.4.x
 
 **Why Replace:**
+
 - `base16ct` is faster and more modern
 - Better maintained
 - Constant-time operations (security)
 
 **Migration:**
+
 ```rust
 // Old (hex)
 use hex;
@@ -4908,16 +5048,19 @@ let encoded = base16ct::lower::encode_string(&data);
 ### 6. **Go: `github.com/gorilla/mux` → `github.com/go-chi/chi`**
 
 **Current Status:**
+
 - Found in: 3 go.mod files
 - Version: v1.8.1
 
 **Why Replace:**
+
 - `chi` is lighter and faster
 - More modern API
 - Better middleware support
 - Or use stdlib `net/http` for simplicity
 
 **Migration:**
+
 ```go
 // Old (gorilla/mux)
 import "github.com/gorilla/mux"
@@ -4940,10 +5083,12 @@ import "net/http"
 ### 7. **Go: `gorm.io/gorm` → `sqlc` or `sqlx`**
 
 **Current Status:**
+
 - Found in: 3 go.mod files
 - Version: v1.31.1
 
 **Why Consider:**
+
 - `sqlc` generates type-safe code from SQL
 - `sqlx` is faster and lighter than GORM
 - Better performance, type safety
@@ -4958,15 +5103,18 @@ import "net/http"
 ### 8. **Python: `psycopg2-binary` → `psycopg` (v3) or `asyncpg`**
 
 **Current Status:**
+
 - Found in: 8 pyproject.toml files
 - Version: 2.9.11
 
 **Why Upgrade:**
+
 - `psycopg` (v3) is modern, async-native
 - `asyncpg` is fastest for async workloads
 - Better async support
 
 **Migration:**
+
 ```python
 # Old (psycopg2)
 import psycopg2
@@ -4994,6 +5142,7 @@ conn = await asyncpg.connect(...)
 ### 9. **Rust: `chrono` → `time` crate**
 
 **Why Consider:**
+
 - `time` crate is lighter and faster
 - Smaller binary size
 
@@ -5007,6 +5156,7 @@ conn = await asyncpg.connect(...)
 ### 10. **Rust: `crossbeam-channel` → `tokio::sync::mpsc`**
 
 **Why Consider:**
+
 - If already using tokio, use tokio channels
 - Fewer dependencies
 
@@ -5031,36 +5181,40 @@ conn = await asyncpg.connect(...)
 
 ## 📊 Migration Priority Matrix
 
-| Dependency | Priority | Effort | Impact | Recommendation |
-|------------|----------|--------|--------|-----------------|
-| `lazy_static` | HIGH | Medium | High | ✅ Replace immediately |
-| `md5` | HIGH | Low | Critical | ✅ Replace immediately (security) |
-| `lib/pq` | HIGH | Medium | High | ✅ Replace (unmaintained) |
-| `thiserror` | MEDIUM | Low | Medium | ⚠️ Upgrade to 2.0 |
-| `hex` | MEDIUM | Low | Low | ⚠️ Consider base16ct |
-| `gorilla/mux` | MEDIUM | Medium | Medium | ⚠️ Consider chi or stdlib |
-| `gorm` | MEDIUM | High | High | ⚠️ Consider if performance critical |
-| `psycopg2` | MEDIUM | Medium | Medium | ⚠️ Consider psycopg3/asyncpg |
-| `chrono` | LOW | Medium | Low | 💡 Optional |
-| `crossbeam-channel` | LOW | Medium | Low | 💡 Optional |
+| Dependency          | Priority | Effort | Impact   | Recommendation                      |
+| ------------------- | -------- | ------ | -------- | ----------------------------------- |
+| `lazy_static`       | HIGH     | Medium | High     | ✅ Replace immediately              |
+| `md5`               | HIGH     | Low    | Critical | ✅ Replace immediately (security)   |
+| `lib/pq`            | HIGH     | Medium | High     | ✅ Replace (unmaintained)           |
+| `thiserror`         | MEDIUM   | Low    | Medium   | ⚠️ Upgrade to 2.0                   |
+| `hex`               | MEDIUM   | Low    | Low      | ⚠️ Consider base16ct                |
+| `gorilla/mux`       | MEDIUM   | Medium | Medium   | ⚠️ Consider chi or stdlib           |
+| `gorm`              | MEDIUM   | High   | High     | ⚠️ Consider if performance critical |
+| `psycopg2`          | MEDIUM   | Medium | Medium   | ⚠️ Consider psycopg3/asyncpg        |
+| `chrono`            | LOW      | Medium | Low      | 💡 Optional                         |
+| `crossbeam-channel` | LOW      | Medium | Low      | 💡 Optional                         |
 
 ---
 
 ## 🎯 Recommended Action Plan
 
 ### Phase 1: Critical Security (Week 1)
+
 1. ✅ Replace `md5` with `sha2` or `blake3`
 2. ✅ Replace `lazy_static` with `std::sync::OnceLock`
 
 ### Phase 2: Unmaintained Dependencies (Week 2)
+
 3. ✅ Replace `lib/pq` with `pgx/v5`
 
 ### Phase 3: Performance Improvements (Week 3-4)
+
 4. ⚠️ Upgrade `thiserror` to 2.0
 5. ⚠️ Consider `base16ct` for `hex`
 6. ⚠️ Consider `chi` for `gorilla/mux`
 
 ### Phase 4: Optional (As Needed)
+
 7. 💡 Consider `psycopg3`/`asyncpg` for Python
 8. 💡 Consider `time` crate if binary size matters
 9. 💡 Consider `sqlc`/`sqlx` if GORM performance is an issue
@@ -5070,6 +5224,7 @@ conn = await asyncpg.connect(...)
 ## 📝 Implementation Scripts
 
 See:
+
 - `legacy_audit.py` - Audit script
 - `LEGACY_AUDIT_REPORT.json` - Detailed JSON report
 
@@ -5088,7 +5243,6 @@ See:
 **Generated:** 2026-02-18  
 **Next Review:** After Phase 1 completion
 
-
 ---
 
 ## Source: legacy-migration.md
@@ -5101,12 +5255,14 @@ See:
 ## ✅ Completed Replacements
 
 ### Rust Dependencies
+
 - ✅ `lazy_static` → Removed (use `std::sync::OnceLock`)
 - ✅ `md5` → `sha2` (security fix)
 - ✅ `hex 0.4` → `base16ct 1.0` (4 files)
 - ✅ `thiserror 1.0` → `thiserror 2.0` (3 files)
 
 ### Go Dependencies
+
 - ✅ `github.com/lib/pq` → `github.com/jackc/pgx/v5` (3 files)
 
 ---
@@ -5116,6 +5272,7 @@ See:
 ### 1. lazy_static → std::sync::OnceLock
 
 **Before:**
+
 ```rust
 use lazy_static::lazy_static;
 use std::collections::HashMap;
@@ -5134,6 +5291,7 @@ fn main() {
 ```
 
 **After:**
+
 ```rust
 use std::sync::OnceLock;
 use std::collections::HashMap;
@@ -5154,6 +5312,7 @@ fn main() {
 ```
 
 **Files to update:**
+
 - `thegent/hooks/hook-dispatcher/src/**/*.rs`
 - `thegent/crates/thegent-hooks/src/**/*.rs`
 
@@ -5162,6 +5321,7 @@ fn main() {
 ### 2. md5 → sha2
 
 **Before:**
+
 ```rust
 use md5::{Md5, Digest};
 
@@ -5172,6 +5332,7 @@ fn hash_data(data: &[u8]) -> String {
 ```
 
 **After:**
+
 ```rust
 use sha2::{Sha256, Digest};
 
@@ -5191,6 +5352,7 @@ fn hash_data_blake3(data: &[u8]) -> String {
 ```
 
 **Files to update:**
+
 - `thegent/crates/thegent-runtime/src/**/*.rs`
 
 **Note:** MD5 is cryptographically broken. Use SHA-256 for compatibility or BLAKE3 for speed.
@@ -5200,6 +5362,7 @@ fn hash_data_blake3(data: &[u8]) -> String {
 ### 3. hex → base16ct
 
 **Before:**
+
 ```rust
 use hex;
 
@@ -5213,6 +5376,7 @@ fn decode(s: &str) -> Result<Vec<u8>, hex::FromHexError> {
 ```
 
 **After:**
+
 ```rust
 use base16ct::{lower, Upper};
 
@@ -5233,12 +5397,14 @@ fn encode_upper(data: &[u8]) -> String {
 ```
 
 **Files to update:**
+
 - `thegent/crates/thegent-runtime/src/**/*.rs`
 - `thegent/crates/thegent-crypto/src/**/*.rs`
 - `thegent/crates/thegent-memory/src/**/*.rs`
 - `thegent/crates/thegent-hooks/src/**/*.rs`
 
 **Benefits:**
+
 - Constant-time operations (security)
 - Faster performance
 - Better maintained
@@ -5250,10 +5416,12 @@ fn encode_upper(data: &[u8]) -> String {
 **Mostly drop-in replacement.** Check for:
 
 **Breaking changes:**
+
 - Const generics improvements (better performance)
 - Some attribute syntax changes
 
 **Before (1.0):**
+
 ```rust
 use thiserror::Error;
 
@@ -5265,6 +5433,7 @@ pub enum MyError {
 ```
 
 **After (2.0):**
+
 ```rust
 use thiserror::Error;
 
@@ -5277,6 +5446,7 @@ pub enum MyError {
 ```
 
 **Files updated:**
+
 - `thegent/crates/thegent-router/Cargo.toml`
 - `thegent/crates/supermemory-rs/Cargo.toml`
 - `thegent/crates/thegent-memory/Cargo.toml`
@@ -5288,6 +5458,7 @@ pub enum MyError {
 ### 5. lib/pq → pgx/v5 (Go)
 
 **Before:**
+
 ```go
 import (
     "database/sql"
@@ -5310,6 +5481,7 @@ func query(db *sql.DB) error {
 ```
 
 **After:**
+
 ```go
 import (
     "context"
@@ -5339,11 +5511,13 @@ func connectPool(ctx context.Context) (*pgxpool.Pool, error) {
 ```
 
 **Files updated:**
+
 - `trace/backend/go.mod`
 - `trace/backend/tests/go.mod`
 - `claude-squad/go.mod`
 
 **Migration steps:**
+
 1. Replace `sql.Open()` with `pgx.Connect()`
 2. Add `context.Context` to all database operations
 3. Update query methods (pgx uses different API)
@@ -5351,6 +5525,7 @@ func connectPool(ctx context.Context) (*pgxpool.Pool, error) {
 5. Update error handling (pgx has better error types)
 
 **Benefits:**
+
 - Faster performance
 - Better type safety
 - Modern API
@@ -5393,6 +5568,7 @@ grep -r "database/sql" --include="*.go" .
 After making code changes:
 
 ### Rust
+
 - [ ] Run `cargo check --workspace`
 - [ ] Run `cargo test --workspace`
 - [ ] Check for compilation errors
@@ -5402,6 +5578,7 @@ After making code changes:
 - [ ] Test thiserror 2.0 compatibility
 
 ### Go
+
 - [ ] Run `go mod tidy`
 - [ ] Run `go build ./...`
 - [ ] Run `go test ./...`
@@ -5414,13 +5591,13 @@ After making code changes:
 
 ## 📊 Impact Summary
 
-| Replacement | Files Changed | Code Changes Needed | Risk Level |
-|-------------|---------------|---------------------|------------|
-| lazy_static | 2 | Medium | Low |
-| md5 → sha2 | 1 | Low | Low |
-| hex → base16ct | 4 | Low | Low |
-| thiserror 1→2 | 3 | Low | Low |
-| lib/pq → pgx | 3 | Medium-High | Medium |
+| Replacement    | Files Changed | Code Changes Needed | Risk Level |
+| -------------- | ------------- | ------------------- | ---------- |
+| lazy_static    | 2             | Medium              | Low        |
+| md5 → sha2     | 1             | Low                 | Low        |
+| hex → base16ct | 4             | Low                 | Low        |
+| thiserror 1→2  | 3             | Low                 | Low        |
+| lib/pq → pgx   | 3             | Medium-High         | Medium     |
 
 **Total:** 13 dependency files updated, code changes required in ~10-15 source files.
 
@@ -5429,6 +5606,7 @@ After making code changes:
 ## 🚀 Next Steps
 
 1. **Update Rust source code:**
+
    ```bash
    cd thegent/crates
    cargo check --workspace  # Find errors
@@ -5437,6 +5615,7 @@ After making code changes:
    ```
 
 2. **Update Go source code:**
+
    ```bash
    cd trace/backend
    go mod tidy
@@ -5463,7 +5642,6 @@ After making code changes:
 
 **Generated:** 2026-02-18  
 **See also:** `LEGACY_MODERN_ALTERNATIVES_REPORT.md` for full audit
-
 
 ---
 
@@ -5494,18 +5672,21 @@ This project has migration needs across three main categories. Choose the guide 
 Moving from legacy architectures, patterns, or codebases to modern implementations.
 
 **Scope:**
+
 - System architecture replacements (legacy convergence)
 - Framework upgrades (Rust, Go, Python versions)
 - Dependency replacements (see legacy-migration.md)
 - CLI framework transitions (e.g., Click → Typer)
 
 **Characteristics:**
+
 - May affect multiple files across the codebase
 - Requires comprehensive testing
 - May need backward compatibility period
 - Risk: Medium to High
 
 **Examples:**
+
 - Replacing `gorilla/mux` with `chi` router
 - Migrating from `psycopg2` to `psycopg3` or `asyncpg`
 - Updating `gorm` to `sqlc` or `sqlx`
@@ -5520,18 +5701,21 @@ Moving from legacy architectures, patterns, or codebases to modern implementatio
 Transforming data structures, storage formats, or database schemas.
 
 **Scope:**
+
 - Storage format changes (JSONL → SQLite, JSON → MessagePack)
 - Database schema version upgrades
 - Data transformation and validation
 - Backup and rollback procedures
 
 **Characteristics:**
+
 - Non-destructive (original data preserved)
 - Incremental (can run in phases)
 - Requires validation at each step
 - Risk: Low to Medium (with proper backups)
 
 **Examples:**
+
 - JSONL memory files → SQLite database migration
 - JSON configuration → YAML transformation
 - Version 1.0 → 2.0 schema migrations
@@ -5546,18 +5730,21 @@ Transforming data structures, storage formats, or database schemas.
 Updating code patterns, import structures, or language-specific idioms.
 
 **Scope:**
+
 - Import path changes
 - Module reorganization
 - Deprecated API removal
 - Refactoring for modernization
 
 **Characteristics:**
+
 - Usually localized to specific files
 - Low risk if tests pass
 - Can be automated with scripts
 - Risk: Low
 
 **Examples:**
+
 - Updating legacy imports
 - Removing deprecated API calls
 - Moving from `sha2` to `blake3` hashing
@@ -5572,6 +5759,7 @@ Updating code patterns, import structures, or language-specific idioms.
 ### For Dependency Replacements
 
 1. **Identify the scope:**
+
    ```bash
    # Find usage across codebase
    grep -r "old_library" . --include="*.rs" --include="*.go" --include="*.py"
@@ -5590,11 +5778,13 @@ Updating code patterns, import structures, or language-specific idioms.
 ### For Data Migrations
 
 1. **Create backup first:**
+
    ```bash
    cp -r source destination.backup.$(date +%Y%m%d)
    ```
 
 2. **Run dry-run:**
+
    ```bash
    python3 scripts/migrate.py --dry-run
    ```
@@ -5736,6 +5926,7 @@ SELECT * FROM new_table LIMIT 10;
 **Scenario:** Migration partially completed but failed
 
 1. **Check state:**
+
    ```bash
    # For data migrations
    SELECT COUNT(*) FROM migrated_data;
@@ -5809,7 +6000,6 @@ Before starting any migration:
 **Generated:** 2026-02-20  
 **Consolidated from:** 45+ migration files across crun, trace, thegent, pheno-sdk, zen-mcp-server, and related components
 
-
 ---
 
 ## Source: setup-guide.md
@@ -5840,19 +6030,19 @@ Before installing CRUN, ensure you have the following:
 
 ### Required Software
 
-| Component | Version | Purpose |
-|-----------|---------|---------|
-| Python | 3.11 - 3.13 | CRUN requires Python 3.11+ |
-| pip or uv | Latest | Package manager for Python dependencies |
-| Git | 2.0+ | Optional, for version control integration |
+| Component | Version     | Purpose                                   |
+| --------- | ----------- | ----------------------------------------- |
+| Python    | 3.11 - 3.13 | CRUN requires Python 3.11+                |
+| pip or uv | Latest      | Package manager for Python dependencies   |
+| Git       | 2.0+        | Optional, for version control integration |
 
 ### Optional Components (for full features)
 
-| Component | Version | Purpose |
-|-----------|---------|---------|
-| NATS | 2.10+ | For distributed agent coordination |
-| Redis | 7.0+ | For caching and state management |
-| PostgreSQL | 12+ | For persistent planning data (SQLite is default) |
+| Component  | Version | Purpose                                          |
+| ---------- | ------- | ------------------------------------------------ |
+| NATS       | 2.10+   | For distributed agent coordination               |
+| Redis      | 7.0+    | For caching and state management                 |
+| PostgreSQL | 12+     | For persistent planning data (SQLite is default) |
 
 ### Check Your Python Version
 
@@ -5862,6 +6052,7 @@ python3 --version
 ```
 
 If you don't have a compatible Python version, install it:
+
 - **macOS:** `brew install python@3.12`
 - **Ubuntu/Debian:** `apt-get install python3.12 python3.12-venv`
 - **Windows:** Download from [python.org](https://www.python.org/downloads/)
@@ -6032,6 +6223,7 @@ crun --help
 ```
 
 **Expected Output:**
+
 ```
 Usage: crun [OPTIONS] COMMAND [ARGS]...
 
@@ -6076,6 +6268,7 @@ crun ai-plan generate-massive sample_project.txt -o test_plan.md
 ```
 
 **Expected Outcome:**
+
 - A file `test_plan.md` is created with a multi-thousand line plan
 - Plan includes tasks, subtasks, dependencies, and timelines
 
@@ -6088,6 +6281,7 @@ crun ai-plan generate-massive sample_project.txt -o test_plan.md
 **Problem:** `ERROR: Python 3.9 is not compatible. Requires Python 3.11+`
 
 **Solution:**
+
 ```bash
 # Check your Python version
 python3 --version
@@ -6106,6 +6300,7 @@ source venv/bin/activate
 **Problem:** `command not found: crun` or `pip: not found`
 
 **Solution:**
+
 ```bash
 # Make sure virtual environment is activated
 # macOS/Linux:
@@ -6120,6 +6315,7 @@ source venv/bin/activate
 **Problem:** `ImportError: No module named 'pheno'`
 
 **Solution:**
+
 ```bash
 # Reinstall in editable mode
 pip install -e ".[all]"
@@ -6133,6 +6329,7 @@ pip install -e ".[dev]"
 **Problem:** When running `crun ai-plan generate-massive`: `Error: API key required`
 
 **Solution:**
+
 ```bash
 # Set API key as environment variable
 export OPENROUTER_API_KEY=or-your-key-here
@@ -6146,6 +6343,7 @@ export OPENROUTER_API_KEY=or-your-key-here
 **Problem:** When launching GUI/server: `Address already in use: 0.0.0.0:8000`
 
 **Solution:**
+
 ```bash
 # Either kill the process using the port:
 lsof -ti:8000 | xargs kill -9
@@ -6159,6 +6357,7 @@ CRUN_PORT=8001 crun gui
 **Problem:** `MemoryError` or `OSError: too many open files`
 
 **Solution:**
+
 ```bash
 # Increase file descriptor limit (macOS/Linux)
 ulimit -n 10240
@@ -6173,6 +6372,7 @@ CRUN_RESOURCES_TARGET_FD_LIMIT=10240
 **Problem:** `No display available` or GUI window doesn't appear
 
 **Solution:**
+
 ```bash
 # Use TUI instead of GUI
 crun tui
@@ -6207,7 +6407,6 @@ If you encounter issues:
 
 **Version:** CRUN 3.0.0 | Last Updated: 2026-02-20
 
-
 ---
 
 ## Source: swarm-controller.md
@@ -6221,6 +6420,7 @@ If you encounter issues:
 ## What You're Getting
 
 A production-ready agent orchestration system that:
+
 - Monitors agent health every 10 seconds
 - Detects failures (stale, SLO breaches, errors)
 - Auto-heals via graceful pausing and intelligent restarting
@@ -6235,28 +6435,36 @@ A production-ready agent orchestration system that:
 ## Quick Navigation
 
 ### Want to Deploy?
+
 Start here: **`docs/guides/SWARM_CONTROLLER_README.md`**
+
 - Architecture overview
 - Quick start (5 minutes)
 - Installation
 - Running the controller
 
 ### Want to Understand It?
+
 Read: **`SWARM_CONTROLLER_DELIVERABLES.md`**
+
 - Complete feature list
 - All success criteria marked ✓
 - Code metrics and validation
 - Production readiness checklist
 
 ### Want Detailed Usage?
+
 Read: **`docs/guides/SWARM_CONTROLLER_USAGE.md`**
+
 - Configuration guide
 - All CLI commands
 - Health monitoring logic
 - Troubleshooting
 
 ### Want to Integrate?
+
 Read: **`docs/guides/SWARM_INTEGRATION_GUIDE.md`**
+
 - Integration patterns
 - Agent lifecycle integration
 - Code examples (thegent, Prefect, custom)
@@ -6267,6 +6475,7 @@ Read: **`docs/guides/SWARM_INTEGRATION_GUIDE.md`**
 ## 60-Second Overview
 
 ### What It Does
+
 ```
 ┌─────────────────────────────────────────────────────┐
 │         Swarm Controller (10s cycle)                 │
@@ -6297,6 +6506,7 @@ Read: **`docs/guides/SWARM_INTEGRATION_GUIDE.md`**
 ```
 
 ### How to Run
+
 ```bash
 # Install
 pip3 install psutil pyyaml
@@ -6310,6 +6520,7 @@ python3 scripts/swarm_controller.py --report
 ```
 
 ### Key Features
+
 - **Graceful Pause**: SIGSTOP (not kill) - preserves state
 - **Auto-Restart**: Exponential backoff, max 3 attempts
 - **Smart Scaling**: Queue-driven, resource-aware
@@ -6322,44 +6533,49 @@ python3 scripts/swarm_controller.py --report
 
 ## File Locations
 
-| File | Purpose |
-|------|---------|
-| `scripts/swarm_controller.py` | **Main controller (742 LOC)** |
-| `config/swarm_controller_config.yaml` | Configuration (all tunable) |
-| `scripts/test_swarm_controller.py` | Test suite (7 tests, all passing) |
-| `docs/guides/SWARM_CONTROLLER_README.md` | Overview and quick start |
-| `docs/guides/SWARM_CONTROLLER_USAGE.md` | Detailed usage guide |
-| `docs/guides/SWARM_INTEGRATION_GUIDE.md` | Integration patterns |
-| `docs/reference/AGENTS_ACTIVE.md` | Agent status tracking |
-| `.github/workflows/swarm-health.yml` | CI/CD automation |
-| `SWARM_CONTROLLER_DELIVERABLES.md` | Complete deliverables list |
-| `SWARM_CONTROLLER_SUMMARY.md` | Implementation summary |
+| File                                     | Purpose                           |
+| ---------------------------------------- | --------------------------------- |
+| `scripts/swarm_controller.py`            | **Main controller (742 LOC)**     |
+| `config/swarm_controller_config.yaml`    | Configuration (all tunable)       |
+| `scripts/test_swarm_controller.py`       | Test suite (7 tests, all passing) |
+| `docs/guides/SWARM_CONTROLLER_README.md` | Overview and quick start          |
+| `docs/guides/SWARM_CONTROLLER_USAGE.md`  | Detailed usage guide              |
+| `docs/guides/SWARM_INTEGRATION_GUIDE.md` | Integration patterns              |
+| `docs/reference/AGENTS_ACTIVE.md`        | Agent status tracking             |
+| `.github/workflows/swarm-health.yml`     | CI/CD automation                  |
+| `SWARM_CONTROLLER_DELIVERABLES.md`       | Complete deliverables list        |
+| `SWARM_CONTROLLER_SUMMARY.md`            | Implementation summary            |
 
 ---
 
 ## Common Tasks
 
 ### Start Monitoring
+
 ```bash
 python3 scripts/swarm_controller.py --monitor --auto-heal
 ```
 
 ### Check Swarm Health
+
 ```bash
 python3 scripts/swarm_controller.py --report
 ```
 
 ### Pause an Agent (Gracefully)
+
 ```bash
 python3 scripts/swarm_controller.py --pause-agent agent-1
 ```
 
 ### Resume an Agent
+
 ```bash
 python3 scripts/swarm_controller.py --resume-agent agent-1
 ```
 
 ### Update Agent Metrics
+
 ```bash
 python3 scripts/swarm_controller.py --update-metrics agent-1 \
   task_progress=5 \
@@ -6367,6 +6583,7 @@ python3 scripts/swarm_controller.py --update-metrics agent-1 \
 ```
 
 ### Get JSON Status
+
 ```bash
 python3 scripts/swarm_controller.py --status
 ```
@@ -6376,6 +6593,7 @@ python3 scripts/swarm_controller.py --status
 ## Test Results
 
 All tests passing:
+
 ```
 ✓ Configuration Loading
 ✓ Agent Metrics
@@ -6389,6 +6607,7 @@ TEST SUMMARY: 7/7 PASSED
 ```
 
 Run yourself:
+
 ```bash
 python3 scripts/test_swarm_controller.py
 ```
@@ -6451,6 +6670,7 @@ SwarmController (Main Orchestrator)
 ## State & Logging
 
 ### `.claude/swarm_state.json`
+
 JSON snapshot of all agent metrics (updated each cycle).
 
 ```json
@@ -6466,6 +6686,7 @@ JSON snapshot of all agent metrics (updated each cycle).
 ```
 
 ### `.claude/swarm_controller.log`
+
 Detailed log of all decisions.
 
 ```
@@ -6510,6 +6731,7 @@ No hardcoded values - fully customizable.
 ## Production Ready?
 
 Yes! This implementation includes:
+
 - [x] Comprehensive error handling
 - [x] State persistence
 - [x] Detailed logging
@@ -6527,6 +6749,7 @@ Yes! This implementation includes:
 ## Questions?
 
 See the relevant guide:
+
 - **How do I use it?** → `docs/guides/SWARM_CONTROLLER_USAGE.md`
 - **How do I integrate?** → `docs/guides/SWARM_INTEGRATION_GUIDE.md`
 - **What did you build?** → `SWARM_CONTROLLER_DELIVERABLES.md`
@@ -6538,7 +6761,6 @@ See the relevant guide:
 **Status**: ✓ COMPLETE AND PRODUCTION READY
 
 Implemented, tested, documented, and ready for deployment.
-
 
 ---
 

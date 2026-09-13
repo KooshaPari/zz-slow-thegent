@@ -14,7 +14,7 @@ Runs Cursor models via cursor-api (wisdgod) - OpenAI-compatible HTTP backend.
 
 ### Methods
 
-#### CursorApiRunner.__init__
+#### CursorApiRunner.**init**
 
 ```python
 __init__(self: Any, settings: Any, model: str)

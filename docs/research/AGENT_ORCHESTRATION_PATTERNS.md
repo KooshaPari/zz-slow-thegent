@@ -59,6 +59,7 @@ result = compiled.invoke({"query": "What is 2+2?"})
 ```
 
 **Tradeoffs:**
+
 - ✅ Deterministic, composable, easy to debug
 - ✅ Natural for reasoning chains (chain-of-thought)
 - ❌ Slower for independent tasks
@@ -105,6 +106,7 @@ for result in results:
 ```
 
 **Tradeoffs:**
+
 - ✅ Exploits independent parallelism
 - ✅ Fast for embarrassingly parallel problems
 - ❌ Harder to coordinate results
@@ -192,6 +194,7 @@ async def example():
 ```
 
 **Tradeoffs:**
+
 - ✅ Optimal: runs only necessary parallelism
 - ✅ Works for complex workflows
 - ❌ Requires explicit dependency specification
@@ -280,6 +283,7 @@ class LoadBalancer:
 ```
 
 **Tradeoffs:**
+
 - ✅ Prevents worker starvation
 - ✅ Better throughput than static assignment
 - ❌ Adds coordination overhead
@@ -524,6 +528,7 @@ class DynamicAgentOrchestrator:
 ```
 
 **Tradeoffs:**
+
 - ✅ Reduces agent creation overhead
 - ✅ Amortizes LLM API calls
 - ❌ Requires careful state reset to avoid context leakage
@@ -659,7 +664,7 @@ context = manager.get_context()
 
 **Multi-level context: Summary → Detail**
 
-```python
+````python
 from typing import Optional
 
 
@@ -705,7 +710,7 @@ class HierarchicalContextManager:
         if len(self.get_context(new_level).split()) > self.max_tokens:
             return self.switch_level(new_level - 1)
         return self.get_context(new_level)
-```
+````
 
 ---
 
@@ -1518,6 +1523,7 @@ result2 = await batcher.add_request({"query": "What is 3+3?"})
 ### 4.4 Resource Pooling
 
 Already covered in **Agent Pooling** section. Key patterns:
+
 - Connection pools (reuse HTTP connections)
 - Object pools (avoid allocation overhead)
 - Thread pools (for I/O operations)
@@ -2256,38 +2262,41 @@ class FallbackRouter:
 
 ## Summary: Pattern Selection Guide
 
-| Problem | Best Pattern | Why |
-|---------|-------------|-----|
-| Task dependencies | DAG Orchestration | Optimal parallelism |
-| Many independent tasks | Work Stealing | Prevents starvation |
-| Tight agent coupling | Shared State | Low latency |
-| Loose agent coupling | Event Bus | Decoupled, scalable |
-| Long documents | Sliding Window | Memory efficient |
-| Chat applications | Multi-turn Manager | Conversation history |
-| High cost sensitivity | Semantic Cache | 80%+ hit rate possible |
-| Latency critical | Prompt Cache | Instant hits |
-| Fast inference | Speculative Decoding | 2-3x speedup |
-| Variable load | Dynamic Spawning | Cost effective |
-| Quality-cost tradeoff | Cost-based Routing | Optimal choices |
-| Complex queries | Specialist Routing | Expert answers |
-| Reliability critical | Fallback Chain | Graceful degradation |
+| Problem                | Best Pattern         | Why                    |
+| ---------------------- | -------------------- | ---------------------- |
+| Task dependencies      | DAG Orchestration    | Optimal parallelism    |
+| Many independent tasks | Work Stealing        | Prevents starvation    |
+| Tight agent coupling   | Shared State         | Low latency            |
+| Loose agent coupling   | Event Bus            | Decoupled, scalable    |
+| Long documents         | Sliding Window       | Memory efficient       |
+| Chat applications      | Multi-turn Manager   | Conversation history   |
+| High cost sensitivity  | Semantic Cache       | 80%+ hit rate possible |
+| Latency critical       | Prompt Cache         | Instant hits           |
+| Fast inference         | Speculative Decoding | 2-3x speedup           |
+| Variable load          | Dynamic Spawning     | Cost effective         |
+| Quality-cost tradeoff  | Cost-based Routing   | Optimal choices        |
+| Complex queries        | Specialist Routing   | Expert answers         |
+| Reliability critical   | Fallback Chain       | Graceful degradation   |
 
 ---
 
 ## Key Research References
 
 **Academic Papers:**
+
 - **AgentConductor** (arXiv:2602.17100) - RL-optimized topology selection
 - **AdaptOrch** (arXiv:2602.16873) - Dynamic canonical topologies
 - **ThunderAgent** (arXiv:2602.13692) - 1.5-3.6x throughput improvements
 - **Agent Communication Protocol** (arXiv:2602.15055) - Federated agent coordination
 
 **Frameworks:**
+
 - LangGraph - Graph-based orchestration with stateful execution
 - AutoGen - Message-passing multi-agent architecture
 - LangChain - Streaming and component architecture
 
 **Optimization Techniques:**
+
 - Prompt Caching (Claude, OpenAI) - 85%+ cache hit rates
 - Semantic Caching - 60-80% hit rates with similarity matching
 - Speculative Decoding - 2-3x latency reduction

@@ -12,23 +12,23 @@ description: Temporal roadmap, milestone tracking, and retrospective analysis
 **Target**: Feb 2026
 **Focus**: Translation fixes & Provider parity
 
-| Feature | Status | Owner |
-|---------|--------|-------|
-| Function name sanitization | ✅ Done | KooshaPari |
-| Context management stripping | ✅ Done | KooshaPari |
-| Codex 429 handling | 🔄 In Progress | - |
-| Gemini 3.1 support | ✅ Done | - |
+| Feature                      | Status         | Owner      |
+| ---------------------------- | -------------- | ---------- |
+| Function name sanitization   | ✅ Done        | KooshaPari |
+| Context management stripping | ✅ Done        | KooshaPari |
+| Codex 429 handling           | 🔄 In Progress | -          |
+| Gemini 3.1 support           | ✅ Done        | -          |
 
 ### v6.8 (Jan 2026)
 
 **Released**: Jan 2026
 **Focus**: OAuth & Auth improvements
 
-| Feature | Status | Date |
-|---------|--------|------|
-| Qwen OAuth fix | ✅ Done | Jan 28 |
-| Claude OAuth refresh | ✅ Done | Jan 25 |
-| Token caching | ✅ Done | Jan 20 |
+| Feature               | Status  | Date   |
+| --------------------- | ------- | ------ |
+| Qwen OAuth fix        | ✅ Done | Jan 28 |
+| Claude OAuth refresh  | ✅ Done | Jan 25 |
+| Token caching         | ✅ Done | Jan 20 |
 | Multi-account routing | ✅ Done | Jan 15 |
 
 ### v6.7 (Dec 2025)
@@ -36,12 +36,12 @@ description: Temporal roadmap, milestone tracking, and retrospective analysis
 **Released**: Dec 2025
 **Focus**: Stability & Performance
 
-| Feature | Status | Date |
-|---------|--------|------|
+| Feature            | Status  | Date   |
+| ------------------ | ------- | ------ |
 | Response streaming | ✅ Done | Dec 18 |
-| Error handling | ✅ Done | Dec 15 |
-| Rate limiting | ✅ Done | Dec 10 |
-| Cache improvements | ✅ Done | Dec 5 |
+| Error handling     | ✅ Done | Dec 15 |
+| Rate limiting      | ✅ Done | Dec 10 |
+| Cache improvements | ✅ Done | Dec 5  |
 
 ## Velocity Chart
 
@@ -96,11 +96,11 @@ Current (Feb 22):   ████ 45 ✓ Target: 40
 
 ### Action Items
 
-| Item | Owner | Due |
-|------|-------|-----|
-| Add integration test suite | KooshaPari | Mar 1 |
-| Document OAuth flow | kooshapari | Mar 7 |
-| Automate issue triage | - | Mar 14 |
+| Item                        | Owner       | Due    |
+| --------------------------- | ----------- | ------ |
+| Add integration test suite  | KooshaPari  | Mar 1  |
+| Document OAuth flow         | kooshapari  | Mar 7  |
+| Automate issue triage       | -           | Mar 14 |
 | Review process improvements | maintainers | Mar 15 |
 
 ## Upcoming Features
@@ -120,13 +120,13 @@ Current (Feb 22):   ████ 45 ✓ Target: 40
 
 ## Issue Aging
 
-| Age Range | Count | % |
-|----------|-------|---|
-| < 1 week | 45 | 28% |
-| 1-2 weeks | 35 | 22% |
-| 2-4 weeks | 40 | 25% |
-| 1-3 months | 25 | 15% |
-| > 3 months | 15 | 10% |
+| Age Range  | Count | %   |
+| ---------- | ----- | --- |
+| < 1 week   | 45    | 28% |
+| 1-2 weeks  | 35    | 22% |
+| 2-4 weeks  | 40    | 25% |
+| 1-3 months | 25    | 15% |
+| > 3 months | 15    | 10% |
 
 ## Dependencies
 
@@ -145,10 +145,10 @@ Cache ─────► Router ────► Executor
 ## Release Cadence
 
 | Release | Frequency | Duration | Issues |
-|---------|-----------|----------|---------|
-| Patch | As needed | 1-2 days | 1-5 |
-| Minor | Bi-weekly | 1 week | 10-20 |
-| Major | Monthly | 2 weeks | 30+ |
+| ------- | --------- | -------- | ------ |
+| Patch   | As needed | 1-2 days | 1-5    |
+| Minor   | Bi-weekly | 1 week   | 10-20  |
+| Major   | Monthly   | 2 weeks  | 30+    |
 
 ## Links
 

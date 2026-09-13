@@ -14,7 +14,7 @@ Smart merge coordination using Mergiraf and structural aware merges.
 
 ### Methods
 
-#### SmartMerger.__init__
+#### SmartMerger.**init**
 
 ```python
 __init__(self: Any, mergiraf_path: str)

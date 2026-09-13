@@ -71,12 +71,12 @@ production_trust_violation(input) { ... }
 
 ## 5. Implementation Phases
 
-| Phase | Deliverable | Effort |
-|-------|-------------|--------|
-| P1 | Document PolicyEngine as Phase 1 PDP; OPA as Phase 2 option | Done (this doc) |
-| P2 | Add `THGENT_OPA_URL` config; optional OPA client in PolicyEngine | 2–3 days |
-| P3 | Ship default Rego policies; CI policy tests | 3–4 days |
-| P4 | Migrate all PolicyEngine rules to Rego; deprecate Python policies | 5–7 days |
+| Phase | Deliverable                                                       | Effort          |
+| ----- | ----------------------------------------------------------------- | --------------- |
+| P1    | Document PolicyEngine as Phase 1 PDP; OPA as Phase 2 option       | Done (this doc) |
+| P2    | Add `THGENT_OPA_URL` config; optional OPA client in PolicyEngine  | 2–3 days        |
+| P3    | Ship default Rego policies; CI policy tests                       | 3–4 days        |
+| P4    | Migrate all PolicyEngine rules to Rego; deprecate Python policies | 5–7 days        |
 
 ---
 
@@ -85,9 +85,9 @@ production_trust_violation(input) { ... }
 ```yaml
 # config.example.yaml
 governance:
-  opa_url: ""  # e.g. http://localhost:8181
+  opa_url: "" # e.g. http://localhost:8181
   opa_timeout_ms: 500
-  opa_fallback_allow: false  # If OPA unreachable, allow or deny?
+  opa_fallback_allow: false # If OPA unreachable, allow or deny?
 ```
 
 ---

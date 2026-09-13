@@ -47,6 +47,7 @@ _log.info(
 ### Configuration
 
 Override TTL is configurable via:
+
 - `THGENT_OVERRIDE_TTL_SECONDS` environment variable
 - Default: 24 hours (86400 seconds)
 - Documented in `src/thegent/config.py` (line 415)
@@ -54,6 +55,7 @@ Override TTL is configurable via:
 ## Usage
 
 The expired event is automatically emitted when:
+
 1. An override is checked via `OverrideManager.has_unexpired()`
 2. The override's `expires_at` timestamp has passed
 3. The override file is cleaned up

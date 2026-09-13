@@ -12,7 +12,7 @@ Content tabs component.
 
 ### Methods
 
-#### ContentTabs.__init__
+#### ContentTabs.**init**
 
 ```python
 __init__(self: Any)

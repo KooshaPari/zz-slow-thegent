@@ -15,6 +15,7 @@ The ${project} project emerged from a need to address complex technical challeng
 ### Problem Statement
 
 Modern software systems face an unprecedented combination of challenges:
+
 - **Complexity Management**: Systems must handle increasingly complex business logic while remaining understandable and maintainable
 - **Scalability Requirements**: Solutions must scale horizontally to meet growing demand without architectural redesign
 - **Integration Demands**: Components must integrate seamlessly with existing infrastructure and third-party services
@@ -160,6 +161,7 @@ We have decided to adopt a **layered modular architecture** with the following c
 ### Technology Stack
 
 The architectural decisions are supported by the following technology choices (detailed in subsequent ADRs):
+
 - Implementation language and runtime
 - Framework and library selections
 - Data persistence strategy
@@ -179,9 +181,9 @@ The architectural decisions are supported by the following technology choices (d
 
 ## References
 
-1. Evans, Eric. *Domain-Driven Design: Tackling Complexity in the Heart of Software*. Addison-Wesley, 2003.
-2. Martin, Robert C. *Clean Architecture: A Craftsman's Guide to Software Structure and Design*. Prentice Hall, 2017.
-3. Richards, Mark. *Software Architecture Patterns*. O'Reilly Media, 2015.
+1. Evans, Eric. _Domain-Driven Design: Tackling Complexity in the Heart of Software_. Addison-Wesley, 2003.
+2. Martin, Robert C. _Clean Architecture: A Craftsman's Guide to Software Structure and Design_. Prentice Hall, 2017.
+3. Richards, Mark. _Software Architecture Patterns_. O'Reilly Media, 2015.
 4. [The Twelve-Factor App](https://12factor.net/)
 5. [C4 Model for Software Architecture](https://c4model.com/)
 
@@ -189,11 +191,10 @@ The architectural decisions are supported by the following technology choices (d
 
 ## Changelog
 
-| Date | Change | Author |
-|------|--------|--------|
-| $(date +%Y-%m-%d) | Initial draft | Architecture Team |
-| $(date +%Y-%m-%d) | Accepted by team consensus | Tech Lead |
-
+| Date              | Change                     | Author            |
+| ----------------- | -------------------------- | ----------------- |
+| $(date +%Y-%m-%d) | Initial draft              | Architecture Team |
+| $(date +%Y-%m-%d) | Accepted by team consensus | Tech Lead         |
 
 ## Additional Implementation Considerations
 
@@ -242,13 +243,13 @@ Clear documentation ensures the architecture is maintainable:
 
 The success of this architectural decision will be measured against the following criteria:
 
-| Criterion | Target | Measurement Method |
-|-----------|--------|-------------------|
-| Performance | Meet defined SLAs | Continuous benchmarking |
-| Reliability | 99.9% availability | Uptime monitoring |
-| Maintainability | < 4 hours MTTR | Incident analysis |
-| Developer Velocity | Onboard in < 2 days | Developer feedback |
-| Cost Efficiency | Within budget | Resource utilization metrics |
+| Criterion          | Target              | Measurement Method           |
+| ------------------ | ------------------- | ---------------------------- |
+| Performance        | Meet defined SLAs   | Continuous benchmarking      |
+| Reliability        | 99.9% availability  | Uptime monitoring            |
+| Maintainability    | < 4 hours MTTR      | Incident analysis            |
+| Developer Velocity | Onboard in < 2 days | Developer feedback           |
+| Cost Efficiency    | Within budget       | Resource utilization metrics |
 
 ## Future Considerations
 

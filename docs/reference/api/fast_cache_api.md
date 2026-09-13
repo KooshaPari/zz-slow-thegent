@@ -5,11 +5,13 @@
 Multi-tier caching system for optimal performance.
 
 This module provides a high-performance multi-tier caching system:
+
 - L1: cachetools TTLCache (fastest, automatic TTL, smallest)
 - L2: cachetools LRUCache (medium-term, configurable size)
 - L3: diskcache (persistent, survives restarts)
 
 Performance improvements:
+
 - Multi-tier caching reduces memory pressure
 - Persistent caching survives restarts
 - Automatic tier promotion/demotion
@@ -23,13 +25,14 @@ Performance improvements:
 Multi-tier caching system with automatic tier management.
 
 Tiers:
+
 1. L1: In-memory dict (fastest, smallest, volatile)
 2. L2: cachetools LRUCache (medium-term, configurable size)
 3. L3: diskcache (persistent, survives restarts)
 
 ### Methods
 
-#### MultiTierCache.__init__
+#### MultiTierCache.**init**
 
 ```python
 __init__(self: Any, l1_size: int, l2_size: int, l3_path: Any, default_ttl: Any)

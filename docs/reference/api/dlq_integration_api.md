@@ -12,7 +12,7 @@ Integration between governance escalation queue and DLQ.
 
 ### Methods
 
-#### GovernanceDLQIntegration.__init__
+#### GovernanceDLQIntegration.**init**
 
 ```python
 __init__(self: Any)

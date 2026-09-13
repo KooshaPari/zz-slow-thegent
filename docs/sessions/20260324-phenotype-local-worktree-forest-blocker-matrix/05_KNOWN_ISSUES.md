@@ -18,11 +18,13 @@
 ## Blocked Forest Registry
 
 ### Critical: Dirty-Root Blockers
+
 - **`heliosApp`**: 353 dirty paths; all expanded child lanes are dirty/divergent (No-Prune).
 - **`heliosCLI`**: 96 dirty paths; heavily divergent root state.
 - **`AgilePlus`**: 535 dirty paths; major forest noise.
 
 ### Operational: Layout and State Blockers
+
 - **`cliproxy-wtress`**: Typo duplicate of `cliproxy-wtrees` (Must-Normalize).
 - **`portage`**: Stale prunable worktrees and detached legacy lanes (Cleanup-Ready).
 - **`trace`**: Locked initializing lanes (`codex-required-gates*`) block migration (Unlock-Required).
@@ -30,13 +32,14 @@
 - **`ralph-codex-loop`**: Unborn/Initializing (`HEAD` is all zeros).
 
 ### Structural: Mixed-Layout Blockers
+
 - **`AgilePlus`, `phenotype-shared`, `phenotypeActions`**: Mixed canonical + legacy layouts prevent stable forest governance.
 - **`phenotypeActions` (2026-03-24):** `git status` fails with **`expected submodule path 'PROJECT-wtrees/add-lint-test-action' not to be a symbolic link`** — repair submodule/symlink layout before any merge or worktree ops.
 - **`heliosApp` (2026-03-24):** Extensive type errors (200+) in `apps/desktop` and `apps/runtime` (missing modules/types, `InMemoryLocalBus` vs `LocalBus` mismatches, Bun API `spawnSync/file/Glob` missing).
 
 ### Missing / non-repo paths
+
 - **`ralph-codex-loop`:** Decided **archive** (2026-03-24); already in `.archive/ralph-codex-loop`.
 - **`template-commons-wtrees`:** Directory present but **not a git repo** — confirm whether it should be a hub, symlink, or removed.
 - **`heliosApp`**: Missing `CONTRIBUTING.md` and disk space runbook (2026-03-24).
 - **`portage`**: No cron schedule for `/private/tmp` cleanup found.
-

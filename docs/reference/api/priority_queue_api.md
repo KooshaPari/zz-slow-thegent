@@ -27,17 +27,17 @@ from_lane(cls: Any, run_id: str, lane_name: str, metadata: Any)
 
 Create a QueuedRun with priority_score derived from the lane model.
 
-Uses ``LaneModel.get_priority`` so the score matches the canonical lane
-ordering defined in ``lanes.py``.
+Uses `LaneModel.get_priority` so the score matches the canonical lane
+ordering defined in `lanes.py`.
 
 **Parameters**:
 
 - `run_id`: Unique identifier for this run.
 - `lane_name`: One of "critical", "standard", "recovery", "background",
-or any lane name understood by LaneModel.
+  or any lane name understood by LaneModel.
 - `metadata`: Optional caller-supplied key/value pairs.
 
-**Returns**: A ``QueuedRun`` with ``priority_score`` set from the lane model.
+**Returns**: A `QueuedRun` with `priority_score` set from the lane model.
 
 ---
 
@@ -47,16 +47,16 @@ or any lane name understood by LaneModel.
 
 Thread-safe priority queue for swarm run scheduling.
 
-Runs are ordered by ``priority_score`` ascending (lower score = dispatched
+Runs are ordered by `priority_score` ascending (lower score = dispatched
 first). Within the same score, FIFO order is preserved via an internal
 sequence counter.
 
-The interface mirrors ``queue.PriorityQueue`` / ``queue.Queue`` so callers
+The interface mirrors `queue.PriorityQueue` / `queue.Queue` so callers
 can swap without restructuring code.
 
 ### Methods
 
-#### RunPriorityQueue.__init__
+#### RunPriorityQueue.**init**
 
 ```python
 __init__(self: Any)
@@ -70,16 +70,16 @@ __init__(self: Any)
 cancel(self: Any, run_id: str)
 ```
 
-Remove the run with *run_id* from the queue.
+Remove the run with _run_id_ from the queue.
 
 Because the underlying data structure is a heap, this requires a linear
-scan followed by a heap rebuild (O(n)).  Use sparingly on hot paths.
+scan followed by a heap rebuild (O(n)). Use sparingly on hot paths.
 
 **Parameters**:
 
-- `run_id`: The ``run_id`` of the ``QueuedRun`` to remove.
+- `run_id`: The `run_id` of the `QueuedRun` to remove.
 
-**Returns**: ``True`` if a matching run was found and removed, ``False``
+**Returns**: `True` if a matching run was found and removed, `False`
 otherwise.
 
 ---
@@ -92,7 +92,7 @@ drain(self: Any)
 
 Remove and return all items in priority order.
 
-**Returns**: A list of all ``QueuedRun`` items sorted by priority (lowest score
+**Returns**: A list of all `QueuedRun` items sorted by priority (lowest score
 first), with FIFO ordering within the same score.
 
 ---
@@ -103,7 +103,7 @@ first), with FIFO ordering within the same score.
 empty(self: Any)
 ```
 
-Return ``True`` if the queue is empty.
+Return `True` if the queue is empty.
 
 ---
 
@@ -113,9 +113,9 @@ Return ``True`` if the queue is empty.
 full(self: Any)
 ```
 
-Return ``True`` if the queue is at ``maxsize``.
+Return `True` if the queue is at `maxsize`.
 
-Always returns ``False`` when ``maxsize`` is ``0`` (unbounded).
+Always returns `False` when `maxsize` is `0` (unbounded).
 
 ---
 
@@ -127,15 +127,15 @@ get(self: Any, block: bool, timeout: Any)
 
 Dequeue and return the highest-priority run (lowest score).
 
-Within the same ``priority_score``, items are returned in FIFO order.
+Within the same `priority_score`, items are returned in FIFO order.
 
 **Parameters**:
 
-- `block`: If ``True`` (default), block until an item is available.
-- `timeout`: Maximum seconds to wait when ``block=True`` and the queue
-is empty.  ``None`` means wait indefinitely.
+- `block`: If `True` (default), block until an item is available.
+- `timeout`: Maximum seconds to wait when `block=True` and the queue
+  is empty. `None` means wait indefinitely.
 
-**Returns**: The next ``QueuedRun`` in priority order.
+**Returns**: The next `QueuedRun` in priority order.
 
 ---
 
@@ -155,7 +155,7 @@ Dequeue and return the highest-priority run without blocking.
 peek(self: Any)
 ```
 
-Return the next item without removing it, or ``None`` if empty.
+Return the next item without removing it, or `None` if empty.
 
 ---
 
@@ -165,14 +165,14 @@ Return the next item without removing it, or ``None`` if empty.
 put(self: Any, run: QueuedRun, block: bool, timeout: Any)
 ```
 
-Enqueue *run*, blocking if the queue is full and ``block=True``.
+Enqueue _run_, blocking if the queue is full and `block=True`.
 
 **Parameters**:
 
 - `run`: The run item to enqueue.
-- `block`: If ``True`` (default), block until space is available.
-- `timeout`: Maximum seconds to wait when ``block=True`` and the queue
-is full.  ``None`` means wait indefinitely.
+- `block`: If `True` (default), block until space is available.
+- `timeout`: Maximum seconds to wait when `block=True` and the queue
+  is full. `None` means wait indefinitely.
 
 ---
 
@@ -182,7 +182,7 @@ is full.  ``None`` means wait indefinitely.
 put_nowait(self: Any, run: QueuedRun)
 ```
 
-Enqueue *run* without blocking.
+Enqueue _run_ without blocking.
 
 ---
 
@@ -204,16 +204,16 @@ Return the approximate number of items in the queue.
 cancel(self: Any, run_id: str)
 ```
 
-Remove the run with *run_id* from the queue.
+Remove the run with _run_id_ from the queue.
 
 Because the underlying data structure is a heap, this requires a linear
-scan followed by a heap rebuild (O(n)).  Use sparingly on hot paths.
+scan followed by a heap rebuild (O(n)). Use sparingly on hot paths.
 
 **Parameters**:
 
-- `run_id`: The ``run_id`` of the ``QueuedRun`` to remove.
+- `run_id`: The `run_id` of the `QueuedRun` to remove.
 
-**Returns**: ``True`` if a matching run was found and removed, ``False``
+**Returns**: `True` if a matching run was found and removed, `False`
 otherwise.
 
 ---
@@ -226,7 +226,7 @@ drain(self: Any)
 
 Remove and return all items in priority order.
 
-**Returns**: A list of all ``QueuedRun`` items sorted by priority (lowest score
+**Returns**: A list of all `QueuedRun` items sorted by priority (lowest score
 first), with FIFO ordering within the same score.
 
 ---
@@ -237,7 +237,7 @@ first), with FIFO ordering within the same score.
 empty(self: Any)
 ```
 
-Return ``True`` if the queue is empty.
+Return `True` if the queue is empty.
 
 ---
 
@@ -249,17 +249,17 @@ from_lane(cls: Any, run_id: str, lane_name: str, metadata: Any)
 
 Create a QueuedRun with priority_score derived from the lane model.
 
-Uses ``LaneModel.get_priority`` so the score matches the canonical lane
-ordering defined in ``lanes.py``.
+Uses `LaneModel.get_priority` so the score matches the canonical lane
+ordering defined in `lanes.py`.
 
 **Parameters**:
 
 - `run_id`: Unique identifier for this run.
 - `lane_name`: One of "critical", "standard", "recovery", "background",
-or any lane name understood by LaneModel.
+  or any lane name understood by LaneModel.
 - `metadata`: Optional caller-supplied key/value pairs.
 
-**Returns**: A ``QueuedRun`` with ``priority_score`` set from the lane model.
+**Returns**: A `QueuedRun` with `priority_score` set from the lane model.
 
 ---
 
@@ -269,9 +269,9 @@ or any lane name understood by LaneModel.
 full(self: Any)
 ```
 
-Return ``True`` if the queue is at ``maxsize``.
+Return `True` if the queue is at `maxsize`.
 
-Always returns ``False`` when ``maxsize`` is ``0`` (unbounded).
+Always returns `False` when `maxsize` is `0` (unbounded).
 
 ---
 
@@ -283,20 +283,20 @@ get(self: Any, block: bool, timeout: Any)
 
 Dequeue and return the highest-priority run (lowest score).
 
-Within the same ``priority_score``, items are returned in FIFO order.
+Within the same `priority_score`, items are returned in FIFO order.
 
 **Parameters**:
 
-- `block`: If ``True`` (default), block until an item is available.
-- `timeout`: Maximum seconds to wait when ``block=True`` and the queue
-is empty.  ``None`` means wait indefinitely.
+- `block`: If `True` (default), block until an item is available.
+- `timeout`: Maximum seconds to wait when `block=True` and the queue
+  is empty. `None` means wait indefinitely.
 
-**Returns**: The next ``QueuedRun`` in priority order.
+**Returns**: The next `QueuedRun` in priority order.
 
 **Raises**:
 
-- `Empty`: If ``block=False`` (or timeout expires) and the queue is
-empty.
+- `Empty`: If `block=False` (or timeout expires) and the queue is
+  empty.
 
 ---
 
@@ -320,13 +320,13 @@ Dequeue and return the highest-priority run without blocking.
 make_priority_queue(maxsize: int)
 ```
 
-Factory function for ``RunPriorityQueue``.
+Factory function for `RunPriorityQueue`.
 
 **Parameters**:
 
-- `maxsize`: Maximum queue capacity.  ``0`` means unbounded.
+- `maxsize`: Maximum queue capacity. `0` means unbounded.
 
-**Returns**: A new ``RunPriorityQueue`` instance.
+**Returns**: A new `RunPriorityQueue` instance.
 
 ---
 
@@ -336,7 +336,7 @@ Factory function for ``RunPriorityQueue``.
 peek(self: Any)
 ```
 
-Return the next item without removing it, or ``None`` if empty.
+Return the next item without removing it, or `None` if empty.
 
 ---
 
@@ -346,18 +346,18 @@ Return the next item without removing it, or ``None`` if empty.
 put(self: Any, run: QueuedRun, block: bool, timeout: Any)
 ```
 
-Enqueue *run*, blocking if the queue is full and ``block=True``.
+Enqueue _run_, blocking if the queue is full and `block=True`.
 
 **Parameters**:
 
 - `run`: The run item to enqueue.
-- `block`: If ``True`` (default), block until space is available.
-- `timeout`: Maximum seconds to wait when ``block=True`` and the queue
-is full.  ``None`` means wait indefinitely.
+- `block`: If `True` (default), block until space is available.
+- `timeout`: Maximum seconds to wait when `block=True` and the queue
+  is full. `None` means wait indefinitely.
 
 **Raises**:
 
-- `Full`: If ``block=False`` (or timeout expires) and the queue is full.
+- `Full`: If `block=False` (or timeout expires) and the queue is full.
 
 ---
 
@@ -367,11 +367,11 @@ is full.  ``None`` means wait indefinitely.
 put_nowait(self: Any, run: QueuedRun)
 ```
 
-Enqueue *run* without blocking.
+Enqueue _run_ without blocking.
 
 **Raises**:
 
-- `Full`: If the queue is full (only when ``maxsize &gt; 0``).
+- `Full`: If the queue is full (only when `maxsize &gt; 0`).
 
 ---
 

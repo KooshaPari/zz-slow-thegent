@@ -3,6 +3,7 @@
 
 > **Status**: Complete | **Version**: 1.0 | **Date**: 2026-02-16
 > **Related**:
+>
 > - [Idea Seed Expansion Complete](./idea-seeds/IDEA_SEED_EXPANSION_COMPLETE.md)
 > - [Idea Seeds Session Storage](./IDEA_SEEDS_SESSION_STORAGE.md)
 > - [Prompt History Collection Plan](../plans/PROMPT_HISTORY_COLLECTION_AND_AUDIT_SYSTEM.md)
@@ -43,8 +44,8 @@ This document provides a comprehensive review of all idea-seed files, consolidat
 
 ### 2.1 Seed Files
 
-| File | Timestamp | Session ID | Content | Status |
-|------|-----------|------------|---------|--------|
+| File                                    | Timestamp            | Session ID                           | Content                    | Status       |
+| --------------------------------------- | -------------------- | ------------------------------------ | -------------------------- | ------------ |
 | `seed_cursor_20260216T103017Z_*_199.md` | 2026-02-16 10:30:17Z | 87c98b2e-9c87-459c-919e-1430c46c5b5b | Idea seed detection system | ✅ Duplicate |
 | `seed_cursor_20260216T103017Z_*_201.md` | 2026-02-16 10:30:17Z | 87c98b2e-9c87-459c-919e-1430c46c5b5b | Idea seed detection system | ✅ Duplicate |
 | `seed_cursor_20260216T103237Z_*_199.md` | 2026-02-16 10:32:37Z | 87c98b2e-9c87-459c-919e-1430c46c5b5b | Idea seed detection system | ✅ Duplicate |
@@ -53,11 +54,13 @@ This document provides a comprehensive review of all idea-seed files, consolidat
 ### 2.2 Seed Content
 
 **Original Request** (all 4 files identical):
+
 ```
 configure a system to detect and save my exact idea prompts when $idea flag is present in user prompts, exact prompts get saved to research to help ground as "seeds" need to be able to take from my claude code \ codex sessions (they are stored, but clear after 2 weeks so must check on change and addition of a new user entry? find where they are, research web if needed and learn schema to properly parse
 ```
 
 **Key Requirements**:
+
 1. Detect `$idea` flag in user prompts
 2. Save exact prompts to research as "seeds"
 3. Extract from Claude Code / Codex sessions
@@ -72,12 +75,14 @@ configure a system to detect and save my exact idea prompts when $idea flag is p
 ### 3.1 Duplicate Detection
 
 **Analysis**:
+
 - All 4 files contain identical content
 - Same session ID (87c98b2e-9c87-459c-919e-1430c46c5b5b)
 - Same timestamp window (within 2 minutes)
 - Same user query text
 
 **Conclusion**: All 4 seeds are duplicates, likely from:
+
 - Multiple captures of the same conversation
 - Different message IDs (199, 201) from same session
 - System capturing both user query and follow-up
@@ -89,6 +94,7 @@ configure a system to detect and save my exact idea prompts when $idea flag is p
 **Consolidation Document**: `docs/research/idea-seeds/IDEA_SEED_EXPANSION_COMPLETE.md`
 
 **Expansion References**:
+
 - [IDEA_SEED_SYSTEM_IMPLEMENTATION.md](../plans/IDEA_SEED_SYSTEM_IMPLEMENTATION.md) (if exists)
 - [CONVERSATION_DUMP_2026-02-16_EXPANDED.md](./CONVERSATION_DUMP_2026-02-16_EXPANDED.md#4-idea-seed-system)
 - [PROMPT_HISTORY_COLLECTION_AND_AUDIT_SYSTEM.md](../plans/PROMPT_HISTORY_COLLECTION_AND_AUDIT_SYSTEM.md)
@@ -106,6 +112,7 @@ configure a system to detect and save my exact idea prompts when $idea flag is p
 **Work Item**: `research-idea-seed-system`
 
 **BACKLOG Item**:
+
 - **ID**: `research-idea-seed-system`
 - **Title**: Idea seed detection & storage system
 - **Source**: `docs/research/idea-seeds/seed_cursor_20260216T103017Z_*_199.md`
@@ -127,6 +134,7 @@ configure a system to detect and save my exact idea prompts when $idea flag is p
 **Recommendation**: Archive all 4 original seed files
 
 **Rationale**:
+
 1. ✅ Already consolidated in `IDEA_SEED_EXPANSION_COMPLETE.md`
 2. ✅ Already expanded into full implementation plan
 3. ✅ All are duplicates (no unique content)
@@ -136,6 +144,7 @@ configure a system to detect and save my exact idea prompts when $idea flag is p
 **Archive Location**: `docs/research/idea-seeds/archive/`
 
 **Action**:
+
 - [ ] Move 4 seed files to `archive/` directory
 - [ ] Update `IDEA_SEED_EXPANSION_COMPLETE.md` to reference archive location
 - [ ] Add note in expansion document about archive
@@ -145,6 +154,7 @@ configure a system to detect and save my exact idea prompts when $idea flag is p
 **Recommendation**: Keep `IDEA_SEED_EXPANSION_COMPLETE.md` as master reference
 
 **Rationale**:
+
 1. ✅ Provides consolidated view of all seeds
 2. ✅ Links to expanded implementation plans
 3. ✅ Documents consolidation process
@@ -155,6 +165,7 @@ configure a system to detect and save my exact idea prompts when $idea flag is p
 **Current Status**: Idea expanded, implementation plan created
 
 **Next Steps**:
+
 1. ✅ Review implementation plan
 2. ⏳ Implement idea seed detection system
 3. ⏳ Add to WORK_STREAM BACKLOG
@@ -230,7 +241,7 @@ docs/research/idea-seeds/
 
 ---
 
-*Generated: 2026-02-16 | Version: 1.0 | Status: Complete*
+_Generated: 2026-02-16 | Version: 1.0 | Status: Complete_
 
 ---
 
@@ -240,15 +251,18 @@ docs/research/idea-seeds/
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

@@ -20,6 +20,7 @@ This document analyzes work streams, features, and research plans across **8 act
 8. **usage** - AI usage tracking (migration in progress)
 
 **Key Finding**: Projects demonstrate **mature patterns** that can be borrowed:
+
 - **heliosShield's P0-P4 priority system** → Adopt across all projects
 - **thegent's unified work stream** → Template for others
 - **smolgents' cost optimization patterns** → Apply to other agent systems
@@ -34,12 +35,14 @@ This document analyzes work streams, features, and research plans across **8 act
 **File**: `docs/reference/WORK_STREAM.md`
 
 **Structure**:
+
 - **BACKLOG** - Not started items with priority (P1-P2)
 - **CLAIMED** - Active work with agent ID and timestamp
 - **COMPLETED** - Finished items with completion date
 - **Research Docs Extended** - Batch tracking
 
 **Key Features**:
+
 - ✅ Agent-based claiming system
 - ✅ Dependency tracking (`Depends` column)
 - ✅ Source file references
@@ -47,12 +50,14 @@ This document analyzes work streams, features, and research plans across **8 act
 - ✅ Auto-incorporation workflow
 
 **Strengths**:
+
 - Most comprehensive tracking
 - Clear agent accountability
 - Research integration
 - Dependency management
 
 **Borrowable**:
+
 - Agent claiming pattern
 - Research doc integration
 - Dependency tracking format
@@ -64,6 +69,7 @@ This document analyzes work streams, features, and research plans across **8 act
 **File**: `docs/unified/BACKLOG.md`
 
 **Structure**:
+
 - **P0: Blockers** - Critical path items
 - **P1: Features** - High-value features (1 sprint SLA)
 - **P2: Polish** - Quality improvements (2 sprint SLA)
@@ -72,6 +78,7 @@ This document analyzes work streams, features, and research plans across **8 act
 - **Recently Completed** - Last 30 days
 
 **Key Features**:
+
 - ✅ SLA-based priority system
 - ✅ Module categorization
 - ✅ Dependency tracking
@@ -80,12 +87,14 @@ This document analyzes work streams, features, and research plans across **8 act
 - ✅ Metrics summary
 
 **Strengths**:
+
 - Clear priority definitions
 - SLA enforcement
 - Module organization
 - Feature request traceability
 
 **Borrowable**:
+
 - **P0-P4 priority system** → Adopt everywhere
 - SLA definitions
 - Module categorization
@@ -99,23 +108,27 @@ This document analyzes work streams, features, and research plans across **8 act
 **File**: `docs/reference/PROJECT_SUMMARY.md`, `docs/planning/`
 
 **Structure**:
+
 - Phase-based planning (6 phases)
 - User stories (US-1 to US-5)
 - Adapter pattern focus
 - AgilePlus governance
 
 **Key Features**:
+
 - ✅ Phase-based roadmap
 - ✅ User story tracking
 - ✅ Adapter pattern documentation
 - ✅ Testing matrix
 
 **Strengths**:
+
 - Clear phase boundaries
 - User story focus
 - Architecture-first approach
 
 **Borrowable**:
+
 - Phase-based planning structure
 - User story format
 - Adapter pattern documentation
@@ -127,23 +140,27 @@ This document analyzes work streams, features, and research plans across **8 act
 **File**: `IMPLEMENTATION-SUMMARY.md`, `COMPREHENSIVE-MULTI-AGENT-PLAN.md`
 
 **Structure**:
+
 - Multi-phase implementation
 - User stories (1-4)
 - Component tracking
 - Status badges
 
 **Key Features**:
+
 - ✅ Multi-phase tracking
 - ✅ Component-level status
 - ✅ Implementation files tracking
 - ✅ Quick reference
 
 **Strengths**:
+
 - Clear completion tracking
 - Component organization
 - Implementation focus
 
 **Borrowable**:
+
 - Status badge system
 - Component tracking
 - Quick reference format
@@ -155,12 +172,14 @@ This document analyzes work streams, features, and research plans across **8 act
 **File**: `STAGE3_IMPLEMENTATION_ROADMAP.md`, `agileplus/project.md`
 
 **Structure**:
+
 - Stage-based roadmap (Stage 1-3)
 - User stories with point estimates
 - Sprint planning
 - Critical path analysis
 
 **Key Features**:
+
 - ✅ Story point estimation
 - ✅ Sprint-based planning
 - ✅ Critical path identification
@@ -168,12 +187,14 @@ This document analyzes work streams, features, and research plans across **8 act
 - ✅ Go/No-Go criteria
 
 **Strengths**:
+
 - Detailed estimation
 - Sprint planning
 - Risk management
 - Resource planning
 
 **Borrowable**:
+
 - Story point system
 - Sprint planning format
 - Critical path analysis
@@ -186,23 +207,27 @@ This document analyzes work streams, features, and research plans across **8 act
 **File**: `scripts/mcp/COMPLETE_TRACERTM_ROADMAP_UPDATED.md`
 
 **Structure**:
+
 - Phase-based (Phase 1-4)
 - Tool/Resource/Prompt categorization
 - Feature count tracking
 - Effort estimation (days)
 
 **Key Features**:
+
 - ✅ Phase completion tracking
 - ✅ Feature categorization
 - ✅ Effort estimation
 - ✅ Integration planning
 
 **Strengths**:
+
 - Clear phase boundaries
 - Feature organization
 - Effort tracking
 
 **Borrowable**:
+
 - Phase completion format
 - Feature categorization
 - Effort estimation approach
@@ -214,23 +239,27 @@ This document analyzes work streams, features, and research plans across **8 act
 **File**: `agileplus/changes/add-unified-mcp-composition-server/tasks.md`
 
 **Structure**:
+
 - Task-based (10 sections)
 - Numbered subtasks (1.1, 1.2, etc.)
 - Workflow-focused
 - Integration planning
 
 **Key Features**:
+
 - ✅ Task breakdown
 - ✅ Workflow design
 - ✅ Integration focus
 - ✅ Testing planning
 
 **Strengths**:
+
 - Detailed task breakdown
 - Workflow orientation
 - Integration planning
 
 **Borrowable**:
+
 - Task numbering system
 - Workflow documentation
 - Integration planning format
@@ -242,20 +271,24 @@ This document analyzes work streams, features, and research plans across **8 act
 **File**: `todo.md`
 
 **Structure**:
+
 - Simple numbered list
 - Migration-focused
 - Provider logic extraction
 
 **Key Features**:
+
 - ✅ Simple tracking
 - ✅ Migration focus
 - ✅ Provider extraction plan
 
 **Strengths**:
+
 - Simple format
 - Clear migration path
 
 **Borrowable**:
+
 - Simple list format (for small projects)
 
 ---
@@ -264,12 +297,12 @@ This document analyzes work streams, features, and research plans across **8 act
 
 ### 2.1 Priority Systems
 
-| Project | Priority System | Strengths | Borrowable |
-|---------|----------------|-----------|------------|
-| **heliosShield** | P0-P4 with SLAs | Clear definitions, SLA enforcement | ✅ **Adopt everywhere** |
-| **thegent** | P1-P2 (implicit) | Simple, flexible | Use for lightweight projects |
-| **smolgents** | Story points | Detailed estimation | Use for complex projects |
-| **trace** | Phase-based | Clear boundaries | Use for MCP servers |
+| Project          | Priority System  | Strengths                          | Borrowable                   |
+| ---------------- | ---------------- | ---------------------------------- | ---------------------------- |
+| **heliosShield** | P0-P4 with SLAs  | Clear definitions, SLA enforcement | ✅ **Adopt everywhere**      |
+| **thegent**      | P1-P2 (implicit) | Simple, flexible                   | Use for lightweight projects |
+| **smolgents**    | Story points     | Detailed estimation                | Use for complex projects     |
+| **trace**        | Phase-based      | Clear boundaries                   | Use for MCP servers          |
 
 **Recommendation**: **Adopt heliosShield's P0-P4 system** across all projects.
 
@@ -277,11 +310,11 @@ This document analyzes work streams, features, and research plans across **8 act
 
 ### 2.2 Dependency Tracking
 
-| Project | Dependency Format | Strengths |
-|---------|-------------------|-----------|
-| **thegent** | `Depends` column | Clear, explicit |
-| **heliosShield** | `Depends On` column | Links to other items |
-| **smolgents** | Critical path analysis | Visual dependencies |
+| Project          | Dependency Format      | Strengths            |
+| ---------------- | ---------------------- | -------------------- |
+| **thegent**      | `Depends` column       | Clear, explicit      |
+| **heliosShield** | `Depends On` column    | Links to other items |
+| **smolgents**    | Critical path analysis | Visual dependencies  |
 
 **Recommendation**: **Use thegent's `Depends` column format** with heliosShield's linking.
 
@@ -289,11 +322,11 @@ This document analyzes work streams, features, and research plans across **8 act
 
 ### 2.3 Status Tracking
 
-| Project | Status System | Strengths |
-|---------|---------------|-----------|
-| **heliosShield** | Planned, Blocked, In Progress | Clear states |
-| **thegent** | BACKLOG, CLAIMED, COMPLETED | Simple workflow |
-| **kimaki** | Status badges (✅, 🚧, 📋) | Visual |
+| Project          | Status System                 | Strengths       |
+| ---------------- | ----------------------------- | --------------- |
+| **heliosShield** | Planned, Blocked, In Progress | Clear states    |
+| **thegent**      | BACKLOG, CLAIMED, COMPLETED   | Simple workflow |
+| **kimaki**       | Status badges (✅, 🚧, 📋)    | Visual          |
 
 **Recommendation**: **Combine heliosShield's states with kimaki's badges**.
 
@@ -301,11 +334,11 @@ This document analyzes work streams, features, and research plans across **8 act
 
 ### 2.4 Research Integration
 
-| Project | Research Tracking | Strengths |
-|---------|-------------------|-----------|
-| **thegent** | Research doc integration | Comprehensive |
-| **heliosShield** | Research doc references | Linked |
-| **smolgents** | Stage-based research | Phased |
+| Project          | Research Tracking        | Strengths     |
+| ---------------- | ------------------------ | ------------- |
+| **thegent**      | Research doc integration | Comprehensive |
+| **heliosShield** | Research doc references  | Linked        |
+| **smolgents**    | Stage-based research     | Phased        |
 
 **Recommendation**: **Adopt thegent's research doc integration**.
 
@@ -316,6 +349,7 @@ This document analyzes work streams, features, and research plans across **8 act
 ### 3.1 Governance & Quality (from heliosShield)
 
 **Features**:
+
 - ✅ Methodology enforcer (TDD/BDD/Contract/Property)
 - ✅ Reliability gate (flaky quarantine, SLO)
 - ✅ Supply chain gate (SBOM, attestations)
@@ -323,6 +357,7 @@ This document analyzes work streams, features, and research plans across **8 act
 - ✅ SARIF ingestion adapter
 
 **Borrowable To**:
+
 - **thegent** - Agent governance
 - **plangent** - Task validation
 - **smolgents** - Quality gates
@@ -333,12 +368,14 @@ This document analyzes work streams, features, and research plans across **8 act
 ### 3.2 Cost Optimization (from smolgents)
 
 **Features**:
+
 - ✅ Intelligent model routing
 - ✅ Cost-aware task delegation
 - ✅ Performance metrics
 - ✅ Cost tracking
 
 **Borrowable To**:
+
 - **thegent** - Agent cost tracking
 - **plangent** - Sub-agent routing
 - **kimaki** - Voice cost optimization
@@ -349,6 +386,7 @@ This document analyzes work streams, features, and research plans across **8 act
 ### 3.3 Multi-Agent Patterns (from plangent, kimaki)
 
 **Features**:
+
 - ✅ Root agent + sub-agents pattern
 - ✅ Agent pause/resume mechanisms
 - ✅ Agent-to-agent collaboration
@@ -356,6 +394,7 @@ This document analyzes work streams, features, and research plans across **8 act
 - ✅ Project context management
 
 **Borrowable To**:
+
 - **thegent** - Multi-agent orchestration
 - **smolgents** - Delegation patterns
 - **trace** - Agent integration
@@ -365,12 +404,14 @@ This document analyzes work streams, features, and research plans across **8 act
 ### 3.4 MCP Server Patterns (from trace, dphi)
 
 **Features**:
+
 - ✅ Tool/Resource/Prompt categorization
 - ✅ Unified MCP composition
 - ✅ Cross-service orchestration
 - ✅ Health monitoring
 
 **Borrowable To**:
+
 - **thegent** - MCP server management
 - **atoms-mcp-prod** - Composition patterns
 - **zen-mcp-server** - Tool organization
@@ -380,12 +421,14 @@ This document analyzes work streams, features, and research plans across **8 act
 ### 3.5 Documentation Patterns (from thegent)
 
 **Features**:
+
 - ✅ VitePress rich documentation
 - ✅ Auto-generated API docs
 - ✅ Architecture diagrams
 - ✅ LLM-friendly docs
 
 **Borrowable To**:
+
 - **heliosShield** - Documentation system
 - **plangent** - API documentation
 - **smolgents** - Usage guides
@@ -397,35 +440,39 @@ This document analyzes work streams, features, and research plans across **8 act
 
 ### 4.1 Active Research Areas
 
-| Project | Research Focus | Status | Borrowable |
-|---------|----------------|--------|------------|
-| **thegent** | Cross-platform, governance, FastMCP | Active | ✅ |
-| **heliosShield** | LLM gates, chaos engineering | Active | ✅ |
-| **smolgents** | Cost optimization, routing | Complete | ✅ |
-| **trace** | MCP integration, BMM/AgilePlus | Planning | ✅ |
-| **dphi** | MCP composition, workflow integration | Active | ✅ |
+| Project          | Research Focus                        | Status   | Borrowable |
+| ---------------- | ------------------------------------- | -------- | ---------- |
+| **thegent**      | Cross-platform, governance, FastMCP   | Active   | ✅         |
+| **heliosShield** | LLM gates, chaos engineering          | Active   | ✅         |
+| **smolgents**    | Cost optimization, routing            | Complete | ✅         |
+| **trace**        | MCP integration, BMM/AgilePlus        | Planning | ✅         |
+| **dphi**         | MCP composition, workflow integration | Active   | ✅         |
 
 ---
 
 ### 4.2 Research Patterns to Borrow
 
 **From heliosShield**:
+
 - LLM-as-judge gate feasibility
 - Small local model gate (Ollama)
 - Chaos Toolkit experiment format
 - MLX-optimized inference
 
 **From smolgents**:
+
 - Cost routing research
 - Model tier strategy
 - Delegation patterns
 
 **From thegent**:
+
 - Cross-platform research
 - Governance evolution
 - FastMCP patterns
 
 **From trace**:
+
 - AgilePlus integration
 - Completion validation research
 - Progress tracking patterns
@@ -495,13 +542,13 @@ This document analyzes work streams, features, and research plans across **8 act
 
 ### High Priority Borrows
 
-| Feature | Source | Target Projects | Impact |
-|---------|--------|-----------------|--------|
-| P0-P4 Priority System | heliosShield | All projects | High |
-| Research Integration | thegent | All projects | High |
-| Cost Optimization | smolgents | thegent, plangent, kimaki | High |
-| Governance Gates | heliosShield | thegent, plangent | High |
-| MCP Composition | trace, dphi | atoms-mcp-prod, zen-mcp-server | Medium |
+| Feature               | Source       | Target Projects                | Impact |
+| --------------------- | ------------ | ------------------------------ | ------ |
+| P0-P4 Priority System | heliosShield | All projects                   | High   |
+| Research Integration  | thegent      | All projects                   | High   |
+| Cost Optimization     | smolgents    | thegent, plangent, kimaki      | High   |
+| Governance Gates      | heliosShield | thegent, plangent              | High   |
+| MCP Composition       | trace, dphi  | atoms-mcp-prod, zen-mcp-server | Medium |
 
 ---
 
@@ -513,6 +560,7 @@ This document analyzes work streams, features, and research plans across **8 act
 # [Project] Unified Work Stream
 
 ## Priority Definitions
+
 - P0: Blocker (Immediate)
 - P1: Feature (1 sprint)
 - P2: Polish (2 sprints)
@@ -521,27 +569,27 @@ This document analyzes work streams, features, and research plans across **8 act
 
 ## BACKLOG
 
-| ID | Title | Source | Priority | Depends | Module |
-|----|-------|--------|----------|---------|--------|
-| ... | ... | ... | ... | ... | ... |
+| ID  | Title | Source | Priority | Depends | Module |
+| --- | ----- | ------ | -------- | ------- | ------ |
+| ... | ...   | ...    | ...      | ...     | ...    |
 
 ## CLAIMED
 
-| ID | Agent | Started |
-|----|-------|---------|
-| ... | ... | ... |
+| ID  | Agent | Started |
+| --- | ----- | ------- |
+| ... | ...   | ...     |
 
 ## COMPLETED
 
-| ID | Completed | Notes |
-|----|-----------|-------|
-| ... | ... | ... |
+| ID  | Completed | Notes |
+| --- | --------- | ----- |
+| ... | ...       | ...   |
 
 ## Research Integration
 
 | Doc | Extensions | Status |
-|-----|------------|--------|
-| ... | ... | ... |
+| --- | ---------- | ------ |
+| ... | ...        | ...    |
 ```
 
 ---

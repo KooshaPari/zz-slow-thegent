@@ -41,12 +41,12 @@ OpenAI returns a simple, minimal schema. Each model object has exactly four fiel
 
 **Fields:**
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string | Canonical model identifier |
-| `object` | string | Always `"model"` |
-| `created` | integer | Unix timestamp |
-| `owned_by` | string | Provider/org name |
+| Field      | Type    | Description                |
+| ---------- | ------- | -------------------------- |
+| `id`       | string  | Canonical model identifier |
+| `object`   | string  | Always `"model"`           |
+| `created`  | integer | Unix timestamp             |
+| `owned_by` | string  | Provider/org name          |
 
 This minimal schema is what Codex would encounter if it called `api.openai.com` directly. Codex does NOT use this endpoint for its model catalog; instead it uses the Codex-specific `/v1/models` endpoint (which returns the richer schema below).
 
@@ -163,9 +163,17 @@ OpenRouter returns a significantly richer schema per model. Verified by live fet
   },
   "per_request_limits": null,
   "supported_parameters": [
-    "include_reasoning", "max_tokens", "reasoning",
-    "response_format", "seed", "stop", "structured_outputs",
-    "temperature", "tool_choice", "tools", "top_p"
+    "include_reasoning",
+    "max_tokens",
+    "reasoning",
+    "response_format",
+    "seed",
+    "stop",
+    "structured_outputs",
+    "temperature",
+    "tool_choice",
+    "tools",
+    "top_p"
   ],
   "default_parameters": {
     "temperature": null,
@@ -208,9 +216,18 @@ OpenRouter returns a significantly richer schema per model. Verified by live fet
   },
   "per_request_limits": null,
   "supported_parameters": [
-    "include_reasoning", "max_tokens", "reasoning",
-    "response_format", "stop", "structured_outputs",
-    "temperature", "tool_choice", "tools", "top_k", "top_p", "verbosity"
+    "include_reasoning",
+    "max_tokens",
+    "reasoning",
+    "response_format",
+    "stop",
+    "structured_outputs",
+    "temperature",
+    "tool_choice",
+    "tools",
+    "top_k",
+    "top_p",
+    "verbosity"
   ],
   "default_parameters": {
     "temperature": null,
@@ -223,44 +240,46 @@ OpenRouter returns a significantly richer schema per model. Verified by live fet
 
 **OpenRouter field inventory:**
 
-| Field | Type | Notes |
-|-------|------|-------|
-| `id` | string | Namespaced: `"provider/model-name"` |
-| `canonical_slug` | string | Versioned slug with date suffix |
-| `hugging_face_id` | string | HuggingFace model ID or `""` |
-| `name` | string | Human-readable display name |
-| `created` | integer | Unix timestamp |
-| `description` | string | Long-form markdown description |
-| `context_length` | integer or null | Input context window in tokens |
-| `architecture.modality` | string | e.g. `"text+image->text"` |
-| `architecture.input_modalities` | string[] | `["text", "image", "audio", "file", "video"]` subset |
-| `architecture.output_modalities` | string[] | `["text", "image", "embeddings", "audio"]` subset |
-| `architecture.tokenizer` | string | e.g. `"Gemini"`, `"Claude"`, `"GPT"` |
-| `architecture.instruct_type` | string or null | Fine-tune instruction format |
-| `pricing.prompt` | string (decimal) | Cost per token (input) as string |
-| `pricing.completion` | string (decimal) | Cost per token (output) as string |
-| `pricing.image` | string or absent | Cost per image token |
-| `pricing.audio` | string or absent | Cost per audio token |
-| `pricing.internal_reasoning` | string or absent | Cost for reasoning tokens |
-| `pricing.input_cache_read` | string or absent | Cache read cost |
-| `pricing.input_cache_write` | string or absent | Cache write cost |
-| `pricing.web_search` | string or absent | Web search cost per call |
-| `pricing.discount` | number or absent | Discount multiplier |
-| `top_provider.context_length` | integer or null | Provider's actual context limit |
-| `top_provider.max_completion_tokens` | integer or null | Max output tokens |
-| `top_provider.is_moderated` | boolean | Whether content is moderated |
-| `per_request_limits` | object or null | Token limits per request |
-| `supported_parameters` | string[] | LLM parameter names supported |
-| `default_parameters` | object | Default param values (often null) |
-| `expiration_date` | string (ISO 8601) or null | Model deprecation date |
+| Field                                | Type                      | Notes                                                |
+| ------------------------------------ | ------------------------- | ---------------------------------------------------- |
+| `id`                                 | string                    | Namespaced: `"provider/model-name"`                  |
+| `canonical_slug`                     | string                    | Versioned slug with date suffix                      |
+| `hugging_face_id`                    | string                    | HuggingFace model ID or `""`                         |
+| `name`                               | string                    | Human-readable display name                          |
+| `created`                            | integer                   | Unix timestamp                                       |
+| `description`                        | string                    | Long-form markdown description                       |
+| `context_length`                     | integer or null           | Input context window in tokens                       |
+| `architecture.modality`              | string                    | e.g. `"text+image->text"`                            |
+| `architecture.input_modalities`      | string[]                  | `["text", "image", "audio", "file", "video"]` subset |
+| `architecture.output_modalities`     | string[]                  | `["text", "image", "embeddings", "audio"]` subset    |
+| `architecture.tokenizer`             | string                    | e.g. `"Gemini"`, `"Claude"`, `"GPT"`                 |
+| `architecture.instruct_type`         | string or null            | Fine-tune instruction format                         |
+| `pricing.prompt`                     | string (decimal)          | Cost per token (input) as string                     |
+| `pricing.completion`                 | string (decimal)          | Cost per token (output) as string                    |
+| `pricing.image`                      | string or absent          | Cost per image token                                 |
+| `pricing.audio`                      | string or absent          | Cost per audio token                                 |
+| `pricing.internal_reasoning`         | string or absent          | Cost for reasoning tokens                            |
+| `pricing.input_cache_read`           | string or absent          | Cache read cost                                      |
+| `pricing.input_cache_write`          | string or absent          | Cache write cost                                     |
+| `pricing.web_search`                 | string or absent          | Web search cost per call                             |
+| `pricing.discount`                   | number or absent          | Discount multiplier                                  |
+| `top_provider.context_length`        | integer or null           | Provider's actual context limit                      |
+| `top_provider.max_completion_tokens` | integer or null           | Max output tokens                                    |
+| `top_provider.is_moderated`          | boolean                   | Whether content is moderated                         |
+| `per_request_limits`                 | object or null            | Token limits per request                             |
+| `supported_parameters`               | string[]                  | LLM parameter names supported                        |
+| `default_parameters`                 | object                    | Default param values (often null)                    |
+| `expiration_date`                    | string (ISO 8601) or null | Model deprecation date                               |
 
 **How OpenRouter differs from OpenAI:**
+
 - OpenAI: 4 fields (`id`, `object`, `created`, `owned_by`) — minimal.
 - OpenRouter: 13+ top-level fields plus nested objects — provider metadata, pricing, architecture, capability matrix.
 - OpenRouter uses `"data"` as the list key (same as OpenAI).
 - OpenRouter model IDs are namespaced: `"google/gemini-3.1-pro-preview"` vs OpenAI's flat `"gpt-4o"`.
 
 **How OpenRouter differs from Codex:**
+
 - Codex uses `"models"` as the list key; OpenRouter uses `"data"`.
 - Codex uses `slug` as the primary key; OpenRouter uses `id`.
 - Codex has agent/shell-specific fields (`shell_type`, `apply_patch_tool_type`, `base_instructions`, `model_messages`, `supported_reasoning_levels`, etc.) that OpenRouter does not have.
@@ -296,6 +315,7 @@ The warning `"Model metadata not found for gemini-3-flash, using fallback metada
 5. Computes and returns an `x-models-etag` SHA256 header.
 
 **What the adapter correctly sets** (matching real Codex cache):
+
 - `slug`, `display_name`, `description`, `shell_type`, `visibility`, `supported_in_api`
 - `priority`, `upgrade`, `base_instructions`, `model_messages`
 - `supports_reasoning_summaries`, `support_verbosity`, `default_verbosity`
@@ -305,6 +325,7 @@ The warning `"Model metadata not found for gemini-3-flash, using fallback metada
 - `default_reasoning_level`, `supported_reasoning_levels`
 
 **What the adapter sets that the real cache does NOT have** (harmless extras):
+
 - `context_length` — real cache uses `context_window`; Codex ignores `context_length`
 - `max_completion_tokens` — not present in real cache models; Codex ignores it at the model level
 
@@ -553,30 +574,30 @@ This ensures that `gemini-3-flash`, `glm-5`, `minimax-m2.5`, and all other model
 
 ## 10. Schema Comparison Table
 
-| Field | OpenAI | OpenRouter | Codex Cache | Proxy _transform |
-|-------|--------|-----------|-------------|-----------------|
-| `id` / `slug` | `id` | `id` (namespaced) | `slug` | sets `slug` from `id` |
-| `object` | `"model"` | absent | absent | not set |
-| `created` | integer | integer | absent | not set |
-| `owned_by` | string | absent | absent | not set |
-| `name` / `display_name` | absent | `name` | `display_name` | sets `display_name` |
-| `description` | absent | `description` (long) | `description` | sets `description=""` |
-| `context_length` / `context_window` | absent | `context_length` | `context_window` | sets both |
-| `architecture` | absent | nested object | absent | reads `input_modalities` |
-| `pricing` | absent | nested object | absent | not used |
-| `top_provider` | absent | nested object | absent | not used |
-| `per_request_limits` | absent | object or null | absent | not used |
-| `supported_parameters` | absent | string[] | absent | not used |
-| `shell_type` | absent | absent | `shell_type` | sets `"shell_command"` |
-| `visibility` | absent | absent | `visibility` | sets `"list"` |
-| `supported_in_api` | absent | absent | `supported_in_api` | sets `true` |
-| `supported_reasoning_levels` | absent | absent | present | sets default 3-level list |
-| `base_instructions` | absent | absent | present (long) | sets `""` |
-| `model_messages` | absent | absent | present (structured) | sets `"[]"` |
-| `truncation_policy` | absent | absent | present | sets `{"mode":"tokens","limit":10000}` |
-| `input_modalities` | absent | via `architecture` | present | sets `["text"]` |
-| `prefer_websockets` | absent | absent | present | sets `false` |
-| `apply_patch_tool_type` | absent | absent | present | sets `"freeform"` |
+| Field                               | OpenAI    | OpenRouter           | Codex Cache          | Proxy \_transform                      |
+| ----------------------------------- | --------- | -------------------- | -------------------- | -------------------------------------- |
+| `id` / `slug`                       | `id`      | `id` (namespaced)    | `slug`               | sets `slug` from `id`                  |
+| `object`                            | `"model"` | absent               | absent               | not set                                |
+| `created`                           | integer   | integer              | absent               | not set                                |
+| `owned_by`                          | string    | absent               | absent               | not set                                |
+| `name` / `display_name`             | absent    | `name`               | `display_name`       | sets `display_name`                    |
+| `description`                       | absent    | `description` (long) | `description`        | sets `description=""`                  |
+| `context_length` / `context_window` | absent    | `context_length`     | `context_window`     | sets both                              |
+| `architecture`                      | absent    | nested object        | absent               | reads `input_modalities`               |
+| `pricing`                           | absent    | nested object        | absent               | not used                               |
+| `top_provider`                      | absent    | nested object        | absent               | not used                               |
+| `per_request_limits`                | absent    | object or null       | absent               | not used                               |
+| `supported_parameters`              | absent    | string[]             | absent               | not used                               |
+| `shell_type`                        | absent    | absent               | `shell_type`         | sets `"shell_command"`                 |
+| `visibility`                        | absent    | absent               | `visibility`         | sets `"list"`                          |
+| `supported_in_api`                  | absent    | absent               | `supported_in_api`   | sets `true`                            |
+| `supported_reasoning_levels`        | absent    | absent               | present              | sets default 3-level list              |
+| `base_instructions`                 | absent    | absent               | present (long)       | sets `""`                              |
+| `model_messages`                    | absent    | absent               | present (structured) | sets `"[]"`                            |
+| `truncation_policy`                 | absent    | absent               | present              | sets `{"mode":"tokens","limit":10000}` |
+| `input_modalities`                  | absent    | via `architecture`   | present              | sets `["text"]`                        |
+| `prefer_websockets`                 | absent    | absent               | present              | sets `false`                           |
+| `apply_patch_tool_type`             | absent    | absent               | present              | sets `"freeform"`                      |
 
 ---
 

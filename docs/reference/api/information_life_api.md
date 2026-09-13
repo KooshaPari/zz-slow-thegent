@@ -15,7 +15,7 @@ Substrate-independent encoding of an agent identity.
 
 ### Methods
 
-#### InformationPersona.__init__
+#### InformationPersona.**init**
 
 ```python
 __init__(self: Any, agent_id: str)

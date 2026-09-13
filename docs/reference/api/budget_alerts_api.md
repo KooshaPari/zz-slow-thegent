@@ -12,7 +12,7 @@ Check budgets and emit alerts.
 
 ### Methods
 
-#### BudgetAlertSystem.__init__
+#### BudgetAlertSystem.**init**
 
 ```python
 __init__(self: Any, cost_dir: Any, config: Any)

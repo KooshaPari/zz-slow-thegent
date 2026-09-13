@@ -17,6 +17,7 @@ A stage in a workflow containing one or more crews.
 Manages multi-crew workflows with stages.
 
 Supports:
+
 - Multi-crew execution
 - Stage dependencies
 - Parallel stage execution
@@ -24,7 +25,7 @@ Supports:
 
 ### Methods
 
-#### WorkflowEngine.__init__
+#### WorkflowEngine.**init**
 
 ```python
 __init__(self: Any)

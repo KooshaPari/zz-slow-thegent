@@ -1,9 +1,11 @@
 # Hook Spiral Guard
 
 ## Purpose
+
 The regression spiral guard prevents agent sessions from accumulating hidden failures until quality collapses.
 
 It enforces:
+
 - continuous regression detection,
 - interrupt-style escalation for critical growth,
 - test/build/environment-first workflow,
@@ -12,6 +14,7 @@ It enforces:
 - deterministic per-band retry budgets and cooldown windows with explicit remediation directives.
 
 ## Components
+
 - `hooks/governance-gates.sh`
   - Gate: `regression-spiral-guard`
   - Selector mode:
@@ -34,11 +37,13 @@ It enforces:
   - Trend aggregation over metrics stream (breach rate, interrupt count, max streak, MTTR proxy, stale evidence event counts)
 
 ## Config Resolution Order
+
 1. Environment variables (`QA_SPIRAL_*`, `QA_REQUIRE_*`)
 2. `hooks/hook-config.yaml` at `settings.regression_spiral_guard`
 3. Built-in defaults in `hooks/lib/spiral-config.sh`
 
 ## Selector Canonicalization Contract
+
 - Input sources: `QA_GATES_ONLY` (preferred), fallback `THEGENT_GATES_ONLY`
 - Canonicalization pipeline in `hooks/governance-gates.sh`:
   - remove whitespace
@@ -54,6 +59,7 @@ It enforces:
   - If selector env is explicitly provided but canonical list is empty, selector mode still activates and fails closed with explicit reason (`no valid gate labels ...`).
 
 ### Selector Examples
+
 - Single gate:
   - `QA_GATES_ONLY=regression_spiral_guard hooks/governance-gates.sh`
 - Multi gate (canonicalized for execution + cache scope):
@@ -67,6 +73,7 @@ It enforces:
   - expected: fail-closed with `unknown gate label: ...`
 
 ## Supported Environment Overrides
+
 - `QA_SPIRAL_MAX_FAILED_TESTS`
 - `QA_SPIRAL_MAX_FLAKY_TESTS`
 - `QA_SPIRAL_MAX_MISSING_TEST_PAIRS`
@@ -87,7 +94,9 @@ It enforces:
 - `QA_REGRESSION_SPIRAL_FAIL_CLOSED`
 
 ## Freshness Threshold Defaults
+
 From `hooks/hook-config.yaml` (`settings.regression_spiral_guard`):
+
 - `max_test_evidence_age_minutes: 90` for async test evidence (`RESULTS_FILE`)
 - `max_build_evidence_age_minutes: 90` for build/env evidence (`.claude/verification/qa-state.json`)
 - `max_e2e_evidence_age_minutes: 180` for e2e evidence (`.claude/verification/qa-attestation.json`, when `require_e2e_first=true`)
@@ -95,7 +104,9 @@ From `hooks/hook-config.yaml` (`settings.regression_spiral_guard`):
 Missing files count as stale evidence violations.
 
 ## Trend Output Fields
+
 `hook-dispatcher governance spiral-trend` now includes:
+
 - `stale_test_evidence_events`
 - `stale_build_evidence_events`
 - `stale_e2e_evidence_events`
@@ -103,6 +114,7 @@ Missing files count as stale evidence violations.
 - `policy_band` (`green`, `yellow`, `red`)
 
 Pressure score is deterministic and normalized to `[0,1]`:
+
 - `0.40 * breach_rate`
 - `0.20 * interrupt_rate`
 - `0.20 * stale_evidence_rate`
@@ -110,11 +122,13 @@ Pressure score is deterministic and normalized to `[0,1]`:
 - `0.05 * positive_violations_delta_pressure` (`max(violations_delta,0)/3`, capped at `1`)
 
 Policy bands:
+
 - `red` when `pressure_score >= 0.75`
 - `yellow` when `pressure_score >= 0.45` and `< 0.75`
 - `green` otherwise
 
 Shell gate parity:
+
 - `hooks/governance-gates.sh` writes `pressure_score` and `policy_band` to both:
   - `.claude/verification/regression-spiral-guard.json`
   - `.claude/verification/regression-spiral-metrics.jsonl`
@@ -123,6 +137,7 @@ Shell gate parity:
   - `enforcement_path=fail_closed`
 
 ## Spiral Band Ops Fields
+
 The spiral state/report/alert/metrics now share deterministic operational fields:
 
 - State (`.claude/verification/regression-spiral-state.json`)
@@ -151,6 +166,7 @@ The spiral state/report/alert/metrics now share deterministic operational fields
   - `escalation_stage`
 
 ## Operational Lifecycle
+
 1. Spiral policy computes `pressure_score` and assigns a policy band (`green|yellow|red`).
 2. Per-band retry counters are incremented deterministically and constrained by:
    - `max_yellow_retries`
@@ -164,12 +180,14 @@ The spiral state/report/alert/metrics now share deterministic operational fields
 7. `continuous-work-guard.sh` consumes alert fields and prints deterministic directive/cooldown context; it exits `2` only for `severity=critical`.
 
 ## Operational Notes
+
 - Warning alerts do not hard-stop work.
 - Critical alerts trigger interruption behavior.
 - Alerts are cleared automatically when spiral conditions recover.
 - Attempt counters are session-scoped to reduce cross-session false lockouts.
 
 ## Pre-Work Hard Gate
+
 - Task start surfaces enforce a pre-work hard gate before starting new work.
 - The gate blocks when required freshness evidence is missing or stale:
   - test evidence: `~/.claude/.async-test-results.json`
@@ -182,18 +200,20 @@ The spiral state/report/alert/metrics now share deterministic operational fields
   - `max_e2e_evidence_age_minutes=180`
 
 ### Start-Surface Parity Matrix
-| Surface | Entry Point | Gate Behavior on Failure |
-|---|---|---|
-| CLI | `thegent plan next` (`do_next_impl`) | Returns `governance_blocked=true` payload, includes `governance_block.remediation_steps`, blocks start |
-| CLI | `thegent plan get-next` (`do_next_impl` wrapper) | Propagates `governance_blocked=true` with remediation and exits non-zero |
-| CLI | `thegent plan spawn-next` (`spawn_next_impl`) | Propagates `governance_blocked=true`; does not spawn or claim |
-| CLI | `thegent plan claim` (`work_stream_claim_impl`) | Returns `success=false` + `governance_blocked=true` with remediation |
-| MCP | `thegent_do_next` | Returns blocked payload unchanged from `do_next_impl` |
-| MCP | `thegent_plan_get_next` | Returns error payload that preserves `governance_blocked` + remediation |
-| Auto-launch | `AutoLaunchSystem._try_launch_next` fallback via `do_next_impl` | Records `governance_blocked` event and skips launch batch |
-| Auto-launch | `AutoLaunchSystem._launch_item` claim/start path | Uses `work_stream_claim_impl`; on block records `claim_failed` and skips `bg_impl` start |
+
+| Surface     | Entry Point                                                     | Gate Behavior on Failure                                                                               |
+| ----------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| CLI         | `thegent plan next` (`do_next_impl`)                            | Returns `governance_blocked=true` payload, includes `governance_block.remediation_steps`, blocks start |
+| CLI         | `thegent plan get-next` (`do_next_impl` wrapper)                | Propagates `governance_blocked=true` with remediation and exits non-zero                               |
+| CLI         | `thegent plan spawn-next` (`spawn_next_impl`)                   | Propagates `governance_blocked=true`; does not spawn or claim                                          |
+| CLI         | `thegent plan claim` (`work_stream_claim_impl`)                 | Returns `success=false` + `governance_blocked=true` with remediation                                   |
+| MCP         | `thegent_do_next`                                               | Returns blocked payload unchanged from `do_next_impl`                                                  |
+| MCP         | `thegent_plan_get_next`                                         | Returns error payload that preserves `governance_blocked` + remediation                                |
+| Auto-launch | `AutoLaunchSystem._try_launch_next` fallback via `do_next_impl` | Records `governance_blocked` event and skips launch batch                                              |
+| Auto-launch | `AutoLaunchSystem._launch_item` claim/start path                | Uses `work_stream_claim_impl`; on block records `claim_failed` and skips `bg_impl` start               |
 
 ## Validation
+
 Run:
 
 ```bash
@@ -201,6 +221,7 @@ task test:hooks:governance
 ```
 
 This runs:
+
 - shell syntax checks for relevant hooks,
 - unit tests for YAML config loading and defaults,
 - trend command tests over spiral metrics stream,
@@ -208,6 +229,7 @@ This runs:
 - selector artifact schema checks and schema-drift sentinel checks.
 
 ## CI Lane Mapping
+
 - PR / manual:
   - GitHub Actions job: `governance-selector-fast`
   - Task target: `task test:hooks:selector-fast`
@@ -217,6 +239,7 @@ This runs:
 - Both lanes emit fail-closed evidence snippets (`fail-closed`, `policy_band=red`, `critical_interrupt`) on failure and upload logs as artifacts.
 
 ## Artifact Schema Contract
+
 - Selector-mode contracts are enforced by tests in `tests/test_hook_governance_gate_selector.py`:
   - Required key/type assertions:
     - report (`regression-spiral-guard.json`)

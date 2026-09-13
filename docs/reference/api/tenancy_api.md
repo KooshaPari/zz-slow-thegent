@@ -14,7 +14,7 @@ Manages isolated key storage for multi-tenant environments.
 
 ### Methods
 
-#### KeyIsolator.__init__
+#### KeyIsolator.**init**
 
 ```python
 __init__(self: Any, settings: Any)

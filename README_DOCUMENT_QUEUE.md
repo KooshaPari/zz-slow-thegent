@@ -73,6 +73,7 @@ python3 -m thegent.cli.commands.queue next --files
 ## Files Created
 
 All integration files are in:
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/agents/document/`
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/mcp/document_queue.py`
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/cli/commands/queue.py`
@@ -81,6 +82,7 @@ All integration files are in:
 ## Original Queue Files
 
 The original queue system files are preserved in:
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/docs/research/MARKDOWN_SCAN_QUEUE.json`
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/docs/research/process_queue.py`
 

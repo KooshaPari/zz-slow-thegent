@@ -33,7 +33,7 @@ Track LLM costs across sessions.
 
 ### Methods
 
-#### CostTracker.__init__
+#### CostTracker.**init**
 
 ```python
 __init__(self: Any, log_path: Any, daily_budget: Any)

@@ -13,6 +13,7 @@
 All components of the Agent Crew stack have been successfully implemented:
 
 ### Core Components ✅
+
 - [x] **Crew** data model
 - [x] **Task** model with dependencies
 - [x] **CrewAgent** model
@@ -24,6 +25,7 @@ All components of the Agent Crew stack have been successfully implemented:
 - [x] **Harness integration** with thegent agents
 
 ### CLI Commands ✅
+
 - [x] `thegent crew create` - Create crew
 - [x] `thegent crew add-agent` - Add agent to crew
 - [x] `thegent crew add-task` - Add task to crew
@@ -33,6 +35,7 @@ All components of the Agent Crew stack have been successfully implemented:
 - [x] `thegent crew status` - Show execution status
 
 ### Unit Tests ✅
+
 - [x] Test Crew model
 - [x] Test Task model
 - [x] Test CrewAgent model
@@ -48,6 +51,7 @@ All components of the Agent Crew stack have been successfully implemented:
 ## Files Created
 
 ### Core Implementation (9 files)
+
 1. `src/thegent/crew/__init__.py` - Module exports
 2. `src/thegent/crew/crew.py` - Crew data model
 3. `src/thegent/crew/task.py` - Task model with dependencies
@@ -59,13 +63,16 @@ All components of the Agent Crew stack have been successfully implemented:
 9. `src/thegent/crew/harness.py` - Integration with thegent harness
 
 ### CLI (2 files)
+
 10. `src/thegent/cli_crew.py` - CLI command implementations
 11. `src/thegent/main.py` - CLI registration (updated)
 
 ### Tests (1 file)
+
 12. `tests/test_crew.py` - Comprehensive unit tests
 
 ### Documentation (2 files)
+
 13. `docs/research/AGENT_CREW_IMPLEMENTATION_STATUS.md` - Status document
 14. `docs/research/AGENT_CREW_COMPLETE.md` - This completion document
 
@@ -141,6 +148,7 @@ thegent crew execute <crew-id>
 **Ready for**: `impl-agent-crew-codex-harness` - Wire codex/cc/droid harness as agent_executor for Crew
 
 The harness integration is already implemented in `harness.py`, but this work package would involve:
+
 - Enhanced error handling
 - Token/cost parsing from agent output
 - Better integration with existing agent runners

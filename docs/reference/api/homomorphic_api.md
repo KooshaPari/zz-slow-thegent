@@ -15,7 +15,7 @@ Simulates Fully Homomorphic Encryption (FHE) for agent context.
 
 ### Methods
 
-#### HomomorphicContext.__init__
+#### HomomorphicContext.**init**
 
 ```python
 __init__(self: Any)

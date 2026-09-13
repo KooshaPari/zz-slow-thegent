@@ -15,6 +15,7 @@ Phase 1 has successfully implemented the foundational isolation infrastructure f
 #### 1.1 Infrastructure & Setup ✓
 
 **Module Structure Created**:
+
 - `src/thegent/isolation/__init__.py` - Package entry point
 - `src/thegent/isolation/exceptions.py` - Isolation-specific exceptions
 - `src/thegent/isolation/models.py` - Data models (TenantContext, IsolationMode)
@@ -25,6 +26,7 @@ Phase 1 has successfully implemented the foundational isolation infrastructure f
 #### 1.2 Sub-User Implementation ✓
 
 **Core Provider**:
+
 - `src/thegent/isolation/sub_user_provider.py` - SubUserIsolationProvider implementation
   - UID/GID allocation via deterministic hash-based assignment
   - Home directory creation under `/tmp/thegent/{tenant_id}`
@@ -34,6 +36,7 @@ Phase 1 has successfully implemented the foundational isolation infrastructure f
   - Deterministic cleanup with cache eviction
 
 **Key Features**:
+
 - ✓ Allocate tenants with unique UIDs derived from tenant_id hash
 - ✓ Execute commands in isolated environment (HOME, env vars set)
 - ✓ Cleanup removes home directory and evicts from cache
@@ -45,10 +48,12 @@ Phase 1 has successfully implemented the foundational isolation infrastructure f
 #### 1.3 Unit Tests ✓
 
 **Test Files Created**:
+
 - `tests/isolation/test_module_structure.py` - Module structure validation
 - `tests/isolation/test_sub_user_provider.py` - Provider functionality tests
 
 **Test Coverage**:
+
 - ✓ Module import tests (6 tests)
 - ✓ Allocation tests: creation, idempotency, uniqueness (4 tests)
 - ✓ Execution tests: simple command, env vars, timeout, error handling (4 tests)
@@ -59,6 +64,7 @@ Phase 1 has successfully implemented the foundational isolation infrastructure f
 #### 1.4 Executor Integration ✓
 
 **Integration Example**:
+
 - `src/thegent/isolation/executor_integration.py` - IsolatedExecutor example
   - Demonstrates how to wire isolation provider into main executor
   - Supports both isolated and non-isolated execution modes
@@ -70,9 +76,10 @@ Phase 1 has successfully implemented the foundational isolation infrastructure f
 #### 1.5 Configuration Schema (Prepared)
 
 **Configuration Structure**:
+
 ```yaml
 isolation:
-  mode: "sub-user"  # or "os-user", "docker"
+  mode: "sub-user" # or "os-user", "docker"
   enabled: true
   sub_user:
     base_uid: 2000
@@ -122,6 +129,7 @@ isolation:
 **Decision**: Use hash-based UID assignment: `uid = base_uid + hash(tenant_id) % pool_size`
 
 **Rationale**:
+
 - Ensures idempotency (same tenant_id always gets same UID)
 - No external state management needed (no UID registry)
 - Deterministic and reproducible across invocations
@@ -132,6 +140,7 @@ isolation:
 **Decision**: Create tenant home dirs under `/tmp/thegent/{tenant_id}`
 
 **Rationale**:
+
 - No special OS user creation required (Phase 1 scope)
 - Automatic cleanup via OS temp directory policies
 - Isolated file system per tenant
@@ -142,6 +151,7 @@ isolation:
 **Decision**: Cache allocated TenantContext in provider
 
 **Rationale**:
+
 - Ensures idempotency without persistent state
 - Fast re-allocation for repeated tenant execution
 - Simple eviction on cleanup
@@ -151,6 +161,7 @@ isolation:
 **Decision**: No external packages, pure Python + subprocess
 
 **Rationale**:
+
 - Core isolation works with stdlib only
 - Later phases (desktop automation, lease manager) will add dependencies as needed
 - Reduces deployment complexity
@@ -160,16 +171,19 @@ isolation:
 ## Testing Strategy
 
 ### Unit Tests
+
 - **Allocation**: Creation, idempotency, uniqueness
 - **Execution**: Simple command, env vars, timeout, error handling
 - **Cleanup**: Resource release, idempotency
 
 ### Integration Tests (Deferred to Phase 2)
+
 - Multiple concurrent tenants
 - File operation isolation
 - Lease manager integration
 
 ### Manual Verification
+
 - ✓ Module imports work
 - ✓ SubUserIsolationProvider instantiable
 - ✓ Simple echo command executes
@@ -193,6 +207,7 @@ isolation:
 ## Files Created
 
 **Core Implementation**:
+
 - `src/thegent/isolation/__init__.py`
 - `src/thegent/isolation/exceptions.py`
 - `src/thegent/isolation/models.py`
@@ -201,10 +216,12 @@ isolation:
 - `src/thegent/isolation/executor_integration.py`
 
 **Tests**:
+
 - `tests/isolation/test_module_structure.py`
 - `tests/isolation/test_sub_user_provider.py`
 
 **Documentation**:
+
 - `docs/changes/research-cross-platform-isolation/PHASE1_COMPLETION.md` (this file)
 
 ---
@@ -245,15 +262,15 @@ Phase 2 will focus on **Edit Lease Manager Enhancement**:
 
 ## Code Quality
 
-| Metric | Status |
-|--------|--------|
-| Import Test | ✓ Pass |
-| Module Structure | ✓ Complete |
-| Test Coverage | ✓ 16+ tests |
-| Documentation | ✓ Complete |
-| Type Safety | ✓ Compatible |
-| Dependencies | ✓ Minimal (stdlib only) |
-| Backward Compat | ✓ No breaking changes |
+| Metric           | Status                  |
+| ---------------- | ----------------------- |
+| Import Test      | ✓ Pass                  |
+| Module Structure | ✓ Complete              |
+| Test Coverage    | ✓ 16+ tests             |
+| Documentation    | ✓ Complete              |
+| Type Safety      | ✓ Compatible            |
+| Dependencies     | ✓ Minimal (stdlib only) |
+| Backward Compat  | ✓ No breaking changes   |
 
 ---
 

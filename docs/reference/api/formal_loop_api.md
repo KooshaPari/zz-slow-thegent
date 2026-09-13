@@ -14,7 +14,7 @@ Automated loop that periodically verifies the agent's plan for logical consisten
 
 ### Methods
 
-#### FormalVerificationLoop.__init__
+#### FormalVerificationLoop.**init**
 
 ```python
 __init__(self: Any, plan_dag: Any)

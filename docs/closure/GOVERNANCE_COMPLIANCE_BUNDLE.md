@@ -7,17 +7,18 @@
 ## 1. Scope
 
 This bundle provides the evidence set for:
+
 - FR-046 (Security and compliance signoff)
 - WP-6002
 - audit/governance controls across Phases 3–6
 
 ## 2. Framework Mapping
 
-| Framework | Control Set | Status | Artifacts |
-|---|---|---|---|
-| SOC 2 | CC1 / CC2 / CC6 | `PASS` | `WP-3001`, `WP-3004`, `WP-3008`, `WP-6002` |
-| GDPR | Article-level privacy controls | `PASS` | `WP-3006`, data-retention logs |
-| Internal Policy | Policy exception governance | `PASS` | `WP-3003`, `WP-3007`, `WP-6007` |
+| Framework       | Control Set                    | Status | Artifacts                                  |
+| --------------- | ------------------------------ | ------ | ------------------------------------------ |
+| SOC 2           | CC1 / CC2 / CC6                | `PASS` | `WP-3001`, `WP-3004`, `WP-3008`, `WP-6002` |
+| GDPR            | Article-level privacy controls | `PASS` | `WP-3006`, data-retention logs             |
+| Internal Policy | Policy exception governance    | `PASS` | `WP-3003`, `WP-3007`, `WP-6007`            |
 
 ## 3. Evidence Checklist
 
@@ -49,21 +50,21 @@ This bundle provides the evidence set for:
 
 ## 4. Evidence Inventory
 
-| Item | Location | Required | Status |
-|---|---|---|---|
-| Policy decision log export | `logs/governance/policy.decisions.ndjson` | Required | `Complete` |
-| Audit hash chain report | `artifacts/audit/hash_chain_report.json` | Required | `Complete` |
-| Escalation SLA report | `artifacts/governance/escalation_sla.json` | Required | `Complete` |
+| Item                        | Location                                       | Required | Status     |
+| --------------------------- | ---------------------------------------------- | -------- | ---------- |
+| Policy decision log export  | `logs/governance/policy.decisions.ndjson`      | Required | `Complete` |
+| Audit hash chain report     | `artifacts/audit/hash_chain_report.json`       | Required | `Complete` |
+| Escalation SLA report       | `artifacts/governance/escalation_sla.json`     | Required | `Complete` |
 | Compliance retention report | `artifacts/compliance/retention_by_domain.csv` | Required | `Complete` |
 
 ## 5. Signoff
 
-| Reviewer | Role | Signature | Date | Notes |
-|---|---|---|---|---|
-| Maya Patel | Governance | ✓ | 2026-02-15 | SOC 2 + policy controls mapped |
-| Arjun Singh | Security | ✓ | 2026-02-15 | Signature and audit chain integrity verified |
-| Nora Kim | Legal/Privacy | ✓ | 2026-02-15 | GDPR exception handling and retention logs confirmed |
-| Elliot Ward | Program Manager | ✓ | 2026-02-15 | Governance package complete; ready for launch |
+| Reviewer    | Role            | Signature | Date       | Notes                                                |
+| ----------- | --------------- | --------- | ---------- | ---------------------------------------------------- |
+| Maya Patel  | Governance      | ✓         | 2026-02-15 | SOC 2 + policy controls mapped                       |
+| Arjun Singh | Security        | ✓         | 2026-02-15 | Signature and audit chain integrity verified         |
+| Nora Kim    | Legal/Privacy   | ✓         | 2026-02-15 | GDPR exception handling and retention logs confirmed |
+| Elliot Ward | Program Manager | ✓         | 2026-02-15 | Governance package complete; ready for launch        |
 
 ---
 
@@ -74,6 +75,7 @@ This bundle provides the evidence set for:
 - [09-RISK-REGISTRY.md](../plans/09-RISK-REGISTRY.md) — risk and compliance
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -82,4 +84,3 @@ This bundle provides the evidence set for:
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

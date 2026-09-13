@@ -39,12 +39,12 @@ Check API key validity and route behavior.
 
 ## Symptom Matrix
 
-| Symptom | Likely cause | Action |
-|--------|---------------|--------|
-| `command not found: thegent` | PATH/shim not loaded | Re-run shell init + `thegent install-shims` |
-| Immediate auth failures | Missing/invalid API key | Run `thegent setup` and verify env |
-| Session hangs | Provider or network issue | Retry with `--debug`, switch provider |
-| MCP clients cannot connect | MCP server not running | Start `thegent serve` |
+| Symptom                      | Likely cause              | Action                                      |
+| ---------------------------- | ------------------------- | ------------------------------------------- |
+| `command not found: thegent` | PATH/shim not loaded      | Re-run shell init + `thegent install-shims` |
+| Immediate auth failures      | Missing/invalid API key   | Run `thegent setup` and verify env          |
+| Session hangs                | Provider or network issue | Retry with `--debug`, switch provider       |
+| MCP clients cannot connect   | MCP server not running    | Start `thegent serve`                       |
 
 ## Escalation Pattern
 

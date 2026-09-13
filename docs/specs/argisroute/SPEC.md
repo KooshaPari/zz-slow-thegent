@@ -72,5 +72,6 @@ http.ListenAndServe(":8080", r)
 ```
 
 ---
-*Specification Version: 1.0*
-*Last Updated: 2026-04-05*
+
+_Specification Version: 1.0_
+_Last Updated: 2026-04-05_

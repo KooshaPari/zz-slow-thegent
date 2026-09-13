@@ -3,6 +3,7 @@
 **Follows** `07`–`13`. **Snapshot:** 2026-03-24. **Intent:** Final cleanup and long-term stabilization.
 
 ## Slice 1 — GitHub / Repo Policy (8)
+
 1.  **Protections**: Verify required reviewers for `main` in all major repos.
 2.  **CODEOWNERS**: Create/Update for `thegent` repository.
 3.  **Dependabot**: Group all minor/patch updates to reduce noise.
@@ -13,6 +14,7 @@
 8.  **Templates**: Sync Issue/PR templates from `template-commons`.
 
 ## Slice 2 — Reproducibility & Builds (8)
+
 9.  **Bun**: Lock version to `1.3.10` in all `.tool-versions`.
 10. **Frozen Locks**: Ensure `bun install --frozen-lockfile` in all CI.
 11. **Cache**: Optimize `node_modules` caching in GHA.
@@ -23,6 +25,7 @@
 16. **Pre-commit**: Verify hooks (lint, typecheck) are mandatory.
 
 ## Slice 3 — Security & Compliance (8)
+
 17. **SBOM**: Generate SBOM using `syft` for `heliosApp`.
 18. **Audit**: Run `bun audit` and fix all critical vulnerabilities.
 19. **Licenses**: Review `LICENSE` headers in all new source files.
@@ -33,8 +36,10 @@
 24. **Scan**: Run `gitleaks` on local repositories.
 
 ## Slice 4 — Feature Safety & Rollout (2)
+
 25. **Kill Switch**: Document the runtime kill process for `heliosApp`.
 26. **Rollback**: Test the rollback procedure in a staging environment.
 
 ---
+
 **Total Tasks (G+H):** 50.

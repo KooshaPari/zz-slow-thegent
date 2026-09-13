@@ -15,13 +15,13 @@ OpenCode is a headless coding agent CLI that executes agentic tasks via direct i
 
 ### 1.1 Relationship to Codex
 
-| Dimension | Codex | OpenCode |
-|-----------|-------|----------|
-| License | Proprietary | CC0 (public domain) |
-| Execution mode | Direct CLI | Direct CLI |
-| Model routing | Via proxy | Via proxy |
-| Process pattern | `codex` | `opencode` |
-| Registry classification | `_PROXY_AGENTS` | `_DIRECT_AGENTS` |
+| Dimension               | Codex           | OpenCode            |
+| ----------------------- | --------------- | ------------------- |
+| License                 | Proprietary     | CC0 (public domain) |
+| Execution mode          | Direct CLI      | Direct CLI          |
+| Model routing           | Via proxy       | Via proxy           |
+| Process pattern         | `codex`         | `opencode`          |
+| Registry classification | `_PROXY_AGENTS` | `_DIRECT_AGENTS`    |
 
 ---
 
@@ -87,11 +87,11 @@ OpenCode is released under **CC0 1.0 Universal (Public Domain Dedication)**.
 
 ### 4.2 Comparison with Codex
 
-| Aspect | Codex | OpenCode |
-|--------|-------|----------|
-| License | Proprietary EULA | CC0 |
-| Usage tracking | Required | None |
-| Commercial terms | Separate agreement | None |
+| Aspect           | Codex              | OpenCode |
+| ---------------- | ------------------ | -------- |
+| License          | Proprietary EULA   | CC0      |
+| Usage tracking   | Required           | None     |
+| Commercial terms | Separate agreement | None     |
 
 ---
 
@@ -114,24 +114,24 @@ OpenCode is released under **CC0 1.0 Universal (Public Domain Dedication)**.
 
 OpenCode integration MUST maintain feature parity with Codex where applicable:
 
-| Feature | Codex | OpenCode | Parity |
-|---------|-------|----------|--------|
-| Direct invocation | ✅ | ✅ | ✅ |
-| Proxy fallback | ✅ | N/A (direct) | N/A |
-| Process discovery | ✅ | ✅ | ✅ |
-| Model routing | ✅ | ✅ | ✅ |
-| Heartbeat monitor | ✅ | ✅ | ✅ |
+| Feature           | Codex | OpenCode     | Parity |
+| ----------------- | ----- | ------------ | ------ |
+| Direct invocation | ✅    | ✅           | ✅     |
+| Proxy fallback    | ✅    | N/A (direct) | N/A    |
+| Process discovery | ✅    | ✅           | ✅     |
+| Model routing     | ✅    | ✅           | ✅     |
+| Heartbeat monitor | ✅    | ✅           | ✅     |
 
 ---
 
 ## 6. Related Documents
 
-| Document | Purpose |
-|----------|---------|
-| `TERMINOLOGY_LAYERS.md` | Layer vocabulary (harness/LLM/agent definitions) |
-| `23_ARCHITECTURAL_GOVERNANCE.md` | Hexagonal, XDD, SOLID mandates |
-| `src/thegent/agents/registry.py` | Agent registry and runner selection |
-| `src/thegent/infra/discovery_v2.py` | Process discovery patterns |
+| Document                            | Purpose                                          |
+| ----------------------------------- | ------------------------------------------------ |
+| `TERMINOLOGY_LAYERS.md`             | Layer vocabulary (harness/LLM/agent definitions) |
+| `23_ARCHITECTURAL_GOVERNANCE.md`    | Hexagonal, XDD, SOLID mandates                   |
+| `src/thegent/agents/registry.py`    | Agent registry and runner selection              |
+| `src/thegent/infra/discovery_v2.py` | Process discovery patterns                       |
 
 ---
 
@@ -145,8 +145,8 @@ OpenCode integration MUST maintain feature parity with Codex where applicable:
 
 ## 8. Changelog
 
-| Date | Change |
-|------|--------|
+| Date       | Change               |
+| ---------- | -------------------- |
 | 2026-05-01 | Initial stub created |
 
 ---

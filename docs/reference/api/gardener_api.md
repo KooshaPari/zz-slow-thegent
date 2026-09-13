@@ -14,7 +14,7 @@ The Project Gardener - prunes memory into documentation.
 
 ### Methods
 
-#### Gardener.__init__
+#### Gardener.**init**
 
 ```python
 __init__(self: Any, project_root: Path)

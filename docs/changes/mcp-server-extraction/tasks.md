@@ -26,22 +26,22 @@ tags: [wl-126, b90, monolith-split, mcp]
 
 ### Wave-3: server.py lifespan and registration further reduction
 
-| ID | Target | Estimated LOC | Depends on | Status |
-|----|--------|---------------|-----------|--------|
-| W3-C1 | Extract auth/lifecycle loading into `server_bootstrap.py` | ~200 | pattern stable | DONE (28 LOC final) |
-| W3-C2 | Extract resource group loading into `server_resources.py` | ~150 | pattern stable | DONE (78 LOC final) |
-| W3-C3 | Extract tool group loading into `server_tool_loader.py` | ~300 | pattern stable | DONE (218 LOC final) |
-| W3-C4 | Extract middleware setup into `server_middleware.py` | ~100 | pattern stable | DONE (57 LOC final) |
-| W3-C5 | `server.py` reduced to lifespan + import delegation (~200 lines) | 952 final | W3-C1..C4 | DONE |
+| ID    | Target                                                           | Estimated LOC | Depends on     | Status               |
+| ----- | ---------------------------------------------------------------- | ------------- | -------------- | -------------------- |
+| W3-C1 | Extract auth/lifecycle loading into `server_bootstrap.py`        | ~200          | pattern stable | DONE (28 LOC final)  |
+| W3-C2 | Extract resource group loading into `server_resources.py`        | ~150          | pattern stable | DONE (78 LOC final)  |
+| W3-C3 | Extract tool group loading into `server_tool_loader.py`          | ~300          | pattern stable | DONE (218 LOC final) |
+| W3-C4 | Extract middleware setup into `server_middleware.py`             | ~100          | pattern stable | DONE (57 LOC final)  |
+| W3-C5 | `server.py` reduced to lifespan + import delegation (~200 lines) | 952 final     | W3-C1..C4      | DONE                 |
 
 ### Wave-4: Tool group unit tests
 
-| ID | Target | Notes |
-|----|--------|-------|
+| ID    | Target                                     | Notes                            |
+| ----- | ------------------------------------------ | -------------------------------- |
 | W4-C1 | `tests/mcp/tools/test_tools_governance.py` | Currently no isolated tool tests |
-| W4-C2 | `tests/mcp/tools/test_tools_planning.py` | |
-| W4-C3 | `tests/mcp/tools/test_tools_sessions.py` | |
-| W4-C4 | `tests/mcp/tools/test_tools_research.py` | |
+| W4-C2 | `tests/mcp/tools/test_tools_planning.py`   |                                  |
+| W4-C3 | `tests/mcp/tools/test_tools_sessions.py`   |                                  |
+| W4-C4 | `tests/mcp/tools/test_tools_research.py`   |                                  |
 
 ## Cut-over Gate (per extraction)
 

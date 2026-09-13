@@ -25,11 +25,13 @@
 ### Problem Statement
 
 Currently, three different CLI harnesses (Codex CLI, Claude Code, Factory Droid) use fragmented routing mechanisms:
+
 - Codex CLI → `cliproxy_adapter.py` → CLIProxyAPIPlus → Providers
 - Claude Code → `CodexProxyRunner` → CLIProxyAPIPlus → Providers
 - Factory Droid → Factory API → Providers
 
 **Issues**:
+
 - Double translation layers
 - No unified routing, caching, or cost optimization
 - codex-proxy exists as workaround for Responses API handling
@@ -38,6 +40,7 @@ Currently, three different CLI harnesses (Codex CLI, Claude Code, Factory Droid)
 ### Solution
 
 Unify all harnesses through **LiteLLM Router** as single front matter:
+
 - Single translation layer (Responses API → Chat Completions)
 - Unified routing with advanced features (load balancing, fallback, caching)
 - Cost optimization and budget tracking
@@ -50,6 +53,7 @@ Unify all harnesses through **LiteLLM Router** as single front matter:
 ### Research Foundation
 
 This plan is based on comprehensive research of:
+
 - **OpenRouter** (commercial, industry-leading) - 300+ models, smart routing, guardrails, broadcast
 - **LiteLLM Router** (OSS, Netflix-proven) - 100+ providers, load balancing, caching
 - **Advanced routing strategies** - Intent-based, complexity-based, cascade routing
@@ -67,37 +71,41 @@ See `ADVANCED_ROUTER_RESEARCH.md` for complete analysis.
 
 **Source**: [LiteLLM Router Documentation](https://docs.litellm.ai/docs/routing)
 
-| Strategy | Description | Use Case | Performance |
-|----------|-------------|----------|-------------|
-| `simple-shuffle` | Weighted random selection based on RPM/TPM | **Production (Recommended)** | Best performance, minimal latency |
-| `least-busy` | Select least loaded deployment | High traffic scenarios | Good for load distribution |
-| `latency-based-routing` | Route based on latency metrics | Performance critical | Requires metrics collection |
-| `cost-based-routing` | Optimize for cost | Budget conscious | Routes to cheapest model |
-| `usage-based-routing` | Route based on RPM/TPM limits | Rate limit management | Prevents hitting limits |
+| Strategy                | Description                                | Use Case                     | Performance                       |
+| ----------------------- | ------------------------------------------ | ---------------------------- | --------------------------------- |
+| `simple-shuffle`        | Weighted random selection based on RPM/TPM | **Production (Recommended)** | Best performance, minimal latency |
+| `least-busy`            | Select least loaded deployment             | High traffic scenarios       | Good for load distribution        |
+| `latency-based-routing` | Route based on latency metrics             | Performance critical         | Requires metrics collection       |
+| `cost-based-routing`    | Optimize for cost                          | Budget conscious             | Routes to cheapest model          |
+| `usage-based-routing`   | Route based on RPM/TPM limits              | Rate limit management        | Prevents hitting limits           |
 
 **Recommendation**: Use `simple-shuffle` as default (proven at Netflix scale, 8ms P95 latency at 1k RPS)
 
 #### 2. Reliability Features
 
 **Retries**:
+
 - Configurable retry policies per error type
 - Exponential backoff for rate limits
 - Immediate retry for generic errors
 - Custom retry policies via `RetryPolicy` class
 
 **Cooldowns**:
+
 - Automatic cooldown of failing deployments
 - Configurable `allowed_fails` per minute
 - Cooldown duration configurable
 - Per-deployment tracking (not model group)
 
 **Fallback Chains**:
+
 - Automatic fallback to alternative models
 - Context window fallbacks
 - Content policy fallbacks
 - Configurable max fallbacks (default: 5)
 
 **Pre-Call Checks**:
+
 - Context window validation
 - EU region filtering
 - Rate limit checking
@@ -106,11 +114,13 @@ See `ADVANCED_ROUTER_RESEARCH.md` for complete analysis.
 #### 3. Caching
 
 **Types**:
+
 - **In-Memory Cache**: Default, fast, local to process
 - **Redis Cache**: Production-ready, shared across instances
 - **Cache Groups**: Cache across model groups (e.g., Azure + OpenAI)
 
 **Configuration**:
+
 ```python
 router = Router(
     cache_responses=True,
@@ -122,12 +132,14 @@ router = Router(
 #### 4. Cost Tracking
 
 **Features**:
+
 - Per-deployment cost tracking
 - Budget limits per provider
 - Cost optimization routing
 - Custom pricing support
 
 **Usage**:
+
 ```python
 router = Router(
     provider_budget_config={
@@ -140,11 +152,13 @@ router = Router(
 #### 5. Observability
 
 **Custom Callbacks**:
+
 - Track API key, endpoint, model used
 - Log success/failure events
 - Custom logging integrations
 
 **Alerting**:
+
 - Slack webhook support
 - Alert on slow responses
 - Alert on API exceptions
@@ -155,6 +169,7 @@ router = Router(
 **Source**: [codex-proxy GitHub](https://github.com/cornellsh/codex-proxy)
 
 **What it does**:
+
 1. Accepts Responses API format (`/v1/responses`)
 2. Translates to Gemini/Z.AI APIs
 3. Handles SSE streaming
@@ -180,6 +195,7 @@ Provider (OpenAI, Anthropic, etc.)
 ```
 
 **Issues**:
+
 - Double translation (adapter + CLIProxyAPIPlus)
 - No caching
 - No cost optimization
@@ -198,6 +214,7 @@ Provider
 ```
 
 **Issues**:
+
 - Uses Codex proxy even though it's Claude Code
 - No direct LiteLLM Router integration
 - Same limitations as Codex CLI
@@ -213,6 +230,7 @@ Provider
 ```
 
 **Issues**:
+
 - Separate routing mechanism
 - No integration with thegent routing
 - Can't leverage LiteLLM Router features
@@ -274,6 +292,7 @@ Provider
 **File**: `src/thegent/routing/litellm_responses_handler.py` (new)
 
 **Responsibilities**:
+
 - Accept Responses API requests (`/v1/responses`)
 - Translate `input` array → `messages` array
 - Call LiteLLM Router
@@ -281,6 +300,7 @@ Provider
 - Handle WebSocket connections
 
 **Key Functions**:
+
 ```python
 async def handle_responses_request(request: Request) -> Response
 async def handle_responses_stream(request: Request) -> StreamingResponse
@@ -294,11 +314,13 @@ def _chat_completions_to_responses(chunk: dict) -> dict | None
 **File**: `src/thegent/cliproxy_adapter.py` (modify)
 
 **Changes**:
+
 - Add `THGENT_USE_LITELLM_ROUTER` environment variable check
 - Route `/v1/responses` to LiteLLM handler when enabled
 - Maintain backward compatibility with CLIProxyAPIPlus
 
 **Key Changes**:
+
 ```python
 async def proxy_handler(request: Request) -> Response:
     use_litellm = os.environ.get("THGENT_USE_LITELLM_ROUTER", "0") == "1"
@@ -317,6 +339,7 @@ async def proxy_handler(request: Request) -> Response:
 **File**: `src/thegent/agents/codex_proxy.py` (modify)
 
 **Changes**:
+
 - Add option to use LiteLLM Router directly
 - Route Chat Completions requests through LiteLLM Router
 - Maintain backward compatibility
@@ -326,6 +349,7 @@ async def proxy_handler(request: Request) -> Response:
 **File**: `src/thegent/agents/droid.py` (modify)
 
 **Changes**:
+
 - Add option to route through LiteLLM Router
 - Configure droid to use LiteLLM Router endpoint
 - Handle model name mapping
@@ -335,6 +359,7 @@ async def proxy_handler(request: Request) -> Response:
 **File**: `src/thegent/cli_impl.py` (modify)
 
 **Changes**:
+
 - Add task validation during incorporation
 - Use `TaskValidator` to check schema compliance
 - Auto-sync to WORK_STREAM.md after successful incorporation
@@ -370,13 +395,16 @@ async def proxy_handler(request: Request) -> Response:
    - [ ] Verify model list includes Codex CLI models
 
 **Files to Create**:
+
 - `src/thegent/routing/litellm_responses_handler.py`
 
 **Files to Modify**:
+
 - `src/thegent/cliproxy_adapter.py`
 - `src/thegent/routing/litellm_router.py`
 
 **Testing**:
+
 - [ ] Test HTTP POST `/v1/responses` endpoint
 - [ ] Test SSE streaming
 - [ ] Test WebSocket connections
@@ -406,11 +434,13 @@ async def proxy_handler(request: Request) -> Response:
    - [ ] Set up cost tracking
 
 **Files to Modify**:
+
 - `src/thegent/agents/codex_proxy.py`
 - `src/thegent/clode_main.py`
 - `src/thegent/routing/litellm_router.py`
 
 **Testing**:
+
 - [ ] Test `thegent clode flash "Hello"`
 - [ ] Test model routing
 - [ ] Test fallback chains
@@ -433,10 +463,12 @@ async def proxy_handler(request: Request) -> Response:
    - [ ] Set up authentication
 
 **Files to Modify**:
+
 - `src/thegent/agents/droid.py`
 - Factory config generation code
 
 **Testing**:
+
 - [ ] Test `droid exec --model "GLM-4.6 [Z.AI]"`
 - [ ] Test model routing
 - [ ] Test authentication
@@ -464,9 +496,11 @@ async def proxy_handler(request: Request) -> Response:
    - [ ] Provide summary of incorporated tasks
 
 **Files to Modify**:
+
 - `src/thegent/cli_impl.py` (find and modify `plan_incorporate_impl`)
 
 **Testing**:
+
 - [ ] Test with valid task files
 - [ ] Test with invalid task files
 - [ ] Test auto-sync to WORK_STREAM.md
@@ -514,9 +548,7 @@ async def proxy_handler(request: Request) -> Response:
     {
       "type": "message",
       "role": "user",
-      "content": [
-        {"type": "text", "text": "Hello"}
-      ]
+      "content": [{ "type": "text", "text": "Hello" }]
     }
   ],
   "stream": true,
@@ -540,9 +572,7 @@ async def proxy_handler(request: Request) -> Response:
 ```json
 {
   "model": "gpt-5-mini",
-  "messages": [
-    {"role": "user", "content": "Hello"}
-  ],
+  "messages": [{ "role": "user", "content": "Hello" }],
   "stream": true,
   "temperature": 0.7,
   "max_tokens": 1000
@@ -774,30 +804,35 @@ async def test_multi_harness_routing():
 ## Migration Path
 
 ### Phase 1: Implementation (Week 1)
+
 - ✅ Create LiteLLM Responses API handler
 - ✅ Update adapter to support LiteLLM Router backend
 - ✅ Add WebSocket support
 - ✅ Unit tests
 
 ### Phase 2: Integration (Week 2)
+
 - ✅ Integrate Claude Code with LiteLLM Router
 - ✅ Integrate Factory Droid with LiteLLM Router
 - ✅ Update model configuration
 - ✅ Integration tests
 
 ### Phase 3: Plan Incorporate (Week 2)
+
 - ✅ Add task validation to `plan incorporate`
 - ✅ Auto-sync to WORK_STREAM.md
 - ✅ Error reporting
 - ✅ Tests
 
 ### Phase 4: Testing & Optimization (Week 3)
+
 - ✅ Comprehensive testing
 - ✅ Performance optimization
 - ✅ Cost tracking verification
 - ✅ Documentation
 
 ### Phase 5: Rollout (Week 4)
+
 - ✅ Enable LiteLLM Router by default (feature flag)
 - ✅ Monitor performance and errors
 - ✅ Gather feedback
@@ -815,50 +850,54 @@ async def test_multi_harness_routing():
 
 ### Technical Risks
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| LiteLLM Router performance issues | High | Low | Feature flag, fallback to CLIProxyAPIPlus |
-| Responses API translation bugs | Medium | Medium | Comprehensive testing, code review |
-| Model routing errors | Medium | Low | Pre-call checks, fallback chains |
-| WebSocket handling issues | Low | Medium | Test WebSocket connections thoroughly |
+| Risk                              | Impact | Probability | Mitigation                                |
+| --------------------------------- | ------ | ----------- | ----------------------------------------- |
+| LiteLLM Router performance issues | High   | Low         | Feature flag, fallback to CLIProxyAPIPlus |
+| Responses API translation bugs    | Medium | Medium      | Comprehensive testing, code review        |
+| Model routing errors              | Medium | Low         | Pre-call checks, fallback chains          |
+| WebSocket handling issues         | Low    | Medium      | Test WebSocket connections thoroughly     |
 
 ### Operational Risks
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| Configuration errors | Medium | Medium | Validation, clear error messages |
-| Provider API changes | Low | Low | LiteLLM handles provider abstraction |
-| Cost overruns | Medium | Low | Budget limits, cost tracking |
+| Risk                 | Impact | Probability | Mitigation                           |
+| -------------------- | ------ | ----------- | ------------------------------------ |
+| Configuration errors | Medium | Medium      | Validation, clear error messages     |
+| Provider API changes | Low    | Low         | LiteLLM handles provider abstraction |
+| Cost overruns        | Medium | Low         | Budget limits, cost tracking         |
 
 ### Migration Risks
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| Breaking existing workflows | High | Low | Backward compatibility, feature flag |
-| User confusion | Medium | Medium | Clear documentation, migration guide |
-| Performance degradation | Medium | Low | Performance testing, monitoring |
+| Risk                        | Impact | Probability | Mitigation                           |
+| --------------------------- | ------ | ----------- | ------------------------------------ |
+| Breaking existing workflows | High   | Low         | Backward compatibility, feature flag |
+| User confusion              | Medium | Medium      | Clear documentation, migration guide |
+| Performance degradation     | Medium | Low         | Performance testing, monitoring      |
 
 ---
 
 ## Success Metrics
 
 ### Functionality
+
 - ✅ All three harnesses work with LiteLLM Router
 - ✅ Responses API translation works correctly
 - ✅ WebSocket streaming works
 - ✅ Plan incorporate validation works
 
 ### Performance
+
 - ✅ Routing latency < 100ms P95
 - ✅ Cache hit rate > 50% (with Redis)
 - ✅ Fallback success rate > 99%
 
 ### Cost
+
 - ✅ 20-30% cost reduction through optimization
 - ✅ Budget limits enforced correctly
 - ✅ Cost tracking accurate
 
 ### Developer Experience
+
 - ✅ Simplified configuration
 - ✅ Clear error messages
 - ✅ Good documentation
@@ -907,6 +946,7 @@ use_litellm_router: bool = False  # Feature flag
 ## References
 
 ### Documentation
+
 - [LiteLLM Router Docs](https://docs.litellm.ai/docs/routing)
 - [LiteLLM GitHub](https://github.com/BerriAI/litellm)
 - [codex-proxy Reference](https://github.com/cornellsh/codex-proxy)
@@ -927,6 +967,7 @@ use_litellm_router: bool = False  # Feature flag
 - [Semantic Router](https://github.com/aurelio-labs/semantic-router) - Zero-cost intent routing
 
 ### Internal Documentation
+
 - `ULTRA_ADVANCED_ROUTER_RESEARCH.md` - **⭐⭐ Maximum depth research with production-ready code, complete feature analysis**
 - `CHATGPT_PARETO_DEEP_INDEX.md` - **⭐⭐⭐ 7-part deep research from chatgpt3/4 (Foundations, Indices, API, Catalog, Speed Stack, Helios Spec, SOTA)**
 - `CHATGPT_PARETO_ROUTER_EXTENSION.md` - **⭐⭐ Pareto router synthesis: Offer abstraction, shadow pricing, project catalog**

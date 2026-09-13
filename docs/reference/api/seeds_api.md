@@ -5,6 +5,7 @@
 MCP tools for idea seed detection and storage.
 
 Provides tools for:
+
 - Detecting seeds in text using pattern matching
 - Storing seeds persistently in JSONL format
 - Querying and managing seed ideas

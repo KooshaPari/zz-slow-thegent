@@ -10,23 +10,23 @@ tags: [wl-136, design, import-boundary, decomposition]
 
 ## Module Classification Table
 
-| Module | Surface | Rationale |
-|--------|---------|-----------|
-| `src/thegent/agents/` | core | Production agent runners |
-| `src/thegent/mcp/` | core | MCP server — always-on |
-| `src/thegent/routing/` | core | Request routing — hot path |
-| `src/thegent/governance/` | core | SLO emitter, policy engine |
-| `src/thegent/infra/` | core | Infrastructure primitives |
-| `src/thegent/config.py` | core | Config resolution at startup |
-| `src/thegent/session/` | core | Session state management |
-| `src/thegent/orchestration/` | core | DAG execution engine |
-| `src/thegent/cli/commands/impl.py` | core | Execution dispatch |
-| `src/thegent/cli/commands/run_cmds.py` | core | `thegent run` entrypoint |
-| `src/thegent/cli/commands/cli_dag.py` | tooling | DAG management CLI (WL-120) |
-| `src/thegent/cli/commands/cli_tooling.py` | tooling | Dev utilities (WL-136) |
-| `src/thegent/cli/commands/impl_execution.py` | tooling | Execution boundary shim |
-| `benchmarks/` | tooling | Performance benchmarks |
-| `scripts/` | tooling | Dev/QA scripts |
+| Module                                       | Surface | Rationale                    |
+| -------------------------------------------- | ------- | ---------------------------- |
+| `src/thegent/agents/`                        | core    | Production agent runners     |
+| `src/thegent/mcp/`                           | core    | MCP server — always-on       |
+| `src/thegent/routing/`                       | core    | Request routing — hot path   |
+| `src/thegent/governance/`                    | core    | SLO emitter, policy engine   |
+| `src/thegent/infra/`                         | core    | Infrastructure primitives    |
+| `src/thegent/config.py`                      | core    | Config resolution at startup |
+| `src/thegent/session/`                       | core    | Session state management     |
+| `src/thegent/orchestration/`                 | core    | DAG execution engine         |
+| `src/thegent/cli/commands/impl.py`           | core    | Execution dispatch           |
+| `src/thegent/cli/commands/run_cmds.py`       | core    | `thegent run` entrypoint     |
+| `src/thegent/cli/commands/cli_dag.py`        | tooling | DAG management CLI (WL-120)  |
+| `src/thegent/cli/commands/cli_tooling.py`    | tooling | Dev utilities (WL-136)       |
+| `src/thegent/cli/commands/impl_execution.py` | tooling | Execution boundary shim      |
+| `benchmarks/`                                | tooling | Performance benchmarks       |
+| `scripts/`                                   | tooling | Dev/QA scripts               |
 
 ## Import Boundary Rule
 
@@ -52,6 +52,7 @@ uv run python scripts/check_thegent_core_boundary.py --strict
 ```
 
 Via Taskfile:
+
 ```bash
 task quality:core-boundary         # advisory
 task quality:core-boundary:strict  # CI-blocking
@@ -110,6 +111,7 @@ for each module in the decomposition.
 and run_cmds.py remain core.
 
 **Validation commands**:
+
 ```bash
 task quality:core-boundary:strict
 uv run pytest tests/cli/test_wl120_extraction_hardening.py -v
@@ -117,6 +119,7 @@ uv run pytest tests/governance/test_wl136_two_surface_adr.py -v
 ```
 
 **Residual risks**:
+
 - `cli.py` still imports from `cli_tooling.py` via re-exports; these must be removed
   when cli.py is fully decomposed (Wave-5+).
 - `cli_dag.py` imports from `cli.py` (lazy import pattern); this creates a transient

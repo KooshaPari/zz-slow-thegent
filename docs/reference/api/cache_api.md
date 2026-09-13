@@ -15,7 +15,7 @@ In-process LRU cache with TTL expiration.
 
 ### Methods
 
-#### L1Cache.__init__
+#### L1Cache.**init**
 
 ```python
 __init__(self: Any, max_size: int, ttl_seconds: int)
@@ -93,7 +93,7 @@ Stores cache entries to disk for persistence across process restarts.
 
 ### Methods
 
-#### L2Cache.__init__
+#### L2Cache.**init**
 
 ```python
 __init__(self: Any, cache_dir: str, ttl_seconds: int)
@@ -166,13 +166,14 @@ Get cache statistics.
 Layered cache with L1 → L2 fallback.
 
 Implements fallback logic:
+
 1. Check L1 (fast, in-process)
 2. Check L2 (slower, file-based)
 3. Return None if not found in either layer
 
 ### Methods
 
-#### LayeredCache.__init__
+#### LayeredCache.**init**
 
 ```python
 __init__(self: Any, l1_size: int, l2_dir: str)

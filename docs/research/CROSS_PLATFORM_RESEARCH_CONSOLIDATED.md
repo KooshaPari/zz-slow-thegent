@@ -43,18 +43,19 @@
 
 ### 1.2 Research Status
 
-| Category | Status | Documents |
-|----------|--------|-----------|
-| **Core Research** | ✅ Complete | Main research (4000+ lines), Advanced patterns (600+ lines) |
-| **Performance** | ✅ Complete | Benchmarks & SLAs (700+ lines) |
-| **Security** | ✅ Complete | Security deep dive (800+ lines) |
-| **Integration** | ✅ Complete | Integration guide (1000+ lines) |
-| **Gaps & Extensions** | ✅ Complete | Gaps research (300+ lines), Extensions (200+ lines) |
-| **Planning** | ✅ Complete | Implementation plan (500+ lines), Quick reference (300+ lines) |
+| Category              | Status      | Documents                                                      |
+| --------------------- | ----------- | -------------------------------------------------------------- |
+| **Core Research**     | ✅ Complete | Main research (4000+ lines), Advanced patterns (600+ lines)    |
+| **Performance**       | ✅ Complete | Benchmarks & SLAs (700+ lines)                                 |
+| **Security**          | ✅ Complete | Security deep dive (800+ lines)                                |
+| **Integration**       | ✅ Complete | Integration guide (1000+ lines)                                |
+| **Gaps & Extensions** | ✅ Complete | Gaps research (300+ lines), Extensions (200+ lines)            |
+| **Planning**          | ✅ Complete | Implementation plan (500+ lines), Quick reference (300+ lines) |
 
 ### 1.3 Consolidation Summary
 
 This document consolidates:
+
 - `CROSS_PLATFORM_MULTI_TENANT_DESKTOP_AUTOMATION_RESEARCH.md` (main research)
 - `CROSS_PLATFORM_GAPS_AND_EXTENSIONS_RESEARCH.md` (gaps)
 - `CROSS_PLATFORM_EXTENSIONS_WIDER_DEEPER_OPTIMIZATION.md` (extensions)
@@ -69,23 +70,25 @@ This document consolidates:
 
 ### 2.1 User Isolation Patterns
 
-| Pattern | Isolation Level | Use Case | Implementation |
-|---------|----------------|----------|----------------|
-| **Sub-user** | Process-level | Development, fast iteration | Default, no permissions |
-| **OS User** | OS-level | Production, untrusted agents | Requires admin, true isolation |
-| **Docker** | Container-level | Strongest isolation | Future, container-based |
-| **Hybrid** | Configurable | Flexible deployment | `isolation_mode` config |
+| Pattern      | Isolation Level | Use Case                     | Implementation                 |
+| ------------ | --------------- | ---------------------------- | ------------------------------ |
+| **Sub-user** | Process-level   | Development, fast iteration  | Default, no permissions        |
+| **OS User**  | OS-level        | Production, untrusted agents | Requires admin, true isolation |
+| **Docker**   | Container-level | Strongest isolation          | Future, container-based        |
+| **Hybrid**   | Configurable    | Flexible deployment          | `isolation_mode` config        |
 
 **Recommendation**: Hybrid model (sub-user default + OS user opt-in)
 
 ### 2.2 Multi-Tenant Coordination
 
 **Coordination Mechanisms**:
+
 1. **File-level**: Tenant-aware edit leases (extend `EditLeaseManager`)
 2. **UI Automation**: Desktop automation coordinator + user activity detection
 3. **Process**: Tenant-aware concurrency limits (extend `ConcurrencyController`)
 
 **Coordination Policies**:
+
 - **User priority**: User actions always take precedence
 - **FIFO**: Agent-agent conflicts resolved by arrival time
 - **Resource limits**: Per-tenant concurrency caps
@@ -123,11 +126,13 @@ This document consolidates:
 ### 3.1 macOS
 
 **APIs**:
+
 - **AppleScript**: `osascript`, `py-applescript`
 - **Apple Events**: CoreGraphics, Accessibility API
 - **User Activity**: `CGEventSourceSecondsSinceLastEventType()`
 
 **Implementation**:
+
 ```python
 # src/thegent/infra/desktop_automation/macos.py
 
@@ -154,11 +159,13 @@ class MacOSDesktopProvider:
 ### 3.2 Windows
 
 **APIs**:
+
 - **UI Automation**: `pywinauto` or `uiautomation`
 - **User Activity**: `GetLastInputInfo()` (User32.dll)
 - **User Creation**: PowerShell `New-LocalUser`
 
 **Implementation**:
+
 ```python
 # src/thegent/infra/desktop_automation/windows.py
 
@@ -181,11 +188,13 @@ class WindowsDesktopProvider:
 ### 3.3 Linux
 
 **APIs**:
+
 - **AT-SPI**: `pyatspi` or `dogtail`
 - **D-Bus**: System D-Bus for coordination
 - **User Activity**: `XScreenSaverQueryInfo()` (X11) or `loginctl` (systemd)
 
 **Implementation**:
+
 ```python
 # src/thegent/infra/desktop_automation/linux.py
 
@@ -208,12 +217,12 @@ class LinuxDesktopProvider:
 
 ### 3.4 Additional Platforms
 
-| Platform | Status | Notes |
-|----------|--------|-------|
-| **WSL2** | ✅ Supported | Full provider with path translation |
-| **FreeBSD** | ⚠️ Unsupported | Documented as unsupported |
-| **Docker** | 🔄 Planned | Headless mode, no desktop automation |
-| **CI/CD** | ✅ Supported | Headless agent mode |
+| Platform    | Status         | Notes                                |
+| ----------- | -------------- | ------------------------------------ |
+| **WSL2**    | ✅ Supported   | Full provider with path translation  |
+| **FreeBSD** | ⚠️ Unsupported | Documented as unsupported            |
+| **Docker**  | 🔄 Planned     | Headless mode, no desktop automation |
+| **CI/CD**   | ✅ Supported   | Headless agent mode                  |
 
 ---
 
@@ -222,26 +231,31 @@ class LinuxDesktopProvider:
 ### 4.1 Coordination Patterns
 
 **Pattern 1: User Priority**
+
 - User actions always take precedence
 - Agents pause when user active
 - Resume after user idle timeout
 
 **Pattern 2: FIFO Queue**
+
 - Agent-agent conflicts resolved by arrival time
 - First agent gets lock
 - Others queue and wait
 
 **Pattern 3: Resource Limits**
+
 - Per-tenant concurrency caps
 - Extend `ConcurrencyController` with tenant awareness
 - Circuit breaker on limit exceeded
 
 **Pattern 4: Distributed Coordination**
+
 - Redis for distributed locks
 - Redlock algorithm for consensus
 - Pub/Sub for coordination events
 
 **Pattern 5: Consensus-Based**
+
 - Swarm consensus integration
 - Multi-agent coordination
 - Conflict resolution via voting
@@ -249,6 +263,7 @@ class LinuxDesktopProvider:
 ### 4.2 User Activity Detection
 
 **macOS**:
+
 ```python
 def get_user_activity_macos() -> float:
     """Seconds since last user activity"""
@@ -256,6 +271,7 @@ def get_user_activity_macos() -> float:
 ```
 
 **Windows**:
+
 ```python
 def get_user_activity_windows() -> float:
     """Seconds since last user input"""
@@ -265,6 +281,7 @@ def get_user_activity_windows() -> float:
 ```
 
 **Linux**:
+
 ```python
 def get_user_activity_linux() -> float:
     """Seconds since last user activity"""
@@ -279,12 +296,14 @@ def get_user_activity_linux() -> float:
 ### 4.3 Conflict Resolution
 
 **Resolution Strategy**:
+
 1. **Detect conflict**: User activity or agent-agent collision
 2. **Pause agents**: Release locks, pause execution
 3. **Wait for resolution**: User idle timeout or queue processing
 4. **Resume**: Re-acquire locks, continue execution
 
 **Implementation**:
+
 ```python
 # src/thegent/infra/desktop_coordinator.py
 
@@ -345,16 +364,19 @@ class DesktopAutomationProvider(ABC):
 ### 5.2 Platform Implementations
 
 **macOS Provider**:
+
 - AppleScript for simple actions
 - Apple Events for advanced control
 - Accessibility API for element finding
 
 **Windows Provider**:
+
 - UI Automation (UIA) for modern apps
 - MSAA fallback for legacy apps
 - PowerShell for system operations
 
 **Linux Provider**:
+
 - AT-SPI for accessibility
 - D-Bus for system integration
 - X11/Wayland considerations
@@ -364,11 +386,13 @@ class DesktopAutomationProvider(ABC):
 **CUA Framework**: [Computer-Use Agent](https://github.com/trycua/cua)
 
 **Integration Strategy**:
+
 - Native providers for simple cases (default)
 - CUA for advanced scenarios (opt-in)
 - MCP server integration available
 
 **When to Use CUA**:
+
 - Complex multi-step workflows
 - Cross-platform consistency required
 - MCP tool integration needed
@@ -386,17 +410,18 @@ class DesktopAutomationProvider(ABC):
 
 ### 6.2 Shell Selection Matrix
 
-| Context | macOS | Linux | Windows (native) | Windows (WSL2) |
-|---------|-------|-------|------------------|----------------|
-| **Hooks** | Bash | Bash | WSL2 Bash or pwsh | Bash |
-| **Agent subprocess** | Bash/zsh | Bash | pwsh or WSL2 Bash | Bash |
-| **OS user creation** | dscl/useradd | useradd | pwsh (New-LocalUser) | N/A |
-| **Desktop automation** | AppleScript/osascript | Python+AT-SPI | pwsh + UI Automation | N/A |
-| **thegent CLI** | Python (any) | Python (any) | Python (any) | Python (any) |
+| Context                | macOS                 | Linux         | Windows (native)     | Windows (WSL2) |
+| ---------------------- | --------------------- | ------------- | -------------------- | -------------- |
+| **Hooks**              | Bash                  | Bash          | WSL2 Bash or pwsh    | Bash           |
+| **Agent subprocess**   | Bash/zsh              | Bash          | pwsh or WSL2 Bash    | Bash           |
+| **OS user creation**   | dscl/useradd          | useradd       | pwsh (New-LocalUser) | N/A            |
+| **Desktop automation** | AppleScript/osascript | Python+AT-SPI | pwsh + UI Automation | N/A            |
+| **thegent CLI**        | Python (any)          | Python (any)  | Python (any)         | Python (any)   |
 
 ### 6.3 Implementation
 
 **Shell Detection Utility**:
+
 ```python
 # src/thegent/infra/shell_detection.py
 
@@ -414,21 +439,22 @@ def get_preferred_shell(platform: str, context: Literal["hooks", "agent", "os_ad
 ```
 
 **Configuration**:
+
 ```yaml
 # config.yaml
 agent:
-  shell: "bash"  # Options: bash, pwsh, wsl-bash
-  shell_detection: true  # Auto-detect based on context
+  shell: "bash" # Options: bash, pwsh, wsl-bash
+  shell_detection: true # Auto-detect based on context
 ```
 
 ### 6.4 Tasks
 
-| ID | Task | Phase | Depends |
-|----|------|-------|---------|
-| P-SHELL-1 | Create `shell_detection.py` with `get_preferred_shell()` | Phase 1 | None |
-| P-SHELL-2 | Add `THGENT_AGENT_SHELL` config | Phase 1 | P-SHELL-1 |
+| ID        | Task                                                     | Phase   | Depends   |
+| --------- | -------------------------------------------------------- | ------- | --------- |
+| P-SHELL-1 | Create `shell_detection.py` with `get_preferred_shell()` | Phase 1 | None      |
+| P-SHELL-2 | Add `THGENT_AGENT_SHELL` config                          | Phase 1 | P-SHELL-1 |
 | P-SHELL-3 | Update hook dispatcher to use shell detection on Windows | Phase 2 | P-SHELL-1 |
-| P-SHELL-4 | Create `docs/reference/POSIX_PWSH_SHELL_STRATEGY.md` | Phase 1 | None |
+| P-SHELL-4 | Create `docs/reference/POSIX_PWSH_SHELL_STRATEGY.md`     | Phase 1 | None      |
 
 ---
 
@@ -458,6 +484,7 @@ Mac (client)                    Windows PC (compute)
 ### 7.2 Implementation Details
 
 **Remote Execution Flow**:
+
 1. **Sync files**: Syncthing bi-directional sync
 2. **SSH connection**: Establish secure tunnel
 3. **Execute command**: Run `thegent` on remote host
@@ -465,11 +492,13 @@ Mac (client)                    Windows PC (compute)
 5. **Sync artifacts**: Sync results back to client
 
 **Session Registry**:
+
 - Remote host maintains separate `run_registry.jsonl`
 - Client can query remote registry via SSH
 - MCP server optional for remote access
 
 **MCP Reachability**:
+
 - Remote MCP server on port 3847 (configurable)
 - Client connects via SSH tunnel or Tailscale VPN
 - Optional: Expose via reverse proxy
@@ -489,12 +518,12 @@ hosts:
 
 ### 7.4 Tasks
 
-| ID | Task | Phase | Depends |
-|----|------|-------|---------|
-| P-REMOTE-1 | Implement `thegent run --remote HOST` command | Phase 4 | None |
-| P-REMOTE-2 | Add remote session registry support | Phase 4 | P-REMOTE-1 |
-| P-REMOTE-3 | Add MCP server on remote host | Phase 4 | P-REMOTE-1 |
-| P-REMOTE-4 | Add SSH tunnel management | Phase 4 | P-REMOTE-1 |
+| ID         | Task                                          | Phase   | Depends    |
+| ---------- | --------------------------------------------- | ------- | ---------- |
+| P-REMOTE-1 | Implement `thegent run --remote HOST` command | Phase 4 | None       |
+| P-REMOTE-2 | Add remote session registry support           | Phase 4 | P-REMOTE-1 |
+| P-REMOTE-3 | Add MCP server on remote host                 | Phase 4 | P-REMOTE-1 |
+| P-REMOTE-4 | Add SSH tunnel management                     | Phase 4 | P-REMOTE-1 |
 
 ---
 
@@ -502,27 +531,30 @@ hosts:
 
 ### 8.1 Performance Targets
 
-| Metric | Target | Current | Notes |
-|--------|--------|---------|-------|
-| **Click Latency (p95)** | <100ms | TBD | Simple actions |
-| **Success Rate** | >95% | TBD | Overall reliability |
-| **Element Find (cached)** | <10ms | TBD | Cached elements |
-| **Screenshot (full)** | <500ms | TBD | Full screen capture |
-| **Screenshot (region)** | <100ms | TBD | Region capture |
+| Metric                    | Target | Current | Notes               |
+| ------------------------- | ------ | ------- | ------------------- |
+| **Click Latency (p95)**   | <100ms | TBD     | Simple actions      |
+| **Success Rate**          | >95%   | TBD     | Overall reliability |
+| **Element Find (cached)** | <10ms  | TBD     | Cached elements     |
+| **Screenshot (full)**     | <500ms | TBD     | Full screen capture |
+| **Screenshot (region)**   | <100ms | TBD     | Region capture      |
 
 ### 8.2 Optimization Strategies
 
 **Caching**:
+
 - Element cache (TTL: 5 seconds)
 - Screenshot cache (TTL: 1 second)
 - User activity cache (TTL: 0.5 seconds)
 
 **Parallel Execution**:
+
 - Batch operations where possible
 - Parallel element finding
 - Concurrent screenshot regions
 
 **Incremental Updates**:
+
 - Only capture changed regions
 - Diff-based screenshot updates
 - Smart element invalidation
@@ -530,12 +562,14 @@ hosts:
 ### 8.3 Performance Monitoring
 
 **Metrics**:
+
 - Operation latency (p50, p95, p99)
 - Success/failure rates
 - Cache hit rates
 - Resource usage (CPU, memory)
 
 **Observability**:
+
 - OpenTelemetry spans
 - Prometheus metrics
 - Run registry events
@@ -547,6 +581,7 @@ hosts:
 ### 9.1 Threat Model
 
 **Attack Surfaces**:
+
 1. **Input injection**: Malicious automation commands
 2. **UI spoofing**: Fake UI elements
 3. **Screenshot leakage**: Sensitive data exposure
@@ -556,21 +591,25 @@ hosts:
 ### 9.2 Security Controls
 
 **Input Validation**:
+
 - Validate all automation commands
 - Sanitize user input
 - Rate limiting
 
 **App Verification**:
+
 - Verify UI element authenticity
 - Check window ownership
 - Validate process identity
 
 **Screenshot Redaction**:
+
 - Redact sensitive regions
 - Configurable redaction rules
 - Audit trail
 
 **Zero-Trust Automation**:
+
 - Verify every action
 - Audit all operations
 - Immutable audit logs
@@ -578,11 +617,13 @@ hosts:
 ### 9.3 Compliance
 
 **GDPR**:
+
 - Data minimization
 - Right to deletion
 - Audit trails
 
 **SOC 2**:
+
 - Access controls
 - Audit logging
 - Security monitoring
@@ -594,38 +635,46 @@ hosts:
 ### 10.1 Existing thegent Systems
 
 **ConcurrencyController (WP-5001)**:
+
 - Extend with tenant-aware limits
 - Location: `src/thegent/execution.py`
 
 **EditLeaseManager (MTSP-14)**:
+
 - Extend with tenant awareness
 - Location: `src/thegent/orchestration/edit_lease.py`
 
 **Retry & Fallback (WP-2002)**:
+
 - Use for automation failures
 - Location: `src/thegent/agents/resilience.py`
 
 **Run Registry**:
+
 - Log automation actions
 - Location: `src/thegent/execution.py:RunMeta`
 
 **OpenTelemetry (WP-Y6)**:
+
 - Add automation spans
 - Location: `src/thegent/observability/otel_instrumentation.py`
 
 ### 10.2 New Components
 
 **User Isolation**:
+
 - `src/thegent/infra/user_isolation.py`
 - `src/thegent/infra/os_user_manager.py`
 - `src/thegent/infra/user_pool.py`
 
 **Multi-Tenant Coordination**:
+
 - `src/thegent/infra/user_activity.py`
 - `src/thegent/infra/desktop_coordinator.py`
 - `src/thegent/infra/conflict_resolver.py`
 
 **Desktop Automation**:
+
 - `src/thegent/infra/desktop_automation/base.py`
 - `src/thegent/infra/desktop_automation/macos.py`
 - `src/thegent/infra/desktop_automation/windows.py`
@@ -680,14 +729,14 @@ hosts:
 
 ### 12.1 Error Taxonomy
 
-| Failure Class | Examples | Handling |
-|---------------|----------|----------|
-| **Transient** | Network blip, element not yet visible | Retry with backoff (tenacity) |
-| **Permission** | Accessibility denied, UAC | Fail fast; clear message; link to setup guide |
-| **State** | App closed, window moved | Re-find element; invalidate cache |
-| **Resource** | OOM, disk full | Circuit breaker; escalate |
-| **Platform** | API deprecated, unsupported OS | Version check; graceful degradation |
-| **User** | User interrupted, lock screen | Release lock; queue or abort |
+| Failure Class  | Examples                              | Handling                                      |
+| -------------- | ------------------------------------- | --------------------------------------------- |
+| **Transient**  | Network blip, element not yet visible | Retry with backoff (tenacity)                 |
+| **Permission** | Accessibility denied, UAC             | Fail fast; clear message; link to setup guide |
+| **State**      | App closed, window moved              | Re-find element; invalidate cache             |
+| **Resource**   | OOM, disk full                        | Circuit breaker; escalate                     |
+| **Platform**   | API deprecated, unsupported OS        | Version check; graceful degradation           |
+| **User**       | User interrupted, lock screen         | Release lock; queue or abort                  |
 
 ### 12.2 Error Codes
 
@@ -706,13 +755,13 @@ THGENT-E010: Invalid selector
 
 ### 12.3 Retry & Fallback Chains
 
-| Layer | Retry | Fallback |
-|-------|-------|----------|
+| Layer                  | Retry                | Fallback                                                 |
+| ---------------------- | -------------------- | -------------------------------------------------------- |
 | **Desktop automation** | 3x with 0.5s backoff | AppleScript → Apple Events (macOS); UIA → MSAA (Windows) |
-| **Remote SSH** | 2x with 2s backoff | Fail with clear message |
-| **Element find** | 2x with 1s | Broader selector; screenshot + vision fallback |
-| **Screenshot** | 1 retry | Region fallback; lower resolution |
-| **User activity** | No retry | Config: `skip_user_check` for headless |
+| **Remote SSH**         | 2x with 2s backoff   | Fail with clear message                                  |
+| **Element find**       | 2x with 1s           | Broader selector; screenshot + vision fallback           |
+| **Screenshot**         | 1 retry              | Region fallback; lower resolution                        |
+| **User activity**      | No retry             | Config: `skip_user_check` for headless                   |
 
 ### 12.4 Circuit Breaker Integration
 
@@ -726,33 +775,33 @@ THGENT-E010: Invalid selector
 
 ### 13.1 Additional Platforms
 
-| Platform | Status | Implementation |
-|----------|--------|----------------|
-| **WSL2** | ✅ Supported | Full provider with path translation (`/mnt/c/` ↔ `C:\`) |
-| **FreeBSD** | ⚠️ Unsupported | Documented as unsupported |
-| **Docker** | 🔄 Planned | Headless mode; no desktop automation |
-| **CI/CD** | ✅ Supported | Headless agent mode (`THGENT_HEADLESS=1`) |
+| Platform    | Status         | Implementation                                           |
+| ----------- | -------------- | -------------------------------------------------------- |
+| **WSL2**    | ✅ Supported   | Full provider with path translation (`/mnt/c/` ↔ `C:\`) |
+| **FreeBSD** | ⚠️ Unsupported | Documented as unsupported                                |
+| **Docker**  | 🔄 Planned     | Headless mode; no desktop automation                     |
+| **CI/CD**   | ✅ Supported   | Headless agent mode (`THGENT_HEADLESS=1`)                |
 
 ### 13.2 Edge Cases
 
-| Edge Case | Handling |
-|-----------|----------|
-| **Multi-monitor** | `screenshot(region)` with monitor index; `get_monitors()` |
-| **High-DPI / Retina** | Scale factor detection; coordinate scaling |
-| **Mixed DPI** | Per-monitor scale; document coordinate system |
-| **Wayland (Linux)** | `wlr-screencopy`, `pipewire`; document limitations |
-| **Headless Linux** | Xvfb; `DISPLAY=:99`; `xvfb-run` wrapper |
-| **Locked screen** | Detect lock; deny automation or queue |
-| **Sleep / Hibernate** | Detect sleep; fail fast with clear error |
+| Edge Case             | Handling                                                  |
+| --------------------- | --------------------------------------------------------- |
+| **Multi-monitor**     | `screenshot(region)` with monitor index; `get_monitors()` |
+| **High-DPI / Retina** | Scale factor detection; coordinate scaling                |
+| **Mixed DPI**         | Per-monitor scale; document coordinate system             |
+| **Wayland (Linux)**   | `wlr-screencopy`, `pipewire`; document limitations        |
+| **Headless Linux**    | Xvfb; `DISPLAY=:99`; `xvfb-run` wrapper                   |
+| **Locked screen**     | Detect lock; deny automation or queue                     |
+| **Sleep / Hibernate** | Detect sleep; fail fast with clear error                  |
 
 ### 13.3 Use Cases Beyond Desktop
 
-| Use Case | Implementation |
-|----------|----------------|
-| **Headless agent (CI)** | `thegent run --headless`; skip desktop automation |
-| **Scheduled runs** | cron/systemd timer; no user activity check when headless |
-| **Batch processing** | `thegent run --batch` for non-interactive |
-| **Remote + headless** | `thegent run --remote HOST --headless` |
+| Use Case                | Implementation                                           |
+| ----------------------- | -------------------------------------------------------- |
+| **Headless agent (CI)** | `thegent run --headless`; skip desktop automation        |
+| **Scheduled runs**      | cron/systemd timer; no user activity check when headless |
+| **Batch processing**    | `thegent run --batch` for non-interactive                |
+| **Remote + headless**   | `thegent run --remote HOST --headless`                   |
 
 ---
 
@@ -761,39 +810,47 @@ THGENT-E010: Invalid selector
 ### 14.1 Common Issues
 
 **Issue**: Permission denied (accessibility)
+
 - **Solution**: Enable accessibility permissions (macOS/Windows/Linux)
 - **Check**: Run `thegent desktop check-permissions`
 
 **Issue**: Element not found
+
 - **Solution**: Verify selector; check if app is running; increase timeout
 - **Check**: Run `thegent desktop debug-selector SELECTOR`
 
 **Issue**: Remote host unreachable
+
 - **Solution**: Check SSH connection; verify Tailscale VPN; check firewall
 - **Check**: Run `ssh HOST` manually; verify `remote_hosts.yaml`
 
 **Issue**: User activity detected
+
 - **Solution**: Wait for user idle; use `--skip-user-check` for headless
 - **Check**: Run `thegent desktop user-activity`
 
 ### 14.2 Diagnostics
 
 **Check Permissions**:
+
 ```bash
 thegent desktop check-permissions
 ```
 
 **Debug Selector**:
+
 ```bash
 thegent desktop debug-selector "button:Submit"
 ```
 
 **User Activity**:
+
 ```bash
 thegent desktop user-activity
 ```
 
 **Remote Connection**:
+
 ```bash
 thegent remote test windows-pc
 ```
@@ -804,15 +861,15 @@ thegent remote test windows-pc
 
 Add to [WORK_STREAM.md](../reference/WORK_STREAM.md) BACKLOG:
 
-| ID | Title | Priority | Depends |
-|----|-------|----------|---------|
-| **research-cross-platform-isolation** | User isolation implementation (Hybrid model) | P1 | - |
-| **research-cross-platform-coordination** | Multi-tenant coordination implementation | P1 | research-cross-platform-isolation |
-| **research-cross-platform-desktop** | Desktop automation providers (macOS/Windows/Linux) | P1 | research-cross-platform-coordination |
-| **research-cross-platform-shell** | POSIX + PowerShell dual-shell strategy | P1 | - |
-| **research-cross-platform-remote** | Remote compute implementation | P2 | HYBRID_ENV |
-| **research-cross-platform-performance** | Performance optimization & benchmarking | P2 | research-cross-platform-desktop |
-| **research-cross-platform-security** | Security hardening & compliance | P1 | research-cross-platform-desktop |
+| ID                                       | Title                                              | Priority | Depends                              |
+| ---------------------------------------- | -------------------------------------------------- | -------- | ------------------------------------ |
+| **research-cross-platform-isolation**    | User isolation implementation (Hybrid model)       | P1       | -                                    |
+| **research-cross-platform-coordination** | Multi-tenant coordination implementation           | P1       | research-cross-platform-isolation    |
+| **research-cross-platform-desktop**      | Desktop automation providers (macOS/Windows/Linux) | P1       | research-cross-platform-coordination |
+| **research-cross-platform-shell**        | POSIX + PowerShell dual-shell strategy             | P1       | -                                    |
+| **research-cross-platform-remote**       | Remote compute implementation                      | P2       | HYBRID_ENV                           |
+| **research-cross-platform-performance**  | Performance optimization & benchmarking            | P2       | research-cross-platform-desktop      |
+| **research-cross-platform-security**     | Security hardening & compliance                    | P1       | research-cross-platform-desktop      |
 
 ---
 
@@ -865,15 +922,18 @@ Add to [WORK_STREAM.md](../reference/WORK_STREAM.md) BACKLOG:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

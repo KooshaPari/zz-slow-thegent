@@ -113,11 +113,11 @@ event_store = EventStore(storage=RedisStore(url="redis://localhost"))
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| storage | AsyncKeyValue | MemoryStore() | Backend for event storage |
-| max_events_per_stream | int | 100 | Max events retained per stream |
-| ttl | int | 3600 | Event TTL in seconds; None = no expiration |
+| Parameter             | Type          | Default       | Description                                |
+| --------------------- | ------------- | ------------- | ------------------------------------------ |
+| storage               | AsyncKeyValue | MemoryStore() | Backend for event storage                  |
+| max_events_per_stream | int           | 100           | Max events retained per stream             |
+| ttl                   | int           | 3600          | Event TTL in seconds; None = no expiration |
 
 ### Usage with HTTP app
 
@@ -144,19 +144,19 @@ Client reconnects with `Last-Event-ID`; EventStore resumes from last event.
 
 ## 3. thegent Application
 
-| Use Case | Backend | Config |
-|----------|---------|--------|
-| Response cache (ps, list_agents, list_models) | DiskStore or RedisStore | `cache_storage=DiskStore(directory="/var/cache/thegent")` |
-| EventStore (long thegent_run) | MemoryStore or RedisStore | `EventStore(storage=RedisStore(...))` |
-| OAuth (if added) | RedisStore + FernetEncryptionWrapper | `client_storage=FernetEncryptionWrapper(...)` |
-| Docket tasks (background) | `FASTMCP_DOCKET_URL=redis://...` | Task backend |
+| Use Case                                      | Backend                              | Config                                                    |
+| --------------------------------------------- | ------------------------------------ | --------------------------------------------------------- |
+| Response cache (ps, list_agents, list_models) | DiskStore or RedisStore              | `cache_storage=DiskStore(directory="/var/cache/thegent")` |
+| EventStore (long thegent_run)                 | MemoryStore or RedisStore            | `EventStore(storage=RedisStore(...))`                     |
+| OAuth (if added)                              | RedisStore + FernetEncryptionWrapper | `client_storage=FernetEncryptionWrapper(...)`             |
+| Docket tasks (background)                     | `FASTMCP_DOCKET_URL=redis://...`     | Task backend                                              |
 
 ### Config Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| THGENT_CACHE_STORAGE | memory | `memory`, `disk:/path`, or `redis://host:port` |
-| FASTMCP_DOCKET_URL | memory:// | Task backend for background tasks |
+| Variable             | Default   | Description                                    |
+| -------------------- | --------- | ---------------------------------------------- |
+| THGENT_CACHE_STORAGE | memory    | `memory`, `disk:/path`, or `redis://host:port` |
+| FASTMCP_DOCKET_URL   | memory:// | Task backend for background tasks              |
 
 ---
 
@@ -293,12 +293,12 @@ audit_store = EventStore(
 
 **Retention Policy:**
 
-| Event Type | TTL | Storage Backend |
-|------------|-----|-----------------|
-| Progress events | 5 min | Redis (db=0) |
-| Session completion | 1 hour | Redis (db=0) |
-| Audit logs | 24 hours | Redis (db=1) |
-| Long-term analytics | 30 days | Disk/Cloud |
+| Event Type          | TTL      | Storage Backend |
+| ------------------- | -------- | --------------- |
+| Progress events     | 5 min    | Redis (db=0)    |
+| Session completion  | 1 hour   | Redis (db=0)    |
+| Audit logs          | 24 hours | Redis (db=1)    |
+| Long-term analytics | 30 days  | Disk/Cloud      |
 
 #### 5.2 Sharding for High Volume
 
@@ -331,12 +331,12 @@ class ShardedEventStore:
 
 ### 6. Cross-Document References
 
-| Reference | Purpose |
-|-----------|---------|
-| `FASTMCP_IMPLEMENTATION_GUIDE.md` | Storage backend configuration |
-| `FASTMCP_SPEC_DEEP_DIVE.md` | EventStore specification |
-| `FASTMCP_MIDDLEWARE.md` | Caching middleware patterns |
-| `FASTMCP_TRANSFORMS_DEPLOYMENT.md` | HTTP deployment with EventStore |
+| Reference                                   | Purpose                             |
+| ------------------------------------------- | ----------------------------------- |
+| `FASTMCP_IMPLEMENTATION_GUIDE.md`           | Storage backend configuration       |
+| `FASTMCP_SPEC_DEEP_DIVE.md`                 | EventStore specification            |
+| `FASTMCP_MIDDLEWARE.md`                     | Caching middleware patterns         |
+| `FASTMCP_TRANSFORMS_DEPLOYMENT.md`          | HTTP deployment with EventStore     |
 | `src/thegent/governance/evidence_ledger.py` | Evidence ledger with event sourcing |
 
 ---

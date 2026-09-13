@@ -9,11 +9,11 @@
 
 ## 1. Current Models
 
-| Model | Isolation | OS Identity | Use Case |
-|------|-----------|-------------|----------|
-| **Sub-user** | Process tree only | None | Dev, trusted |
-| **OS user** | Real user account | useradd / New-LocalUser | Production |
-| **Docker** | Container | Container user | Sandbox |
+| Model        | Isolation         | OS Identity             | Use Case     |
+| ------------ | ----------------- | ----------------------- | ------------ |
+| **Sub-user** | Process tree only | None                    | Dev, trusted |
+| **OS user**  | Real user account | useradd / New-LocalUser | Production   |
+| **Docker**   | Container         | Container user          | Sandbox      |
 
 ---
 
@@ -64,13 +64,13 @@
 
 ## 3. Implementation Priority
 
-| Option | Priority | Phase |
-|--------|----------|-------|
-| systemd scope (Linux) | P1 | Phase 3 |
-| Windows Job Objects | P1 | Phase 3 |
-| PAM module | P3 | Future |
-| Windows Service | P3 | Future |
-| launchd per-agent | P3 | Future |
+| Option                | Priority | Phase   |
+| --------------------- | -------- | ------- |
+| systemd scope (Linux) | P1       | Phase 3 |
+| Windows Job Objects   | P1       | Phase 3 |
+| PAM module            | P3       | Future  |
+| Windows Service       | P3       | Future  |
+| launchd per-agent     | P3       | Future  |
 
 ---
 
@@ -81,7 +81,6 @@
 - [CROSS_PLATFORM_MULTI_TENANT_DESKTOP_AUTOMATION_RESEARCH.md](../research/CROSS_PLATFORM_MULTI_TENANT_DESKTOP_AUTOMATION_RESEARCH.md)
 - [GIT_INDEX_LOCK_OS_LEVEL_AND_AGENT_SYSTEM_USER_PLAN.md](../research/GIT_INDEX_LOCK_OS_LEVEL_AND_AGENT_SYSTEM_USER_PLAN.md) — Git wrapper in agent PATH, hooks layout for system user
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -90,15 +89,18 @@
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

@@ -58,6 +58,7 @@ Phase 1 of the TUI Compositor is now complete, providing:
 ### `layout_engine.py` - Core Layout Engine
 
 **Provides**:
+
 - `Direction` - Layout direction enum (VERTICAL, HORIZONTAL)
 - `SizeUnit` - Size units (%, fr, cells, auto)
 - `Size` - Dimension specification with unit conversion
@@ -123,6 +124,7 @@ line_count = output.get_line_count()
 ```
 
 **Features**:
+
 - Auto-scrolling RichLog widget
 - Timestamp display (HH:MM:SS format)
 - Rich text styling support
@@ -147,6 +149,7 @@ status.stop_timer()
 ```
 
 **Features**:
+
 - Real-time status display (idle/running/error/done)
 - Model name display
 - Token counter with formatting
@@ -172,6 +175,7 @@ sidebar.update_session_info(session_id="sess_abc123", start_time="14:30:45", upt
 ```
 
 **Features**:
+
 - Agent list with status indicators
 - Session information display
 - Quick action buttons (Pause, Resume, Stop)
@@ -413,18 +417,19 @@ pytest tests/compositor/ --cov=thegent.compositor --cov-report=html
 
 ## Performance Characteristics
 
-| Aspect | Measurement |
-|--------|-------------|
-| Layout calculation | <1ms (100 widgets) |
-| Component creation | ~2-5ms per component |
-| Memory per widget | 100-500KB |
-| Render overhead | Textual handles (typically <16ms) |
+| Aspect             | Measurement                       |
+| ------------------ | --------------------------------- |
+| Layout calculation | <1ms (100 widgets)                |
+| Component creation | ~2-5ms per component              |
+| Memory per widget  | 100-500KB                         |
+| Render overhead    | Textual handles (typically <16ms) |
 
 ---
 
 ## Dependencies
 
 **Required** (already in pyproject.toml):
+
 - `textual >= 0.50.0`
 - `rich >= 13.7.0`
 - `python >= 3.12`
@@ -436,15 +441,18 @@ pytest tests/compositor/ --cov=thegent.compositor --cov-report=html
 ## Files Created/Modified
 
 ### New Files
+
 - `src/thegent/compositor/layout_engine.py` (380 lines)
 - `src/thegent/compositor/components.py` (440 lines)
 - `tests/compositor/test_layout_engine.py` (200 lines)
 - `tests/compositor/test_components.py` (200 lines)
 
 ### Modified Files
+
 - `src/thegent/compositor/__init__.py` - Updated exports
 
 ### Existing (Untouched)
+
 - `src/thegent/compositor/app.py`
 - `src/thegent/compositor/pane_manager.py`
 - `src/thegent/compositor/terminal_pane.py`

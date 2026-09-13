@@ -12,7 +12,7 @@ Native governance scanner with obfuscated triggers.
 
 ### Methods
 
-#### NativeGovernanceScanner.__init__
+#### NativeGovernanceScanner.**init**
 
 ```python
 __init__(self: Any)

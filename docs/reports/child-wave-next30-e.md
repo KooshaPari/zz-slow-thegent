@@ -4,6 +4,7 @@
 - Status: complete for implemented items; report backfill completed in this pass
 
 ## Changes
+
 - `src/thegent/security/sandboxing.py`
 - `src/thegent/infra/resource_management.py`
 - `src/thegent/observability/observability_v2.py`
@@ -14,6 +15,7 @@
 - `tests/mesh/test_observability.py`
 
 ## Validation
+
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/python -m pytest tests/security/test_sandboxing_provider.py -q` (4 passed)
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/python -m pytest tests/infra/test_resource_prediction.py -q` (41 passed)
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/python -m pytest tests/observability/test_observability_v2.py -q` (5 passed)

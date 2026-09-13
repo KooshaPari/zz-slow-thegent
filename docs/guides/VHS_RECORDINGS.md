@@ -49,32 +49,32 @@ Sleep 2s
 
 ## Tape Commands Reference
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `Output <file>` | Set output GIF path | `Output docs/public/assets/demos/demo.gif` |
-| `Set <key> <value>` | Set configuration | `Set FontSize 16` |
-| `Type <text>` | Type text | `Type "thegent run codex 'Hello'"` |
-| `Enter` | Press Enter | `Enter` |
-| `Sleep <ms>` | Wait milliseconds | `Sleep 1000` |
-| `Ctrl+<key>` | Press Ctrl+key | `Ctrl+L` (clear) |
-| `Alt+<key>` | Press Alt+key | `Alt+Right` |
-| `Backspace` | Press backspace | `Backspace` |
-| `Tab` | Press tab | `Tab` |
-| `Escape` | Press escape | `Escape` |
-| `Up` / `Down` | Arrow keys | `Up` |
+| Command             | Description         | Example                                    |
+| ------------------- | ------------------- | ------------------------------------------ |
+| `Output <file>`     | Set output GIF path | `Output docs/public/assets/demos/demo.gif` |
+| `Set <key> <value>` | Set configuration   | `Set FontSize 16`                          |
+| `Type <text>`       | Type text           | `Type "thegent run codex 'Hello'"`         |
+| `Enter`             | Press Enter         | `Enter`                                    |
+| `Sleep <ms>`        | Wait milliseconds   | `Sleep 1000`                               |
+| `Ctrl+<key>`        | Press Ctrl+key      | `Ctrl+L` (clear)                           |
+| `Alt+<key>`         | Press Alt+key       | `Alt+Right`                                |
+| `Backspace`         | Press backspace     | `Backspace`                                |
+| `Tab`               | Press tab           | `Tab`                                      |
+| `Escape`            | Press escape        | `Escape`                                   |
+| `Up` / `Down`       | Arrow keys          | `Up`                                       |
 
 ## Available Settings
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `Width` | 1200 | Terminal width in pixels |
-| `Height` | 600 | Terminal height in pixels |
-| `FrameRate` | 30 | FPS for the GIF |
-| `TypingSpeed` | 50 | ms between keystrokes |
-| `Theme` | Catppuccin Mocha | Color theme |
-| `FontSize` | 16 | Font size |
-| `Shell` | zsh | Shell to use |
-| `Padding` | 20 | Padding around content |
+| Setting       | Default          | Description               |
+| ------------- | ---------------- | ------------------------- |
+| `Width`       | 1200             | Terminal width in pixels  |
+| `Height`      | 600              | Terminal height in pixels |
+| `FrameRate`   | 30               | FPS for the GIF           |
+| `TypingSpeed` | 50               | ms between keystrokes     |
+| `Theme`       | Catppuccin Mocha | Color theme               |
+| `FontSize`    | 16               | Font size                 |
+| `Shell`       | zsh              | Shell to use              |
+| `Padding`     | 20               | Padding around content    |
 
 ## Available Themes
 
@@ -85,6 +85,7 @@ vhs themes
 ```
 
 Common themes:
+
 - Catppuccin Mocha
 - Catppuccin Latte
 - Dracula
@@ -141,7 +142,11 @@ vhs my-feature.tape
 3. **Use in documentation**:
 
 ```vue
-<DemoGif src="my-feature.gif" alt="My Feature Demo" caption="Demonstrating my feature" />
+<DemoGif
+  src="my-feature.gif"
+  alt="My Feature Demo"
+  caption="Demonstrating my feature"
+/>
 ```
 
 ## Best Practices
@@ -185,6 +190,7 @@ Sleep 3s
 ### GIF not generating
 
 Check that:
+
 - Output path is correct and directory exists
 - No syntax errors in the tape file
 - VHS is installed correctly

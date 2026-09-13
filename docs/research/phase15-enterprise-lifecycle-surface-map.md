@@ -7,27 +7,33 @@
 > **WORK_STREAM ID:** phase15-enterprise-lifecycle
 
 ## 1. Overview
+
 This document maps the architectural surfaces required for enterprise-grade compliance, security integration, and ecosystem extensibility.
 
 ## 2. Integration Points
 
 ### 2.1 Egress Surface: SOC/SIEM Integration
+
 - **New Component**: `src/thegent/observability/egress.py`
 - **Responsibility**: Pushing normalized JSON events to external webhooks or syslog endpoints.
 
 ### 2.2 Forensic Surface: Incident Replay Ledger
+
 - **New Component**: `src/thegent/governance/ledger.py`
 - **Responsibility**: Immutable, hash-chained storage of incident artifacts for post-mortem analysis.
 
 ### 2.3 Ecosystem Surface: Marketplace Contracts
+
 - **Existing**: `src/thegent/contracts/registry.py`
 - **Expansion**: Verification logic for third-party plugin contracts and metadata.
 
 ### 2.4 Compliance Surface: Certification Export
+
 - **New Component**: `src/thegent/governance/compliance.py`
 - **Responsibility**: Generating evidence bundles mapped to SOC 2, ISO 42001, and EU AI Act requirements.
 
 ### 2.5 Privacy Surface: Redaction Policy
+
 - **Existing**: `src/thegent/output_parser.py` (or similar)
 - **Responsibility**: Automatic PII/Secret redaction for support mode sessions.
 
@@ -237,11 +243,11 @@ class PIIRedactor:
 - [ ] Integration tests passing (pending)
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -251,15 +257,18 @@ class PIIRedactor:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

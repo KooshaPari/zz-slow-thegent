@@ -10,11 +10,13 @@
 ## Problem
 
 Commands like this were hanging:
+
 ```bash
 . ~/.zshenv && cd /Users/kooshapari/temp-PRODVERCEL/485/kush/thegent && test -f flake.nix && echo "flake.nix exists" && head -3 flake.nix
 ```
 
 **Root Cause:** The `.envrc` file was using `use flake` which triggers direnv to evaluate the Nix flake. This evaluation takes ~3m 40s because it needs to:
+
 1. Parse `flake.nix`
 2. Evaluate Nix expressions
 3. Build/download dependencies
@@ -51,6 +53,7 @@ fi
 ```
 
 **Key Changes:**
+
 - Check if shell is non-interactive (`[ -z "${PS1:-}" ] && [ ! -t 0 ]`)
 - Skip `use flake` in non-interactive shells
 - Use Python venv fallback instead (fast, ~0.01s)
@@ -61,11 +64,13 @@ fi
 ## Results
 
 **Before:**
+
 - Command hang time: ~3m 40s
 - Blocked agent delegation workflow
 - Slow CI/CD execution
 
 **After:**
+
 - Command execution: ~0.016s (bash) / ~0.01s (zsh)
 - **99.99% faster** (from 220s to 0.016s)
 - Agent delegation workflow unblocked

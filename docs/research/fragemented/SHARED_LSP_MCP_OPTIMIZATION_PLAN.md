@@ -9,6 +9,7 @@
 ## Problem Statement
 
 Currently, each thegent session spawns its own LSP/MCP processes:
+
 - **16 active sessions** = 16 × (1-2 GB) = **16-32 GB memory usage**
 - Each session independently starts:
   - LSP servers (pyright, typescript-language-server, etc.)
@@ -16,6 +17,7 @@ Currently, each thegent session spawns its own LSP/MCP processes:
   - Node.js processes for tooling
 
 **User Request:** Share LSP/MCP processes across sessions:
+
 - **One shared LSP per project** (or system-wide if possible)
 - **One shared MCP server per project**
 - Only separate when necessary (e.g., different LSP configs)
@@ -96,6 +98,7 @@ Use when:
    - If needed: Use project-scoped server: `~/.cache/thegent/mcp/{project_hash}.lock`
 
 **Files to Modify:**
+
 - `thegent/src/thegent/mcp_manage.py` - Add system-wide server detection
 - `thegent/src/thegent/agents/cliproxy_manager.py` - Connect to shared server
 - Add lockfile mechanism: `~/.cache/thegent/mcp/system.lock` (default)
@@ -127,6 +130,7 @@ Use when:
    - If needed: Use project-scoped server: `~/.cache/thegent/lsp/{project_hash}.lock`
 
 **Files to Modify:**
+
 - `thegent/src/thegent/agents/cliproxy_manager.py` - LSP client connection
 - Add LSP server manager: `thegent/src/thegent/lsp_manager.py`
 - Add lockfile mechanism: `~/.cache/thegent/lsp/system.lock` (default)
@@ -167,6 +171,7 @@ def get_server_scope(project_root: Optional[Path] = None) -> tuple[str, Path]:
 ```
 
 **Benefits:**
+
 - Different projects get separate servers (isolation)
 - Same project shares server (efficiency)
 - System-wide option available (single server for all)
@@ -391,15 +396,15 @@ THGENT_FORCE_PROJECT_ISOLATION=0  # Set to 1 to force per-project servers
 # ~/.config/thegent/config.yaml
 shared_servers:
   enabled: true
-  scope: "system"  # "system" (default) or "project"
+  scope: "system" # "system" (default) or "project"
   lsp:
     enabled: true
     timeout: 300
-    system_wide: true  # Default: true
+    system_wide: true # Default: true
   mcp:
     enabled: true
     timeout: 300
-    system_wide: true  # Default: true
+    system_wide: true # Default: true
 ```
 
 ### Project-Level Override
@@ -413,6 +418,7 @@ To force project isolation for a specific project, create:
 ```
 
 **When to Use Project Isolation:**
+
 - Different language versions (Python 3.11 vs 3.12)
 - Different LSP/MCP configurations
 - Security/compliance isolation requirements
@@ -480,6 +486,7 @@ To force project isolation for a specific project, create:
 ### Risk 1: Server Crash Affects All Sessions
 
 **Mitigation:**
+
 - Health checks and auto-restart
 - Graceful degradation to per-session fallback
 - Session-level error handling
@@ -487,6 +494,7 @@ To force project isolation for a specific project, create:
 ### Risk 2: LSP Server Doesn't Support Multi-Client
 
 **Mitigation:**
+
 - Check LSP server capabilities
 - Fallback to per-session for unsupported servers
 - Document limitations
@@ -494,6 +502,7 @@ To force project isolation for a specific project, create:
 ### Risk 3: Project Isolation Issues
 
 **Mitigation:**
+
 - Use project root hash as isolation key
 - Verify workspace root matches
 - Add project validation

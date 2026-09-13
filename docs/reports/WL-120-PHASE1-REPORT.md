@@ -10,11 +10,11 @@ Extracted the observability/health/escalation/governance/review/compliance block
 
 ## Metrics
 
-| File | Before | After | Delta |
-|------|--------|-------|-------|
-| `impl.py` | 7,425 lines | 6,375 lines | -1,050 lines (-14.1%) |
-| `observability_impl.py` | N/A (new) | 1,125 lines | +1,125 lines |
-| Net LOC reduction in `impl.py` | -- | -- | **-1,050 lines** |
+| File                           | Before      | After       | Delta                 |
+| ------------------------------ | ----------- | ----------- | --------------------- |
+| `impl.py`                      | 7,425 lines | 6,375 lines | -1,050 lines (-14.1%) |
+| `observability_impl.py`        | N/A (new)   | 1,125 lines | +1,125 lines          |
+| Net LOC reduction in `impl.py` | --          | --          | **-1,050 lines**      |
 
 ## What Was Extracted
 
@@ -38,6 +38,7 @@ All extracted symbols are re-exported from `impl.py` via a single import block. 
 ## Cross-module Dependencies
 
 The new module has two lazy imports back to `impl.py`:
+
 - `review_impl` imports `run_impl` (lazy, inside function body)
 - `sitback_dashboard_impl` imports `ps_impl` (lazy, inside function body)
 
@@ -51,11 +52,11 @@ These are safe because they are lazy imports (inside function bodies), not top-l
 
 ## Remaining Hotspots
 
-| File | Current LOC | Target |
-|------|-------------|--------|
-| `impl.py` | 6,375 | <=500 |
-| `cli.py` | 6,994 | <=500 |
-| `server.py` | 3,929 | <=500 |
+| File        | Current LOC | Target |
+| ----------- | ----------- | ------ |
+| `impl.py`   | 6,375       | <=500  |
+| `cli.py`    | 6,994       | <=500  |
+| `server.py` | 3,929       | <=500  |
 
 ## Next Steps
 

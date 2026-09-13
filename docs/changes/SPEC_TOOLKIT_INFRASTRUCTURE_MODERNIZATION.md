@@ -17,16 +17,19 @@ Hexagonal architecture example, specification toolkit.
 ## Proposed Changes
 
 ### Phase 1: Foundation (8 hours)
+
 - Modern pyproject.toml
 - Install uv
 - Configure ruff, mypy
 
 ### Phase 2: Architecture Maintenance (8 hours)
+
 - Audit hexagonal structure
 - Strengthen port/adapter boundaries
 - Document patterns
 
 **Maintain structure:**
+
 ```
 spec_toolkit/
 ├── domain/          # Business logic
@@ -36,6 +39,7 @@ spec_toolkit/
 ```
 
 ### Phase 3: Modernization (4 hours)
+
 - Add pydantic-settings
 - Add quality tools
 - Update documentation
@@ -58,4 +62,3 @@ spec_toolkit/
 - [ ] Hexagonal architecture maintained
 - [ ] Quality tools passing
 - [ ] Patterns documented
-

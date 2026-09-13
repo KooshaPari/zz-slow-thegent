@@ -7,18 +7,19 @@
 > **WORK_STREAM ID:** phase15-enterprise-compliance
 
 ## 1. Objective
+
 Verify that enterprise features (egress, ledger, redaction) meet strict security and auditability standards.
 
 ## 2. Test Cases
 
-| ID | Category | Description | Success Criteria |
-|----|----------|-------------|------------------|
-| EC-001 | Egress | Emit a "High Risk" event. | Event pushed to mock SIEM endpoint within 5s. |
-| EC-002 | Ledger | Add artifact to ledger and verify hash chain. | Chain integrity check passes; tampering detected. |
-| EC-003 | Redaction | Run support mode with a session containing an API key. | Output contains `[REDACTED]` instead of the key. |
-| EC-004 | Compliance| Export SOC 2 evidence bundle. | Bundle contains signed run history and policy logs. |
-| EC-005 | Plugin | Attempt to register an unsigned plugin contract. | Registration rejected. |
-| EC-006 | Forensic | Replay an incident from the ledger. | Replay exactly matches original execution trace. |
+| ID     | Category   | Description                                            | Success Criteria                                    |
+| ------ | ---------- | ------------------------------------------------------ | --------------------------------------------------- |
+| EC-001 | Egress     | Emit a "High Risk" event.                              | Event pushed to mock SIEM endpoint within 5s.       |
+| EC-002 | Ledger     | Add artifact to ledger and verify hash chain.          | Chain integrity check passes; tampering detected.   |
+| EC-003 | Redaction  | Run support mode with a session containing an API key. | Output contains `[REDACTED]` instead of the key.    |
+| EC-004 | Compliance | Export SOC 2 evidence bundle.                          | Bundle contains signed run history and policy logs. |
+| EC-005 | Plugin     | Attempt to register an unsigned plugin contract.       | Registration rejected.                              |
+| EC-006 | Forensic   | Replay an incident from the ledger.                    | Replay exactly matches original execution trace.    |
 
 ## 3. Test Implementation
 
@@ -195,11 +196,11 @@ def test_ec006_incident_replay(ledger):
 - [ ] All tests passing (pending implementation)
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -209,14 +210,17 @@ def test_ec006_incident_replay(ledger):
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added planning patterns
 2. Added implementation roadmap
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - WORK_STREAM.md
 - Implementation guides
 
 ### Practical Additions
+
 - Planning templates
 - Roadmap configurations

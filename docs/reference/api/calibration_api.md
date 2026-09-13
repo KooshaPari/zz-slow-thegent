@@ -12,7 +12,7 @@ Calibrates agent confidence scores based on operator feedback.
 
 ### Methods
 
-#### ConfidenceCalibrator.__init__
+#### ConfidenceCalibrator.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings)

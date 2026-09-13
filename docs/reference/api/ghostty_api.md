@@ -39,7 +39,7 @@ Usage::
 
 ### Methods
 
-#### GhosttyIntegration.__init__
+#### GhosttyIntegration.**init**
 
 ```python
 __init__(self: Any, config_path: Any)
@@ -50,7 +50,7 @@ Initialise the integration.
 **Parameters**:
 
 - `config_path`: Override the default Ghostty config path
-(~/.config/ghostty/config).  Useful for tests.
+  (~/.config/ghostty/config). Useful for tests.
 
 ---
 
@@ -65,7 +65,7 @@ Read the Ghostty configuration file and return a GhosttyConfig.
 If the config file does not exist or cannot be parsed the returned
 GhosttyConfig contains default values.
 
-**Returns**: GhosttyConfig populated from ``~/.config/ghostty/config``
+**Returns**: GhosttyConfig populated from `~/.config/ghostty/config`
 (or the custom path provided at construction time).
 
 ---
@@ -81,12 +81,12 @@ Return a dict of terminal-related environment variables.
 The following variables are included (value is empty string when not
 set in the current environment):
 
-- ``TERM_PROGRAM``
-- ``TERM``
-- ``COLORTERM``
-- ``TERM_PROGRAM_VERSION``
-- ``GHOSTTY_RESOURCES_DIR``
-- ``GHOSTTY_BIN_DIR``
+- `TERM_PROGRAM`
+- `TERM`
+- `COLORTERM`
+- `TERM_PROGRAM_VERSION`
+- `GHOSTTY_RESOURCES_DIR`
+- `GHOSTTY_BIN_DIR`
 
 **Returns**: Mapping of env-var name to its current value (or empty string).
 
@@ -100,10 +100,10 @@ is_available(self: Any)
 
 Return True when the current process is running inside Ghostty.
 
-Detection is based on the ``TERM_PROGRAM`` environment variable being
-set to ``"ghostty"``.
+Detection is based on the `TERM_PROGRAM` environment variable being
+set to `"ghostty"`.
 
-**Returns**: True if ``TERM_PROGRAM == "ghostty"``; False otherwise.
+**Returns**: True if `TERM_PROGRAM == "ghostty"`; False otherwise.
 
 ---
 
@@ -115,13 +115,13 @@ open_tab(self: Any, command: Any)
 
 Open a new tab in the current Ghostty window.
 
-Uses the ``ghostty +open-tab`` CLI command.  The Ghostty binary must
-be on ``PATH``.
+Uses the `ghostty +open-tab` CLI command. The Ghostty binary must
+be on `PATH`.
 
 **Parameters**:
 
 - `command`: Optional shell command to run in the new tab.
-If None, the default shell is used.
+  If None, the default shell is used.
 
 **Returns**: True if the command exited successfully; False otherwise.
 
@@ -135,13 +135,13 @@ send_notification(self: Any, title: str, body: str)
 
 Send a macOS desktop notification via osascript.
 
-Uses ``osascript`` (AppleScript) which is available on macOS.
+Uses `osascript` (AppleScript) which is available on macOS.
 Returns False on non-macOS platforms or when osascript is unavailable.
 
 **Parameters**:
 
 - `title`: Notification title.
-- `body`:  Notification body text.
+- `body`: Notification body text.
 
 **Returns**: True if the notification was delivered; False otherwise.
 
@@ -157,8 +157,8 @@ Write the theme setting to the Ghostty config file.
 
 **Parameters**:
 
-- `theme`: Theme name to set (e.g. ``"dark"``, ``"light"``,
-``"Dracula"``).
+- `theme`: Theme name to set (e.g. `"dark"`, `"light"`,
+  `"Dracula"`).
 
 **Returns**: True on success; False if the write failed.
 
@@ -177,7 +177,7 @@ Read the Ghostty configuration file and return a GhosttyConfig.
 If the config file does not exist or cannot be parsed the returned
 GhosttyConfig contains default values.
 
-**Returns**: GhosttyConfig populated from ``~/.config/ghostty/config``
+**Returns**: GhosttyConfig populated from `~/.config/ghostty/config`
 (or the custom path provided at construction time).
 
 ---
@@ -193,12 +193,12 @@ Return a dict of terminal-related environment variables.
 The following variables are included (value is empty string when not
 set in the current environment):
 
-- ``TERM_PROGRAM``
-- ``TERM``
-- ``COLORTERM``
-- ``TERM_PROGRAM_VERSION``
-- ``GHOSTTY_RESOURCES_DIR``
-- ``GHOSTTY_BIN_DIR``
+- `TERM_PROGRAM`
+- `TERM`
+- `COLORTERM`
+- `TERM_PROGRAM_VERSION`
+- `GHOSTTY_RESOURCES_DIR`
+- `GHOSTTY_BIN_DIR`
 
 **Returns**: Mapping of env-var name to its current value (or empty string).
 
@@ -212,10 +212,10 @@ is_available(self: Any)
 
 Return True when the current process is running inside Ghostty.
 
-Detection is based on the ``TERM_PROGRAM`` environment variable being
-set to ``"ghostty"``.
+Detection is based on the `TERM_PROGRAM` environment variable being
+set to `"ghostty"`.
 
-**Returns**: True if ``TERM_PROGRAM == "ghostty"``; False otherwise.
+**Returns**: True if `TERM_PROGRAM == "ghostty"`; False otherwise.
 
 ---
 
@@ -227,13 +227,13 @@ open_tab(self: Any, command: Any)
 
 Open a new tab in the current Ghostty window.
 
-Uses the ``ghostty +open-tab`` CLI command.  The Ghostty binary must
-be on ``PATH``.
+Uses the `ghostty +open-tab` CLI command. The Ghostty binary must
+be on `PATH`.
 
 **Parameters**:
 
 - `command`: Optional shell command to run in the new tab.
-If None, the default shell is used.
+  If None, the default shell is used.
 
 **Returns**: True if the command exited successfully; False otherwise.
 
@@ -247,13 +247,13 @@ send_notification(self: Any, title: str, body: str)
 
 Send a macOS desktop notification via osascript.
 
-Uses ``osascript`` (AppleScript) which is available on macOS.
+Uses `osascript` (AppleScript) which is available on macOS.
 Returns False on non-macOS platforms or when osascript is unavailable.
 
 **Parameters**:
 
 - `title`: Notification title.
-- `body`:  Notification body text.
+- `body`: Notification body text.
 
 **Returns**: True if the notification was delivered; False otherwise.
 
@@ -269,8 +269,8 @@ Write the theme setting to the Ghostty config file.
 
 **Parameters**:
 
-- `theme`: Theme name to set (e.g. ``"dark"``, ``"light"``,
-``"Dracula"``).
+- `theme`: Theme name to set (e.g. `"dark"`, `"light"`,
+  `"Dracula"`).
 
 **Returns**: True on success; False if the write failed.
 

@@ -12,7 +12,7 @@ Affected tests detection.
 
 ### Methods
 
-#### AffectedTestsSubcommand.__init__
+#### AffectedTestsSubcommand.**init**
 
 ```python
 __init__(self: Any)

@@ -7,13 +7,15 @@ This guide documents the dependency upgrades implemented and how to use the new 
 ### 1. Rust Dependencies
 
 #### reqwest v0.11 → v0.12
+
 - **File:** `thegent/crates/thegent-memory/Cargo.toml`
 - **Impact:** Better performance, improved async handling
 - **Breaking Changes:** Minimal - mostly drop-in replacement
 - **Action Required:** None - code should work as-is
 
 #### simd-json Added
-- **Files:** 
+
+- **Files:**
   - `thegent/crates/thegent-memory/Cargo.toml`
   - `thegent/crates/thegent-router/Cargo.toml`
   - `thegent/crates/supermemory-rs/Cargo.toml`
@@ -24,24 +26,28 @@ This guide documents the dependency upgrades implemented and how to use the new 
 - **Usage:** See "Using simd-json" section below
 
 #### dashmap v5 → v6
+
 - **File:** `thegent/crates/thegent-hooks/Cargo.toml`
 - **Impact:** Better performance, improved API
 - **Breaking Changes:** Minimal API changes
 - **Action Required:** Review code for any deprecated methods
 
 #### git2 v0.18 → v0.21
+
 - **File:** `thegent/crates/thegent-git/Cargo.toml`
 - **Impact:** Bug fixes, performance improvements
 - **Breaking Changes:** Some API changes - see git2 changelog
 - **Action Required:** Test Git operations thoroughly
 
 #### gix Added (Optional)
+
 - **File:** `thegent/crates/thegent-git/Cargo.toml`
 - **Impact:** Pure Rust Git implementation, 1.5-2x faster
 - **Usage:** Enable with `--features gix` flag
 - **Action Required:** Migrate gradually - see migration guide below
 
 #### compio Added (Optional)
+
 - **File:** `thegent/crates/thegent-memory/Cargo.toml`
 - **Impact:** io_uring/IOCP-based async I/O, 2-3x faster
 - **Usage:** Enable with `--features compio` flag
@@ -50,6 +56,7 @@ This guide documents the dependency upgrades implemented and how to use the new 
 ### 2. Go Dependencies
 
 #### redis/go-redis v9.18.0-beta.2 → v9.18.0
+
 - **File:** `trace/backend/go.mod`
 - **Impact:** Stable release, bug fixes
 - **Breaking Changes:** None
@@ -58,6 +65,7 @@ This guide documents the dependency upgrades implemented and how to use the new 
 ### 3. Python Dependencies
 
 #### granian Added
+
 - **File:** `thegent/pyproject.toml`
 - **Impact:** Rust-based ASGI server, 30-50% faster than uvicorn
 - **Usage:** Replace `uvicorn` with `granian` in startup scripts
@@ -225,6 +233,7 @@ Expected performance improvements:
 If issues occur, you can rollback:
 
 ### Rust
+
 ```bash
 # Revert Cargo.toml changes
 git checkout -- thegent/crates/*/Cargo.toml
@@ -232,6 +241,7 @@ cargo update
 ```
 
 ### Go
+
 ```bash
 # Revert go.mod
 git checkout -- trace/backend/go.mod
@@ -239,6 +249,7 @@ go mod tidy
 ```
 
 ### Python
+
 ```bash
 # Remove granian from pyproject.toml
 # Or just don't use it - uvicorn is still available

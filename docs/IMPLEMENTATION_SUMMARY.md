@@ -3,6 +3,7 @@
 ## ✅ All Features Implemented
 
 ### Core Features
+
 1. ✅ **System Dependency Installation**
    - Homebrew auto-install
    - mise via Homebrew or Nix
@@ -30,6 +31,7 @@
    - Runs mise doctor
 
 ### Advanced Features
+
 6. ✅ **Uninstall Functionality**
    - Remove hooks from shell configs
    - Optionally uninstall mise package
@@ -60,16 +62,19 @@
 ## Files Created/Modified
 
 ### Core Implementation
+
 - `src/thegent/install.py` - All installation/uninstall functions
 - `src/thegent/main.py` - Install & uninstall commands
 - `src/thegent/cli.py` - Setup command integration
 
 ### Configuration
+
 - `.mise.toml` - Project mise configuration
 - `.envrc` - Optimized for mise
 - `shell/.zshenv` - Updated template
 
 ### Testing & Documentation
+
 - `scripts/test_mise_installation.sh` - Test suite
 - `docs/MISE_INTEGRATION_COMPLETE.md` - Full documentation
 - `docs/ALL_FEATURES_COMPLETE.md` - Feature summary
@@ -85,7 +90,7 @@
   - install_system_dependencies()
   - uninstall_mise_hooks()
   - uninstall_system_dependencies()
-  - _backup_shell_config()
+  - \_backup_shell_config()
 
 - **Commands Added**: 2
   - `thegent install --system-deps`
@@ -97,6 +102,7 @@
 ## Usage Examples
 
 ### Installation
+
 ```bash
 # Basic installation
 thegent install --system-deps
@@ -109,6 +115,7 @@ thegent install --system-deps --verbose
 ```
 
 ### Uninstallation
+
 ```bash
 # Remove hooks only
 thegent uninstall-system-deps
@@ -121,6 +128,7 @@ thegent uninstall-system-deps --dry-run
 ```
 
 ### Verification
+
 ```bash
 mise --version
 mise doctor
@@ -130,16 +138,19 @@ echo $MISE_ENV  # Should be "1"
 ## Next Steps
 
 ### Immediate
+
 1. **User Testing** - Test on real systems
 2. **Documentation** - Update README, CHANGELOG
 3. **Edge Cases** - Test error scenarios
 
 ### Short Term
+
 1. **Restore Command** - `thegent restore-backup`
 2. **Backup Cleanup** - Remove old backups
 3. **CI/CD** - Automated testing
 
 ### Long Term
+
 1. **Telemetry** - Usage metrics
 2. **Auto-update** - Keep mise updated
 3. **Multi-platform** - Windows support

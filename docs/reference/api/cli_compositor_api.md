@@ -9,6 +9,7 @@ to provide rich.progress-backed progress bars and dynamic status lines for
 long-running CLI commands.
 
 Main exports:
+
 - ProgressPanel: A compositor panel backed by a rich Progress task.
 - StatusPanel: A compositor panel backed by a dynamic callable.
 - CliCompositor: Manages multiple progress bars and info panels in CLI output.
@@ -38,7 +39,7 @@ Usage::
 
 ### Methods
 
-#### CliCompositor.__init__
+#### CliCompositor.**init**
 
 ```python
 __init__(self: Any, console: Any)
@@ -51,7 +52,7 @@ Initialise a CliCompositor.
 - `console`: Rich Console to use for output. Creates a new one if None.
 - `refresh_per_second`: How many times per second to refresh the live display.
 - `transient`: If True, the live display disappears on exit (useful for
-non-interactive pipelines).
+  non-interactive pipelines).
 
 ---
 
@@ -330,7 +331,7 @@ Mark a named progress panel as fully completed.
 
 **Raises**:
 
-- `KeyError`: If no progress panel with ``name`` exists.
+- `KeyError`: If no progress panel with `name` exists.
 
 ---
 
@@ -431,6 +432,6 @@ Update a named progress panel.
 
 **Raises**:
 
-- `KeyError`: If no progress panel with ``name`` exists.
+- `KeyError`: If no progress panel with `name` exists.
 
 ---

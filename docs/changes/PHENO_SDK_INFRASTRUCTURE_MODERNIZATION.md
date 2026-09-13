@@ -11,6 +11,7 @@
 ## Current State Analysis
 
 ### Strengths
+
 ✅ Large, comprehensive SDK  
 ✅ Has pyproject.toml  
 ✅ Good structure with multiple modules  
@@ -18,6 +19,7 @@
 ✅ Test infrastructure present
 
 ### Issues
+
 ❌ No uv configuration (likely using pip/poetry)  
 ❌ Configuration scattered across files  
 ❌ No clear hexagonal architecture boundaries  
@@ -34,6 +36,7 @@
 ### Phase 1: Foundation Setup (15 hours)
 
 #### 1.1 Create Modern pyproject.toml
+
 ```toml
 [build-system]
 requires = ["hatchling>=1.21.0"]
@@ -90,6 +93,7 @@ packages = ["src/pheno_sdk"]
 ```
 
 #### 1.2 Install uv and Setup
+
 ```bash
 # Install uv
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -109,7 +113,9 @@ uv lock
 ### Phase 2: Hexagonal Architecture Refactoring (20 hours)
 
 #### 2.1 Define Domain Layer
+
 **File:** `src/pheno_sdk/domain/models.py`
+
 ```python
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
@@ -147,7 +153,9 @@ class Deployment(BaseModel):
 ```
 
 #### 2.2 Define Port Interfaces
+
 **File:** `src/pheno_sdk/domain/ports.py`
+
 ```python
 from abc import ABC, abstractmethod
 from typing import List, Optional
@@ -207,7 +215,9 @@ class StoragePort(ABC):
 ```
 
 #### 2.3 Implement Adapters
+
 **File:** `src/pheno_sdk/adapters/aws/infrastructure.py`
+
 ```python
 from pheno_sdk.domain.ports import InfrastructureProviderPort
 from pheno_sdk.domain.models import Resource, ResourceStatus
@@ -244,6 +254,7 @@ class AWSInfrastructureAdapter(InfrastructureProviderPort):
 ```
 
 **File:** `src/pheno_sdk/adapters/gcp/infrastructure.py`
+
 ```python
 from pheno_sdk.domain.ports import InfrastructureProviderPort
 from google.cloud import compute_v1
@@ -257,7 +268,9 @@ class GCPInfrastructureAdapter(InfrastructureProviderPort):
 ```
 
 #### 2.4 Create Application Services
+
 **File:** `src/pheno_sdk/application/infrastructure_service.py`
+
 ```python
 from pheno_sdk.domain.ports import InfrastructureProviderPort
 from pheno_sdk.domain.models import Resource, ResourceStatus
@@ -284,7 +297,9 @@ class InfrastructureService:
 ```
 
 #### 2.5 Define Public API
+
 **File:** `src/pheno_sdk/__init__.py`
+
 ```python
 """
 Pheno SDK - Infrastructure SDK for Pheno platform
@@ -318,7 +333,9 @@ __version__ = "1.0.0"
 ### Phase 3: Configuration Modernization (10 hours)
 
 #### 3.1 Create Pydantic Settings
+
 **File:** `src/pheno_sdk/config/settings.py`
+
 ```python
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field, SecretStr
@@ -380,7 +397,9 @@ class PhenoSDKSettings(BaseSettings):
 ```
 
 #### 3.2 Create Configuration Files
+
 **File:** `config.yml`
+
 ```yaml
 # Pheno SDK Configuration
 
@@ -402,6 +421,7 @@ features:
 ```
 
 **File:** `secrets.yml.example`
+
 ```yaml
 # Pheno SDK Secrets
 
@@ -418,6 +438,7 @@ gcp:
 ### Phase 4: Code Quality & Testing (5 hours)
 
 #### 4.1 Configure Quality Tools
+
 ```toml
 [tool.bandit]
 targets = ["src"]
@@ -433,7 +454,9 @@ strict = true
 ```
 
 #### 4.2 Setup Pre-commit
+
 **File:** `.pre-commit-config.yaml`
+
 ```yaml
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -451,6 +474,7 @@ repos:
 ```
 
 #### 4.3 Update Tests
+
 ```python
 # tests/conftest.py
 import pytest
@@ -470,6 +494,7 @@ def test_settings():
 ## Migration Steps
 
 ### Step 1: Backup
+
 ```bash
 git checkout -b backup/pre-modernization
 git push origin backup/pre-modernization
@@ -478,6 +503,7 @@ git checkout -b feature/infrastructure-modernization
 ```
 
 ### Step 2: Setup Foundation
+
 ```bash
 # Install uv
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -489,6 +515,7 @@ uv lock
 ```
 
 ### Step 3: Refactor Architecture
+
 ```bash
 # Create new directory structure
 mkdir -p src/pheno_sdk/{domain,application,adapters,config}
@@ -499,6 +526,7 @@ mkdir -p src/pheno_sdk/{domain,application,adapters,config}
 ```
 
 ### Step 4: Implement Configuration
+
 ```bash
 # Create settings
 # Create config files
@@ -506,6 +534,7 @@ mkdir -p src/pheno_sdk/{domain,application,adapters,config}
 ```
 
 ### Step 5: Test
+
 ```bash
 pytest
 ruff check --fix .
@@ -529,9 +558,11 @@ bandit -r src/
 ## Risks & Mitigations
 
 ### Risk 1: Breaking Changes for Dependent Projects
+
 **Mitigation:** Maintain backward compatibility, versioning
 
 ### Risk 2: Architecture Refactoring Complexity
+
 **Mitigation:** Incremental refactoring, comprehensive testing
 
 ---
@@ -547,4 +578,3 @@ bandit -r src/
 1. Update dependent projects
 2. Create migration guide for SDK users
 3. Publish new version
-

@@ -43,39 +43,40 @@ Parity target means each stack has:
 ## 3. Current Parity Matrix (Code + File Types)
 
 Legend:
+
 - `A` = active and wired in current repo execution path.
 - `P` = partially wired (some pieces exist, not full parity).
 - `T` = template-ready only (governance intent exists, not wired).
 - `M` = missing.
 
-| Surface | Templates | Task/Hook/CI Wiring | Status | Notes |
-|---|---:|---:|---|---|
-| Python (py, pyi) | Yes | Strong | `A` | Ruff/ty/basedpyright/mypy/pytest/security present in task + CI. |
-| Go | Yes | Partial | `P` | Go exists in max-lines + hook extension lists; no dedicated Go lane in main `thegent` CI. |
-| TS/JS (ts,tsx,js,jsx,mjs,cjs) | Yes | Partial | `P` | Oxlint template parity logic exists in governance gate; not fully wired as first-class CI lane in `thegent`. |
-| Shell (sh,zsh,bash,bats) | Yes | Partial | `P` | ShellCheck in Taskfile and template; not enforced in CI workflow currently. |
-| JSON/YAML/TOML | Yes | Partial | `P` | pre-commit checks exist; stronger schema policy exists mostly in governance hooks. |
-| Markdown/docs | Yes (markdownlint/vale templates) | Weak | `P` | Docs build gate exists; markdown lint policy not fully wired in CI/pre-commit. |
-| Rust | Yes | Partial | `P` | Rust assets and benchmarks exist; no first-class fmt/clippy/test/audit lane in main CI yet. |
-| Zig | No dedicated template file | Partial | `P` | Tooling setup + build and max-lines support exist; no fmt/test policy lane wired. |
-| Mojo | No dedicated template file | Minimal | `P` | Mentioned in setup and max-lines extension list; no formatter/test/security lanes wired. |
-| Java | Yes (checkstyle) | Template only | `T` | No active Java lint/test lane wired. |
-| C/C++ | Yes (clang-tidy/cppcheck) | Template only | `T` | No active C/C++ lane wired. |
-| C#/.NET | No dedicated quality template currently | Missing | `M` | No active .NET lane or template in current quality set. |
-| Kotlin/Swift/Dart/PHP/Ruby/Perl/Lua/Terraform/etc | Yes (various templates) | Template only | `T` | Policy scaffolding exists but not executed as lanes. |
+| Surface                                           |                               Templates | Task/Hook/CI Wiring | Status | Notes                                                                                                        |
+| ------------------------------------------------- | --------------------------------------: | ------------------: | ------ | ------------------------------------------------------------------------------------------------------------ |
+| Python (py, pyi)                                  |                                     Yes |              Strong | `A`    | Ruff/ty/basedpyright/mypy/pytest/security present in task + CI.                                              |
+| Go                                                |                                     Yes |             Partial | `P`    | Go exists in max-lines + hook extension lists; no dedicated Go lane in main `thegent` CI.                    |
+| TS/JS (ts,tsx,js,jsx,mjs,cjs)                     |                                     Yes |             Partial | `P`    | Oxlint template parity logic exists in governance gate; not fully wired as first-class CI lane in `thegent`. |
+| Shell (sh,zsh,bash,bats)                          |                                     Yes |             Partial | `P`    | ShellCheck in Taskfile and template; not enforced in CI workflow currently.                                  |
+| JSON/YAML/TOML                                    |                                     Yes |             Partial | `P`    | pre-commit checks exist; stronger schema policy exists mostly in governance hooks.                           |
+| Markdown/docs                                     |       Yes (markdownlint/vale templates) |                Weak | `P`    | Docs build gate exists; markdown lint policy not fully wired in CI/pre-commit.                               |
+| Rust                                              |                                     Yes |             Partial | `P`    | Rust assets and benchmarks exist; no first-class fmt/clippy/test/audit lane in main CI yet.                  |
+| Zig                                               |              No dedicated template file |             Partial | `P`    | Tooling setup + build and max-lines support exist; no fmt/test policy lane wired.                            |
+| Mojo                                              |              No dedicated template file |             Minimal | `P`    | Mentioned in setup and max-lines extension list; no formatter/test/security lanes wired.                     |
+| Java                                              |                        Yes (checkstyle) |       Template only | `T`    | No active Java lint/test lane wired.                                                                         |
+| C/C++                                             |               Yes (clang-tidy/cppcheck) |       Template only | `T`    | No active C/C++ lane wired.                                                                                  |
+| C#/.NET                                           | No dedicated quality template currently |             Missing | `M`    | No active .NET lane or template in current quality set.                                                      |
+| Kotlin/Swift/Dart/PHP/Ruby/Perl/Lua/Terraform/etc |                 Yes (various templates) |       Template only | `T`    | Policy scaffolding exists but not executed as lanes.                                                         |
 
 ---
 
 ## 4. Shared Cross-Language Governance Status
 
-| Cross-language Gate | Status | Notes |
-|---|---|---|
-| Max file length gate | `P` | Implemented (Rust + Zig runner + shell wrapper) but not yet fully wired into pre-commit + CI + task defaults. |
-| Suppression policy blocker | `A` (template), `P` (runtime) | Template pre-commit rule exists; repo-level full enforcement still needs unified rollout. |
-| Smart changed-file execution | `A` | Hook config supports changed/all scopes and incremental analysis. |
-| Async test dispatch by file extension | `A` | Broad extension routing exists across many languages. |
-| Trace parity template audit | `A` (for py/go/oxlint) | Existing trace parity gate currently focuses on ruff/golangci/oxlint semantics. |
-| Per-stack policy spec centralization | `P` | Strong template inventory exists; stack execution contracts are uneven. |
+| Cross-language Gate                   | Status                        | Notes                                                                                                         |
+| ------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Max file length gate                  | `P`                           | Implemented (Rust + Zig runner + shell wrapper) but not yet fully wired into pre-commit + CI + task defaults. |
+| Suppression policy blocker            | `A` (template), `P` (runtime) | Template pre-commit rule exists; repo-level full enforcement still needs unified rollout.                     |
+| Smart changed-file execution          | `A`                           | Hook config supports changed/all scopes and incremental analysis.                                             |
+| Async test dispatch by file extension | `A`                           | Broad extension routing exists across many languages.                                                         |
+| Trace parity template audit           | `A` (for py/go/oxlint)        | Existing trace parity gate currently focuses on ruff/golangci/oxlint semantics.                               |
+| Per-stack policy spec centralization  | `P`                           | Strong template inventory exists; stack execution contracts are uneven.                                       |
 
 ---
 
@@ -195,6 +196,7 @@ Implementation must follow the speed spec:
 Reference: `docs/governance/POLYGLOT_GOVERNANCE_SPEED_SPEC_2026-02-20.md`.
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -203,4 +205,3 @@ Reference: `docs/governance/POLYGLOT_GOVERNANCE_SPEED_SPEC_2026-02-20.md`.
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

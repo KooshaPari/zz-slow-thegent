@@ -39,7 +39,7 @@
    - `ArtifactStorage`: Abstract storage interface
    - `MemoryArtifactStorage`: Production-ready in-memory implementation
    - Features: Session indexing, category indexing, tag indexing, full-text search
-   - Methods: store, retrieve, delete, list_*, search
+   - Methods: store, retrieve, delete, list\_\*, search
 
 6. **registry.py** (200 lines)
    - `ArtifactRegistry`: Type factory and registry
@@ -77,43 +77,43 @@
 
 ## Feature Matrix
 
-| Feature | Status | Implemented In |
-|---------|--------|----------------|
-| Base artifact class | ✅ | base.py |
-| Metadata tracking | ✅ | base.py |
-| Code change artifacts | ✅ | code_artifacts.py |
-| File operation artifacts | ✅ | code_artifacts.py |
-| Tool invocation artifacts | ✅ | tool_artifacts.py |
-| MCP call artifacts | ✅ | tool_artifacts.py |
-| Decision artifacts | ✅ | decision_artifacts.py |
-| Branching point artifacts | ✅ | decision_artifacts.py |
-| Storage interface | ✅ | storage.py |
-| In-memory storage | ✅ | storage.py |
-| Session indexing | ✅ | storage.py |
-| Category indexing | ✅ | storage.py |
-| Tag-based search | ✅ | storage.py |
-| Full-text search | ✅ | storage.py |
-| Artifact registry | ✅ | registry.py |
-| Type factory | ✅ | registry.py |
-| Code generators | ✅ | generators.py |
-| Tool generators | ✅ | generators.py |
-| Decision generators | ✅ | generators.py |
-| Unified API | ✅ | api.py |
-| Signature verification | ✅ | api.py (via MAIF) |
-| Chain verification | ✅ | api.py (via MAIF) |
-| Dependency tracking | ✅ | api.py |
+| Feature                   | Status | Implemented In        |
+| ------------------------- | ------ | --------------------- |
+| Base artifact class       | ✅     | base.py               |
+| Metadata tracking         | ✅     | base.py               |
+| Code change artifacts     | ✅     | code_artifacts.py     |
+| File operation artifacts  | ✅     | code_artifacts.py     |
+| Tool invocation artifacts | ✅     | tool_artifacts.py     |
+| MCP call artifacts        | ✅     | tool_artifacts.py     |
+| Decision artifacts        | ✅     | decision_artifacts.py |
+| Branching point artifacts | ✅     | decision_artifacts.py |
+| Storage interface         | ✅     | storage.py            |
+| In-memory storage         | ✅     | storage.py            |
+| Session indexing          | ✅     | storage.py            |
+| Category indexing         | ✅     | storage.py            |
+| Tag-based search          | ✅     | storage.py            |
+| Full-text search          | ✅     | storage.py            |
+| Artifact registry         | ✅     | registry.py           |
+| Type factory              | ✅     | registry.py           |
+| Code generators           | ✅     | generators.py         |
+| Tool generators           | ✅     | generators.py         |
+| Decision generators       | ✅     | generators.py         |
+| Unified API               | ✅     | api.py                |
+| Signature verification    | ✅     | api.py (via MAIF)     |
+| Chain verification        | ✅     | api.py (via MAIF)     |
+| Dependency tracking       | ✅     | api.py                |
 
 ## Code Statistics
 
-| Metric | Value |
-|--------|-------|
-| Total lines (excluding docstrings) | ~1,900 |
-| Number of classes | 20 |
-| Number of enums | 8 |
-| Number of methods | 85+ |
-| Type safety | 100% (Pydantic models) |
-| Async support | Full (8/8 storage methods async) |
-| Logging coverage | Full |
+| Metric                             | Value                            |
+| ---------------------------------- | -------------------------------- |
+| Total lines (excluding docstrings) | ~1,900                           |
+| Number of classes                  | 20                               |
+| Number of enums                    | 8                                |
+| Number of methods                  | 85+                              |
+| Type safety                        | 100% (Pydantic models)           |
+| Async support                      | Full (8/8 storage methods async) |
+| Logging coverage                   | Full                             |
 
 ## Integration Points
 

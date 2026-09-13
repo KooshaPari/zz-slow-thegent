@@ -14,11 +14,11 @@ This is distinct from Phase 3 (common-rust.sh), which replaces entire hook libra
 
 ### Why Phase 2?
 
-| Phase | Scope | Mechanism | Status |
-|-------|-------|-----------|--------|
-| 1 | Rust binary built and available | `crates/thegent-hooks/` | Done |
-| **2** | **Per-hook opt-in via env/config** | **`rust_dispatch.sh`** | **Done (this doc)** |
-| 3 | Full runtime replacement via common-rust.sh | Sources `common-rust.sh` | Separate |
+| Phase | Scope                                       | Mechanism                | Status              |
+| ----- | ------------------------------------------- | ------------------------ | ------------------- |
+| 1     | Rust binary built and available             | `crates/thegent-hooks/`  | Done                |
+| **2** | **Per-hook opt-in via env/config**          | **`rust_dispatch.sh`**   | **Done (this doc)** |
+| 3     | Full runtime replacement via common-rust.sh | Sources `common-rust.sh` | Separate            |
 
 Phase 2 allows gradual adoption: hooks can be migrated one at a time while the rest of the hook system continues operating in shell mode.
 
@@ -105,10 +105,10 @@ Attempts to invoke `thegent-hooks <subcommand> [args...]`.
 
 Return values:
 
-| Return | Meaning |
-|--------|---------|
-| Exit code from binary | Binary executed; caller propagates its exit code |
-| Shell return `1` | Rust disabled or binary not found; caller falls back to shell |
+| Return                | Meaning                                                       |
+| --------------------- | ------------------------------------------------------------- |
+| Exit code from binary | Binary executed; caller propagates its exit code              |
+| Shell return `1`      | Rust disabled or binary not found; caller falls back to shell |
 
 The binary's exit codes are forwarded as-is, except exit code `127` (command not found at exec time), which is treated as a fallback trigger.
 
@@ -177,19 +177,19 @@ thegent-hooks debounce <hook_name> --timeout <secs> [file]
 
 **Environment variables**:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `HOOK_NAME` | `debounce` | Debounce key (required) |
-| `DEBOUNCE_TIMEOUT` | `2` | Window in seconds |
-| `FILE_PATH` | (empty) | File being edited |
-| `HOOK_CACHE_DIR` | `/tmp/claude-hook-cache-<uid>` | Cache directory |
+| Variable           | Default                        | Description             |
+| ------------------ | ------------------------------ | ----------------------- |
+| `HOOK_NAME`        | `debounce`                     | Debounce key (required) |
+| `DEBOUNCE_TIMEOUT` | `2`                            | Window in seconds       |
+| `FILE_PATH`        | (empty)                        | File being edited       |
+| `HOOK_CACHE_DIR`   | `/tmp/claude-hook-cache-<uid>` | Cache directory         |
 
 **Exit codes**:
 
-| Code | Meaning |
-|------|---------|
-| `0` | Window elapsed; proceed. Prints JSON array of pending files. |
-| `1` | Within window; skip. |
+| Code | Meaning                                                      |
+| ---- | ------------------------------------------------------------ |
+| `0`  | Window elapsed; proceed. Prints JSON array of pending files. |
+| `1`  | Within window; skip.                                         |
 
 ### `hooks/incremental-check.sh` (FR-HOOKS-002, FR-HOOKS-003)
 
@@ -216,17 +216,17 @@ hooks/incremental-check.sh --record my-hook src/foo.py src/bar.py
 
 **Exit codes (check mode)**:
 
-| Code | Meaning |
-|------|---------|
-| `0` | No changes; caller may skip validation |
-| `1` | Changes detected (or no prior manifest); caller must run |
+| Code | Meaning                                                  |
+| ---- | -------------------------------------------------------- |
+| `0`  | No changes; caller may skip validation                   |
+| `1`  | Changes detected (or no prior manifest); caller must run |
 
 **Exit codes (record mode)**:
 
-| Code | Meaning |
-|------|---------|
-| `0` | Manifest written successfully |
-| `1` | Error writing manifest |
+| Code | Meaning                       |
+| ---- | ----------------------------- |
+| `0`  | Manifest written successfully |
+| `1`  | Error writing manifest        |
 
 ### `hooks/circuit-breaker.sh` (FR-HOOKS-004, FR-HOOKS-003)
 
@@ -245,28 +245,28 @@ thegent-hooks breaker-success <hook_name>
 
 **Subcommands**:
 
-| Subcommand | Rust subcommand | Description |
-|------------|-----------------|-------------|
-| `check` | `breaker-check` | Print circuit state; exit 0 if safe, exit 1 if open |
-| `record` | `breaker-record` | Record a failure |
-| `reset` | `breaker-reset` | Clear circuit state |
-| `success` | `breaker-success` | Decrement failure count |
+| Subcommand | Rust subcommand   | Description                                         |
+| ---------- | ----------------- | --------------------------------------------------- |
+| `check`    | `breaker-check`   | Print circuit state; exit 0 if safe, exit 1 if open |
+| `record`   | `breaker-record`  | Record a failure                                    |
+| `reset`    | `breaker-reset`   | Clear circuit state                                 |
+| `success`  | `breaker-success` | Decrement failure count                             |
 
 **Circuit states**:
 
-| State | stdout | Exit | Meaning |
-|-------|--------|------|---------|
-| `closed` | `closed` | `0` | Normal operation |
-| `open` | `open` | `1` | Too many failures; skip tool |
-| `half-open` | `half-open` | `0` | Cooldown elapsed; allow probe |
+| State       | stdout      | Exit | Meaning                       |
+| ----------- | ----------- | ---- | ----------------------------- |
+| `closed`    | `closed`    | `0`  | Normal operation              |
+| `open`      | `open`      | `1`  | Too many failures; skip tool  |
+| `half-open` | `half-open` | `0`  | Cooldown elapsed; allow probe |
 
 **Environment variables**:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `BREAKER_THRESHOLD` | `3` | Failures before opening |
-| `BREAKER_COOLDOWN` | `300` | Cooldown in seconds |
-| `HOOK_CACHE_DIR` | `/tmp/claude-hook-cache-<uid>` | Cache directory |
+| Variable            | Default                        | Description             |
+| ------------------- | ------------------------------ | ----------------------- |
+| `BREAKER_THRESHOLD` | `3`                            | Failures before opening |
+| `BREAKER_COOLDOWN`  | `300`                          | Cooldown in seconds     |
+| `HOOK_CACHE_DIR`    | `/tmp/claude-hook-cache-<uid>` | Cache directory         |
 
 **Usage example**:
 
@@ -289,15 +289,15 @@ fi
 
 ## Subcommand Mapping Reference
 
-| Hook | Shell function / usage | Rust subcommand |
-|------|----------------------|-----------------|
-| debounce.sh | (standalone, env-driven) | `debounce` |
-| incremental-check.sh (check) | `incremental-check.sh <key> [files...]` | `incremental-check` |
+| Hook                          | Shell function / usage                           | Rust subcommand      |
+| ----------------------------- | ------------------------------------------------ | -------------------- |
+| debounce.sh                   | (standalone, env-driven)                         | `debounce`           |
+| incremental-check.sh (check)  | `incremental-check.sh <key> [files...]`          | `incremental-check`  |
 | incremental-check.sh (record) | `incremental-check.sh --record <key> [files...]` | `incremental-record` |
-| circuit-breaker.sh check | `circuit-breaker.sh check <key>` | `breaker-check` |
-| circuit-breaker.sh record | `circuit-breaker.sh record <key>` | `breaker-record` |
-| circuit-breaker.sh reset | `circuit-breaker.sh reset <key>` | `breaker-reset` |
-| circuit-breaker.sh success | `circuit-breaker.sh success <key>` | `breaker-success` |
+| circuit-breaker.sh check      | `circuit-breaker.sh check <key>`                 | `breaker-check`      |
+| circuit-breaker.sh record     | `circuit-breaker.sh record <key>`                | `breaker-record`     |
+| circuit-breaker.sh reset      | `circuit-breaker.sh reset <key>`                 | `breaker-reset`      |
+| circuit-breaker.sh success    | `circuit-breaker.sh success <key>`               | `breaker-success`    |
 
 ---
 
@@ -363,12 +363,12 @@ task test:bats
 
 The test file contains 20 tests across 4 groups:
 
-| Group | Tests | Covers |
-|-------|-------|--------|
-| `rust_dispatch.sh` | 5 | enable/disable logic, binary resolution, dispatch, exit code forwarding |
-| `debounce.sh` | 4 | Rust delegate, shell fallback, window active, window elapsed |
-| `incremental-check.sh` | 5 | Rust check/record delegates, no manifest, unchanged files, changed files |
-| `circuit-breaker.sh` | 6 | Rust check/record/reset delegates, initial closed, threshold opens, reset clears, success decrements, half-open after cooldown |
+| Group                  | Tests | Covers                                                                                                                         |
+| ---------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `rust_dispatch.sh`     | 5     | enable/disable logic, binary resolution, dispatch, exit code forwarding                                                        |
+| `debounce.sh`          | 4     | Rust delegate, shell fallback, window active, window elapsed                                                                   |
+| `incremental-check.sh` | 5     | Rust check/record delegates, no manifest, unchanged files, changed files                                                       |
+| `circuit-breaker.sh`   | 6     | Rust check/record/reset delegates, initial closed, threshold opens, reset clears, success decrements, half-open after cooldown |
 
 ### Test Stub Pattern
 

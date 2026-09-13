@@ -15,7 +15,7 @@ Configuration validator.
 
 ### Methods
 
-#### ConfigValidator.__init__
+#### ConfigValidator.**init**
 
 ```python
 __init__(self: Any, config_path: Any)

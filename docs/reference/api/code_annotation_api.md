@@ -12,7 +12,7 @@ Generate code annotations for documentation.
 
 ### Methods
 
-#### CodeAnnotationGenerator.__init__
+#### CodeAnnotationGenerator.**init**
 
 ```python
 __init__(self: Any, annotation_format: str)

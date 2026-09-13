@@ -14,7 +14,7 @@ Finds and exploits price differences across regional agent markets.
 
 ### Methods
 
-#### ArbitrageEngine.__init__
+#### ArbitrageEngine.**init**
 
 ```python
 __init__(self: Any, market: AgentMarket)

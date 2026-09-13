@@ -5,10 +5,12 @@
 Fast UUID generation with optimized backends.
 
 This module provides optimized UUID generation:
+
 - fastuuid for faster UUID generation (already installed!)
 - Standard uuid module fallback
 
 Performance improvements:
+
 - fastuuid: Faster UUID generation (2-5x faster)
 - Optimized for high-frequency UUID generation
 

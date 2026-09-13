@@ -5,21 +5,23 @@
 
 ## Quick Links
 
-| Document | Purpose | Size | Key Info |
-|----------|---------|------|----------|
-| [track-2-hexagonal-split-tdd-plan.md](#main-plan) | Full TDD implementation plan | 2,534 lines | Code, tests, build commands |
-| [TRACK2_SUMMARY.md](#summary) | Executive summary | 200 lines | Overview, timeline, standards |
-| [TRACK2_TASK_CHECKLIST.md](#checklist) | Task-by-task checklist | 400 lines | Dependencies, verification steps |
-| This document | Index and navigation | — | You are here |
+| Document                                          | Purpose                      | Size        | Key Info                         |
+| ------------------------------------------------- | ---------------------------- | ----------- | -------------------------------- |
+| [track-2-hexagonal-split-tdd-plan.md](#main-plan) | Full TDD implementation plan | 2,534 lines | Code, tests, build commands      |
+| [TRACK2_SUMMARY.md](#summary)                     | Executive summary            | 200 lines   | Overview, timeline, standards    |
+| [TRACK2_TASK_CHECKLIST.md](#checklist)            | Task-by-task checklist       | 400 lines   | Dependencies, verification steps |
+| This document                                     | Index and navigation         | —           | You are here                     |
 
 ---
 
 ## Main Plan
+
 **File:** `/docs/changes/track-2-hexagonal-split-tdd-plan.md`
 
 The **definitive document** for Track 2 implementation. Contains:
 
 ### Structure
+
 1. **Overview** — Scope, LOC counts, priorities, migration matrix
 2. **Part 1: Foundation (thegent-policy)** — P0, largest crate
    - 1.1 Create crate skeleton
@@ -40,6 +42,7 @@ The **definitive document** for Track 2 implementation. Contains:
    - Quality gate bash script
 
 ### Key Features
+
 - **100% concrete:** Every file path is absolute and exact
 - **Test-first:** Every task starts with failing tests (Rust + Python)
 - **Buildable:** All code is production-ready, copy-paste usable
@@ -47,6 +50,7 @@ The **definitive document** for Track 2 implementation. Contains:
 - **Verified:** Parity tests and benchmarks before removal
 
 ### How to Use
+
 1. Read **Overview** to understand scope
 2. Pick a task from Part 1-6
 3. Copy **Failing test first** code into test file
@@ -59,9 +63,11 @@ The **definitive document** for Track 2 implementation. Contains:
 ---
 
 ## Summary
+
 **File:** `/docs/changes/TRACK2_SUMMARY.md`
 
 Quick reference for:
+
 - What's being migrated (6 Python modules → 5 Rust crates)
 - Task structure (6 major tasks across 5 parts)
 - Execution order (P0 → P1 → P2 → P3 → Verification)
@@ -74,11 +80,13 @@ Quick reference for:
 ---
 
 ## Checklist
+
 **File:** `/docs/changes/TRACK2_TASK_CHECKLIST.md`
 
 Step-by-step checklist for implementation:
 
 ### Organization
+
 - **Dependency graph:** Shows which tasks must complete before others
 - **Sequential checklist:** Checkbox for each sub-step (create file, run test, verify)
 - **Quality gate criteria:** What must pass before each task is done
@@ -87,6 +95,7 @@ Step-by-step checklist for implementation:
 - **Time breakdown:** Estimated hours per task
 
 ### Key Sections
+
 - **Phase P0 (4-6h):** Tasks 1.1, 1.2, 1.3 (foundation)
 - **Phase P1 (3-4h):** Tasks 2.1, 3.1 (session & audit)
 - **Phase P2 (2-3h):** Task 6.1 (security, not in main plan yet)
@@ -101,19 +110,19 @@ Step-by-step checklist for implementation:
 
 ### Python Modules → Rust Crates
 
-| Python Module | Lines | Target Crate | Task | Priority |
-|---|---|---|---|---|
-| `src/thegent/governance/` | 12,638 | `crates/thegent-policy` | 1.1-1.3 | P0 |
-| `src/thegent/session/` | 896 | extend `crates/thegent-zmx` | 2.1 | P1 |
-| `src/thegent/audit/` | 2,342 | extend `crates/thegent-jsonl` | 3.1 | P1 |
-| `src/thegent/metrics/` | 80 | `crates/thegent-metrics` | 4.1 | P3 |
-| `src/thegent/security/` | 1,594 | extend `crates/thegent-crypto` | (6.1*) | P2 |
-| `src/thegent/verification/` | 711 | extend `crates/thegent-crypto` | (6.1*) | P2 |
-| FastMCP tools (CPU-bound) | ~3,000 | PyO3 modules | 1.2-1.3 | P0 |
+| Python Module               | Lines  | Target Crate                   | Task    | Priority |
+| --------------------------- | ------ | ------------------------------ | ------- | -------- |
+| `src/thegent/governance/`   | 12,638 | `crates/thegent-policy`        | 1.1-1.3 | P0       |
+| `src/thegent/session/`      | 896    | extend `crates/thegent-zmx`    | 2.1     | P1       |
+| `src/thegent/audit/`        | 2,342  | extend `crates/thegent-jsonl`  | 3.1     | P1       |
+| `src/thegent/metrics/`      | 80     | `crates/thegent-metrics`       | 4.1     | P3       |
+| `src/thegent/security/`     | 1,594  | extend `crates/thegent-crypto` | (6.1\*) | P2       |
+| `src/thegent/verification/` | 711    | extend `crates/thegent-crypto` | (6.1\*) | P2       |
+| FastMCP tools (CPU-bound)   | ~3,000 | PyO3 modules                   | 1.2-1.3 | P0       |
 
 **Total:** ~23,261 LOC → 5 Rust crates (new + extended)
 
-*Note: Task 6.1 (Security) has same structure as others; included in main plan as reference.
+\*Note: Task 6.1 (Security) has same structure as others; included in main plan as reference.
 
 ---
 
@@ -147,24 +156,28 @@ START
 Every task must pass ALL of these:
 
 ### Code Quality
+
 - ✓ Zero `cargo clippy` warnings (`-D warnings` enforced)
 - ✓ No fallbacks, legacy compatibility, or silent error handling
 - ✓ Fail-fast on errors (clear, loud failures)
 - ✓ All edge cases tested (zero cost, negative values, etc.)
 
 ### Test Coverage
+
 - ✓ **Unit tests:** ≥95% coverage (verified with tarpaulin)
 - ✓ **Integration tests:** ≥90% coverage (rust + python)
 - ✓ **E2E tests:** ≥80% coverage (where applicable)
 - ✓ Parity tests (Python vs Rust match 100%)
 
 ### Performance
+
 - ✓ Meets latency targets (e.g., <1ms for compliance checks)
 - ✓ Benchmarks show ≥2x speedup vs Python
 - ✓ No memory leaks
 - ✓ Batch operations show parallelism benefits
 
 ### Build & Tooling
+
 - ✓ PyO3 bindings compile cleanly (`maturin develop --release`)
 - ✓ Python bindings importable
 - ✓ Works on Python 3.10, 3.11, 3.12
@@ -175,6 +188,7 @@ Every task must pass ALL of these:
 ## Build System Overview
 
 ### Tools Used
+
 - **Language:** Rust (primary), Python (bindings)
 - **Bindings:** PyO3 + maturin
 - **Testing:** `cargo test` (Rust), `pytest` (Python)
@@ -209,6 +223,7 @@ pytest tests/integration/test_python_rust_parity.py -v
 ## Timeline & Resources
 
 ### Sequential Estimate
+
 - **P0 (foundation):** 4-6 hours
 - **P1 (session & audit):** 3-4 hours
 - **P2 (security):** 2-3 hours
@@ -218,6 +233,7 @@ pytest tests/integration/test_python_rust_parity.py -v
 **Total:** 12-18 hours
 
 ### With Parallelization (2+ agents)
+
 - **Critical path (1.1 → 1.2 → 1.3):** 4-6 hours
 - **Parallel tracks (2.1, 3.1, 4.1, 6.1):** Run while 1.3 in progress
 - **Wall-clock time:** 3-5 hours
@@ -241,6 +257,7 @@ pytest tests/integration/test_python_rust_parity.py -v
 ## How to Use These Documents
 
 ### For Implementation Teams
+
 1. Start with **TRACK2_SUMMARY.md** (5 min overview)
 2. Read **track-2-hexagonal-split-tdd-plan.md** (main reference)
 3. Use **TRACK2_TASK_CHECKLIST.md** during implementation
@@ -248,6 +265,7 @@ pytest tests/integration/test_python_rust_parity.py -v
 5. Verify checklist items as you complete them
 
 ### For Code Review
+
 1. Check **Quality Standards** section above
 2. Verify test coverage with tarpaulin output
 3. Confirm parity tests pass
@@ -255,6 +273,7 @@ pytest tests/integration/test_python_rust_parity.py -v
 5. Ensure no fallbacks or legacy code introduced
 
 ### For Project Tracking
+
 1. Use **Timeline & Resources** for estimates
 2. Track tasks against **Task Execution Flowchart**
 3. Mark completion when all **Success Criteria** met
@@ -304,14 +323,14 @@ tests/
 
 Refer to the appropriate document:
 
-| Q | Document |
-|---|----------|
-| "What's being migrated?" | TRACK2_SUMMARY.md |
-| "How do I start Task 1.1?" | track-2-hexagonal-split-tdd-plan.md, Part 1 |
-| "What do I need to verify?" | TRACK2_TASK_CHECKLIST.md, Quality Gate section |
-| "What's the timeline?" | TRACK2_SUMMARY.md, Timeline section |
-| "What commands should I run?" | TRACK2_TASK_CHECKLIST.md, Commands section |
-| "How do I know when I'm done?" | TRACK2_SUMMARY.md, Success Criteria |
+| Q                              | Document                                       |
+| ------------------------------ | ---------------------------------------------- |
+| "What's being migrated?"       | TRACK2_SUMMARY.md                              |
+| "How do I start Task 1.1?"     | track-2-hexagonal-split-tdd-plan.md, Part 1    |
+| "What do I need to verify?"    | TRACK2_TASK_CHECKLIST.md, Quality Gate section |
+| "What's the timeline?"         | TRACK2_SUMMARY.md, Timeline section            |
+| "What commands should I run?"  | TRACK2_TASK_CHECKLIST.md, Commands section     |
+| "How do I know when I'm done?" | TRACK2_SUMMARY.md, Success Criteria            |
 
 ---
 

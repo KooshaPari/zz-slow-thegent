@@ -125,6 +125,7 @@ Each session is a single JSON file named `ses_<ULID>.json` containing:
 ```
 
 **Key observations:**
+
 - No explicit end timestamp; duration is provided separately (calculate: start + duration)
 - Usage stats include input and completion token counts
 - Model metadata includes thinking capability (Enabled/Disabled)
@@ -141,6 +142,7 @@ JSONL file with one JSON object per line:
 ```
 
 **Key observations:**
+
 - Simple format: `prompt` and ISO `timestamp`
 - Useful for prompt tracking and session reconstruction
 - Can have many more entries than session files (history of all interactions)
@@ -164,18 +166,18 @@ JSONL file with one JSON object per line:
 
 ### What's Extracted per Session
 
-| Field | Source | Format | Notes |
-|-------|--------|--------|-------|
-| Session ID | `id` field | String (ULID) | Unique identifier |
-| Model | `model.name` | String | e.g. `claude-haiku-4-5` |
-| Provider | `provider.name` | String | e.g. `anthropic-subscription` |
-| Input Tokens | `usage.input_tokens` | Integer | Prompt token count |
-| Output Tokens | `usage.output_tokens` | Integer | Completion token count |
-| Started Time | `started_time` | ISO 8601 UTC | Parsed with Z→+00:00 conversion |
-| Ended Time | `started_time` + `duration` | ISO 8601 UTC | Calculated, not stored |
-| Duration | `duration.secs` + `duration.nanos` | Float (seconds) | Precise to nanosecond |
-| Project | `dir` | Path string | Working directory |
-| Thinking | `model.thinking` | String (Enabled/Disabled) | Stored in metadata |
+| Field         | Source                             | Format                    | Notes                           |
+| ------------- | ---------------------------------- | ------------------------- | ------------------------------- |
+| Session ID    | `id` field                         | String (ULID)             | Unique identifier               |
+| Model         | `model.name`                       | String                    | e.g. `claude-haiku-4-5`         |
+| Provider      | `provider.name`                    | String                    | e.g. `anthropic-subscription`   |
+| Input Tokens  | `usage.input_tokens`               | Integer                   | Prompt token count              |
+| Output Tokens | `usage.output_tokens`              | Integer                   | Completion token count          |
+| Started Time  | `started_time`                     | ISO 8601 UTC              | Parsed with Z→+00:00 conversion |
+| Ended Time    | `started_time` + `duration`        | ISO 8601 UTC              | Calculated, not stored          |
+| Duration      | `duration.secs` + `duration.nanos` | Float (seconds)           | Precise to nanosecond           |
+| Project       | `dir`                              | Path string               | Working directory               |
+| Thinking      | `model.thinking`                   | String (Enabled/Disabled) | Stored in metadata              |
 
 ### Test Results
 
@@ -248,13 +250,13 @@ All code follows thegent conventions:
 
 ## Files Modified/Created
 
-| File | Type | Changes |
-|------|------|---------|
-| `src/thegent/models/ante_scraper.py` | Created | 123 lines, dedicated Ante scraper |
-| `src/thegent/orchestration/state/session_scraper.py` | Modified | +30 lines, added `scrape_ante_history()` |
-| `src/thegent/agents/unified_session_index.py` | Modified | +70 lines, enhanced `_index_ante()` + new `_parse_ante_session()` |
-| `src/thegent/models/scrapers.py` | Modified | +25 lines, added `scrape_ante()` and async wrappers |
-| `tests/test_unit_scrapers.py` | Modified | +45 lines, added `TestScrapeAnte` class with 3 unit tests |
+| File                                                 | Type     | Changes                                                           |
+| ---------------------------------------------------- | -------- | ----------------------------------------------------------------- |
+| `src/thegent/models/ante_scraper.py`                 | Created  | 123 lines, dedicated Ante scraper                                 |
+| `src/thegent/orchestration/state/session_scraper.py` | Modified | +30 lines, added `scrape_ante_history()`                          |
+| `src/thegent/agents/unified_session_index.py`        | Modified | +70 lines, enhanced `_index_ante()` + new `_parse_ante_session()` |
+| `src/thegent/models/scrapers.py`                     | Modified | +25 lines, added `scrape_ante()` and async wrappers               |
+| `tests/test_unit_scrapers.py`                        | Modified | +45 lines, added `TestScrapeAnte` class with 3 unit tests         |
 
 ## Assumptions Made
 

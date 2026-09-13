@@ -2,4 +2,3 @@
 
 Source: `docs/architecture`
 Files: 5
-

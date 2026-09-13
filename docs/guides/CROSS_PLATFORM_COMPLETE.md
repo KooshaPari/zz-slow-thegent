@@ -2,6 +2,7 @@
 
 > **Status**: Complete | **Version**: 1.0 | **Date**: 2026-02-16
 > **Related**:
+>
 > - [Cross-Platform Research Complete](../research/CROSS_PLATFORM_RESEARCH_COMPLETE.md)
 > - [Cross-Platform Multi-Tenant Implementation Plan](../plans/CROSS_PLATFORM_MULTI_TENANT_IMPLEMENTATION_PLAN.md)
 > - [Cross-Platform Master Index](../CROSS_PLATFORM_MASTER_INDEX.md)
@@ -43,16 +44,19 @@ pip install pyatspi
 **Step 2: Grant Permissions (2 min)**
 
 **macOS:**
+
 1. System Preferences > Security & Privacy > Accessibility
 2. Add Terminal (or your Python interpreter)
 3. System Preferences > Security & Privacy > Screen Recording (for screenshots)
 4. Add Terminal
 
 **Windows:**
+
 - Run as Administrator, OR
 - Configure Group Policy
 
 **Linux:**
+
 - Usually granted by default
 
 **Step 3: Write Your First Automation (2 min)**
@@ -113,6 +117,7 @@ element = provider.find_element("button[x=100,y=200]")
 ### 2.1 Migration Overview
 
 This guide helps you migrate from:
+
 - Manual UI interaction → Automated desktop automation
 - Platform-specific code → Cross-platform abstraction
 - Single-agent → Multi-tenant coordination
@@ -123,11 +128,13 @@ This guide helps you migrate from:
 #### Path 1: Adding Desktop Automation to New Code
 
 **Step 1: Install Dependencies**
+
 ```bash
 pip install py-applescript pywinauto pyatspi
 ```
 
 **Step 2: Import Provider**
+
 ```python
 from thegent.infra.desktop_automation import get_provider
 
@@ -135,6 +142,7 @@ provider = get_provider()
 ```
 
 **Step 3: Use Provider**
+
 ```python
 element = provider.find_element("button[name='Save']")
 if element:
@@ -144,6 +152,7 @@ if element:
 #### Path 2: Migrating Existing Platform-Specific Code
 
 **Before (macOS-specific):**
+
 ```python
 import subprocess
 
@@ -158,6 +167,7 @@ def click_button_macos(button_name: str):
 ```
 
 **After (Cross-platform):**
+
 ```python
 from thegent.infra.desktop_automation import get_provider
 
@@ -173,6 +183,7 @@ def click_button(button_name: str):
 #### Path 3: Migrating to Multi-Tenant Coordination
 
 **Before (Single-agent):**
+
 ```python
 def automate_task():
     provider = get_provider()
@@ -181,6 +192,7 @@ def automate_task():
 ```
 
 **After (Multi-tenant):**
+
 ```python
 from thegent.infra.desktop_automation import get_provider, Coordinator
 
@@ -219,6 +231,7 @@ def automate_task(agent_id: str):
 **Status:** ✅ Complete
 
 **Deliverables:**
+
 - ✅ Comprehensive research (13 documents, 12,000+ lines)
 - ✅ Architecture decisions documented
 - ✅ Implementation plan created
@@ -233,6 +246,7 @@ def automate_task(agent_id: str):
 **Week 1: Core Infrastructure**
 
 **Tasks:**
+
 - [ ] Create base provider abstract class (`DesktopAutomationProvider`)
 - [ ] Implement `UIElement`, `AutomationAction`, `AutomationResult` dataclasses
 - [ ] Create provider factory (`get_provider()`)
@@ -240,6 +254,7 @@ def automate_task(agent_id: str):
 - [ ] Set up test infrastructure
 
 **Deliverables:**
+
 - Base provider class
 - Configuration system
 - Test framework
@@ -247,6 +262,7 @@ def automate_task(agent_id: str):
 **Week 2: Platform Implementations**
 
 **Tasks:**
+
 - [ ] Implement macOS provider (AppleScript)
 - [ ] Implement Windows provider (UI Automation)
 - [ ] Implement Linux provider (AT-SPI)
@@ -254,6 +270,7 @@ def automate_task(agent_id: str):
 - [ ] Write unit tests
 
 **Deliverables:**
+
 - Three platform providers
 - Platform detection
 - Unit test suite
@@ -263,6 +280,7 @@ def automate_task(agent_id: str):
 **Goal:** Add multi-tenant coordination and conflict resolution.
 
 **Tasks:**
+
 - [ ] Implement file-based locking
 - [ ] Implement UI automation coordination
 - [ ] Add process coordination
@@ -270,6 +288,7 @@ def automate_task(agent_id: str):
 - [ ] Add conflict resolution
 
 **Deliverables:**
+
 - Coordinator class
 - Lock management
 - Conflict resolution
@@ -279,6 +298,7 @@ def automate_task(agent_id: str):
 **Goal:** Add advanced features and optimizations.
 
 **Tasks:**
+
 - [ ] Add screenshot and analysis
 - [ ] Implement batch operations
 - [ ] Add performance optimizations
@@ -286,6 +306,7 @@ def automate_task(agent_id: str):
 - [ ] Add monitoring and metrics
 
 **Deliverables:**
+
 - Advanced features
 - Performance optimizations
 - Monitoring system
@@ -295,6 +316,7 @@ def automate_task(agent_id: str):
 **Goal:** Production hardening and documentation.
 
 **Tasks:**
+
 - [ ] Security audit
 - [ ] Performance testing
 - [ ] Documentation completion
@@ -302,6 +324,7 @@ def automate_task(agent_id: str):
 - [ ] Release preparation
 
 **Deliverables:**
+
 - Production-ready system
 - Complete documentation
 - Test suite
@@ -708,6 +731,7 @@ def get_provider() -> DesktopAutomationProvider:
 **Permissions**: Accessibility, Screen Recording
 
 **Example**:
+
 ```python
 from thegent.infra.desktop_automation import get_provider
 
@@ -723,6 +747,7 @@ provider.click(element)
 **Permissions**: Administrator or Group Policy
 
 **Example**:
+
 ```python
 from thegent.infra.desktop_automation import get_provider
 
@@ -738,6 +763,7 @@ provider.click(element)
 **Permissions**: Usually granted by default
 
 **Example**:
+
 ```python
 from thegent.infra.desktop_automation import get_provider
 
@@ -787,6 +813,7 @@ provider.click(element)
 **Symptoms**: `find_element()` returns `None`
 
 **Solutions**:
+
 1. Check selector syntax
 2. Verify element exists in UI
 3. Wait for element to appear: `wait_for_idle()`
@@ -797,6 +824,7 @@ provider.click(element)
 **Symptoms**: `click()` returns `success=False`
 
 **Solutions**:
+
 1. Verify element is visible and enabled
 2. Check if element is covered by another element
 3. Try focusing element first: `focus(element)`
@@ -807,6 +835,7 @@ provider.click(element)
 **Symptoms**: Slow automation execution
 
 **Solutions**:
+
 1. Cache elements instead of re-finding
 2. Reduce `wait_for_idle()` timeouts
 3. Batch operations
@@ -815,16 +844,19 @@ provider.click(element)
 ### 8.4 Platform-Specific Issues
 
 **macOS**:
+
 - Check Accessibility permissions
 - Verify AppleScript syntax
 - Check for system dialogs blocking automation
 
 **Windows**:
+
 - Run as Administrator if needed
 - Check Group Policy settings
 - Verify UI Automation is enabled
 
 **Linux**:
+
 - Check AT-SPI is running
 - Verify accessibility permissions
 - Check for desktop environment compatibility
@@ -840,8 +872,7 @@ provider.click(element)
 
 ---
 
-*Generated: 2026-02-16 | Version: 1.0 | Status: Complete*
-
+_Generated: 2026-02-16 | Version: 1.0 | Status: Complete_
 
 ---
 
@@ -851,15 +882,18 @@ provider.click(element)
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

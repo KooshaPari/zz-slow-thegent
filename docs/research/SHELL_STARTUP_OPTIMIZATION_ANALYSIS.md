@@ -28,6 +28,7 @@
 ### ⚠️ Potential Issues Found
 
 1. **Async Plugin Loading (Lines 72-87 in .zshrc)**
+
    ```zsh
    () {
        source "${HOME}/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh" &
@@ -35,6 +36,7 @@
        source "${HOME}/.zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" &
    }
    ```
+
    **Problem:** Background jobs (`&`) in zsh don't work for `source` - this will fail silently or block
    **Fix:** Use proper async loading or load synchronously but defer until after prompt
 
@@ -59,25 +61,31 @@
 ## Optimization Recommendations
 
 ### Priority 1: Fix Async Plugin Loading
+
 **Current:** Background jobs don't work for `source`
 **Fix:** Use proper async loading pattern or load synchronously after prompt
 
 ### Priority 2: Optimize direnv Hooks
+
 **Current:** Multiple hooks calling direnv allow
 **Fix:**
+
 - Cache allowed directories
 - Only check once per directory
 - Remove precmd hook (only use chpwd)
 
 ### Priority 3: Remove Duplicate Sourcing
+
 **Current:** `.zsh_bundle.zsh` sourced twice
 **Fix:** Only source once, use guard variable
 
 ### Priority 4: Lazy Load Nix
+
 **Current:** Nix loaded in `.zshenv` for all shells
 **Fix:** Only load Nix when needed or in interactive shells
 
 ### Priority 5: Compile Zsh Scripts
+
 **Current:** Scripts loaded as plain text
 **Fix:** Use `zcompile` to create `.zwc` files for faster loading
 
@@ -85,15 +93,16 @@
 
 ## Expected Impact
 
-| Optimization | Expected Reduction | Cumulative |
-|--------------|-------------------|------------|
-| Fix async plugin loading | 50-100ms | 50-100ms |
-| Optimize direnv hooks | 20-50ms | 70-150ms |
-| Remove duplicate sourcing | 10-30ms | 80-180ms |
-| Lazy load Nix | 10-50ms | 90-230ms |
-| Compile zsh scripts | 20-50ms | 110-280ms |
+| Optimization              | Expected Reduction | Cumulative |
+| ------------------------- | ------------------ | ---------- |
+| Fix async plugin loading  | 50-100ms           | 50-100ms   |
+| Optimize direnv hooks     | 20-50ms            | 70-150ms   |
+| Remove duplicate sourcing | 10-30ms            | 80-180ms   |
+| Lazy load Nix             | 10-50ms            | 90-230ms   |
+| Compile zsh scripts       | 20-50ms            | 110-280ms  |
 
 **Note:** Current measurement shows 35.74ms, which is already below target. The user-reported 654ms might be from:
+
 - First-time cold start (compinit rebuilding cache)
 - Heavy plugins loading
 - direnv evaluating flake.nix

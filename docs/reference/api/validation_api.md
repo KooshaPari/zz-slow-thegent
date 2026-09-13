@@ -24,7 +24,7 @@ WP-7005: Policy layer for semantic validation of agent outputs.
 
 ### Methods
 
-#### SemanticPolicyEngine.__init__
+#### SemanticPolicyEngine.**init**
 
 ```python
 __init__(self: Any, strict: bool)

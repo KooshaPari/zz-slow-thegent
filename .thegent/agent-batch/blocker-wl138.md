@@ -7,6 +7,7 @@ Scope: execution-level gate closeout for WL-138 progress artifact pipeline.
 ## What changed
 
 1. Added execution-level gates to WL-138 progress artifact generation (`scripts/wl138_decomposition_progress.py`):
+
 - Rust hook decomposition gate:
   - `cargo test -q --manifest-path hooks/hook-dispatcher/Cargo.toml`
 - Zig promotion outcome gates:
@@ -16,11 +17,13 @@ Scope: execution-level gate closeout for WL-138 progress artifact pipeline.
   - `python -m pytest -q tests/test_mojo_score_rank_harness.py::test_run_smoke_with_fake_mojo tests/test_mojo_score_rank_harness.py::test_run_enforces_promotion_gate_by_default`
 
 2. Expanded artifact schema to include command-level gate evidence:
+
 - per-checkpoint `execution_gates[]` with command, status, exit code, duration, stdout/stderr tails
 - per-checkpoint `evaluation` showing path vs execution-gate completion
 - top-level execution gate completion summary
 
 3. Added WL-138 tests for execution-gate semantics (`tests/test_wl138_decomposition_progress.py`):
+
 - skip mode for fast artifact shape verification
 - failing gate unit check proving checkpoint completion now depends on command outcomes
 
@@ -37,6 +40,7 @@ python -m pytest -q tests/test_wl138_decomposition_progress.py
 ```
 
 Observed:
+
 - WL-138 artifact generation: `completion: 5/5 (100.0%)`, `execution gates: 4/4 (100.0%)`.
 - Script/test files compile cleanly.
 - Focused WL-138 test file: `2 passed in 0.17s`.
@@ -46,4 +50,5 @@ Observed:
 WL-138 remains `in_progress`.
 
 Remaining blocker (explicit):
+
 - `WL-120` monolith-cut program is still open, so WL-138 epic-level decomposition completion cannot be marked `COMPLETED` yet.

@@ -27,16 +27,19 @@ thegent shell optimize
 **What it does**: Defers loading expensive tools (nvm, rbenv, pyenv, etc.) until first use.
 
 **Benefits**:
+
 - Saves 200-800ms on shell startup
 - Only loads tools when actually needed
 - Transparent to user (works automatically)
 
 **How it works**:
+
 - Wraps tool commands (node, npm, ruby, python, etc.)
 - On first use, loads the tool initialization
 - Subsequent uses are instant
 
 **Example**:
+
 ```zsh
 # Before: nvm loads at startup (~500ms)
 # After: nvm loads on first 'node' or 'npm' use (~50ms)
@@ -48,16 +51,19 @@ $ node --version  # Triggers nvm load, then runs node
 **What it does**: Caches results of `eval "$(tool init -)"` commands.
 
 **Benefits**:
+
 - 80-90% faster on subsequent loads
 - Cache valid for 1 hour
 - Automatic invalidation on tool updates
 
 **How it works**:
+
 - First run: Executes command, caches output
 - Subsequent runs: Sources cached output (<10ms)
 - Cache key: Hash of command + arguments
 
 **Example**:
+
 ```zsh
 # First run: ~65ms
 _evalcache rbenv init -
@@ -71,11 +77,13 @@ _evalcache rbenv init -
 **What it does**: Measures and reports shell startup time.
 
 **Benefits**:
+
 - Identify slow-loading components
 - Track optimization improvements
 - Debug performance issues
 
 **Usage**:
+
 ```bash
 # Enable profiling
 thegent shell profile --enable
@@ -92,11 +100,13 @@ thegent shell profile --disable
 **What it does**: Measures average shell startup time over multiple iterations.
 
 **Usage**:
+
 ```bash
 thegent shell benchmark --iterations 10
 ```
 
 **Output**:
+
 ```
 Shell Startup Benchmark Results
 ┌─────────────┬──────────┐
@@ -141,6 +151,7 @@ thegent shell clear-cache
 **Symptoms**: Tools still load at startup
 
 **Solutions**:
+
 1. Check if tool is detected: `thegent shell status`
 2. Verify lazy loading is enabled in `.zsh_optimization.zsh`
 3. Check for conflicts with other shell configs
@@ -150,6 +161,7 @@ thegent shell clear-cache
 **Symptoms**: Stale cache, wrong tool versions
 
 **Solutions**:
+
 ```bash
 # Clear cache
 thegent shell clear-cache
@@ -163,11 +175,13 @@ rm -rf ~/.cache/thegent/eval-cache/*
 **Symptoms**: Startup time still slow
 
 **Diagnosis**:
+
 1. Run benchmark: `thegent shell benchmark`
 2. Enable profiling: `thegent shell profile --enable`
 3. Check `zprof` output for slow components
 
 **Common culprits**:
+
 - Oh My Zsh plugins
 - Custom .zshrc additions
 - Network calls during startup
@@ -213,12 +227,12 @@ echo "$(date +%s) $(thegent shell benchmark --iterations 1)" >> "$THEGENT_STARTU
 
 ## Performance Targets
 
-| Metric | Target | Excellent |
-|--------|--------|-----------|
-| Startup time | <500ms | <200ms |
-| Lazy load overhead | <100ms | <50ms |
-| Eval cache hit | <20ms | <10ms |
-| Memory footprint | <20MB | <10MB |
+| Metric             | Target | Excellent |
+| ------------------ | ------ | --------- |
+| Startup time       | <500ms | <200ms    |
+| Lazy load overhead | <100ms | <50ms     |
+| Eval cache hit     | <20ms  | <10ms     |
+| Memory footprint   | <20MB  | <10MB     |
 
 ## Integration with Other Tools
 
@@ -258,7 +272,6 @@ fi
 - [evalcache Plugin](https://github.com/mroth/evalcache)
 - [Zsh Profiling](http://zsh.sourceforge.net/Doc/Release/Zsh-Modules.html#The-zsh_002fzprof-Module)
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -267,15 +280,18 @@ fi
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

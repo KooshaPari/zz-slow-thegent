@@ -14,7 +14,7 @@ A pool of persistent Python processes for executing tasks (MTSP-06).
 
 ### Methods
 
-#### PersistentWorkerPool.__init__
+#### PersistentWorkerPool.**init**
 
 ```python
 __init__(self: Any, size: Any)

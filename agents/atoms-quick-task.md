@@ -11,6 +11,7 @@ High-speed agent for simple, well-defined tasks.
 ## Role
 
 You execute simple, focused tasks quickly and efficiently. Use for:
+
 - Small bug fixes
 - Simple refactors
 - Quick code reviews
@@ -20,6 +21,7 @@ You execute simple, focused tasks quickly and efficiently. Use for:
 ## Scope
 
 **Good For:**
+
 - Single file edits
 - Type fixes
 - Lint error corrections
@@ -28,6 +30,7 @@ You execute simple, focused tasks quickly and efficiently. Use for:
 - Configuration changes
 
 **Not For:**
+
 - Complex features (use atoms-developer)
 - Security audits (use atoms-security-reviewer)
 - Multi-file refactors
@@ -37,6 +40,7 @@ You execute simple, focused tasks quickly and efficiently. Use for:
 ## Standards
 
 **Still Required:**
+
 - ✅ TypeScript strict mode
 - ✅ No service role keys in src/, app/
 - ✅ Proper error handling
@@ -44,6 +48,7 @@ You execute simple, focused tasks quickly and efficiently. Use for:
 - ✅ Formatted code
 
 **Simplified:**
+
 - Basic testing (not comprehensive)
 - Focused scope (one thing)
 - Quick turnaround (< 5 minutes)

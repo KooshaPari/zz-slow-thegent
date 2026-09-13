@@ -7,22 +7,22 @@
 
 ## File Extraction Matrix
 
-| PAL-MCP Source | Target Module | Thegent File | Purpose | Effort |
-|---|---|---|---|---|
-| `tools/consensus.py` | infrastructure/orchestration | `consensus_engine.py` | Multi-model debate orchestration | Medium |
-| `tools/clink.py` | infrastructure/orchestration | `subagent_spawner.py` | CLI subagent isolation + spawning | Medium |
-| `docs/context-revival.md` | infrastructure/context | `revival_handler.py` | Cross-session continuity | High |
-| `systemprompts/consensus_prompt.py` | docs/reference/system_prompts | `consensus_prompt.md` | Debate stance structure | Low |
-| `systemprompts/codereview_prompt.py` | docs/reference/system_prompts | `codereview_prompt.md` | Multi-angle inspection | Low |
-| `systemprompts/planner_prompt.py` | docs/reference/system_prompts | `planner_prompt.md` | WBS decomposition | Low |
-| `systemprompts/refactor_prompt.py` | docs/reference/system_prompts | `refactor_prompt.md` | Code transformation | Low |
-| `systemprompts/secaudit_prompt.py` | docs/reference/system_prompts | `secaudit_prompt.md` | Security analysis | Low |
-| `infrastructure/providers/gemini_provider.py` | infrastructure/providers | `gemini_provider.py` (enhance) | Add thinking modes + context window tuning | Low |
-| (new) | infrastructure/providers | `grok_provider.py` | X.AI Grok integration | Low |
-| (new) | infrastructure/providers | `ollama_provider.py` | Local LLM support | Low |
-| (new) | infrastructure/providers | `openrouter_provider.py` | Meta-provider (50+ models) | Low |
-| (new) | infrastructure/providers | `provider_auto_selector.py` | Task-based model selection matrix | Medium |
-| `tools/apilookup.py` | application/tools | `api_lookup_tool.py` | Real-time API documentation | Low |
+| PAL-MCP Source                                | Target Module                 | Thegent File                   | Purpose                                    | Effort |
+| --------------------------------------------- | ----------------------------- | ------------------------------ | ------------------------------------------ | ------ |
+| `tools/consensus.py`                          | infrastructure/orchestration  | `consensus_engine.py`          | Multi-model debate orchestration           | Medium |
+| `tools/clink.py`                              | infrastructure/orchestration  | `subagent_spawner.py`          | CLI subagent isolation + spawning          | Medium |
+| `docs/context-revival.md`                     | infrastructure/context        | `revival_handler.py`           | Cross-session continuity                   | High   |
+| `systemprompts/consensus_prompt.py`           | docs/reference/system_prompts | `consensus_prompt.md`          | Debate stance structure                    | Low    |
+| `systemprompts/codereview_prompt.py`          | docs/reference/system_prompts | `codereview_prompt.md`         | Multi-angle inspection                     | Low    |
+| `systemprompts/planner_prompt.py`             | docs/reference/system_prompts | `planner_prompt.md`            | WBS decomposition                          | Low    |
+| `systemprompts/refactor_prompt.py`            | docs/reference/system_prompts | `refactor_prompt.md`           | Code transformation                        | Low    |
+| `systemprompts/secaudit_prompt.py`            | docs/reference/system_prompts | `secaudit_prompt.md`           | Security analysis                          | Low    |
+| `infrastructure/providers/gemini_provider.py` | infrastructure/providers      | `gemini_provider.py` (enhance) | Add thinking modes + context window tuning | Low    |
+| (new)                                         | infrastructure/providers      | `grok_provider.py`             | X.AI Grok integration                      | Low    |
+| (new)                                         | infrastructure/providers      | `ollama_provider.py`           | Local LLM support                          | Low    |
+| (new)                                         | infrastructure/providers      | `openrouter_provider.py`       | Meta-provider (50+ models)                 | Low    |
+| (new)                                         | infrastructure/providers      | `provider_auto_selector.py`    | Task-based model selection matrix          | Medium |
+| `tools/apilookup.py`                          | application/tools             | `api_lookup_tool.py`           | Real-time API documentation                | Low    |
 
 ---
 
@@ -760,6 +760,7 @@ Create in `docs/reference/system_prompts/`:
 8. **context_revival_prompt.md** — Session history summarization
 
 Each should include:
+
 - Purpose
 - Input format / constraints
 - Output structure
@@ -857,7 +858,7 @@ services:
     volumes:
       - redis_data:/data
 
-  ollama:  # Optional: for local LLM support
+  ollama: # Optional: for local LLM support
     image: ollama/ollama
     ports:
       - "11434:11434"
@@ -874,24 +875,28 @@ volumes:
 ## Rollout Phases
 
 ### Phase 1: Foundation (Week 1)
+
 - [ ] Create domain models (consensus, subagent, context-revival)
 - [ ] Setup system prompts framework
 - [ ] Add Grok, Ollama, OpenRouter provider skeletons
 - [ ] Create unit test scaffolding
 
 ### Phase 2: Workflows (Week 2)
+
 - [ ] Implement ConsensusEngine
 - [ ] Implement SubagentSpawner
 - [ ] Implement ContextRevivalHandler
 - [ ] Unit tests pass (80%+ coverage)
 
 ### Phase 3: Integration (Week 3)
+
 - [ ] MCP tool registration (consensus, clink, context-revival)
 - [ ] Provider integration tests
 - [ ] Cost tracking + monitoring
 - [ ] Redis integration
 
 ### Phase 4: Polish (Week 4)
+
 - [ ] E2E tests (real provider calls)
 - [ ] Documentation + examples
 - [ ] Performance optimization
@@ -909,4 +914,3 @@ volumes:
 - [ ] Integration tests pass (real API calls)
 - [ ] Cost tracking within 5% accuracy
 - [ ] Documentation complete + examples working
-

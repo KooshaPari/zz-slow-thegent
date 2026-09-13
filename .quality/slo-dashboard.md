@@ -3,26 +3,26 @@
 > Source: (source: /Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/.quality/loc-metrics.json)
 > Thresholds: Wave-1 E1 / `src/thegent/governance/slo.py`
 
-| Metric | Value | Status | Threshold (Green) | Threshold (Red) |
-|--------|-------|--------|-------------------|-----------------|
-| Total Python LOC | N/A | GREEN | <=80,000 | >=120,000 |
-| file_loc max | N/A | GREEN | <=1200 | >=1800 |
-| file_loc p95 | N/A | GREEN | <=1200 | >=1800 |
-| file_loc median | N/A | GREEN | <=1200 | >=1800 |
-| p95 latency (ms) | N/A | GREEN | <=250ms | >=500ms |
-| error rate (%) | N/A | GREEN | <=0.5% | >=1.0% |
-| trend health score | N/A | RED | >=95 | <=50 |
+| Metric             | Value | Status | Threshold (Green) | Threshold (Red) |
+| ------------------ | ----- | ------ | ----------------- | --------------- |
+| Total Python LOC   | N/A   | GREEN  | <=80,000          | >=120,000       |
+| file_loc max       | N/A   | GREEN  | <=1200            | >=1800          |
+| file_loc p95       | N/A   | GREEN  | <=1200            | >=1800          |
+| file_loc median    | N/A   | GREEN  | <=1200            | >=1800          |
+| p95 latency (ms)   | N/A   | GREEN  | <=250ms           | >=500ms         |
+| error rate (%)     | N/A   | GREEN  | <=0.5%            | >=1.0%          |
+| trend health score | N/A   | RED    | >=95              | <=50            |
 
 ## Breach States
 
-| Condition | State |
-|-----------|-------|
-| `past_sla_count > 0` | CRITICAL — escalation backlog critical |
-| `within_budget == false` | CRITICAL — contract drift over budget |
-| `trend_health_score < 50` | CRITICAL |
-| `trend_health_score < 80` | DEGRADED |
-| `trend_health_score < 95` | WARNING |
-| All thresholds in green | HEALTHY |
+| Condition                 | State                                  |
+| ------------------------- | -------------------------------------- |
+| `past_sla_count > 0`      | CRITICAL — escalation backlog critical |
+| `within_budget == false`  | CRITICAL — contract drift over budget  |
+| `trend_health_score < 50` | CRITICAL                               |
+| `trend_health_score < 80` | DEGRADED                               |
+| `trend_health_score < 95` | WARNING                                |
+| All thresholds in green   | HEALTHY                                |
 
 ## Threshold Source
 

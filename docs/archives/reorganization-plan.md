@@ -3,6 +3,7 @@
 **Project Status**: Comprehensive restructuring of 67 root-level markdown files, 19 separate docs/ directories, and conversation dump cleanup
 
 **Current State Audit**:
+
 - 67 markdown files at root level (target: ~5-10)
 - 19 separate docs/ directories with significant duplication
 - 31 conversation dump files identified (migration, summary, report, phase, complete filenames)
@@ -10,6 +11,7 @@
 - Quality score: 3.8/10
 
 **Target State**:
+
 - Unified /docs structure with clear hierarchy
 - Core documentation only: API reference, deployment, setup, architecture, operations
 - Zero conversation dumps in public docs
@@ -22,8 +24,9 @@
 ### 1.1: Root-Level Conversation Dump Removal
 
 **WL-1.1.1: Archive Root-Level Migration & Report Files**
+
 - **Title**: Remove 31 conversation dump files from root
-- **Scope**: 
+- **Scope**:
   - Files to archive: `MIGRATION_*.md`, `*_MIGRATION_*.md`, `*_SUMMARY.md`, `*_COMPLETE.md`, `*_REPORT.md`, `PHASE*.md` (31 files total)
   - Create `/archive/conversation-dumps/2026-02-ROOT-CLEANUP/` directory
   - Move all 31 files there
@@ -40,6 +43,7 @@
 - **Estimated Effort**: Small (1-2 hours)
 
 **WL-1.1.2: Create Root Documentation Index**
+
 - **Title**: New ROOT_INDEX.md for navigation
 - **Scope**:
   - Analyze remaining 36 root files after cleanup
@@ -62,6 +66,7 @@
 ### 1.2: Conversation Dump Directory Cleanup
 
 **WL-1.2.1: Archive atoms.tech/docs (366 files)**
+
 - **Title**: Move atoms.tech/docs to conversation dump archive
 - **Scope**:
   - Analysis: atoms.tech/docs contains 366 markdown files (likely API conversation history)
@@ -78,6 +83,7 @@
 - **Estimated Effort**: Small (1 hour)
 
 **WL-1.2.2: Clean High-Volume Project Docs Directories**
+
 - **Title**: Archive conversation dumps from high-volume docs dirs
 - **Scope**:
   - zen-mcp-server/docs: 43 files → identify conversation dumps
@@ -98,6 +104,7 @@
 - **Estimated Effort**: Medium (3-4 hours)
 
 **WL-1.2.3: Remove Empty/Minimal Docs Directories**
+
 - **Title**: Delete unused docs directories
 - **Scope**:
   - Identify and remove: archive/docs, crun-gui/docs, kagentop/docs (0 files each)
@@ -116,7 +123,8 @@
 ### 1.3: Root-Level File Consolidation
 
 **WL-1.3.1: Consolidate Technical Documentation Files**
-- **Title**: Merge 3 technical-documentation-*.md files into one
+
+- **Title**: Merge 3 technical-documentation-\*.md files into one
 - **Scope**:
   - Files: `technical-documentation-backend.md`, `technical-documentation-frontend.md`, `technical-documentation-mcp.md`
   - Analyze each file's content and structure
@@ -139,6 +147,7 @@
 - **Estimated Effort**: Medium (2-3 hours)
 
 **WL-1.3.2: Consolidate Architecture & Alignment Files**
+
 - **Title**: Merge architecture documentation (7 files)
 - **Scope**:
   - Files: `CIVILIZATION_ARCHITECTURE_SUMMARY.md`, `README_CIVILIZATION_ARCHITECTURE.md`, `MULTI_TENANT_AGENT_CIVILIZATION_ARCHITECTURE.md`, `ALIGNMENT_*.md` (3 files), `CROSS_PROJECT_COORDINATION_PATTERNS.md`
@@ -159,6 +168,7 @@
 - **Estimated Effort**: Medium (3 hours)
 
 **WL-1.3.3: Consolidate MCP-Related Files**
+
 - **Title**: Merge 6 MCP analysis/summary files
 - **Scope**:
   - Files: `MCP_COMPARISON_ANALYSIS.md`, `MCP_DUPLICATION_ANALYSIS.md`, `MCP_MERGE_SUMMARY.md`, `MCP_SYSTEM_SCOPE_SETUP.md`, `CLIPROXY_FORK_ZEN_AUDIT.md`
@@ -182,6 +192,7 @@
 ### 1.4: Minor Consolidations
 
 **WL-1.4.1: Consolidate Utility & Reference Files**
+
 - **Title**: Merge 8 utility/reference files
 - **Scope**:
   - Files: `AGENTS.md`, `ADDITIONAL_MODERN_ALTERNATIVES.md`, `LEGACY_MODERN_ALTERNATIVES_REPORT.md`, `FEATURE_OPTIMIZATION_PLAN.md`, `FEATURE_UTILIZATION_*.md` (2 files), `RESOURCE_UTILIZATION_ANALYSIS.md`, `CURRENT_USAGE_TRACKING_GUIDE.md`
@@ -198,6 +209,7 @@
 - **Estimated Effort**: Small (1.5 hours)
 
 **WL-1.4.2: Archive Audit & Analysis Files**
+
 - **Title**: Move 12 audit/report/analysis files
 - **Scope**:
   - Files: `AUDIT_COMPLETE.md`, `COMPREHENSIVE_AUDIT_SUMMARY.md`, `DEPENDENCY_AUDIT_REPORT.md`, `FEATURE_UTILIZATION_ANALYSIS.md`, `DOCUMENTATION_CONSOLIDATION_ANALYSIS.md`, `README_ALIGNMENT_ANALYSIS.md`, `*_ANALYSIS.md` (more files)
@@ -216,6 +228,7 @@
 ---
 
 **PHASE 1 SUMMARY**:
+
 - Remove 31 conversation dumps from root
 - Archive 366-file atoms.tech/docs directory
 - Reduce 4 high-volume project docs to core only
@@ -230,6 +243,7 @@
 ### 2.1: Create New Documentation Architecture
 
 **WL-2.1.1: Design New /docs Directory Structure**
+
 - **Title**: Define and document new docs hierarchy
 - **Scope**:
   - Create `/docs/` structure:
@@ -296,6 +310,7 @@
 - **Estimated Effort**: Medium (2 hours)
 
 **WL-2.1.2: Migrate Core Documentation to /docs**
+
 - **Title**: Move existing docs to new structure
 - **Scope**:
   - Move crun/docs → docs/projects/crun/
@@ -319,6 +334,7 @@
 ### 2.2: Create Project Navigation Layer
 
 **WL-2.2.1: Create docs/project-catalog.md**
+
 - **Title**: Central project documentation index
 - **Scope**:
   - Document all 19 projects with status (active/legacy/archived)
@@ -346,6 +362,7 @@
 - **Estimated Effort**: Small (2 hours)
 
 **WL-2.2.2: Create Project-Level README Templates**
+
 - **Title**: Standardized project documentation structure
 - **Scope**:
   - Create `/docs/projects/PROJECT_TEMPLATE.md` template with sections:
@@ -376,6 +393,7 @@
 ### 2.3: Establish Documentation Standards
 
 **WL-2.3.1: Create docs/DOCUMENTATION_STANDARDS.md**
+
 - **Title**: Documentation quality guidelines
 - **Scope**:
   - Define standards for:
@@ -401,6 +419,7 @@
 - **Estimated Effort**: Small (2 hours)
 
 **WL-2.3.2: Create Contribution Guide**
+
 - **Title**: How to add/update documentation
 - **Scope**:
   - Create `/docs/CONTRIBUTING.md` with:
@@ -426,6 +445,7 @@
 ### 2.4: Organize Existing Project Docs
 
 **WL-2.4.1: Restructure crun/docs into new hierarchy**
+
 - **Title**: Apply new structure to crun documentation
 - **Scope**:
   - Move crun/docs/ to docs/projects/crun/
@@ -447,6 +467,7 @@
 - **Estimated Effort**: Medium (2-3 hours)
 
 **WL-2.4.2: Restructure remaining project docs (zen-mcp, thegent, pheno-sdk)**
+
 - **Title**: Organize other major project docs
 - **Scope**:
   - zen-mcp-server/docs → docs/projects/zen-mcp-server/
@@ -466,6 +487,7 @@
 - **Estimated Effort**: Medium (4 hours)
 
 **WL-2.4.3: Minor project documentation consolidation**
+
 - **Title**: Organize remaining 11 projects' docs
 - **Scope**:
   - Projects: 4sgm, atoms-mcp-prod, cliproxyapi-plusplus, craph, morph, opencode-openai-codex-auth, plangent, smartcp, smolgents, task-tool, trace
@@ -487,6 +509,7 @@
 ---
 
 **PHASE 2 SUMMARY**:
+
 - Design new /docs hierarchy
 - Migrate all project docs to unified structure
 - Create project navigation and indexing
@@ -501,6 +524,7 @@
 ### 3.1: API Reference Documentation
 
 **WL-3.1.1: Create Central API Reference Overview**
+
 - **Title**: Master API reference document
 - **Scope**:
   - Create `/docs/api/README.md` with:
@@ -527,6 +551,7 @@
 - **Estimated Effort**: Medium (3 hours)
 
 **WL-3.1.2: Create REST API Reference**
+
 - **Title**: Complete REST API documentation
 - **Scope**:
   - If auto-generated OpenAPI exists: use it
@@ -551,6 +576,7 @@
 - **Estimated Effort**: Large (6-8 hours)
 
 **WL-3.1.3: Create MCP Protocol Reference**
+
 - **Title**: MCP protocol commands and schemas
 - **Scope**:
   - Create `/docs/api/mcp/PROTOCOL.md` documenting:
@@ -574,6 +600,7 @@
 - **Estimated Effort**: Large (6-8 hours)
 
 **WL-3.1.4: Create CLI Command Reference**
+
 - **Title**: Complete CLI documentation
 - **Scope**:
   - Create `/docs/api/cli/COMMANDS.md` documenting:
@@ -601,6 +628,7 @@
 ### 3.2: Deployment & Operations
 
 **WL-3.2.1: Create Deployment Guide**
+
 - **Title**: Production deployment procedures
 - **Scope**:
   - Create `/docs/deployment/DEPLOYMENT_GUIDE.md` with:
@@ -626,6 +654,7 @@
 - **Estimated Effort**: Large (8-10 hours)
 
 **WL-3.2.2: Create Operations Runbook**
+
 - **Title**: Day-2 operations procedures
 - **Scope**:
   - Create `/docs/deployment/OPERATIONS_RUNBOOK.md` with sections:
@@ -653,6 +682,7 @@
 - **Estimated Effort**: Large (8-10 hours)
 
 **WL-3.2.3: Create Configuration Reference**
+
 - **Title**: All configuration options documented
 - **Scope**:
   - Create `/docs/deployment/CONFIGURATION.md` (or enhance existing) with:
@@ -678,6 +708,7 @@
 - **Estimated Effort**: Medium (5-6 hours)
 
 **WL-3.2.4: Create Scaling & Performance Guide**
+
 - **Title**: Scaling, performance tuning, and optimization
 - **Scope**:
   - Create `/docs/deployment/SCALING_GUIDE.md` with:
@@ -708,6 +739,7 @@
 ### 3.3: Development & Setup
 
 **WL-3.3.1: Create Development Setup Guide**
+
 - **Title**: Get any developer up and running
 - **Scope**:
   - Create `/docs/development/SETUP_GUIDE.md` with:
@@ -735,6 +767,7 @@
 - **Estimated Effort**: Medium (4-5 hours)
 
 **WL-3.3.2: Create Development Workflow Guide**
+
 - **Title**: How to work on the codebase
 - **Scope**:
   - Create `/docs/development/DEVELOPMENT_WORKFLOW.md` with:
@@ -760,6 +793,7 @@
 - **Estimated Effort**: Medium (4-5 hours)
 
 **WL-3.3.3: Create Testing Strategy Document**
+
 - **Title**: Testing standards and procedures
 - **Scope**:
   - Create `/docs/development/TESTING_STRATEGY.md` with:
@@ -790,6 +824,7 @@
 ### 3.4: Concepts & Architecture
 
 **WL-3.4.1: Create Core Architecture Document**
+
 - **Title**: Comprehensive architecture overview
 - **Scope**:
   - Create `/docs/ARCHITECTURE.md` (if not exists) with:
@@ -814,6 +849,7 @@
 - **Estimated Effort**: Medium (4-5 hours)
 
 **WL-3.4.2: Create Agent Architecture Concepts**
+
 - **Title**: Conceptual guide to agent design
 - **Scope**:
   - Create `/docs/concepts/AGENT_ARCHITECTURE.md` with:
@@ -839,6 +875,7 @@
 - **Estimated Effort**: Medium (3-4 hours)
 
 **WL-3.4.3: Create MCP Protocol Concepts Guide**
+
 - **Title**: Conceptual introduction to MCP protocol
 - **Scope**:
   - Create `/docs/concepts/MCP_PROTOCOL.md` with:
@@ -866,6 +903,7 @@
 ### 3.5: Troubleshooting & Support
 
 **WL-3.5.1: Create FAQ Document**
+
 - **Title**: Frequently asked questions
 - **Scope**:
   - Create `/docs/troubleshooting/FAQ.md` with:
@@ -890,6 +928,7 @@
 - **Estimated Effort**: Medium (3-4 hours)
 
 **WL-3.5.2: Create Common Issues & Solutions**
+
 - **Title**: Troubleshooting guide for common problems
 - **Scope**:
   - Create `/docs/troubleshooting/COMMON_ISSUES.md` with:
@@ -916,6 +955,7 @@
 - **Estimated Effort**: Medium (4-5 hours)
 
 **WL-3.5.3: Create Error Code Reference**
+
 - **Title**: Error codes with meanings and solutions
 - **Scope**:
   - Create `/docs/troubleshooting/ERROR_CODES.md` with:
@@ -940,6 +980,7 @@
 ---
 
 **PHASE 3 SUMMARY**:
+
 - Create complete API reference (REST, MCP, CLI)
 - Create deployment and operations guides
 - Create development setup and workflow guides
@@ -954,6 +995,7 @@
 ### 4.1: Cross-Referencing & Navigation
 
 **WL-4.1.1: Create Global Navigation Document**
+
 - **Title**: /docs/README.md as single entry point
 - **Scope**:
   - Create/enhance `/docs/README.md` with:
@@ -978,6 +1020,7 @@
 - **Estimated Effort**: Small (1-2 hours)
 
 **WL-4.1.2: Create Cross-Reference Matrix**
+
 - **Title**: Document relationships map
 - **Scope**:
   - Create `/docs/CROSS_REFERENCES.md` with:
@@ -998,6 +1041,7 @@
 - **Estimated Effort**: Small (2 hours)
 
 **WL-4.1.3: Add Breadcrumb Navigation**
+
 - **Title**: Navigation breadcrumbs in all docs
 - **Scope**:
   - Add to all docs (300+ files):
@@ -1022,6 +1066,7 @@
 ### 4.2: Search & Indexing
 
 **WL-4.2.1: Create Documentation Search Index**
+
 - **Title**: Searchable index of all documentation
 - **Scope**:
   - If using Fumadocs/MkDocs: enhance search configuration
@@ -1045,6 +1090,7 @@
 - **Estimated Effort**: Medium (4-5 hours)
 
 **WL-4.2.2: Create Documentation Site (if needed)**
+
 - **Title**: Web interface for documentation
 - **Scope**:
   - If not already deployed:
@@ -1074,6 +1120,7 @@
 ### 4.3: Automation & Quality Checks
 
 **WL-4.3.1: Create Documentation Linting Rules**
+
 - **Title**: Automated documentation quality checks
 - **Scope**:
   - Create `/tools/doc-lint.py` (or use existing tool like markdownlint) with checks for:
@@ -1100,6 +1147,7 @@
 - **Estimated Effort**: Medium (4-5 hours)
 
 **WL-4.3.2: Create Documentation Link Validator**
+
 - **Title**: Automated link checking
 - **Scope**:
   - Create `/tools/validate-links.py` (or use existing tool) that:
@@ -1120,6 +1168,7 @@
 - **Estimated Effort**: Small (2-3 hours)
 
 **WL-4.3.3: Create Documentation Audit Script**
+
 - **Title**: Regular documentation health checks
 - **Scope**:
   - Create `/tools/doc-audit.py` that:
@@ -1147,6 +1196,7 @@
 ### 4.4: Team Processes & Governance
 
 **WL-4.4.1: Create Documentation Review Checklist**
+
 - **Title**: Standardized review process for docs
 - **Scope**:
   - Create `/docs/REVIEW_CHECKLIST.md` for PRs with:
@@ -1172,6 +1222,7 @@
 - **Estimated Effort**: Small (1-2 hours)
 
 **WL-4.4.2: Create Documentation Ownership Matrix**
+
 - **Title**: Assign documentation owners
 - **Scope**:
   - Create `/docs/DOCUMENTATION_OWNERS.md` with:
@@ -1194,6 +1245,7 @@
 - **Estimated Effort**: Small (1-2 hours)
 
 **WL-4.4.3: Create Documentation Maintenance Schedule**
+
 - **Title**: Regular doc updates and reviews
 - **Scope**:
   - Create `/docs/MAINTENANCE_SCHEDULE.md` with:
@@ -1220,6 +1272,7 @@
 ### 4.5: Final Quality Assurance
 
 **WL-4.5.1: Complete Documentation Audit**
+
 - **Title**: Final audit before launch
 - **Scope**:
   - Run all linting and validation tools
@@ -1245,6 +1298,7 @@
 - **Estimated Effort**: Large (6-8 hours)
 
 **WL-4.5.2: Documentation Readiness Review**
+
 - **Title**: Final review with stakeholders
 - **Scope**:
   - Get feedback from:
@@ -1268,6 +1322,7 @@
 - **Estimated Effort**: Medium (4-5 hours)
 
 **WL-4.5.3: Launch & Announcement**
+
 - **Title**: Public documentation release
 - **Scope**:
   - Publish documentation website (if not already live)
@@ -1293,6 +1348,7 @@
 ---
 
 **PHASE 4 SUMMARY**:
+
 - Create unified navigation and cross-referencing
 - Implement search and indexing
 - Set up automated documentation linting and validation
@@ -1306,10 +1362,10 @@
 ## COMPREHENSIVE WORKLOG SUMMARY
 
 ### By Phase:
+
 - **Phase 1** (Days 1-3): 15-18 hours
   - 12 specific worklog items
   - Focus: Quick cleanup, remove low-value content, consolidate root files
-  
 - **Phase 2** (Days 4-7): 25-30 hours
   - 14 specific worklog items
   - Focus: Structure reorganization, standard setting, navigation layers
@@ -1325,6 +1381,7 @@
 **Total Estimated Effort**: 140-175 hours (~3.5-4.5 weeks at full-time)
 
 ### Success Metrics:
+
 - [ ] Root markdown files: 67 → 10-15 (essential only)
 - [ ] Duplicate docs: 19 directories → 1 unified structure
 - [ ] Conversation dumps: 227+ files → archived

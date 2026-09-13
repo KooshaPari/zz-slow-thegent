@@ -57,11 +57,13 @@ Find all subprocess calls that use shells:
 ### Phase 2: Optimize Shell Selection
 
 **Strategy:**
+
 1. Detect fastest available shell (zsh > bash > sh)
 2. Use zsh explicitly in all subprocess calls
 3. Cache shell path to avoid repeated lookups
 
 **Code Pattern:**
+
 ```python
 import shutil
 import os
@@ -97,6 +99,7 @@ Update `.claude/hooks/*.sh` to use zsh:
 ### Phase 4: Optimize zsh Startup
 
 **Issue:** zsh startup may be slow due to:
+
 - Heavy `.zshrc` loading
 - Plugin initialization
 - Environment setup
@@ -224,9 +227,9 @@ THGENT_SHELL=/bin/bash  # Force bash
 ```yaml
 # ~/.config/thegent/config.yaml
 shell:
-  preferred: "zsh"  # zsh, bash, or auto
-  path: "/bin/zsh"  # Override path
-  optimize_startup: true  # Skip heavy .zshrc for non-interactive
+  preferred: "zsh" # zsh, bash, or auto
+  path: "/bin/zsh" # Override path
+  optimize_startup: true # Skip heavy .zshrc for non-interactive
 ```
 
 ## Performance Optimizations

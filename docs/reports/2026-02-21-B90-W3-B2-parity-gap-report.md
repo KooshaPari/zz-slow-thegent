@@ -18,9 +18,9 @@ parser implementations in `thegent.routing` and the Rust implementations in
 
 ## Parity Test Files (Wave-2 Artifacts)
 
-| File | Purpose | Status |
-|------|---------|--------|
-| `tests/routing/test_wl131_parser_parity.py` | Python-vs-expected parity for `parse_model_suffixes` (11 cases + property tests) | **PASSING** (Python only) |
+| File                                             | Purpose                                                                                                          | Status                                       |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| `tests/routing/test_wl131_parser_parity.py`      | Python-vs-expected parity for `parse_model_suffixes` (11 cases + property tests)                                 | **PASSING** (Python only)                    |
 | `tests/routing/test_wl131_rust_python_parity.py` | Cross-language parity for `extract_xml_tags`, `parse_model_suffixes`, `parse_checkpoint_by_id`, `parse_dlq_item` | **PASSING** (Python path; Rust path skipped) |
 
 ---
@@ -32,18 +32,18 @@ parser implementations in `thegent.routing` and the Rust implementations in
 All of the following have complete Rust implementations behind the PyO3 boundary
 and are exported via the `thegent_parser` module:
 
-| Function | Rust Status | Python Baseline | Parity Tests | Rust Parity Active? |
-|----------|-------------|-----------------|--------------|---------------------|
-| `parse_model_suffixes` | PyO3 wrapper done | `thegent.routing.model_suffix_parser` | 11 cases in `test_wl131_parser_parity.py` | No — skipped (maturin build not verified) |
-| `extract_xml_tags` | PyO3 wrapper done | Reference regex in test helper | 7 cases in `test_wl131_rust_python_parity.py` | No — skipped |
-| `strip_think_blocks` | PyO3 wrapper done | Not yet mapped to a Python module | — | No — skipped |
-| `strip_noise` | PyO3 wrapper done | Not yet mapped to a Python module | — | No — skipped |
-| `parse_checkpoint_by_id` | PyO3 wrapper done | Reference impl in test helper | 5 cases in `test_wl131_rust_python_parity.py` | No — skipped |
-| `parse_dlq_item` | PyO3 wrapper done | Reference impl in test helper | 5 cases in `test_wl131_rust_python_parity.py` | No — skipped |
-| `parse_override_unexpired` | PyO3 wrapper done | Not mapped | — | No — skipped |
-| `parse_fatigue_line` | PyO3 wrapper done | Not mapped | — | No — skipped |
-| `parse_circuit_failure` | PyO3 wrapper done | Not mapped | — | No — skipped |
-| `parse_jsonl_file` | PyO3 wrapper done | Not mapped | — | No — skipped |
+| Function                   | Rust Status       | Python Baseline                       | Parity Tests                                  | Rust Parity Active?                       |
+| -------------------------- | ----------------- | ------------------------------------- | --------------------------------------------- | ----------------------------------------- |
+| `parse_model_suffixes`     | PyO3 wrapper done | `thegent.routing.model_suffix_parser` | 11 cases in `test_wl131_parser_parity.py`     | No — skipped (maturin build not verified) |
+| `extract_xml_tags`         | PyO3 wrapper done | Reference regex in test helper        | 7 cases in `test_wl131_rust_python_parity.py` | No — skipped                              |
+| `strip_think_blocks`       | PyO3 wrapper done | Not yet mapped to a Python module     | —                                             | No — skipped                              |
+| `strip_noise`              | PyO3 wrapper done | Not yet mapped to a Python module     | —                                             | No — skipped                              |
+| `parse_checkpoint_by_id`   | PyO3 wrapper done | Reference impl in test helper         | 5 cases in `test_wl131_rust_python_parity.py` | No — skipped                              |
+| `parse_dlq_item`           | PyO3 wrapper done | Reference impl in test helper         | 5 cases in `test_wl131_rust_python_parity.py` | No — skipped                              |
+| `parse_override_unexpired` | PyO3 wrapper done | Not mapped                            | —                                             | No — skipped                              |
+| `parse_fatigue_line`       | PyO3 wrapper done | Not mapped                            | —                                             | No — skipped                              |
+| `parse_circuit_failure`    | PyO3 wrapper done | Not mapped                            | —                                             | No — skipped                              |
+| `parse_jsonl_file`         | PyO3 wrapper done | Not mapped                            | —                                             | No — skipped                              |
 
 ### Current Behavior of Cross-Language Parity Tests
 
@@ -75,18 +75,19 @@ or imports with fallback reference implementations.
 ## Current Status
 
 ### What Is Done
+
 - PyO3 wrapper in `crates/thegent-parser/src/lib.rs`: complete, covers 11 functions
 - Python parity test cases written: 11 cases for `parse_model_suffixes`, 7 for `extract_xml_tags`, 5 for `parse_checkpoint_by_id`, 5 for `parse_dlq_item`
 - Python-side parity tests: all passing
 
 ### Remaining Gaps
 
-| Gap | Description | Blocking? |
-|-----|-------------|-----------|
-| `parse_model_suffixes` (Rust) | Rust PyO3 ready, `maturin develop --release` not run | Yes for cross-language parity |
-| `extract_xml_tags` | Python only; Rust wrapper ready but maturin not run | Yes for cross-language parity |
-| `parse_checkpoint_by_id` | Python only in tests | Yes for cross-language parity |
-| `parse_dlq_item` | Python only in tests | Yes for cross-language parity |
+| Gap                                                                                                                                | Description                                           | Blocking?                          |
+| ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------- |
+| `parse_model_suffixes` (Rust)                                                                                                      | Rust PyO3 ready, `maturin develop --release` not run  | Yes for cross-language parity      |
+| `extract_xml_tags`                                                                                                                 | Python only; Rust wrapper ready but maturin not run   | Yes for cross-language parity      |
+| `parse_checkpoint_by_id`                                                                                                           | Python only in tests                                  | Yes for cross-language parity      |
+| `parse_dlq_item`                                                                                                                   | Python only in tests                                  | Yes for cross-language parity      |
 | `strip_think_blocks`, `strip_noise`, `parse_override_unexpired`, `parse_fatigue_line`, `parse_circuit_failure`, `parse_jsonl_file` | Python reference not yet written; Rust wrapper exists | Low priority — no parity tests yet |
 
 ---
@@ -140,4 +141,4 @@ when the extension is absent, so there are no CI failures from this gap.
 
 ---
 
-*Generated by B90-W3-B2 agent. Follow-up review date: 2026-03-07.*
+_Generated by B90-W3-B2 agent. Follow-up review date: 2026-03-07._

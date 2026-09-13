@@ -8,6 +8,7 @@
 ## What is Headless LSP?
 
 **Headless LSP** provides Language Server Protocol (LSP) servers running without a GUI, perfect for:
+
 - Agent-driven development
 - CI/CD pipelines
 - Automated code analysis
@@ -40,6 +41,7 @@ thegent lsp list
 ```
 
 Output:
+
 ```
 ┌─────────────────────────────────────────┐
 │      Running LSP Servers                │
@@ -96,26 +98,31 @@ thegent lsp inspect /path/to/project --profile "Default"
 If LSP servers are missing, install them:
 
 **Python**:
+
 ```bash
 npm install -g pyright
 ```
 
 **TypeScript**:
+
 ```bash
 npm install -g typescript-language-server typescript
 ```
 
 **Rust**:
+
 ```bash
 rustup component add rust-analyzer
 ```
 
 **Go**:
+
 ```bash
 go install golang.org/x/tools/gopls@latest
 ```
 
 **C++**:
+
 ```bash
 # macOS
 brew install llvm
@@ -135,6 +142,7 @@ apt-get install clangd
 ### Issue: "IntelliJ IDEA not found"
 
 **Solution**:
+
 1. Ensure IntelliJ IDEA Ultimate is installed
 2. Add `idea` to PATH, or
 3. Specify path: `JetBrainsCLI(ide_path=Path("/path/to/idea"))`
@@ -142,6 +150,7 @@ apt-get install clangd
 ### Issue: LSP server crashes
 
 **Solution**: Check logs:
+
 ```bash
 # Check process status
 thegent lsp list
@@ -189,6 +198,7 @@ if result["success"]:
 **Current Status**: Core implementation complete, testing pending
 
 **Known Limitations**:
+
 - JetBrains Gateway not yet implemented
 - Multi-client LSP proxy not yet implemented
 - Remote LSP support not yet implemented

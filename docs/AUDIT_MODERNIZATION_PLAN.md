@@ -5,6 +5,7 @@ This document tracks the comprehensive audit, modernization, and optimization of
 ## 1. Audit Summary (Feb 2026)
 
 ### System-wide Ecosystems
+
 - **Homebrew**: High density of modern Rust-based utilities (`atuin`, `b3sum`, `bat`, `bottom`, etc.).
 - **NPM (Global)**: Significant MCP (Model Context Protocol) presence and agent-specific tools (`claude-code`, `codex`, `auggie`).
 - **Python (Global)**: Managed via `pip` (migrating to `uv`), includes core AI libraries (`accelerate`, `litellm`, `pydantic`).
@@ -12,6 +13,7 @@ This document tracks the comprehensive audit, modernization, and optimization of
 - **Mise**: Active environment manager for unified tool versioning.
 
 ### thegent Project Ecosystems
+
 - **Rust Workspace**: Multi-crate architecture using `serde`, `tokio`, `clap`, and `pyo3` for Python FFI.
 - **Node.js**: Focused on documentation (`VitePress`) and testing (`Playwright`, `Puppeteer`).
 - **Python**: Robust agent framework using `httpx`, `typer`, `pydantic`, and `fastmcp`.
@@ -21,6 +23,7 @@ This document tracks the comprehensive audit, modernization, and optimization of
 ## 2. Modernization Roadmap (100 Recommendations)
 
 ### Chunk 1: CLI & Standard Utility Accelerators (Completed/Planned)
+
 - [x] **`jaq`**: JSON processing (Rust).
 - [x] **`rg`**: Search (Rust).
 - [x] **`fd`**: Find (Rust).
@@ -32,6 +35,7 @@ This document tracks the comprehensive audit, modernization, and optimization of
 - [ ] **`ahash`**: High-performance hashing.
 
 ### Chunk 2: AI Orchestration & MCP Enhancements (2026 Research)
+
 - [ ] **`mcp-bridge`**: Unified bridge between disparate MCP servers.
 - [ ] **`ollama-grid`**: Local LLM orchestration for low-latency utility tasks.
 - [ ] **`agent-protocol-v2`**: Implement the 2026 unified agent communication standard.
@@ -44,6 +48,7 @@ This document tracks the comprehensive audit, modernization, and optimization of
 - [ ] **`instructor-rs`**: Typed LLM outputs for Rust crates.
 
 ### Chunk 3: DevEx & Build Systems
+
 - [ ] **`rolldown`**: Switch VitePress/Node builds to the Rust-based bundler.
 - [ ] **`oxlint`**: Deep integration into `quality-gate.sh` (50x faster than ESLint).
 - [ ] **`taplo`**: TOML formatting and linting for Cargo.toml workspace.
@@ -56,6 +61,7 @@ This document tracks the comprehensive audit, modernization, and optimization of
 - [ ] **`knip`**: Find unused dependencies and exports in the docset.
 
 ### Chunk 4: Infrastructure & Multi-Tenancy
+
 - [ ] **`firecracker-rs`**: Micro-VM orchestration for absolute agent isolation.
 - [ ] **`io-uring`**: Zero-copy I/O for `thegent-shm`.
 - [ ] **`zenoh`**: Next-gen pub/sub for agent-to-agent mesh communication.
@@ -63,6 +69,7 @@ This document tracks the comprehensive audit, modernization, and optimization of
 - [ ] **`tailscale-mcp`**: Secure agent mesh overlay networks.
 
 ### Chunk 5: Security & Compliance (2026 Shift-Left)
+
 - [ ] **`trivy-rs`**: Integrate high-performance container/dependency scanning.
 - [ ] **`gitleaks-rs`**: Real-time secret detection in the `thegent-git` shim.
 - [ ] **`cosign`**: Sign agent-generated artifacts for provenance.
@@ -75,6 +82,7 @@ This document tracks the comprehensive audit, modernization, and optimization of
 - [ ] **`step-cli`**: Automated certificate management for agent-to-agent TLS.
 
 ### Chunk 6: Observability & Agent Tracing
+
 - [ ] **`logfire-rs`**: High-performance structured logging for the Rust core.
 - [ ] **`tokio-console`**: Debugging runtime behavior of asynchronous agent tasks.
 - [ ] **`opentelemetry-rust-advanced`**: Metrics, Logs, and Traces for every hook execution.
@@ -85,6 +93,7 @@ This document tracks the comprehensive audit, modernization, and optimization of
 - [ ] **`tracing-flame`**: Real-time flamegraph generation for performance bottlenecks.
 
 ### Chunk 7: Data Processing & High-Performance I/O
+
 - [ ] **`arrow-rs`**: Use Apache Arrow for high-speed data exchange between agents.
 - [ ] **`polars`**: High-performance dataframes for agent analytical tasks.
 - [ ] **`flatbuffers`**: Zero-copy serialization for agent-mesh messages.
@@ -93,6 +102,7 @@ This document tracks the comprehensive audit, modernization, and optimization of
 - [ ] **`datafusion`**: Query engine for large-scale agent trace analysis.
 
 ### Chunk 8: 2026 Project-Specific Library Modernization
+
 - [ ] **Rust: `jiff` (from `chrono`)**: Migrate to the next-gen date/time library for better performance and API.
 - [ ] **Rust: `serde_yml` (from `serde_yaml`)**: Replace the unmaintained YAML library with the modern community fork.
 - [ ] **Rust: `OnceLock` (from `lazy_static`)**: Modernize static initialization to use standard library features.
@@ -104,6 +114,7 @@ This document tracks the comprehensive audit, modernization, and optimization of
 - [ ] **Project: `just`**: Add a `justfile` to replace complex bash-based task orchestration.
 
 ### Chunk 9: 2026 "Add More" Recommendations (Expanding to 100)
+
 - [ ] **`nu`**: Nushell for structured data pipelines in agent scripts.
 - [ ] **`starship`**: Cross-shell prompt for consistent agent environment visibility.
 - [ ] **`bacon`**: Background Rust code checker for immediate developer feedback.
@@ -133,6 +144,7 @@ This document tracks the comprehensive audit, modernization, and optimization of
 - [ ] **`obsidian-mcp`**: Local-first knowledge management for agents.
 
 ### Chunk 10: 2026 Specialized Libraries & Frameworks
+
 - [ ] **`topiary`**: Universal formatting for multi-language codebases.
 - [ ] **`tree-sitter-cli`**: Use for AST-aware searches and modifications.
 - [ ] **`comrak`**: Extremely fast GitHub-flavored markdown parsing in Rust.
@@ -161,6 +173,7 @@ This document tracks the comprehensive audit, modernization, and optimization of
 - [ ] **`trl-rs`**: Reinforcement learning from agent feedback (RLAF).
 
 ### Chunk 11: Security, Governance & Compliance (Final Audit)
+
 - [ ] **`auth0-mcp`**: Secure identity management for agent-to-human workflows.
 - [ ] **`okta-mcp`**: Enterprise SSO integration for the agent mesh.
 - [ ] **`vault-rs`**: Advanced secret management for agent credentials.
@@ -175,8 +188,8 @@ This document tracks the comprehensive audit, modernization, and optimization of
 
 ## 3. Implementation Log
 
-| Date | ID | Task | Status | Result |
-| :--- | :--- | :--- | :--- | :--- |
-| 2026-02-20 | C1-01 | Migrate core utilities to Rust shims | Completed | 2-10x speedup |
-| 2026-02-20 | C1-02 | Add `pkg` unified shim | Completed | Unified multi-tenant lock |
-| 2026-02-20 | C1-03 | Bulk Fix `pyo3` conflicts | Completed | Workspace builds successfully |
+| Date       | ID    | Task                                 | Status    | Result                        |
+| :--------- | :---- | :----------------------------------- | :-------- | :---------------------------- |
+| 2026-02-20 | C1-01 | Migrate core utilities to Rust shims | Completed | 2-10x speedup                 |
+| 2026-02-20 | C1-02 | Add `pkg` unified shim               | Completed | Unified multi-tenant lock     |
+| 2026-02-20 | C1-03 | Bulk Fix `pyo3` conflicts            | Completed | Workspace builds successfully |

@@ -18,23 +18,24 @@ Thegent has a multi-layered agent hierarchy system with support for multiple AI 
 
 **Purpose**: Live-execution hierarchy manager for running agent tasks
 
-| Component | Description |
-|-----------|-------------|
-| `AgentHierarchyManager` | Main orchestrator for capability-based routing |
-| `AgentNode` | Represents a node in the hierarchy tree |
-| `AgentCapability` | Enum: CODE, RESEARCH, REVIEW, TEST, DEPLOY, PLAN, SECURITY, DATA, DOCUMENTATION, ORCHESTRATE |
-| `AgentState` | Enum: IDLE, RUNNING, COMPLETED, FAILED, CANCELLED |
-| `RoutingStrategy` | CAPABILITY_MATCH, ROUND_ROBIN, LEAST_LOADED |
+| Component               | Description                                                                                  |
+| ----------------------- | -------------------------------------------------------------------------------------------- |
+| `AgentHierarchyManager` | Main orchestrator for capability-based routing                                               |
+| `AgentNode`             | Represents a node in the hierarchy tree                                                      |
+| `AgentCapability`       | Enum: CODE, RESEARCH, REVIEW, TEST, DEPLOY, PLAN, SECURITY, DATA, DOCUMENTATION, ORCHESTRATE |
+| `AgentState`            | Enum: IDLE, RUNNING, COMPLETED, FAILED, CANCELLED                                            |
+| `RoutingStrategy`       | CAPABILITY_MATCH, ROUND_ROBIN, LEAST_LOADED                                                  |
 
 ### 2. SmolGents Integration (`src/thegent/agents/smolgents/`)
 
-| Component | Description |
-|-----------|-------------|
-| `SmolAgent` | Base agent class wrapping SmolAgents framework |
+| Component   | Description                                       |
+| ----------- | ------------------------------------------------- |
+| `SmolAgent` | Base agent class wrapping SmolAgents framework    |
 | `AgentTree` | Parent/child relationship tracking for SmolAgents |
-| `tools.py` | Tool definitions for SmolAgents |
+| `tools.py`  | Tool definitions for SmolAgents                   |
 
 **Integration Points**:
+
 - `AgentTree` can be attached to `AgentHierarchyManager` via `smolagent` field
 - Supports `MultiStepAgent`, `CodeAgent`, `ToolCallingAgent` from SmolAgents
 
@@ -42,11 +43,11 @@ Thegent has a multi-layered agent hierarchy system with support for multiple AI 
 
 **Purpose**: Persistence-backed role-based hierarchy
 
-| Component | Description |
-|-----------|-------------|
-| `AgentHierarchyManager` | JSON file-based persistence |
-| Role-based | EXECUTIVE, TEAM_LEAD, SPECIALIST |
-| Team Management | Delegation policy enforcement |
+| Component               | Description                      |
+| ----------------------- | -------------------------------- |
+| `AgentHierarchyManager` | JSON file-based persistence      |
+| Role-based              | EXECUTIVE, TEAM_LEAD, SPECIALIST |
+| Team Management         | Delegation policy enforcement    |
 
 ---
 
@@ -54,16 +55,16 @@ Thegent has a multi-layered agent hierarchy system with support for multiple AI 
 
 ### Available Harness Runners
 
-| Harness | Location | Description |
-|---------|----------|-------------|
-| **Codex** | `codex_proxy.py` | Runs via CLIProxyAPIPlus with multi-agent support |
-| **Claude Code** | `direct_agents.py` | Direct CLI invocation |
-| **Droid (Factory)** | `droid.py` | Factory droid exec runner |
-| **Cursor** | `direct_agents.py` | Direct CLI invocation |
-| **Copilot** | `direct_agents.py` | Direct CLI invocation |
-| **Gemini CLI** | `direct_agents.py` | Direct CLI invocation |
-| **OpenCode** | `direct_agents.py` | Direct CLI invocation |
-| **Crew** | `crew/harness.py` | Crew executor with DAG resolution |
+| Harness             | Location           | Description                                       |
+| ------------------- | ------------------ | ------------------------------------------------- |
+| **Codex**           | `codex_proxy.py`   | Runs via CLIProxyAPIPlus with multi-agent support |
+| **Claude Code**     | `direct_agents.py` | Direct CLI invocation                             |
+| **Droid (Factory)** | `droid.py`         | Factory droid exec runner                         |
+| **Cursor**          | `direct_agents.py` | Direct CLI invocation                             |
+| **Copilot**         | `direct_agents.py` | Direct CLI invocation                             |
+| **Gemini CLI**      | `direct_agents.py` | Direct CLI invocation                             |
+| **OpenCode**        | `direct_agents.py` | Direct CLI invocation                             |
+| **Crew**            | `crew/harness.py`  | Crew executor with DAG resolution                 |
 
 ### Agent CLI Mapping
 
@@ -81,6 +82,7 @@ _AGENT_CLI = {
 ### Harness Wrapper
 
 `_wrap_with_harness()` in `direct_agents.py` provides unified harness integration:
+
 - Phase 2/3: Uses `thegent-hooks` Rust harness
 - Fallback: Legacy `heliosShield` harness
 
@@ -88,16 +90,16 @@ _AGENT_CLI = {
 
 ## Key Files
 
-| Path | Purpose |
-|------|---------|
-| `src/thegent/agents/hierarchy.py` | AgentHierarchyManager (live execution) |
-| `src/thegent/agents/smolgents/base.py` | SmolAgent base class |
-| `src/thegent/agents/smolgents/hierarchy.py` | AgentTree for SmolGents |
-| `src/thegent/governance/agent_hierarchy.py` | Governance hierarchy |
-| `src/thegent/agents/codex_proxy.py` | Codex via CLIProxy |
-| `src/thegent/agents/droid.py` | Factory Droid runner |
-| `src/thegent/agents/direct_agents.py` | Direct CLI agents |
-| `src/thegent/agents/crew/harness.py` | Crew harness bridge |
+| Path                                        | Purpose                                |
+| ------------------------------------------- | -------------------------------------- |
+| `src/thegent/agents/hierarchy.py`           | AgentHierarchyManager (live execution) |
+| `src/thegent/agents/smolgents/base.py`      | SmolAgent base class                   |
+| `src/thegent/agents/smolgents/hierarchy.py` | AgentTree for SmolGents                |
+| `src/thegent/governance/agent_hierarchy.py` | Governance hierarchy                   |
+| `src/thegent/agents/codex_proxy.py`         | Codex via CLIProxy                     |
+| `src/thegent/agents/droid.py`               | Factory Droid runner                   |
+| `src/thegent/agents/direct_agents.py`       | Direct CLI agents                      |
+| `src/thegent/agents/crew/harness.py`        | Crew harness bridge                    |
 
 ---
 

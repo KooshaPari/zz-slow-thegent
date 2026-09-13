@@ -2,16 +2,16 @@
 
 ## 1) Covered items table (issue id/title/status)
 
-| Seq Item | Expected Mapping | Issue ID | Title | Status |
-|---|---|---|---|---|
-| #128 | QOL #49 | N/A | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
-| #129 | QOL #50 | N/A | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
-| #130 | QOL #51 | N/A | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
-| #131 | QOL #52 | N/A | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
-| #132 | QOL #53 | N/A | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
-| #133 | QOL #54 | N/A | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
-| #134 | QOL #55 | N/A | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
-| #135 | QOL #56 | N/A | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
+| Seq Item | Expected Mapping | Issue ID | Title                                                       | Status                 |
+| -------- | ---------------- | -------- | ----------------------------------------------------------- | ---------------------- |
+| #128     | QOL #49          | N/A      | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
+| #129     | QOL #50          | N/A      | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
+| #130     | QOL #51          | N/A      | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
+| #131     | QOL #52          | N/A      | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
+| #132     | QOL #53          | N/A      | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
+| #133     | QOL #54          | N/A      | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
+| #134     | QOL #55          | N/A      | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
+| #135     | QOL #56          | N/A      | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked-source-missing |
 
 ## 2) thegent impact classification (direct/indirect/external)
 

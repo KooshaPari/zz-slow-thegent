@@ -24,7 +24,7 @@ Prevents agent-on-agent edit collisions by providing advisory locks with TTL.
 
 ### Methods
 
-#### EditLeaseManager.__init__
+#### EditLeaseManager.**init**
 
 ```python
 __init__(self: Any, state_dir: Path)

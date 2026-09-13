@@ -12,7 +12,7 @@ Event system for pub/sub.
 
 ### Methods
 
-#### EventSystem.__init__
+#### EventSystem.**init**
 
 ```python
 __init__(self: Any)

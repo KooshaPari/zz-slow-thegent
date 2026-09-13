@@ -19,6 +19,7 @@
 ### Step 1: Install Syncthing (Both Devices)
 
 **Windows:**
+
 ```powershell
 # Download from https://syncthing.net/downloads/
 # Install and launch
@@ -26,6 +27,7 @@
 ```
 
 **Mac:**
+
 ```bash
 brew install syncthing
 syncthing
@@ -35,12 +37,14 @@ syncthing
 ### Step 2: Install Tailscale (Both Devices)
 
 **Windows:**
+
 ```powershell
 # Download from https://tailscale.com/download/windows
 # Install and sign in
 ```
 
 **Mac:**
+
 ```bash
 brew install tailscale
 tailscale up
@@ -49,12 +53,14 @@ tailscale up
 ### Step 3: Install Parsec (Both Devices)
 
 **Windows (Host):**
+
 ```powershell
 # Download from https://parsec.app/downloads
 # Install, enable hosting, set access code
 ```
 
 **Mac (Client):**
+
 ```bash
 # Download from https://parsec.app/downloads
 # Install and connect using access code
@@ -210,14 +216,17 @@ desktop.ini
 ### Sync Settings
 
 **Versioning:**
+
 - Type: Simple File Versioning
 - Keep Versions: 30 days
 
 **Bandwidth:**
+
 - Upload: 50 Mbps
 - Download: 100 Mbps
 
 **Schedule:**
+
 - Full sync: Off-hours (2 AM - 6 AM)
 - Incremental: Real-time
 
@@ -228,6 +237,7 @@ desktop.ini
 ### Shell Configs
 
 **Mac:**
+
 ```bash
 # Backup existing
 cp ~/.zshrc ~/.zshrc.backup
@@ -240,6 +250,7 @@ ln -s ~/kush/configs/shell/.zshrc ~/.zshrc
 ```
 
 **Windows (WSL2):**
+
 ```bash
 # Backup existing
 cp ~/.bashrc ~/.bashrc.backup
@@ -254,6 +265,7 @@ ln -s ~/kush/configs/shell/.bashrc ~/.bashrc
 ### VS Code Configs
 
 **Mac:**
+
 ```bash
 # Backup existing
 cp -r ~/Library/Application\ Support/Code/User ~/Library/Application\ Support/Code/User.backup
@@ -266,6 +278,7 @@ ln -s ~/kush/configs/vscode ~/Library/Application\ Support/Code/User
 ```
 
 **Windows:**
+
 ```powershell
 # Backup existing
 xcopy %APPDATA%\Code\User %APPDATA%\Code\User.backup /E /I
@@ -284,6 +297,7 @@ mklink /J %APPDATA%\Code\User D:\kush\configs\vscode
 ### Sync Not Working
 
 1. **Check Tailscale connectivity:**
+
    ```bash
    tailscale status
    ping <windows-pc-ip>
@@ -317,6 +331,7 @@ mklink /J %APPDATA%\Code\User D:\kush\configs\vscode
 ### Conflicts
 
 1. **Check conflict files:**
+
    ```bash
    find ~/kush -name "*.sync-conflict-*"
    ```
@@ -428,7 +443,6 @@ mklink /J %APPDATA%\Code\User D:\kush\configs\vscode
 **Last Updated:** 2026-02-16
 **Status:** Quick Reference
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -437,15 +451,18 @@ mklink /J %APPDATA%\Code\User D:\kush\configs\vscode
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

@@ -15,7 +15,7 @@ Optimizes agent prompts by tracking version performance and proposing improvemen
 
 ### Methods
 
-#### PromptOptimizer.__init__
+#### PromptOptimizer.**init**
 
 ```python
 __init__(self: Any, agent_id: str, registry: Any)

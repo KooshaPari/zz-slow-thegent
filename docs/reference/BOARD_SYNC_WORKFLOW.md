@@ -101,6 +101,7 @@ Example:
 
 ```markdown
 ### [WL-159] Cross-Repo Board Sync Operationalization
+
 **Status:** IN PROGRESS
 **Priority:** P2
 
@@ -114,10 +115,10 @@ Operationalize repeatable board update/import flow using native tooling.
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `THGENT_BOARD_ID` | (none) | Board identifier (required for sync) |
-| `THGENT_BOARD_SOURCE` | `github` | Board platform: github \| linear |
+| Variable              | Default  | Description                          |
+| --------------------- | -------- | ------------------------------------ |
+| `THGENT_BOARD_ID`     | (none)   | Board identifier (required for sync) |
+| `THGENT_BOARD_SOURCE` | `github` | Board platform: github \| linear     |
 
 ### .env File
 
@@ -143,6 +144,7 @@ task board:sync
 ```
 
 Output:
+
 ```
 [green]Board sync complete: 15 item(s) updated on github.[/green]
   [dim]synced: WL-159[/dim]
@@ -161,6 +163,7 @@ uv run thegent sync board \
 ```
 
 Output:
+
 ```
 [yellow]Dry-run: Board sync dry-run: would sync 12 item(s) to linear.[/yellow]
   [dim][dry-run] WL-159: IN_PROGRESS[/dim]
@@ -195,11 +198,11 @@ The board sync uses:
 
 Work item status is mapped across platforms:
 
-| WORK_STREAM.md | GitHub | Linear |
-|---|---|---|
-| BACKLOG | Todo | Backlog |
-| IN PROGRESS | In Progress | In Progress |
-| COMPLETED | Done | Done |
+| WORK_STREAM.md | GitHub      | Linear      |
+| -------------- | ----------- | ----------- |
+| BACKLOG        | Todo        | Backlog     |
+| IN PROGRESS    | In Progress | In Progress |
+| COMPLETED      | Done        | Done        |
 
 ## Troubleshooting
 
@@ -222,6 +225,7 @@ task board:sync
 
 ```markdown
 ### [WL-NNN] Title
+
 **Status:** IN PROGRESS
 ```
 

@@ -208,8 +208,8 @@ let temp_file = format!("{}.tmp", self.cache_file.to_string_lossy());
 - Reliable: Fail gracefully, monitor, retry with limits
 - Cross-platform: Use Rust crates, test everywhere
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog

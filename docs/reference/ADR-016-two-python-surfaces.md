@@ -1,6 +1,7 @@
 # ADR-016: Two Python Surfaces (Core Runtime vs Tooling/Test)
 
 ## Status
+
 ACCEPTED (2026-02-21)
 
 ## Context
@@ -14,26 +15,31 @@ The repository already introduced extraction modules (`dag_impl.py`, `work_strea
 Adopt and enforce two explicit Python surfaces:
 
 1. Core runtime surface:
+
 - Includes runtime command handlers and runtime execution/control modules.
 - Must trend downward in LOC and import complexity.
 - Must stay on fast-lane validation paths.
 
 2. Tooling/test/research surface:
+
 - Includes tests, scripts, docs generators, migration/diagnostic tooling.
 - May grow independently, but must not become a runtime dependency without explicit approval.
 - Runs in separate/deeper lanes where possible.
 
 Routing rule:
+
 - When a domain has an extracted implementation module, command surfaces import that module directly instead of pulling handlers from `impl.py`.
 
 ## Consequences
 
 Positive:
+
 - Clear ownership and enforcement target for WL-136.
 - Lower coupling between command surfaces and the legacy `impl.py` monolith.
 - Better decomposition signal for WL-120 progress.
 
 Tradeoffs:
+
 - Transition period keeps some compatibility exports in `impl.py`.
 - Additional import-routing checks are required to prevent regressions.
 

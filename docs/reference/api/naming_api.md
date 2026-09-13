@@ -11,6 +11,7 @@ Consistent naming conventions enforcement.
 Naming convention enforcer.
 
 This class enforces consistent naming conventions across all components:
+
 - Commands: kebab-case
 - Config keys: snake_case
 - Functions: snake_case
@@ -19,7 +20,7 @@ This class enforces consistent naming conventions across all components:
 
 ### Methods
 
-#### NamingConvention.__init__
+#### NamingConvention.**init**
 
 ```python
 __init__(self: Any)

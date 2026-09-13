@@ -31,42 +31,45 @@
 Run an agent in foreground with full control and real-time output.
 
 **Syntax**:
+
 ```bash
 thegent run [PROMPT] [AGENT] [OPTIONS]
 ```
 
 **Arguments**:
+
 - `PROMPT`: Task prompt (required unless using `--retry --run-id`)
 - `AGENT`: Provider name (optional when `-M/--model` given)
 
 **Options**:
 
-| Option | Short | Description | Default |
-|--------|-------|-------------|---------|
-| `--model` | `-M` | Model override or model-first routing | None |
-| `--provider` | `-P` | Provider override for model-first routing | None |
-| `--routing` | `-R` | Routing policy (`prefer_direct` \| `prefer_proxy` \| `failover` \| `round_robin` \| `cheapest` \| `cost_quality` \| `pareto` \| `roi`) | `prefer_direct` |
-| `--mode` | `-m` | Execution mode (`read-only` \| `write` \| `full`) | `write` |
-| `--timeout` | `-t` | Timeout hint in seconds (tool-call budget injection) | 90 |
-| `--cd` | `-d` | Working directory | Current directory |
-| `--live` | | Stream output live to terminal | False |
-| `--full` | `-f` | Show full raw output (default: stream-json, parsed) | False |
-| `--failover` | | On failure, try next route (model-first only) | False |
-| `--include-contract` | | Print resolved model route contract metadata | False |
-| `--run-id` | | Explicit run ID for registry correlation | Auto-generated |
-| `--lane` | | Execution lane (`standard` \| `critical` \| `recovery`) | `standard` |
-| `--idempotency-token` | | Deterministic token to prevent duplicate runs | None |
-| `--confidence` | | Task confidence score (0.0-1.0) | None |
-| `--arbitration` | | Arbitration role (`leader` \| `follower` \| `consensus`) | None |
-| `--override` | | Policy override reason code | None |
-| `--contract-version` | | Contract schema version (default: current) | None |
-| `--domain` | | Domain tag for tiered retention (WP-3006) | None |
-| `--speculative` | | Enable speculative execution mode (WP-5001) | False |
-| `--search/--no-search` | | Enable web search for codex agents | `--search` |
-| `--debug` | | Enable debug mode (THGENT_DEBUG=1) | False |
-| `--retry` | | Retry failed run by --run-id | False |
+| Option                 | Short | Description                                                                                                                            | Default           |
+| ---------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| `--model`              | `-M`  | Model override or model-first routing                                                                                                  | None              |
+| `--provider`           | `-P`  | Provider override for model-first routing                                                                                              | None              |
+| `--routing`            | `-R`  | Routing policy (`prefer_direct` \| `prefer_proxy` \| `failover` \| `round_robin` \| `cheapest` \| `cost_quality` \| `pareto` \| `roi`) | `prefer_direct`   |
+| `--mode`               | `-m`  | Execution mode (`read-only` \| `write` \| `full`)                                                                                      | `write`           |
+| `--timeout`            | `-t`  | Timeout hint in seconds (tool-call budget injection)                                                                                   | 90                |
+| `--cd`                 | `-d`  | Working directory                                                                                                                      | Current directory |
+| `--live`               |       | Stream output live to terminal                                                                                                         | False             |
+| `--full`               | `-f`  | Show full raw output (default: stream-json, parsed)                                                                                    | False             |
+| `--failover`           |       | On failure, try next route (model-first only)                                                                                          | False             |
+| `--include-contract`   |       | Print resolved model route contract metadata                                                                                           | False             |
+| `--run-id`             |       | Explicit run ID for registry correlation                                                                                               | Auto-generated    |
+| `--lane`               |       | Execution lane (`standard` \| `critical` \| `recovery`)                                                                                | `standard`        |
+| `--idempotency-token`  |       | Deterministic token to prevent duplicate runs                                                                                          | None              |
+| `--confidence`         |       | Task confidence score (0.0-1.0)                                                                                                        | None              |
+| `--arbitration`        |       | Arbitration role (`leader` \| `follower` \| `consensus`)                                                                               | None              |
+| `--override`           |       | Policy override reason code                                                                                                            | None              |
+| `--contract-version`   |       | Contract schema version (default: current)                                                                                             | None              |
+| `--domain`             |       | Domain tag for tiered retention (WP-3006)                                                                                              | None              |
+| `--speculative`        |       | Enable speculative execution mode (WP-5001)                                                                                            | False             |
+| `--search/--no-search` |       | Enable web search for codex agents                                                                                                     | `--search`        |
+| `--debug`              |       | Enable debug mode (THGENT_DEBUG=1)                                                                                                     | False             |
+| `--retry`              |       | Retry failed run by --run-id                                                                                                           | False             |
 
 **Examples**:
+
 ```bash
 # Basic usage
 thegent run "Fix bug in auth.py" free
@@ -89,20 +92,22 @@ thegent run --retry --run-id abc123
 Start a background run and register a session. Non-blocking execution.
 
 **Syntax**:
+
 ```bash
 thegent bg [PROMPT] [AGENT] [OPTIONS]
 ```
 
 **Additional Options** (inherits all `run` options plus):
 
-| Option | Short | Description | Default |
-|--------|-------|-------------|---------|
-| `--owner` | | Session owner tag (default: `<user>:<cwd-name>`) | Auto |
-| `--format` | | Output format (`json` \| `rich` \| `md`) | `rich` |
-| `--continuation` | `-C` | Prior session id(s) to continue from (comma-separated) | None |
-| `--continuation-stderr` | | Include stderr from prior session(s) | False |
+| Option                  | Short | Description                                            | Default |
+| ----------------------- | ----- | ------------------------------------------------------ | ------- |
+| `--owner`               |       | Session owner tag (default: `<user>:<cwd-name>`)       | Auto    |
+| `--format`              |       | Output format (`json` \| `rich` \| `md`)               | `rich`  |
+| `--continuation`        | `-C`  | Prior session id(s) to continue from (comma-separated) | None    |
+| `--continuation-stderr` |       | Include stderr from prior session(s)                   | False   |
 
 **Examples**:
+
 ```bash
 # Background run
 thegent bg "Implement feature X" free
@@ -122,24 +127,26 @@ thegent bg "Research topic" --format md
 Base free tier agent using Copilot gpt-5-mini. Alias for `thegent run "<prompt>" free`.
 
 **Syntax**:
+
 ```bash
 thegent free [PROMPT] [OPTIONS]
 ```
 
 **Key Options**:
 
-| Option | Short | Description | Default |
-|--------|-------|-------------|---------|
-| `--do-next` | `-n` | Find next work item from plan do-next and run it | False |
-| `--repeat` | `-r` | With --do-next: run up to N work packages sequentially | 1 |
-| `--mode` | `-m` | Mode (`read-only` \| `write` \| `full`) | `write` |
-| `--timeout` | `-t` | Timeout (default from THGENT_DEFAULT_TIMEOUT_FREE, else 300) | 300 |
-| `--live/--no-live` | `-l` | Stream output live | `--live` |
-| `--bg` | `-b` | Run in background (async) | False |
-| `--diff` | `-D` | Suppress live stream; show diff/summary at end | False |
-| `--cd` | `-d` | Working directory | Current directory |
+| Option             | Short | Description                                                  | Default           |
+| ------------------ | ----- | ------------------------------------------------------------ | ----------------- |
+| `--do-next`        | `-n`  | Find next work item from plan do-next and run it             | False             |
+| `--repeat`         | `-r`  | With --do-next: run up to N work packages sequentially       | 1                 |
+| `--mode`           | `-m`  | Mode (`read-only` \| `write` \| `full`)                      | `write`           |
+| `--timeout`        | `-t`  | Timeout (default from THGENT_DEFAULT_TIMEOUT_FREE, else 300) | 300               |
+| `--live/--no-live` | `-l`  | Stream output live                                           | `--live`          |
+| `--bg`             | `-b`  | Run in background (async)                                    | False             |
+| `--diff`           | `-D`  | Suppress live stream; show diff/summary at end               | False             |
+| `--cd`             | `-d`  | Working directory                                            | Current directory |
 
 **Examples**:
+
 ```bash
 # Simple free agent run
 thegent free "Fix bug in auth.py"
@@ -159,6 +166,7 @@ thegent free "Long task" --bg
 Run tasks with role-based system prompts.
 
 **Commands**:
+
 - `thegent summarize <prompt>`: Summarize content with brevity and key takeaways
 - `thegent research <prompt>`: Deep dive research and comprehensive information gathering
 - `thegent review <prompt>`: Critical analysis and quality checks for code or documentation
@@ -167,6 +175,7 @@ Run tasks with role-based system prompts.
 - `thegent code <prompt>`: Generate or modify code
 
 **Common Options** (all role commands):
+
 - `--cd, -d <path>`: Working directory
 - `--mode, -m <mode>`: Mode (`read-only` \| `write` \| `full`, default: `write`)
 - `--timeout, -t <seconds>`: Timeout hint
@@ -177,6 +186,7 @@ Run tasks with role-based system prompts.
 **Default Agent**: Uses virtual 'role' agent which defaults to `gemini-3-flash` unless `--agent` or `--model` specified.
 
 **Examples**:
+
 ```bash
 # Research task
 thegent research "Latest VitePress plugins" --bg
@@ -192,17 +202,19 @@ thegent code "Implement user authentication"
 
 `thegent review` is designed for automation gates:
 
-| Exit Code | Meaning |
-|---|---|
-| `0` | Review completed and found no issues |
-| `1` | Review completed and found one or more issues |
-| `2` | Review output contract invalid (schema/JSON violation) |
-| other non-zero | Underlying runner failure propagated as-is |
+| Exit Code      | Meaning                                                |
+| -------------- | ------------------------------------------------------ |
+| `0`            | Review completed and found no issues                   |
+| `1`            | Review completed and found one or more issues          |
+| `2`            | Review output contract invalid (schema/JSON violation) |
+| other non-zero | Underlying runner failure propagated as-is             |
 
 **CI Example**:
+
 ```bash
 thegent review "Review src/ for correctness" --format json
 ```
+
 - parse JSON output for issue details
 - fail pipeline on any non-zero code
 - structured review JSON must include `summary`, `overall_rating`, and `issues` (legacy `rating` alias is rejected)
@@ -250,11 +262,13 @@ Image input guards use the model capability matrix in
 Find next actionable work items from WORK_STREAM.md, PLAN_STATUS, FR_TRACKER, docs/plans/, escalation queue.
 
 **Syntax**:
+
 ```bash
 thegent plan do-next [OPTIONS]
 ```
 
 **Options**:
+
 - `--cd, -d <path>`: Working directory
 - `--limit, -l <N>`: Max items to return (default: 5)
 - `--format, -f <format>`: Output format (`rich` \| `json`)
@@ -262,6 +276,7 @@ thegent plan do-next [OPTIONS]
 **Output**: List of actionable work items with IDs, prompts, dependencies, status.
 
 **Examples**:
+
 ```bash
 # Get next 5 work items (default)
 thegent plan do-next
@@ -278,17 +293,20 @@ thegent plan do-next --format json
 Get first work item prompt for scripting. Returns prompt only (plain text).
 
 **Syntax**:
+
 ```bash
 thegent plan get-next [OPTIONS]
 ```
 
 **Options**:
+
 - `--cd, -d <path>`: Working directory
 - `--format, -f <format>`: Output (`plain` (default, prompt only) \| `json`)
 
 **Use Case**: Scripting integration, e.g., `PROMPT=$(thegent plan get-next)`
 
 **Examples**:
+
 ```bash
 # Get prompt for scripting
 PROMPT=$(thegent plan get-next)
@@ -303,11 +321,13 @@ thegent plan get-next --format json
 Loop: get next item -> run bg -> repeat until no items or --max reached.
 
 **Syntax**:
+
 ```bash
 thegent plan loop [OPTIONS]
 ```
 
 **Options**:
+
 - `--cd, -d <path>`: Working directory
 - `--max, -m <N>`: Max iterations (0=unbounded, default: 0)
 - `--sleep, -s <seconds>`: Seconds between iterations (default: 5.0)
@@ -315,12 +335,14 @@ thegent plan loop [OPTIONS]
 - `--dry-run`: Print only, do not run
 
 **Behavior**:
+
 1. Get next work item via `plan do-next`
 2. Run item in background with specified agent
 3. Sleep for specified interval
 4. Repeat until no items or max iterations reached
 
 **Examples**:
+
 ```bash
 # Continuous loop (unbounded, recommended)
 thegent plan loop
@@ -340,11 +362,13 @@ thegent plan loop --dry-run
 Block until next actionable work exists (DAG ready, do-next, escalation, inbox).
 
 **Syntax**:
+
 ```bash
 thegent plan wait-next [OPTIONS]
 ```
 
 **Options**:
+
 - `--cd, -d <path>`: Working directory
 - `--poll, -p <seconds>`: Poll interval in seconds (default: 2.0)
 - `--timeout, -t <seconds>`: Max wait seconds (0=unbounded, default: 0.0)
@@ -354,6 +378,7 @@ thegent plan wait-next [OPTIONS]
 **Use Case**: Idle waiting instead of busy loops. Blocks until work is available.
 
 **Examples**:
+
 ```bash
 # Wait for any work
 thegent plan wait-next
@@ -373,15 +398,18 @@ thegent plan wait-next --poll 5
 Merge fragments from 02-UNIFIED-WBS.md, docs/plans/, docs/research/, docs/docset/ into WORK_STREAM.md.
 
 **Syntax**:
+
 ```bash
 thegent plan incorporate [OPTIONS]
 ```
 
 **Options**:
+
 - `--cd, -d <path>`: Working directory
 - `--dry-run`: Show what would be merged without writing
 
 **Behavior**:
+
 - Scans `docs/plans/`, `docs/research/`, `docs/docset/` for fragments
 - Extracts work items from fragments
 - Merges into WORK_STREAM.md
@@ -389,6 +417,7 @@ thegent plan incorporate [OPTIONS]
 - Preserves CLAIMED and COMPLETED sections
 
 **Examples**:
+
 ```bash
 # Incorporate fragments
 thegent plan incorporate
@@ -402,16 +431,19 @@ thegent plan incorporate --dry-run
 Claim or complete items in unified work stream.
 
 **Syntax**:
+
 ```bash
 thegent plan claim <item_id> [agent_id] [OPTIONS]
 thegent plan complete <item_id> [agent_id] [OPTIONS]
 ```
 
 **Options**:
+
 - `--cd, -d <path>`: Project directory
 - `agent_id`: Agent ID (auto-detected if missing)
 
 **Examples**:
+
 ```bash
 # Claim work item
 thegent plan claim research-library-http
@@ -425,11 +457,13 @@ thegent plan complete research-library-http
 Show recent runs (work-package progress). Alias for `history --limit N`.
 
 **Syntax**:
+
 ```bash
 thegent plan progress [OPTIONS]
 ```
 
 **Options**:
+
 - `--limit, -l <N>`: Number of runs to show (default: 10)
 - `--format, -f <format>`: Output format (`rich` \| `json`)
 
@@ -442,11 +476,13 @@ thegent plan progress [OPTIONS]
 List active background sessions.
 
 **Syntax**:
+
 ```bash
 thegent ps [OPTIONS]
 ```
 
 **Options**:
+
 - `--all`: Show all sessions (including exited)
 - `--owner <tag>`: Filter by owner tag
 - `--format <format>`: Output format (`rich` \| `json` \| `md`)
@@ -455,6 +491,7 @@ thegent ps [OPTIONS]
 **Output**: Table of sessions with ID, agent, prompt, status, started time, etc.
 
 **Examples**:
+
 ```bash
 # List running sessions
 thegent ps
@@ -474,17 +511,20 @@ thegent ps --format json
 Block until session exits.
 
 **Syntax**:
+
 ```bash
 thegent wait <session_id> [OPTIONS]
 ```
 
 **Options**:
+
 - `--timeout <seconds>`: Max wait time (0=unbounded)
 - `--poll <seconds>`: Poll interval (default: 1.0)
 
 **Use Case**: Idle waiting instead of busy loops. Blocks until session completes.
 
 **Examples**:
+
 ```bash
 # Wait for session
 thegent wait abc123
@@ -498,11 +538,13 @@ thegent wait abc123 --timeout 300
 Check status of a background session.
 
 **Syntax**:
+
 ```bash
 thegent status <session_id> [OPTIONS]
 ```
 
 **Options**:
+
 - `--format <format>`: Output format (`rich` \| `json` \| `md`)
 
 **Output**: Session status, metadata, output summary.
@@ -512,11 +554,13 @@ thegent status <session_id> [OPTIONS]
 Terminate a running session.
 
 **Syntax**:
+
 ```bash
 thegent kill <session_id> [OPTIONS]
 ```
 
 **Options**:
+
 - `--force`: Force kill (SIGKILL instead of SIGTERM)
 
 ---
@@ -525,34 +569,37 @@ thegent kill <session_id> [OPTIONS]
 
 ### Available Providers
 
-| Provider | Type | Default Model | Notes |
-|----------|------|---------------|-------|
-| `free` | Direct | `gpt-5-mini` | Copilot free tier (recommended default) |
-| `claude` | Direct | `claude-haiku-4.5` | Anthropic Claude API |
-| `gemini` | Direct | `gemini-3-flash` | Google Gemini API |
-| `copilot` | Direct | `gpt-5-mini` | GitHub Copilot |
-| `codex` | Direct | `gpt-5.3-codex` | Codex API |
-| `cursor` | Proxy | `gemini-3-flash` | Cursor API (wisdgod) |
-| `antigravity` | Proxy | `gemini-3-flash` | Antigravity proxy |
-| `minimax` | Proxy | `minimax-m2.5` | MiniMax API |
-| `glm` | Proxy | `glm-5` | Zhipu GLM API |
-| `nim` | Proxy | `step-3.5-flash` | NVIDIA NIM |
-| `kilo` | Proxy | `minimax-m2.5` | Kilo proxy |
-| `kiro` | Proxy | `claude-haiku-4.5` | Kiro proxy |
+| Provider      | Type   | Default Model      | Notes                                   |
+| ------------- | ------ | ------------------ | --------------------------------------- |
+| `free`        | Direct | `gpt-5-mini`       | Copilot free tier (recommended default) |
+| `claude`      | Direct | `claude-haiku-4.5` | Anthropic Claude API                    |
+| `gemini`      | Direct | `gemini-3-flash`   | Google Gemini API                       |
+| `copilot`     | Direct | `gpt-5-mini`       | GitHub Copilot                          |
+| `codex`       | Direct | `gpt-5.3-codex`    | Codex API                               |
+| `cursor`      | Proxy  | `gemini-3-flash`   | Cursor API (wisdgod)                    |
+| `antigravity` | Proxy  | `gemini-3-flash`   | Antigravity proxy                       |
+| `minimax`     | Proxy  | `minimax-m2.5`     | MiniMax API                             |
+| `glm`         | Proxy  | `glm-5`            | Zhipu GLM API                           |
+| `nim`         | Proxy  | `step-3.5-flash`   | NVIDIA NIM                              |
+| `kilo`        | Proxy  | `minimax-m2.5`     | Kilo proxy                              |
+| `kiro`        | Proxy  | `claude-haiku-4.5` | Kiro proxy                              |
 
 ### Model Catalog
 
 **Anthropic Models**:
+
 - `claude-haiku-4.5`: Fast, cost-effective (cost: 0.2, latency: 300ms, accuracy: 0.85)
 - `claude-sonnet-4.5`: Balanced (cost: 0.5, latency: 600ms, accuracy: 0.92)
 - `claude-sonnet-4.5-1m`: 1M context (cost: 0.6, latency: 900ms, accuracy: 0.90)
 - `claude-opus-4.6`: Highest quality (cost: 1.0, latency: 1500ms, accuracy: 0.98)
 
 **Gemini Models**:
+
 - `gemini-3-flash`: Fast, free tier friendly (cost: 0.1, latency: 200ms, accuracy: 0.82)
 - `gemini-3-pro`: Higher quality (cost: 0.4, latency: 800ms, accuracy: 0.91)
 
 **Codex Models**:
+
 - `gpt-5.3-codex`: Base Codex model
 - `gpt-5.3-codex-spark`: Spark variant
 - `gpt-5.3-codex-spark-high`: High quality spark
@@ -561,6 +608,7 @@ thegent kill <session_id> [OPTIONS]
 - `gpt-5.3-codex-xhigh`: Extra high quality
 
 **Other Models**:
+
 - `gpt-5-mini`: OpenAI GPT-5 Mini (via Copilot)
 - `minimax-m2.5`: MiniMax M2.5
 - `glm-5`: Zhipu GLM-5
@@ -569,16 +617,16 @@ thegent kill <session_id> [OPTIONS]
 
 ### Routing Policies
 
-| Policy | Description | Use Case |
-|--------|-------------|----------|
+| Policy          | Description                        | Use Case                                |
+| --------------- | ---------------------------------- | --------------------------------------- |
 | `prefer_direct` | Prefer direct provider connections | Low latency, high reliability (default) |
-| `prefer_proxy` | Prefer proxy connections | Cost optimization, rate limit handling |
-| `failover` | Try primary, fallback on failure | High availability |
-| `round_robin` | Distribute across routes | Load balancing |
-| `cheapest` | Select cheapest route | Cost optimization |
-| `cost_quality` | Balance cost and quality | Optimal value |
-| `pareto` | Pareto frontier optimization | Multi-objective optimization |
-| `roi` | Return on investment optimization | Business value |
+| `prefer_proxy`  | Prefer proxy connections           | Cost optimization, rate limit handling  |
+| `failover`      | Try primary, fallback on failure   | High availability                       |
+| `round_robin`   | Distribute across routes           | Load balancing                          |
+| `cheapest`      | Select cheapest route              | Cost optimization                       |
+| `cost_quality`  | Balance cost and quality           | Optimal value                           |
+| `pareto`        | Pareto frontier optimization       | Multi-objective optimization            |
+| `roi`           | Return on investment optimization  | Business value                          |
 
 **Default**: `prefer_direct` (configurable via `THGENT_DEFAULT_ROUTING`)
 
@@ -587,11 +635,13 @@ thegent kill <session_id> [OPTIONS]
 **When to Use**: Specify model without provider, let thegent resolve provider automatically.
 
 **Syntax**:
+
 ```bash
 thegent run "Task" -M <model> [--provider <provider>] [--routing <policy>]
 ```
 
 **Examples**:
+
 ```bash
 # Model-first with auto provider resolution
 thegent run "Task" -M gemini-3-flash
@@ -615,11 +665,13 @@ thegent run "Task" -M gemini-3-flash --failover
 Parse and display DAG session from `.factory/dag-session.md`.
 
 **Syntax**:
+
 ```bash
 thegent dag list [OPTIONS]
 ```
 
 **Options**:
+
 - `--cd, -d <path>`: Working directory (default: cwd)
 - `--format, -f <format>`: Output format (`rich` \| `md`)
 
@@ -628,11 +680,13 @@ thegent dag list [OPTIONS]
 Execute DAG tasks in dependency order.
 
 **Syntax**:
+
 ```bash
 thegent dag run [OPTIONS]
 ```
 
 **Options**:
+
 - `--cd, -d <path>`: Working directory
 - `--agent <agent>`: Agent for tasks (default: `free`)
 - `--dry-run`: Show execution plan without running
@@ -642,11 +696,13 @@ thegent dag run [OPTIONS]
 Update task status from session exit.
 
 **Syntax**:
+
 ```bash
 thegent dag sync [OPTIONS]
 ```
 
 **Options**:
+
 - `--cd, -d <path>`: Working directory
 
 ### `thegent dag update` - Update DAG State
@@ -654,6 +710,7 @@ thegent dag sync [OPTIONS]
 Update DAG state manually.
 
 **Syntax**:
+
 ```bash
 thegent dag update [OPTIONS]
 ```
@@ -663,11 +720,13 @@ thegent dag update [OPTIONS]
 Validate DAG: cycles, orphans, agent names. Exit 2 on failure.
 
 **Syntax**:
+
 ```bash
 thegent dag validate [OPTIONS]
 ```
 
 **Options**:
+
 - `--cd, -d <path>`: Working directory (default: cwd)
 
 ---
@@ -679,11 +738,13 @@ thegent dag validate [OPTIONS]
 Run planning simulation overlays (XD1–XD3): PERT, resources, continuity risk.
 
 **Syntax**:
+
 ```bash
 thegent plan analyze [OPTIONS]
 ```
 
 **Options**:
+
 - `--cd, -d <path>`: Working directory
 - `--pert`: Run PERT overlay on DAG tasks
 - `--resources`: Simulate resource contention
@@ -699,11 +760,13 @@ thegent plan analyze [OPTIONS]
 Validate config; fail-fast on misconfig.
 
 **Syntax**:
+
 ```bash
 thegent config check [OPTIONS]
 ```
 
 **Options**:
+
 - `--format <format>`: Output format (`rich` \| `json`)
 
 ### `thegent setup` - Initialize Thegent
@@ -711,11 +774,13 @@ thegent config check [OPTIONS]
 Initialize thegent: configure MCP clients and background services.
 
 **Syntax**:
+
 ```bash
 thegent setup [OPTIONS]
 ```
 
 **Options**:
+
 - `--force`: Force re-initialization
 
 ### `thegent doctor` - Health Checks
@@ -723,11 +788,13 @@ thegent setup [OPTIONS]
 Run comprehensive health and preflight checks.
 
 **Syntax**:
+
 ```bash
 thegent doctor [OPTIONS]
 ```
 
 **Options**:
+
 - `--fix`: Try to fix common issues automatically
 
 ---
@@ -742,11 +809,13 @@ thegent doctor [OPTIONS]
 Create a target lock and optionally lock it in one step.
 
 **Syntax**:
+
 ```bash
 thegent phench target bootstrap <target> --source-root <dir> --ref <ref> --include <glob> --exclude <glob>
 ```
 
 **Notes**:
+
 - Omit `--source-root` to default to the sibling `repos/` root.
 - `--ref` sets the initial selection for each discovered repo.
 - Use `--no-auto-lock` if you need to adjust entries before locking.
@@ -754,6 +823,7 @@ thegent phench target bootstrap <target> --source-root <dir> --ref <ref> --inclu
 ## Module manifest schema
 
 Manifest path:
+
 - `~/CodeProjects/Phenotype/projects/modules/<module-name>/manifest.json`
 
 ```json
@@ -761,14 +831,15 @@ Manifest path:
   "schema_version": 1,
   "repo_ids": ["thegent-api", "thegent-control-plane"],
   "repo_patterns": ["*mcp*"],
-  "repo_ref_overrides": {"thegent-api": "main"},
-  "repo_runner_overrides": {"thegent-api": "task"},
-  "repo_command_overrides": {"thegent-api": "hello"},
-  "repo_env_profile_overrides": {"thegent-api": "ci"}
+  "repo_ref_overrides": { "thegent-api": "main" },
+  "repo_runner_overrides": { "thegent-api": "task" },
+  "repo_command_overrides": { "thegent-api": "hello" },
+  "repo_env_profile_overrides": { "thegent-api": "ci" }
 }
 ```
 
 Notes:
+
 - `schema_version` defaults to `1` when omitted in existing manifests.
 - `repo_ids` and `repo_patterns` are optional; at least one must be present.
 - `repo_patterns` expands against repos in the selected target lock.
@@ -780,11 +851,13 @@ Notes:
 Scan repository checkouts and surface modules that appear across multiple repos.
 
 **Syntax**:
+
 ```bash
 thegent phench modules audit [OPTIONS]
 ```
 
 **Options**:
+
 - `--source-root <dir>`: Root containing repo checkouts (defaults to `THGENT_PHENOTYPE_REPOS_ROOT`).
 - `--include-repo <glob>`: Limit to repositories matching a glob pattern (repeatable).
 - `--exclude-repo <glob>`: Exclude repositories matching a glob pattern (repeatable).
@@ -795,6 +868,7 @@ thegent phench modules audit [OPTIONS]
 - `--include-repo-modules-root/--no-include-repo-modules-root`: Include or ignore `<repo>/modules/<module>/manifest.json` as ownership signal.
 
 **Notes**:
+
 - Modules are discovered from:
   - `src/<module>/__init__.py` package markers.
   - `<repo>/modules/<module>/manifest.json` when enabled.
@@ -811,11 +885,13 @@ Collect repo-local module manifests and mirror them into
 `~/CodeProjects/Phenotype/projects/modules/<module>/manifest.json`.
 
 **Syntax**:
+
 ```bash
 thegent phench modules sync [OPTIONS]
 ```
 
 **Options**:
+
 - `--source-root <dir>`: Root containing repos to scan.
 - `--destination-root <dir>`: Destination module root for sync output.
 - `--include-repo <glob>` / `--exclude-repo <glob>`: Repository include/exclude filter.
@@ -833,11 +909,13 @@ thegent phench modules sync --source-root ../repos --destination-root ../project
 Execute a command against selected repo(s) in a target.
 
 **Syntax**:
+
 ```bash
 thegent phench projects run --target <target> --runner <runner> --command <command>
 ```
 
 **Options**:
+
 - `--repo-id`: Single repo target.
 - `--repo-ref <repo-id>@<ref>`: Explicit per-repo branch/tag/SHA mapping (repeatable).
 - `--ref` / `--branch`: Shared ref for selected repo or all repos.
@@ -852,12 +930,14 @@ thegent phench projects run --target <target> --runner <runner> --command <comma
 - `--no-prepare`: Skip automatic `lock` and `materialize` before run.
 
 **Module override precedence** (highest to lowest):
+
 - CLI `--repo-ref` overrides manifest `repo_ref_overrides` for matching repos.
 - CLI `--runner` / `--command` overrides both manifest runner/command overrides.
 - `repo_runner_overrides`, `repo_command_overrides`, `repo_env_profile_overrides` from manifest
   apply to matching repos unless overridden by CLI arguments.
 
 **Examples**:
+
 ```bash
 # Run per-repo refs from feature branches in one command
 thegent phench projects run \
@@ -889,6 +969,7 @@ thegent phench projects run \
 Show lock/runtime/env snapshot for a target.
 
 **Syntax**:
+
 ```bash
 thegent phench projects status --target <target>
 ```
@@ -898,6 +979,7 @@ thegent phench projects status --target <target>
 Open interactive target/repo/ref selection and run immediately.
 
 **Syntax**:
+
 ```bash
 thegent phench tui --runner <runner> --command <command> [--target <target>]
 ```
@@ -913,6 +995,7 @@ If you omit `--target` and multiple targets exist, the CLI prompts for target.
 Run login for provider. Unified flow: open URL + prompt for API key.
 
 **Syntax**:
+
 ```bash
 thegent login <provider> [OPTIONS]
 thegent cliproxy login <provider> [OPTIONS]
@@ -921,9 +1004,11 @@ thegent cliproxy login <provider> [OPTIONS]
 **Providers**: `claude`, `codex`, `minimax`, `glm`, `nim`, `kilo`, `roo`, `qwen`, `antigravity`, `iflow`, `kiro`. `gemini`/`copilot` route via Codex proxy.
 
 **Options**:
+
 - `--force, -f`: Re-enter key even if already configured
 
 **Examples**:
+
 ```bash
 # Login to Claude
 thegent login claude
@@ -944,11 +1029,13 @@ thegent login claude --force
 Start thegent MCP server for IDE integration.
 
 **Syntax**:
+
 ```bash
 thegent mcp serve [OPTIONS]
 ```
 
 **Options**:
+
 - `--port <port>`: HTTP port (default: 8000)
 - `--host <host>`: Host (default: localhost)
 
@@ -957,6 +1044,7 @@ thegent mcp serve [OPTIONS]
 ### MCP Tools
 
 Thegent exposes MCP tools for:
+
 - Agent execution (`thegent_run`, `thegent_bg`)
 - Work stream management (`plan_do_next`, `plan_claim`, `plan_complete`)
 - Session management (`ps`, `status`, `wait`)
@@ -1037,18 +1125,22 @@ thegent bg "Debug issue" -C <session_id> --continuation-stderr
 ## Environment Variables
 
 ### Timeout Configuration
+
 - `THGENT_DEFAULT_TIMEOUT`: Default agent timeout (default: 90s)
 - `THGENT_DEFAULT_TIMEOUT_CLAUDE`: Claude agent timeout (default: 300s)
 - `THGENT_DEFAULT_TIMEOUT_FREE`: Free agent timeout (default: 300s)
 
 ### Routing Configuration
+
 - `THGENT_DEFAULT_ROUTING`: Default routing policy (`prefer_direct` \| `prefer_proxy`)
 
 ### Session Configuration
+
 - `THGENT_OWNER_TAG`: Explicit owner tag override
 - `THGENT_OWNER_SCOPE`: Owner scope (supports `{user}`, `{uid}`, `{pid}`, `{ppid}`, `{cwd}` placeholders)
 
 ### Debug Configuration
+
 - `THGENT_DEBUG`: Enable debug mode (1=enabled)
 
 ---

@@ -9,11 +9,11 @@
 
 ## 1. Summary
 
-| Project | Role in Smart Contract System |
-|---------|------------------------------|
-| **heliosShield** | Hosts the smart contract system: gate script, hooks, governance, P7–P16 phases |
-| **trace** | Strictness reference for rollout; requirement traceability system; uses thegent for agent runs |
-| **thegent** | Agent orchestration CLI; single source of truth; integrates with heliosShield via discovery/dev health |
+| Project          | Role in Smart Contract System                                                                          |
+| ---------------- | ------------------------------------------------------------------------------------------------------ |
+| **heliosShield** | Hosts the smart contract system: gate script, hooks, governance, P7–P16 phases                         |
+| **trace**        | Strictness reference for rollout; requirement traceability system; uses thegent for agent runs         |
+| **thegent**      | Agent orchestration CLI; single source of truth; integrates with heliosShield via discovery/dev health |
 
 ---
 
@@ -128,14 +128,14 @@
 
 ## 6. Key Documents
 
-| Doc | Purpose |
-|-----|---------|
-| `heliosShield/docs/guides/QA_GOVERNANCE_SMART_CONTRACT_PLAN_V3.md` | Full v3 plan |
-| `heliosShield/chatgpt.md` | CDDL origin (chatgpt transcript) |
-| `heliosShield/docs/unified/modules/governance/smart-contracts.md` | Module overview |
-| `heliosShield/docs/reports/2026-02-14-heliosShield-SMART-CONTRACT-HOOKS-AUDIT.md` | Audit and gaps |
-| `heliosShield/docs/reports/2026-02-14-THGENT-PLAN-AUDIT-FULL.md` | thegent/heliosShield/trace CLI audit |
-| `trace/00_START_HERE.md` | Trace project overview |
+| Doc                                                                               | Purpose                              |
+| --------------------------------------------------------------------------------- | ------------------------------------ |
+| `heliosShield/docs/guides/QA_GOVERNANCE_SMART_CONTRACT_PLAN_V3.md`                | Full v3 plan                         |
+| `heliosShield/chatgpt.md`                                                         | CDDL origin (chatgpt transcript)     |
+| `heliosShield/docs/unified/modules/governance/smart-contracts.md`                 | Module overview                      |
+| `heliosShield/docs/reports/2026-02-14-heliosShield-SMART-CONTRACT-HOOKS-AUDIT.md` | Audit and gaps                       |
+| `heliosShield/docs/reports/2026-02-14-THGENT-PLAN-AUDIT-FULL.md`                  | thegent/heliosShield/trace CLI audit |
+| `trace/00_START_HERE.md`                                                          | Trace project overview               |
 
 ---
 

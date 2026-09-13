@@ -11,6 +11,7 @@
 ## Implementation Summary
 
 Full implementation of Agent Crew stack following Agile Plus principles:
+
 - ✅ Core data models (Crew, Task, Agent)
 - ✅ TaskExecutor with dependency resolution
 - ✅ CrewExecutor with execution modes

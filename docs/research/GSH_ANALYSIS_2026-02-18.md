@@ -19,14 +19,14 @@
 
 ### Core Components
 
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| **Shell Parser** | `mvdan/sh` | POSIX compatibility, command parsing |
-| **TUI Framework** | `bubbletea` (Go) | Interactive REPL, terminal UI |
-| **Logging** | `zap` (Uber) | Structured logging |
-| **Language Runtime** | Custom (Go) | gsh scripting language interpreter |
-| **Agent Protocol** | ACP (Agent Client Protocol) | External agent integration (e.g., Claude Code) |
-| **LLM Integration** | OpenAI-compatible API | Supports Ollama (local) + OpenRouter/remote |
+| Component            | Technology                  | Purpose                                        |
+| -------------------- | --------------------------- | ---------------------------------------------- |
+| **Shell Parser**     | `mvdan/sh`                  | POSIX compatibility, command parsing           |
+| **TUI Framework**    | `bubbletea` (Go)            | Interactive REPL, terminal UI                  |
+| **Logging**          | `zap` (Uber)                | Structured logging                             |
+| **Language Runtime** | Custom (Go)                 | gsh scripting language interpreter             |
+| **Agent Protocol**   | ACP (Agent Client Protocol) | External agent integration (e.g., Claude Code) |
+| **LLM Integration**  | OpenAI-compatible API       | Supports Ollama (local) + OpenRouter/remote    |
 
 ### Design Philosophy
 
@@ -44,6 +44,7 @@
 **What it does**: Predicts the next command based on context and history.
 
 **Example**:
+
 ```bash
 gsh> git status
 # gsh suggests: git add .
@@ -56,17 +57,20 @@ gsh> git status
 **What it does**: Chat with AI agents directly in shell using `#` prefix.
 
 **Example**:
+
 ```bash
 gsh> # look at my unstaged changes and write test cases for them
 ```
 
 **Agent Capabilities**:
+
 - Run shell commands and analyze output
 - Search, read, and modify files
 - Use custom MCP servers
 - Maintain conversation context across turns
 
 **Comparison to thegent**:
+
 - **thegent**: Agents run via `thegent run/bg` commands, separate from shell
 - **gsh**: Agents are native shell primitives, no separate command needed
 
@@ -75,6 +79,7 @@ gsh> # look at my unstaged changes and write test cases for them
 **What it does**: Custom scripting language (`gsh`) for composing agents and workflows.
 
 **Example**:
+
 ```gsh
 #!/usr/bin/env gsh
 
@@ -93,6 +98,7 @@ if (diff.stdout == "") {
 ```
 
 **Comparison to thegent**:
+
 - **thegent**: Uses Python (`typer`) for CLI, agents defined in markdown (`agents/*.md`)
 - **gsh**: Custom language optimized for agent composition, more declarative
 
@@ -101,6 +107,7 @@ if (diff.stdout == "") {
 **What it does**: Delegates to external agents via Agent Client Protocol (ACP).
 
 **Example** (Claude Code integration):
+
 ```gsh
 # ~/.gsh/repl.gsh
 acp ClaudeCode {
@@ -113,6 +120,7 @@ gsh> @claude Please analyze the current directory and suggest improvements.
 ```
 
 **Comparison to thegent**:
+
 - **thegent**: MCP server (`thegent serve`) exposes tools to agents
 - **gsh**: Uses ACP (different protocol) to integrate external agents as shell primitives
 
@@ -121,6 +129,7 @@ gsh> @claude Please analyze the current directory and suggest improvements.
 **What it does**: Runs existing shell scripts without modification.
 
 **Example**:
+
 ```bash
 gsh> ls -la | grep ".py"
 # Works exactly like bash/zsh
@@ -132,42 +141,47 @@ gsh> ls -la | grep ".py"
 
 ## Comparison Matrix
 
-| Feature | gsh | zsh + Starship | thegent |
-|---------|-----|----------------|---------|
-| **POSIX Compatibility** | ✅ Full | ✅ Full | ❌ Python CLI |
-| **Built-in AI Agents** | ✅ Native (`#` prefix) | ❌ Requires external tools | ✅ Via `thegent run/bg` |
-| **Agent Scripting** | ✅ Custom language | ❌ Shell scripts only | ✅ Python + Markdown |
-| **Command Suggestions** | ✅ AI-powered | ⚠️ Plugin-based (zsh-autosuggestions) | ❌ Not applicable |
-| **External Agent Protocol** | ✅ ACP | ❌ None | ✅ MCP |
-| **Extensibility** | ✅ `~/.gsh/repl.gsh` | ✅ `.zshrc` + plugins | ✅ Python modules |
-| **Startup Speed** | ⚠️ Unknown (early stage) | ✅ Fast (~80ms goal) | ✅ Fast (Python CLI) |
-| **Maturity** | ⚠️ Early (v1.0) | ✅ Mature (decades) | ✅ Mature (production) |
-| **Cross-platform** | ✅ Go (portable) | ✅ Unix-like | ✅ Python (cross-platform) |
+| Feature                     | gsh                      | zsh + Starship                        | thegent                    |
+| --------------------------- | ------------------------ | ------------------------------------- | -------------------------- |
+| **POSIX Compatibility**     | ✅ Full                  | ✅ Full                               | ❌ Python CLI              |
+| **Built-in AI Agents**      | ✅ Native (`#` prefix)   | ❌ Requires external tools            | ✅ Via `thegent run/bg`    |
+| **Agent Scripting**         | ✅ Custom language       | ❌ Shell scripts only                 | ✅ Python + Markdown       |
+| **Command Suggestions**     | ✅ AI-powered            | ⚠️ Plugin-based (zsh-autosuggestions) | ❌ Not applicable          |
+| **External Agent Protocol** | ✅ ACP                   | ❌ None                               | ✅ MCP                     |
+| **Extensibility**           | ✅ `~/.gsh/repl.gsh`     | ✅ `.zshrc` + plugins                 | ✅ Python modules          |
+| **Startup Speed**           | ⚠️ Unknown (early stage) | ✅ Fast (~80ms goal)                  | ✅ Fast (Python CLI)       |
+| **Maturity**                | ⚠️ Early (v1.0)          | ✅ Mature (decades)                   | ✅ Mature (production)     |
+| **Cross-platform**          | ✅ Go (portable)         | ✅ Unix-like                          | ✅ Python (cross-platform) |
 
 ---
 
 ## Strengths
 
 ### 1. **Native Agent Integration**
+
 - Agents are shell primitives, not external commands
 - No context switching between shell and agent tools
 - Natural language commands feel like shell commands
 
 ### 2. **POSIX Compatibility**
+
 - Can run existing scripts without modification
 - Gradual migration path (use gsh for new workflows, keep bash/zsh for legacy)
 
 ### 3. **Battery-Included**
+
 - No plugin management (unlike zsh)
 - History, autosuggestions, syntax highlighting built-in
 - Less configuration overhead
 
 ### 4. **Modern Architecture**
+
 - Go-based (fast, portable)
 - Structured logging, telemetry (opt-out)
 - Clean separation: `~/.gshrc` (POSIX) vs `~/.gsh/repl.gsh` (gsh features)
 
 ### 5. **Agent Scripting Language**
+
 - Declarative agent definitions
 - Pipeline syntax (`diff.stdout | CommitWriter`)
 - Type system planned (roadmap)
@@ -177,31 +191,37 @@ gsh> ls -la | grep ".py"
 ## Weaknesses & Concerns
 
 ### 1. **Early Stage**
+
 - v1.0 reflects breaking changes, not stability
 - Bugs, incomplete features, breaking changes expected
 - Small community (~377 stars)
 
 ### 2. **Performance Unknown**
+
 - No benchmarks for startup time, command execution
 - AI suggestions may add latency
 - Telemetry shows "startup time" is tracked, but no public metrics
 
 ### 3. **Learning Curve**
+
 - Custom scripting language (`gsh`) requires learning
 - Different from bash/zsh for advanced workflows
 - Migration effort for existing shell scripts
 
 ### 4. **Protocol Fragmentation**
+
 - Uses ACP (Agent Client Protocol) instead of MCP
 - May require adapters for MCP-based tools (like thegent)
 - Two competing standards (ACP vs MCP)
 
 ### 5. **Limited Ecosystem**
+
 - Few plugins/extensions compared to zsh
 - No Starship integration (roadmap item)
 - Dependency on external LLM providers (cost, latency)
 
 ### 6. **Telemetry**
+
 - Collects usage stats (opt-out available)
 - Some users may prefer zero telemetry by default
 
@@ -214,6 +234,7 @@ gsh> ls -la | grep ".py"
 **Opportunity**: Bridge thegent's MCP server to gsh's ACP protocol.
 
 **Implementation**:
+
 ```python
 # thegent/mcp_to_acp_adapter.py
 # Expose thegent tools as ACP-compatible agents
@@ -226,6 +247,7 @@ gsh> ls -la | grep ".py"
 **Opportunity**: Support gsh as an optional shell for agent workflows.
 
 **Implementation**:
+
 - Add `thegent shell gsh` command
 - Configure gsh with thegent MCP adapter
 - Document migration path from zsh to gsh
@@ -237,14 +259,18 @@ gsh> ls -la | grep ".py"
 **Opportunity**: Adopt declarative agent definitions in thegent.
 
 **Current** (thegent):
+
 ```markdown
 # agents/example.md
+
 ## Capabilities
+
 - File operations
 - Code generation
 ```
 
 **Potential** (inspired by gsh):
+
 ```yaml
 # agents/example.yaml
 agent:
@@ -263,6 +289,7 @@ agent:
 **Opportunity**: Add AI-powered command suggestions to thegent CLI.
 
 **Implementation**:
+
 - Use LLM to suggest next `thegent` command based on context
 - Integrate with `thegent plan do-next` for workflow suggestions
 
@@ -273,12 +300,14 @@ agent:
 ## Should We Adopt gsh?
 
 ### ✅ **Adopt If**:
+
 - You want **native agent integration** in shell (no `thegent run` needed)
 - You prefer **declarative agent scripting** over Python
 - You're building **new workflows** (not migrating legacy scripts)
 - You want **battery-included** shell (no plugin management)
 
 ### ❌ **Don't Adopt If**:
+
 - You need **production stability** (gsh is early stage)
 - You have **extensive zsh/bash scripts** (migration cost)
 - You prefer **MCP over ACP** (protocol fragmentation)
@@ -296,21 +325,25 @@ agent:
 ## Research Questions
 
 ### 1. **Performance Benchmarks**
+
 - What is gsh's startup time? (Goal: ≤80ms like zsh)
 - How does AI suggestion latency compare to zsh-autosuggestions?
 - Memory footprint vs zsh/bash?
 
 ### 2. **ACP vs MCP**
+
 - Is ACP standardized? (or gsh-specific?)
 - Can we build bidirectional adapter (MCP ↔ ACP)?
 - Which protocol will win long-term?
 
 ### 3. **Agent Capabilities**
+
 - How does gsh's agent execution compare to `thegent run`?
 - Can gsh agents use thegent's MCP tools?
 - What's the context window/limitation?
 
 ### 4. **Ecosystem Maturity**
+
 - How many ACP-compatible agents exist?
 - Is Starship integration planned? (roadmap item)
 - Plugin ecosystem growth rate?

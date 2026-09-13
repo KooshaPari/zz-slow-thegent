@@ -49,26 +49,32 @@ The proxy stack consists of:
 ### How Authentication Headers Are Currently Passed Through
 
 In `_proxy_request()` (line 294–296):
+
 ```python
 headers = dict(request.headers)
 headers.pop("host", None)
 headers.pop("content-length", None)
 ```
+
 The `Authorization: Bearer sk-or-...` header from the incoming request is forwarded verbatim. No
 headers are added by the proxy layer. There is no code anywhere in `cliproxy_adapter.py` that
 injects `HTTP-Referer` or `X-Title`.
 
 In `_proxy_stream()` (line 381):
+
 ```python
 async with httpx.AsyncClient(timeout=120.0) as client:
     async with client.stream("POST", url, content=body, headers=headers) as resp:
 ```
+
 Same pattern: headers forwarded as-is.
 
 In `websocket_responses_handler()` (line 661):
+
 ```python
 headers = {"Content-Type": "application/json", "Accept": "text/event-stream"}
 ```
+
 WebSocket-originating requests strip ALL incoming headers and only send `Content-Type` and
 `Accept`. The `Authorization` header from the WebSocket client is NOT forwarded to the backend.
 
@@ -119,11 +125,13 @@ requests.
 
 **Fix**: Inject attribution headers into all outbound requests to OpenRouter backends. The proxy
 needs to detect when the backend URL points to `openrouter.ai` and add:
+
 ```python
 if "openrouter.ai" in backend_url:
     headers["HTTP-Referer"] = "https://thegent.dev"
     headers["X-Title"] = "thegent"
 ```
+
 This must be applied in both `_proxy_request()` and `_proxy_stream()`.
 
 ---
@@ -134,9 +142,11 @@ This must be applied in both `_proxy_request()` and `_proxy_stream()`.
 
 **Description**: In `websocket_responses_handler()` (line 661), when forwarding the translated
 chat completions request to the backend, the headers dict is constructed from scratch:
+
 ```python
 headers = {"Content-Type": "application/json", "Accept": "text/event-stream"}
 ```
+
 The `Authorization: Bearer sk-or-...` header from the WebSocket client connection is completely
 dropped. For OpenRouter, which requires `Authorization: Bearer <key>`, this means every
 WebSocket-originated request will fail with 401 Unauthorized.
@@ -144,6 +154,7 @@ WebSocket-originated request will fail with 401 Unauthorized.
 **File/Line**: `src/thegent/cliproxy_adapter.py` — `websocket_responses_handler()` line 661
 
 **Fix**: Extract and forward the authorization header from the WebSocket headers:
+
 ```python
 ws_auth = websocket.headers.get("authorization") or websocket.headers.get("Authorization")
 headers = {"Content-Type": "application/json", "Accept": "text/event-stream"}
@@ -168,6 +179,7 @@ field will just be the slug, not a human-readable name.
 
 **Fix**: Add OpenRouter-routed model entries. Since OpenRouter uses `provider/model-name` format,
 the primary models to add are:
+
 ```python
 "anthropic/claude-sonnet-4-20250514": {
     "context_window": 200000,
@@ -188,6 +200,7 @@ the primary models to add are:
     "backend": "proxy",
 },
 ```
+
 The provider definitions JSON shows `google/gemini-2.0-flash-001` as the default model, so this
 entry is the minimum required.
 
@@ -199,6 +212,7 @@ entry is the minimum required.
 
 **Description**: `_backend_path()` (line 535–540) checks if the backend base URL ends with `/v1`
 and if so strips the `/v1` prefix from the request path:
+
 ```python
 def _backend_path(backend_url: str, request_path: str) -> str:
     base = backend_url.rstrip("/")
@@ -206,18 +220,21 @@ def _backend_path(backend_url: str, request_path: str) -> str:
         return request_path[4:]  # /v1/responses -> /responses
     return request_path
 ```
+
 OpenRouter's base URL is `https://openrouter.ai/api/v1`. When this is the backend URL,
 `base.endswith("/v1")` is `True`, so `/v1/chat/completions` becomes `/chat/completions`. The
 final URL would be `https://openrouter.ai/api/v1/chat/completions` — which is correct in this
 case.
 
 However, when `_proxy_stream()` constructs the URL for streaming (line 371–373):
+
 ```python
 if transform_responses:
     url = f"{backend_url.rstrip('/')}/chat/completions"
 else:
     url = f"{backend_url.rstrip('/')}{path}" if path.startswith("/") else ...
 ```
+
 For the `transform_responses=True` path (used by `/v1/responses`), the URL is hardcoded as
 `{backend}/chat/completions` — which generates `https://openrouter.ai/api/v1/chat/completions`.
 This is correct.
@@ -239,9 +256,11 @@ which returns the path unchanged.
 **Severity**: P1 (security concern — disables certificate validation for all backend calls)
 
 **Description**: In `_proxy_request()` line 308:
+
 ```python
 async with httpx.AsyncClient(timeout=120.0, verify=False) as client:
 ```
+
 `verify=False` disables TLS certificate validation. For the CLIProxy backend on localhost, this is
 irrelevant. But the code comment implies this was added to handle the local proxy. If OpenRouter's
 base URL (`https://openrouter.ai/api/v1`) were ever used directly as `backend_url`, this would
@@ -267,19 +286,23 @@ response. In streaming responses, OpenRouter also returns `usage.total_cost` in 
 chunk (when `stream_options: {include_usage: true}` is set, or in the terminal chunk by default).
 
 The proxy's `_extract_usage()` function (line 85–87):
+
 ```python
 def _extract_usage(chunk: dict[str, Any]) -> dict[str, Any] | None:
     return chunk.get("usage") or None
 ```
+
 This extracts the entire `usage` object, which includes `total_cost` if OpenRouter sends it.
 However, `_ResponsesStreamState.closing_events()` (line 244–250) only reads
 `prompt_tokens`/`completion_tokens` from the usage dict and emits them in the `response.completed`
 event:
+
 ```python
 usage = self._usage or {}
 prompt_tokens = usage.get("prompt_tokens", 0)
 completion_tokens = usage.get("completion_tokens", 0)
 ```
+
 The `total_cost` value from OpenRouter is silently discarded. The cost tracking infrastructure in
 `routing/cost_tracker.py` is never informed of the actual cost.
 
@@ -287,6 +310,7 @@ The `total_cost` value from OpenRouter is silently discarded. The cost tracking 
 190–250; `_extract_usage()` line 85–87
 
 **Fix**: Thread `usage.total_cost` through to the cost tracker. After extracting usage:
+
 ```python
 total_cost = usage.get("total_cost")
 if total_cost is not None:
@@ -296,6 +320,7 @@ if total_cost is not None:
     tracker = get_cost_tracker()
     tracker.record_cost(total_cost, model=self.model)
 ```
+
 This requires `_ResponsesStreamState` to have access to the model name (already stored as
 `self.model`) and a reference to or import of the cost tracker.
 
@@ -306,6 +331,7 @@ This requires `_ResponsesStreamState` to have access to the model name (already 
 **Severity**: P2 (nice-to-have — advanced OpenRouter routing and transforms not usable)
 
 **Description**: OpenRouter supports two non-standard request fields:
+
 - `transforms`: Middleware transforms list (e.g., `["middle-out"]` for context window compression)
 - `provider`: Provider routing preferences object with `order`, `allow_fallbacks`, `require_parameters`
 
@@ -313,6 +339,7 @@ When the adapter translates `/v1/responses` to `/v1/chat/completions` via
 `_responses_to_chat_completions()` (line 56–72) or the equivalent in
 `litellm_responses_handler.py`, these fields from the original request body are not forwarded.
 The transforms are:
+
 ```python
 return {
     "model": mapped_model,
@@ -322,12 +349,14 @@ return {
     "max_tokens": body.get("max_output_tokens") or body.get("max_tokens"),
 }
 ```
+
 Any `transforms` or `provider` fields in the client request are dropped.
 
 **File/Line**: `src/thegent/cliproxy_adapter.py` — `_responses_to_chat_completions()` lines 56–72;
 `src/thegent/routing/litellm_responses_handler.py` — `_responses_to_chat_completions()` lines 74–102
 
 **Fix**: Pass through OpenRouter-specific fields when translating:
+
 ```python
 result = {
     "model": mapped_model,
@@ -367,6 +396,7 @@ if max_tokens is not None:
 **Description**: OpenRouter returns a `model` field in the response body that reflects the actual
 model used (which may differ from the requested model when fallbacks occur). The streaming handler
 ignores this field:
+
 - In `_proxy_stream()`, the `stream()` generator never reads the `model` field from individual SSE
   chunks.
 - `_ResponsesStreamState` is initialized with `model=model` (the requested model from the request
@@ -378,6 +408,7 @@ ignores this field:
 
 **Fix**: Extract the `model` field from the first SSE chunk and update `state.model` before
 emitting preamble events:
+
 ```python
 actual_model = obj.get("model") or model  # obj is the parsed SSE chunk
 if not preamble_emitted:
@@ -391,6 +422,7 @@ if not preamble_emitted:
 **Severity**: P1 (OpenRouter errors are structured differently; they may be misinterpreted)
 
 **Description**: OpenRouter returns errors in this format:
+
 ```json
 {
   "error": {
@@ -402,10 +434,12 @@ if not preamble_emitted:
   }
 }
 ```
+
 The `code` field is the HTTP status code inside the error object (not standard OpenAI which uses
 `code` as a string error code). The `metadata` field contains upstream provider error details.
 
 The current proxy returns backend errors directly (line 382–386 in `_proxy_stream()`):
+
 ```python
 if resp.status_code != 200:
     err_body = await resp.aread()
@@ -413,12 +447,14 @@ if resp.status_code != 200:
     yield f'data: {{"error":{{"message":"Backend {resp.status_code}"}}}}\n\n'.encode()
     return
 ```
+
 This swallows the actual OpenRouter error body and replaces it with a generic message, losing
 the `metadata.provider_name` and `metadata.raw` context that would help debug upstream failures.
 
 **File/Line**: `src/thegent/cliproxy_adapter.py` — `_proxy_stream()` stream generator lines 382–386
 
 **Fix**: Forward the actual error body from OpenRouter instead of replacing it:
+
 ```python
 if resp.status_code != 200:
     err_body = await resp.aread()
@@ -439,16 +475,19 @@ if resp.status_code != 200:
 **Severity**: P1 (LiteLLM router path is broken for OpenRouter when `use_litellm_router=True`)
 
 **Description**: `routing/provider_types.py` classifies providers into execution paths:
+
 ```python
 NATIVE_CLI_PROVIDERS = frozenset({"codex", "claude", "opencode"})
 API_KEY_PROVIDERS = frozenset({"minimax", "nim", "glm", "kilo", "zen"})
 LOGIN_AUTH_PROVIDERS = frozenset({"antigravity", "cursor", "kiro", "gemini", "copilot"})
 ```
+
 `"openrouter"` appears in none of these. `get_execution_path("openrouter")` returns
 `ExecutionPath.CLIPROXY_API` by default (the final `return` in the function), which routes it
 through `http://localhost:8317/v1`. This is actually correct — OpenRouter goes through CLIProxy.
 
 However, in `litellm_router.py`, `_get_api_key_env()`:
+
 ```python
 mapping = {
     "minimax": "MINIMAX_API_KEY",
@@ -458,8 +497,10 @@ mapping = {
 }
 return mapping.get(provider, f"{provider.upper()}_API_KEY")
 ```
+
 For `"openrouter"`, this correctly returns `"OPENROUTER_API_KEY"` via the fallback. But in
 `_route_to_litellm_config()`, the provider mapping for LiteLLM model string construction:
+
 ```python
 provider_mapping = {
     "gemini": "gemini",
@@ -469,6 +510,7 @@ provider_mapping = {
 }
 litellm_provider = provider_mapping.get(provider, provider)
 ```
+
 For `"openrouter"`, `litellm_provider` would be `"openrouter"` and the litellm model string would
 be `"openrouter/google/gemini-2.0-flash-001"` — which is the correct LiteLLM format for OpenRouter
 models. This is coincidentally correct.
@@ -491,10 +533,12 @@ provider is `openrouter`, not `openai`). Document the explicit routing decision.
 **Severity**: P1 (wrong URL for Responses-API streaming to OpenRouter)
 
 **Description**: In `_proxy_stream()` (line 371):
+
 ```python
 if transform_responses:
     url = f"{backend_url.rstrip('/')}/chat/completions"
 ```
+
 When `transform_responses=True` (i.e., the client called `/v1/responses`), the URL is constructed
 as `{backend}/chat/completions`. If `backend_url` is `http://127.0.0.1:8317/v1`, this produces
 `http://127.0.0.1:8317/v1/chat/completions` — correct.
@@ -511,6 +555,7 @@ produce a broken URL.
 
 **Fix**: Use the same `_backend_path()` logic or append `/v1/chat/completions` only when the
 backend URL does not already end with `/v1`:
+
 ```python
 if transform_responses:
     base = backend_url.rstrip("/")
@@ -519,6 +564,7 @@ if transform_responses:
     else:
         url = f"{base}/v1/chat/completions"
 ```
+
 This matches what `_backend_path()` does and makes the two code paths consistent.
 
 ---
@@ -532,12 +578,14 @@ supports `/v1/chat/completions`. The adapter handles this correctly for HTTP req
 `_responses_to_chat_completions()` and for WebSocket via the WS→SSE bridge. However, the non-LiteLLM
 path in `proxy_handler()` at line 594–602 always sends Responses API requests to the backend as
 `/chat/completions`:
+
 ```python
 if path == "/v1/responses":
     return await _proxy_stream(
         body, req_headers, backend, "/chat/completions", transform_responses=True, model=req_model
     )
 ```
+
 This is already handled correctly. No fix needed for the path routing. The issue is purely
 documentation: OpenRouter support requires the adapter layer be active.
 
@@ -569,31 +617,31 @@ and expects it to reach OpenRouter. Issue 2 still needs fixing for direct-proxy 
 
 ### P0 — Blocking Issues
 
-| # | File | Change |
-|---|------|--------|
-| 1 | `cliproxy_adapter.py` line 661 | Fix WebSocket handler to forward `Authorization` header to backend HTTP calls |
-| 2 | `routing/model_metadata.py` | Add OpenRouter default model (`google/gemini-2.0-flash-001`) and any commonly-used OpenRouter models with accurate context windows |
+| #   | File                           | Change                                                                                                                             |
+| --- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `cliproxy_adapter.py` line 661 | Fix WebSocket handler to forward `Authorization` header to backend HTTP calls                                                      |
+| 2   | `routing/model_metadata.py`    | Add OpenRouter default model (`google/gemini-2.0-flash-001`) and any commonly-used OpenRouter models with accurate context windows |
 
 ### P1 — Missing Features / Broken Behavior
 
-| # | File | Change |
-|---|------|--------|
-| 3 | `cliproxy_adapter.py` lines 294–296, 380 | Inject `HTTP-Referer` and `X-Title` headers when backend URL contains `openrouter.ai` |
-| 4 | `cliproxy_adapter.py` lines 382–386 | Forward actual OpenRouter error body instead of replacing with generic message |
-| 5 | `cliproxy_adapter.py` lines 190–250 | Thread `usage.total_cost` from OpenRouter into cost tracker after extracting usage |
-| 6 | `cliproxy_adapter.py` line 308 | Remove `verify=False` from `_proxy_request()` (inconsistency with `_proxy_stream()`) |
-| 7 | `routing/provider_types.py` | Add `"openrouter"` to `API_KEY_PROVIDERS` frozenset with explicit documentation |
-| 8 | `routing/litellm_router.py` | Add explicit `"openrouter": "openrouter"` to provider mapping in `_route_to_litellm_config()` |
-| 9 | `cliproxy_adapter.py` line 371 | Make transform stream URL consistent with `_backend_path()` logic |
+| #   | File                                     | Change                                                                                        |
+| --- | ---------------------------------------- | --------------------------------------------------------------------------------------------- |
+| 3   | `cliproxy_adapter.py` lines 294–296, 380 | Inject `HTTP-Referer` and `X-Title` headers when backend URL contains `openrouter.ai`         |
+| 4   | `cliproxy_adapter.py` lines 382–386      | Forward actual OpenRouter error body instead of replacing with generic message                |
+| 5   | `cliproxy_adapter.py` lines 190–250      | Thread `usage.total_cost` from OpenRouter into cost tracker after extracting usage            |
+| 6   | `cliproxy_adapter.py` line 308           | Remove `verify=False` from `_proxy_request()` (inconsistency with `_proxy_stream()`)          |
+| 7   | `routing/provider_types.py`              | Add `"openrouter"` to `API_KEY_PROVIDERS` frozenset with explicit documentation               |
+| 8   | `routing/litellm_router.py`              | Add explicit `"openrouter": "openrouter"` to provider mapping in `_route_to_litellm_config()` |
+| 9   | `cliproxy_adapter.py` line 371           | Make transform stream URL consistent with `_backend_path()` logic                             |
 
 ### P2 — Nice-to-Have
 
-| # | File | Change |
-|---|------|--------|
-| 10 | `cliproxy_adapter.py` lines 56–72 | Forward `transforms`, `provider`, `route` OpenRouter-specific fields in `_responses_to_chat_completions()` |
-| 11 | `routing/litellm_responses_handler.py` lines 74–102 | Same: forward OpenRouter fields in the LiteLLM path's `_responses_to_chat_completions()` |
-| 12 | `cliproxy_adapter.py` lines 375–430 | Extract actual model from SSE chunks and update `state.model` before emitting preamble events |
-| 13 | `routing/harness_model_mapping.py` | Add OpenRouter model ID aliases to `CODEX_TO_BACKEND_MODEL` for any OpenRouter models exposed via Codex |
+| #   | File                                                | Change                                                                                                     |
+| --- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| 10  | `cliproxy_adapter.py` lines 56–72                   | Forward `transforms`, `provider`, `route` OpenRouter-specific fields in `_responses_to_chat_completions()` |
+| 11  | `routing/litellm_responses_handler.py` lines 74–102 | Same: forward OpenRouter fields in the LiteLLM path's `_responses_to_chat_completions()`                   |
+| 12  | `cliproxy_adapter.py` lines 375–430                 | Extract actual model from SSE chunks and update `state.model` before emitting preamble events              |
+| 13  | `routing/harness_model_mapping.py`                  | Add OpenRouter model ID aliases to `CODEX_TO_BACKEND_MODEL` for any OpenRouter models exposed via Codex    |
 
 ---
 

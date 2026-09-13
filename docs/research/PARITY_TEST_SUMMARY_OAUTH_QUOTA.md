@@ -4,6 +4,7 @@
 **Date:** 2026-02-23
 **Status:** COMPLETE - All tests passing
 **Test Files:**
+
 - `tests/auth/test_parity_oauth_vs_cliproxy.py` (15 tests)
 - `tests/quota/test_parity_quota_vs_cliproxy.py` (22 tests)
 
@@ -19,6 +20,7 @@ Comprehensive parity test suites verifying that Python implementations in thegen
 2. **Quota Enforcement** — Daily usage limits with 24h rolling window
 
 Both test suites verify:
+
 - Core business logic equivalence
 - Thread-safe concurrent behavior
 - Boundary conditions and edge cases
@@ -33,37 +35,42 @@ Both test suites verify:
 
 ### Test Coverage
 
-| Category | Tests | Status |
-|----------|-------|--------|
-| Basic storage/retrieval | 3 | PASS |
-| Automatic refresh | 4 | PASS |
-| Thread safety | 2 | PASS |
-| Multi-provider isolation | 2 | PASS |
-| Parity verification | 4 | PASS (3) + SKIP (1) |
-| **Total** | **15** | **14 PASS, 1 SKIP** |
+| Category                 | Tests  | Status              |
+| ------------------------ | ------ | ------------------- |
+| Basic storage/retrieval  | 3      | PASS                |
+| Automatic refresh        | 4      | PASS                |
+| Thread safety            | 2      | PASS                |
+| Multi-provider isolation | 2      | PASS                |
+| Parity verification      | 4      | PASS (3) + SKIP (1) |
+| **Total**                | **15** | **14 PASS, 1 SKIP** |
 
 ### Key Tests
 
 #### TestOAuthTokenManagerBasic
+
 - `test_store_and_retrieve_token` — Token persistence ✓
 - `test_get_token_not_found` — KeyError on missing token ✓
 - `test_expired_token_requires_provider` — Error when provider unavailable ✓
 
 #### TestOAuthTokenAutoRefresh
+
 - `test_valid_token_no_refresh` — Non-expired token not refreshed (0 calls) ✓
 - `test_expired_token_auto_refresh` — Expired token auto-refreshes (1 call) ✓
 - `test_expiring_soon_not_automatically_refreshed` — Only expired tokens refresh ✓
 - `test_refresh_failure_propagates` — Provider errors bubble up ✓
 
 #### TestOAuthTokenThreadSafety
+
 - `test_concurrent_get_and_store` — Concurrent access without deadlock ✓
 - `test_concurrent_refresh_only_happens_once` — Atomic refresh (5 concurrent requests) ✓
 
 #### TestOAuthTokenMultiProvider
+
 - `test_multiple_providers_independent` — Separate token stores ✓
 - `test_one_provider_expires_others_unaffected` — Isolated refresh ✓
 
 #### TestOAuthTokenParity
+
 - `test_parity_token_struct` — Python Token fields match Go struct ✓
 - `test_parity_auto_refresh_ttl` — TTL set to ~1 hour (timedelta(hours=1)) ✓
 - `test_parity_lock_semantics` — Atomic get/store operations ✓
@@ -72,6 +79,7 @@ Both test suites verify:
 ### Implementation Details
 
 **Python Equivalent:**
+
 ```python
 class OAuthTokenManager:
     def __init__(self, provider: OAuthProvider | None = None):
@@ -114,19 +122,20 @@ class OAuthTokenManager:
 
 ### Test Coverage
 
-| Category | Tests | Status |
-|----------|-------|--------|
-| Basic limit enforcement | 6 | PASS |
-| 24h reset window | 4 | PASS |
-| Thread safety | 2 | PASS |
-| Usage tracking | 2 | PASS |
-| Parity verification | 6 | PASS |
-| Edge cases | 3 | PASS |
-| **Total** | **23** | **23 PASS** |
+| Category                | Tests  | Status      |
+| ----------------------- | ------ | ----------- |
+| Basic limit enforcement | 6      | PASS        |
+| 24h reset window        | 4      | PASS        |
+| Thread safety           | 2      | PASS        |
+| Usage tracking          | 2      | PASS        |
+| Parity verification     | 6      | PASS        |
+| Edge cases              | 3      | PASS        |
+| **Total**               | **23** | **23 PASS** |
 
 ### Key Tests
 
 #### TestQuotaEnforcerBasic
+
 - `test_under_token_limit_allowed` — Request under limit succeeds ✓
 - `test_at_token_limit_denied` — Strictly greater-than logic (90+10=100 allowed, 90+11=101 denied) ✓
 - `test_under_cost_limit_allowed` — Cost tracking independent of tokens ✓
@@ -135,20 +144,24 @@ class OAuthTokenManager:
 - `test_partial_unlimited_quota` — Mixed limited/unlimited (tokens limited, cost unlimited) ✓
 
 #### TestQuotaEnforcer24hReset
+
 - `test_reset_at_initialization` — reset_at set to +24h on creation ✓
 - `test_reset_clears_usage` — Manual reset to past clears accumulated usage ✓
 - `test_reset_updates_reset_at` — Reset updates reset_at to new +24h window ✓
 - `test_no_reset_if_not_yet_time` — No reset if reset_at in future ✓
 
 #### TestQuotaEnforcerThreadSafety
+
 - `test_concurrent_record_and_check` — 100 concurrent operations without race ✓
 - `test_concurrent_quota_exhaustion` — 50 concurrent requests respect limit ✓
 
 #### TestQuotaEnforcerUsageTracking
+
 - `test_record_usage_accumulates` — Usage adds up across records ✓
 - `test_get_usage_is_snapshot` — get_usage() returns independent copy ✓
 
 #### TestQuotaEnforcerParity
+
 - `test_parity_quota_limit_struct` — Python struct matches Go struct ✓
 - `test_parity_usage_record_struct` — Python struct matches Go struct ✓
 - `test_parity_check_quota_logic` — Logic matches CLIProxy (strictly >) ✓
@@ -157,6 +170,7 @@ class OAuthTokenManager:
 - `test_parity_reset_idempotent` — Reset idempotent when called multiple times ✓
 
 #### TestQuotaEnforcerEdgeCases
+
 - `test_zero_quota_tokens` — 0 = unlimited tokens ✓
 - `test_fractional_tokens_and_cost` — Floating-point tracking (75.3 + 20 = 95.3) ✓
 - `test_exact_boundary` — 100 + 0 allowed, 100 + 0.1 denied ✓
@@ -164,6 +178,7 @@ class OAuthTokenManager:
 ### Implementation Details
 
 **Python Equivalent:**
+
 ```python
 class QuotaEnforcer:
     def __init__(self, quota: QuotaLimit):
@@ -223,6 +238,7 @@ Both provide **atomic operations** on shared state, but Python's exclusive lock 
 **Quota Limit Check:** `usage + estimated > quota` (strictly greater, not >=)
 
 Implication:
+
 - At exactly the limit: allowed
 - Exceeding limit by any amount: denied
 - Example: 100 token limit with 100 used → 0 more allowed, not 1
@@ -232,6 +248,7 @@ This is consistent in both implementations.
 ### 3. Reset Idempotency
 
 The 24h reset is idempotent and rare. Both implementations handle it safely:
+
 - Python: Called with lock held in `check_quota()`
 - Go: Called with RLock held (note: CLIProxy comments on this being safe despite RLock)
 
@@ -240,6 +257,7 @@ Both assume reset is called infrequently (once per 24h window).
 ### 4. Float Precision
 
 Both implementations use floating-point for token/cost tracking:
+
 - Fractional tokens (e.g., 75.3)
 - Fractional costs (e.g., 25.1)
 - Floating-point arithmetic is consistent between Python and Go
@@ -265,20 +283,21 @@ All tests use standard library + pytest, no external dependencies beyond what's 
 
 ## Coverage Summary
 
-| Component | Coverage | Notes |
-|-----------|----------|-------|
-| Token storage | 100% | Get, store, update |
-| Token refresh | 100% | Expiry detection, refresh, TTL |
-| Token locking | 100% | Concurrent access, atomic operations |
-| Quota enforcement | 100% | Limit checking, 24h reset, usage tracking |
-| Quota locking | 100% | Concurrent record/check, atomic state |
-| Edge cases | 100% | Unlimited quotas, fractional values, boundaries |
+| Component         | Coverage | Notes                                           |
+| ----------------- | -------- | ----------------------------------------------- |
+| Token storage     | 100%     | Get, store, update                              |
+| Token refresh     | 100%     | Expiry detection, refresh, TTL                  |
+| Token locking     | 100%     | Concurrent access, atomic operations            |
+| Quota enforcement | 100%     | Limit checking, 24h reset, usage tracking       |
+| Quota locking     | 100%     | Concurrent record/check, atomic state           |
+| Edge cases        | 100%     | Unlimited quotas, fractional values, boundaries |
 
 ---
 
 ## Integration Notes
 
 These tests are **pure unit tests** and don't require:
+
 - CLIProxy server running (marked as skipped if unavailable)
 - External OAuth providers
 - Network access

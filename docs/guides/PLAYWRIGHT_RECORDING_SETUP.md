@@ -106,17 +106,17 @@ Configuration class for recording sessions.
 
 **Parameters:**
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `base_url` | str | `http://localhost:5173` | Base URL for navigation |
-| `browser` | str | `chromium` | Browser engine (chromium, firefox, webkit) |
-| `headless` | bool | `False` | Run browser headless mode |
-| `viewport_width` | int | 1280 | Viewport width (px) |
-| `viewport_height` | int | 720 | Viewport height (px) |
-| `device_scale_factor` | float | 1.0 | DPI/scale factor |
-| `locale` | str | `en-US` | Browser locale |
-| `timezone_id` | str | `America/New_York` | Browser timezone |
-| `output_dir` | Path | `docs/recordings` | Output directory for recordings |
+| Parameter             | Type  | Default                 | Description                                |
+| --------------------- | ----- | ----------------------- | ------------------------------------------ |
+| `base_url`            | str   | `http://localhost:5173` | Base URL for navigation                    |
+| `browser`             | str   | `chromium`              | Browser engine (chromium, firefox, webkit) |
+| `headless`            | bool  | `False`                 | Run browser headless mode                  |
+| `viewport_width`      | int   | 1280                    | Viewport width (px)                        |
+| `viewport_height`     | int   | 720                     | Viewport height (px)                       |
+| `device_scale_factor` | float | 1.0                     | DPI/scale factor                           |
+| `locale`              | str   | `en-US`                 | Browser locale                             |
+| `timezone_id`         | str   | `America/New_York`      | Browser timezone                           |
+| `output_dir`          | Path  | `docs/recordings`       | Output directory for recordings            |
 
 **Example:**
 
@@ -346,18 +346,18 @@ The `playwright.config.ts` file configures Playwright test runner:
 ```typescript
 // playwright.config.ts
 export default defineConfig({
-  testDir: './recordings',
+  testDir: "./recordings",
   webServer: {
-    command: 'bun run docs:dev',
-    url: 'http://localhost:5173',
+    command: "bun run docs:dev",
+    url: "http://localhost:5173",
   },
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: "http://localhost:5173",
     viewport: { width: 1280, height: 720 },
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
   },
-})
+});
 ```
 
 Run Playwright tests:

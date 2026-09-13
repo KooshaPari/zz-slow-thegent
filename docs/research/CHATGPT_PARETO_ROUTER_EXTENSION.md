@@ -21,6 +21,7 @@ This document synthesizes **extreme-depth research** from ChatGPT conversations 
 7. **Mapping to LiteLLM** - How Helios concepts map to LiteLLM Router
 
 **Key Design Philosophy** (from ChatGPT research):
+
 - Models are commodities
 - Offers are economic units
 - Subscriptions are resource pools
@@ -98,12 +99,12 @@ Step 5 — Generate fallback chain
 
 ### 1.3 Fallback Strategy by Failure Type
 
-| Failure Type | Fallback Action |
-|--------------|-----------------|
-| Rate limit / 429 | Switch provider/offer immediately |
-| Timeout | Switch to fastest offer on Pareto set |
-| Schema/tool failure | Switch to highest adherence offer |
-| Bad output quality | Escalate to higher quality tier |
+| Failure Type        | Fallback Action                       |
+| ------------------- | ------------------------------------- |
+| Rate limit / 429    | Switch provider/offer immediately     |
+| Timeout             | Switch to fastest offer on Pareto set |
+| Schema/tool failure | Switch to highest adherence offer     |
+| Bad output quality  | Escalate to higher quality tier       |
 
 ---
 
@@ -118,6 +119,7 @@ Offer = (provider endpoint, modelId, region, plan/quota regime, pricing, constra
 ```
 
 Same "model" across:
+
 - OpenRouter vs direct provider
 - Different regions
 - Different subscriptions/quotas
@@ -126,27 +128,30 @@ Same "model" across:
 
 ### 2.2 Why Offer-First Beats Model→Provider Two-Stage
 
-| Two-Stage (model → provider) | Offer-First |
-|------------------------------|-------------|
+| Two-Stage (model → provider)                                  | Offer-First                              |
+| ------------------------------------------------------------- | ---------------------------------------- |
 | Select "claude-opus" without considering provider rate limits | Economics and limits baked in from start |
-| Ignores subscription quotas | Correct handling of quotas/outages |
-| Ignores region latency | Consistent scoring |
-| Must do offer-routing anyway as second step | Single routing decision |
+| Ignores subscription quotas                                   | Correct handling of quotas/outages       |
+| Ignores region latency                                        | Consistent scoring                       |
+| Must do offer-routing anyway as second step                   | Single routing decision                  |
 
 **Recommendation**: Offer-first, always.
 
 ### 2.3 Canonical Schema Layers
 
 **A) Identity & Capabilities** (mostly static)
+
 - provider, offerId, modelId
 - context window, max output, tool support, JSON mode, vision
 
 **B) Commercials & Limits** (changes often)
+
 - list prices (in/out, cache read/write)
 - rate limits / concurrency
 - plan entitlements / included usage / throttling rules
 
 **C) Observed Telemetry** (changes constantly)
+
 - p50/p95 latency, error rate, timeout rate
 - format adherence rate (JSON validity, tool-call success)
 - per-role success metrics
@@ -158,6 +163,7 @@ Same "model" across:
 ### 3.1 Speed Index (Exact Formula)
 
 Speed = time to usable answer (not just latency). Includes:
+
 - TTFT (time to first token)
 - Total latency
 - Output length (longer outputs = longer read + parse)
@@ -202,17 +208,18 @@ Role-specific, dynamic, measured from usage + benchmarks.
 
 ### 4.1 Effective Unit Cost (EUC) by Plan Type
 
-| Plan Type | EUC Calculation |
-|-----------|-----------------|
-| **payg_token** | EUC_in = price_in_per_token, EUC_out = price_out_per_token |
-| **fixed_bucket_tokens** | EUC_blended = monthly_fee / expected_tokens_covered |
-| **premium_request_bucket** | Convert requests→tokens via observed avg; EUC = fee / (requests × avg_tokens) |
-| **prompt_rate_limited** | Minimax: 300 prompts/5h → prompts_month × avg_tokens; EUC = fee / expected_tokens |
-| **volatile_free** | EUC = very_small_floor + high volatility penalty |
+| Plan Type                  | EUC Calculation                                                                   |
+| -------------------------- | --------------------------------------------------------------------------------- |
+| **payg_token**             | EUC_in = price_in_per_token, EUC_out = price_out_per_token                        |
+| **fixed_bucket_tokens**    | EUC_blended = monthly_fee / expected_tokens_covered                               |
+| **premium_request_bucket** | Convert requests→tokens via observed avg; EUC = fee / (requests × avg_tokens)     |
+| **prompt_rate_limited**    | Minimax: 300 prompts/5h → prompts_month × avg_tokens; EUC = fee / expected_tokens |
+| **volatile_free**          | EUC = very_small_floor + high volatility penalty                                  |
 
 ### 4.2 Shadow Pricing (Two Layers)
 
 **Layer 1: Monthly Budget Shadow**
+
 ```
 budget_remaining = 600 - spend_to_date
 expected_remaining = 600 * (days_remaining / days_in_month)
@@ -221,6 +228,7 @@ budget_shadow = 1 / max(ratio, ε)
 ```
 
 **Layer 2: Plan Quota Shadow**
+
 ```
 plan_ratio = remaining_tokens_est / expected_remaining_tokens_est
 plan_shadow = 1 / max(plan_ratio, ε)
@@ -233,6 +241,7 @@ As quota depletes → shadow spikes → router shifts away from that offer.
 ### 4.3 "Unlimited" Plans (Copilot)
 
 Cannot price as $0 (would dominate every decision). Use:
+
 - EUC = very_small_floor (e.g., $0.001/MTok)
 - Add scarcity shadow to prevent degenerate always-pick
 - Apply non-cost constraints: rate limits, quality thresholds
@@ -252,16 +261,17 @@ Total: $600/month
 
 ### 5.2 Role-Level Budget Allocation (Example)
 
-| Role | Allocation |
-|------|-------------|
-| code_complex | 40% |
-| doc_writer | 20% |
-| fast_chat | 15% |
-| agent_workflow | 25% |
+| Role           | Allocation |
+| -------------- | ---------- |
+| code_complex   | 40%        |
+| doc_writer     | 20%        |
+| fast_chat      | 15%        |
+| agent_workflow | 25%        |
 
 ### 5.3 Degraded Mode
 
 When budget burn crosses 85%:
+
 - Disable premium offers
 - Force cache-first behavior
 - Prioritize self-host / low-cost API models
@@ -285,6 +295,7 @@ Benchmarks are sparse: Model A has 5/8, Model B has 6/8, but missing sets differ
 ### 6.2 Solution: Two-Part Quality System
 
 **Offline Quality (from benchmark table)**
+
 1. Normalize per benchmark: z = (score - mean_b) / std_b
 2. Impute missing via shrinkage to family mean:
    ```
@@ -297,15 +308,18 @@ Benchmarks are sparse: Model A has 5/8, Model B has 6/8, but missing sets differ
    ```
 
 **Online Quality (from your reality)**
+
 - test_pass_rate, lint/build success
 - "needed escalation" rate
 - tool/schema adherence
 
 **Final Blend**
+
 ```
 q = sigmoid(offline_quality_adj) * (1 - ρ(n)) + online_quality * ρ(n)
 ρ(n) = n / (n + k)   # n = eval'd tasks for offer+role
 ```
+
 Early on: benchmarks guide. Later: your data wins.
 
 ---
@@ -314,16 +328,16 @@ Early on: benchmarks guide. Later: your data wins.
 
 ### 7.1 Subscription Plans (From User)
 
-| Plan | Monthly | Notes |
-|------|---------|-------|
-| Claude Max | $200 | ~3B tok/mo (dynamic, across 3 models, includes cached) |
-| Codex | $200 | ~11B tok/mo |
-| Cursor | $200 | ~$600 usage equivalent |
-| Minimax | $40 | 300 prompts / 5 hours |
-| Copilot Student Pro | Free | Unlimited completions; 300 premium requests/mo (Pro) |
-| GLM Max | $80 | 3× usage vs Claude (on paper) |
-| Gemini/Antigravity | $20 | Free plans via Google AI Premium |
-| Promo (Kilo, Roo, Opencode, Kimi, Qwen) | Varies | Rotating free/cheap models |
+| Plan                                    | Monthly | Notes                                                  |
+| --------------------------------------- | ------- | ------------------------------------------------------ |
+| Claude Max                              | $200    | ~3B tok/mo (dynamic, across 3 models, includes cached) |
+| Codex                                   | $200    | ~11B tok/mo                                            |
+| Cursor                                  | $200    | ~$600 usage equivalent                                 |
+| Minimax                                 | $40     | 300 prompts / 5 hours                                  |
+| Copilot Student Pro                     | Free    | Unlimited completions; 300 premium requests/mo (Pro)   |
+| GLM Max                                 | $80     | 3× usage vs Claude (on paper)                          |
+| Gemini/Antigravity                      | $20     | Free plans via Google AI Premium                       |
+| Promo (Kilo, Roo, Opencode, Kimi, Qwen) | Varies  | Rotating free/cheap models                             |
 
 ### 7.2 Offer ID Examples (Project Context)
 
@@ -377,6 +391,7 @@ promo:harness:kilo|roo|opencode:<rotating>
 ```
 
 **Sources**:
+
 - OpenRouter Models API
 - Vercel AI Gateway model mappings
 - Direct provider docs/APIs
@@ -468,6 +483,7 @@ promo:harness:kilo|roo|opencode:<rotating>
 ### 9.2 Hot Path Data Model
 
 Router runs off **snapshots** (fast, deterministic):
+
 - OfferSnapshot (capabilities + base pricing)
 - TelemetrySnapshot (latency/errors/adherence)
 - EconomicsSnapshot (effective cost + shadow price + budget state)
@@ -479,16 +495,16 @@ Router runs off **snapshots** (fast, deterministic):
 
 ### 10.1 Concept Mapping
 
-| Helios / Pareto Concept | LiteLLM Equivalent | Project Component |
-|-------------------------|-------------------|-------------------|
-| Offer | Deployment (model + provider + config) | `harness_model_mapping`, `model_indices.json` |
-| Offer Registry | Router model_list | `litellm_router.py`, `catalog.py` |
-| Commercial Engine | Cost tracking, budget | `cost_tracker.py`, custom |
-| Shadow Pricing | Not built-in | **Extend** cost_tracker |
-| Pareto Selection | simple-shuffle, cost-based-routing | **Extend** routing strategies |
-| Responses API | Chat Completions | `cliproxy_adapter.py`, Responses→Chat translation |
-| Data Plane | LiteLLM Proxy | `litellm_router.py` |
-| Control Plane | Config + custom services | Offer Registry, Economics, Quality |
+| Helios / Pareto Concept | LiteLLM Equivalent                     | Project Component                                 |
+| ----------------------- | -------------------------------------- | ------------------------------------------------- |
+| Offer                   | Deployment (model + provider + config) | `harness_model_mapping`, `model_indices.json`     |
+| Offer Registry          | Router model_list                      | `litellm_router.py`, `catalog.py`                 |
+| Commercial Engine       | Cost tracking, budget                  | `cost_tracker.py`, custom                         |
+| Shadow Pricing          | Not built-in                           | **Extend** cost_tracker                           |
+| Pareto Selection        | simple-shuffle, cost-based-routing     | **Extend** routing strategies                     |
+| Responses API           | Chat Completions                       | `cliproxy_adapter.py`, Responses→Chat translation |
+| Data Plane              | LiteLLM Proxy                          | `litellm_router.py`                               |
+| Control Plane           | Config + custom services               | Offer Registry, Economics, Quality                |
 
 ### 10.2 Integration Architecture
 
@@ -521,32 +537,36 @@ Router runs off **snapshots** (fast, deterministic):
 
 ### 10.3 Gaps to Fill (Pareto → LiteLLM)
 
-| Gap | Solution |
-|-----|----------|
-| Shadow pricing | Custom callback / middleware in LiteLLM; or pre-filter deployments by effective cost |
-| Pareto frontier | Custom routing strategy plugin; or pre-compute ranked list, pass to LiteLLM as fallback chain |
-| Offer abstraction | Map offers → LiteLLM deployments; one deployment per offer |
-| Quality index | Pre-filter by min quality; or weight deployments by quality in custom strategy |
-| Budget engine | Integrate with cost_tracker; enforce caps before routing |
+| Gap               | Solution                                                                                      |
+| ----------------- | --------------------------------------------------------------------------------------------- |
+| Shadow pricing    | Custom callback / middleware in LiteLLM; or pre-filter deployments by effective cost          |
+| Pareto frontier   | Custom routing strategy plugin; or pre-compute ranked list, pass to LiteLLM as fallback chain |
+| Offer abstraction | Map offers → LiteLLM deployments; one deployment per offer                                    |
+| Quality index     | Pre-filter by min quality; or weight deployments by quality in custom strategy                |
+| Budget engine     | Integrate with cost_tracker; enforce caps before routing                                      |
 
 ### 10.4 Recommended Phased Approach
 
 **Phase 1**: LiteLLM Router + Responses API adapter (existing plan)
+
 - Single translation layer
 - Basic routing (model selection, fallbacks)
 - Cost tracking
 
 **Phase 2**: Offer Registry + Economics Snapshot
+
 - Canonical offers.yaml, plans.yaml
 - Shadow pricing engine (background job)
 - Effective cost in routing decision
 
 **Phase 3**: Pareto + Lexicographic Router
+
 - Custom routing strategy or wrapper
 - Hard constraints → Pareto → Lexi
 - Full fallback chain generation
 
 **Phase 4**: Quality Index + Budget Engine
+
 - Benchmark ingestion + imputation
 - Online quality from harness logs
 - Role budgets, degraded mode

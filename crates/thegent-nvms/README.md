@@ -6,12 +6,12 @@ binding infrastructure.
 
 ## What lives here
 
-| File | Purpose |
-|------|---------|
-| `src/lib.rs` | Low-level `sys` C ABI declarations + safe high-level wrappers (`Instance`, `GpuDevice`, `PerfStats`) |
-| `src/lib.rs` (bottom) | pyo3 Python extension (`thegent_nvms` module) — gated behind `python` feature |
-| `build.rs` | Links against the nanovms CGo archive (`libnvms_core.a`) |
-| `pyproject.toml` | maturin packaging for Python wheels |
+| File                  | Purpose                                                                                              |
+| --------------------- | ---------------------------------------------------------------------------------------------------- |
+| `src/lib.rs`          | Low-level `sys` C ABI declarations + safe high-level wrappers (`Instance`, `GpuDevice`, `PerfStats`) |
+| `src/lib.rs` (bottom) | pyo3 Python extension (`thegent_nvms` module) — gated behind `python` feature                        |
+| `build.rs`            | Links against the nanovms CGo archive (`libnvms_core.a`)                                             |
+| `pyproject.toml`      | maturin packaging for Python wheels                                                                  |
 
 ## Build
 

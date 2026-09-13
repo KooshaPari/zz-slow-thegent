@@ -7,12 +7,12 @@
 
 ## Executive Summary
 
-| Metric | Current | Target | Opportunity |
-|--------|---------|--------|--------------|
-| Python LOC | 258,446 | <200,000 | 58K+ reduction |
-| Rust LOC | 168,545 | >200,000 | +31K migration |
-| Python % | 60.5% | <50% | Shift to Rust |
-| Files | 1,408 | 800 | 600+ can be reduced |
+| Metric     | Current | Target   | Opportunity         |
+| ---------- | ------- | -------- | ------------------- |
+| Python LOC | 258,446 | <200,000 | 58K+ reduction      |
+| Rust LOC   | 168,545 | >200,000 | +31K migration      |
+| Python %   | 60.5%   | <50%     | Shift to Rust       |
+| Files      | 1,408   | 800      | 600+ can be reduced |
 
 ---
 
@@ -20,24 +20,24 @@
 
 ### 1. Largest Files (>1500 LOC) - Candidates for Splitting
 
-| File | LOC | Recommendation |
-|------|-----|----------------|
-| `execution.py` | 2,823 | Split into modules by concern |
-| `workstream_autosync.py` | 2,217 | Extract to separate package |
-| `doctor.py` | 2,020 | Split CLI from lib |
-| `project.py` | 2,012 | Split into focused modules |
-| `install.py` | 1,784 | Extract install strategies |
-| `sync.py` | 1,745 | Split by sync type |
+| File                     | LOC   | Recommendation                |
+| ------------------------ | ----- | ----------------------------- |
+| `execution.py`           | 2,823 | Split into modules by concern |
+| `workstream_autosync.py` | 2,217 | Extract to separate package   |
+| `doctor.py`              | 2,020 | Split CLI from lib            |
+| `project.py`             | 2,012 | Split into focused modules    |
+| `install.py`             | 1,784 | Extract install strategies    |
+| `sync.py`                | 1,745 | Split by sync type            |
 
 ### 2. Duplicate Patterns - Refactor to Shared Utils
 
-| Pattern | Count | Recommendation |
-|---------|-------|----------------|
-| `to_dict` | 67 | Use Pydantic models |
-| `_load_config` | 27 | Centralize config loading |
-| `is_enabled` | 28 | Use FeatureFlag class |
-| `register` | 40 | Centralize registry |
-| `compose` | 30 | Extract to composables |
+| Pattern        | Count | Recommendation            |
+| -------------- | ----- | ------------------------- |
+| `to_dict`      | 67    | Use Pydantic models       |
+| `_load_config` | 27    | Centralize config loading |
+| `is_enabled`   | 28    | Use FeatureFlag class     |
+| `register`     | 40    | Centralize registry       |
+| `compose`      | 30    | Extract to composables    |
 
 ---
 
@@ -45,21 +45,21 @@
 
 ### High Priority (Python doing system work)
 
-| Module | LOC | Rust Replacement |
-|--------|-----|------------------|
-| `subprocess` calls (80+ files) | ~15K | Use `thegent-shims` crate |
-| `shell` operations | ~8K | Use `thegent-shims` crate |
-| `git` operations | ~5K | Use `thegent-git` crate |
-| File watching | ~2K | Use `thegent-watcher` crate |
-| JSON parsing | ~3K | Use `thegent-jsonl` crate |
+| Module                         | LOC  | Rust Replacement            |
+| ------------------------------ | ---- | --------------------------- |
+| `subprocess` calls (80+ files) | ~15K | Use `thegent-shims` crate   |
+| `shell` operations             | ~8K  | Use `thegent-shims` crate   |
+| `git` operations               | ~5K  | Use `thegent-git` crate     |
+| File watching                  | ~2K  | Use `thegent-watcher` crate |
+| JSON parsing                   | ~3K  | Use `thegent-jsonl` crate   |
 
 ### Candidates for External Libraries
 
-| Custom Code | LOC | Better Alternative |
-|-------------|-----|-------------------|
-| Custom logging | 500+ | Use `loguru` |
-| Custom caching | 300+ | Use `cachetools` |
-| Custom CLI | 1000+ | Use `typer` more consistently |
+| Custom Code    | LOC   | Better Alternative            |
+| -------------- | ----- | ----------------------------- |
+| Custom logging | 500+  | Use `loguru`                  |
+| Custom caching | 300+  | Use `cachetools`              |
+| Custom CLI     | 1000+ | Use `typer` more consistently |
 
 ---
 
@@ -67,20 +67,20 @@
 
 ### Belongs in CLIProxyAPI (not thegent)
 
-| Code | LOC | Reason |
-|------|-----|--------|
+| Code                      | LOC | Reason                |
+| ------------------------- | --- | --------------------- |
 | Provider-specific routing | ~3K | CLIProxy owns routing |
-| Model-specific logic | ~2K | Provider concern |
-| API client wrappers | ~5K | Belongs in API layer |
+| Model-specific logic      | ~2K | Provider concern      |
+| API client wrappers       | ~5K | Belongs in API layer  |
 
 ### Belongs in Separate Packages
 
-| Code | LOC | New Package |
-|------|-----|-------------|
-| Workstream autosync | 4K+ | `thegent-workstream` |
-| Install logic | 1.8K | `thegent-installer` |
-| Doctor/diagnosis | 2K | `thegent-doctor` |
-| Project scaffolding | 2K | `thegent-scaffold` |
+| Code                | LOC  | New Package          |
+| ------------------- | ---- | -------------------- |
+| Workstream autosync | 4K+  | `thegent-workstream` |
+| Install logic       | 1.8K | `thegent-installer`  |
+| Doctor/diagnosis    | 2K   | `thegent-doctor`     |
+| Project scaffolding | 2K   | `thegent-scaffold`   |
 
 ---
 
@@ -130,30 +130,33 @@
 
 ## Recommendations Summary
 
-| Priority | Action | LOC Impact |
-|----------|--------|-----------|
-| 🔴 High | Move subprocess to Rust | -15K |
-| 🔴 High | Split execution.py | -1.5K |
-| 🟡 Medium | Pydantic everywhere | -500 |
-| 🟡 Medium | Split workstream_autosync | -2K |
-| 🟢 Low | Extract install to package | -400 |
-| 🟢 Low | Centralize config | -300 |
+| Priority  | Action                     | LOC Impact |
+| --------- | -------------------------- | ---------- |
+| 🔴 High   | Move subprocess to Rust    | -15K       |
+| 🔴 High   | Split execution.py         | -1.5K      |
+| 🟡 Medium | Pydantic everywhere        | -500       |
+| 🟡 Medium | Split workstream_autosync  | -2K        |
+| 🟢 Low    | Extract install to package | -400       |
+| 🟢 Low    | Centralize config          | -300       |
 
 ---
 
 ## Implementation Plan
 
 ### Sprint 1: Quick Wins
+
 - [ ] Centralize config loading
-- [ ] Standardize is_enabled patterns  
+- [ ] Standardize is_enabled patterns
 - [ ] Add Pydantic models for remaining dict-serializable classes
 
 ### Sprint 2: Medium Refactors
+
 - [ ] Split execution.py into modules
 - [ ] Extract workstream_autosync types
 - [ ] Create thegent-installer package
 
 ### Sprint 3: Rust Migration
+
 - [ ] Move subprocess handling to Rust
 - [ ] Move file operations to Rust
 - [ ] Expand thegent-shims crate
@@ -162,12 +165,12 @@
 
 ## Success Metrics
 
-| Metric | Current | Post-Refactor |
-|--------|---------|---------------|
-| Python LOC | 258,446 | <200,000 |
-| Rust LOC | 168,545 | >200,000 |
-| Files | 1,408 | <1,000 |
-| Avg file size | 183 LOC | <150 LOC |
+| Metric        | Current | Post-Refactor |
+| ------------- | ------- | ------------- |
+| Python LOC    | 258,446 | <200,000      |
+| Rust LOC      | 168,545 | >200,000      |
+| Files         | 1,408   | <1,000        |
+| Avg file size | 183 LOC | <150 LOC      |
 
 ---
 
@@ -175,29 +178,29 @@
 
 ### Empty Stub Files (21 total) - Can Be Removed
 
-| Path | Module | Action |
-|------|--------|--------|
-| src/docs_engine/export/__init__.py | docs_engine | Remove |
-| src/docs_engine/git/__init__.py | docs_engine | Remove |
-| src/docs_engine/hub/__init__.py | docs_engine | Remove |
-| src/docs_engine/mcp/__init__.py | docs_engine | Remove |
-| src/docs_engine/semantic/__init__.py | docs_engine | Remove |
-| src/docs_engine/sidebar/__init__.py | docs_engine | Remove |
-| src/thegent/cli/apps/__init__.py | cli | Remove |
-| src/thegent/evals/__init__.py | evals | Remove |
-| src/thegent/mcp/tools/__init__.py | mcp | Remove |
-| src/thegent/observability/__init__.py | observability | Remove |
-| src/thegent/offload/__init__.py | offload | Remove |
-| src/thegent/orchestration/consensus/__init__.py | orchestration | Review |
-| src/thegent/orchestration/pruning/__init__.py | orchestration | Review |
-| src/thegent/orchestration/resilience/__init__.py | orchestration | Review |
-| src/thegent/orchestration/resource/__init__.py | orchestration | Review |
-| src/thegent/orchestration/state/__init__.py | orchestration | Review |
-| src/thegent/orchestration/strategies/__init__.py | orchestration | Review |
-| src/thegent/prompts/__init__.py | prompts | Remove |
-| src/thegent/protocols/__init__.py | protocols | Remove |
-| src/thegent/tools/__init__.py | tools | Remove |
-| src/thegent/utils/routing_impl/guardrails/__init__.py | utils | Review |
+| Path                                                  | Module        | Action |
+| ----------------------------------------------------- | ------------- | ------ |
+| src/docs_engine/export/**init**.py                    | docs_engine   | Remove |
+| src/docs_engine/git/**init**.py                       | docs_engine   | Remove |
+| src/docs_engine/hub/**init**.py                       | docs_engine   | Remove |
+| src/docs_engine/mcp/**init**.py                       | docs_engine   | Remove |
+| src/docs_engine/semantic/**init**.py                  | docs_engine   | Remove |
+| src/docs_engine/sidebar/**init**.py                   | docs_engine   | Remove |
+| src/thegent/cli/apps/**init**.py                      | cli           | Remove |
+| src/thegent/evals/**init**.py                         | evals         | Remove |
+| src/thegent/mcp/tools/**init**.py                     | mcp           | Remove |
+| src/thegent/observability/**init**.py                 | observability | Remove |
+| src/thegent/offload/**init**.py                       | offload       | Remove |
+| src/thegent/orchestration/consensus/**init**.py       | orchestration | Review |
+| src/thegent/orchestration/pruning/**init**.py         | orchestration | Review |
+| src/thegent/orchestration/resilience/**init**.py      | orchestration | Review |
+| src/thegent/orchestration/resource/**init**.py        | orchestration | Review |
+| src/thegent/orchestration/state/**init**.py           | orchestration | Review |
+| src/thegent/orchestration/strategies/**init**.py      | orchestration | Review |
+| src/thegent/prompts/**init**.py                       | prompts       | Remove |
+| src/thegent/protocols/**init**.py                     | protocols     | Remove |
+| src/thegent/tools/**init**.py                         | tools         | Remove |
+| src/thegent/utils/routing_impl/guardrails/**init**.py | utils         | Review |
 
 ### Files with TODO/FIXME (16 files)
 
@@ -213,13 +216,16 @@ All TODOs/FIXMEs are intentional - regex patterns, constants, test code.
 ## Action Plan
 
 ### Split: workstream_autosync.py (2217 LOC)
+
 - Extract to `thegent-sync-workstream` package
 - Split by: adapters (GH/Linear), core (runner, config)
 
-### Split: project.py (2012 LOC)  
+### Split: project.py (2012 LOC)
+
 - Split by: scaffold, install, update commands
 
 ### Rust Migration: Subprocess
+
 - 80+ files using subprocess
 - Already exists: `thegent-shims` crate
 - Opportunity: Add more shim functions
@@ -229,6 +235,7 @@ All TODOs/FIXMEs are intentional - regex patterns, constants, test code.
 ## Migration Progress
 
 ### Shim Subprocess Migration (Feb 23, 2026) ✅ COMPLETE
+
 - Created: `thegent/infra/shim_subprocess.py` - shim-aware subprocess runner
 - **Updated 91 files to use shims** - Full migration complete!
 

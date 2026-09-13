@@ -726,13 +726,13 @@ trace:
   # Retention
   ttl_days: 7
   max_storage_gb: 10
-  compression: zstd  # zstd | gzip
+  compression: zstd # zstd | gzip
 
   # Sampling (record 1 in N traces)
   sample_rate: 1.0
 
 replay:
-  fallback_mode: mock  # mock | live | error
+  fallback_mode: mock # mock | live | error
   validate_traces: true
 
 variator:

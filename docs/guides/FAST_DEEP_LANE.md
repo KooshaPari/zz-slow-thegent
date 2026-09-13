@@ -80,9 +80,9 @@ def test_expensive_computation(): ...
 
 ## Lane Summary
 
-| Lane | Trigger | Markers included | Target time |
-|------|---------|-----------------|-------------|
-| fast | Default / CI fast | not slow, not integration, not e2e, not load | < 30s |
-| deep | On demand / nightly | `@pytest.mark.deep` | < 5 min |
-| gate | Pre-promotion | fast then deep | < 6 min |
-| nightly | Nightly CI | slow or integration or e2e or load | Unrestricted |
+| Lane    | Trigger             | Markers included                             | Target time  |
+| ------- | ------------------- | -------------------------------------------- | ------------ |
+| fast    | Default / CI fast   | not slow, not integration, not e2e, not load | < 30s        |
+| deep    | On demand / nightly | `@pytest.mark.deep`                          | < 5 min      |
+| gate    | Pre-promotion       | fast then deep                               | < 6 min      |
+| nightly | Nightly CI          | slow or integration or e2e or load           | Unrestricted |

@@ -14,7 +14,7 @@ Coordinates teammates during a multi-agent run.
 
 ### Methods
 
-#### TeamCoordinator.__init__
+#### TeamCoordinator.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)

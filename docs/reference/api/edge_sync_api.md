@@ -15,7 +15,7 @@ Manages low-power synchronization between edge agents and the mesh.
 
 ### Methods
 
-#### EdgeSyncController.__init__
+#### EdgeSyncController.**init**
 
 ```python
 __init__(self: Any, device_id: str)

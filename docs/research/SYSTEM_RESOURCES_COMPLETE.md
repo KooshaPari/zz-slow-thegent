@@ -3,6 +3,7 @@
 
 > **Status**: Complete | **Version**: 1.0 | **Date**: 2026-02-16
 > **Related**:
+>
 > - [System Resources FD CPU Deep Research](./SYSTEM_RESOURCES_FD_CPU_DEEP_RESEARCH.md)
 > - [Swarm Complete](./SWARM_COMPLETE.md)
 > - [Process Optimization Plan](../plans/PROCESS_OPTIMIZATION_PLAN.md)
@@ -25,6 +26,7 @@
 ### 1.1 Key Concepts
 
 Activity Monitor–style metrics (CPU %, memory, FD count, threads, ports) are essential for:
+
 - **ConcurrencyController** gates (FD, memory, load)
 - **Prune prioritization** (RSS-aware, FD-aware)
 - **`thegent ps` / `thegent observe`** — extend to system process view
@@ -32,14 +34,14 @@ Activity Monitor–style metrics (CPU %, memory, FD count, threads, ports) are e
 
 ### 1.2 Current State
 
-| Component | Status | Location |
-|-----------|--------|----------|
-| **ResourceSnapshot** | ✅ Implemented | `load_based_limits.py` |
-| **FD sampling (Linux)** | ✅ Implemented | `/proc/self/fd` |
-| **FD sampling (macOS)** | ⚠️ Partial | Falls back to 0 |
-| **Memory sampling** | ✅ Implemented | `/proc/meminfo` (Linux), `vm_stat` (macOS) |
-| **Load average** | ✅ Implemented | `os.getloadavg()` |
-| **Per-process metrics** | ❌ Not implemented | — |
+| Component               | Status             | Location                                   |
+| ----------------------- | ------------------ | ------------------------------------------ |
+| **ResourceSnapshot**    | ✅ Implemented     | `load_based_limits.py`                     |
+| **FD sampling (Linux)** | ✅ Implemented     | `/proc/self/fd`                            |
+| **FD sampling (macOS)** | ⚠️ Partial         | Falls back to 0                            |
+| **Memory sampling**     | ✅ Implemented     | `/proc/meminfo` (Linux), `vm_stat` (macOS) |
+| **Load average**        | ✅ Implemented     | `os.getloadavg()`                          |
+| **Per-process metrics** | ❌ Not implemented | —                                          |
 
 ### 1.3 Gaps
 
@@ -608,7 +610,7 @@ gates:
 sampling:
   cache_ttl: 5.0
   fd_cache_ttl: 60.0
-  method: auto  # auto | lsof | proc
+  method: auto # auto | lsof | proc
 
 prune:
   sort_by: rss
@@ -623,14 +625,17 @@ prune:
 ### 7.1 Common Issues
 
 **Issue**: macOS FD count always 0
+
 - **Solution**: Use `lsof` method, enable caching
 - **Config**: `THGENT_FD_SAMPLE_METHOD=lsof`, `THGENT_FD_SAMPLE_CACHE_SEC=60`
 
 **Issue**: Prune too aggressive
+
 - **Solution**: Increase threshold, adjust sort order
 - **Config**: `THGENT_PRUNE_SORT_BY=rss`, `THGENT_AUTO_PRUNE_THRESHOLD=20`
 
 **Issue**: Resource gates always block
+
 - **Solution**: Check thresholds, verify sampling
 - **Debug**: `thegent observe resources`
 
@@ -682,7 +687,7 @@ print(f"Allowed: {allowed}, Violations: {violations}")
 
 ---
 
-*Generated: 2026-02-16 | Version: 1.0 | Status: Complete*
+_Generated: 2026-02-16 | Version: 1.0 | Status: Complete_
 
 ---
 
@@ -692,15 +697,18 @@ print(f"Allowed: {allowed}, Violations: {violations}")
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added planning patterns
 2. Added implementation roadmap
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - WORK_STREAM.md
 - Implementation guides
 
 ### Practical Additions
+
 - Planning templates
 - Roadmap configurations
 

@@ -14,11 +14,11 @@ This document is the **single source of truth** for structured output contracts 
 
 ## 2. Contract Registry
 
-| Contract ID | Version | Description | Compatibility |
-|-------------|---------|-------------|---------------|
-| csm | csm-v1 | Canonical Structured Message: unified schema | task-tool-18, zen-rich-v1 |
-| task-tool | task-tool-18 | Task-tool 18-tag XML (snake_case) | csm-v1 |
-| zen | zen-rich-v1 | Zen rich protocol (status, progress, actions, files) | csm-v1 |
+| Contract ID | Version      | Description                                          | Compatibility             |
+| ----------- | ------------ | ---------------------------------------------------- | ------------------------- |
+| csm         | csm-v1       | Canonical Structured Message: unified schema         | task-tool-18, zen-rich-v1 |
+| task-tool   | task-tool-18 | Task-tool 18-tag XML (snake_case)                    | csm-v1                    |
+| zen         | zen-rich-v1  | Zen rich protocol (status, progress, actions, files) | csm-v1                    |
 
 ---
 
@@ -26,24 +26,24 @@ This document is the **single source of truth** for structured output contracts 
 
 All agent outputs normalize to `CanonicalStructuredMessage`:
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| task_id | str | No | Task identifier |
-| run_id | str | No | Run correlation ID |
-| chunk_id | str | No | Chunk identifier |
-| status | enum | Yes | pending, in_progress, completed, failed, blocked, cancelled |
-| phase | enum | No | planner, operator, reviewer, unknown |
-| progress | float | No | 0.0–1.0 |
-| objective | str | No | Task objective |
-| summary | str | No | Condensed summary |
-| actions_completed | list[str] | No | Completed action list |
-| issues | list[str] | No | Issues encountered |
-| next_steps | list[str] | No | Recommended next steps |
-| evidence_set_hash | str | No | Governance evidence hash |
-| policy_gate_id | str | No | Policy gate identifier |
-| decision_reason_code | str | No | Decision rationale code |
-| schema_version | str | Yes | Always "csm-v1" |
-| source_contract | str | No | Original contract (task-tool-18, zen-rich-v1, etc.) |
+| Field                | Type      | Required | Description                                                 |
+| -------------------- | --------- | -------- | ----------------------------------------------------------- |
+| task_id              | str       | No       | Task identifier                                             |
+| run_id               | str       | No       | Run correlation ID                                          |
+| chunk_id             | str       | No       | Chunk identifier                                            |
+| status               | enum      | Yes      | pending, in_progress, completed, failed, blocked, cancelled |
+| phase                | enum      | No       | planner, operator, reviewer, unknown                        |
+| progress             | float     | No       | 0.0–1.0                                                     |
+| objective            | str       | No       | Task objective                                              |
+| summary              | str       | No       | Condensed summary                                           |
+| actions_completed    | list[str] | No       | Completed action list                                       |
+| issues               | list[str] | No       | Issues encountered                                          |
+| next_steps           | list[str] | No       | Recommended next steps                                      |
+| evidence_set_hash    | str       | No       | Governance evidence hash                                    |
+| policy_gate_id       | str       | No       | Policy gate identifier                                      |
+| decision_reason_code | str       | No       | Decision rationale code                                     |
+| schema_version       | str       | Yes      | Always "csm-v1"                                             |
+| source_contract      | str       | No       | Original contract (task-tool-18, zen-rich-v1, etc.)         |
 
 ---
 
@@ -66,6 +66,7 @@ Provider adapters implement `OutputAdapter`:
 - `normalize(raw, context) -> AdapterResult`: Convert raw output to CSM
 
 Adapters must:
+
 - Return `AdapterResult` with `csm` and `confidence` (0.0–1.0).
 - Populate `parse_errors` on partial failure.
 - Set `source_contract` when known.

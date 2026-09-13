@@ -11,12 +11,14 @@
 ### Swarm Controller (swarm_controller.py)
 
 **Current Tracking:**
+
 - Agent metrics (CPU, memory, PID, restarts)
 - Health status (healthy, paused, unhealthy, dead)
 - Local queue and scaling decisions
 - State persistence to `.claude/swarm_state.json`
 
 **Missing:**
+
 - Global awareness across projects
 - Cross-project communication paths
 - Unique identity persistence
@@ -25,12 +27,14 @@
 ### Agent Identity System (agent_identity_system.py)
 
 **Current Capabilities:**
+
 - Global registry at `~/.claude/civilization/registry.json`
 - Unique agent IDs: `{project}:{uuid}:L{1-3}:{role}`
 - Parent-child relationships
 - Service discovery
 
 **Missing Integration:**
+
 - Heartbeat updates to registry
 - Initial agent registration
 - Stale agent cleanup
@@ -44,6 +48,7 @@
 Add registry awareness to SwarmController without changing core logic:
 
 **In swarm_controller.py, imports:**
+
 ```python
 from agent_identity_system import (
     GlobalAgentRegistry,
@@ -53,7 +58,8 @@ from agent_identity_system import (
 )
 ```
 
-**In SwarmController.__init__():**
+**In SwarmController.**init**():**
+
 ```python
 def __init__(self, config_path: str = "config/swarm_controller_config.yaml"):
     # ... existing init ...
@@ -66,6 +72,7 @@ def __init__(self, config_path: str = "config/swarm_controller_config.yaml"):
 ```
 
 **Add method to detect project:**
+
 ```python
 def _detect_project_name(self) -> str:
     """Detect project name from config or current directory."""
@@ -81,6 +88,7 @@ def _detect_project_name(self) -> str:
 When SwarmController starts, register itself as L1:
 
 **In SwarmController.start():**
+
 ```python
 def start(self):
     """Start monitoring loop with registry integration."""
@@ -105,6 +113,7 @@ def start(self):
 Update agent tracking to include registry:
 
 **Modify monitor_agents() to register discovered agents:**
+
 ```python
 def monitor_agents(self):
     """Monitor agent health with registry integration."""
@@ -162,6 +171,7 @@ def _register_agent_to_registry(self, agent_id: str, metrics: AgentMetrics):
 Keep agents alive in registry:
 
 **In monitor_agents() health check loop:**
+
 ```python
 # Update heartbeat in registry for active agents
 for agent_id in self.agent_metrics:
@@ -175,6 +185,7 @@ for agent_id in self.agent_metrics:
 Handle agents that disappear from monitoring:
 
 **Add periodic cleanup task:**
+
 ```python
 def cleanup_stale_agents(self):
     """Remove stale agents from both monitoring and registry."""
@@ -202,14 +213,14 @@ def _try_recover_agent(self, agent_id: str) -> bool:
 
 ## Integration Timeline
 
-| Step | Task | Duration | Priority |
-|------|------|----------|----------|
-| 1 | Minimal integration (imports, registry creation) | 30 min | HIGH |
-| 2 | Register L1 on start | 30 min | HIGH |
-| 3 | Auto-register discovered L2/L3 agents | 1 hour | MEDIUM |
-| 4 | Heartbeat updates | 15 min | MEDIUM |
-| 5 | Stale agent cleanup | 20 min | LOW |
-| 6 | Cross-project communication tests | 1 hour | LOW |
+| Step | Task                                             | Duration | Priority |
+| ---- | ------------------------------------------------ | -------- | -------- |
+| 1    | Minimal integration (imports, registry creation) | 30 min   | HIGH     |
+| 2    | Register L1 on start                             | 30 min   | HIGH     |
+| 3    | Auto-register discovered L2/L3 agents            | 1 hour   | MEDIUM   |
+| 4    | Heartbeat updates                                | 15 min   | MEDIUM   |
+| 5    | Stale agent cleanup                              | 20 min   | LOW      |
+| 6    | Cross-project communication tests                | 1 hour   | LOW      |
 
 **Total estimated: 3.5 hours for basic integration**
 
@@ -334,8 +345,8 @@ registry:
   enabled: true
   path: ~/.claude/civilization/registry.json
   auto_register: true
-  heartbeat_interval: 10  # seconds
-  stale_ttl: 300  # seconds
+  heartbeat_interval: 10 # seconds
+  stale_ttl: 300 # seconds
 ```
 
 ---
@@ -347,6 +358,7 @@ registry:
 **Problem:** Local agent ID (`thegent-researcher-1`) != registry ID (`thegent:abc123:L2:researcher`)
 
 **Solution:** Maintain mapping dictionary:
+
 ```python
 self.agent_id_map = {
     "thegent-researcher-1": "thegent:abc123:L2:researcher",
@@ -358,6 +370,7 @@ self.agent_id_map = {
 **Problem:** Multiple processes write registry simultaneously
 
 **Solution:** Add file locking:
+
 ```python
 import fcntl
 
@@ -374,6 +387,7 @@ def _save_to_disk_locked(self):
 **Problem:** Registry slows down as agents scale to 100+
 
 **Solution:** Implement in-memory caching + periodic sync:
+
 ```python
 class CachedRegistry(GlobalAgentRegistry):
     def get_agents_by_project(self, project):

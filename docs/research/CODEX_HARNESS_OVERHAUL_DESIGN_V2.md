@@ -46,20 +46,20 @@ The CLI already ships `codex resume [SESSION_ID]` and `codex resume --last` (int
 
 After audit, the actual gaps are narrower than V1 assumed:
 
-| Feature | Status in Upstream | Gap |
-|---|---|---|
-| Project memory (AGENTS.md) | Fully implemented | Config aliases for CODEX.md / CLAUDE.md |
-| Skills system (SKILL.md) | Fully implemented | thegent doesn't populate `~/.codex/skills/` |
-| Session resume (interactive) | Fully implemented | `exec --json` mode doesn't support resume |
-| TypeScript SDK | Ships with repo | thegent uses subprocess directly; SDK not used |
-| HTTP API mode | App-server present, not OpenAI-compat | `/v1/chat/completions`-style REST endpoint missing |
-| WebSocket mode | App-server protocol | Stable programmatic client not shipped |
-| Hooks system | `notify` callback (exit only) | No pre/post-tool hooks |
-| Batch mode | Not present | No multi-prompt file input |
-| Eval mode | Not present | No benchmark harness |
-| Sub-agent spawning as a tool | Not present | No `codex spawn` tool call |
-| `--codex-home` flag | Not present | State isolation requires `HOME` env override |
-| Context compression in exec | Not present | `compact_remote.rs` only for TUI |
+| Feature                      | Status in Upstream                    | Gap                                                |
+| ---------------------------- | ------------------------------------- | -------------------------------------------------- |
+| Project memory (AGENTS.md)   | Fully implemented                     | Config aliases for CODEX.md / CLAUDE.md            |
+| Skills system (SKILL.md)     | Fully implemented                     | thegent doesn't populate `~/.codex/skills/`        |
+| Session resume (interactive) | Fully implemented                     | `exec --json` mode doesn't support resume          |
+| TypeScript SDK               | Ships with repo                       | thegent uses subprocess directly; SDK not used     |
+| HTTP API mode                | App-server present, not OpenAI-compat | `/v1/chat/completions`-style REST endpoint missing |
+| WebSocket mode               | App-server protocol                   | Stable programmatic client not shipped             |
+| Hooks system                 | `notify` callback (exit only)         | No pre/post-tool hooks                             |
+| Batch mode                   | Not present                           | No multi-prompt file input                         |
+| Eval mode                    | Not present                           | No benchmark harness                               |
+| Sub-agent spawning as a tool | Not present                           | No `codex spawn` tool call                         |
+| `--codex-home` flag          | Not present                           | State isolation requires `HOME` env override       |
+| Context compression in exec  | Not present                           | `compact_remote.rs` only for TUI                   |
 
 ---
 
@@ -73,14 +73,14 @@ The fork/contribute decision is based on one question per change: **does the cha
 
 These modify behavioral semantics or add infrastructure that upstream will not carry:
 
-| Change | Why Fork Required | Fork Location |
-|---|---|---|
-| Pre/post-tool hooks (`pre-tool-<name>.sh`, `post-tool-<name>.sh`) | Runs arbitrary local scripts before/after every model tool call. Security surface that upstream cannot generalize. | `codex-rs/core/src/hooks/` (new module) |
-| Session-start / session-end hooks | Same reasoning; hooks into session lifecycle internals | `codex-rs/exec/src/lib.rs` hook dispatch points |
-| Sub-agent spawning as a first-class tool (`codex_spawn`) | Adds a new built-in tool to the tool registry; upstream would need governance policy for this | `codex-rs/core/src/tools/spawn.rs` (new) |
-| Global memory injection (`~/.codex/memory.md`) | Already possible via `instructions` config; fork only if we need automatic watch+reload semantics | Thin: config layer only, no fork needed |
-| `--codex-home` flag | Structural change to how `CODEX_HOME` is resolved; upstream has open interest in this but hasn't shipped it | `codex-rs/core/src/config/mod.rs` — `find_codex_home()` |
-| Context compression in `exec --json` mode | Upstream `compact.rs` and `compact_remote.rs` are TUI-gated; wiring them into exec path requires threading through the event processor | `codex-rs/exec/src/event_processor_with_jsonl_output.rs` |
+| Change                                                            | Why Fork Required                                                                                                                      | Fork Location                                            |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| Pre/post-tool hooks (`pre-tool-<name>.sh`, `post-tool-<name>.sh`) | Runs arbitrary local scripts before/after every model tool call. Security surface that upstream cannot generalize.                     | `codex-rs/core/src/hooks/` (new module)                  |
+| Session-start / session-end hooks                                 | Same reasoning; hooks into session lifecycle internals                                                                                 | `codex-rs/exec/src/lib.rs` hook dispatch points          |
+| Sub-agent spawning as a first-class tool (`codex_spawn`)          | Adds a new built-in tool to the tool registry; upstream would need governance policy for this                                          | `codex-rs/core/src/tools/spawn.rs` (new)                 |
+| Global memory injection (`~/.codex/memory.md`)                    | Already possible via `instructions` config; fork only if we need automatic watch+reload semantics                                      | Thin: config layer only, no fork needed                  |
+| `--codex-home` flag                                               | Structural change to how `CODEX_HOME` is resolved; upstream has open interest in this but hasn't shipped it                            | `codex-rs/core/src/config/mod.rs` — `find_codex_home()`  |
+| Context compression in `exec --json` mode                         | Upstream `compact.rs` and `compact_remote.rs` are TUI-gated; wiring them into exec path requires threading through the event processor | `codex-rs/exec/src/event_processor_with_jsonl_output.rs` |
 
 **Minimal fork delta rule:** The fork MUST be a thin patch layer. Every forked file MUST have a comment block at the top: `// THEGENT FORK: <reason> -- upstream PR: <link or "pending">`. This makes merge tracking explicit.
 
@@ -88,14 +88,14 @@ These modify behavioral semantics or add infrastructure that upstream will not c
 
 These are generally useful improvements with no thegent-specific behavior:
 
-| Change | Upstream PR Rationale | Effort |
-|---|---|---|
-| `--codex-home` / `CODEX_HOME` env var for state isolation | Directly useful for multi-instance workloads; OpenAI has acknowledged the need | Small: ~30 lines in `find_codex_home()` |
-| `exec resume --last --json` (non-interactive resume with JSONL output) | The exec binary already has `resume` for interactive; the JSON path is missing | Medium: wire `ThreadManager::resume` through exec event processor |
-| Enhanced JSONL output events (`session.started` with session_id, `tool.started` / `tool.completed` with duration) | Useful for any programmatic consumer | Small: add fields to existing event structs in `exec_events.rs` |
-| `--output-last-message` writes session_id in addition to final message | Trivial, high utility for scripting | Trivial |
-| SSE/streaming improvements in the responses-api-proxy | Bug-class fix; upstream benefits directly | Medium |
-| `project_doc_fallback_filenames` documented example for CLAUDE.md | Documentation only | Trivial |
+| Change                                                                                                            | Upstream PR Rationale                                                          | Effort                                                            |
+| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `--codex-home` / `CODEX_HOME` env var for state isolation                                                         | Directly useful for multi-instance workloads; OpenAI has acknowledged the need | Small: ~30 lines in `find_codex_home()`                           |
+| `exec resume --last --json` (non-interactive resume with JSONL output)                                            | The exec binary already has `resume` for interactive; the JSON path is missing | Medium: wire `ThreadManager::resume` through exec event processor |
+| Enhanced JSONL output events (`session.started` with session_id, `tool.started` / `tool.completed` with duration) | Useful for any programmatic consumer                                           | Small: add fields to existing event structs in `exec_events.rs`   |
+| `--output-last-message` writes session_id in addition to final message                                            | Trivial, high utility for scripting                                            | Trivial                                                           |
+| SSE/streaming improvements in the responses-api-proxy                                                             | Bug-class fix; upstream benefits directly                                      | Medium                                                            |
+| `project_doc_fallback_filenames` documented example for CLAUDE.md                                                 | Documentation only                                                             | Trivial                                                           |
 
 ### 1.4 Changes That Are Config-Only
 
@@ -158,7 +158,7 @@ Each hook receives a JSON object on stdin:
   "tool": {
     "name": "shell",
     "id": "tool_abc123",
-    "input": {"command": "rm -rf /tmp/foo"}
+    "input": { "command": "rm -rf /tmp/foo" }
   },
   "context": {
     "cwd": "/repo/src",
@@ -316,6 +316,7 @@ async def codex_spawn(
 ```
 
 **Resource limits enforced by the MCP server (not Codex fork):**
+
 - `max_depth`: passed as metadata; MCP server checks against a session depth counter
 - `max_concurrent`: semaphore on the MCP server (default: 4)
 - `timeout_sec`: enforced via `asyncio.wait_for`
@@ -359,8 +360,8 @@ Manages N concurrent `Thread` instances with isolated state directories:
 ```typescript
 interface CodexPoolOptions {
   size: number;
-  codexHomesBaseDir?: string;  // defaults to /tmp/codex-pool-<pid>
-  sharedAuthPath?: string;     // path to shared ~/.codex/auth symlink
+  codexHomesBaseDir?: string; // defaults to /tmp/codex-pool-<pid>
+  sharedAuthPath?: string; // path to shared ~/.codex/auth symlink
   configOverrides?: CodexConfigObject;
 }
 
@@ -368,8 +369,8 @@ class CodexPool {
   constructor(options: CodexPoolOptions): void;
   async acquire(): Promise<Thread>;
   release(thread: Thread): void;
-  async drain(): Promise<void>;  // wait for all active threads to finish
-  async dispose(): Promise<void>;  // release resources, clean temp dirs
+  async drain(): Promise<void>; // wait for all active threads to finish
+  async dispose(): Promise<void>; // release resources, clean temp dirs
 }
 ```
 
@@ -377,10 +378,10 @@ class CodexPool {
 
 ```typescript
 interface ThreadOptions {
-  sessionId?: string;       // resume existing session by ID
-  sessionName?: string;     // human-readable thread label
-  hooksDir?: string;        // path to hooks directory for this thread
-  codexHome?: string;       // isolated codex home dir (for pool usage)
+  sessionId?: string; // resume existing session by ID
+  sessionName?: string; // human-readable thread label
+  hooksDir?: string; // path to hooks directory for this thread
+  codexHome?: string; // isolated codex home dir (for pool usage)
 }
 ```
 
@@ -552,8 +553,20 @@ Metrics output:
   "model": "gpt-5.3-codex",
   "timestamp": "2026-02-20T14:30:00Z",
   "results": [
-    {"case": "fibonacci", "passed": true, "turns": 2, "latency_ms": 4200, "tokens": 340},
-    {"case": "sorting", "passed": true, "turns": 3, "latency_ms": 6100, "tokens": 520}
+    {
+      "case": "fibonacci",
+      "passed": true,
+      "turns": 2,
+      "latency_ms": 4200,
+      "tokens": 340
+    },
+    {
+      "case": "sorting",
+      "passed": true,
+      "turns": 3,
+      "latency_ms": 6100,
+      "tokens": 520
+    }
   ],
   "summary": {
     "success_rate": 1.0,
@@ -608,17 +621,18 @@ P4.2 Upstream PRs: --codex-home, session_id JSONL, enhanced events
 
 **Approach: Config-only, zero fork, immediate value.**
 
-| Task ID | Description | Depends On | Effort | Owner |
-|---|---|---|---|---|
-| P1.1 | Update `~/.codex/config.toml` with `project_doc_fallback_filenames`, `model_instructions_file` | — | 1 tool call | thegent |
-| P1.2 | Create `~/.codex/memory.md` with thegent global context | P1.1 | 1 tool call | thegent |
-| P1.3 | Port thegent governance skills to `~/.codex/skills/` SKILL.md format | P1.1 | 3–5 subagents | thegent |
-| P1.4 | Update `codex_proxy.py` to pass `model_instructions_file` and `project_doc_fallback_filenames` via `-c` overrides | P1.1 | 2 tool calls | thegent |
-| P1.5 | Integration test: verify AGENTS.md + CODEX.md + skills all inject into prompts | P1.3, P1.4 | 1 subagent | thegent |
+| Task ID | Description                                                                                                       | Depends On | Effort        | Owner   |
+| ------- | ----------------------------------------------------------------------------------------------------------------- | ---------- | ------------- | ------- |
+| P1.1    | Update `~/.codex/config.toml` with `project_doc_fallback_filenames`, `model_instructions_file`                    | —          | 1 tool call   | thegent |
+| P1.2    | Create `~/.codex/memory.md` with thegent global context                                                           | P1.1       | 1 tool call   | thegent |
+| P1.3    | Port thegent governance skills to `~/.codex/skills/` SKILL.md format                                              | P1.1       | 3–5 subagents | thegent |
+| P1.4    | Update `codex_proxy.py` to pass `model_instructions_file` and `project_doc_fallback_filenames` via `-c` overrides | P1.1       | 2 tool calls  | thegent |
+| P1.5    | Integration test: verify AGENTS.md + CODEX.md + skills all inject into prompts                                    | P1.3, P1.4 | 1 subagent    | thegent |
 
 **Milestone:** Codex sessions started by thegent automatically load global memory, project docs (AGENTS.md or CODEX.md), and thegent skills. No fork. Purely additive.
 
 **Acceptance criteria:**
+
 - `codex exec --json "what skills are available?"` returns a response that lists thegent skills
 - `CODEX.md` in a project root is injected as system instructions
 - `~/.codex/memory.md` content appears in every session
@@ -627,20 +641,20 @@ P4.2 Upstream PRs: --codex-home, session_id JSONL, enhanced events
 
 **Approach: Thin Rust fork with minimal delta. Upstream PRs filed in parallel.**
 
-| Task ID | Description | Depends On | Effort | Owner |
-|---|---|---|---|---|
-| P2.1 | Fork: add `session_id` to `session.started` JSONL event | — | ~50 lines | thegent/fork |
-| P2.2 | Fork: add `codex exec --continue <session_id>` flag | P2.1 | ~100 lines | thegent/fork |
-| P2.3 | Fork: add `tool.started` / `tool.completed` JSONL events with duration | P2.1 | ~80 lines | thegent/fork |
-| P2.4 | Fork: add `HooksConfig` to `ConfigToml`; add hook discovery module | P2.1 | ~200 lines | thegent/fork |
-| P2.5 | Fork: implement `HookRunner` (spawn script, pipe JSON, return exit code) | P2.4 | ~150 lines | thegent/fork |
-| P2.6 | Fork: inject pre/post-tool hook calls into `exec.rs` tool dispatch | P2.4, P2.5 | ~100 lines | thegent/fork |
-| P2.7 | Fork: inject session-start/end hook calls into `exec/src/lib.rs` | P2.4, P2.5 | ~60 lines | thegent/fork |
-| P2.8 | Fork: add `--codex-home <dir>` flag; update `find_codex_home()` | — | ~40 lines | thegent/fork |
-| P2.9 | Update `codex_proxy.py` to read `session.started` session_id; store in thegent session DB | P2.1 | ~80 lines | thegent |
-| P2.10 | Write pre-tool hook: `pre-tool-governance-check.sh` | P2.6 | 1 tool call | thegent |
-| P2.11 | Write session-end hook: `session-end-memory-update.sh` | P2.7 | 1 tool call | thegent |
-| P2.12 | Integration tests: hooks fire, block on non-zero exit, session_id flows | P2.6–2.11 | 1 subagent | thegent |
+| Task ID | Description                                                                               | Depends On | Effort      | Owner        |
+| ------- | ----------------------------------------------------------------------------------------- | ---------- | ----------- | ------------ |
+| P2.1    | Fork: add `session_id` to `session.started` JSONL event                                   | —          | ~50 lines   | thegent/fork |
+| P2.2    | Fork: add `codex exec --continue <session_id>` flag                                       | P2.1       | ~100 lines  | thegent/fork |
+| P2.3    | Fork: add `tool.started` / `tool.completed` JSONL events with duration                    | P2.1       | ~80 lines   | thegent/fork |
+| P2.4    | Fork: add `HooksConfig` to `ConfigToml`; add hook discovery module                        | P2.1       | ~200 lines  | thegent/fork |
+| P2.5    | Fork: implement `HookRunner` (spawn script, pipe JSON, return exit code)                  | P2.4       | ~150 lines  | thegent/fork |
+| P2.6    | Fork: inject pre/post-tool hook calls into `exec.rs` tool dispatch                        | P2.4, P2.5 | ~100 lines  | thegent/fork |
+| P2.7    | Fork: inject session-start/end hook calls into `exec/src/lib.rs`                          | P2.4, P2.5 | ~60 lines   | thegent/fork |
+| P2.8    | Fork: add `--codex-home <dir>` flag; update `find_codex_home()`                           | —          | ~40 lines   | thegent/fork |
+| P2.9    | Update `codex_proxy.py` to read `session.started` session_id; store in thegent session DB | P2.1       | ~80 lines   | thegent      |
+| P2.10   | Write pre-tool hook: `pre-tool-governance-check.sh`                                       | P2.6       | 1 tool call | thegent      |
+| P2.11   | Write session-end hook: `session-end-memory-update.sh`                                    | P2.7       | 1 tool call | thegent      |
+| P2.12   | Integration tests: hooks fire, block on non-zero exit, session_id flows                   | P2.6–2.11  | 1 subagent  | thegent      |
 
 **Milestone:** Every Codex tool call fires pre/post hooks. Sessions emit IDs that thegent tracks. `--continue <session_id>` enables non-interactive session resumption.
 
@@ -648,30 +662,30 @@ P4.2 Upstream PRs: --codex-home, session_id JSONL, enhanced events
 
 ### 5.4 Phase 3 — Sub-Agents, SDK, HTTP API (8 weeks)
 
-| Task ID | Description | Depends On | Effort | Owner |
-|---|---|---|---|---|
-| P3.1 | thegent MCP server: implement `codex_spawn` tool | P2.8 | 3–5 tool calls | thegent |
-| P3.2 | thegent MCP server: enforce spawn depth/concurrency limits | P3.1 | 2 tool calls | thegent |
-| P3.3 | Fork: `codex batch` subcommand + new crate | P2.8 | ~500 lines | thegent/fork |
-| P3.4 | Fork: `codex serve` subcommand (Axum HTTP shim over app-server) | — | ~400 lines | thegent/fork |
-| P3.5 | TypeScript SDK: `CodexPool` class | P2.8 | ~200 lines | thegent/fork |
-| P3.6 | TypeScript SDK: typed `SessionStartedEvent`, `ToolStartedEvent`, `ToolCompletedEvent` | P2.1 | ~100 lines | thegent/fork |
-| P3.7 | TypeScript SDK: `Thread({ sessionId })` resume constructor | P2.2 | ~80 lines | thegent/fork |
-| P3.8 | `codex_proxy.py` refactor: typed Pydantic event models mirroring SDK | P2.9 | ~200 lines | thegent |
-| P3.9 | Integration tests: spawn, batch, serve | P3.1–3.7 | 2 subagents | thegent |
+| Task ID | Description                                                                           | Depends On | Effort         | Owner        |
+| ------- | ------------------------------------------------------------------------------------- | ---------- | -------------- | ------------ |
+| P3.1    | thegent MCP server: implement `codex_spawn` tool                                      | P2.8       | 3–5 tool calls | thegent      |
+| P3.2    | thegent MCP server: enforce spawn depth/concurrency limits                            | P3.1       | 2 tool calls   | thegent      |
+| P3.3    | Fork: `codex batch` subcommand + new crate                                            | P2.8       | ~500 lines     | thegent/fork |
+| P3.4    | Fork: `codex serve` subcommand (Axum HTTP shim over app-server)                       | —          | ~400 lines     | thegent/fork |
+| P3.5    | TypeScript SDK: `CodexPool` class                                                     | P2.8       | ~200 lines     | thegent/fork |
+| P3.6    | TypeScript SDK: typed `SessionStartedEvent`, `ToolStartedEvent`, `ToolCompletedEvent` | P2.1       | ~100 lines     | thegent/fork |
+| P3.7    | TypeScript SDK: `Thread({ sessionId })` resume constructor                            | P2.2       | ~80 lines      | thegent/fork |
+| P3.8    | `codex_proxy.py` refactor: typed Pydantic event models mirroring SDK                  | P2.9       | ~200 lines     | thegent      |
+| P3.9    | Integration tests: spawn, batch, serve                                                | P3.1–3.7   | 2 subagents    | thegent      |
 
 **Milestone:** Agents can spawn sub-agents via MCP. Batch execution of N tasks uses a single `codex batch` invocation. A local HTTP endpoint allows non-subprocess access.
 
 ### 5.5 Phase 4 — Eval Mode + Upstream Contribution (ongoing)
 
-| Task ID | Description | Depends On | Effort | Owner |
-|---|---|---|---|---|
-| P4.1 | Fork: `codex eval` subcommand + grader protocol | P3.3 | ~600 lines | thegent/fork |
-| P4.2 | Write eval suite for HARNESS_PARITY_MATRIX benchmark categories | P4.1 | 5–8 subagents | thegent |
-| P4.3 | Upstream PR: `--codex-home` | P2.8 | PR filing | thegent |
-| P4.4 | Upstream PR: `session_id` in JSONL + tool events | P2.1–2.3 | PR filing | thegent |
-| P4.5 | Upstream PR: `codex exec --continue` | P2.2 | PR filing | thegent |
-| P4.6 | If upstream merges PRs: remove fork patches for those changes, rebase | P4.3–4.5 | merge work | thegent |
+| Task ID | Description                                                           | Depends On | Effort        | Owner        |
+| ------- | --------------------------------------------------------------------- | ---------- | ------------- | ------------ |
+| P4.1    | Fork: `codex eval` subcommand + grader protocol                       | P3.3       | ~600 lines    | thegent/fork |
+| P4.2    | Write eval suite for HARNESS_PARITY_MATRIX benchmark categories       | P4.1       | 5–8 subagents | thegent      |
+| P4.3    | Upstream PR: `--codex-home`                                           | P2.8       | PR filing     | thegent      |
+| P4.4    | Upstream PR: `session_id` in JSONL + tool events                      | P2.1–2.3   | PR filing     | thegent      |
+| P4.5    | Upstream PR: `codex exec --continue`                                  | P2.2       | PR filing     | thegent      |
+| P4.6    | If upstream merges PRs: remove fork patches for those changes, rebase | P4.3–4.5   | merge work    | thegent      |
 
 ---
 
@@ -688,14 +702,14 @@ Maintain a file `codex-rs/THEGENT_PATCHES.md` in the fork that lists every diver
 ```markdown
 # thegent Fork Patches
 
-| File | Change | Lines | Upstream PR | Status |
-|------|--------|-------|-------------|--------|
-| core/src/config/mod.rs | HooksConfig struct | +35 | #TBD | pending |
-| core/src/hooks/mod.rs | HookDispatcher (new file) | +180 | N/A | fork-only |
-| core/src/exec.rs | pre/post-tool hook dispatch | +60 | N/A | fork-only |
-| exec/src/lib.rs | session-start/end hook + session_id event | +80 | #TBD | pending |
-| exec/src/cli.rs | --continue flag, --codex-home flag | +40 | #TBD | pending |
-| exec/src/exec_events.rs | session.started, tool.started/completed events | +50 | #TBD | pending |
+| File                    | Change                                         | Lines | Upstream PR | Status    |
+| ----------------------- | ---------------------------------------------- | ----- | ----------- | --------- |
+| core/src/config/mod.rs  | HooksConfig struct                             | +35   | #TBD        | pending   |
+| core/src/hooks/mod.rs   | HookDispatcher (new file)                      | +180  | N/A         | fork-only |
+| core/src/exec.rs        | pre/post-tool hook dispatch                    | +60   | N/A         | fork-only |
+| exec/src/lib.rs         | session-start/end hook + session_id event      | +80   | #TBD        | pending   |
+| exec/src/cli.rs         | --continue flag, --codex-home flag             | +40   | #TBD        | pending   |
+| exec/src/exec_events.rs | session.started, tool.started/completed events | +50   | #TBD        | pending   |
 ```
 
 ### 6.3 Rebase Cadence
@@ -712,6 +726,7 @@ Priority order for pushing changes upstream (highest chance of acceptance first)
 4. `codex exec --continue <session_id>` (the interactive version already exists; exec parity)
 
 Changes NOT to push upstream:
+
 - Pre/post-tool hooks (security surface, thegent-specific governance concern)
 - `codex spawn` tool (orchestration-specific)
 - `codex eval` (thegent eval suite is custom; upstream may build their own)
@@ -862,6 +877,7 @@ session-end-memory.sh
 ```
 
 **Data flows:**
+
 1. Task enters via thegent work queue → `codex_proxy.py` spawns forked `codex exec --json`
 2. Session starts → `session.started` event with `session_id` written to thegent session DB
 3. Model calls a tool → `pre-tool-governance.sh` fires → if exit 0, tool executes → `post-tool-log.sh` fires
@@ -872,30 +888,30 @@ session-end-memory.sh
 
 ## 9. Risk Register
 
-| Risk | Probability | Impact | Mitigation |
-|---|---|---|---|
-| Upstream changes `exec.rs` tool dispatch and invalidates fork patch | Medium | High | Keep patch minimal; file upstream PR for hooks so they pull the change in |
-| Hook scripts introduce security vulnerabilities (command injection in payload parsing) | Medium | High | Validate hook scripts are executable by owner only (0700); sanitize JSON before passing to shell; use `jq` not eval |
-| SQLite contention in multi-agent `--codex-home` scenario before flag lands | Low | Medium | Continue using `HOME` env override; each agent gets isolated `HOME`; SQLite is per-home |
-| TypeScript SDK not maintained by upstream; diverges from binary protocol | Low | Low | SDK is thin wrapper over JSONL; reimplement in Python if needed (already done in `codex_proxy.py`) |
-| `codex serve` Axum shim lags Responses API changes | Medium | Medium | Pin to specific codex version; update shim on API changes; treat as beta |
-| Eval suite becomes stale as models improve | High | Low | Schedule quarterly eval runs; metrics are relative (harness comparison), not absolute |
+| Risk                                                                                   | Probability | Impact | Mitigation                                                                                                          |
+| -------------------------------------------------------------------------------------- | ----------- | ------ | ------------------------------------------------------------------------------------------------------------------- |
+| Upstream changes `exec.rs` tool dispatch and invalidates fork patch                    | Medium      | High   | Keep patch minimal; file upstream PR for hooks so they pull the change in                                           |
+| Hook scripts introduce security vulnerabilities (command injection in payload parsing) | Medium      | High   | Validate hook scripts are executable by owner only (0700); sanitize JSON before passing to shell; use `jq` not eval |
+| SQLite contention in multi-agent `--codex-home` scenario before flag lands             | Low         | Medium | Continue using `HOME` env override; each agent gets isolated `HOME`; SQLite is per-home                             |
+| TypeScript SDK not maintained by upstream; diverges from binary protocol               | Low         | Low    | SDK is thin wrapper over JSONL; reimplement in Python if needed (already done in `codex_proxy.py`)                  |
+| `codex serve` Axum shim lags Responses API changes                                     | Medium      | Medium | Pin to specific codex version; update shim on API changes; treat as beta                                            |
+| Eval suite becomes stale as models improve                                             | High        | Low    | Schedule quarterly eval runs; metrics are relative (harness comparison), not absolute                               |
 
 ---
 
 ## 10. Success Criteria
 
-| Criterion | Target | Measurement |
-|---|---|---|
-| Project memory injection | CODEX.md + AGENTS.md loaded in every session | Verify with `codex exec --json "what are the project docs?"` |
-| Skills availability | All thegent governance skills listed in system prompt | Same test with "what skills are available?" |
-| Hook execution | Pre-tool hook fires before every shell command | Instrumented test: hook writes to log; verify log has N entries after N tool calls |
-| Session ID tracking | thegent session DB has session_id within 2s of session start | E2E test with DB read |
-| Session resume | `--continue <id>` resumes prior conversation context | Test: session A sets a variable; session B (resumed) can read it |
-| Sub-agent spawning | `codex_spawn` tool call spawns isolated child; result returned | MCP tool integration test |
-| Fork delta size | All non-crate fork patches < 1000 lines | `git diff upstream/main -- codex-rs/{core,exec}/src | wc -l` |
-| Upstream PR acceptance | At least `--codex-home` merged upstream within 3 months | PR tracking |
-| Eval score baseline | Codex overall score ≥ 87 on HARNESS_PARITY_MATRIX benchmark | `codex eval --suite tests/eval/codex/ --output metrics.json` |
+| Criterion                | Target                                                         | Measurement                                                                        |
+| ------------------------ | -------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------ |
+| Project memory injection | CODEX.md + AGENTS.md loaded in every session                   | Verify with `codex exec --json "what are the project docs?"`                       |
+| Skills availability      | All thegent governance skills listed in system prompt          | Same test with "what skills are available?"                                        |
+| Hook execution           | Pre-tool hook fires before every shell command                 | Instrumented test: hook writes to log; verify log has N entries after N tool calls |
+| Session ID tracking      | thegent session DB has session_id within 2s of session start   | E2E test with DB read                                                              |
+| Session resume           | `--continue <id>` resumes prior conversation context           | Test: session A sets a variable; session B (resumed) can read it                   |
+| Sub-agent spawning       | `codex_spawn` tool call spawns isolated child; result returned | MCP tool integration test                                                          |
+| Fork delta size          | All non-crate fork patches < 1000 lines                        | `git diff upstream/main -- codex-rs/{core,exec}/src                                | wc -l` |
+| Upstream PR acceptance   | At least `--codex-home` merged upstream within 3 months        | PR tracking                                                                        |
+| Eval score baseline      | Codex overall score ≥ 87 on HARNESS_PARITY_MATRIX benchmark    | `codex eval --suite tests/eval/codex/ --output metrics.json`                       |
 
 ---
 

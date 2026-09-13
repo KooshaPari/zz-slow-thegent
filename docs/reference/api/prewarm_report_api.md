@@ -12,7 +12,7 @@ Prewarm and report subcommands.
 
 ### Methods
 
-#### PrewarmReportSubcommands.__init__
+#### PrewarmReportSubcommands.**init**
 
 ```python
 __init__(self: Any, cache_dir: Any)

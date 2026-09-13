@@ -17,19 +17,23 @@
 ## Fixes Applied
 
 ### `src/thegent/cli/apps/sync.py`
+
 - Added `sync_status` (FR-SYNC-039): `thegent sync status [--format json]`
 - Added `sync_push` (FR-SYNC-039): `thegent sync push [--target URL]`
 - Added `sync_pull` (FR-SYNC-040): `thegent sync pull [--source URL]`
 - Added `sync_reset` (FR-SYNC-040): `thegent sync reset --yes`
 
 ### `src/thegent/main.py`
+
 - Re-added `from thegent.cli.apps.sync import app as sync_app`
 - Added `__all__ = ["app", "sync_app"]`
 
 ### `src/thegent/utils/helpers.py`
+
 - Re-added `read_json(path)`, `write_json(path, data)`, `find_project_root(start=None)`
 
 ### `src/thegent/orchestration/protocol.py`
+
 - Removed trailing whitespace (W291)
 
 ---
@@ -54,13 +58,13 @@
 
 Implemented 5 parallel tracks via `thegent-complete` team (agent-infra, agent-quality, agent-dx, agent-docgen):
 
-| Track | Deliverables |
-|-------|-------------|
-| A: Infra | ProjectRegistry (SQLite), ShadowAuditGit, EpisodeController, audit CLI, hierarchy CLI |
-| B: Quality | 469 → 0 ruff errors across 205 files |
-| C: DX | batch_ops, path_utils, helpers, workstream command |
-| D: Docgen | ContentTabs Vue component, TS stubs, imagetools, edit links, link checker |
-| E: Research | HierarchyOrchestrator, session-end dump hook |
+| Track       | Deliverables                                                                          |
+| ----------- | ------------------------------------------------------------------------------------- |
+| A: Infra    | ProjectRegistry (SQLite), ShadowAuditGit, EpisodeController, audit CLI, hierarchy CLI |
+| B: Quality  | 469 → 0 ruff errors across 205 files                                                  |
+| C: DX       | batch_ops, path_utils, helpers, workstream command                                    |
+| D: Docgen   | ContentTabs Vue component, TS stubs, imagetools, edit links, link checker             |
+| E: Research | HierarchyOrchestrator, session-end dump hook                                          |
 
 ---
 
@@ -84,17 +88,20 @@ Implemented 5 parallel tracks via `thegent-complete` team (agent-infra, agent-qu
 ### Classes Implemented
 
 **SchemaVetterCheck** (`name="schema_vetter"`)
+
 - Constructor: `schema_model: type[BaseModel]`, `target: Literal["stdout", "stderr", "combined"] = "stdout"`
 - Two-step: `json.loads()` first (fails "JSON parse failed: {e}"), then `model_validate_json()` (fails "Schema validation failed: {e}")
 - Pydantic v2 wraps JSON errors in ValidationError; two-step approach correctly separates them
 
 **DiffSizeVetterCheck** (`name="diff_size_vetter"`)
+
 - Constructor: `max_lines_changed: int = 500`
 - Metadata key: `lines_changed` (distinct from WL-090 `DiffSizeCheck.diff_lines`)
 
 **SafetyVetterCheck** (`name="safety_vetter"`)
+
 - Pure regex — no SemanticFirewall dependency
-- Secrets (Bearer, AKIA, ghp_, sk-) checked before PII (email, SSN)
+- Secrets (Bearer, AKIA, ghp\_, sk-) checked before PII (email, SSN)
 - GitHub PAT uses `{30,}` to be tolerant of length variations
 
 ### Test Results
@@ -113,10 +120,12 @@ WL-092: Implement `VetterOrchestrator.evaluate()` — approve/reject path.
 ### Fixes Applied
 
 **New Files:**
+
 - `src/thegent/govern/vetter/orchestrator.py` — `VetterOrchestrator` implementation
 - `tests/test_wl092_vetter_orchestrator.py` — 35 unit tests, all `# @trace WL-092`
 
 **Modified Files:**
+
 - `src/thegent/govern/vetter/models.py`: added `fail_fast: bool = False` to `VetterPolicy`; added `duration_ms: int = 0` to `VetterResult`
 - `src/thegent/govern/vetter/__init__.py`: exported `VetterOrchestrator`
 - `docs/reference/WORK_STREAM.md`: marked WL-092 COMPLETED
@@ -151,17 +160,20 @@ None (new feature).
 ### Implementation Summary
 
 New `OutputSchemaValidator` in `src/thegent/agents/output_schema.py`:
+
 - Loads JSON Schema from file via `fastjsonschema`
 - `validate(output)` — fails loudly (ValueError) for non-JSON or schema mismatch
 - `get_system_prompt_injection()` — returns schema constraint text for Claude Code injection
 - `get_codex_args()` — returns `["--output-schema", "<path>"]` for Codex CLI
 
 Modified `src/thegent/cli/commands/impl.py`:
+
 - Added `output_schema: str | None = None` to `run_impl()` signature
 - Injects schema constraint into prompt (after WL-013 block)
 - Post-run: validates output and stores `validated_output` in payload
 
 Modified `src/thegent/cli/commands/cli.py` and `src/thegent/cli/apps/run.py`:
+
 - Added `--output-schema` CLI flag, wired through to `run_impl()`
 
 ### Test Results
@@ -196,6 +208,7 @@ WL-093: Vetter HITL Escalation — wire escalated verdict + HITLApprovalWorkflow
 ### Fixes Applied
 
 Created `tests/test_wl093_vetter_hitl_escalation.py` with 31 integration tests covering:
+
 - vetter_escalation event fields (event_type, status="pending", run_id, timestamp, escalation_lane, reason, session_id)
 - escalation_lane from run_context (defaults to "standard")
 - hitl_workflow.await_approval() args: run_id, policy="vetter_escalation", checkpoint="post_execution", unified_diff
@@ -273,6 +286,7 @@ WL-103: Context Compaction Layer in Agent Runner — expand test suite to 25+ te
 ### Fixes Applied
 
 **Modified `src/thegent/agents/context_compactor.py`:**
+
 - Added `_encoding_for_model(model)` helper — resolves tiktoken encoding by model-name prefix, falls back to cl100k_base for unknown models.
 - Added `model: str | None = None` parameter to `ContextCompactor.__init__()`.
 - Added `count_tokens(text)` — uses tiktoken when model is set, char-based otherwise.
@@ -281,6 +295,7 @@ WL-103: Context Compaction Layer in Agent Runner — expand test suite to 25+ te
 - Added `should_compact(tokens_used, context_max)` — returns True if ratio > threshold_ratio.
 
 **Modified `tests/test_wl103_context_compactor.py`:**
+
 - Expanded from 7 tests to 39 tests.
 - Test categories: constructor validation, char-based counting, tiktoken counting, `should_compact`, `usage_ratio`, `compact` no-op, `compact` active, `estimate_turn_tokens`, RunResult field, dataclass immutability, `count_turns_tokens`, tiktoken wired into compact.
 
@@ -322,10 +337,12 @@ WL-119: Implement Google Search Grounding for Gemini-routed `thegent run` invoca
 ### Fixes Applied
 
 **New Files:**
+
 - `src/thegent/agents/grounding.py` — `GroundingSource` dataclass, `build_grounding_tools_arg()`, `extract_grounding_metadata_sources()`, `_resolve_gemini_api_key()`, `_resolve_gemini_model()`, `run_gemini_with_grounding()`, `GEMINI_GROUNDING_AGENTS`.
 - `tests/test_wl119_google_grounding.py` — 27 tests, all `# @trace WL-119`.
 
 **Modified Files:**
+
 - `src/thegent/cli/commands/impl.py` — Added WL-119 grounding override block before `fsm.run`; when `google_grounding=True`, calls `run_gemini_with_grounding` directly and sets `fsm.state.status` accordingly. Non-grounding path is unchanged (moved into `else:` branch).
 
 ### Test Results
@@ -357,16 +374,16 @@ WL-119: Implement Google Search Grounding for Gemini-routed `thegent run` invoca
 
 Created 8 new files under `src/thegent/cli/commands/`:
 
-| File | Domain | Exports |
-|------|--------|---------|
-| `_cli_shared.py` | Shared infrastructure | `console`, `ThegentSettings`, `RunRegistry`, `_lazy_import`, helpers, constants |
-| `run_cmds.py` | Execution / run commands | 12 commands |
-| `session_cmds.py` | Session lifecycle | 24 commands |
-| `governance_cmds.py` | Governance / compliance / policy | 35 commands |
-| `plan_cmds.py` | DAG / plan / workstream | 31 commands |
-| `model_cmds.py` | Model / agent listing and config | 25 exports |
-| `infra_cmds.py` | Infrastructure / observability | 22 commands |
-| `team_cmds.py` | Teams / handoffs / collaboration | 23 commands |
+| File                 | Domain                           | Exports                                                                         |
+| -------------------- | -------------------------------- | ------------------------------------------------------------------------------- |
+| `_cli_shared.py`     | Shared infrastructure            | `console`, `ThegentSettings`, `RunRegistry`, `_lazy_import`, helpers, constants |
+| `run_cmds.py`        | Execution / run commands         | 12 commands                                                                     |
+| `session_cmds.py`    | Session lifecycle                | 24 commands                                                                     |
+| `governance_cmds.py` | Governance / compliance / policy | 35 commands                                                                     |
+| `plan_cmds.py`       | DAG / plan / workstream          | 31 commands                                                                     |
+| `model_cmds.py`      | Model / agent listing and config | 25 exports                                                                      |
+| `infra_cmds.py`      | Infrastructure / observability   | 22 commands                                                                     |
+| `team_cmds.py`       | Teams / handoffs / collaboration | 23 commands                                                                     |
 
 Added re-export block at the end of `cli.py` (7 `from .domain import *` lines with `# noqa: E402, F401, F403 -- WL-124 re-export` justification comments) so all existing import paths remain valid.
 
@@ -377,6 +394,7 @@ tests/test_wl124_cli_split.py: 382 passed in 0.61s
 ```
 
 Tests cover:
+
 - Module importability for all 7 domain modules
 - `__all__` consistency (every listed name actually defined)
 - Contract: expected exports present per domain

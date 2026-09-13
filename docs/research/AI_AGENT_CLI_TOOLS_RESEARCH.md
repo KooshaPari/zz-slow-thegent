@@ -9,6 +9,7 @@
 ---
 
 ## 1. SUPERPOWERS
+
 **Organization:** obra
 **Repository:** https://github.com/obra/superpowers
 **Language:** Shell / Cross-platform CLI
@@ -19,11 +20,13 @@
 An agentic skills framework & software development methodology that works. Focuses on providing a structured approach to building and managing AI agent capabilities with reproducible results.
 
 **Tech Stack:**
+
 - Language: Shell/Bash (primary), Python (helpers)
 - Model Support: Claude, GPT-4, open-source LLMs
 - Integration: Direct CLI invocation
 
 **Key Capabilities:**
+
 - Skills-based agent architecture
 - Development methodology framework
 - Software engineering focused
@@ -34,6 +37,7 @@ An agentic skills framework & software development methodology that works. Focus
 **Unique Differentiators:** Emphasis on reusable skills framework rather than ad-hoc prompting; production-proven methodology
 
 **Performance Characteristics:**
+
 - High adoption (55K+ stars)
 - Active development (recent updates)
 - Community-driven improvements
@@ -43,6 +47,7 @@ An agentic skills framework & software development methodology that works. Focus
 ---
 
 ## 2. KLAVIS AI
+
 **Organization:** Klavis-AI
 **Repository:** https://github.com/Klavis-AI/klavis
 **Language:** Python
@@ -53,12 +58,14 @@ An agentic skills framework & software development methodology that works. Focus
 MCP integration platform that lets AI agents use tools reliably at scale. Handles OAuth2, API authentication, and complex tool orchestration with built-in reliability mechanisms.
 
 **Tech Stack:**
+
 - Language: Python (backend), TypeScript (frontend)
 - Architecture: Client-server with MCP protocol
 - Model Support: Claude, GPT-4, LLaMA (via MCP)
 - Integrations: Discord, Slack, web APIs
 
 **Key Capabilities:**
+
 - MCP server/client architecture
 - Function calling abstraction
 - OAuth2 & credential management
@@ -70,6 +77,7 @@ MCP integration platform that lets AI agents use tools reliably at scale. Handle
 **Unique Differentiators:** First-class MCP support; enterprise authentication; production reliability focus
 
 **Performance Characteristics:**
+
 - Optimized for production scale
 - Low latency tool execution
 - Distributed agent support
@@ -79,6 +87,7 @@ MCP integration platform that lets AI agents use tools reliably at scale. Handle
 ---
 
 ## 3. SERENA
+
 **Organization:** oraios
 **Repository:** https://github.com/oraios/serena
 **Language:** Python
@@ -88,11 +97,13 @@ MCP integration platform that lets AI agents use tools reliably at scale. Handle
 A powerful coding agent toolkit providing semantic retrieval and editing capabilities. Available as MCP server and other integrations for IDE and CLI environments.
 
 **Tech Stack:**
+
 - Language: Python
 - Integration Points: MCP server, VSCode integration, CLI
 - Model Support: Claude Code, GPT-4, local models
 
 **Key Capabilities:**
+
 - Semantic code search and retrieval
 - Intelligent code editing
 - Context-aware refactoring
@@ -104,6 +115,7 @@ A powerful coding agent toolkit providing semantic retrieval and editing capabil
 **Unique Differentiators:** Specialized for code semantic understanding; dual IDE/CLI interface; production-proven in Cursor integration
 
 **Performance Characteristics:**
+
 - Fast semantic search
 - Low-latency edits
 - Handles large codebases (100K+ LOC)
@@ -111,6 +123,7 @@ A powerful coding agent toolkit providing semantic retrieval and editing capabil
 ---
 
 ## 4. HEXSTRIKE AI
+
 **Organization:** 0x4m4
 **Repository:** https://github.com/0x4m4/hexstrike-ai
 **Language:** Python
@@ -120,12 +133,14 @@ A powerful coding agent toolkit providing semantic retrieval and editing capabil
 Advanced MCP server for cybersecurity automation. Enables AI agents to autonomously run 150+ security tools for pentesting, vulnerability discovery, bug bounty automation, and security research.
 
 **Tech Stack:**
+
 - Language: Python
 - Integration: MCP server
 - Tools Integrated: 150+ cybersecurity tools
 - Model Support: Claude, GPT-4, Copilot
 
 **Key Capabilities:**
+
 - 150+ integrated security tools
 - Automated pentesting workflows
 - Vulnerability scanning automation
@@ -138,6 +153,7 @@ Advanced MCP server for cybersecurity automation. Enables AI agents to autonomou
 **Unique Differentiators:** Largest integrated security tool set; production pentesting ready; real-world offensive capabilities
 
 **Performance Characteristics:**
+
 - Fast tool invocation
 - Parallel scanning support
 - Minimal false positives
@@ -147,6 +163,7 @@ Advanced MCP server for cybersecurity automation. Enables AI agents to autonomou
 ---
 
 ## 5. PYSPUR
+
 **Organization:** PySpur-Dev
 **Repository:** https://github.com/PySpur-Dev/pyspur
 **Language:** TypeScript
@@ -156,12 +173,14 @@ Advanced MCP server for cybersecurity automation. Enables AI agents to autonomou
 A visual playground for agentic workflows. Enables iteration over agents 10x faster with graphical workflow design, real-time debugging, and performance profiling.
 
 **Tech Stack:**
+
 - Language: TypeScript (frontend)
 - Architecture: Web-based IDE
 - Model Support: Claude, GPT-4, custom models
 - Runtime: Node.js
 
 **Key Capabilities:**
+
 - Visual workflow builder
 - Real-time agent debugging
 - Performance profiling
@@ -174,6 +193,7 @@ A visual playground for agentic workflows. Enables iteration over agents 10x fas
 **Unique Differentiators:** First visual agent IDE; 10x iteration speed claim; integrated testing and profiling
 
 **Performance Characteristics:**
+
 - Sub-second visual updates
 - Real-time token counting
 - Optimized for iteration speed
@@ -181,6 +201,7 @@ A visual playground for agentic workflows. Enables iteration over agents 10x fas
 ---
 
 ## 6. AGENTGATEWAY
+
 **Organization:** agentgateway
 **Repository:** https://github.com/agentgateway/agentgateway
 **Language:** Rust
@@ -190,12 +211,14 @@ A visual playground for agentic workflows. Enables iteration over agents 10x fas
 Next-generation agentic proxy for AI agents and MCP servers. Provides intelligent routing, load balancing, and failover for agent infrastructure at scale.
 
 **Tech Stack:**
+
 - Language: Rust (high performance)
 - Architecture: Proxy middleware
 - Integration: MCP protocol
 - Concurrency: Async/await tokio runtime
 
 **Key Capabilities:**
+
 - Intelligent request routing
 - Agent load balancing
 - Failover mechanisms
@@ -208,6 +231,7 @@ Next-generation agentic proxy for AI agents and MCP servers. Provides intelligen
 **Unique Differentiators:** High-performance Rust implementation; enterprise-grade proxy features; infrastructure-as-code ready
 
 **Performance Characteristics:**
+
 - <10ms latency overhead
 - Handles 10K+ concurrent agents
 - Memory efficient
@@ -217,6 +241,7 @@ Next-generation agentic proxy for AI agents and MCP servers. Provides intelligen
 ---
 
 ## 7. OCTOTOOLS
+
 **Organization:** octotools
 **Repository:** https://github.com/octotools/octotools
 **Language:** Python
@@ -226,12 +251,14 @@ Next-generation agentic proxy for AI agents and MCP servers. Provides intelligen
 An agentic framework with extensible tools for complex reasoning. Designed for building multi-step reasoning workflows with custom tool integration.
 
 **Tech Stack:**
+
 - Language: Python
 - Architecture: Framework + CLI
 - Model Support: Claude, GPT-4, LLaMA
 - Extension System: Python plugin architecture
 
 **Key Capabilities:**
+
 - Extensible tool system
 - Multi-step reasoning chains
 - Custom tool development
@@ -244,6 +271,7 @@ An agentic framework with extensible tools for complex reasoning. Designed for b
 **Unique Differentiators:** Emphasis on extensibility; simplified tool abstraction; rapid tool prototyping
 
 **Performance Characteristics:**
+
 - Fast tool loading
 - Efficient caching
 - Supports real-time streaming
@@ -253,6 +281,7 @@ An agentic framework with extensible tools for complex reasoning. Designed for b
 ---
 
 ## 8. MCP-USE
+
 **Organization:** mcp-use
 **Repository:** https://github.com/mcp-use/mcp-use
 **Language:** TypeScript
@@ -262,12 +291,14 @@ An agentic framework with extensible tools for complex reasoning. Designed for b
 The fullstack MCP framework to develop MCP Apps for ChatGPT/Claude and MCP Servers for AI Agents. Provides unified abstraction for building agent integrations.
 
 **Tech Stack:**
+
 - Language: TypeScript
 - Framework: Next.js (web), Node.js (server)
 - Protocol: Model Context Protocol
 - Model Support: Claude, GPT-4, Copilot
 
 **Key Capabilities:**
+
 - Unified MCP abstraction
 - Server-side MCP development
 - Client-side MCP consumption
@@ -280,6 +311,7 @@ The fullstack MCP framework to develop MCP Apps for ChatGPT/Claude and MCP Serve
 **Unique Differentiators:** Fullstack approach; unified abstraction; excellent TypeScript support; fastest MCP development
 
 **Performance Characteristics:**
+
 - Fast server initialization
 - Efficient message passing
 - Sub-100ms round trip
@@ -289,6 +321,7 @@ The fullstack MCP framework to develop MCP Apps for ChatGPT/Claude and MCP Serve
 ---
 
 ## 9. TRADING AGENTS
+
 **Organization:** TauricResearch
 **Repository:** https://github.com/TauricResearch/TradingAgents
 **Language:** Python
@@ -298,12 +331,14 @@ The fullstack MCP framework to develop MCP Apps for ChatGPT/Claude and MCP Serve
 Multi-agent LLM financial trading framework. Enables AI agents to perform market analysis, risk assessment, and automated trading with real money.
 
 **Tech Stack:**
+
 - Language: Python
 - Libraries: pandas, numpy, ccxt, yfinance
 - Model Support: Claude, GPT-4, local LLMs
 - Exchange Integration: Binance, Coinbase, interactive Brokers
 
 **Key Capabilities:**
+
 - Multi-agent trading systems
 - Market analysis agents
 - Risk management agents
@@ -317,6 +352,7 @@ Multi-agent LLM financial trading framework. Enables AI agents to perform market
 **Unique Differentiators:** Production trading ready; largest star count in finance domain; proven real-money trading
 
 **Performance Characteristics:**
+
 - Real-time market data processing
 - Sub-second trade execution
 - Handles concurrent market streams
@@ -328,6 +364,7 @@ Multi-agent LLM financial trading framework. Enables AI agents to perform market
 ---
 
 ## 10. HEURIST AGENT FRAMEWORK
+
 **Organization:** heurist-network
 **Repository:** https://github.com/heurist-network/heurist-agent-framework
 **Language:** Python
@@ -337,6 +374,7 @@ Multi-agent LLM financial trading framework. Enables AI agents to perform market
 A flexible multi-interface AI agent framework for building agents with reasoning, tool use, memory, deep research, blockchain interaction, MCP, and agents-as-a-service.
 
 **Tech Stack:**
+
 - Language: Python
 - Architecture: Modular framework
 - Model Support: Claude, GPT-4, Gemini, local models
@@ -344,6 +382,7 @@ A flexible multi-interface AI agent framework for building agents with reasoning
 - Storage: Vector DB for memory
 
 **Key Capabilities:**
+
 - Multi-interface deployment (CLI, API, Web)
 - Advanced reasoning modes
 - Persistent memory systems
@@ -358,6 +397,7 @@ A flexible multi-interface AI agent framework for building agents with reasoning
 **Unique Differentiators:** Blockchain-native agents; built-in AaaS capabilities; enterprise feature set; reasoning specialization
 
 **Performance Characteristics:**
+
 - Efficient memory management
 - Low-latency API responses
 - Scalable vector operations
@@ -367,6 +407,7 @@ A flexible multi-interface AI agent framework for building agents with reasoning
 ---
 
 ## 11. SANDBOX (Agent Infrastructure)
+
 **Organization:** agent-infra
 **Repository:** https://github.com/agent-infra/sandbox
 **Language:** Python
@@ -376,12 +417,14 @@ A flexible multi-interface AI agent framework for building agents with reasoning
 All-in-One Sandbox for AI Agents combining Browser, Shell, File, MCP, and VSCode Server in a single Docker container. Production-ready agent execution environment.
 
 **Tech Stack:**
+
 - Language: Python (controller)
 - Runtime: Docker container
 - Included Tools: Browser automation, shell, file system, VSCode Server, MCP server
 - Model Support: Any model via API
 
 **Key Capabilities:**
+
 - Unified sandbox environment
 - Browser automation (Playwright/Puppeteer)
 - Shell command execution
@@ -396,6 +439,7 @@ All-in-One Sandbox for AI Agents combining Browser, Shell, File, MCP, and VSCode
 **Unique Differentiators:** All-in-one Docker package; easiest agent deployment; production container ready; complete tool suite
 
 **Performance Characteristics:**
+
 - Container startup <5s
 - Efficient resource usage
 - Isolated execution environment
@@ -405,6 +449,7 @@ All-in-One Sandbox for AI Agents combining Browser, Shell, File, MCP, and VSCode
 ---
 
 ## 12. MEDAX
+
 **Organization:** bowang-lab
 **Repository:** https://github.com/bowang-lab/MedRAX
 **Language:** Python
@@ -415,12 +460,14 @@ All-in-One Sandbox for AI Agents combining Browser, Shell, File, MCP, and VSCode
 Medical Reasoning Agent for Chest X-ray (MedRAX). Specialized agent for medical image analysis with multi-step reasoning for diagnostic support.
 
 **Tech Stack:**
+
 - Language: Python
 - ML Framework: PyTorch
 - Vision Model: Domain-specific medical image encoders
 - Model Support: Fine-tuned LLMs for medical reasoning
 
 **Key Capabilities:**
+
 - Chest X-ray analysis
 - Multi-step diagnostic reasoning
 - Visual question answering on medical images
@@ -433,6 +480,7 @@ Medical Reasoning Agent for Chest X-ray (MedRAX). Specialized agent for medical 
 **Unique Differentiators:** ICML-published research; medical-specific optimization; explainability focus; diagnostic accuracy benchmarks
 
 **Performance Characteristics:**
+
 - Medical diagnostic accuracy benchmarked
 - Fast inference <2s per image
 - Handles variable image sizes
@@ -444,6 +492,7 @@ Medical Reasoning Agent for Chest X-ray (MedRAX). Specialized agent for medical 
 ---
 
 ## 13. AGENTS-FROM-SCRATCH
+
 **Organization:** pguso
 **Repository:** https://github.com/pguso/agents-from-scratch
 **Language:** Python
@@ -453,12 +502,14 @@ Medical Reasoning Agent for Chest X-ray (MedRAX). Specialized agent for medical 
 Build AI agents from first principles using a local LLM - no frameworks, no cloud APIs, no hidden reasoning. Educational and practical framework for agent development.
 
 **Tech Stack:**
+
 - Language: Python
 - Local LLM Support: Ollama, llama.cpp, GPT4All
 - Architecture: Pure Python (minimal dependencies)
 - No Cloud Required: Fully local
 
 **Key Capabilities:**
+
 - Local-only execution
 - Educational agent building
 - Transparent reasoning steps
@@ -472,6 +523,7 @@ Build AI agents from first principles using a local LLM - no frameworks, no clou
 **Unique Differentiators:** Privacy-first (no cloud); transparent/educational; minimal dependencies; perfect for learning agent architecture
 
 **Performance Characteristics:**
+
 - Runs on consumer hardware
 - Low memory footprint
 - Deterministic outputs
@@ -481,6 +533,7 @@ Build AI agents from first principles using a local LLM - no frameworks, no clou
 ---
 
 ## 14. SE-AGENT (Self-Evolution Agent)
+
 **Organization:** JARVIS-Xs
 **Repository:** https://github.com/JARVIS-Xs/SE-Agent
 **Language:** Python
@@ -490,12 +543,14 @@ Build AI agents from first principles using a local LLM - no frameworks, no clou
 SE-Agent is a self-evolution framework for LLM code agents. Enables trajectory-level evolution with revision, recombination, and refinement for software engineering tasks. Achieves SOTA on SWE-bench Verified.
 
 **Tech Stack:**
+
 - Language: Python
 - Specialization: Code generation and testing
 - Model Support: Claude, GPT-4, CodeLlama
 - Evaluation: SWE-bench integration
 
 **Key Capabilities:**
+
 - Self-evolution mechanism (Revision, Recombination, Refinement)
 - Code generation and execution
 - Test-driven development
@@ -509,6 +564,7 @@ SE-Agent is a self-evolution framework for LLM code agents. Enables trajectory-l
 **Unique Differentiators:** Self-evolution approach; SOTA SWE-bench performance; novel reasoning escape technique
 
 **Performance Characteristics:**
+
 - Improves with iterations
 - Handles complex software engineering tasks
 - Efficient trajectory reuse
@@ -520,6 +576,7 @@ SE-Agent is a self-evolution framework for LLM code agents. Enables trajectory-l
 ---
 
 ## 15. OPEN-AGENTRL
+
 **Organization:** Gen-Verse
 **Repository:** https://github.com/Gen-Verse/Open-AgentRL
 **Language:** Python
@@ -529,6 +586,7 @@ SE-Agent is a self-evolution framework for LLM code agents. Enables trajectory-l
 An open-source reinforcement learning framework for training LLM-based agents. Supports GRPO, PPO, RLHF with multi-turn reasoning, tool use, and distributed training.
 
 **Tech Stack:**
+
 - Language: Python
 - RL Algorithms: GRPO, PPO, RLHF
 - Training: Distributed (Ray, DeepSpeed)
@@ -536,6 +594,7 @@ An open-source reinforcement learning framework for training LLM-based agents. S
 - Evaluation: Custom benchmarks
 
 **Key Capabilities:**
+
 - Multiple RL algorithms (GRPO, PPO, RLHF)
 - Multi-turn reasoning support
 - Tool use training
@@ -549,6 +608,7 @@ An open-source reinforcement learning framework for training LLM-based agents. S
 **Unique Differentiators:** Open-source RL training; cutting-edge GRPO algorithm; distributed-ready; research framework
 
 **Performance Characteristics:**
+
 - Efficient gradient computation
 - Supports 8x80GB GPU clusters
 - Training stability improvements
@@ -558,6 +618,7 @@ An open-source reinforcement learning framework for training LLM-based agents. S
 ---
 
 ## 16. DOCKER COMPOSE-FOR-AGENTS
+
 **Organization:** Docker
 **Repository:** https://github.com/docker/compose-for-agents
 **Language:** TypeScript
@@ -567,12 +628,14 @@ An open-source reinforcement learning framework for training LLM-based agents. S
 Official Docker tool for composing and orchestrating AI agent workloads. Native integration with Docker Compose for agent containerization and multi-agent systems.
 
 **Tech Stack:**
+
 - Language: TypeScript
 - Runtime: Docker/Docker Compose
 - Orchestration: Compose v2+
 - Integration: Official Docker product
 
 **Key Capabilities:**
+
 - Docker Compose file syntax for agents
 - Multi-agent orchestration
 - Service dependencies
@@ -587,6 +650,7 @@ Official Docker tool for composing and orchestrating AI agent workloads. Native 
 **Unique Differentiators:** Official Docker product; seamless Docker integration; production-proven; enterprise support
 
 **Performance Characteristics:**
+
 - Native container performance
 - Zero overhead orchestration
 - Horizontal scaling ready
@@ -596,6 +660,7 @@ Official Docker tool for composing and orchestrating AI agent workloads. Native 
 ---
 
 ## 17. TRPC-AGENT-GO
+
 **Organization:** trpc-group
 **Repository:** https://github.com/trpc-group/trpc-agent-go
 **Language:** Go
@@ -605,6 +670,7 @@ Official Docker tool for composing and orchestrating AI agent workloads. Native 
 High-performance agent framework written in Go. Enterprise-grade agent infrastructure with built-in RPC, tracing, and observability.
 
 **Tech Stack:**
+
 - Language: Go (high-performance)
 - Protocol: tRPC (custom RPC protocol)
 - Concurrency: Goroutines
@@ -612,6 +678,7 @@ High-performance agent framework written in Go. Enterprise-grade agent infrastru
 - Model Support: Claude, GPT-4 via APIs
 
 **Key Capabilities:**
+
 - High-performance RPC
 - Distributed tracing
 - Metrics collection
@@ -626,6 +693,7 @@ High-performance agent framework written in Go. Enterprise-grade agent infrastru
 **Unique Differentiators:** Go performance; enterprise observability; tRPC integration; production infrastructure ready
 
 **Performance Characteristics:**
+
 - <1ms RPC latency
 - Handles 100K+ RPS
 - Memory efficient (go runtime)
@@ -636,6 +704,7 @@ High-performance agent framework written in Go. Enterprise-grade agent infrastru
 ---
 
 ## 18. AGENTS-AT-SCALE-ARK
+
 **Organization:** McKinsey
 **Repository:** https://github.com/mckinsey/agents-at-scale-ark
 **Language:** TypeScript
@@ -645,12 +714,14 @@ High-performance agent framework written in Go. Enterprise-grade agent infrastru
 McKinsey's enterprise agent framework designed for scaling agents in production environments. Focus on governance, observability, and business alignment.
 
 **Tech Stack:**
+
 - Language: TypeScript
 - Architecture: Enterprise-grade
 - Integration: Enterprise tools (Salesforce, SAP, etc.)
 - Model Support: Claude, GPT-4, enterprise models
 
 **Key Capabilities:**
+
 - Enterprise governance framework
 - Audit trail and compliance
 - Business process alignment
@@ -665,6 +736,7 @@ McKinsey's enterprise agent framework designed for scaling agents in production 
 **Unique Differentiators:** McKinsey enterprise expertise; governance-first design; business alignment; compliance ready
 
 **Performance Characteristics:**
+
 - Enterprise reliability (99.99% SLA)
 - Audit-friendly logging
 - Multi-tenant isolation
@@ -674,6 +746,7 @@ McKinsey's enterprise agent framework designed for scaling agents in production 
 ---
 
 ## 19. AGENTIC-RADAR
+
 **Organization:** splx-ai
 **Repository:** https://github.com/splx-ai/agentic-radar
 **Language:** Python
@@ -683,6 +756,7 @@ McKinsey's enterprise agent framework designed for scaling agents in production 
 Security-focused agent monitoring and anomaly detection system. Provides real-time monitoring of agent behavior and security threat detection.
 
 **Tech Stack:**
+
 - Language: Python
 - Monitoring: Prometheus/Grafana integration
 - Detection: ML-based anomaly detection
@@ -690,6 +764,7 @@ Security-focused agent monitoring and anomaly detection system. Provides real-ti
 - Storage: Time-series DB compatible
 
 **Key Capabilities:**
+
 - Agent behavior monitoring
 - Anomaly detection
 - Security threat detection
@@ -704,6 +779,7 @@ Security-focused agent monitoring and anomaly detection system. Provides real-ti
 **Unique Differentiators:** First agent security monitoring tool; anomaly detection focus; compliance reporting; forensic capabilities
 
 **Performance Characteristics:**
+
 - Real-time monitoring
 - Sub-second anomaly detection
 - Historical trend analysis
@@ -713,6 +789,7 @@ Security-focused agent monitoring and anomaly detection system. Provides real-ti
 ---
 
 ## 20. VERL-TOOL
+
 **Organization:** TIGER-AI-Lab
 **Repository:** https://github.com/TIGER-AI-Lab/verl-tool
 **Language:** Python
@@ -722,6 +799,7 @@ Security-focused agent monitoring and anomaly detection system. Provides real-ti
 Versatile agent reinforcement learning toolkit. Research-oriented framework for agent training with advanced reasoning and planning capabilities.
 
 **Tech Stack:**
+
 - Language: Python
 - RL Framework: PyTorch-based
 - Algorithms: Custom VERL algorithm
@@ -729,6 +807,7 @@ Versatile agent reinforcement learning toolkit. Research-oriented framework for 
 - Distributed: Ray-based
 
 **Key Capabilities:**
+
 - Verifiable reasoning
 - Long-horizon planning
 - Agent training pipelines
@@ -743,6 +822,7 @@ Versatile agent reinforcement learning toolkit. Research-oriented framework for 
 **Unique Differentiators:** Advanced reasoning focus; VERL algorithm; research-optimized; curriculum learning support
 
 **Performance Characteristics:**
+
 - Efficient training convergence
 - Supports large models
 - Distributed training ready
@@ -752,6 +832,7 @@ Versatile agent reinforcement learning toolkit. Research-oriented framework for 
 ---
 
 ## 21. NONO (Security-focused Agent)
+
 **Organization:** always-further
 **Repository:** https://github.com/always-further/nono
 **Language:** Rust
@@ -761,6 +842,7 @@ Versatile agent reinforcement learning toolkit. Research-oriented framework for 
 Lightweight, high-performance agent framework written in Rust. Optimized for security-sensitive applications and edge deployment.
 
 **Tech Stack:**
+
 - Language: Rust
 - Async Runtime: Tokio
 - Security: TLS 1.3, encryption built-in
@@ -768,6 +850,7 @@ Lightweight, high-performance agent framework written in Rust. Optimized for sec
 - Deployment: Single binary
 
 **Key Capabilities:**
+
 - High-performance agent execution
 - Built-in encryption
 - Memory safety (Rust guarantees)
@@ -781,6 +864,7 @@ Lightweight, high-performance agent framework written in Rust. Optimized for sec
 **Unique Differentiators:** Rust safety guarantees; single binary deployment; edge-ready; memory-efficient
 
 **Performance Characteristics:**
+
 - <10ms agent response
 - <50MB memory footprint
 - Runs on ARM devices
@@ -791,44 +875,53 @@ Lightweight, high-performance agent framework written in Rust. Optimized for sec
 
 ## Summary Statistics
 
-| Category | Count | Top Project | Stars |
-|----------|-------|-------------|-------|
-| General Frameworks | 6 | Superpowers | 55,809 |
-| MCP-based | 5 | mcp-use | 9,206 |
-| Domain-Specific | 5 | TradingAgents | 30,232 |
-| Infrastructure | 4 | AgentGateway | 1,772 |
-| **Total Documented** | **20+** | - | - |
+| Category             | Count   | Top Project   | Stars  |
+| -------------------- | ------- | ------------- | ------ |
+| General Frameworks   | 6       | Superpowers   | 55,809 |
+| MCP-based            | 5       | mcp-use       | 9,206  |
+| Domain-Specific      | 5       | TradingAgents | 30,232 |
+| Infrastructure       | 4       | AgentGateway  | 1,772  |
+| **Total Documented** | **20+** | -             | -      |
 
 ---
 
 ## Key Insights
 
 ### 1. **Emergence of MCP-Native Tools**
+
 The Model Context Protocol (MCP) is becoming the standard integration layer. Tools like `mcp-use`, `Klavis`, and `HexStrike AI` leverage MCP for ecosystem interoperability.
 
 ### 2. **Domain Specialization Accelerating**
+
 Specialized agents for finance (TradingAgents: 30K⭐), healthcare (MedRAX), and security (HexStrike) are gaining significant traction and GitHub stars.
 
 ### 3. **Infrastructure Maturation**
+
 Orchestration, deployment, and monitoring tools (Docker Compose-for-Agents, AgentGateway, Agentic-Radar) indicate the ecosystem is moving beyond agent development to production operations.
 
 ### 4. **Language Diversification**
+
 While Python dominates (70%), Rust, Go, and TypeScript agents are growing for performance-critical and infrastructure roles:
+
 - **Python:** General frameworks, research
 - **Rust:** High-performance infrastructure, security
 - **Go:** Enterprise services, orchestration
 - **TypeScript:** Web-based IDEs, API services
 
 ### 5. **Enterprise Adoption Signals**
+
 Official tools from Docker, Microsoft, McKinsey, and AWS indicate enterprise AI agents are moving from research to production.
 
 ### 6. **Privacy & Edge Deployment**
+
 "Agents-from-Scratch" (local-only) and "Nono" (edge-optimized) show growing demand for privacy-preserving and decentralized agent execution.
 
 ### 7. **Training & Optimization**
+
 Open-AgentRL and VERL-Tool represent growing research focus on agent optimization through reinforcement learning, moving beyond prompt-based approaches.
 
 ### 8. **Security as First-Class Concern**
+
 HexStrike AI (150+ security tools), Agentic-Radar (monitoring), and Nono (secure-by-default) reflect increased emphasis on agent security and observability.
 
 ---
@@ -836,6 +929,7 @@ HexStrike AI (150+ security tools), Agentic-Radar (monitoring), and Nono (secure
 ## Search Methodology
 
 **Data Sources:**
+
 - GitHub API searches (100+ queries)
 - Recent trending repositories (2024-2026)
 - Academic papers (ICML 2025 papers)
@@ -843,6 +937,7 @@ HexStrike AI (150+ security tools), Agentic-Radar (monitoring), and Nono (secure
 - Official organization repositories
 
 **Search Terms Used:**
+
 - `agent + cli + created:>2024`
 - `agentic + framework`
 - `autonomous + agent`
@@ -852,6 +947,7 @@ HexStrike AI (150+ security tools), Agentic-Radar (monitoring), and Nono (secure
 - Domain-specific: `medical agent`, `trading agent`, etc.
 
 **Exclusion Criteria:**
+
 - Projects with <20 stars (potential projects still in early stages)
 - Forks of major projects
 - Archived repositories

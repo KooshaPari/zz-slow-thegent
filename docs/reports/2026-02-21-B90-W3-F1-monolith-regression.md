@@ -37,13 +37,13 @@ tests/cli/test_wl136_tooling_routing.py - 43 passed, 1 skipped in 7.03s
 
 ## LOC Inventory
 
-| File | Lines |
-|------|-------|
-| `src/thegent/cli/commands/cli.py` | 6881 |
-| `src/thegent/cli/commands/cli_dag.py` | 621 |
-| `src/thegent/cli/commands/cli_tooling.py` | 257 |
-| `src/thegent/cli/commands/impl_execution.py` | 32 |
-| `src/thegent/mcp/server.py` | 3867 |
+| File                                         | Lines |
+| -------------------------------------------- | ----- |
+| `src/thegent/cli/commands/cli.py`            | 6881  |
+| `src/thegent/cli/commands/cli_dag.py`        | 621   |
+| `src/thegent/cli/commands/cli_tooling.py`    | 257   |
+| `src/thegent/cli/commands/impl_execution.py` | 32    |
+| `src/thegent/mcp/server.py`                  | 3867  |
 
 Note: The LOC collector (`collect_loc_metrics.py`) reports cli.py at 5665 LOC (counting only non-blank/non-comment lines), while `wc -l` yields 6881 raw lines.
 

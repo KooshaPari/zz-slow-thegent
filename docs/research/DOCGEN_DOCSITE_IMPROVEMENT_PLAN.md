@@ -9,6 +9,7 @@
 ## Executive Summary
 
 This plan outlines comprehensive improvements to the documentation generation and site system, based on:
+
 - Deep audit of current VitePress implementation
 - Comparison with MkDocs Material implementations in other kush projects
 - Web research on best practices
@@ -16,6 +17,7 @@ This plan outlines comprehensive improvements to the documentation generation an
 - Feature parity analysis
 
 **Goals**:
+
 1. Enhance VitePress with MkDocs Material features
 2. Optimize documentation generation performance
 3. Improve API documentation generation
@@ -32,25 +34,27 @@ This plan outlines comprehensive improvements to the documentation generation an
 **Target**: ✅ Navigation tabs for top-level sections
 
 **Implementation**:
+
 ```typescript
 // docs/.vitepress/config.ts
 export default defineConfig({
   themeConfig: {
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'Guides', link: '/guides/', activeMatch: '/guides/' },
-      { text: 'Reference', link: '/reference/', activeMatch: '/reference/' },
-      { text: 'API', link: '/api/', activeMatch: '/api/' },
+      { text: "Home", link: "/" },
+      { text: "Guides", link: "/guides/", activeMatch: "/guides/" },
+      { text: "Reference", link: "/reference/", activeMatch: "/reference/" },
+      { text: "API", link: "/api/", activeMatch: "/api/" },
     ],
     // Enable navigation tabs
     sidebar: sidebar,
-  }
-})
+  },
+});
 ```
 
 **VitePress Support**: ✅ Native support via `nav` configuration
 
 **Action Items**:
+
 - [ ] Update `config.ts` with proper `nav` structure
 - [ ] Ensure `activeMatch` patterns are correct
 - [ ] Test tab highlighting
@@ -66,6 +70,7 @@ export default defineConfig({
 **Target**: ✅ Sticky sidebar and header
 
 **Implementation**:
+
 ```typescript
 // docs/.vitepress/theme/custom.css
 :root {
@@ -81,6 +86,7 @@ export default defineConfig({
 ```
 
 **Action Items**:
+
 - [ ] Add CSS for sticky sidebar
 - [ ] Test on mobile devices
 - [ ] Ensure proper scroll behavior
@@ -96,30 +102,30 @@ export default defineConfig({
 **Target**: ✅ Grouped sections with collapsible subsections
 
 **Implementation**:
+
 ```typescript
 // docs/.vitepress/sidebar.ts (enhanced)
 export const sidebar = {
-  '/guides/': [
+  "/guides/": [
     {
-      text: 'Getting Started',
+      text: "Getting Started",
       collapsed: false,
       items: [
-        { text: 'Introduction', link: '/guides/' },
-        { text: 'Installation', link: '/guides/installation' },
-      ]
+        { text: "Introduction", link: "/guides/" },
+        { text: "Installation", link: "/guides/installation" },
+      ],
     },
     {
-      text: 'Advanced',
+      text: "Advanced",
       collapsed: true,
-      items: [
-        { text: 'Advanced Usage', link: '/guides/advanced' },
-      ]
-    }
-  ]
-}
+      items: [{ text: "Advanced Usage", link: "/guides/advanced" }],
+    },
+  ],
+};
 ```
 
 **Action Items**:
+
 - [ ] Enhance `generate-sidebar.py` to support sections
 - [ ] Add `collapsed` property support
 - [ ] Update sidebar generation logic
@@ -135,6 +141,7 @@ export const sidebar = {
 **Target**: ✅ Enhanced breadcrumbs with icons
 
 **Implementation**:
+
 ```vue
 <!-- docs/.vitepress/theme/components/Breadcrumbs.vue -->
 <template>
@@ -150,6 +157,7 @@ export const sidebar = {
 ```
 
 **Action Items**:
+
 - [ ] Create Breadcrumbs component
 - [ ] Integrate with VitePress router
 - [ ] Add to theme
@@ -167,44 +175,46 @@ export const sidebar = {
 **Target**: ✅ Algolia search with suggestions
 
 **Implementation**:
+
 ```typescript
 // docs/.vitepress/config.ts
-import { defineConfig } from 'vitepress'
+import { defineConfig } from "vitepress";
 
 export default defineConfig({
   themeConfig: {
     search: {
-      provider: 'algolia',
+      provider: "algolia",
       options: {
-        appId: 'YOUR_APP_ID',
-        apiKey: 'YOUR_SEARCH_API_KEY',
-        indexName: 'thegent-docs',
+        appId: "YOUR_APP_ID",
+        apiKey: "YOUR_SEARCH_API_KEY",
+        indexName: "thegent-docs",
         locales: {
           root: {
-            placeholder: 'Search documentation',
+            placeholder: "Search documentation",
             translations: {
               button: {
-                buttonText: 'Search',
-                buttonAriaLabel: 'Search documentation'
+                buttonText: "Search",
+                buttonAriaLabel: "Search documentation",
               },
               modal: {
                 searchBox: {
-                  resetButtonTitle: 'Clear the query',
-                  resetButtonAriaLabel: 'Clear the query',
-                  cancelButtonText: 'Cancel',
-                  cancelButtonAriaLabel: 'Cancel'
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-})
+                  resetButtonTitle: "Clear the query",
+                  resetButtonAriaLabel: "Clear the query",
+                  cancelButtonText: "Cancel",
+                  cancelButtonAriaLabel: "Cancel",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+});
 ```
 
 **Action Items**:
+
 - [ ] Set up Algolia account
 - [ ] Configure index
 - [ ] Add search API keys (env vars)
@@ -224,10 +234,12 @@ export default defineConfig({
 **Target**: ✅ Search suggestions and result highlighting
 
 **Implementation**:
+
 - Algolia provides this out of the box
 - For local search, enhance with custom component
 
 **Action Items**:
+
 - [ ] Configure Algolia highlighting
 - [ ] Test suggestion accuracy
 - [ ] Optimize search index
@@ -245,16 +257,17 @@ export default defineConfig({
 **Target**: ✅ Tabbed content blocks
 
 **Implementation**:
+
 ```vue
 <!-- docs/.vitepress/theme/components/Tabs.vue -->
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from "vue";
 
 const props = defineProps<{
-  items: Array<{ label: string; content: string }>
-}>()
+  items: Array<{ label: string; content: string }>;
+}>();
 
-const activeTab = ref(0)
+const activeTab = ref(0);
 </script>
 
 <template>
@@ -277,7 +290,8 @@ const activeTab = ref(0)
 ```
 
 **Usage**:
-```markdown
+
+````markdown
 <Tabs>
   <template #tab-0>
     ```python
@@ -290,9 +304,10 @@ const activeTab = ref(0)
     ```
   </template>
 </Tabs>
-```
+````
 
 **Action Items**:
+
 - [ ] Create Tabs component
 - [ ] Register in theme
 - [ ] Add CSS styling
@@ -310,6 +325,7 @@ const activeTab = ref(0)
 **Target**: ✅ Line-by-line code annotations
 
 **Implementation**:
+
 ```vue
 <!-- docs/.vitepress/theme/components/CodeAnnotation.vue -->
 <template>
@@ -330,6 +346,7 @@ const activeTab = ref(0)
 ```
 
 **Action Items**:
+
 - [ ] Research VitePress code annotation support
 - [ ] Create custom component if needed
 - [ ] Add CSS for annotations
@@ -346,6 +363,7 @@ const activeTab = ref(0)
 **Target**: ✅ Tooltip support for terms
 
 **Implementation**:
+
 ```vue
 <!-- docs/.vitepress/theme/components/Tooltip.vue -->
 <template>
@@ -357,11 +375,13 @@ const activeTab = ref(0)
 ```
 
 **Usage**:
+
 ```markdown
 <Tooltip text="SPA" content="Single Page Application">
 ```
 
 **Action Items**:
+
 - [ ] Create Tooltip component
 - [ ] Add CSS animations
 - [ ] Register in theme
@@ -378,34 +398,38 @@ const activeTab = ref(0)
 **Target**: ✅ Math equations with KaTeX
 
 **Implementation**:
+
 ```bash
 npm install markdown-it-katex katex
 ```
 
 ```typescript
 // docs/.vitepress/config.ts
-import markdownItKatex from 'markdown-it-katex'
+import markdownItKatex from "markdown-it-katex";
 
 export default defineConfig({
   markdown: {
     config: (md) => {
-      md.use(markdownItKatex)
-    }
-  }
-})
+      md.use(markdownItKatex);
+    },
+  },
+});
 ```
 
 **Usage**:
+
 ```markdown
 Inline math: $E = mc^2$
 
 Block math:
+
 $$
 \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
 $$
 ```
 
 **Action Items**:
+
 - [ ] Install KaTeX packages
 - [ ] Configure markdown-it-katex
 - [ ] Add KaTeX CSS
@@ -423,29 +447,32 @@ $$
 **Target**: ✅ Emoji support in markdown
 
 **Implementation**:
+
 ```bash
 npm install markdown-it-emoji
 ```
 
 ```typescript
 // docs/.vitepress/config.ts
-import emoji from 'markdown-it-emoji'
+import emoji from "markdown-it-emoji";
 
 export default defineConfig({
   markdown: {
     config: (md) => {
-      md.use(emoji)
-    }
-  }
-})
+      md.use(emoji);
+    },
+  },
+});
 ```
 
 **Usage**:
+
 ```markdown
 :smile: :rocket: :heart:
 ```
 
 **Action Items**:
+
 - [ ] Install markdown-it-emoji
 - [ ] Configure plugin
 - [ ] Test emoji rendering
@@ -464,6 +491,7 @@ export default defineConfig({
 **Target**: ✅ mkdocstrings-like functionality
 
 **Improvements**:
+
 1. **Better Docstring Parsing**:
    - Support Google, NumPy, reStructuredText styles
    - Parse parameter descriptions
@@ -481,6 +509,7 @@ export default defineConfig({
    - Link to parent classes
 
 **Implementation**:
+
 ```python
 # scripts/generate-api-docs-enhanced.py
 import ast
@@ -516,6 +545,7 @@ def parse_google_docstring(docstring: str) -> Dict:
 ```
 
 **Action Items**:
+
 - [ ] Enhance docstring parser
 - [ ] Add type hint extraction
 - [ ] Add inheritance documentation
@@ -533,6 +563,7 @@ def parse_google_docstring(docstring: str) -> Dict:
 **Target**: ✅ Extract JSDoc and generate API docs
 
 **Implementation**:
+
 ```python
 # scripts/generate-typescript-api-docs.py
 import re
@@ -576,6 +607,7 @@ def extract_jsdoc(file_path: Path) -> Dict:
 ```
 
 **Action Items**:
+
 - [ ] Create TypeScript API generator
 - [ ] Parse JSDoc comments
 - [ ] Extract type information
@@ -593,6 +625,7 @@ def extract_jsdoc(file_path: Path) -> Dict:
 **Target**: ✅ Render OpenAPI specs as interactive docs
 
 **Implementation**:
+
 ```bash
 npm install @scalar/vue @scalar/api-reference
 ```
@@ -600,11 +633,11 @@ npm install @scalar/vue @scalar/api-reference
 ```vue
 <!-- docs/.vitepress/theme/components/OpenAPI.vue -->
 <script setup lang="ts">
-import { ApiReference } from '@scalar/api-reference'
+import { ApiReference } from "@scalar/api-reference";
 
 const props = defineProps<{
-  spec: string | object
-}>()
+  spec: string | object;
+}>();
 </script>
 
 <template>
@@ -613,6 +646,7 @@ const props = defineProps<{
 ```
 
 **Action Items**:
+
 - [ ] Install Scalar or similar
 - [ ] Create OpenAPI component
 - [ ] Add OpenAPI spec loader
@@ -632,6 +666,7 @@ const props = defineProps<{
 **Target**: ✅ Optimized chunks for faster loads
 
 **Implementation**:
+
 ```typescript
 // docs/.vitepress/config.ts
 export default defineConfig({
@@ -641,24 +676,25 @@ export default defineConfig({
         output: {
           manualChunks: (id) => {
             // Split vendor chunks
-            if (id.includes('node_modules')) {
-              if (id.includes('mermaid')) {
-                return 'mermaid'
+            if (id.includes("node_modules")) {
+              if (id.includes("mermaid")) {
+                return "mermaid";
               }
-              if (id.includes('vue')) {
-                return 'vue'
+              if (id.includes("vue")) {
+                return "vue";
               }
-              return 'vendor'
+              return "vendor";
             }
-          }
-        }
-      }
-    }
-  }
-})
+          },
+        },
+      },
+    },
+  },
+});
 ```
 
 **Action Items**:
+
 - [ ] Analyze bundle sizes
 - [ ] Configure manual chunks
 - [ ] Test load performance
@@ -675,27 +711,30 @@ export default defineConfig({
 **Target**: ✅ WebP/AVIF with lazy loading
 
 **Implementation**:
+
 ```bash
 npm install vite-imagetools
 ```
 
 ```typescript
 // docs/.vitepress/config.ts
-import { imagetools } from 'vite-imagetools'
+import { imagetools } from "vite-imagetools";
 
 export default defineConfig({
   vite: {
-    plugins: [imagetools()]
-  }
-})
+    plugins: [imagetools()],
+  },
+});
 ```
 
 **Usage**:
+
 ```markdown
 ![Image](./image.jpg?format=webp&w=800)
 ```
 
 **Action Items**:
+
 - [ ] Install vite-imagetools
 - [ ] Configure image optimization
 - [ ] Add lazy loading
@@ -713,21 +752,23 @@ export default defineConfig({
 **Target**: ✅ Subset fonts, preload, font-display
 
 **Implementation**:
+
 ```css
 /* docs/.vitepress/theme/custom.css */
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/inter-subset.woff2') format('woff2');
+  font-family: "Inter";
+  src: url("/fonts/inter-subset.woff2") format("woff2");
   font-display: swap;
   unicode-range: U+0020-007F; /* Latin */
 }
 
 :root {
-  --vp-font-family-base: 'Inter', sans-serif;
+  --vp-font-family-base: "Inter", sans-serif;
 }
 ```
 
 **Action Items**:
+
 - [ ] Subset fonts (Latin, common symbols)
 - [ ] Add font preload
 - [ ] Configure font-display
@@ -744,6 +785,7 @@ export default defineConfig({
 **Target**: ✅ Optimized, compressed index
 
 **Implementation**:
+
 - Use Algolia (handles optimization)
 - Or optimize local search index:
   - Compress index
@@ -751,6 +793,7 @@ export default defineConfig({
   - Use Web Workers
 
 **Action Items**:
+
 - [ ] Analyze search index size
 - [ ] Implement compression
 - [ ] Add lazy loading
@@ -769,19 +812,21 @@ export default defineConfig({
 **Target**: ✅ Edit links on every page
 
 **Implementation**:
+
 ```typescript
 // docs/.vitepress/config.ts
 export default defineConfig({
   themeConfig: {
     editLink: {
-      pattern: 'https://github.com/your-org/thegent/edit/main/docs/:path',
-      text: 'Edit this page on GitHub'
-    }
-  }
-})
+      pattern: "https://github.com/your-org/thegent/edit/main/docs/:path",
+      text: "Edit this page on GitHub",
+    },
+  },
+});
 ```
 
 **Action Items**:
+
 - [ ] Configure edit links
 - [ ] Test link generation
 - [ ] Add to theme
@@ -797,22 +842,22 @@ export default defineConfig({
 **Target**: ✅ Enhanced with git info
 
 **Implementation**:
+
 ```bash
 npm install vitepress-plugin-git-commit-date
 ```
 
 ```typescript
 // docs/.vitepress/config.ts
-import { gitCommitDatePlugin } from 'vitepress-plugin-git-commit-date'
+import { gitCommitDatePlugin } from "vitepress-plugin-git-commit-date";
 
 export default defineConfig({
-  plugins: [
-    gitCommitDatePlugin()
-  ]
-})
+  plugins: [gitCommitDatePlugin()],
+});
 ```
 
 **Action Items**:
+
 - [ ] Install git commit date plugin
 - [ ] Configure plugin
 - [ ] Test date display
@@ -828,22 +873,24 @@ export default defineConfig({
 **Target**: ✅ Version switcher
 
 **Implementation**:
+
 ```typescript
 // docs/.vitepress/config.ts
 export default defineConfig({
   themeConfig: {
     version: {
-      current: '1.0.0',
+      current: "1.0.0",
       versions: [
-        { text: '1.0.0', link: '/1.0.0/' },
-        { text: '0.9.0', link: '/0.9.0/' }
-      ]
-    }
-  }
-})
+        { text: "1.0.0", link: "/1.0.0/" },
+        { text: "0.9.0", link: "/0.9.0/" },
+      ],
+    },
+  },
+});
 ```
 
 **Action Items**:
+
 - [ ] Research VitePress versioning solutions
 - [ ] Implement version switcher
 - [ ] Set up versioned builds
@@ -860,17 +907,26 @@ export default defineConfig({
 **Target**: ✅ Google Analytics / Plausible
 
 **Implementation**:
+
 ```typescript
 // docs/.vitepress/config.ts
 export default defineConfig({
   head: [
-    ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=GA_ID' }],
-    ['script', {}, "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'GA_ID');"]
-  ]
-})
+    [
+      "script",
+      { async: "", src: "https://www.googletagmanager.com/gtag/js?id=GA_ID" },
+    ],
+    [
+      "script",
+      {},
+      "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'GA_ID');",
+    ],
+  ],
+});
 ```
 
 **Action Items**:
+
 - [ ] Set up Google Analytics
 - [ ] Add tracking code
 - [ ] Test event tracking
@@ -889,6 +945,7 @@ export default defineConfig({
 **Target**: ✅ Parallel generation for speed
 
 **Implementation**:
+
 ```python
 # scripts/vitepress-agent-workflow-parallel.py
 import asyncio
@@ -907,6 +964,7 @@ async def generate_parallel():
 ```
 
 **Action Items**:
+
 - [ ] Refactor generators for async
 - [ ] Implement parallel execution
 - [ ] Add progress tracking
@@ -923,6 +981,7 @@ async def generate_parallel():
 **Target**: ✅ Only regenerate changed files
 
 **Implementation**:
+
 ```python
 # scripts/vitepress-agent-workflow-incremental.py
 import hashlib
@@ -947,6 +1006,7 @@ def should_regenerate(file_path: Path, cache_dir: Path) -> bool:
 ```
 
 **Action Items**:
+
 - [ ] Implement file hashing
 - [ ] Add cache directory
 - [ ] Check file changes
@@ -964,6 +1024,7 @@ def should_regenerate(file_path: Path, cache_dir: Path) -> bool:
 **Target**: ✅ Auto-regenerate on file changes
 
 **Implementation**:
+
 ```python
 # scripts/vitepress-agent-workflow-watch.py
 from watchdog.observers import Observer
@@ -984,6 +1045,7 @@ observer.start()
 ```
 
 **Action Items**:
+
 - [ ] Install watchdog
 - [ ] Implement file watcher
 - [ ] Add debouncing
@@ -1003,6 +1065,7 @@ observer.start()
 **Target**: ✅ Comprehensive link validation
 
 **Implementation**:
+
 ```python
 # scripts/check-links.py
 import requests
@@ -1025,6 +1088,7 @@ def check_links(md_file: Path):
 ```
 
 **Action Items**:
+
 - [ ] Create link checker script
 - [ ] Add to CI/CD
 - [ ] Test link validation
@@ -1041,7 +1105,8 @@ def check_links(md_file: Path):
 **Target**: ✅ Validate code examples
 
 **Implementation**:
-```python
+
+````python
 # scripts/validate-code-examples.py
 import ast
 import re
@@ -1056,9 +1121,10 @@ def validate_python_examples(md_file: Path):
             ast.parse(code)
         except SyntaxError as e:
             print(f"Syntax error in {md_file}: {e}")
-```
+````
 
 **Action Items**:
+
 - [ ] Create code validator
 - [ ] Support multiple languages
 - [ ] Add to CI/CD
@@ -1075,6 +1141,7 @@ def validate_python_examples(md_file: Path):
 **Target**: ✅ Accessibility compliance
 
 **Implementation**:
+
 ```bash
 npm install -D @axe-core/cli
 ```
@@ -1089,6 +1156,7 @@ npm install -D @axe-core/cli
 ```
 
 **Action Items**:
+
 - [ ] Install accessibility tools
 - [ ] Run accessibility tests
 - [ ] Fix accessibility issues
@@ -1204,6 +1272,7 @@ npm install -D @axe-core/cli
 **Status**: ✅ **COMPLETE** (2026-02-18)
 
 **Completed Items**:
+
 - ✅ Navigation tabs with activeMatch patterns
 - ✅ Sticky navigation (already implemented)
 - ✅ Edit-on-GitHub links (already implemented)

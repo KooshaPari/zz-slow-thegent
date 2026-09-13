@@ -19,17 +19,20 @@ Batch 3 optimizations focus on async execution, caching, and utility improvement
 **File**: `src/thegent/infra/fast_subprocess.py`
 
 **Features**:
+
 - **Async subprocess execution**: Non-blocking `asyncio.subprocess` support
 - **Concurrent execution**: Run multiple subprocesses concurrently with semaphore control
 - **Optimized process creation**: Platform-specific flags (Windows CREATE_NO_WINDOW, Unix start_new_session)
 - **Resource management**: Better FD handling and process lifecycle management
 
 **Performance**:
+
 - Non-blocking execution for concurrent operations
 - Better resource usage than blocking `subprocess.run()`
 - Semaphore-controlled concurrency prevents resource exhaustion
 
 **Usage**:
+
 ```python
 from thegent.infra import run_subprocess_async, run_subprocesses_concurrent
 
@@ -47,6 +50,7 @@ results = await run_subprocesses_concurrent([["cmd1"], ["cmd2"], ["cmd3"]], max_
 **File**: `src/thegent/infra/fast_cache.py`
 
 **Features**:
+
 - **L1 Cache**: In-memory dict (fastest, smallest, volatile)
 - **L2 Cache**: cachetools LRUCache (medium-term, configurable size)
 - **L3 Cache**: diskcache (persistent, survives restarts)
@@ -55,11 +59,13 @@ results = await run_subprocesses_concurrent([["cmd1"], ["cmd2"], ["cmd3"]], max_
 - **Statistics**: Cache hit/miss tracking and size monitoring
 
 **Performance**:
+
 - Multi-tier reduces memory pressure
 - Persistent caching survives restarts
 - Better cache hit rates with tiered approach
 
 **Usage**:
+
 ```python
 from thegent.infra import get_cache
 
@@ -76,6 +82,7 @@ stats = cache.stats()
 ```
 
 **Dependencies**:
+
 - `cachetools` (optional, for L2 cache)
 - `diskcache` (optional, for L3 persistent cache)
 
@@ -86,16 +93,19 @@ stats = cache.stats()
 **File**: `src/thegent/infra/fast_string_ops.py`
 
 **Features**:
+
 - **Fuzzy matching**: rapidfuzz for 10-100x faster fuzzy string matching
 - **Fuzzy ratio**: Calculate similarity between strings (0-100)
 - **Regex search**: regex library for advanced regex patterns
 - **Regex findall**: Find all matches with advanced patterns
 
 **Performance**:
+
 - rapidfuzz: 10-100x faster than fuzzywuzzy
 - regex library: Faster for complex patterns, better Unicode support
 
 **Usage**:
+
 ```python
 from thegent.infra import fuzzy_match, fuzzy_ratio, regex_search
 
@@ -110,6 +120,7 @@ match = regex_search(r"\p{L}+", text)  # Unicode word characters
 ```
 
 **Dependencies**:
+
 - `rapidfuzz` (already installed! ✅)
 - `regex` (already installed! ✅)
 
@@ -120,15 +131,18 @@ match = regex_search(r"\p{L}+", text)  # Unicode word characters
 **File**: `src/thegent/infra/fast_uuid.py`
 
 **Features**:
+
 - **UUID4 generation**: Random UUIDs (2-5x faster with fastuuid)
 - **UUID1 generation**: MAC address + timestamp UUIDs
 - **String variants**: Convenience functions for string output
 
 **Performance**:
+
 - fastuuid: 2-5x faster than standard uuid.uuid4()
 - Optimized for high-frequency UUID generation
 
 **Usage**:
+
 ```python
 from thegent.infra import uuid4, uuid4_str, uuid1, uuid1_str
 
@@ -142,6 +156,7 @@ uuid_string = uuid1_str()
 ```
 
 **Dependencies**:
+
 - `fastuuid` (already installed! ✅)
 
 ---
@@ -151,27 +166,22 @@ uuid_string = uuid1_str()
 ### Total Fast Abstraction Layers: 11 ✅
 
 **Batch 1** (4 layers):
+
 1. Fast Process Monitor
 2. Fast YAML Parser
 3. Fast TOML Parser
 4. Fast File Watcher
 
-**Batch 2** (3 layers):
-5. Fast JSON Schema Validator
-6. Fast File Operations
-7. Fast HTTP Client
+**Batch 2** (3 layers): 5. Fast JSON Schema Validator 6. Fast File Operations 7. Fast HTTP Client
 
-**Batch 3** (4 layers):
-8. Fast Subprocess Execution
-9. Multi-Tier Caching
-10. Fast String Operations
-11. Fast UUID Generation
+**Batch 3** (4 layers): 8. Fast Subprocess Execution 9. Multi-Tier Caching 10. Fast String Operations 11. Fast UUID Generation
 
 ---
 
 ## 🚀 Integration Status
 
 All Batch 3 optimizations are:
+
 - ✅ Implemented and tested
 - ✅ Exported from `thegent.infra`
 - ✅ Ready for migration
@@ -203,12 +213,12 @@ pip install cachetools diskcache
 
 ### Expected Improvements:
 
-| Optimization | Current | With Fast Backend | Improvement |
-|--------------|---------|-------------------|-------------|
-| Subprocess (concurrent) | Sequential | Async concurrent | **Nx faster** (N = concurrency) |
-| Caching | Single-tier | Multi-tier | **Better hit rates** |
-| Fuzzy matching | Standard | rapidfuzz | **10-100x faster** |
-| UUID generation | uuid | fastuuid | **2-5x faster** |
+| Optimization            | Current     | With Fast Backend | Improvement                     |
+| ----------------------- | ----------- | ----------------- | ------------------------------- |
+| Subprocess (concurrent) | Sequential  | Async concurrent  | **Nx faster** (N = concurrency) |
+| Caching                 | Single-tier | Multi-tier        | **Better hit rates**            |
+| Fuzzy matching          | Standard    | rapidfuzz         | **10-100x faster**              |
+| UUID generation         | uuid        | fastuuid          | **2-5x faster**                 |
 
 ---
 

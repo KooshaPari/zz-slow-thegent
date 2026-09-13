@@ -14,7 +14,7 @@ Manages context sharing across multiple agent runs (Multi-Tenancy).
 
 ### Methods
 
-#### ContextSharer.__init__
+#### ContextSharer.**init**
 
 ```python
 __init__(self: Any)
@@ -50,7 +50,7 @@ Provides high-performance shared memory context for agent processes.
 
 ### Methods
 
-#### ZeroCopyContext.__init__
+#### ZeroCopyContext.**init**
 
 ```python
 __init__(self: Any, size: int)

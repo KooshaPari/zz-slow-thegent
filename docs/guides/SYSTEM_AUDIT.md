@@ -6,12 +6,12 @@
 
 The audit framework inspects four categories:
 
-| Category | What it checks |
-|---|---|
-| **hooks** | Hooks registered in `hooks/hook-config.yaml` versus `.sh` files on disk |
-| **agents** | Agent `.md` persona files in `agents/` versus optional `bounded-contexts.yaml` registry |
-| **config** | `ThegentSettings` field defaults versus actual `THGENT_*` environment variables |
-| **dependencies** | `pyproject.toml` declared dependencies versus installed packages |
+| Category         | What it checks                                                                          |
+| ---------------- | --------------------------------------------------------------------------------------- |
+| **hooks**        | Hooks registered in `hooks/hook-config.yaml` versus `.sh` files on disk                 |
+| **agents**       | Agent `.md` persona files in `agents/` versus optional `bounded-contexts.yaml` registry |
+| **config**       | `ThegentSettings` field defaults versus actual `THGENT_*` environment variables         |
+| **dependencies** | `pyproject.toml` declared dependencies versus installed packages                        |
 
 ## Quick Start
 
@@ -39,14 +39,14 @@ Exit code is `0` when no drift is detected, `1` when any issues are found.
 
 ## Status Values
 
-| Status | Meaning |
-|---|---|
-| `ok` | Check passed; declared state matches actual state |
-| `missing` | Declared entry has no corresponding file or resource |
-| `unexpected` | Resource exists on disk but is not declared |
-| `drift` | Declared specifier does not match actual value (e.g., wrong version) |
-| `warn` | Non-critical issue; attention recommended |
-| `error` | Audit could not complete the check (e.g., parse failure) |
+| Status       | Meaning                                                              |
+| ------------ | -------------------------------------------------------------------- |
+| `ok`         | Check passed; declared state matches actual state                    |
+| `missing`    | Declared entry has no corresponding file or resource                 |
+| `unexpected` | Resource exists on disk but is not declared                          |
+| `drift`      | Declared specifier does not match actual value (e.g., wrong version) |
+| `warn`       | Non-critical issue; attention recommended                            |
+| `error`      | Audit could not complete the check (e.g., parse failure)             |
 
 ## Category Details
 
@@ -195,9 +195,9 @@ The command exits with code `1` when any drift is detected, causing the CI step 
 
 ## Source Locations
 
-| File | Purpose |
-|---|---|
-| `src/thegent/audit/__init__.py` | Module public API |
-| `src/thegent/audit/system_audit.py` | `AuditResult`, `AuditReport`, `SystemAuditor` |
-| `src/thegent/commands/audit.py` | `thegent audit` CLI command (typer app) |
-| `tests/test_system_audit.py` | 34 unit tests (FR-AUDIT-001 through FR-AUDIT-020) |
+| File                                | Purpose                                           |
+| ----------------------------------- | ------------------------------------------------- |
+| `src/thegent/audit/__init__.py`     | Module public API                                 |
+| `src/thegent/audit/system_audit.py` | `AuditResult`, `AuditReport`, `SystemAuditor`     |
+| `src/thegent/commands/audit.py`     | `thegent audit` CLI command (typer app)           |
+| `tests/test_system_audit.py`        | 34 unit tests (FR-AUDIT-001 through FR-AUDIT-020) |

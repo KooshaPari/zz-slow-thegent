@@ -12,7 +12,7 @@ JIT-friendly implementation of RouterManager.
 
 ### Methods
 
-#### PurePythonRouter.__init__
+#### PurePythonRouter.**init**
 
 ```python
 __init__(self: Any, strategy: RoutingStrategy)

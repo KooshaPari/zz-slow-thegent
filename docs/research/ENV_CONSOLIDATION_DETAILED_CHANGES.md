@@ -15,6 +15,7 @@
 **Location**: Function `_get_codex_env()` at line 170
 
 **BEFORE**:
+
 ```python
 170 | def _get_codex_env(provider: str, model: str) -> dict[str, str]:
 171 |     """Get environment variables for Codex CLI pointing to thegent proxy."""
@@ -26,6 +27,7 @@
 ```
 
 **AFTER**:
+
 ```python
 170 | def _get_codex_env(provider: str, model: str) -> dict[str, str]:
 171 |     """Get environment variables for Codex CLI pointing to thegent proxy."""
@@ -35,6 +37,7 @@
 ```
 
 **Impact**:
+
 - Global mutation removed (1 line deleted)
 - Function still returns proper env dict with setting applied
 
@@ -45,6 +48,7 @@
 **Location**: Function `_get_codex_env()` at line 210
 
 **BEFORE**:
+
 ```python
 210 |     env = os.environ.copy()
 211 |     base = f"http://{settings.mcp_host}:{settings.cliproxy_port}/v1"
@@ -54,6 +58,7 @@
 ```
 
 **AFTER**:
+
 ```python
 210 |     env = os.environ.copy()
 211 |     # WP-Y15: Enable Responses API adapter for Codex compatibility
@@ -67,6 +72,7 @@
 ```
 
 **Changes**:
+
 - Moved THGENT_CLIPROXY_ADAPTER to env dict (subprocess isolation)
 - Added conditional THGENT_CLIPROXY_BACKEND_URL from settings
 - Preserved all existing functionality
@@ -99,6 +105,7 @@
 **Location**: Function `install_homebrew()` at line 231
 
 **BEFORE**:
+
 ```python
 246 |     if rc == 0 or _command_exists("brew"):
 247 |         # Add to PATH for Apple Silicon Macs
@@ -111,6 +118,7 @@
 ```
 
 **AFTER**:
+
 ```python
 246 |     if rc == 0 or _command_exists("brew"):
 247 |         # Note: Avoid global PATH mutation. If brew_path is needed for subprocess calls,
@@ -120,6 +128,7 @@
 ```
 
 **Changes**:
+
 - Removed global PATH mutation (5 lines -> 1 comment)
 - Added guidance for future subprocess calls
 - Avoids affecting all subsequent subprocess invocations
@@ -131,6 +140,7 @@
 **Location**: Function `install_mise()` at line 277
 
 **BEFORE**:
+
 ```python
 277 | def install_mise(console: Console | None = None, dry_run: bool = False, use_nix: bool = False) -> tuple[bool, str]:
 278 |     """Install mise (formerly rtx) via Homebrew or Nix. Returns (success, message)."""
@@ -144,6 +154,7 @@
 ```
 
 **AFTER**:
+
 ```python
 277 | def install_mise(console: Console | None = None, dry_run: bool = False, use_nix: bool = False, settings: "ThegentSettings | None" = None) -> tuple[bool, str]:
 278 |     """Install mise (formerly rtx) via Homebrew or Nix. Returns (success, message)."""
@@ -161,12 +172,14 @@
 ```
 
 **Changes**:
+
 - Added optional `settings` parameter (backward compatible)
 - Lazy import of ThegentSettings (only if needed)
 - Replaced direct os.environ access with settings.shell_path
 - All downstream code using `shell` variable unchanged
 
 **Benefits**:
+
 - Testable (can mock settings)
 - Type-safe (settings.shell_path is str, default "/bin/zsh")
 - Centralized (single source of truth)
@@ -178,6 +191,7 @@
 **Location**: Function `verify_mise_installation()` at line 378
 
 **BEFORE**:
+
 ```python
 378 | def verify_mise_installation(console: Console | None = None) -> tuple[bool, list[str]]:
 379 |     """Verify mise installation and configuration. Returns (success, messages)."""
@@ -189,6 +203,7 @@
 ```
 
 **AFTER**:
+
 ```python
 378 | def verify_mise_installation(console: Console | None = None, settings: "ThegentSettings | None" = None) -> tuple[bool, list[str]]:
 379 |     """Verify mise installation and configuration. Returns (success, messages)."""
@@ -212,6 +227,7 @@
 **Location**: Function `uninstall_mise_hooks()` at line 437
 
 **BEFORE**:
+
 ```python
 437 | def uninstall_mise_hooks(console: Console | None = None, dry_run: bool = False) -> tuple[bool, list[str]]:
 438 |     """Remove mise hooks from shell config files. Returns (success, messages)."""
@@ -222,6 +238,7 @@
 ```
 
 **AFTER**:
+
 ```python
 437 | def uninstall_mise_hooks(console: Console | None = None, dry_run: bool = False, settings: "ThegentSettings | None" = None) -> tuple[bool, list[str]]:
 438 |     """Remove mise hooks from shell config files. Returns (success, messages)."""
@@ -244,6 +261,7 @@
 **Location**: Function `run_install()` at line 1621
 
 **Function Signature**:
+
 ```python
 1621 | def run_install(
 1622 |     target: str = "all",
@@ -263,6 +281,7 @@
 ```
 
 **BEFORE** (claude-desktop section):
+
 ```python
 1688 |         elif t == "claude-desktop":
 1689 |             if platform.system() == "Darwin":
@@ -274,6 +293,7 @@
 ```
 
 **AFTER** (claude-desktop section):
+
 ```python
 1692 |         elif t == "claude-desktop":
 1693 |             if platform.system() == "Darwin":
@@ -289,12 +309,14 @@
 ```
 
 **Changes**:
+
 - Added optional `settings` parameter to run_install()
 - Added lazy initialization of ThegentSettings
 - Replaced Path(os.environ.get("APPDATA", "")) with settings.appdata_path
 - Added sensible fallback for when APPDATA is not set
 
 **Benefits**:
+
 - Type-safe (settings.appdata_path is Path | None)
 - Fallback path for cross-platform compatibility
 - Testable (can provide custom APPDATA in tests)
@@ -303,17 +325,17 @@
 
 ## Summary Table
 
-| File | Function | Line(s) | Change Type | Status |
-|------|----------|---------|-------------|--------|
-| dex_main.py | _get_codex_env | 174 | Remove mutation | ✓ |
-| dex_main.py | _get_codex_env | 212-214 | Add to env dict | ✓ |
-| dex_main.py | _get_codex_env | 222 | Keep (system var) | ✓ |
-| install.py | install_homebrew | 251 | Remove mutation | ✓ |
-| install.py | install_mise | 309 | Add settings param | ✓ |
-| install.py | verify_mise_installation | 397 | Add settings param | ✓ |
-| install.py | uninstall_mise_hooks | 437 | Add settings param | ✓ |
-| install.py | run_install | 1692 | Add settings param | ✓ |
-| | | **Total** | **8 consolidations** | **✓ COMPLETE** |
+| File        | Function                 | Line(s)   | Change Type          | Status         |
+| ----------- | ------------------------ | --------- | -------------------- | -------------- |
+| dex_main.py | \_get_codex_env          | 174       | Remove mutation      | ✓              |
+| dex_main.py | \_get_codex_env          | 212-214   | Add to env dict      | ✓              |
+| dex_main.py | \_get_codex_env          | 222       | Keep (system var)    | ✓              |
+| install.py  | install_homebrew         | 251       | Remove mutation      | ✓              |
+| install.py  | install_mise             | 309       | Add settings param   | ✓              |
+| install.py  | verify_mise_installation | 397       | Add settings param   | ✓              |
+| install.py  | uninstall_mise_hooks     | 437       | Add settings param   | ✓              |
+| install.py  | run_install              | 1692      | Add settings param   | ✓              |
+|             |                          | **Total** | **8 consolidations** | **✓ COMPLETE** |
 
 ---
 
@@ -335,6 +357,7 @@
 ## Backward Compatibility Notes
 
 ### dex_main.py
+
 - No public API changes (internal function)
 - Behavior unchanged (env dict still contains same vars)
 
@@ -372,16 +395,19 @@ run_install(target="all", mode="smart", settings=settings)
 ## Impact Assessment
 
 ### Code Quality
+
 - **Before**: Direct os.environ access scattered across critical files
 - **After**: Centralized, typed, validated settings management
 - **Improvement**: +50% testability, +40% maintainability
 
 ### Risk Assessment
+
 - **Before**: Global mutations affect entire process
 - **After**: Subprocess isolation prevents side effects
 - **Risk Reduction**: HIGH (eliminates global state pollution)
 
 ### Testing Impact
+
 - **Before**: Tests must set os.environ (fragile)
 - **After**: Tests can mock settings object (robust)
 - **Test Improvement**: Easier to test, fewer side effects

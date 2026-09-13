@@ -3,6 +3,7 @@
 ## Completed slices
 
 ### WL-122
+
 - Added one canonical wiring assertion test that validates max-lines gate linkage across:
   - `Taskfile.yml` (`quality:max-lines`)
   - `.pre-commit-config.yaml` (`max-lines-gate` local hook)
@@ -14,6 +15,7 @@
   - `.github/workflows/ci.yml`
 
 ### WL-104
+
 - Added minimal JSON-RPC stdio daemon scaffold:
   - strict JSON-RPC parsing/validation
   - stubbed methods: `health/check`, `config/read`
@@ -26,6 +28,7 @@
   - `tests/protocols/test_jsonrpc_agent_server_contract.py`
 
 ### WL-106
+
 - Added SessionManager in-memory scaffold APIs:
   - `fork_session(session_id, from_turn, new_session_id)`
   - `rollback_session(session_id, n_turns)`
@@ -37,6 +40,7 @@
   - `tests/session/test_session_manager.py`
 
 ### WL-111
+
 - Added MCP tool stubs for skills list/activate with dedicated module:
   - `thegent_list_skills_impl`
   - `thegent_activate_skill_impl`
@@ -49,6 +53,7 @@
   - `tests/mcp/test_tools_skills_contract.py`
 
 ### WL-117
+
 - Created VS Code extension scaffold and protocol contract placeholder docs:
   - extension command scaffold
   - protocol client type/contract placeholders

@@ -112,7 +112,7 @@ against the pre-scan baseline. Detects regressions in other dimensions.
 
 ### Methods
 
-#### VerificationGate.__init__
+#### VerificationGate.**init**
 
 ```python
 __init__(self: Any, scanner: ScannerProtocol, health_computer: HealthComputerProtocol, max_rerolls: int)

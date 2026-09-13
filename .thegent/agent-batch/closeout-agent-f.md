@@ -7,6 +7,7 @@ Primary WLs: `WL-134`, `WL-135`
 ## Scope Closed
 
 Completed Track F closeout for:
+
 - `WL-134` fast/deep test topology rebalance.
 - `WL-135` LOC/complexity SLO dashboard pipeline, tests/docs, and status updates.
 
@@ -41,6 +42,7 @@ Completed Track F closeout for:
 ## WORK_STREAM Status Update
 
 Updated `docs/reference/WORK_STREAM.md`:
+
 - Marked `WL-134` as `COMPLETED (2026-02-21)` and `Blocked by: none`.
 - Marked `WL-135` as `COMPLETED (2026-02-21)` and `Blocked by: none`.
 - Removed `WL-134` and `WL-135` rows from `CLAIMED` table.
@@ -49,15 +51,19 @@ Updated `docs/reference/WORK_STREAM.md`:
 ## Validation Evidence
 
 Compile/syntax:
+
 ```bash
 python3 -m py_compile scripts/collect_loc_metrics.py scripts/wl137_weekly_diagnosis.py scripts/render_slo_dashboard.py scripts/emit_wl135_slo_stub.py tests/test_wl134_deep_lane_marker.py tests/test_wl135_loc_collector.py tests/test_wl135_slo_dashboard.py tests/test_wl135_slo_metric_emitter_stub.py tests/test_wl135_ci_summary_contract.py
 ```
+
 Result: pass (no output).
 
 Focused tests:
+
 ```bash
 uv run pytest -q tests/test_wl134_deep_lane_marker.py tests/test_wl135_loc_collector.py tests/test_wl135_slo_dashboard.py tests/test_wl135_slo_metric_emitter_stub.py tests/test_wl135_ci_summary_contract.py
 ```
+
 Result: `27 passed in 35.12s`.
 
 ## Files Touched for Closeout

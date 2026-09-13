@@ -18,7 +18,7 @@ Manages discovery and delegation for the teammate swarm.
 
 ### Methods
 
-#### TeammateManager.__init__
+#### TeammateManager.**init**
 
 ```python
 __init__(self: Any, storage_path: Path, hierarchy_manager: Any)

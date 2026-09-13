@@ -1,10 +1,11 @@
-<DONE>
----
+## <DONE>
+
 title: "Zig Hook Dispatcher Activation and Parity Verification"
 date: 2026-02-23
 status: completed
 owner: claude-code-agent
 tags: [zig, hooks, governance-gates, parity-testing, track-3]
+
 ---
 
 # Zig Hook Dispatcher Activation and Parity Verification
@@ -37,17 +38,17 @@ hook-dispatcher-zig v1.0.0 (Zig 0.15.2)
 
 The Zig dispatcher implements 9 event types with full round-trip validation:
 
-| Event Type | Description | Parity Status |
-|-----------|-------------|--------------|
-| `SessionStart` | Session initialization | ✓ Valid |
-| `SessionEnd` | Session termination | ✓ Valid |
-| `PreToolUse` | Before tool invocation | ✓ Valid |
-| `PostToolUse` | After tool invocation | ✓ Valid |
-| `Stop` | Final termination signal | ✓ Valid |
-| `UserPromptSubmit` | User input received | ✓ Valid |
-| `PreCompact` | Before compaction phase | ✓ Valid |
-| `Notification` | Notification event | ✓ Valid |
-| `PostAgentRun` | Post-run validation | ✓ Valid |
+| Event Type         | Description              | Parity Status |
+| ------------------ | ------------------------ | ------------- |
+| `SessionStart`     | Session initialization   | ✓ Valid       |
+| `SessionEnd`       | Session termination      | ✓ Valid       |
+| `PreToolUse`       | Before tool invocation   | ✓ Valid       |
+| `PostToolUse`      | After tool invocation    | ✓ Valid       |
+| `Stop`             | Final termination signal | ✓ Valid       |
+| `UserPromptSubmit` | User input received      | ✓ Valid       |
+| `PreCompact`       | Before compaction phase  | ✓ Valid       |
+| `Notification`     | Notification event       | ✓ Valid       |
+| `PostAgentRun`     | Post-run validation      | ✓ Valid       |
 
 **Validation**: All 9 event types successfully validate through `validate` subcommand.
 
@@ -78,6 +79,7 @@ The Zig implementation provides a generic contract/rule evaluation engine that s
 ### Rule Engine
 
 The dispatcher evaluates governance rules using:
+
 - **Operators**: `eq` (equality), `ne` (inequality), `gt`/`lt` (numeric), `contains`, `regex`
 - **Contract format**: JSON rule definitions with name, operator, expected value, fail-closed flag
 - **Output format**: Shell-compatible PASS/FAIL/N/A/FAIL-CLOSED format matching governance-gates.sh
@@ -93,6 +95,7 @@ The dispatcher evaluates governance rules using:
 ### Test Breakdown
 
 #### Dispatcher Functionality Tests (4 tests)
+
 - `test_zig_dispatcher_version`: Binary reports version correctly
 - `test_zig_dispatcher_validate_event_type`: All 9 event types validate
 - `test_zig_dispatcher_invalid_event_type`: Invalid types are rejected
@@ -101,6 +104,7 @@ The dispatcher evaluates governance rules using:
 **Status**: ✓ 4/4 PASS
 
 #### Event Type Parity Tests (5 tests)
+
 - `test_session_start_event_validity`: SessionStart is valid
 - `test_pre_tool_use_event_validity`: PreToolUse is valid
 - `test_post_tool_use_event_validity`: PostToolUse is valid
@@ -110,6 +114,7 @@ The dispatcher evaluates governance rules using:
 **Status**: ✓ 5/5 PASS
 
 #### Gate Parity Tests (7 tests)
+
 1. **test_gate_pre_tool_use_parity** `@FR-GOV-001`
    - Validates tool name, arguments, and preconditions
    - Status: ✓ PASS
@@ -139,6 +144,7 @@ The dispatcher evaluates governance rules using:
    - Status: ✓ PASS
 
 #### Dispatcher Behavior Tests (3 tests)
+
 - `test_dispatcher_deterministic_on_same_input`: Same input → same output
 - `test_dispatcher_handles_empty_input_gracefully`: Graceful handling of empty input
 - `test_dispatcher_version_output_format`: Version format compliance
@@ -146,6 +152,7 @@ The dispatcher evaluates governance rules using:
 **Status**: ✓ 3/3 PASS
 
 #### Shell Governance Gates Integration Tests (3 tests)
+
 - `test_governance_gates_script_exists`: governance-gates.sh present
 - `test_governance_gates_is_executable`: Script has exec permissions
 - `test_governance_gates_can_be_sourced`: Shell syntax is valid
@@ -153,6 +160,7 @@ The dispatcher evaluates governance rules using:
 **Status**: ✓ 3/3 PASS
 
 #### Gate Decision Logic Tests (2 tests)
+
 - `test_gate_pass_fail_consistency`: Consistent gate state representation
 - `test_gate_metrics_consistency`: Consistent metric tracking
 
@@ -170,13 +178,13 @@ Output: Clean, no failures
 
 ### Parity Analysis
 
-| Aspect | Zig | Shell | Parity |
-|--------|-----|-------|--------|
-| Event type validation | ✓ All 9 types | ✓ Implicit | ✓ |
-| Gate decision logic | ✓ Pass/Fail/NA/FailClosed | ✓ Same states | ✓ |
-| Output format | ✓ Shell-compatible | ✓ Governance-gates.sh | ✓ |
-| Determinism | ✓ Yes (atomic ops) | ✓ Yes (bash) | ✓ |
-| Error handling | ✓ Explicit rejection | ✓ Same behavior | ✓ |
+| Aspect                | Zig                       | Shell                 | Parity |
+| --------------------- | ------------------------- | --------------------- | ------ |
+| Event type validation | ✓ All 9 types             | ✓ Implicit            | ✓      |
+| Gate decision logic   | ✓ Pass/Fail/NA/FailClosed | ✓ Same states         | ✓      |
+| Output format         | ✓ Shell-compatible        | ✓ Governance-gates.sh | ✓      |
+| Determinism           | ✓ Yes (atomic ops)        | ✓ Yes (bash)          | ✓      |
+| Error handling        | ✓ Explicit rejection      | ✓ Same behavior       | ✓      |
 
 **Overall Parity**: ✓ VERIFIED — All gates match shell behavior
 
@@ -215,14 +223,14 @@ The Zig dispatcher integrates at:
 
 ## Activation Status
 
-| Component | Status | Notes |
-|-----------|--------|-------|
-| Zig dispatcher binary | ✓ Built | hooks/zig/zig-out/bin/hook-dispatcher-zig |
-| Parity tests | ✓ 24/24 PASS | tests/test_zig_hook_parity.py |
-| Zig unit tests | ✓ All PASS | cd hooks/zig && zig build test |
-| Configuration | ✓ Enabled | use_zig_dispatcher: true |
-| Shell integration | ✓ Compatible | Output format matches governance-gates.sh |
-| Production readiness | ✓ Yes | Ready for deployment |
+| Component             | Status       | Notes                                     |
+| --------------------- | ------------ | ----------------------------------------- |
+| Zig dispatcher binary | ✓ Built      | hooks/zig/zig-out/bin/hook-dispatcher-zig |
+| Parity tests          | ✓ 24/24 PASS | tests/test_zig_hook_parity.py             |
+| Zig unit tests        | ✓ All PASS   | cd hooks/zig && zig build test            |
+| Configuration         | ✓ Enabled    | use_zig_dispatcher: true                  |
+| Shell integration     | ✓ Compatible | Output format matches governance-gates.sh |
+| Production readiness  | ✓ Yes        | Ready for deployment                      |
 
 **Overall Status**: ✓ **ACTIVATED AND VERIFIED**
 
@@ -250,7 +258,8 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 
 ### Risks: None identified
 
-**Rationale**: 
+**Rationale**:
+
 - All parity tests pass (24/24)
 - Binary tested on target platform (macOS arm64)
 - Shell integration verified
@@ -270,15 +279,15 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 
 ## Files Changed
 
-| File | Type | Change |
-|------|------|--------|
-| `tests/test_zig_hook_parity.py` | New | 24 parity tests |
-| `hooks/hook-config.yaml` | Modified | Added Zig dispatcher settings |
-| `hooks/zig/src/main.zig` | Existing | Already in repo (from track-3) |
-| `hooks/zig/src/dispatcher.zig` | Existing | Already in repo (from track-3) |
-| `hooks/zig/src/event.zig` | Existing | Already in repo (from track-3) |
-| `hooks/zig/src/contracts.zig` | Existing | Already in repo (from track-3) |
-| `hooks/zig/build.zig` | Existing | Already in repo (from track-3) |
+| File                            | Type     | Change                         |
+| ------------------------------- | -------- | ------------------------------ |
+| `tests/test_zig_hook_parity.py` | New      | 24 parity tests                |
+| `hooks/hook-config.yaml`        | Modified | Added Zig dispatcher settings  |
+| `hooks/zig/src/main.zig`        | Existing | Already in repo (from track-3) |
+| `hooks/zig/src/dispatcher.zig`  | Existing | Already in repo (from track-3) |
+| `hooks/zig/src/event.zig`       | Existing | Already in repo (from track-3) |
+| `hooks/zig/src/contracts.zig`   | Existing | Already in repo (from track-3) |
+| `hooks/zig/build.zig`           | Existing | Already in repo (from track-3) |
 
 ## Test Coverage Summary
 
@@ -292,4 +301,4 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 
 ---
 
-*Activation completed on 2026-02-23. Ready for merge and deployment.*
+_Activation completed on 2026-02-23. Ready for merge and deployment._

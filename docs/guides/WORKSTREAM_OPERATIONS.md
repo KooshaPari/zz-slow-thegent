@@ -33,10 +33,10 @@ class WorkStreamItem:
 
 **Methods:**
 
-| Method | Description |
-|--------|-------------|
+| Method                          | Description                                     |
+| ------------------------------- | ----------------------------------------------- |
 | `dependency_ids() -> list[str]` | Returns list of dependency IDs, empty when none |
-| `priority_key() -> int` | Integer sort key (P0=0, P1=1, …, P4=4) |
+| `priority_key() -> int`         | Integer sort key (P0=0, P1=1, …, P4=4)          |
 
 ### WorkStreamState
 
@@ -50,12 +50,12 @@ class WorkStreamState:
 
 **Methods:**
 
-| Method | Description |
-|--------|-------------|
-| `claimed_ids() -> set[str]` | IDs of all claimed items |
-| `completed_ids() -> set[str]` | IDs of all completed items |
-| `all_items() -> list[WorkStreamItem]` | All items across sections |
-| `find_by_id(item_id) -> WorkStreamItem or None` | Lookup by ID |
+| Method                                          | Description                |
+| ----------------------------------------------- | -------------------------- |
+| `claimed_ids() -> set[str]`                     | IDs of all claimed items   |
+| `completed_ids() -> set[str]`                   | IDs of all completed items |
+| `all_items() -> list[WorkStreamItem]`           | All items across sections  |
+| `find_by_id(item_id) -> WorkStreamItem or None` | Lookup by ID               |
 
 ---
 
@@ -92,6 +92,7 @@ def get_next_items(
 
 Return up to `n` unblocked, unclaimed backlog items sorted by priority
 (P0 first). Items are excluded when:
+
 - already in CLAIMED, or
 - their `min_priority` rank exceeds the threshold, or
 - any dependency has not yet appeared in COMPLETED.
@@ -133,6 +134,7 @@ def claim_item(item_id: str, agent_id: str, path: Path | str | None = None) -> b
 
 Atomically add `item_id` to the CLAIMED section with `agent_id` and the
 current UTC timestamp. Returns `False` when:
+
 - the item does not exist in BACKLOG,
 - the item is already claimed, or
 - the file cannot be written.

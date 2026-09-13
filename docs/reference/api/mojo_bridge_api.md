@@ -17,18 +17,20 @@ compiled Mojo binaries, with future support for C-ABI integration when stable.
 Bridge for calling Mojo modules from Python.
 
 Supports:
+
 - Subprocess-based execution of compiled Mojo binaries
 - Graceful fallback when Mojo is not available
 - JSON-based I/O for data exchange
 - Async execution for better integration
 
 Future:
+
 - C-ABI integration when Mojo's foreign function interface stabilizes
 - Direct memory sharing for high-performance scenarios
 
 ### Methods
 
-#### MojoBridge.__init__
+#### MojoBridge.**init**
 
 ```python
 __init__(self: Any, mojo_root: Any, cache_root: Any)

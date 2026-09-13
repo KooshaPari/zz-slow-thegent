@@ -35,11 +35,11 @@ shell/
 
 ### Agent vs Interactive Shells
 
-| Profile | Purpose | Startup target |
-|---------|---------|----------------|
-| `.zshrc` | Human interactive shell | < 100 ms |
-| `.zsh_slim.zsh` | AI agent sub-shells | < 10 ms |
-| `thegent.zshrc.agent` | Agent shell with structured logging | < 50 ms |
+| Profile               | Purpose                             | Startup target |
+| --------------------- | ----------------------------------- | -------------- |
+| `.zshrc`              | Human interactive shell             | < 100 ms       |
+| `.zsh_slim.zsh`       | AI agent sub-shells                 | < 10 ms        |
+| `thegent.zshrc.agent` | Agent shell with structured logging | < 50 ms        |
 
 ---
 
@@ -47,15 +47,15 @@ shell/
 
 The Python auditor (`src/thegent/tools/shell_config.py`) provides:
 
-| Class / Method | Purpose |
-|----------------|---------|
-| `ShellConfigFile.parse(path)` | Parse a single file for functions, aliases, and source calls |
-| `ShellConfigAuditor.audit(dirs)` | Walk directories and return all config files |
-| `ShellConfigAuditor.find_duplicates(configs)` | Find function names defined in more than one file |
-| `ShellConfigAuditor.find_duplicate_aliases(configs)` | Find alias names defined in more than one file |
-| `ShellConfigAuditor.generate_consolidated(configs)` | Merge all files into one script with origin comments |
-| `ShellConfigAuditor.check_sourcing_order(configs)` | Detect missing sources, circular chains, empty files |
-| `ShellConfigAuditor.sourcing_graph(configs)` | Build a name -> sourced-files mapping |
+| Class / Method                                       | Purpose                                                      |
+| ---------------------------------------------------- | ------------------------------------------------------------ |
+| `ShellConfigFile.parse(path)`                        | Parse a single file for functions, aliases, and source calls |
+| `ShellConfigAuditor.audit(dirs)`                     | Walk directories and return all config files                 |
+| `ShellConfigAuditor.find_duplicates(configs)`        | Find function names defined in more than one file            |
+| `ShellConfigAuditor.find_duplicate_aliases(configs)` | Find alias names defined in more than one file               |
+| `ShellConfigAuditor.generate_consolidated(configs)`  | Merge all files into one script with origin comments         |
+| `ShellConfigAuditor.check_sourcing_order(configs)`   | Detect missing sources, circular chains, empty files         |
+| `ShellConfigAuditor.sourcing_graph(configs)`         | Build a name -> sourced-files mapping                        |
 
 ### Running the Audit
 
@@ -107,13 +107,13 @@ The initial audit of `shell/` identified the following:
 
 ### Functions defined in multiple files
 
-| Function | Files |
-|----------|-------|
-| `_thegent_timeout_cmd` | `.zsh_safeguards.zsh`, `.zsh_advanced.zsh` |
-| `zshexit` | `.zsh_optimization.zsh`, `.zsh_advanced.zsh` |
+| Function               | Files                                        |
+| ---------------------- | -------------------------------------------- |
+| `_thegent_timeout_cmd` | `.zsh_safeguards.zsh`, `.zsh_advanced.zsh`   |
+| `zshexit`              | `.zsh_optimization.zsh`, `.zsh_advanced.zsh` |
 
 **Recommendation**: Keep `_thegent_timeout_cmd` only in `.zsh_advanced.zsh` (which is sourced
-after safeguards) and have `.zsh_safeguards.zsh` delegate to it via a guard.  For `zshexit`,
+after safeguards) and have `.zsh_safeguards.zsh` delegate to it via a guard. For `zshexit`,
 consolidate into `.zsh_advanced.zsh` since it runs last and registers the cleanup job.
 
 ### Sourcing Relationships
@@ -132,7 +132,7 @@ consolidate into `.zsh_advanced.zsh` since it runs last and registers the cleanu
 
 ### `.zshrc.optimized` / Redundant Files
 
-No `.zshrc.optimized` file was found in the repository.  If one exists on disk after
+No `.zshrc.optimized` file was found in the repository. If one exists on disk after
 installation, it can safely be removed—`shell/.zshrc` is the canonical source.
 
 ---

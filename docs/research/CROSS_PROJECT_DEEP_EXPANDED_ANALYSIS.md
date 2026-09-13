@@ -29,16 +29,16 @@ This document provides an **expanded, deeper analysis** of the kush ecosystem, e
 
 ### 1.1 Core Projects (Previously Analyzed)
 
-| Project | Status | Key Strengths | Borrowable Features |
-|---------|--------|---------------|---------------------|
-| **thegent** | ✅ Active | Unified work stream, research integration | Work stream template, research linking |
-| **heliosShield** | ✅ Active | P0-P4 priority system, governance gates | Priority system, governance patterns |
-| **plangent** | ✅ Complete | Adapter pattern, hierarchical agents | Multi-agent patterns, adapter design |
-| **kimaki** | ✅ Complete | Voice AI, multi-project context | Conversation rules, context management |
-| **smolgents** | ✅ Production | Cost optimization, model routing | Cost tracking, routing strategies |
-| **trace** | ✅ Planning | MCP categorization, comprehensive planning | Tool organization, planning structure |
-| **dphi** | ✅ Active | MCP composition, workflow integration | Composition patterns, workflows |
-| **usage** | 🚧 Migration | Usage tracking, provider extraction | Tracking patterns, migration strategies |
+| Project          | Status        | Key Strengths                              | Borrowable Features                     |
+| ---------------- | ------------- | ------------------------------------------ | --------------------------------------- |
+| **thegent**      | ✅ Active     | Unified work stream, research integration  | Work stream template, research linking  |
+| **heliosShield** | ✅ Active     | P0-P4 priority system, governance gates    | Priority system, governance patterns    |
+| **plangent**     | ✅ Complete   | Adapter pattern, hierarchical agents       | Multi-agent patterns, adapter design    |
+| **kimaki**       | ✅ Complete   | Voice AI, multi-project context            | Conversation rules, context management  |
+| **smolgents**    | ✅ Production | Cost optimization, model routing           | Cost tracking, routing strategies       |
+| **trace**        | ✅ Planning   | MCP categorization, comprehensive planning | Tool organization, planning structure   |
+| **dphi**         | ✅ Active     | MCP composition, workflow integration      | Composition patterns, workflows         |
+| **usage**        | 🚧 Migration  | Usage tracking, provider extraction        | Tracking patterns, migration strategies |
 
 ### 1.2 Additional Projects Analyzed
 
@@ -48,6 +48,7 @@ This document provides an **expanded, deeper analysis** of the kush ecosystem, e
 **Tech**: Python 3.12, FastMCP, Supabase
 
 **Key Features**:
+
 - ✅ Sophisticated OAuth + Bearer token auth
 - ✅ Row-Level Security (RLS) integration
 - ✅ 5 consolidated MCP tools
@@ -57,6 +58,7 @@ This document provides an **expanded, deeper analysis** of the kush ecosystem, e
 - ✅ 25+ business services
 
 **Borrowable**:
+
 - **Authentication patterns** → OAuth PKCE + Bearer token hybrid
 - **RLS integration** → Database-level security
 - **Adapter pattern** → Hexagonal architecture
@@ -64,6 +66,7 @@ This document provides an **expanded, deeper analysis** of the kush ecosystem, e
 - **Monitoring infrastructure** → Performance tracking
 
 **Files**:
+
 - `CODEBASE_ARCHITECTURE_COMPLETE.md` - Architecture overview
 - `AUTH_SYSTEM_COMPLETE_GUIDE.md` - Auth patterns
 - `src/atoms_mcp/infrastructure/monitoring.py` - Monitoring
@@ -76,6 +79,7 @@ This document provides an **expanded, deeper analysis** of the kush ecosystem, e
 **Tech**: Python, Hexagonal Architecture
 
 **Key Features**:
+
 - ✅ Common patterns library
 - ✅ WBS decomposition patterns
 - ✅ Testing patterns (pyramid, hexagonal)
@@ -84,12 +88,14 @@ This document provides an **expanded, deeper analysis** of the kush ecosystem, e
 - ✅ Deployment patterns
 
 **Borrowable**:
+
 - **WBS patterns** → Feature development, refactoring, migration
 - **Testing patterns** → Test pyramid, hexagonal testing, test data management
 - **Migration patterns** → Strangler fig, big bang, feature flag
 - **Deployment patterns** → Phased rollout, canary, gradual
 
 **Files**:
+
 - `work-prompts/core/COMMON_PATTERNS.md` - Pattern library
 - `BLUEPRINT.md` - Architecture blueprint
 
@@ -101,6 +107,7 @@ This document provides an **expanded, deeper analysis** of the kush ecosystem, e
 **Tech**: Python 3.11-3.13, LangGraph, NATS, Redis
 
 **Key Features**:
+
 - ✅ Hybrid DSL planning
 - ✅ Distributed DAG execution
 - ✅ Advanced code quality analysis
@@ -109,12 +116,14 @@ This document provides an **expanded, deeper analysis** of the kush ecosystem, e
 - ✅ Benchmarking system
 
 **Borrowable**:
+
 - **Planning AI** → Adaptive task decomposition
 - **Tree of Thoughts** → Multi-step reasoning
 - **Benchmarking** → Performance measurement
 - **DAG execution** → Distributed workflows
 
 **Files**:
+
 - `docs/api/planning_ai_adaptive_decomp_module.md` - AI planning
 - `docs/api/planning_ai_tree_of_thoughts_module.md` - ToT
 
@@ -126,6 +135,7 @@ This document provides an **expanded, deeper analysis** of the kush ecosystem, e
 **Tech**: Prometheus, Grafana, Alertmanager
 
 **Key Features**:
+
 - ✅ Comprehensive monitoring stack
 - ✅ Pre-built dashboards (7 dashboards)
 - ✅ Multi-channel alerting
@@ -134,6 +144,7 @@ This document provides an **expanded, deeper analysis** of the kush ecosystem, e
 - ✅ Threat modeling
 
 **Borrowable**:
+
 - **Monitoring stack** → Prometheus + Grafana setup
 - **Dashboard templates** → Pre-built dashboards
 - **Alerting patterns** → Multi-channel alerts
@@ -141,6 +152,7 @@ This document provides an **expanded, deeper analysis** of the kush ecosystem, e
 - **SLO tracking** → Error budgets, SLA monitoring
 
 **Files**:
+
 - `monitoring/MONITORING_GUIDE.md` - Monitoring guide
 - `security/THREAT_MODEL.md` - Threat modeling
 - `SECURITY.md` - Security documentation
@@ -153,6 +165,7 @@ This document provides an **expanded, deeper analysis** of the kush ecosystem, e
 **Tech**: Python, SST SDK, Pydantic
 
 **Key Features**:
+
 - ✅ Infrastructure abstraction
 - ✅ Implementation guides
 - ✅ Database operations
@@ -160,11 +173,13 @@ This document provides an **expanded, deeper analysis** of the kush ecosystem, e
 - ✅ Documentation system
 
 **Borrowable**:
+
 - **Infrastructure patterns** → SDK design
 - **Implementation guides** → Best practices
 - **Database patterns** → Operation abstractions
 
 **Files**:
+
 - `docs/guides/IMPLEMENTATION_MASTER.md` - Implementation guide
 
 ---
@@ -173,13 +188,13 @@ This document provides an **expanded, deeper analysis** of the kush ecosystem, e
 
 ### 2.1 Test Pyramid Patterns
 
-| Project | Unit % | Integration % | E2E % | Coverage Target |
-|---------|--------|---------------|-------|-----------------|
-| **heliosShield** | 70% | 20% | 10% | 80%+ |
-| **smolgents** | 60-70% | 20-30% | 5-10% | 80%+ core |
-| **plangent** | 80% | 15% | 5% | 85%+ adapters |
-| **morph** | 80% | 15% | 5% | 90%+ domain |
-| **atoms-mcp-prod** | 60% | 30% | 10% | 80%+ |
+| Project            | Unit % | Integration % | E2E % | Coverage Target |
+| ------------------ | ------ | ------------- | ----- | --------------- |
+| **heliosShield**   | 70%    | 20%           | 10%   | 80%+            |
+| **smolgents**      | 60-70% | 20-30%        | 5-10% | 80%+ core       |
+| **plangent**       | 80%    | 15%           | 5%    | 85%+ adapters   |
+| **morph**          | 80%    | 15%           | 5%    | 90%+ domain     |
+| **atoms-mcp-prod** | 60%    | 30%           | 10%   | 80%+            |
 
 **Borrowable Pattern**: **smolgents' test pyramid** (60-70% unit, 20-30% integration, 5-10% E2E)
 
@@ -188,6 +203,7 @@ This document provides an **expanded, deeper analysis** of the kush ecosystem, e
 ### 2.2 Hexagonal Testing Strategy (from morph)
 
 **Pattern**:
+
 ```
 Domain Layer:
 ├─ Unit tests (pure logic, mocked ports)
@@ -214,6 +230,7 @@ Architecture:
 ### 2.3 Test Data Management (from morph)
 
 **Pattern**:
+
 ```
 Test Data Hierarchy:
 ├─ Fixtures (reusable test data)
@@ -232,14 +249,14 @@ Test Data Hierarchy:
 
 ### 2.4 Testing Features to Borrow
 
-| Feature | Source | Target Projects | Priority |
-|---------|--------|-----------------|----------|
-| Test pyramid rebalance | heliosShield | All projects | P1 |
-| Hexagonal testing strategy | morph | atoms-mcp-prod, usage | P1 |
-| Test data management | morph | All Python projects | P1 |
-| Characterization tests | heliosShield | Brownfield projects | P2 |
-| Mutation testing | heliosShield RS-012 | Critical systems | P2 |
-| Property testing | heliosShield RC-005 | Smart contracts | P2 |
+| Feature                    | Source              | Target Projects       | Priority |
+| -------------------------- | ------------------- | --------------------- | -------- |
+| Test pyramid rebalance     | heliosShield        | All projects          | P1       |
+| Hexagonal testing strategy | morph               | atoms-mcp-prod, usage | P1       |
+| Test data management       | morph               | All Python projects   | P1       |
+| Characterization tests     | heliosShield        | Brownfield projects   | P2       |
+| Mutation testing           | heliosShield RS-012 | Critical systems      | P2       |
+| Property testing           | heliosShield RC-005 | Smart contracts       | P2       |
 
 ---
 
@@ -248,6 +265,7 @@ Test Data Hierarchy:
 ### 3.1 Phased Rollout Pattern (from morph)
 
 **Pattern**:
+
 ```
 Phase 0: Preparation
     ↓
@@ -275,6 +293,7 @@ Each phase includes:
 #### Strangler Fig Pattern (from morph)
 
 **Steps**:
+
 1. Identify boundary
 2. Create port interface
 3. Implement new adapter
@@ -293,6 +312,7 @@ Each phase includes:
 #### Feature Flag Pattern (from morph)
 
 **Steps**:
+
 1. Implement both old and new
 2. Add feature flag
 3. Enable for internal users
@@ -309,13 +329,13 @@ Each phase includes:
 
 ### 3.3 Deployment Features to Borrow
 
-| Feature | Source | Target Projects | Priority |
-|---------|--------|-----------------|----------|
-| Phased rollout | morph | All production | P1 |
-| Feature flags | morph | All projects | P1 |
-| Strangler fig | morph | Legacy migrations | P1 |
-| Canary deployment | morph | Production services | P1 |
-| Rollback procedures | smolgents | All deployments | P1 |
+| Feature             | Source    | Target Projects     | Priority |
+| ------------------- | --------- | ------------------- | -------- |
+| Phased rollout      | morph     | All production      | P1       |
+| Feature flags       | morph     | All projects        | P1       |
+| Strangler fig       | morph     | Legacy migrations   | P1       |
+| Canary deployment   | morph     | Production services | P1       |
+| Rollback procedures | smolgents | All deployments     | P1       |
 
 ---
 
@@ -324,6 +344,7 @@ Each phase includes:
 ### 4.1 Monitoring Stack (from claude-squad)
 
 **Components**:
+
 - Prometheus (metrics collection)
 - Grafana (visualization)
 - Alertmanager (alert routing)
@@ -331,6 +352,7 @@ Each phase includes:
 - Exporters (metrics collection)
 
 **Features**:
+
 - Real-time metrics (15-second granularity)
 - Pre-built dashboards (7 dashboards)
 - Multi-channel alerting (Slack, PagerDuty, Email)
@@ -388,14 +410,14 @@ Log Levels:
 
 ### 4.4 Monitoring Features to Borrow
 
-| Feature | Source | Target Projects | Priority |
-|---------|--------|-----------------|----------|
-| Prometheus + Grafana | claude-squad | All production | P1 |
-| Pre-built dashboards | claude-squad | All services | P1 |
-| SLO/SLA tracking | claude-squad | Production services | P1 |
-| Cost tracking metrics | smolgents | Agent systems | P1 |
-| Performance monitoring | atoms-mcp-prod | MCP servers | P1 |
-| Health checks | kimaki | All services | P1 |
+| Feature                | Source         | Target Projects     | Priority |
+| ---------------------- | -------------- | ------------------- | -------- |
+| Prometheus + Grafana   | claude-squad   | All production      | P1       |
+| Pre-built dashboards   | claude-squad   | All services        | P1       |
+| SLO/SLA tracking       | claude-squad   | Production services | P1       |
+| Cost tracking metrics  | smolgents      | Agent systems       | P1       |
+| Performance monitoring | atoms-mcp-prod | MCP servers         | P1       |
+| Health checks          | kimaki         | All services        | P1       |
 
 ---
 
@@ -406,6 +428,7 @@ Log Levels:
 #### OAuth PKCE + Bearer Token Hybrid (from atoms-mcp-prod)
 
 **Pattern**:
+
 - OAuth PKCE for external clients (IDEs)
 - Bearer tokens for internal clients
 - Composite authentication provider
@@ -419,6 +442,7 @@ Log Levels:
 #### OAuth 2.0 Flow (from claude-squad)
 
 **Features**:
+
 - GitHub OAuth integration
 - State token (CSRF protection)
 - PKCE support
@@ -434,6 +458,7 @@ Log Levels:
 #### Row-Level Security (RLS) (from atoms-mcp-prod)
 
 **Pattern**:
+
 - Database-level security
 - Automatic query scoping
 - Organization-based access
@@ -447,6 +472,7 @@ Log Levels:
 #### RBAC (from trace, claude-squad)
 
 **Pattern**:
+
 - Role definitions (admin, developer, viewer)
 - Permission mapping
 - Access control enforcement
@@ -461,6 +487,7 @@ Log Levels:
 #### Data Encryption (from trace, claude-squad)
 
 **Pattern**:
+
 - At rest: AES-256
 - In transit: TLS 1.3
 - Backups: Encrypted
@@ -472,14 +499,14 @@ Log Levels:
 
 ### 5.4 Security Features to Borrow
 
-| Feature | Source | Target Projects | Priority |
-|---------|--------|-----------------|----------|
-| OAuth PKCE + Bearer hybrid | atoms-mcp-prod | MCP servers | P1 |
-| RLS integration | atoms-mcp-prod | PostgreSQL projects | P1 |
-| RBAC | trace, claude-squad | Multi-user systems | P1 |
-| Threat modeling | claude-squad | All production | P1 |
-| Security monitoring | claude-squad | Production services | P1 |
-| Audit logging | trace, atoms-mcp-prod | All systems | P1 |
+| Feature                    | Source                | Target Projects     | Priority |
+| -------------------------- | --------------------- | ------------------- | -------- |
+| OAuth PKCE + Bearer hybrid | atoms-mcp-prod        | MCP servers         | P1       |
+| RLS integration            | atoms-mcp-prod        | PostgreSQL projects | P1       |
+| RBAC                       | trace, claude-squad   | Multi-user systems  | P1       |
+| Threat modeling            | claude-squad          | All production      | P1       |
+| Security monitoring        | claude-squad          | Production services | P1       |
+| Audit logging              | trace, atoms-mcp-prod | All systems         | P1       |
 
 ---
 
@@ -488,6 +515,7 @@ Log Levels:
 ### 6.1 Hexagonal Architecture (from morph, atoms-mcp-prod)
 
 **Pattern**:
+
 ```
 ┌─────────────────────────────────┐
 │      Application Layer          │
@@ -512,6 +540,7 @@ Log Levels:
 ### 6.2 Adapter Pattern (from plangent, atoms-mcp-prod)
 
 **Pattern**:
+
 - Generic interfaces before implementation
 - Multiple executor backends
 - Tool provider abstraction
@@ -525,6 +554,7 @@ Log Levels:
 ### 6.3 Event-Driven Architecture (from plangent)
 
 **Pattern**:
+
 - Decoupled agent communication
 - Message queues
 - Event publishing/subscribing
@@ -536,12 +566,12 @@ Log Levels:
 
 ### 6.4 Architecture Features to Borrow
 
-| Feature | Source | Target Projects | Priority |
-|---------|--------|-----------------|----------|
-| Hexagonal architecture | morph, atoms-mcp-prod | New projects | P1 |
-| Adapter pattern | plangent, atoms-mcp-prod | Agent systems | P1 |
-| Event-driven | plangent | Multi-agent systems | P1 |
-| Port/Adapter separation | morph | Refactoring projects | P1 |
+| Feature                 | Source                   | Target Projects      | Priority |
+| ----------------------- | ------------------------ | -------------------- | -------- |
+| Hexagonal architecture  | morph, atoms-mcp-prod    | New projects         | P1       |
+| Adapter pattern         | plangent, atoms-mcp-prod | Agent systems        | P1       |
+| Event-driven            | plangent                 | Multi-agent systems  | P1       |
+| Port/Adapter separation | morph                    | Refactoring projects | P1       |
 
 ---
 
@@ -550,6 +580,7 @@ Log Levels:
 ### 7.1 LLM Quality Research (from heliosShield)
 
 **Research Areas**:
+
 - LLM-as-Judge pattern
 - Local ML models (Qwen-Coder, DeepSeek)
 - MLX optimization (Apple Silicon)
@@ -557,6 +588,7 @@ Log Levels:
 - Binary classification for code quality
 
 **Tools**:
+
 - Gemini Flash ($0.15/$0.60 per M tokens)
 - Claude Haiku ($1/$5 per M tokens)
 - Qwen2.5-Coder (1.5B-32B)
@@ -569,12 +601,14 @@ Log Levels:
 ### 7.2 Chaos Engineering Research (from heliosShield)
 
 **Research Areas**:
+
 - Resilience testing
 - Fault injection
 - Steady-state validation
 - CI integration
 
 **Tools**:
+
 - Toxiproxy (TCP fault injection)
 - Chaos Toolkit (declarative experiments)
 - LitmusChaos (Kubernetes)
@@ -586,12 +620,12 @@ Log Levels:
 
 ### 7.3 Research Features to Borrow
 
-| Research Area | Source | Target Projects | Priority |
-|---------------|--------|-----------------|----------|
-| LLM-as-Judge | heliosShield | Code quality gates | P1 |
-| Local ML models | heliosShield | Pre-commit hooks | P1 |
-| Chaos engineering | heliosShield | Production services | P2 |
-| MLX optimization | heliosShield | Apple Silicon projects | P2 |
+| Research Area     | Source       | Target Projects        | Priority |
+| ----------------- | ------------ | ---------------------- | -------- |
+| LLM-as-Judge      | heliosShield | Code quality gates     | P1       |
+| Local ML models   | heliosShield | Pre-commit hooks       | P1       |
+| Chaos engineering | heliosShield | Production services    | P2       |
+| MLX optimization  | heliosShield | Apple Silicon projects | P2       |
 
 ---
 
@@ -600,6 +634,7 @@ Log Levels:
 ### 8.1 Caching Strategies (from smolgents, heliosShield)
 
 **Patterns**:
+
 - LLM response caching (semantic similarity)
 - Tool result caching (time-based TTL)
 - Configuration caching (application-level)
@@ -613,6 +648,7 @@ Log Levels:
 ### 8.2 Parallelization Patterns (from smolgents)
 
 **Patterns**:
+
 - Execute independent tasks concurrently
 - Parallel agent execution
 - Batch tool calls
@@ -624,13 +660,13 @@ Log Levels:
 
 ### 8.3 Performance Features to Borrow
 
-| Feature | Source | Target Projects | Priority |
-|---------|--------|-----------------|----------|
-| Hierarchical cache | heliosShield | High-traffic services | P1 |
-| Stale-while-revalidate | heliosShield | Cache systems | P1 |
-| Parallel execution | smolgents | Agent systems | P1 |
-| Resource pooling | smolgents | All services | P1 |
-| Connection pooling | smolgents | Database services | P1 |
+| Feature                | Source       | Target Projects       | Priority |
+| ---------------------- | ------------ | --------------------- | -------- |
+| Hierarchical cache     | heliosShield | High-traffic services | P1       |
+| Stale-while-revalidate | heliosShield | Cache systems         | P1       |
+| Parallel execution     | smolgents    | Agent systems         | P1       |
+| Resource pooling       | smolgents    | All services          | P1       |
+| Connection pooling     | smolgents    | Database services     | P1       |
 
 ---
 
@@ -669,6 +705,7 @@ Log Levels:
 ### 9.2 Planning Patterns (from crun)
 
 **Patterns**:
+
 - Adaptive decomposition
 - Tree of Thoughts
 - Benchmarking
@@ -682,31 +719,31 @@ Log Levels:
 
 ### 10.1 High-Priority Borrows (P1)
 
-| Feature | Source | Target Projects | Impact | Effort |
-|---------|--------|-----------------|--------|--------|
-| P0-P4 Priority System | heliosShield | All projects | High | 2-4h |
-| Test Pyramid (60-70-5-10) | smolgents | All projects | High | 1-2h |
-| Hexagonal Testing | morph | Hexagonal projects | High | 1 week |
-| Phased Rollout | morph | Production deployments | High | 1 week |
-| OAuth PKCE + Bearer | atoms-mcp-prod | MCP servers | High | 1-2 weeks |
-| RLS Integration | atoms-mcp-prod | PostgreSQL projects | High | 1 week |
-| Prometheus + Grafana | claude-squad | Production services | High | 1 week |
-| Cost Tracking | smolgents | Agent systems | High | 1-2 weeks |
-| Adapter Pattern | plangent | Agent systems | High | 2-3 weeks |
-| WBS Patterns | morph | All projects | High | 1-2h |
+| Feature                   | Source         | Target Projects        | Impact | Effort    |
+| ------------------------- | -------------- | ---------------------- | ------ | --------- |
+| P0-P4 Priority System     | heliosShield   | All projects           | High   | 2-4h      |
+| Test Pyramid (60-70-5-10) | smolgents      | All projects           | High   | 1-2h      |
+| Hexagonal Testing         | morph          | Hexagonal projects     | High   | 1 week    |
+| Phased Rollout            | morph          | Production deployments | High   | 1 week    |
+| OAuth PKCE + Bearer       | atoms-mcp-prod | MCP servers            | High   | 1-2 weeks |
+| RLS Integration           | atoms-mcp-prod | PostgreSQL projects    | High   | 1 week    |
+| Prometheus + Grafana      | claude-squad   | Production services    | High   | 1 week    |
+| Cost Tracking             | smolgents      | Agent systems          | High   | 1-2 weeks |
+| Adapter Pattern           | plangent       | Agent systems          | High   | 2-3 weeks |
+| WBS Patterns              | morph          | All projects           | High   | 1-2h      |
 
 ---
 
 ### 10.2 Medium-Priority Borrows (P2)
 
-| Feature | Source | Target Projects | Impact | Effort |
-|---------|--------|-----------------|--------|--------|
-| LLM-as-Judge | heliosShield | Code quality | Medium | 2-4h |
+| Feature           | Source       | Target Projects     | Impact | Effort    |
+| ----------------- | ------------ | ------------------- | ------ | --------- |
+| LLM-as-Judge      | heliosShield | Code quality        | Medium | 2-4h      |
 | Chaos Engineering | heliosShield | Production services | Medium | 1-2 weeks |
-| Feature Flags | morph | Feature rollouts | Medium | 1 week |
-| Strangler Fig | morph | Legacy migrations | Medium | 2-4 weeks |
-| Threat Modeling | claude-squad | Production services | Medium | 1 week |
-| Tree of Thoughts | crun | Planning systems | Medium | 1-2 weeks |
+| Feature Flags     | morph        | Feature rollouts    | Medium | 1 week    |
+| Strangler Fig     | morph        | Legacy migrations   | Medium | 2-4 weeks |
+| Threat Modeling   | claude-squad | Production services | Medium | 1 week    |
+| Tree of Thoughts  | crun         | Planning systems    | Medium | 1-2 weeks |
 
 ---
 
@@ -715,16 +752,19 @@ Log Levels:
 ### Phase 1: Foundation (Weeks 1-4)
 
 **Week 1-2: Priority & Testing**
+
 - Adopt P0-P4 priority system (all projects)
 - Implement test pyramid (all projects)
 - Add hexagonal testing (hexagonal projects)
 
 **Week 3-4: Security & Architecture**
+
 - Implement OAuth PKCE + Bearer (MCP servers)
 - Add RLS integration (PostgreSQL projects)
 - Adopt adapter pattern (agent systems)
 
 **Deliverables**:
+
 - Updated work streams
 - Test strategies implemented
 - Security patterns adopted
@@ -734,16 +774,19 @@ Log Levels:
 ### Phase 2: Observability & Performance (Weeks 5-8)
 
 **Week 5-6: Monitoring**
+
 - Set up Prometheus + Grafana (production services)
 - Add cost tracking (agent systems)
 - Implement health checks (all services)
 
 **Week 7-8: Performance**
+
 - Implement hierarchical caching (high-traffic)
 - Add parallel execution (agent systems)
 - Optimize resource pooling
 
 **Deliverables**:
+
 - Monitoring dashboards
 - Cost tracking integrated
 - Performance optimizations
@@ -753,16 +796,19 @@ Log Levels:
 ### Phase 3: Deployment & Research (Weeks 9-12)
 
 **Week 9-10: Deployment**
+
 - Implement phased rollout (production)
 - Add feature flags (all projects)
 - Set up canary deployment
 
 **Week 11-12: Research**
+
 - Integrate LLM-as-Judge (code quality)
 - Set up chaos engineering (production)
 - Add local ML models (pre-commit)
 
 **Deliverables**:
+
 - Deployment patterns implemented
 - Research tools integrated
 - Quality gates enhanced

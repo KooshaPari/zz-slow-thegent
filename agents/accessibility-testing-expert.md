@@ -29,6 +29,7 @@ frontend/apps/web/src/views/**/*.tsx
 ## Auto-Invoke Patterns
 
 Trigger when user mentions:
+
 - "accessibility", "a11y", "wcag", "screen reader", "keyboard nav"
 - File changes in UI components
 - Accessibility test failures
@@ -47,21 +48,21 @@ Trigger when user mentions:
 
 ```typescript
 // e2e/accessibility.a11y.spec.ts
-import { test, expect } from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
+import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
-test('homepage has no accessibility violations', async ({ page }) => {
-  await page.goto('/');
+test("homepage has no accessibility violations", async ({ page }) => {
+  await page.goto("/");
 
   const accessibilityScanResults = await new AxeBuilder({ page })
-    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
     .analyze();
 
   expect(accessibilityScanResults.violations).toEqual([]);
 });
 
-test('form has proper labels and error messages', async ({ page }) => {
-  await page.goto('/form');
+test("form has proper labels and error messages", async ({ page }) => {
+  await page.goto("/form");
 
   // Check for violations
   const results = await new AxeBuilder({ page }).analyze();
@@ -70,7 +71,7 @@ test('form has proper labels and error messages', async ({ page }) => {
   // Verify specific patterns
   const inputs = await page.locator('input[type="text"]').all();
   for (const input of inputs) {
-    const id = await input.getAttribute('id');
+    const id = await input.getAttribute("id");
     const label = page.locator(`label[for="${id}"]`);
     await expect(label).toBeVisible();
   }
@@ -107,15 +108,15 @@ function Dropdown() {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     switch (e.key) {
-      case 'Escape':
+      case "Escape":
         setIsOpen(false);
         buttonRef.current?.focus();
         break;
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
         // Focus first item
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
         // Focus last item
         break;
@@ -135,8 +136,12 @@ function Dropdown() {
       </button>
       {isOpen && (
         <ul role="menu" onKeyDown={handleKeyDown}>
-          <li role="menuitem" tabIndex={0}>Item 1</li>
-          <li role="menuitem" tabIndex={0}>Item 2</li>
+          <li role="menuitem" tabIndex={0}>
+            Item 1
+          </li>
+          <li role="menuitem" tabIndex={0}>
+            Item 2
+          </li>
         </ul>
       )}
     </div>
@@ -162,7 +167,7 @@ function Modal({ isOpen, onClose, children }) {
 
     // Focus first focusable element in modal
     const focusableElements = modal.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
     const firstFocusable = focusableElements[0] as HTMLElement;
     firstFocusable?.focus();
@@ -174,7 +179,7 @@ function Modal({ isOpen, onClose, children }) {
   }, [isOpen]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
+    if (e.key === "Escape") {
       onClose();
     }
   };
@@ -238,6 +243,7 @@ function Modal({ isOpen, onClose, children }) {
 ## WCAG 2.1 AA Checklist
 
 ### Perceivable
+
 - [ ] Text alternatives for non-text content
 - [ ] Captions for audio/video
 - [ ] Content can be presented in different ways
@@ -245,6 +251,7 @@ function Modal({ isOpen, onClose, children }) {
 - [ ] Text can be resized to 200% without loss of functionality
 
 ### Operable
+
 - [ ] All functionality available via keyboard
 - [ ] No keyboard traps
 - [ ] Timing adjustable
@@ -254,12 +261,14 @@ function Modal({ isOpen, onClose, children }) {
 - [ ] Link purpose clear from context
 
 ### Understandable
+
 - [ ] Language of page specified (`<html lang="en">`)
 - [ ] Consistent navigation
 - [ ] Input errors identified and described
 - [ ] Labels and instructions provided
 
 ### Robust
+
 - [ ] Valid HTML
 - [ ] Name, role, value available for UI components
 - [ ] Status messages identified
@@ -283,6 +292,7 @@ bun test --reporter=html
 ## Value Proposition
 
 **Time Savings:**
+
 - Gap 5.5 (E2E accessibility tests): 30 min manual testing → 5 min automated
 - WCAG compliance audit: 2 hours → 20 min with axe-core
 - Keyboard nav debugging: 30 min → 10 min with focus tracing

@@ -3,7 +3,9 @@
 Date: February 23, 2026
 
 ## Overview
+
 Spike Batch B covers three adopt-repos from the Phase 2 analysis:
+
 - **graphiti** (getzep/graphiti) - Persistent agent memory with graph semantics
 - **nats** (nats-io/nats-server) - Event backbone for orchestration
 - **lmcache** (LMCache/LMCache) - KV-cache acceleration for inference
@@ -11,6 +13,7 @@ Spike Batch B covers three adopt-repos from the Phase 2 analysis:
 ## Smoke Tests
 
 ### Graphiti
+
 ```bash
 # Required env vars:
 export GRAPHITI_SERVER_URL="http://localhost:8000"
@@ -23,6 +26,7 @@ uv run python scripts/graphiti_contract_smoke.py
 ```
 
 ### NATS
+
 ```bash
 # Required env vars:
 export THEGENT_EVENT_BUS="nats"
@@ -35,6 +39,7 @@ uv run python scripts/nats_contract_smoke.py
 ```
 
 ### LMCache
+
 ```bash
 # Required env vars (Redis backend):
 export LMCACHE_ENABLED=1
@@ -56,6 +61,7 @@ uv run python scripts/lmcache_contract_smoke.py
 ## Integration Details
 
 ### Graphiti Integration
+
 - **Module**: `src/thegent/integrations/graphiti.py`
 - **Feature Flag**: `THEGENT_ENABLE_GRAPHITI`
 - **Config Env Vars**:
@@ -66,6 +72,7 @@ uv run python scripts/lmcache_contract_smoke.py
   - `GRAPHITI_MAX_CONTEXT_ITEMS` - Max items (default: 10)
 
 ### NATS Integration
+
 - **Module**: `src/thegent/integrations/nats_event_bus.py`
 - **Feature Flag**: `THEGENT_EVENT_BUS=nats`
 - **Config Env Vars**:
@@ -82,6 +89,7 @@ uv run python scripts/lmcache_contract_smoke.py
   - `task.failed`
 
 ### LMCache Integration
+
 - **Module**: `src/thegent/integrations/lmcache.py`
 - **Feature Flag**: `LMCACHE_ENABLED`
 - **Config Env Vars**:
@@ -96,6 +104,7 @@ uv run python scripts/lmcache_contract_smoke.py
 If any integration fails:
 
 1. **Disable the feature flag**:
+
    ```bash
    export THEGENT_ENABLE_GRAPHITI=0
    export THEGENT_EVENT_BUS=local  # or unset
@@ -103,6 +112,7 @@ If any integration fails:
    ```
 
 2. **Verify baseline behavior**:
+
    ```bash
    task quality
    task test

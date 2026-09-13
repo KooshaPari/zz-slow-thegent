@@ -5,6 +5,7 @@
 Provider-harness-model mapping for universal parity across Codex, LiteLLM, and CLIProxy.
 
 Ensures consistent model resolution and metadata when requests flow through:
+
 - Codex harness (dex) -> CLIProxy adapter -> CLIProxyAPIPlus
 - LiteLLM Router -> CLIProxyAPIPlus
 - Direct CLIProxy API

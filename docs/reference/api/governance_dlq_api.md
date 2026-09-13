@@ -12,7 +12,7 @@ Escalation queue with dead letter queue integration.
 
 ### Methods
 
-#### EscalationQueueDLQ.__init__
+#### EscalationQueueDLQ.**init**
 
 ```python
 __init__(self: Any)

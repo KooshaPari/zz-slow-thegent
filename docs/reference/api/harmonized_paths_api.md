@@ -16,7 +16,7 @@ directory structures.
 
 ### Methods
 
-#### HarmonizedPathManager.__init__
+#### HarmonizedPathManager.**init**
 
 ```python
 __init__(self: Any)

@@ -12,7 +12,7 @@ Learning-based subcommands.
 
 ### Methods
 
-#### LearningSubcommands.__init__
+#### LearningSubcommands.**init**
 
 ```python
 __init__(self: Any, learning_db_path: Any)

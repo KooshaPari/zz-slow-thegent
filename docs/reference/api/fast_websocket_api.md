@@ -5,11 +5,13 @@
 Fast WebSocket client with optimized backends.
 
 This module provides optimized WebSocket client support:
+
 - websockets library (modern, fast, async-first)
 - websocket-client fallback (legacy support)
 - Unified API for both sync and async operations
 
 Performance improvements:
+
 - websockets: Modern, faster, better async support
 - Better resource management
 - Automatic backend selection
@@ -22,7 +24,7 @@ High-performance WebSocket client with automatic backend selection.
 
 ### Methods
 
-#### FastWebSocket.__init__
+#### FastWebSocket.**init**
 
 ```python
 __init__(self: Any, url: str)
@@ -55,9 +57,7 @@ connect_sync(self: Any)
 
 Connect synchronously using websocket-client.
 
-Performance:
-    - websocket-client: Legacy, sync-only
-    - Fallback for compatibility
+Performance: - websocket-client: Legacy, sync-only - Fallback for compatibility
 
 ---
 
@@ -101,9 +101,7 @@ connect_sync(self: Any)
 
 Connect synchronously using websocket-client.
 
-Performance:
-    - websocket-client: Legacy, sync-only
-    - Fallback for compatibility
+Performance: - websocket-client: Legacy, sync-only - Fallback for compatibility
 
 ---
 

@@ -10,6 +10,7 @@
 ## Executive Summary
 
 **Findings**:
+
 1. **Serena (oraios/serena)**: Already integrated via MCP mount; has JetBrains plugin
 2. **Serenade (serenadeai/serenade)**: Voice coding tool with JetBrains plugin (different from Serena)
 3. **Ghostty**: Terminal emulator with shell integration (not IDE integration)
@@ -26,11 +27,13 @@
 **Serena** (`oraios/serena`) is **already integrated** in thegent:
 
 **Location**: `src/thegent/mcp_server.py`
+
 - Mounted at namespace `serena` via MCP proxy
 - Enabled via `THGENT_MCP_MOUNT_SERENA=1`
 - Uses `uvx --from git+https://github.com/oraios/serena serena start-mcp-server`
 
 **Capabilities**:
+
 - ✅ Semantic code retrieval (find_symbol, find_referencing_symbols)
 - ✅ Symbol-level code editing (insert_after_symbol, etc.)
 - ✅ LSP-based backend (30+ languages)
@@ -41,6 +44,7 @@
 **Plugin**: https://plugins.jetbrains.com/plugin/28946-serena
 
 **Features**:
+
 - Leverages JetBrains IDE code analysis
 - Supports all JetBrains IDEs (IntelliJ IDEA, PyCharm, WebStorm, etc.)
 - More robust than LSP backend
@@ -49,6 +53,7 @@
 **Integration Status**: ⚠️ **Not yet integrated** in thegent
 
 **How It Works**:
+
 1. Install Serena plugin in JetBrains IDE
 2. Plugin exposes Serena MCP server
 3. Connect thegent to plugin's MCP server
@@ -61,6 +66,7 @@
 **Opportunity**: Detect if Serena JetBrains plugin is available and prefer it over LSP backend.
 
 **Implementation**:
+
 ```python
 # src/thegent/lsp/serena_integration.py
 def detect_serena_backend() -> str:
@@ -79,6 +85,7 @@ def detect_serena_backend() -> str:
 **Opportunity**: Single configuration for Serena (LSP vs JetBrains plugin).
 
 **Implementation**:
+
 ```python
 # src/thegent/config.py
 serena_backend: Literal["auto", "lsp", "jetbrains"] = Field(
@@ -91,6 +98,7 @@ serena_backend: Literal["auto", "lsp", "jetbrains"] = Field(
 **Opportunity**: Bridge JetBrains plugin MCP server to thegent's MCP server.
 
 **Implementation**:
+
 - Detect plugin MCP server (usually on localhost:port)
 - Mount as sub-provider
 - Route Serena tools through plugin
@@ -106,6 +114,7 @@ serena_backend: Literal["auto", "lsp", "jetbrains"] = Field(
 **JetBrains Plugin**: https://github.com/serenadeai/intellij
 
 **Features**:
+
 - Voice-to-code transcription
 - Natural language commands
 - Works with JetBrains IDEs
@@ -117,6 +126,7 @@ serena_backend: Literal["auto", "lsp", "jetbrains"] = Field(
 **Use Case**: Voice-driven agent workflows
 
 **Implementation**:
+
 ```python
 # src/thegent/agents/voice_agent.py
 class VoiceAgentRunner(AgentRunner):
@@ -139,6 +149,7 @@ class VoiceAgentRunner(AgentRunner):
 **Ghostty** is a terminal emulator, not an IDE integration tool.
 
 **Shell Integration**: ✅ Available
+
 - Automatic injection for bash, zsh, fish, elvish
 - Features: prompt marking, jump_to_prompt, alt+click cursor movement
 - Manual setup via `GHOSTTY_RESOURCES_DIR`
@@ -152,11 +163,13 @@ class VoiceAgentRunner(AgentRunner):
 **Pattern**: Ghostty + Neovim/Helix + agents (as seen in community feedback)
 
 **Integration**:
+
 1. **Terminal Session Management**: Track Ghostty terminal sessions
 2. **Agent Terminal Integration**: Run agents in Ghostty terminals
 3. **Shell Integration**: Ensure Ghostty shell integration is configured
 
 **Implementation**:
+
 ```python
 # src/thegent/terminal/ghostty_integration.py
 class GhosttyTerminalManager:
@@ -174,21 +187,21 @@ class GhosttyTerminalManager:
 
 ### Tools with IDE Integrations
 
-| Tool | IDE Support | Integration Status |
-|------|-------------|-------------------|
-| **Serena** | JetBrains, VSCode, Cursor | ✅ Integrated (MCP) |
-| **Serenade** | JetBrains, VSCode | ❌ Not integrated |
-| **Octocode** | VSCode, Cursor | ✅ Integrated (MCP) |
-| **Playwright** | VSCode, Cursor | ✅ Integrated (MCP) |
-| **thegent** | Cursor, Claude Code, Codex | ✅ Integrated (MCP) |
+| Tool           | IDE Support                | Integration Status  |
+| -------------- | -------------------------- | ------------------- |
+| **Serena**     | JetBrains, VSCode, Cursor  | ✅ Integrated (MCP) |
+| **Serenade**   | JetBrains, VSCode          | ❌ Not integrated   |
+| **Octocode**   | VSCode, Cursor             | ✅ Integrated (MCP) |
+| **Playwright** | VSCode, Cursor             | ✅ Integrated (MCP) |
+| **thegent**    | Cursor, Claude Code, Codex | ✅ Integrated (MCP) |
 
 ### JetBrains-Specific Tools
 
-| Tool | Purpose | Integration |
-|------|---------|-------------|
-| **IntelliJ IDEA CLI** | Format, inspect, diff, merge | ✅ Integrated (`thegent lsp format`) |
-| **JetBrains Gateway** | Remote development | ⏳ Planned |
-| **Serena JetBrains Plugin** | Code analysis | ⚠️ Not integrated |
+| Tool                        | Purpose                      | Integration                          |
+| --------------------------- | ---------------------------- | ------------------------------------ |
+| **IntelliJ IDEA CLI**       | Format, inspect, diff, merge | ✅ Integrated (`thegent lsp format`) |
+| **JetBrains Gateway**       | Remote development           | ⏳ Planned                           |
+| **Serena JetBrains Plugin** | Code analysis                | ⚠️ Not integrated                    |
 
 ---
 
@@ -199,6 +212,7 @@ class GhosttyTerminalManager:
 **Goal**: Add JetBrains plugin support to existing Serena integration.
 
 **Tasks**:
+
 1. **Auto-detect JetBrains plugin**
    - Check if plugin MCP server is running
    - Prefer plugin over LSP backend
@@ -215,6 +229,7 @@ class GhosttyTerminalManager:
    - Troubleshooting
 
 **Deliverables**:
+
 - `src/thegent/lsp/serena_integration.py`
 - Updated `src/thegent/config.py`
 - `docs/guides/SERENA_JETBRAINS_INTEGRATION.md`
@@ -224,6 +239,7 @@ class GhosttyTerminalManager:
 **Goal**: Integrate Ghostty terminal for agent workflows.
 
 **Tasks**:
+
 1. **Terminal session management**
    - Track Ghostty terminal sessions
    - Spawn agent-specific terminals
@@ -240,6 +256,7 @@ class GhosttyTerminalManager:
    - Terminal multiplexing (tmux/Zellij)
 
 **Deliverables**:
+
 - `src/thegent/terminal/ghostty_integration.py`
 - `thegent terminal` commands
 - `docs/guides/GHOSTTY_INTEGRATION.md`
@@ -249,6 +266,7 @@ class GhosttyTerminalManager:
 **Goal**: Unified IDE integration layer.
 
 **Tasks**:
+
 1. **IDE abstraction layer**
    - Abstract IDE operations (format, inspect, etc.)
    - Support multiple IDEs (JetBrains, VSCode, Cursor)
@@ -265,6 +283,7 @@ class GhosttyTerminalManager:
    - Documentation
 
 **Deliverables**:
+
 - `src/thegent/ide/integration.py`
 - `src/thegent/ide/jetbrains.py`
 - `src/thegent/ide/vscode.py`
@@ -560,16 +579,19 @@ def terminal_ghostty_check() -> None:
 ## Success Metrics
 
 ### Phase 1 (Serena Enhancement)
+
 - ✅ Auto-detect JetBrains plugin
 - ✅ Prefer plugin over LSP when available
 - ✅ Configuration documented
 
 ### Phase 2 (Ghostty Integration)
+
 - ✅ Terminal session management
 - ✅ Shell integration auto-setup
 - ✅ Agent terminal workflows
 
 ### Phase 3 (IDE Integration)
+
 - ✅ Unified IDE abstraction
 - ✅ Multiple IDE support
 - ✅ MCP exposure

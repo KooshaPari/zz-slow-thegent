@@ -12,7 +12,7 @@ Handle governance override expiration.
 
 ### Methods
 
-#### OverrideExpirationHandler.__init__
+#### OverrideExpirationHandler.**init**
 
 ```python
 __init__(self: Any)

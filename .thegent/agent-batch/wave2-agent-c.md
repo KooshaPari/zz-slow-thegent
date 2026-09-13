@@ -6,18 +6,21 @@ Scope: WL-115, WL-116, WL-118, WL-119, WL-120
 ## Completed Slices
 
 ### WL-115
+
 - Implemented benchmark domain slice:
   - added `BenchRecord` schema model with strict required-field hydration.
   - added JSONL append/load storage helpers with default path support.
   - added focused tests for model roundtrip, schema validation, and store IO behavior.
 
 ### WL-116
+
 - Advanced transcript passthrough slice:
   - added `.srt` transcript ingestion support with timestamp/index stripping.
   - kept existing `.txt/.md` behavior unchanged.
   - added test coverage for `.srt` parsing.
 
 ### WL-118
+
 - Advanced Ollama provider slice:
   - added provider normalization (`ollama-local` alias).
   - classified `ollama` under LiteLLM API execution path.
@@ -26,12 +29,14 @@ Scope: WL-115, WL-116, WL-118, WL-119, WL-120
   - added route/config tests for alias + endpoint behavior.
 
 ### WL-119
+
 - Advanced grounding metadata slice:
   - added structured grounding source extraction from payload metadata (`groundingMetadata`, URL fields).
   - updated `run_impl` to prefer structured grounding sources (when available) and fallback to regex extraction.
   - added test coverage for metadata-based source extraction with dedupe/order behavior.
 
 ### WL-120
+
 - Produced plan delta artifact for blocked sections:
   - updated phased plan with explicit blockers, branch strategy, and safe do-next sequence for boundary enforcement.
 

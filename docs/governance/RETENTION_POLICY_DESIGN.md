@@ -41,12 +41,12 @@ Purge: events older than retention_days for their domain
 
 ## 4. Implementation Phases
 
-| Phase | Deliverable | Effort |
-|-------|-------------|--------|
-| P1 | Design doc (this) | Done |
-| P2 | domain_tag in RunMeta; retention_days_registry per domain | 1–2 days |
-| P3 | Purge command: `thegent govern purge --dry-run` | 1–2 days |
-| P4 | Closure pack expansion with retention/evidence matrix | 2–3 days |
+| Phase | Deliverable                                               | Effort   |
+| ----- | --------------------------------------------------------- | -------- |
+| P1    | Design doc (this)                                         | Done     |
+| P2    | domain_tag in RunMeta; retention_days_registry per domain | 1–2 days |
+| P3    | Purge command: `thegent govern purge --dry-run`           | 1–2 days |
+| P4    | Closure pack expansion with retention/evidence matrix     | 2–3 days |
 
 ---
 

@@ -5,11 +5,13 @@
 Fast path operations with optimizations.
 
 This module provides optimized path operations:
+
 - Direct os.path operations for hot paths
 - Optimized path joining and normalization
 - Fast path existence checks
 
 Performance improvements:
+
 - Direct os.path: Faster than pathlib for simple operations
 - Optimized for common path operations
 

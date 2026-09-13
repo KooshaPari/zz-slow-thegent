@@ -11,6 +11,7 @@ CompositApp - Main Textual application for the TUI compositor.
 Main TUI Compositor application.
 
 Features:
+
 - Menubar with file/edit/view/tools/help menus
 - Statusbar with session info and pane count
 - Container for terminal panes
@@ -22,7 +23,7 @@ Features:
 
 ### Methods
 
-#### CompositApp.__init__
+#### CompositApp.**init**
 
 ```python
 __init__(self: Any, session_state: SessionState | None)
@@ -149,6 +150,7 @@ on_mount(self: Any)
 Called when the app is mounted.
 
 Lifecycle hook that:
+
 - Sets window title and subtitle
 - Initializes pane count
 - Spawns shell processes for panes
@@ -186,6 +188,7 @@ on_unmount(self: Any)
 Called when the app is about to unmount.
 
 Lifecycle hook that:
+
 - Gracefully terminates all child processes
 - Cleans up IPC channels
 - Saves session state
@@ -202,7 +205,7 @@ Error boundary widget for displaying pane render errors.
 
 ### Methods
 
-#### ErrorBoundary.__init__
+#### ErrorBoundary.**init**
 
 ```python
 __init__(self: Any, error_message: str, error_type: str, stack_trace: str, pane_id: str)
@@ -364,6 +367,7 @@ on_mount(self: Any)
 Called when the app is mounted.
 
 Lifecycle hook that:
+
 - Sets window title and subtitle
 - Initializes pane count
 - Spawns shell processes for panes
@@ -401,6 +405,7 @@ on_unmount(self: Any)
 Called when the app is about to unmount.
 
 Lifecycle hook that:
+
 - Gracefully terminates all child processes
 - Cleans up IPC channels
 - Saves session state

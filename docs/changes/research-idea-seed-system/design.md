@@ -145,6 +145,7 @@
 ### 3.1 Pattern Matching
 
 **Explicit Detection** (Flag-based):
+
 ```python
 # Regex pattern for $idea flag
 EXPLICIT_PATTERN = r"\$idea:\s*(.+?)(?=\$|$)"
@@ -154,6 +155,7 @@ EXPLICIT_PATTERN = r"\$idea:\s*(.+?)(?=\$|$)"
 ```
 
 **Implicit Detection** (Heuristic-based):
+
 ```python
 IMPLICIT_PATTERNS = [
     r"new idea:\s*(.+?)(?:\n|$)",  # "New idea: ..."
@@ -167,6 +169,7 @@ IMPLICIT_PATTERNS = [
 ```
 
 **Confidence Scoring**:
+
 - Explicit flag: confidence = 0.99 (user intent is clear)
 - Implicit patterns: confidence = 0.7-0.9 (based on pattern specificity)
 - Manual override: user can set confidence to 1.0 or 0.0
@@ -203,6 +206,7 @@ IMPLICIT_PATTERNS = [
 ### 4.1 JSONL Append-Only Log
 
 **Design Rationale**:
+
 - Simple, human-readable format
 - Efficient append (tail to file)
 - Natural git compatibility
@@ -210,6 +214,7 @@ IMPLICIT_PATTERNS = [
 - Easily parseable by tools/scripts
 
 **Write Process**:
+
 ```python
 def store_idea(idea: IdeaObject, path: str) -> str:
     """
@@ -234,17 +239,20 @@ def store_idea(idea: IdeaObject, path: str) -> str:
 ### 4.2 Git Integration
 
 **Commit Strategy**:
+
 - One commit per idea (immediate, not batched)
 - Commit message: `idea: {id} {short_text}`
 - Metadata: idea ID in commit body
 - Tags: optional git tag for significant ideas
 
 **Audit Trail**:
+
 - Full history via `git log .thegent/ideas/`
 - Recover any past version: `git show <commit>:.thegent/ideas/ideas.jsonl`
 - Integrity check: `git fsck --full`
 
 **Example Commit**:
+
 ```
 commit abc123def456
 Author: thegent <system@thegent.local>
@@ -260,11 +268,13 @@ Date:   Mon Feb 16 14:30:25 2026 +0000
 ### 4.3 Checksum & Integrity
 
 **SHA-256 Checksums**:
+
 - Hash of idea JSON object
 - Stored in `checksum` field
 - Verify on read: `sha256(idea_json) == idea.checksum`
 
 **Deduplication**:
+
 - Hash of idea text
 - Check against existing: `text_hash in dedup_index`
 - Prevent exact duplicates
@@ -276,6 +286,7 @@ Date:   Mon Feb 16 14:30:25 2026 +0000
 ### 5.1 Full-Text Index
 
 **Implementation** (Python):
+
 ```python
 class FullTextIndex:
     def __init__(self):
@@ -300,6 +311,7 @@ class FullTextIndex:
 ```
 
 **Index File** (`.thegent/ideas/ideas.index.json`):
+
 ```json
 {
   "version": "1.0",
@@ -346,24 +358,28 @@ class FullTextIndex:
 ### 6.1 Search Syntax
 
 **Simple Search**:
+
 ```bash
 thegent ideas search "lazy loading"
 # Finds ideas matching all words: lazy AND loading
 ```
 
 **Tag Filtering**:
+
 ```bash
 thegent ideas search "cache" --tag performance
 # Finds ideas matching "cache" tagged with "performance"
 ```
 
 **Date Range**:
+
 ```bash
 thegent ideas search "api" --since 1w
 # Finds ideas matching "api" from last 7 days
 ```
 
 **Multiple Filters**:
+
 ```bash
 thegent ideas search "design" --tag architecture --since 2w --limit 5
 # Find 5 most recent ideas matching "design" with tag "architecture" from last 2 weeks
@@ -399,6 +415,7 @@ def execute_query(query_string: str, filters: Dict) -> List[IdeaObject]:
 ### 7.1 Command Reference
 
 #### `thegent ideas collect`
+
 Collect ideas from current or recent sessions.
 
 ```bash
@@ -413,6 +430,7 @@ $ thegent ideas collect --git-commit
 ```
 
 #### `thegent ideas list`
+
 List ideas with optional filtering.
 
 ```bash
@@ -433,6 +451,7 @@ $ thegent ideas list --output ideas.json
 ```
 
 #### `thegent ideas search`
+
 Full-text search ideas.
 
 ```bash
@@ -454,6 +473,7 @@ $ thegent ideas search "cache" --format csv
 ```
 
 #### `thegent ideas get`
+
 Retrieve specific idea by ID.
 
 ```bash
@@ -468,6 +488,7 @@ $ thegent ideas get idea_20260216_143022_abc123 --format json
 ```
 
 #### `thegent ideas export`
+
 Export ideas to various formats.
 
 ```bash
@@ -491,6 +512,7 @@ $ thegent ideas export --format json --tag performance --since 1w
 ### 8.1 MCP Tools
 
 #### `thegent_idea_collect`
+
 Collect ideas from sessions.
 
 ```json
@@ -516,6 +538,7 @@ Collect ideas from sessions.
 ```
 
 **Response**:
+
 ```json
 {
   "status": "success",
@@ -533,6 +556,7 @@ Collect ideas from sessions.
 ```
 
 #### `thegent_idea_search`
+
 Search ideas.
 
 ```json
@@ -566,6 +590,7 @@ Search ideas.
 ```
 
 #### `thegent_idea_get`
+
 Get specific idea.
 
 ```json
@@ -586,6 +611,7 @@ Get specific idea.
 ```
 
 #### `thegent_idea_list`
+
 List ideas.
 
 ```json
@@ -661,14 +687,14 @@ exit $?
 
 ## 10. Performance Targets
 
-| Operation | Target | Approach |
-|-----------|--------|----------|
-| **Detect idea** | <10ms | Pattern matching (no I/O) |
-| **Store idea** | <50ms | Sequential write + fsync |
+| Operation             | Target | Approach                     |
+| --------------------- | ------ | ---------------------------- |
+| **Detect idea**       | <10ms  | Pattern matching (no I/O)    |
+| **Store idea**        | <50ms  | Sequential write + fsync     |
 | **Search 1000 ideas** | <100ms | Inverted index (no disk I/O) |
-| **Full export** | <500ms | Stream writing + buffering |
-| **Git commit** | <100ms | Batch commits if needed |
-| **Index rebuild** | <1s | Incremental indexing |
+| **Full export**       | <500ms | Stream writing + buffering   |
+| **Git commit**        | <100ms | Batch commits if needed      |
+| **Index rebuild**     | <1s    | Incremental indexing         |
 
 ---
 

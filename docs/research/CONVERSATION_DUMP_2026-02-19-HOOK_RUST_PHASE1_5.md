@@ -8,6 +8,7 @@
 ## Completed Work
 
 ### 1. Affected Tests Module (`src/affected_tests.rs`)
+
 - **Lines**: 500+
 - **Features**:
   - Pattern-based test detection (maps src/foo.rs → tests/)
@@ -22,6 +23,7 @@
   - No external dependencies (uses stdlib + regex)
 
 ### 2. Prewarm Module (`src/prewarm.rs`)
+
 - **Lines**: 400+
 - **Features**:
   - Shared data prewarming (Python/source files, tests)
@@ -38,6 +40,7 @@
   - Extensible architecture for new prewarm types
 
 ### 3. Report Module (`src/report.rs`)
+
 - **Lines**: 450+
 - **Features**:
   - Hook execution reports with metadata
@@ -54,6 +57,7 @@
   - Comprehensive metrics tracking
 
 ### 4. CLI Integration
+
 - Added `cmd_affected_tests()` implementation
   - Takes changed files from args or JSON stdin
   - Supports strategy selection (pattern/import/all)
@@ -68,6 +72,7 @@
   - Proper directory management
 
 ### 5. Library Exports
+
 - Updated `lib.rs` to export all three modules
 - Added proper re-exports for:
   - `AffectedTestsAnalyzer`, `PatternDetector`, `ImportDetector`
@@ -75,17 +80,21 @@
   - `ReportManager`, `HookReport`, issue and metrics types
 
 ### 6. Dependencies Added
+
 - Added `which` crate for tool detection in prewarm module
 
 ## Blockers Found
 
 ### Binary Compilation Issues
+
 The existing main.rs code uses several types from the thegent-hooks library that have compatibility issues:
+
 - `ChangedFilesDetector`, `DependencyGraph` return types are not properly typed in closures
 - Multiple locations need explicit type annotations in map operations
 - These are in the existing `cmd_changed_files_deps()` implementation, not the new code
 
 ### Resolution Path
+
 1. **Option A**: Type annotations in existing code
    - Add explicit types to all closure parameters
    - Estimated 10-15 minutes
@@ -100,6 +109,7 @@ The existing main.rs code uses several types from the thegent-hooks library that
 ## Test Coverage Status
 
 ### New Modules (100% coverage)
+
 - `affected_tests.rs`: 17 unit tests
   - Pattern matching for Python, Rust, TypeScript
   - Import analysis for all languages
@@ -116,6 +126,7 @@ The existing main.rs code uses several types from the thegent-hooks library that
   - Summary reporting
 
 ### Total New Code: 1350+ lines
+
 - Core implementations: 100% type safe
 - Full error handling with thiserror
 - Comprehensive unit tests
@@ -140,16 +151,19 @@ The existing main.rs code uses several types from the thegent-hooks library that
 ## Next Steps
 
 ### Immediate (To fix compilation)
+
 1. Fix type annotations in `cmd_changed_files_filter()` and `cmd_changed_files_deps()`
 2. Rebuild and validate CLI integration
 3. Create comprehensive tests
 
 ### Medium-term (Polish)
+
 1. Document new subcommands in CLI help
 2. Add performance benchmarks
 3. Create integration tests with hook-dispatcher
 
 ### Advanced (Future)
+
 1. Implement coverage-based affected tests detection
 2. Add learning-based skip integration
 3. Create prewarm scheduling strategy
@@ -157,16 +171,16 @@ The existing main.rs code uses several types from the thegent-hooks library that
 
 ## Deliverables Status
 
-| Deliverable | Status | Notes |
-|-------------|--------|-------|
-| affected-tests.rs | ✅ COMPLETE | 500+ lines, 17 tests |
-| prewarm.rs | ✅ COMPLETE | 400+ lines, 4 tests |
-| report.rs | ✅ COMPLETE | 450+ lines, 6 tests |
-| lib.rs exports | ✅ COMPLETE | All types exported |
-| CLI integration | ⚠️ NEEDS FIX | Type annotation issues in existing code |
-| Cargo.toml | ✅ COMPLETE | Added `which` dependency |
-| main.rs routing | ⚠️ NEEDS FIX | Affected by compiler issues |
-| Documentation | ⏳ BLOCKED | Can't proceed until binary compiles |
+| Deliverable       | Status       | Notes                                   |
+| ----------------- | ------------ | --------------------------------------- |
+| affected-tests.rs | ✅ COMPLETE  | 500+ lines, 17 tests                    |
+| prewarm.rs        | ✅ COMPLETE  | 400+ lines, 4 tests                     |
+| report.rs         | ✅ COMPLETE  | 450+ lines, 6 tests                     |
+| lib.rs exports    | ✅ COMPLETE  | All types exported                      |
+| CLI integration   | ⚠️ NEEDS FIX | Type annotation issues in existing code |
+| Cargo.toml        | ✅ COMPLETE  | Added `which` dependency                |
+| main.rs routing   | ⚠️ NEEDS FIX | Affected by compiler issues             |
+| Documentation     | ⏳ BLOCKED   | Can't proceed until binary compiles     |
 
 ## Code Quality Metrics
 

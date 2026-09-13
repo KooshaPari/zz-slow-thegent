@@ -240,54 +240,61 @@ Answer these 5 questions:
 ### Scoring Examples
 
 **LiteLLM:**
+
 1. Embeddable? YES → ✓ (+2)
 2. Reduces effort? YES (already integrated) → ✓ (+2)
 3. Open-source? YES (MIT) → ✓ (+2)
 4. Closes gap? YES (provider breadth) → ✓ (+2)
 5. Maintenance? LOW (upstream maintained) → ✓ (+2)
-**Score: 10/10 → INTEGRATE (already done)**
+   **Score: 10/10 → INTEGRATE (already done)**
 
 **RouteLLM:**
+
 1. Embeddable? YES → ✓ (+2)
 2. Reduces effort? YES (routing decisions) → ✓ (+2)
 3. Open-source? YES (MIT) → ✓ (+2)
 4. Closes gap? YES (ML routing) → ✓ (+2)
 5. Maintenance? LOW (upstream maintained) → ✓ (+2)
-**Score: 10/10 → INTEGRATE ASAP**
+   **Score: 10/10 → INTEGRATE ASAP**
 
 **Bifrost:**
+
 1. Embeddable? NO (API only) → ✗ (0)
 2. Reduces effort? YES (performance + caching) → ✓ (+2)
 3. Open-source? NO (proprietary) → ✗ (0)
 4. Closes gap? YES (semantic caching, performance) → ✓ (+2)
 5. Maintenance? MEDIUM (external service) → ~ (+1)
-**Score: 5/10 → REFERENCE DESIGN NOW, INTEGRATE LATER IF NEEDED**
+   **Score: 5/10 → REFERENCE DESIGN NOW, INTEGRATE LATER IF NEEDED**
 
 **Not Diamond:**
+
 1. Embeddable? NO (SaaS only) → ✗ (0)
 2. Reduces effort? YES (routing) → ✓ (+2)
 3. Open-source? NO (proprietary) → ✗ (0)
 4. Closes gap? YES (ML routing) → ✓ (+2)
 5. Maintenance? VERY HIGH (external SaaS) → ✗ (0)
-**Score: 4/10 → REFERENCE DESIGN ONLY; DO NOT INTEGRATE**
+   **Score: 4/10 → REFERENCE DESIGN ONLY; DO NOT INTEGRATE**
 
 ---
 
 ## Key Takeaways
 
 ### For Decision Makers
+
 - **CLIProxyAPI++ has a unique positioning** (CLI-tool-first, OAuth, protocol translation) that no competitor matches
 - **Top gaps to address:** Semantic caching (ROI: 60-85%), guardrails (table-stakes), MCP routing (strategic)
 - **Recommended path:** Library-first (LiteLLM + RouteLLM + custom semantic caching) for next 2-3 sprints
 - **Performance is not a blocker yet** (5-10ms is acceptable for CLI tools); if it becomes one, evaluate Bifrost as external service
 
 ### For Engineers
+
 - **LiteLLM is already integrated** → deepen integration (study its Router, cost tracking, caching)
 - **RouteLLM is ready to integrate** → implement as routing decision layer (low effort, high ROI)
 - **Semantic caching is a quick win** → 3 days to prototype, 60-85% cost reduction
 - **Guardrails are straightforward to implement** → reference Portkey's public rules (if available) or design 10-20 custom rules
 
 ### For Product
+
 - **Differentiation lies in workflow integration** → CLI tools, agents, multi-step reasoning
 - **Proxy is infrastructure; orchestration is the product** → thegent's Pareto router + governance hooks are the moat
 - **2026 trend: MCP + eval-native routing** → prepare for agent-to-tool routing and quality-driven decisions

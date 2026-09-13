@@ -21,7 +21,7 @@ Manages the agent constitution and high-level governance rules.
 
 ### Methods
 
-#### MetaGovernance.__init__
+#### MetaGovernance.**init**
 
 ```python
 __init__(self: Any, constitution_path: Any)

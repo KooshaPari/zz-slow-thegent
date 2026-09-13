@@ -63,14 +63,14 @@ The cursor-api server uses a `WorkosCursorSessionToken` cookie or a `/build-key`
 
 As of 2026-02-20, the latest release is `v0.4.0-pre.23` (released 2026-02-20). Pre-built static binaries are available for all relevant platforms:
 
-| Platform | Architecture | Available |
-|----------|-------------|-----------|
-| macOS | x86_64 | Yes (`x86_64-darwin`, `x86_64-darwin-compat`) |
-| macOS | ARM64 (Apple Silicon) | Yes (`aarch64-darwin`) |
-| Linux | x86_64 | Yes |
-| Linux | ARM64 | Yes (`aarch64-linux`, `aarch64-linux-compat`) |
-| Windows | x86_64 | Yes (`x86_64-windows.exe`) |
-| Windows | ARM64 | Yes (`aarch64-windows.exe`, `aarch64-windows-compat.exe`) |
+| Platform | Architecture          | Available                                                 |
+| -------- | --------------------- | --------------------------------------------------------- |
+| macOS    | x86_64                | Yes (`x86_64-darwin`, `x86_64-darwin-compat`)             |
+| macOS    | ARM64 (Apple Silicon) | Yes (`aarch64-darwin`)                                    |
+| Linux    | x86_64                | Yes                                                       |
+| Linux    | ARM64                 | Yes (`aarch64-linux`, `aarch64-linux-compat`)             |
+| Windows  | x86_64                | Yes (`x86_64-windows.exe`)                                |
+| Windows  | ARM64                 | Yes (`aarch64-windows.exe`, `aarch64-windows-compat.exe`) |
 
 All binaries use static linking (no libc or system library dependencies). SHA256 checksums are provided.
 
@@ -91,11 +91,13 @@ This is not a blocking limitation: no CI workflow should be using Cursor credent
 The project has been in active development for approximately 10 months (as of the research date). The developer describes the current version as stable (`当前版本已稳定`). The release cadence is active (v0.4.0-pre.23 released the same day as this evaluation). The project has 624 GitHub stars.
 
 Risks:
+
 - The project is a reverse-engineered third-party tool. If Cursor changes its backend protocol, cursor-api may break until patched.
 - The project is maintained by a single developer (community contributions exist).
 - Version `v0.4.0-pre.23` carries a `pre` tag — pre-release versions may have instability.
 
 Mitigations in thegent's current code:
+
 - `_is_cursor_api_reachable()` checks availability before use and returns a clear error if the server is not running.
 - The runner fails loudly (non-zero exit, descriptive stderr) rather than silently.
 - Users are directed to start or configure cursor-api manually.
@@ -118,17 +120,17 @@ This is a significant reverse-engineering effort with ongoing maintenance burden
 
 ### 3.2 Comparative Assessment
 
-| Criterion | cursor-api (current, WL-018 done) | Native Python (WL-054) |
-|-----------|----------------------------------|------------------------|
-| Implementation effort | Done (WL-018 complete) | High (L — full day+) |
-| Maintenance burden | Low (upstream maintains) | High (own the fork) |
-| Platform availability | Pre-built binaries for all platforms | No binary needed |
-| External process required | Yes (cursor-api server) | No |
-| Auth mechanism | Bearer token (manual or file) | SQLite auto-read |
-| OpenAI compat | Yes (standard httpx calls via codex) | No (custom protocol) |
-| CI usability | No (requires Cursor session) | No (requires Cursor session) |
-| Protocol stability | Depends on cursor-api upstream | Depends on Cursor backend |
-| Protobuf/gRPC required | No | Yes |
+| Criterion                 | cursor-api (current, WL-018 done)    | Native Python (WL-054)       |
+| ------------------------- | ------------------------------------ | ---------------------------- |
+| Implementation effort     | Done (WL-018 complete)               | High (L — full day+)         |
+| Maintenance burden        | Low (upstream maintains)             | High (own the fork)          |
+| Platform availability     | Pre-built binaries for all platforms | No binary needed             |
+| External process required | Yes (cursor-api server)              | No                           |
+| Auth mechanism            | Bearer token (manual or file)        | SQLite auto-read             |
+| OpenAI compat             | Yes (standard httpx calls via codex) | No (custom protocol)         |
+| CI usability              | No (requires Cursor session)         | No (requires Cursor session) |
+| Protocol stability        | Depends on cursor-api upstream       | Depends on Cursor backend    |
+| Protobuf/gRPC required    | No                                   | Yes                          |
 
 The native Python path provides one UX benefit: auto-reading the SQLite session token from Cursor IDE's local database, removing the need for the user to run a separate server. However:
 
@@ -145,6 +147,7 @@ The native Python path provides one UX benefit: auto-reading the SQLite session 
 **Keep the current `cursor-api` server approach (WL-018 already implemented).**
 
 The binary dependency is:
+
 - Available on all relevant platforms as pre-built static binaries.
 - Not bundled with Cursor IDE — users must install it separately (acceptable).
 - Actively maintained with a recent release.
@@ -175,6 +178,7 @@ https://github.com/wisdgod/cursor-api/releases
 ```
 
 Select the appropriate asset:
+
 - macOS Intel: `x86_64-darwin`
 - macOS Apple Silicon: `aarch64-darwin`
 - Linux x64: `x86_64-linux`
@@ -234,6 +238,7 @@ If conditions change and WL-054 is unblocked, an implementing agent should:
 7. **Fail fast**: If SQLite file is not found, raise `RuntimeError` with clear instructions — do not silently fall back.
 
 ConnectRPC endpoints to implement (minimum viable):
+
 - `aiserver.v1.AiService/StreamUnifiedChatWithTools` — main chat stream
 - (Optional) `aiserver.v1.AiService/GetModels` — model list
 

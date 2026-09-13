@@ -12,7 +12,7 @@ Cost sensitivity experiment framework.
 
 ### Methods
 
-#### CostSensitivityExperiment.__init__
+#### CostSensitivityExperiment.**init**
 
 ```python
 __init__(self: Any)

@@ -12,7 +12,7 @@ Fixed heliosShield bridge implementation.
 
 ### Methods
 
-#### HeliosShieldBridge.__init__
+#### HeliosShieldBridge.**init**
 
 ```python
 __init__(self: Any)

@@ -1,4 +1,5 @@
 # Worklog Wave 72 Lane B Evidence Report
+
 Date: 2026-02-22
 Lane: B
 Scope: WL-220, WL-184, WL-185, WL-187, WL-188
@@ -6,6 +7,7 @@ Scope: WL-220, WL-184, WL-185, WL-187, WL-188
 Constraint honored: `docs/reference/WORK_STREAM.md` status lines were not edited.
 
 ## Files Touched
+
 - `src/thegent/integrations/prod_readiness.py`
   - Added production readiness gate types and logic for WL-220 checks and reporting.
 - `src/thegent/integrations/header_normalizer.py`
@@ -26,7 +28,9 @@ Constraint honored: `docs/reference/WORK_STREAM.md` status lines were not edited
 - `tests/commands/test_sync_rollback_cli.py`
 
 ## Verification Commands
+
 ```bash
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run python -m pytest -q tests/integrations/test_wl220_prod_readiness.py tests/integrations/test_wl184_header_normalizer.py tests/integrations/test_wl185_reflection_rollback.py tests/test_wl159_board_sync.py tests/commands/test_sync_board_autopilot_cli.py tests/commands/test_sync_rollback_cli.py
 ```
+
 Result: `82 passed in 11.79s`

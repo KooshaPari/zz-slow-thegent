@@ -15,7 +15,7 @@ Bridges digital agent context with simulated biological storage.
 
 ### Methods
 
-#### DNAStorageBridge.__init__
+#### DNAStorageBridge.**init**
 
 ```python
 __init__(self: Any)

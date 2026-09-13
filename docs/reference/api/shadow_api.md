@@ -10,7 +10,7 @@ Uses git worktree for a true isolated branch/workspace, or symlink-shadow as fal
 
 ### Methods
 
-#### ShadowWorkspace.__init__
+#### ShadowWorkspace.**init**
 
 ```python
 __init__(self: Any, project_root: Path, shadow_id: str)

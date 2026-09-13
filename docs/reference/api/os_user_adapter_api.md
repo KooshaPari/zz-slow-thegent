@@ -12,7 +12,7 @@ Adapter for creating and managing OS-level users for agent isolation.
 
 ### Methods
 
-#### OSUserAdapter.__init__
+#### OSUserAdapter.**init**
 
 ```python
 __init__(self: Any)

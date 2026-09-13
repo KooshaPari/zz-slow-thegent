@@ -10,6 +10,7 @@ This guide helps migrate from standard libraries to optimized fast alternatives 
 ### YAML Parsing
 
 **Before:**
+
 ```python
 import yaml
 
@@ -18,6 +19,7 @@ yaml.safe_dump(data, output_file)
 ```
 
 **After:**
+
 ```python
 from thegent.infra import yaml_load, yaml_dump
 
@@ -28,6 +30,7 @@ yaml_dump(data, output_file)
 ### TOML Parsing
 
 **Before:**
+
 ```python
 import tomlkit
 
@@ -36,6 +39,7 @@ tomlkit.dump(data, file_path)
 ```
 
 **After:**
+
 ```python
 from thegent.infra import toml_load, toml_dump
 
@@ -46,6 +50,7 @@ toml_dump(data, file_path)
 ### File Watching
 
 **Before:**
+
 ```python
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -56,6 +61,7 @@ observer.start()
 ```
 
 **After:**
+
 ```python
 from thegent.infra import watch_files
 
@@ -71,6 +77,7 @@ watch_files(path, on_change, recursive=True)  # 5-10x faster
 ### Process Monitoring
 
 **Before:**
+
 ```python
 import psutil
 
@@ -79,6 +86,7 @@ for proc in psutil.process_iter():
 ```
 
 **After:**
+
 ```python
 from thegent.infra import get_fast_monitor
 
@@ -109,6 +117,7 @@ pip install rtoml  # or tomli
 Replace standard library imports with fast alternatives:
 
 #### YAML Files to Update:
+
 - `thegent/agents/cliproxy_manager.py`
 - `thegent/dex_main.py`
 - `thegent/clode_main.py`
@@ -121,6 +130,7 @@ Replace standard library imports with fast alternatives:
 - `thegent/integration/plan_system.py`
 
 #### Watchdog Files to Update:
+
 - `thegent/governance/triggers.py`
 
 ### Step 3: Update Function Calls
@@ -128,6 +138,7 @@ Replace standard library imports with fast alternatives:
 #### YAML Migration Pattern:
 
 **Old:**
+
 ```python
 import yaml
 
@@ -139,6 +150,7 @@ with open("output.yaml", "w") as f:
 ```
 
 **New:**
+
 ```python
 from thegent.infra import yaml_load, yaml_dump
 
@@ -149,6 +161,7 @@ yaml_dump(data, "output.yaml")
 #### TOML Migration Pattern:
 
 **Old:**
+
 ```python
 import tomlkit
 
@@ -161,6 +174,7 @@ Path("output.toml").write_text(tomlkit.dumps(doc))
 ```
 
 **New:**
+
 ```python
 from thegent.infra import toml_load, toml_dump
 
@@ -171,6 +185,7 @@ toml_dump({"key": "value"}, "output.toml")
 #### File Watching Migration Pattern:
 
 **Old:**
+
 ```python
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -187,6 +202,7 @@ observer.start()
 ```
 
 **New:**
+
 ```python
 from thegent.infra import watch_files
 from watchfiles import Change
@@ -204,26 +220,31 @@ watch_files(path, on_change, recursive=True)
 ## Performance Benchmarks
 
 ### YAML Parsing
+
 - **PyYAML**: Baseline (100ms for 1000 lines)
 - **oyaml**: 20-30ms (3-5x faster)
 - **ruamel.yaml**: 30-50ms (2-3x faster)
 
 ### TOML Parsing
+
 - **tomlkit**: Baseline (50ms for 1000 lines)
 - **tomli**: 10-15ms (3-5x faster)
 - **rtoml**: 2-5ms (10-20x faster)
 
 ### File Watching
+
 - **watchdog**: Baseline (high CPU usage)
 - **watchfiles**: 5-10x faster, lower CPU usage
 
 ### Process Monitoring
+
 - **psutil.process_iter()**: Baseline (500ms for 600 processes)
 - **FastProcessMonitor**: 20-50ms (10-100x faster)
 
 ## Backward Compatibility
 
 All fast parsers maintain backward compatibility:
+
 - Same function signatures
 - Same return types
 - Automatic fallback to standard libraries if fast backends unavailable
@@ -231,6 +252,7 @@ All fast parsers maintain backward compatibility:
 ## Testing
 
 After migration, verify:
+
 1. Functionality works correctly
 2. Performance improvements are measurable
 3. Error handling is preserved
@@ -238,6 +260,7 @@ After migration, verify:
 ## Rollback Plan
 
 If issues occur, revert imports:
+
 ```python
 # Rollback to standard library
 import yaml

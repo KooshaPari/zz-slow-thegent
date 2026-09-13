@@ -24,6 +24,7 @@ When installed, uses importlib.resources.
 Check if thegent is running in development mode.
 
 Dev mode is active if:
+
 1. THGENT_DEV=1 is set (via ThegentSettings.dev)
 2. We are running from a git repository and src/thegent exists
 

@@ -17,7 +17,7 @@ Continuously sweep for automatable chores:
 
 Respond with:
 PrimaryOutput: agent-handoffs/phases/04a-automation/<task>.md
-Scratch: agent-handoffs/_scratch/automation-sweeper/<note>.md
+Scratch: agent-handoffs/\_scratch/automation-sweeper/<note>.md
 Summary: <automation angle>
 Candidates:
 

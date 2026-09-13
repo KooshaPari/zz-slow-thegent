@@ -12,7 +12,7 @@ Smart merge and conflict resolution (SCLI-P5.1–P5.4).
 
 ### Methods
 
-#### SmartMerge.__init__
+#### SmartMerge.**init**
 
 ```python
 __init__(self: Any, mesh_root: Path)

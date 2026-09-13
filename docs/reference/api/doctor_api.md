@@ -10,7 +10,7 @@ Doctor module for comprehensive health and preflight checks of thegent environme
 
 ### Methods
 
-#### CheckResult.__init__
+#### CheckResult.**init**
 
 ```python
 __init__(self: Any, name: str, category: str)

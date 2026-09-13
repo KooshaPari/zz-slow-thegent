@@ -3,6 +3,7 @@
 ## Problem: "Resource temporarily unavailable" (EAGAIN)
 
 **Symptoms:**
+
 - `which` command times out (2m 43s)
 - Fork failures: `/usr/bin/cat: fork: retry: Resource temporarily unavailable`
 - System becomes unresponsive
@@ -35,12 +36,14 @@ which codex
 ## System Limits
 
 **macOS Default Limits:**
+
 ```bash
 ulimit -u  # Max user processes: typically 709 or 1064
 ulimit -n  # Max open files: typically 256 or unlimited
 ```
 
 **When Exceeded:**
+
 - `fork()` returns EAGAIN
 - System becomes unresponsive
 - Commands timeout
@@ -63,6 +66,7 @@ find() {
 ```
 
 **Add to shell config:**
+
 ```bash
 # ~/.zshrc or ~/.bashrc
 which() {
@@ -82,6 +86,7 @@ fi
 ```
 
 **Skip during PATH resolution:**
+
 ```bash
 # Skip if resolving PATH
 if [[ -n "${_RESOLVING_PATH:-}" ]]; then
@@ -116,6 +121,7 @@ wait_for_slot() {
 3. **Process Scanning**: sysinfo crate instead of `ps` subprocess
 
 **Expected Impact:**
+
 - Eliminate 90%+ of subprocess spawns
 - Reduce process count from 100+ to <10 per hook
 - Eliminate fork failures entirely
@@ -123,11 +129,13 @@ wait_for_slot() {
 ## Immediate Actions
 
 1. **Apply fast-path fix:**
+
    ```bash
    bash thegent/scripts/fix-which-timeout.sh
    ```
 
 2. **Increase process limits (temporary):**
+
    ```bash
    ulimit -u 2048  # Increase max processes
    ```
@@ -144,6 +152,7 @@ wait_for_slot() {
 ### 1. Process Monitoring
 
 **Add to common.sh:**
+
 ```bash
 _check_process_count() {
   local count=$(ps aux | wc -l)
@@ -158,6 +167,7 @@ _check_process_count() {
 ### 2. Circuit Breaker
 
 **Stop spawning if failures detected:**
+
 ```bash
 if [[ -f "/tmp/thegent-fork-failures" ]]; then
   local failures=$(cat /tmp/thegent-fork-failures)
@@ -171,6 +181,7 @@ fi
 ### 3. Early Exit
 
 **Exit early if in PATH resolution:**
+
 ```bash
 # At top of common.sh
 if [[ -n "${_RESOLVING_PATH:-}" ]]; then
@@ -189,24 +200,27 @@ fi
 ## Testing
 
 **Test which command:**
+
 ```bash
 time which codex  # Should be <10ms
 ```
 
 **Monitor processes:**
+
 ```bash
 watch -n 1 'ps aux | wc -l'
 ```
 
 **Test fork resilience:**
+
 ```bash
 for i in {1..100}; do which codex & done
 wait
 # Should complete without EAGAIN errors
 ```
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog

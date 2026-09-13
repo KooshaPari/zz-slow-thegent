@@ -7,6 +7,7 @@
 ## Overview
 
 The TUI Dashboard provides L1 coordinators with real-time visibility into:
+
 - Work stream status (PENDING, CLAIMED, COMPLETED)
 - Active agents and their progress
 - Blockers and dependencies
@@ -92,12 +93,14 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
 ```
 
 **Components:**
+
 - **Title**: Always visible, shows project and current phase
 - **Timestamp**: UTC time, auto-updates every second
 - **Status Indicator**: Colored dot (● green=healthy, ● yellow=warning, ● red=critical)
 - **Quick Stats**: Count of items in each state
 
 **Color Coding:**
+
 - Green: All metrics healthy, no blockers
 - Yellow: 1-2 warnings, SLO approaching, 1-2 blockers
 - Red: Active failures, multiple blockers, critical SLO breaches
@@ -122,6 +125,7 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
 ```
 
 **Columns:**
+
 - **Agent**: Assigned agent name (e.g., `dev-1`, `tester`)
 - **Task ID**: Work item identifier (e.g., `TGNT-P6.1`)
 - **Task Title**: Shortened title (truncated to fit)
@@ -152,6 +156,7 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
 ```
 
 **Columns:**
+
 - **Blocked ID**: Task waiting for dependency
 - **Blocked By**: Dependency status
   - ✓ ready (dependency will complete soon)
@@ -165,6 +170,7 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
   - "Start parallel prep?" - dependency will take time, start parallel work
 
 **Colors:**
+
 - Green: Blocker resolving soon (< 5 min)
 - Yellow: Blocker moderate (5-15 min)
 - Red: Blocker critical (> 15 min or stuck)
@@ -186,6 +192,7 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
 ```
 
 **Columns:**
+
 - **Task ID**: Unique identifier
 - **Title**: Brief description
 - **Est.**: Time estimate
@@ -214,15 +221,15 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
 
 **Metrics Explained:**
 
-| Metric | Formula | Good | Warning | Critical |
-|--------|---------|------|---------|----------|
-| Avg Task Duration | Sum(completed durations) / count | 80-120% | 120-150% | >150% |
-| Cycle Time | Median(CLAIMED → COMPLETED) | <15 min | 15-25 min | >25 min |
-| Agent Utilization | Active agents / Total agents | >50% | 30-50% | <30% |
-| Success Rate | (Total - Errors) / Total * 100 | >95% | 85-95% | <85% |
-| Blocker Count | Count(BLOCKED tasks) | <3 | 3-5 | >5 |
-| Phase ETA | Based on remaining tasks & cycle time | On time | ±15% | >±15% |
-| Quality Gate | Lint + test + coverage status | All PASS | 1 WARN | 1+ FAIL |
+| Metric            | Formula                               | Good     | Warning   | Critical |
+| ----------------- | ------------------------------------- | -------- | --------- | -------- |
+| Avg Task Duration | Sum(completed durations) / count      | 80-120%  | 120-150%  | >150%    |
+| Cycle Time        | Median(CLAIMED → COMPLETED)           | <15 min  | 15-25 min | >25 min  |
+| Agent Utilization | Active agents / Total agents          | >50%     | 30-50%    | <30%     |
+| Success Rate      | (Total - Errors) / Total \* 100       | >95%     | 85-95%    | <85%     |
+| Blocker Count     | Count(BLOCKED tasks)                  | <3       | 3-5       | >5       |
+| Phase ETA         | Based on remaining tasks & cycle time | On time  | ±15%      | >±15%    |
+| Quality Gate      | Lint + test + coverage status         | All PASS | 1 WARN    | 1+ FAIL  |
 
 ### 6. Footer (Fixed Bottom)
 
@@ -233,6 +240,7 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
 ```
 
 **Hotkeys:**
+
 - `[A]` → Show extended agents view (more details, edit mode)
 - `[W]` → Show full work stream (sortable by status, priority, team)
 - `[B]` → Show detailed blocker analysis (manual resolution options)
@@ -398,6 +406,7 @@ The TUI Dashboard provides L1 coordinators with real-time visibility into:
 ```
 
 **Tech Stack:**
+
 - Language: Bash or Python (curses/blessed)
 - Data Source: `docs/reference/WORK_STREAM.md` (parsed as markdown table)
 - Refresh: Simple file poll + terminal clear/redraw
@@ -481,11 +490,11 @@ User presses [A] for agents view:
 
 ## Version & Maintenance
 
-| Version | Date | Status | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2026-02-18 | Design | Initial mockup and specification |
-| 1.1 | TBD | Planned | MVP implementation (Phase 1) |
-| 2.0 | TBD | Planned | Extended views + sorting |
+| Version | Date       | Status  | Changes                          |
+| ------- | ---------- | ------- | -------------------------------- |
+| 1.0     | 2026-02-18 | Design  | Initial mockup and specification |
+| 1.1     | TBD        | Planned | MVP implementation (Phase 1)     |
+| 2.0     | TBD        | Planned | Extended views + sorting         |
 
 **Maintained By:** L1 Coordinator
-**Feedback & Issues:** File in docs/research/FEEDBACK_*.md
+**Feedback & Issues:** File in docs/research/FEEDBACK\_\*.md

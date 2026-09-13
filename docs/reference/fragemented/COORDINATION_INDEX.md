@@ -10,13 +10,13 @@ This index documents the complete coordination framework for Phase 6, enabling m
 
 ### Documents Created
 
-| Document | Size | Purpose | Status |
-|----------|------|---------|--------|
-| **COORDINATION.md** | 24 KB | Three-level hierarchy, workflows, recovery | ✓ Complete |
-| **AGENTS_ACTIVE.md** | 8.5 KB | Agent registry, team management | ✓ Complete |
-| **TUI_DASHBOARD_DESIGN.md** | 34 KB | Dashboard mockup, implementation plan | ✓ Complete |
-| **FAILURE_RECOVERY_PLAYBOOK.md** | 27 KB | 10 FRP scenarios, decision tree | ✓ Complete |
-| **COORDINATION_INDEX.md** | This file | Cross-reference and navigation | ✓ Complete |
+| Document                         | Size      | Purpose                                    | Status     |
+| -------------------------------- | --------- | ------------------------------------------ | ---------- |
+| **COORDINATION.md**              | 24 KB     | Three-level hierarchy, workflows, recovery | ✓ Complete |
+| **AGENTS_ACTIVE.md**             | 8.5 KB    | Agent registry, team management            | ✓ Complete |
+| **TUI_DASHBOARD_DESIGN.md**      | 34 KB     | Dashboard mockup, implementation plan      | ✓ Complete |
+| **FAILURE_RECOVERY_PLAYBOOK.md** | 27 KB     | 10 FRP scenarios, decision tree            | ✓ Complete |
+| **COORDINATION_INDEX.md**        | This file | Cross-reference and navigation             | ✓ Complete |
 
 **Total:** 93.5 KB of coordination documentation
 
@@ -27,11 +27,13 @@ This index documents the complete coordination framework for Phase 6, enabling m
 ### For Claude Code (L1 Coordinators)
 
 **Getting Started:**
+
 1. Read: [COORDINATION.md - Level 1 Section](COORDINATION.md#level-1-coordinator-claude-code)
 2. Review: [AGENTS_ACTIVE.md - Team Composition Patterns](AGENTS_ACTIVE.md#team-composition-patterns)
 3. Understand: [TUI_DASHBOARD_DESIGN.md - Overview](TUI_DASHBOARD_DESIGN.md#overview)
 
 **Operational Tasks:**
+
 - Creating a team → [COORDINATION.md - Team Coordination](COORDINATION.md#team-coordination)
 - Assigning work → [AGENTS_ACTIVE.md - Commands](AGENTS_ACTIVE.md#commands-for-registry-management)
 - Monitoring progress → [TUI_DASHBOARD_DESIGN.md - Full Dashboard](TUI_DASHBOARD_DESIGN.md#full-dashboard-layout-160x40-minimum)
@@ -40,11 +42,13 @@ This index documents the complete coordination framework for Phase 6, enabling m
 ### For L2 Teammates (Named Agents)
 
 **Getting Started:**
+
 1. Read: [COORDINATION.md - Level 2 Section](COORDINATION.md#level-2-teammates-named-agents)
 2. Learn: [COORDINATION.md - CLAIMED Workflow](COORDINATION.md#claimed-workflow)
 3. Practice: [COORDINATION.md - COMPLETED Workflow](COORDINATION.md#completed-workflow)
 
 **During Execution:**
+
 - Finding work → `thegent plan do-next`
 - Claiming task → [COORDINATION.md - CLAIMED Step 3](COORDINATION.md#3-agent-claims-item)
 - Updating status → [COORDINATION.md - COMPLETED Step 4](COORDINATION.md#4-unblock-downstream-tasks)
@@ -54,10 +58,12 @@ This index documents the complete coordination framework for Phase 6, enabling m
 ### For L3 Thegent Agents
 
 **Getting Started:**
+
 1. Read: [COORDINATION.md - Level 3 Section](COORDINATION.md#level-3-thegent-agents-freepremium)
 2. Understand: [AGENTS_ACTIVE.md - Agent Lifecycle States](AGENTS_ACTIVE.md#agent-lifecycle-states)
 
 **During Execution:**
+
 - Follow L2 instructions exactly
 - Report results via file writes or stdout
 - If stuck, escalate to L2 (don't make decisions)
@@ -95,18 +101,18 @@ This index documents the complete coordination framework for Phase 6, enabling m
 
 ### Recovery Workflows (L1)
 
-| Failure | Handler | Reference |
-|---------|---------|-----------|
-| Agent timeout | Release task, force kill if needed | [FRP-1](FAILURE_RECOVERY_PLAYBOOK.md#frp-1-agent-crashtimeout-during-execution) |
-| Race condition | Break tie, lock WORK_STREAM.md | [FRP-2](FAILURE_RECOVERY_PLAYBOOK.md#frp-2-duplicate-task-claims-race-condition) |
-| Circular dependency | Break cycle by redesign | [FRP-3](FAILURE_RECOVERY_PLAYBOOK.md#frp-3-circular-dependencies) |
-| File merge conflict | Manual merge + verify | [FRP-4](FAILURE_RECOVERY_PLAYBOOK.md#frp-4-file-conflict-multiple-agents-editing-same-file) |
-| Regression after completion | Reopen task, fix, test | [FRP-5](FAILURE_RECOVERY_PLAYBOOK.md#frp-5-regression-after-completion) |
-| SLO breach (10x estimate) | Investigate, split, adjust | [FRP-6](FAILURE_RECOVERY_PLAYBOOK.md#frp-6-slo-breach-task-running-10x-estimate) |
-| Git conflict in WORK_STREAM | Manual merge, prevent future | [FRP-7](FAILURE_RECOVERY_PLAYBOOK.md#frp-7-git-conflict-in-work_streammd) |
-| Blocker 30+ min | Escalate dependency | [FRP-8](FAILURE_RECOVERY_PLAYBOOK.md#frp-8-blocker-slo-breach-task-waiting-30-minutes) |
-| Permission/file lock error | Fix perms, remove lock | [FRP-9](FAILURE_RECOVERY_PLAYBOOK.md#frp-9-permissionfile-locking-issues) |
-| No more work | Verify complete, next phase | [FRP-10](FAILURE_RECOVERY_PLAYBOOK.md#frp-10-work-stream-depletion-all-tasks-claimedcomplete) |
+| Failure                     | Handler                            | Reference                                                                                     |
+| --------------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------- |
+| Agent timeout               | Release task, force kill if needed | [FRP-1](FAILURE_RECOVERY_PLAYBOOK.md#frp-1-agent-crashtimeout-during-execution)               |
+| Race condition              | Break tie, lock WORK_STREAM.md     | [FRP-2](FAILURE_RECOVERY_PLAYBOOK.md#frp-2-duplicate-task-claims-race-condition)              |
+| Circular dependency         | Break cycle by redesign            | [FRP-3](FAILURE_RECOVERY_PLAYBOOK.md#frp-3-circular-dependencies)                             |
+| File merge conflict         | Manual merge + verify              | [FRP-4](FAILURE_RECOVERY_PLAYBOOK.md#frp-4-file-conflict-multiple-agents-editing-same-file)   |
+| Regression after completion | Reopen task, fix, test             | [FRP-5](FAILURE_RECOVERY_PLAYBOOK.md#frp-5-regression-after-completion)                       |
+| SLO breach (10x estimate)   | Investigate, split, adjust         | [FRP-6](FAILURE_RECOVERY_PLAYBOOK.md#frp-6-slo-breach-task-running-10x-estimate)              |
+| Git conflict in WORK_STREAM | Manual merge, prevent future       | [FRP-7](FAILURE_RECOVERY_PLAYBOOK.md#frp-7-git-conflict-in-work_streammd)                     |
+| Blocker 30+ min             | Escalate dependency                | [FRP-8](FAILURE_RECOVERY_PLAYBOOK.md#frp-8-blocker-slo-breach-task-waiting-30-minutes)        |
+| Permission/file lock error  | Fix perms, remove lock             | [FRP-9](FAILURE_RECOVERY_PLAYBOOK.md#frp-9-permissionfile-locking-issues)                     |
+| No more work                | Verify complete, next phase        | [FRP-10](FAILURE_RECOVERY_PLAYBOOK.md#frp-10-work-stream-depletion-all-tasks-claimedcomplete) |
 
 ---
 
@@ -233,12 +239,12 @@ grep "TGNT-P6.1" docs/reference/WORK_STREAM.md | wc -l
 
 ### Implementation Roadmap
 
-| Phase | Timeframe | Deliverable | Owner |
-|-------|-----------|-------------|-------|
-| **Phase 1 (MVP)** | Week 1 | Basic dashboard (header + agents + blockers) | TBD |
-| **Phase 2** | Week 2 | Extended views (workstream, blockers, stats) | TBD |
-| **Phase 3** | Week 3 | Interactive features (claim, message, edit) | TBD |
-| **Phase 4** | Week 4 | Predictions & automation (ETA, auto-unblock) | TBD |
+| Phase             | Timeframe | Deliverable                                  | Owner |
+| ----------------- | --------- | -------------------------------------------- | ----- |
+| **Phase 1 (MVP)** | Week 1    | Basic dashboard (header + agents + blockers) | TBD   |
+| **Phase 2**       | Week 2    | Extended views (workstream, blockers, stats) | TBD   |
+| **Phase 3**       | Week 3    | Interactive features (claim, message, edit)  | TBD   |
+| **Phase 4**       | Week 4    | Predictions & automation (ETA, auto-unblock) | TBD   |
 
 📄 **Full details:** [TUI_DASHBOARD_DESIGN.md - Implementation Roadmap](TUI_DASHBOARD_DESIGN.md#implementation-roadmap)
 
@@ -248,23 +254,23 @@ grep "TGNT-P6.1" docs/reference/WORK_STREAM.md | wc -l
 
 ### When to Create a Team
 
-| Scenario | Decision | Effort |
-|----------|----------|--------|
-| Single agent, simple task (1-2 files) | ❌ No team | 5-15 min |
-| 2-3 agents, feature | ✓ Small team | 30-45 min |
-| 4-6 agents, sprint | ✓ Medium team | 60-120 min |
-| 7+ agents, major refactor | ✓ Large team | 120+ min |
+| Scenario                              | Decision      | Effort     |
+| ------------------------------------- | ------------- | ---------- |
+| Single agent, simple task (1-2 files) | ❌ No team    | 5-15 min   |
+| 2-3 agents, feature                   | ✓ Small team  | 30-45 min  |
+| 4-6 agents, sprint                    | ✓ Medium team | 60-120 min |
+| 7+ agents, major refactor             | ✓ Large team  | 120+ min   |
 
 ### When to Escalate to L1
 
-| Issue | Escalate? | When? |
-|-------|-----------|-------|
-| Task estimate seems low | ⚠ Maybe | If >100% and persistent |
-| Need another agent | ✓ Always | Ask L1 to allocate |
-| Change scope | ✓ Always | Don't unilaterally change |
-| Circular dependency | ✓ Always | Can't break on own |
-| File conflict | ⚠ Maybe | Try manual merge first |
-| Blocker >15 min | ✓ Always | Report immediately |
+| Issue                   | Escalate? | When?                     |
+| ----------------------- | --------- | ------------------------- |
+| Task estimate seems low | ⚠ Maybe  | If >100% and persistent   |
+| Need another agent      | ✓ Always  | Ask L1 to allocate        |
+| Change scope            | ✓ Always  | Don't unilaterally change |
+| Circular dependency     | ✓ Always  | Can't break on own        |
+| File conflict           | ⚠ Maybe  | Try manual merge first    |
+| Blocker >15 min         | ✓ Always  | Report immediately        |
 
 ---
 
@@ -320,24 +326,24 @@ grep "TGNT-P6.1" docs/reference/WORK_STREAM.md | wc -l
 
 ### ✓ Good Patterns
 
-| Pattern | Example | Reference |
-|---------|---------|-----------|
-| Atomic CLAIMED update | Claim task, immediately commit | [COORDINATION.md](COORDINATION.md#3-agent-claims-item) |
-| Clear task ownership | One agent per task | [AGENTS_ACTIVE.md](AGENTS_ACTIVE.md#agent-lifecycle-states) |
-| Explicit dependencies | All TGNT-P6.X specify Depends On | [COORDINATION.md](COORDINATION.md#overview) |
-| Fast recovery | FRP procedures, auto-escalation | [FAILURE_RECOVERY_PLAYBOOK.md](FAILURE_RECOVERY_PLAYBOOK.md) |
-| Blocker visibility | Dashboard shows blockers in red | [TUI_DASHBOARD_DESIGN.md](TUI_DASHBOARD_DESIGN.md#3-blockers-section-always-visible) |
+| Pattern               | Example                          | Reference                                                                            |
+| --------------------- | -------------------------------- | ------------------------------------------------------------------------------------ |
+| Atomic CLAIMED update | Claim task, immediately commit   | [COORDINATION.md](COORDINATION.md#3-agent-claims-item)                               |
+| Clear task ownership  | One agent per task               | [AGENTS_ACTIVE.md](AGENTS_ACTIVE.md#agent-lifecycle-states)                          |
+| Explicit dependencies | All TGNT-P6.X specify Depends On | [COORDINATION.md](COORDINATION.md#overview)                                          |
+| Fast recovery         | FRP procedures, auto-escalation  | [FAILURE_RECOVERY_PLAYBOOK.md](FAILURE_RECOVERY_PLAYBOOK.md)                         |
+| Blocker visibility    | Dashboard shows blockers in red  | [TUI_DASHBOARD_DESIGN.md](TUI_DASHBOARD_DESIGN.md#3-blockers-section-always-visible) |
 
 ### ❌ Anti-Patterns
 
-| Anti-Pattern | Problem | Fix |
-|--------------|---------|-----|
-| Manual WORK_STREAM updates | Race conditions | Use TaskUpdate tool |
-| Claiming without commit | Other agents don't see claim | Always commit immediately |
-| Hiding blockers | Escalation delays | Report immediately to L1 |
-| Circular dependencies | Deadlock | Break cycle with redesign (FRP-3) |
-| No timestamps | Can't detect staleness | Always use ISO 8601 timestamps |
-| Soft estimates | SLO breaches | +30% buffer for git/risky work |
+| Anti-Pattern               | Problem                      | Fix                               |
+| -------------------------- | ---------------------------- | --------------------------------- |
+| Manual WORK_STREAM updates | Race conditions              | Use TaskUpdate tool               |
+| Claiming without commit    | Other agents don't see claim | Always commit immediately         |
+| Hiding blockers            | Escalation delays            | Report immediately to L1          |
+| Circular dependencies      | Deadlock                     | Break cycle with redesign (FRP-3) |
+| No timestamps              | Can't detect staleness       | Always use ISO 8601 timestamps    |
+| Soft estimates             | SLO breaches                 | +30% buffer for git/risky work    |
 
 ---
 
@@ -345,22 +351,22 @@ grep "TGNT-P6.1" docs/reference/WORK_STREAM.md | wc -l
 
 ### Task-Level SLOs
 
-| Metric | Target | Warning | Critical |
-|--------|--------|---------|----------|
-| Cycle Time | 15 min | >20 min | >30 min |
-| SLO Adherence | 100% | >85% | <70% |
-| Estimate Accuracy | ±30% | ±50% | >50% |
-| Agent Utilization | 60%+ | 30-60% | <30% |
-| Blocker Resolution | <5 min | <15 min | >30 min |
+| Metric             | Target | Warning | Critical |
+| ------------------ | ------ | ------- | -------- |
+| Cycle Time         | 15 min | >20 min | >30 min  |
+| SLO Adherence      | 100%   | >85%    | <70%     |
+| Estimate Accuracy  | ±30%   | ±50%    | >50%     |
+| Agent Utilization  | 60%+   | 30-60%  | <30%     |
+| Blocker Resolution | <5 min | <15 min | >30 min  |
 
 ### Phase-Level SLOs
 
-| Metric | Target | Warning | Critical |
-|--------|--------|---------|----------|
-| Phase Completion | On schedule | ±15% | >±15% |
-| Test Coverage | >=90% | >=80% | <80% |
-| Zero Regressions | 0 | 1 | >1 |
-| Quality Gate Pass | 100% | >95% | <95% |
+| Metric            | Target      | Warning | Critical |
+| ----------------- | ----------- | ------- | -------- |
+| Phase Completion  | On schedule | ±15%    | >±15%    |
+| Test Coverage     | >=90%       | >=80%   | <80%     |
+| Zero Regressions  | 0           | 1       | >1       |
+| Quality Gate Pass | 100%        | >95%    | <95%     |
 
 ---
 
@@ -378,6 +384,7 @@ If you encounter a failure not covered by FRP-1 through FRP-10:
 ### Suggest Improvements
 
 Good places for improvements:
+
 - Automation (reduce manual steps)
 - Visibility (better metrics, clearer dashboards)
 - Prevention (avoid failures before they happen)
@@ -387,11 +394,11 @@ Good places for improvements:
 
 ## Version History
 
-| Version | Date | Changes | Status |
-|---------|------|---------|--------|
-| 1.0 | 2026-02-18 | Initial coordination framework | ✓ Active |
-| 1.1 | TBD | Dashboard MVP implementation | Planned |
-| 2.0 | TBD | Automated escalation & recovery | Planned |
+| Version | Date       | Changes                         | Status   |
+| ------- | ---------- | ------------------------------- | -------- |
+| 1.0     | 2026-02-18 | Initial coordination framework  | ✓ Active |
+| 1.1     | TBD        | Dashboard MVP implementation    | Planned  |
+| 2.0     | TBD        | Automated escalation & recovery | Planned  |
 
 ---
 

@@ -2,17 +2,20 @@
 # Zsh + Modern Dev CLI Research - 2026-02-22
 
 ## Scope
+
 - Research pass over user-provided `r/zsh` and adjacent titles.
 - Added related ecosystem threads (`r/commandline`, `r/neovim`, `r/MacOS`, `r/LocalLLaMA`, `r/AI_Agents`).
 - Goal: practical, low-cost, modern shell/dev-CLI setup and high-signal links.
 
 ## Executive Summary
+
 - `zsh` remains the most customizable default, with a strong plugin ecosystem and mature performance tuning patterns.
 - The dominant 2026 pattern is minimal base config + async/lazy loading + fast history/search tooling.
 - AI helpers are most useful as command-suggestion overlays, not autonomous command runners.
 - For terminal choice, communities still split by latency preference and platform fit (`foot`, `kitty`, `wezterm`, `ghostty`, `iTerm2`).
 
 ## Recommended 2026 Baseline Setup
+
 1. Keep `~/.zshrc` small and explicit. Load only core plugins first.
 2. Core plugins: `zsh-autosuggestions`, `zsh-syntax-highlighting`, `fzf` integration.
 3. Use lazy-loading for heavy tools (version managers, large completion scripts).
@@ -21,6 +24,7 @@
 6. Measure startup regularly and trim non-essential modules.
 
 ## Common Anti-Patterns
+
 - Loading too many plugins by default.
 - Running many `eval` blocks synchronously on every shell start.
 - Allowing AI helpers to execute commands directly without review.
@@ -29,6 +33,7 @@
 ## Canonical Thread Matches (Selected)
 
 ### r/zsh
+
 - zsh-git-ai: Never write a commit message again
   https://www.reddit.com/r/zsh/comments/1m6mkm5
 - New ZSH plugin to retrieve command history of specific directory
@@ -77,6 +82,7 @@
   https://www.reddit.com/r/zsh/comments/1llxdo5
 
 ### Adjacent Threads
+
 - Modern linux: a containerized, batteries-included collection of tools (`r/commandline`)
   https://www.reddit.com/r/commandline/comments/1lv9l19
 - I built a context-aware shell history tool in C++20 that acts like IntelliSense. (`r/commandline`)
@@ -97,5 +103,6 @@
   https://www.reddit.com/r/AI_Agents/comments/1qw54wr/reddit_api_solution_2026_creating_a_reddit_search/
 
 ## Notes
+
 - Some query strings in the request were search prompts rather than exact post titles.
 - This document records resolved canonical Reddit posts and practical setup guidance derived from the discussion set.

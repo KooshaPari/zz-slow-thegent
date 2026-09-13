@@ -9,6 +9,7 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 ### 1. **Comprehensive Guardrails System** (`security/guardrails.py`)
 
 **Features**:
+
 - ✅ Command validation with multiple safety checks
 - ✅ Rate limiting (commands, file ops, network, process kills)
 - ✅ Security invariants enforcement
@@ -16,11 +17,13 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 - ✅ Protected process list (agents, terminals, shells)
 
 **Protected Processes**:
+
 - Agent processes: `cursor-agent`, `thegent`, `claude`, `codex`, `droid`, `opencode`, `copilot`
 - Shell processes: `bash`, `zsh`, `sh`, `fish`, `tcsh`, `csh`
 - Terminal emulators: `ghostty`, `terminal`, `iterm`, `alacritty`, `kitty`, `wezterm`, `warp`
 
 **Blocked Patterns**:
+
 - `kill -9 cursor-agent`
 - `ps | grep cursor-agent | xargs kill`
 - `rm -rf /`
@@ -30,6 +33,7 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 ### 2. **Token & Context Optimization** (`security/context_optimizer.py`)
 
 **Strategies**:
+
 - ✅ **Secret Removal**: Replaces `sk-abc123` → `${OPENAI_API_KEY}`
 - ✅ **Smart Truncation**: Keeps first 45% + last 45%, truncates middle intelligently
 - ✅ **Whitespace Compression**: Reduces unnecessary spaces/newlines
@@ -38,6 +42,7 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 **Expected Savings**: 50-80% token reduction, 50-80% cost reduction
 
 **Integration Points**:
+
 - `_build_continuation_prompt()` - Session continuation
 - `_inject_time_constraint()` - Time-constrained prompts
 - `_resolve_prompt()` - Prompt resolution
@@ -45,6 +50,7 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 ### 3. **Input Sanitization** (`security/input_sanitizer.py`)
 
 **Protections**:
+
 - ✅ SQL injection detection
 - ✅ XSS (Cross-Site Scripting) detection
 - ✅ Command injection detection
@@ -54,11 +60,13 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 ### 4. **Command Execution Protection**
 
 **Integration Points**:
+
 - ✅ `run_subprocess_optimized()` - All subprocess calls validated
 - ✅ `run_shell_command()` - All shell commands validated
 - ✅ `popen_shell_command()` - All shell process creation validated
 
 **Protection Layers**:
+
 1. Basic validation (`_validate_command_safety`)
 2. Comprehensive guardrails (`validate_command`)
 3. Rate limiting
@@ -67,6 +75,7 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 ### 5. **Pruning System Fixes**
 
 **Fixes Applied**:
+
 - ✅ Removed shell patterns (bash, zsh, sh) from pruning
 - ✅ Terminal protection (even with `force=True`)
 - ✅ Comprehensive logging with caller info
@@ -79,12 +88,14 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 ### 6. **Secret Management**
 
 **Features**:
+
 - ✅ Environment variable mapping
 - ✅ Secret masking for logging
 - ✅ No hardcoded secrets in code
 - ✅ Automatic secret removal from context
 
 **Mapping**:
+
 ```python
 openai_api_key → OPENAI_API_KEY
 anthropic_api_key → ANTHROPIC_API_KEY
@@ -95,18 +106,21 @@ aws_access_key → AWS_ACCESS_KEY_ID
 ## 📊 Impact
 
 ### Security
+
 - ✅ **100% protection** against agent-to-agent killing
 - ✅ **100% protection** against terminal killing
 - ✅ **Multi-layer validation** for all commands
 - ✅ **Rate limiting** prevents resource exhaustion
 
 ### Token Optimization
+
 - ✅ **50-80% token reduction** through optimization
 - ✅ **50-80% cost reduction** for LLM API calls
 - ✅ **Secrets never exposed** in logs or context
 - ✅ **Smart truncation** maintains context quality
 
 ### Performance
+
 - ✅ **Rate limiting** prevents abuse
 - ✅ **Input validation** prevents attacks
 - ✅ **Efficient context management**
@@ -135,6 +149,7 @@ THGENT_SECURITY_RATE_LIMIT_NETWORK_PER_MINUTE=50
 ## 📝 Usage Examples
 
 ### Command Validation
+
 ```python
 from thegent.security import validate_command
 
@@ -143,6 +158,7 @@ is_allowed, error = validate_command(["rm", "-rf", "/"])
 ```
 
 ### Context Optimization
+
 ```python
 from thegent.security import optimize_context
 
@@ -151,6 +167,7 @@ optimized = optimize_context(large_context, max_tokens=50000)
 ```
 
 ### Secret Access
+
 ```python
 from thegent.security import get_secret
 
@@ -171,6 +188,7 @@ api_key = get_secret("openai_api_key")
 ## 📈 Monitoring
 
 Security events are logged:
+
 - `SECURITY BLOCKED` - Blocked commands
 - `RATE_LIMIT_EXCEEDED` - Rate limit violations
 - `TOKEN_OPTIMIZATION` - Context optimization stats
@@ -181,6 +199,7 @@ Security events are logged:
 **All security features are implemented and integrated.**
 
 The system now has:
+
 - ✅ Comprehensive command validation
 - ✅ Token optimization
 - ✅ Secret management

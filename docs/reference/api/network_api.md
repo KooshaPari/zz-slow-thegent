@@ -31,7 +31,7 @@ Return current I/O counters per interface.
 **Parameters**:
 
 - `interface`: If provided, return stats only for this interface.
-If None, return stats for all available interfaces.
+  If None, return stats for all available interfaces.
 
 **Returns**: List of NetworkStats, one per matching interface.
 Returns an empty list when psutil is unavailable.
@@ -72,12 +72,12 @@ Returns an empty list when psutil is unavailable.
 sample_bandwidth(self: Any, interval_s: float)
 ```
 
-Measure bandwidth by taking two samples separated by *interval_s* seconds.
+Measure bandwidth by taking two samples separated by _interval_s_ seconds.
 
 **Parameters**:
 
 - `interval_s`: Seconds between the two counter snapshots.
-Must be positive; values &lt;= 0 are clamped to 0.01 s.
+  Must be positive; values &lt;= 0 are clamped to 0.01 s.
 
 **Returns**: List of BandwidthSample (send_bps / recv_bps) per interface.
 Returns an empty list when psutil is unavailable.
@@ -103,7 +103,7 @@ Return current I/O counters per interface.
 **Parameters**:
 
 - `interface`: If provided, return stats only for this interface.
-If None, return stats for all available interfaces.
+  If None, return stats for all available interfaces.
 
 **Returns**: List of NetworkStats, one per matching interface.
 Returns an empty list when psutil is unavailable.
@@ -144,12 +144,12 @@ Returns an empty list when psutil is unavailable.
 sample_bandwidth(self: Any, interval_s: float)
 ```
 
-Measure bandwidth by taking two samples separated by *interval_s* seconds.
+Measure bandwidth by taking two samples separated by _interval_s_ seconds.
 
 **Parameters**:
 
 - `interval_s`: Seconds between the two counter snapshots.
-Must be positive; values &lt;= 0 are clamped to 0.01 s.
+  Must be positive; values &lt;= 0 are clamped to 0.01 s.
 
 **Returns**: List of BandwidthSample (send_bps / recv_bps) per interface.
 Returns an empty list when psutil is unavailable.

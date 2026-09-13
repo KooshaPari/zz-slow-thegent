@@ -22,6 +22,7 @@ For `sessionend`, spoken/message output is forced to:
 `Session Complete - Chat X - <NOTI>`
 
 Where:
+
 - `Chat X` is a static per-session label persisted from `SESSION_ID` mapping.
 - `<NOTI>` is the moving topic from latest user prompt, truncated to keep speech near ~5s.
 - Topic source is updated by `hooks/prompt-submit-guard.sh` into `.claude/notify-topic.txt`.
@@ -33,6 +34,7 @@ Voice output is normalized to:
 `<STATE> - <Agent> says - <NOTI>`
 
 Examples:
+
 - `Stop Issues - Codex says - quality checks reported failures`
 - `Session Complete - Cursor says - Session Complete - Chat 4 - finalize DAG sync`
 

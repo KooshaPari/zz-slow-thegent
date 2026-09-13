@@ -14,7 +14,7 @@ Manages layout persistence and switching.
 
 ### Methods
 
-#### LayoutManager.__init__
+#### LayoutManager.**init**
 
 ```python
 __init__(self: Any, storage_dir: Any)

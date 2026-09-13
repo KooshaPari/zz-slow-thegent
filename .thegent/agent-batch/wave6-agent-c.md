@@ -5,6 +5,7 @@ Date: 2026-02-21
 ## Scope Completed
 
 ### WL-115: add `bench run --output-format json` test coverage
+
 - Test changes:
   - Added explicit coverage for `thegent bench run --output-format json` and JSON payload assertions.
 - Files changed:
@@ -13,6 +14,7 @@ Date: 2026-02-21
   - `test_bench_run_supports_output_format_json`
 
 ### WL-116: add audio transcript metadata to structured output schema docs
+
 - Docs changes:
   - Added a dedicated structured-output schema section documenting:
     - `audio_transcript`
@@ -25,6 +27,7 @@ Date: 2026-02-21
   - `docs/plans/WL-116-AGENT-C-AUDIO-PASSTHROUGH-PLAN.md`
 
 ### WL-118: add doctor check severity levels for ollama statuses
+
 - Code changes:
   - Added `severity` field to `CheckResult` (`info|warning|error|critical`).
   - Added explicit severity assignment for Ollama runtime checks (missing binary, no models, HTTP failure, timeout, connect error, unexpected exception).
@@ -38,6 +41,7 @@ Date: 2026-02-21
   - `test_runtime_infrastructure_ollama_timeout_sets_error_severity`
 
 ### WL-119: add grounding source dedupe/normalization helper tests
+
 - Code changes:
   - Added `normalize_grounding_source_url()` helper.
   - Updated `extract_grounding_sources()` to normalize URLs before dedupe.
@@ -51,6 +55,7 @@ Date: 2026-02-21
   - `test_normalize_grounding_source_url_trims_and_lowercases_host`
 
 ### WL-120: update modernization plan with wave-4/5 checkpoint rows
+
 - Docs changes:
   - Added Wave-4 and Wave-5 executed checkpoint entries in the main checkpoint list.
   - Added explicit `Wave-4/5 Checkpoint Rows` table with WL item evidence mappings.
@@ -60,13 +65,16 @@ Date: 2026-02-21
 ## Focused Validation
 
 1. Compile checks:
+
 - `python -m py_compile src/thegent/routing/grounding.py src/thegent/doctor.py`
 - Result: pass.
 
 2. Focused WL tests:
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/.venv/bin/pytest -q tests/test_wl115_bench_cli.py tests/test_wl116_audio_inputs.py tests/test_wl118_ollama_doctor_slice.py tests/test_wl119_grounding_sources.py`
 - Result: `24 passed in 4.79s`.
 
 ## Constraints Check
+
 - `docs/reference/WORK_STREAM.md` not modified.
 - Changes scoped to requested WL-115/116/118/119/120 items only.

@@ -9,6 +9,7 @@
 ## Overview
 
 The Agent Identity and Discovery system provides:
+
 - **Unique global identifiers** for all agents across all projects
 - **Persistent identity** that survives agent restarts and project migrations
 - **Scalable service discovery** supporting 5-20 agents with <100ms lookup latency
@@ -27,11 +28,11 @@ The Agent Identity and Discovery system provides:
 
 **Components**:
 
-| Component | Type | Length | Format | Example |
-|-----------|------|--------|--------|---------|
-| `project` | String | 3-16 chars | lowercase, alphanumeric, dashes | `kush`, `atoms`, `my-project` |
-| `uuid` | String | 36 chars | UUID v4 (canonical RFC4122) | `8d3f2c1a-5e7b-4d2f-9e1c-6a8b3f2d1e0a` |
-| `L{tier}` | Enum | 2 chars | `L1`, `L2`, or `L3` | `L1` |
+| Component   | Type   | Length     | Format                           | Example                                |
+| ----------- | ------ | ---------- | -------------------------------- | -------------------------------------- |
+| `project`   | String | 3-16 chars | lowercase, alphanumeric, dashes  | `kush`, `atoms`, `my-project`          |
+| `uuid`      | String | 36 chars   | UUID v4 (canonical RFC4122)      | `8d3f2c1a-5e7b-4d2f-9e1c-6a8b3f2d1e0a` |
+| `L{tier}`   | Enum   | 2 chars    | `L1`, `L2`, or `L3`              | `L1`                                   |
 | `role-slug` | String | 3-32 chars | lowercase, alphanumeric, hyphens | `claude-code`, `runner-1`, `cursor-01` |
 
 ### Examples
@@ -55,21 +56,23 @@ atoms:3d4e5f6a-7b8c-9d0e-1f2a-3b4c-5d6e:L3:cursor-01
 
 ### Uniqueness Constraints
 
-| Level | Constraint | Implication |
-|-------|-----------|-------------|
-| Global | `{project}:{uuid}` is globally unique | Only one agent with given UUID in given project |
-| Per-Project | Multiple agents can have same `role-slug` | `runner-1`, `runner-2`, `runner-3` in same project |
-| Per-Agent | UUID is immutable | Identifies same agent across all projects it touches |
-| Per-Tier | Within project, can have multiple L1/L2/L3 agents | Multiple L2s in same project, each with unique UUID |
+| Level       | Constraint                                        | Implication                                          |
+| ----------- | ------------------------------------------------- | ---------------------------------------------------- |
+| Global      | `{project}:{uuid}` is globally unique             | Only one agent with given UUID in given project      |
+| Per-Project | Multiple agents can have same `role-slug`         | `runner-1`, `runner-2`, `runner-3` in same project   |
+| Per-Agent   | UUID is immutable                                 | Identifies same agent across all projects it touches |
+| Per-Tier    | Within project, can have multiple L1/L2/L3 agents | Multiple L2s in same project, each with unique UUID  |
 
 ### Special Cases
 
 **L1 Agent Identity Schemes:**
+
 - Claude Code: `{project}:L1:claude-code` (may have single UUID per project)
 - Claude (CLI): `{project}:L1:claude` (may share UUID across projects if CLI-global)
 - Cursor: `{project}:L1:cursor` (one Cursor window per project)
 
 **L3 Agent Naming:**
+
 - Cursor windows: `{project}:L3:cursor-01`, `cursor-02`, etc. (numbered)
 - CLI agents: `{project}:L3:cli-agent-01` (numbered)
 - External tools: `{project}:L3:tool-{tool_name}` (tool-specific)
@@ -97,6 +100,7 @@ def initialize_agent_identity(project: str, role: str, tier: str):
 ```
 
 **Persistence Locations**:
+
 ```
 ~/.claude/civilization/
 ├── kush/
@@ -113,6 +117,7 @@ def initialize_agent_identity(project: str, role: str, tier: str):
 ```
 
 **Guarantees**:
+
 - Same agent always gets same UUID across restarts
 - Agent UUID is immutable (persisted in `~/.claude/civilization/`)
 - If agent file deleted, new UUID generated (treated as new agent)
@@ -224,11 +229,7 @@ def initialize_agent_identity(project: str, role: str, tier: str):
       "last_heartbeat": "2026-02-19T14:37:35Z",
       "heartbeat_interval_seconds": 15,
       "parent_id": null,
-      "capabilities": [
-        "read_files",
-        "delegate_to_l2",
-        "researcher"
-      ],
+      "capabilities": ["read_files", "delegate_to_l2", "researcher"],
       "endpoints": {
         "mcp": "127.0.0.1:3848"
       },
@@ -254,11 +255,7 @@ def initialize_agent_identity(project: str, role: str, tier: str):
       "last_heartbeat": "2026-02-19T14:37:32Z",
       "heartbeat_interval_seconds": 60,
       "parent_id": "atoms:7e8f9a0b-1c2d-3e4f-5a6b-7c8d-9e0f:L1:claude",
-      "capabilities": [
-        "read_files",
-        "write_files",
-        "run_bash"
-      ],
+      "capabilities": ["read_files", "write_files", "run_bash"],
       "endpoints": {
         "mcp": "127.0.0.1:3849"
       },
@@ -401,12 +398,14 @@ def lookup_agent(agent_id: str) -> dict:
 ### Option 1: File-Based Registry (Primary)
 
 **Strengths**:
+
 - Simple (no separate service)
 - Git-native (commits are audit trail)
 - Works offline
 - Compatible with existing projects
 
 **Weaknesses**:
+
 - ~1s lookup latency (need git pull)
 - Eventual consistency (~10s propagation)
 - Scaling concerns beyond 100 agents
@@ -450,6 +449,7 @@ class FileBasedRegistry:
 ```
 
 **Lookup Diagram**:
+
 ```
 lookup(agent_id)
   ├─ Cache hit? → return (10ms)
@@ -460,12 +460,14 @@ lookup(agent_id)
 ### Option 2: MCP Service Registry (Real-Time Alternative)
 
 **Strengths**:
+
 - <50ms lookup latency (local MCP call)
 - Real-time updates (push-based)
 - Scalable to 1000+ agents
 - Strong consistency
 
 **Weaknesses**:
+
 - Requires MCP server (extra process)
 - Single point of failure (can add replicas)
 - Offline not supported (unless local cache)
@@ -500,6 +502,7 @@ class MCPServiceRegistry:
 ```
 
 **MCP Tool Schema**:
+
 ```python
 @mcp.tool()
 async def registry_lookup(agent_id: str) -> dict:
@@ -523,12 +526,14 @@ async def registry_list_agents(
 ### Option 3: Gossip Protocol (Peer Discovery)
 
 **Strengths**:
+
 - Fully decentralized (no central registry needed)
 - Resilient (survives network partitions)
 - P2P discovery (agents find each other directly)
 - Works offline
 
 **Weaknesses**:
+
 - 1-5s propagation (probabilistic)
 - Eventual consistency (temporary inconsistency)
 - Higher bandwidth (periodic gossip)
@@ -585,6 +590,7 @@ class GossipRegistry:
 ```
 
 **Gossip Example** (timeline):
+
 ```
 T=0: Agent A boots, knows only itself
      ├─ A.known_agents = {A}
@@ -758,11 +764,11 @@ async def resolve(agent_id: str, timeout: float = 5.0) -> AgentEndpoint:
 
 ### Endpoint Fallback Chain
 
-| Priority | Protocol | Latency | Use Case |
-|----------|----------|---------|----------|
-| 1 | MCP (stdio) | <50ms | Task dispatch, real-time |
-| 2 | HTTP | 100-200ms | RESTful commands, fallback |
-| 3 | Git (file-based) | 500-1000ms | Async messages, eventual consistency |
+| Priority | Protocol         | Latency    | Use Case                             |
+| -------- | ---------------- | ---------- | ------------------------------------ |
+| 1        | MCP (stdio)      | <50ms      | Task dispatch, real-time             |
+| 2        | HTTP             | 100-200ms  | RESTful commands, fallback           |
+| 3        | Git (file-based) | 500-1000ms | Async messages, eventual consistency |
 
 ### Example: Task Dispatch with Fallback
 
@@ -876,11 +882,13 @@ class CRDTAgentEntry:
 ### Heartbeat Mechanism
 
 **Heartbeat Interval** (by tier):
+
 - L1: Every 10 seconds
 - L2: Every 30 seconds
 - L3: Every 60 seconds (or longer if idle)
 
 **Stale Agent Detection**:
+
 ```python
 def mark_stale_agents(registry: dict, now: float):
     """
@@ -901,6 +909,7 @@ def mark_stale_agents(registry: dict, now: float):
 ```
 
 **Registry Cleanup**:
+
 ```python
 def prune_stale_agents(registry: dict, max_stale_age_hours: int = 24):
     """
@@ -980,14 +989,13 @@ def authorize_registry_update(updating_agent_id: str, entry_to_update: dict) -> 
 
 ## Glossary
 
-| Term | Definition |
-|------|-----------|
-| **Agent ID** | Globally unique identifier: `{project}:{uuid}:L{tier}:{role-slug}` |
-| **UUID** | 36-character RFC4122 identifier, immutable per agent |
-| **Registry** | Golden source of truth for agent identity, location, capabilities |
-| **Heartbeat** | Periodic status update sent by agent (10-60s intervals) |
-| **Endpoint** | Network address where agent can be reached (MCP, HTTP, git) |
-| **Discovery** | Process of finding agents (registry lookup, gossip, MCP query) |
-| **CRDT** | Conflict-free Replicated Data Type (for concurrent updates) |
-| **Stale Agent** | Agent that hasn't sent heartbeat for >3x interval |
-
+| Term            | Definition                                                         |
+| --------------- | ------------------------------------------------------------------ |
+| **Agent ID**    | Globally unique identifier: `{project}:{uuid}:L{tier}:{role-slug}` |
+| **UUID**        | 36-character RFC4122 identifier, immutable per agent               |
+| **Registry**    | Golden source of truth for agent identity, location, capabilities  |
+| **Heartbeat**   | Periodic status update sent by agent (10-60s intervals)            |
+| **Endpoint**    | Network address where agent can be reached (MCP, HTTP, git)        |
+| **Discovery**   | Process of finding agents (registry lookup, gossip, MCP query)     |
+| **CRDT**        | Conflict-free Replicated Data Type (for concurrent updates)        |
+| **Stale Agent** | Agent that hasn't sent heartbeat for >3x interval                  |

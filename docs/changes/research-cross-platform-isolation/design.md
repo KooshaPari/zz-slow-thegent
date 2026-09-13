@@ -45,19 +45,19 @@
 
 ### 1.2 Core Implementation Files
 
-| File | Purpose | LOC |
-|------|---------|-----|
-| `thegent/isolation/sub_user_provider.py` | Sub-user context allocation & execution | 300 |
-| `thegent/isolation/os_user_provider.py` | OS user isolation (sudoers + user mgmt) | 350 |
-| `thegent/coordination/edit_lease_manager.py` | Tenant-aware file locks | 250 |
-| `thegent/coordination/desktop_coordinator.py` | Desktop action scheduling & coordination | 400 |
-| `thegent/coordination/user_activity_detector.py` | User input/window detection | 200 |
-| `thegent/desktop/macos.py` | macOS AppleScript provider | 200 |
-| `thegent/desktop/linux.py` | Linux AT-SPI provider | 250 |
-| `thegent/desktop/windows.py` | Windows UI Automation provider | 250 |
-| `thegent/audit/isolation_auditor.py` | Audit logging & compliance | 150 |
-| **Tests** | Unit, integration, security, performance | 1500+ |
-| **Total** | | **3700+ LOC** |
+| File                                             | Purpose                                  | LOC           |
+| ------------------------------------------------ | ---------------------------------------- | ------------- |
+| `thegent/isolation/sub_user_provider.py`         | Sub-user context allocation & execution  | 300           |
+| `thegent/isolation/os_user_provider.py`          | OS user isolation (sudoers + user mgmt)  | 350           |
+| `thegent/coordination/edit_lease_manager.py`     | Tenant-aware file locks                  | 250           |
+| `thegent/coordination/desktop_coordinator.py`    | Desktop action scheduling & coordination | 400           |
+| `thegent/coordination/user_activity_detector.py` | User input/window detection              | 200           |
+| `thegent/desktop/macos.py`                       | macOS AppleScript provider               | 200           |
+| `thegent/desktop/linux.py`                       | Linux AT-SPI provider                    | 250           |
+| `thegent/desktop/windows.py`                     | Windows UI Automation provider           | 250           |
+| `thegent/audit/isolation_auditor.py`             | Audit logging & compliance               | 150           |
+| **Tests**                                        | Unit, integration, security, performance | 1500+         |
+| **Total**                                        |                                          | **3700+ LOC** |
 
 ---
 
@@ -145,6 +145,7 @@ thegent isolation setup-os-user --num-users 5 --base-user thegent-prod
 ```
 
 **Lock File Format** (JSON):
+
 ```json
 {
   "lease_id": "tenant-abc123:file.py:1708345234567890123",
@@ -218,18 +219,21 @@ return lease
 ### 6.1 Platform Detection Logic
 
 **macOS**:
+
 ```
 osascript: "tell app System Events name of (first app process whose frontmost is true)"
 → Returns active app name (e.g., "Code", "Terminal")
 ```
 
 **Linux**:
+
 ```
 x11: XGetInputFocus() → Active window
 OR AT-SPI: dbus query active window accessible object
 ```
 
 **Windows**:
+
 ```
 ctypes: GetForegroundWindow() → Active window hwnd
 → GetWindowText(hwnd) → Window title
@@ -252,13 +256,13 @@ isolation:
 
   # Sub-user configuration
   sub_user:
-    prefix: "thegent"          # thegent-tenant-abc123
-    base_uid: 1000             # UID offset start
+    prefix: "thegent" # thegent-tenant-abc123
+    base_uid: 1000 # UID offset start
     home_dir_template: "/tmp/thegent/{tenant_id}"
 
   # OS user configuration (if mode: "os-user")
   os_user:
-    prefix: "thegent-agent-"   # thegent-agent-1, etc.
+    prefix: "thegent-agent-" # thegent-agent-1, etc.
     base_home: "/home"
     sudo_nopasswd: true
 
@@ -286,9 +290,9 @@ coordination:
 # Platform-specific providers
 platform:
   macos:
-    desktop_provider: "applescript"  # or "accessibility"
+    desktop_provider: "applescript" # or "accessibility"
   linux:
-    desktop_provider: "at-spi"       # or "x11"
+    desktop_provider: "at-spi" # or "x11"
   windows:
     desktop_provider: "uiautomation"
 
@@ -304,12 +308,12 @@ audit:
 
 ### 8.1 Latency Budget (p95)
 
-| Operation | Latency | Budget | Notes |
-|-----------|---------|--------|-------|
-| Sub-user allocation | <1ms | 5ms | Hash-based UID assignment |
-| Lease acquire | <50ms | 100ms | File write + conflict check |
-| Desktop action execute | <200ms | 500ms | Platform provider call |
-| User activity check | <50ms | 100ms | Window manager query |
+| Operation              | Latency | Budget | Notes                       |
+| ---------------------- | ------- | ------ | --------------------------- |
+| Sub-user allocation    | <1ms    | 5ms    | Hash-based UID assignment   |
+| Lease acquire          | <50ms   | 100ms  | File write + conflict check |
+| Desktop action execute | <200ms  | 500ms  | Platform provider call      |
+| User activity check    | <50ms   | 100ms  | Window manager query        |
 
 ### 8.2 Success Rate Target
 
@@ -322,18 +326,21 @@ audit:
 ## 9. Testing Checklist
 
 ### Phase 1: Sub-User Isolation
+
 - [ ] Allocate tenant, verify UID/GID set
 - [ ] Execute command in context, verify env vars
 - [ ] Multiple tenants execute concurrently without interference
 - [ ] Cleanup releases resources
 
 ### Phase 2: Edit Lease Manager
+
 - [ ] Single tenant acquires & releases lease
 - [ ] Conflict detected when different tenant tries to acquire same file
 - [ ] Multiple files acquired in batch
 - [ ] Lease timeout auto-expires
 
 ### Phase 3: Desktop Coordinator
+
 - [ ] macOS: click, type, hotkey actions work
 - [ ] Linux: AT-SPI actions work
 - [ ] Windows: UI Automation actions work
@@ -342,12 +349,14 @@ audit:
 - [ ] Concurrent actions queued correctly (no UI collision)
 
 ### Phase 4: OS User Isolation
+
 - [ ] Users created with correct UIDs/home dirs
 - [ ] Sudoers config generated correctly
 - [ ] OS user execution works (and isolation verified)
 - [ ] Cleanup removes users
 
 ### Phase 5: Integration & Security
+
 - [ ] Multiple concurrent agents with different isolation modes
 - [ ] Audit log captures all events
 - [ ] Cross-tenant file access prevented (security test)

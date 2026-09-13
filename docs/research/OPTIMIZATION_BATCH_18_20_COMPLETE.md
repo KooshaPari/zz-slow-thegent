@@ -20,17 +20,20 @@ Successfully completed optimization items 18-20, migrating subprocess calls to f
 **Status**: ✅ Complete
 
 **Changes**:
+
 - Migrated model scraper subprocess calls to use `run_subprocess_optimized()` from `thegent.infra`
 - Updated `scrape_cursor()`, `scrape_copilot()`, `scrape_gemini()`, `scrape_claude()` functions
 - All scrapers now use optimized subprocess execution with better resource management
 
 **Files Modified**:
+
 - `src/thegent/models/scrapers.py`
   - Added import: `from thegent.infra import run_subprocess_optimized`
   - Updated all `subprocess.run()` calls to `run_subprocess_optimized()`
   - Improved stdout decoding handling for cross-platform compatibility
 
 **Performance**:
+
 - Optimized process creation flags (CREATE_NO_WINDOW on Windows, close_fds on Unix)
 - Better resource management for concurrent subprocess execution
 - Foundation for future async/concurrent subprocess migration
@@ -44,17 +47,20 @@ Successfully completed optimization items 18-20, migrating subprocess calls to f
 **Status**: ✅ Complete
 
 **Changes**:
+
 - Integrated `MultiTierCache` from `thegent.infra` into hot paths
 - Added caching to route resolution (most frequently called path)
 - Added caching to static catalog building (expensive operation)
 
 **Files Modified**:
+
 - `src/thegent/models/catalog.py`
   - Route resolution: Added multi-tier cache with L1 (100 entries) and L2 (1000 entries), 300s TTL
   - Static catalog: Added cache with 1-hour TTL to avoid rebuilding on every access
   - Automatic fallback to OrderedDict LRU cache if `MultiTierCache` unavailable
 
 **Implementation Details**:
+
 ```python
 # Route resolution caching
 try:
@@ -68,11 +74,13 @@ except ImportError:
 ```
 
 **Performance**:
+
 - Route resolution: Sub-millisecond lookups for cached entries (vs 1-5ms uncached)
 - Static catalog: Avoids expensive rebuild on every access (cached for 1 hour)
 - Multi-tier architecture: L1 (fastest, smallest) → L2 (medium-term) → L3 (persistent, optional)
 
 **Cache Statistics**:
+
 - L1: 100 entries (TTLCache, 60s default TTL)
 - L2: 1000 entries (LRUCache)
 - L3: Disabled (can be enabled with disk path for persistence)
@@ -86,6 +94,7 @@ except ImportError:
 **File Created**: `scripts/benchmark_optimizations.py`
 
 **Features**:
+
 1. **YAML Parsing Benchmark**
    - Compares PyYAML (baseline) vs ruamel.yaml (optimized)
    - Measures mean, median, stdev
@@ -117,6 +126,7 @@ except ImportError:
    - Calculates cache speedup
 
 **Usage**:
+
 ```bash
 # Run with default settings (100 iterations)
 python scripts/benchmark_optimizations.py
@@ -132,6 +142,7 @@ python scripts/benchmark_optimizations.py --iterations 1000 --warmup 50
 ```
 
 **Output Format**:
+
 - Console: Summary table with speedup ratios
 - JSON: Detailed results with mean, median, stdev for each benchmark
 
@@ -139,24 +150,27 @@ python scripts/benchmark_optimizations.py --iterations 1000 --warmup 50
 
 ## Performance Improvements Summary
 
-| Optimization | Component | Improvement |
-|--------------|-----------|-------------|
-| opti-18 | Subprocess execution | Optimized resource management, foundation for async |
-| opti-19 | Route resolution | Sub-millisecond cached lookups (vs 1-5ms uncached) |
-| opti-19 | Static catalog | Avoids rebuild overhead (1-hour cache) |
-| opti-20 | Benchmarking | Infrastructure for measuring all optimizations |
+| Optimization | Component            | Improvement                                         |
+| ------------ | -------------------- | --------------------------------------------------- |
+| opti-18      | Subprocess execution | Optimized resource management, foundation for async |
+| opti-19      | Route resolution     | Sub-millisecond cached lookups (vs 1-5ms uncached)  |
+| opti-19      | Static catalog       | Avoids rebuild overhead (1-hour cache)              |
+| opti-20      | Benchmarking         | Infrastructure for measuring all optimizations      |
 
 ---
 
 ## Integration Status
 
 ### Dependencies
+
 All required dependencies are already installed:
+
 - `cachetools` (for MultiTierCache L1/L2)
 - `diskcache` (optional, for L3 persistence)
 - Fast subprocess module (already in `thegent.infra`)
 
 ### Backward Compatibility
+
 - All optimizations include fallbacks to standard implementations
 - No breaking changes
 - Graceful degradation if optional dependencies unavailable
@@ -175,13 +189,16 @@ All required dependencies are already installed:
 ## Files Modified
 
 ### Code Changes
+
 - `src/thegent/models/scrapers.py` - Subprocess optimization
 - `src/thegent/models/catalog.py` - Multi-tier caching integration
 
 ### New Files
+
 - `scripts/benchmark_optimizations.py` - Comprehensive benchmarking script
 
 ### Documentation
+
 - `docs/research/OPTIMIZATION_BATCH_18_20_COMPLETE.md` - This document
 
 ---

@@ -21,7 +21,7 @@ Bridges standard thegent networking with Delay-Tolerant protocols.
 
 ### Methods
 
-#### DTNBridge.__init__
+#### DTNBridge.**init**
 
 ```python
 __init__(self: Any, node_id: str)

@@ -1,6 +1,7 @@
 # Advanced Performance Patterns & Best Practices
 
 ## Table of Contents
+
 1. [Multi-Level Caching](#multi-level-caching)
 2. [Parallel Processing Patterns](#parallel-processing-patterns)
 3. [Error Handling & Resilience](#error-handling--resilience)
@@ -44,17 +45,20 @@
 ### Implementation
 
 **Rust Implementation** (`thegent-cache` crate):
+
 - L1: `LruCache` for hot data
 - L2: `DashMap` for concurrent access
 - L3: JSON files on disk
 
 **Benefits**:
+
 - 99%+ hit rate for frequently accessed data
 - Sub-microsecond access for hot data
 - Automatic promotion/demotion
 - TTL-based expiration
 
 **Usage**:
+
 ```rust
 let cache = MultiLevelCache::new(1000, Duration::from_secs(3600))
     .with_disk_cache("/tmp/thegent-cache");
@@ -70,6 +74,7 @@ let path = cache.get(&"tool:jq".to_string());
 ### Rayon for CPU-Bound Tasks
 
 **Tool Detection**:
+
 ```rust
 use rayon::prelude::*;
 
@@ -81,6 +86,7 @@ let results: Vec<_> = tools
 ```
 
 **File Operations**:
+
 ```rust
 use walkdir::WalkDir;
 use rayon::prelude::*;
@@ -97,6 +103,7 @@ WalkDir::new(root)
 ### Tokio for I/O-Bound Tasks
 
 **Async Hook Execution**:
+
 ```rust
 use tokio::time::{timeout, Duration};
 
@@ -109,6 +116,7 @@ async fn execute_hook(hook: Hook, event: Event) -> Result<HookResult> {
 ```
 
 **Concurrent Tool Detection**:
+
 ```rust
 use tokio::time::Instant;
 
@@ -133,6 +141,7 @@ async fn detect_all_tools() -> HashMap<String, String> {
 ### Circuit Breaker Pattern
 
 **Implementation**:
+
 ```rust
 pub struct CircuitBreaker {
     failure_count: usize,
@@ -247,6 +256,7 @@ pub fn resolve_tool_with_fallback(
 ### Criterion.rs Integration
 
 **Setup** (`Cargo.toml`):
+
 ```toml
 [dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }
@@ -257,6 +267,7 @@ harness = false
 ```
 
 **Benchmark** (`benches/tool_detection.rs`):
+
 ```rust
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use thegent_tool_detect::ToolDetector;
@@ -285,6 +296,7 @@ criterion_main!(benches);
 ### Hyperfine Integration
 
 **Script** (`scripts/benchmark.sh`):
+
 ```bash
 #!/usr/bin/env bash
 

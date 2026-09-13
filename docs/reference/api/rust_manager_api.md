@@ -12,7 +12,7 @@ Manager that delegates MAIF operations to the Rust binary.
 
 ### Methods
 
-#### RustMAIFManager.__init__
+#### RustMAIFManager.**init**
 
 ```python
 __init__(self: Any, binary_path: Path, private_key_path: Path, public_key_path: Path)

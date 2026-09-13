@@ -12,11 +12,11 @@ All code MUST be tested before or during implementation:
 
 Target test distribution:
 
-| Type | Target | Tolerance |
-|------|--------|-----------|
-| Unit | 70% | ±5% |
-| Integration | 20% | ±5% |
-| E2E | 10% | ±5% |
+| Type        | Target | Tolerance |
+| ----------- | ------ | --------- |
+| Unit        | 70%    | ±5%       |
+| Integration | 20%    | ±5%       |
+| E2E         | 10%    | ±5%       |
 
 ## Test File Organization
 
@@ -414,6 +414,7 @@ open htmlcov/index.html
 ### Coverage Exceptions
 
 Don't test:
+
 - External library code you don't control
 - Generated code (migrations, protobuf)
 - Thin wrapper functions with obvious behavior

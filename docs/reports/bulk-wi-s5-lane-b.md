@@ -1,4 +1,5 @@
 ### [WL-5470] AGENT_REGISTRY_RESEARCH line 376 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -8,6 +9,7 @@
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5471] AGENT_REGISTRY_RESEARCH line 377 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -17,6 +19,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5472] AGENT_REGISTRY_RESEARCH line 391 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -26,6 +29,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5473] AGENT_REGISTRY_RESEARCH line 394 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -35,6 +39,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5474] AGENT_REGISTRY_RESEARCH line 395 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -44,6 +49,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5475] AGENT_REGISTRY_RESEARCH line 396 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -53,6 +59,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5476] AGENT_REGISTRY_RESEARCH line 397 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -62,6 +69,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5477] AGENT_REGISTRY_RESEARCH line 400 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -71,6 +79,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5478] AGENT_REGISTRY_RESEARCH line 401 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -80,6 +89,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5479] AGENT_REGISTRY_RESEARCH line 402 backlog marker
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk

@@ -2,31 +2,31 @@
 
 ## 1) Covered items table (issue id/title/status)
 
-| Global Item | QOL Item | Issue | Title | Status |
-|---|---:|---|---|---|
-| #101 | #22 | CLIProxyAPI#1538 | Gemini-3-pro-high Corrupted thought signature | Open |
-| #102 | #23 | CLIProxyAPI#1531 | Invalid JSON payload received: Unknown name `deprecated` | Open |
-| #103 | #24 | CLIProxyAPI#1526 | 反重力逻辑加载失效 | Open |
-| #104 | #25 | CLIProxyAPI#1509 | 反重力 claude-opus-4-6-thinking 模型如何通过 () 实现强行思考 | Open |
-| #105 | #26 | CLIProxyAPI#1493 | Feature request [allow to configure RPM, TPM, RPD, TPD] | Open |
-| #106 | #27 | CLIProxyAPI#1486 | Antigravity Ultra plan: Opus 4.6 gets 429 on CLIProxy but runs with Opencode-Auth | Open |
-| #107 | #28 | CLIProxyAPIPlus#200 | gemini能不能设置配额,自动禁用,自动启用? | Open |
-| #108 | #29 | CLIProxyAPI#1475 | [feat]更新很频繁,可以内置软件更新功能吗 | Open |
-| #109 | #30 | CLIProxyAPIPlus#183 | why no kiro in dashboard | Open |
+| Global Item | QOL Item | Issue               | Title                                                                             | Status |
+| ----------- | -------: | ------------------- | --------------------------------------------------------------------------------- | ------ |
+| #101        |      #22 | CLIProxyAPI#1538    | Gemini-3-pro-high Corrupted thought signature                                     | Open   |
+| #102        |      #23 | CLIProxyAPI#1531    | Invalid JSON payload received: Unknown name `deprecated`                          | Open   |
+| #103        |      #24 | CLIProxyAPI#1526    | 反重力逻辑加载失效                                                                | Open   |
+| #104        |      #25 | CLIProxyAPI#1509    | 反重力 claude-opus-4-6-thinking 模型如何通过 () 实现强行思考                      | Open   |
+| #105        |      #26 | CLIProxyAPI#1493    | Feature request [allow to configure RPM, TPM, RPD, TPD]                           | Open   |
+| #106        |      #27 | CLIProxyAPI#1486    | Antigravity Ultra plan: Opus 4.6 gets 429 on CLIProxy but runs with Opencode-Auth | Open   |
+| #107        |      #28 | CLIProxyAPIPlus#200 | gemini能不能设置配额,自动禁用,自动启用?                                           | Open   |
+| #108        |      #29 | CLIProxyAPI#1475    | [feat]更新很频繁,可以内置软件更新功能吗                                           | Open   |
+| #109        |      #30 | CLIProxyAPIPlus#183 | why no kiro in dashboard                                                          | Open   |
 
 ## 2) thegent impact classification (direct/indirect/external)
 
-| Global Item | Issue | Classification | Basis |
-|---|---|---|---|
-| #101 | CLIProxyAPI#1538 | Indirect | Provider translation integrity issue; affects reliability of proxied model behavior seen by thegent users. |
-| #102 | CLIProxyAPI#1531 | Direct | Payload schema incompatibility can break request flow initiated by thegent/Codex-style clients. |
-| #103 | CLIProxyAPI#1526 | External | Antigravity internal loading behavior; no clear thegent-owned code path from issue text alone. |
-| #104 | CLIProxyAPI#1509 | External | Usage/how-to request around forcing thinking mode; operational guidance, not a thegent runtime defect. |
-| #105 | CLIProxyAPI#1493 | External | Rate-limit feature request in proxy platform; outside thegent code ownership. |
-| #106 | CLIProxyAPI#1486 | Indirect | 429 behavior impacts user outcomes in thegent via upstream proxy/account policy interactions. |
-| #107 | CLIProxyAPIPlus#200 | External | Quota auto-disable/enable request targets proxy product controls, not thegent. |
-| #108 | CLIProxyAPI#1475 | External | Built-in updater request for upstream product; no direct thegent implementation requirement. |
-| #109 | CLIProxyAPIPlus#183 | External | Dashboard product gap; unrelated to thegent runtime path. |
+| Global Item | Issue               | Classification | Basis                                                                                                      |
+| ----------- | ------------------- | -------------- | ---------------------------------------------------------------------------------------------------------- |
+| #101        | CLIProxyAPI#1538    | Indirect       | Provider translation integrity issue; affects reliability of proxied model behavior seen by thegent users. |
+| #102        | CLIProxyAPI#1531    | Direct         | Payload schema incompatibility can break request flow initiated by thegent/Codex-style clients.            |
+| #103        | CLIProxyAPI#1526    | External       | Antigravity internal loading behavior; no clear thegent-owned code path from issue text alone.             |
+| #104        | CLIProxyAPI#1509    | External       | Usage/how-to request around forcing thinking mode; operational guidance, not a thegent runtime defect.     |
+| #105        | CLIProxyAPI#1493    | External       | Rate-limit feature request in proxy platform; outside thegent code ownership.                              |
+| #106        | CLIProxyAPI#1486    | Indirect       | 429 behavior impacts user outcomes in thegent via upstream proxy/account policy interactions.              |
+| #107        | CLIProxyAPIPlus#200 | External       | Quota auto-disable/enable request targets proxy product controls, not thegent.                             |
+| #108        | CLIProxyAPI#1475    | External       | Built-in updater request for upstream product; no direct thegent implementation requirement.               |
+| #109        | CLIProxyAPIPlus#183 | External       | Dashboard product gap; unrelated to thegent runtime path.                                                  |
 
 ## 3) Proposed local actions (tests/docs/code touchpoints) with priority P0/P1/P2
 

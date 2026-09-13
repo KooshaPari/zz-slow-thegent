@@ -8,15 +8,15 @@ Switches between hierarchical (tree-based) and P2P (mesh) coordination
 modes based on swarm size and average agent load.
 
 Mode selection:
-  HIERARCHICAL  — swarm_size &lt; THGENT_HIER_THRESHOLD (default 5) OR avg_load &lt; 0.3
-  P2P           — swarm_size &gt;= threshold AND avg_load &gt;= 0.7
-  ADAPTIVE      — gradual blend in the range [0.3, 0.7) avg_load
+HIERARCHICAL — swarm_size &lt; THGENT_HIER_THRESHOLD (default 5) OR avg_load &lt; 0.3
+P2P — swarm_size &gt;= threshold AND avg_load &gt;= 0.7
+ADAPTIVE — gradual blend in the range [0.3, 0.7) avg_load
 
 Routing:
-  HIERARCHICAL  — always delegate to agents[0] (coordinator)
-  P2P           — round-robin across all agents
-  ADAPTIVE      — weighted blend: probabilistically picks coordinator vs
-                  round-robin based on avg_load
+HIERARCHICAL — always delegate to agents[0] (coordinator)
+P2P — round-robin across all agents
+ADAPTIVE — weighted blend: probabilistically picks coordinator vs
+round-robin based on avg_load
 
 ---
 
@@ -46,7 +46,7 @@ Usage::
 
 ### Methods
 
-#### HybridCoordinationStrategy.__init__
+#### HybridCoordinationStrategy.**init**
 
 ```python
 __init__(self: Any)
@@ -72,7 +72,7 @@ Select mode, route the task, and return :class:`CoordinationMetrics`.
 
 - `task_id`: Task identifier.
 - `agents`: Available agent IDs (non-empty).
-- `swarm_size`: Total swarm size (may differ from ``len(agents)``).
+- `swarm_size`: Total swarm size (may differ from `len(agents)`).
 - `avg_load`: Average agent load (0.0 – 1.0).
 
 **Returns**: :class:`CoordinationMetrics` with the routing decision.
@@ -93,7 +93,7 @@ Route a task to an agent according to the given mode.
 - `agents`: Ordered list of available agent IDs. Must be non-empty.
 - `mode`: The :class:`CoordinationMode` to apply.
 - `avg_load`: Current average load (used only in ADAPTIVE mode for
-weighting; defaults to 0.5).
+  weighting; defaults to 0.5).
 
 **Returns**: The chosen agent ID.
 
@@ -130,7 +130,7 @@ Select mode, route the task, and return :class:`CoordinationMetrics`.
 
 - `task_id`: Task identifier.
 - `agents`: Available agent IDs (non-empty).
-- `swarm_size`: Total swarm size (may differ from ``len(agents)``).
+- `swarm_size`: Total swarm size (may differ from `len(agents)`).
 - `avg_load`: Average agent load (0.0 – 1.0).
 
 **Returns**: :class:`CoordinationMetrics` with the routing decision.
@@ -151,13 +151,13 @@ Route a task to an agent according to the given mode.
 - `agents`: Ordered list of available agent IDs. Must be non-empty.
 - `mode`: The :class:`CoordinationMode` to apply.
 - `avg_load`: Current average load (used only in ADAPTIVE mode for
-weighting; defaults to 0.5).
+  weighting; defaults to 0.5).
 
 **Returns**: The chosen agent ID.
 
 **Raises**:
 
-- `ValueError`: If *agents* is empty.
+- `ValueError`: If _agents_ is empty.
 
 ---
 

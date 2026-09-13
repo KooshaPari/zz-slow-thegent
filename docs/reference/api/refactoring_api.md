@@ -14,7 +14,7 @@ Analyzes and optimizes agent 'thought patterns' or prompt hierarchies.
 
 ### Methods
 
-#### CognitiveRefactorer.__init__
+#### CognitiveRefactorer.**init**
 
 ```python
 __init__(self: Any, agent_id: str)

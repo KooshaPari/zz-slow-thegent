@@ -15,7 +15,7 @@ server-side to ensure multi-tenant isolation.
 
 ### Methods
 
-#### ControlPlaneConfigProvider.__init__
+#### ControlPlaneConfigProvider.**init**
 
 ```python
 __init__(self: Any, url: str, timeout: float)

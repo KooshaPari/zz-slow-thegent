@@ -60,11 +60,11 @@ This walks you through:
 
 If you prefer manual configuration, API keys are read from environment variables:
 
-| Variable | Provider |
-|----------|----------|
-| `ANTHROPIC_API_KEY` | Claude |
-| `OPENAI_API_KEY` | OpenAI / Codex |
-| `GOOGLE_API_KEY` | Gemini |
+| Variable            | Provider       |
+| ------------------- | -------------- |
+| `ANTHROPIC_API_KEY` | Claude         |
+| `OPENAI_API_KEY`    | OpenAI / Codex |
+| `GOOGLE_API_KEY`    | Gemini         |
 
 ---
 
@@ -134,14 +134,14 @@ thegent/
 
 Key files at the root:
 
-| File | Purpose |
-|------|---------|
-| `PRD.md` | Product requirements -- the "what" and "why" |
-| `FUNCTIONAL_REQUIREMENTS.md` | Formal FR-XXX-NNN SHALL statements |
-| `ADR.md` | Architecture decision records |
-| `PLAN.md` | Phased work breakdown with dependencies |
-| `CLAUDE.md` | Agent instructions and project governance |
-| `Taskfile.yml` | All quality commands (`task lint`, `task test`, etc.) |
+| File                         | Purpose                                               |
+| ---------------------------- | ----------------------------------------------------- |
+| `PRD.md`                     | Product requirements -- the "what" and "why"          |
+| `FUNCTIONAL_REQUIREMENTS.md` | Formal FR-XXX-NNN SHALL statements                    |
+| `ADR.md`                     | Architecture decision records                         |
+| `PLAN.md`                    | Phased work breakdown with dependencies               |
+| `CLAUDE.md`                  | Agent instructions and project governance             |
+| `Taskfile.yml`               | All quality commands (`task lint`, `task test`, etc.) |
 
 ---
 
@@ -163,14 +163,14 @@ thegent enforces test-first development. Write a failing test before fixing a bu
 
 ## What to Read Next
 
-| Goal | Document |
-|------|----------|
-| Understand core domain concepts | [CONCEPTUAL_FOUNDATIONS.md](./CONCEPTUAL_FOUNDATIONS.md) |
-| Plan your learning path | [LEARNING_PATHS.md](./LEARNING_PATHS.md) |
-| Dive into the CLI | [QUICK_START.md](./QUICK_START.md) |
-| Understand anti-patterns | [anti-patterns.md](./anti-patterns.md) |
-| Debug issues | [AGENT_DEBUGGING_AND_REMEDIATION_GUIDE.md](./AGENT_DEBUGGING_AND_REMEDIATION_GUIDE.md) |
-| Set up cross-platform | [CROSS_PLATFORM_QUICK_START.md](./CROSS_PLATFORM_QUICK_START.md) |
+| Goal                            | Document                                                                               |
+| ------------------------------- | -------------------------------------------------------------------------------------- |
+| Understand core domain concepts | [CONCEPTUAL_FOUNDATIONS.md](./CONCEPTUAL_FOUNDATIONS.md)                               |
+| Plan your learning path         | [LEARNING_PATHS.md](./LEARNING_PATHS.md)                                               |
+| Dive into the CLI               | [QUICK_START.md](./QUICK_START.md)                                                     |
+| Understand anti-patterns        | [anti-patterns.md](./anti-patterns.md)                                                 |
+| Debug issues                    | [AGENT_DEBUGGING_AND_REMEDIATION_GUIDE.md](./AGENT_DEBUGGING_AND_REMEDIATION_GUIDE.md) |
+| Set up cross-platform           | [CROSS_PLATFORM_QUICK_START.md](./CROSS_PLATFORM_QUICK_START.md)                       |
 
 ---
 

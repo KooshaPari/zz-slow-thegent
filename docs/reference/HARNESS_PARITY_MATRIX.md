@@ -14,33 +14,34 @@ This matrix compares five major agent harnesses across 13 feature categories. **
 
 ## Feature Comparison Matrix
 
-| Feature Category | Codex | Claude Code | Ante* | Gemini CLI | Copilot Workspace | Priority to Add |
-|---|---|---|---|---|---|---|
-| **Non-Interactive Mode** | ✅ `codex exec` | ✅ `--print` | ✅ Headless | ✅ `--prompt` | ⚠️ Limited (web-focused) | N/A |
-| **JSONL/Streaming Output** | ✅ `--json` | ✅ `--output-format stream-json` | ⚠️ Partial | ✅ JSON streaming | ⚠️ Web-centric | N/A |
-| **Project Memory/Context** | ⚠️ Baseline (`.thegent/rules` -> `.codex/skills`) | ✅ `CLAUDE.md` + session memory | ✅ Skills + memory | ✅ Project config | ❌ Per-issue only | **P1: Expand memory depth** |
-| **Compact/Adaptive Context** | ✅ Context compactor active | ✅ Adaptive thinking | ✅ Selective context | ✅ Hooks control context | ✅ Specialized models | **P2: Improve heuristics** |
-| **Skills/Commands System** | ✅ `.codex/skills` + activate skill tools | ✅ Skills (Anthropic standard) | ✅ Skills + procedures | ✅ Agent Skills (extensible) | ✅ Agent Skills | **P1: Strengthen interoperability** |
-| **Tool Approval/Permissions** | ✅ `--dangerously-bypass-approvals` | ✅ `--permission-mode` | ✅ Fine-grained | ✅ Built-in approval | ✅ Multi-stage approval | Configured |
-| **Subprocess Invocation** | ✅ Native Rust, direct | ✅ Via shell + monitoring | ⚠️ Sandboxed | ✅ Via shell | ✅ Via shell | N/A |
-| **MCP Integration** | ✅ Full (Codex-native) | ✅ Full (100M+ downloads) | ⚠️ Partial | ✅ Full (Google-certified) | ⚠️ Limited | N/A |
-| **Sub-Agent Spawning** | ⚠️ Manual (Anthropic SDK) | ✅ Via Task tool | ✅ Built-in | ⚠️ Via MCP | ✅ System of sub-agents | Configured |
-| **Session Continuity** | ⚠️ Stateless (file-based) | ✅ Stateful (resume/teleport) | ✅ Stateful | ✅ Stateful | ✅ Workspace state | **P1: Session persistence** |
-| **Multi-Model Support** | ✅ 11+ models (via routing) | ✅ Multiple models | ✅ Multiple models | ✅ Multiple models | ✅ Multi-model (experimental) | N/A |
-| **Filesystem Sandbox** | ✅ Strict (workspace-write, full-auto) | ✅ Sandbox mode (Linux/Mac) | ✅ Strict | ✅ Via hooks | ⚠️ Issue-scoped | Configured |
-| **Hooks/Middleware System** | ⚠️ Post-run hook dispatcher baseline | ⚠️ Limited (pre/post tool use) | ✅ Extensive | ✅ Rich lifecycle hooks | ❌ None | **P1: Broaden lifecycle coverage** |
-| **Git Workflow Awareness** | ⚠️ Basic (--skip-git-repo-check) | ✅ Native git operations | ✅ Git-aware | ✅ Git-aware | ✅ PR generation | Configured |
-| **Local/Offline Mode** | ✅ Yes (Rust binary) | ✅ Yes (terminal-native) | ✅ Yes | ⚠️ Needs internet | ❌ Cloud-dependent | N/A |
-| **Interactive Terminal UI** | ⚠️ Minimal (JSON stream) | ✅ Rich TUI with diffs | ✅ Rich TUI | ✅ Rich TUI | ✅ Web UI (visual) | **P2: Enhance TUI** |
-| **Diff Review/Approval** | ❌ None (JSON only) | ✅ Side-by-side diffs | ✅ Built-in | ✅ Built-in | ✅ Visual + PR | **P1: Add diff UI** |
-| **Provider Routing** | ✅ LiteLLM router | ✅ Native routing | ⚠️ Limited | ✅ Provider abstraction | ⚠️ GitHub-centric | N/A |
-| **API Key Management** | ✅ Env-based, proxy-aware | ✅ Keyring + env | ✅ Secure storage | ✅ Google Cloud IAM | ✅ GitHub OAuth | Configured |
-| **Extensibility/Custom Tools** | ⚠️ Via MCP + SDK | ✅ Skills + MCP | ✅ Skills + plugins | ✅ Skills + MCP hooks | ✅ Agent Skills + Actions | N/A |
-| **Eval/Benchmark Mode** | ❌ None | ❌ None | ✅ Built-in metrics | ⚠️ Partial | ⚠️ Partial (Terminal-Bench) | **P2: Add benchmarking** |
-| **Error Recovery** | ✅ Retry + hang detection | ✅ Adaptive retry | ✅ Recovery logic | ✅ Error handling | ✅ Self-healing | N/A |
-| **Cost Optimization** | ✅ Model routing + caching | ✅ Model selection | ✅ Selective processing | ✅ Token optimization | ✅ Resource-aware | Configured |
+| Feature Category               | Codex                                             | Claude Code                      | Ante\*                  | Gemini CLI                   | Copilot Workspace             | Priority to Add                     |
+| ------------------------------ | ------------------------------------------------- | -------------------------------- | ----------------------- | ---------------------------- | ----------------------------- | ----------------------------------- |
+| **Non-Interactive Mode**       | ✅ `codex exec`                                   | ✅ `--print`                     | ✅ Headless             | ✅ `--prompt`                | ⚠️ Limited (web-focused)      | N/A                                 |
+| **JSONL/Streaming Output**     | ✅ `--json`                                       | ✅ `--output-format stream-json` | ⚠️ Partial              | ✅ JSON streaming            | ⚠️ Web-centric                | N/A                                 |
+| **Project Memory/Context**     | ⚠️ Baseline (`.thegent/rules` -> `.codex/skills`) | ✅ `CLAUDE.md` + session memory  | ✅ Skills + memory      | ✅ Project config            | ❌ Per-issue only             | **P1: Expand memory depth**         |
+| **Compact/Adaptive Context**   | ✅ Context compactor active                       | ✅ Adaptive thinking             | ✅ Selective context    | ✅ Hooks control context     | ✅ Specialized models         | **P2: Improve heuristics**          |
+| **Skills/Commands System**     | ✅ `.codex/skills` + activate skill tools         | ✅ Skills (Anthropic standard)   | ✅ Skills + procedures  | ✅ Agent Skills (extensible) | ✅ Agent Skills               | **P1: Strengthen interoperability** |
+| **Tool Approval/Permissions**  | ✅ `--dangerously-bypass-approvals`               | ✅ `--permission-mode`           | ✅ Fine-grained         | ✅ Built-in approval         | ✅ Multi-stage approval       | Configured                          |
+| **Subprocess Invocation**      | ✅ Native Rust, direct                            | ✅ Via shell + monitoring        | ⚠️ Sandboxed            | ✅ Via shell                 | ✅ Via shell                  | N/A                                 |
+| **MCP Integration**            | ✅ Full (Codex-native)                            | ✅ Full (100M+ downloads)        | ⚠️ Partial              | ✅ Full (Google-certified)   | ⚠️ Limited                    | N/A                                 |
+| **Sub-Agent Spawning**         | ⚠️ Manual (Anthropic SDK)                         | ✅ Via Task tool                 | ✅ Built-in             | ⚠️ Via MCP                   | ✅ System of sub-agents       | Configured                          |
+| **Session Continuity**         | ⚠️ Stateless (file-based)                         | ✅ Stateful (resume/teleport)    | ✅ Stateful             | ✅ Stateful                  | ✅ Workspace state            | **P1: Session persistence**         |
+| **Multi-Model Support**        | ✅ 11+ models (via routing)                       | ✅ Multiple models               | ✅ Multiple models      | ✅ Multiple models           | ✅ Multi-model (experimental) | N/A                                 |
+| **Filesystem Sandbox**         | ✅ Strict (workspace-write, full-auto)            | ✅ Sandbox mode (Linux/Mac)      | ✅ Strict               | ✅ Via hooks                 | ⚠️ Issue-scoped               | Configured                          |
+| **Hooks/Middleware System**    | ⚠️ Post-run hook dispatcher baseline              | ⚠️ Limited (pre/post tool use)   | ✅ Extensive            | ✅ Rich lifecycle hooks      | ❌ None                       | **P1: Broaden lifecycle coverage**  |
+| **Git Workflow Awareness**     | ⚠️ Basic (--skip-git-repo-check)                  | ✅ Native git operations         | ✅ Git-aware            | ✅ Git-aware                 | ✅ PR generation              | Configured                          |
+| **Local/Offline Mode**         | ✅ Yes (Rust binary)                              | ✅ Yes (terminal-native)         | ✅ Yes                  | ⚠️ Needs internet            | ❌ Cloud-dependent            | N/A                                 |
+| **Interactive Terminal UI**    | ⚠️ Minimal (JSON stream)                          | ✅ Rich TUI with diffs           | ✅ Rich TUI             | ✅ Rich TUI                  | ✅ Web UI (visual)            | **P2: Enhance TUI**                 |
+| **Diff Review/Approval**       | ❌ None (JSON only)                               | ✅ Side-by-side diffs            | ✅ Built-in             | ✅ Built-in                  | ✅ Visual + PR                | **P1: Add diff UI**                 |
+| **Provider Routing**           | ✅ LiteLLM router                                 | ✅ Native routing                | ⚠️ Limited              | ✅ Provider abstraction      | ⚠️ GitHub-centric             | N/A                                 |
+| **API Key Management**         | ✅ Env-based, proxy-aware                         | ✅ Keyring + env                 | ✅ Secure storage       | ✅ Google Cloud IAM          | ✅ GitHub OAuth               | Configured                          |
+| **Extensibility/Custom Tools** | ⚠️ Via MCP + SDK                                  | ✅ Skills + MCP                  | ✅ Skills + plugins     | ✅ Skills + MCP hooks        | ✅ Agent Skills + Actions     | N/A                                 |
+| **Eval/Benchmark Mode**        | ❌ None                                           | ❌ None                          | ✅ Built-in metrics     | ⚠️ Partial                   | ⚠️ Partial (Terminal-Bench)   | **P2: Add benchmarking**            |
+| **Error Recovery**             | ✅ Retry + hang detection                         | ✅ Adaptive retry                | ✅ Recovery logic       | ✅ Error handling            | ✅ Self-healing               | N/A                                 |
+| **Cost Optimization**          | ✅ Model routing + caching                        | ✅ Model selection               | ✅ Selective processing | ✅ Token optimization        | ✅ Resource-aware             | Configured                          |
 
 **Legend:**
+
 - ✅ = Fully supported
 - ⚠️ = Partial or limited
 - ❌ = Not available
@@ -54,6 +55,7 @@ This matrix compares five major agent harnesses across 13 feature categories. **
 These features are fundamental to competitive parity with Claude Code and Gemini CLI:
 
 ### 1. **Project Memory/Context Depth** (Impact: HIGH)
+
 - **Current baseline**: Codex flows already sync project instructions from `.thegent/rules/` into `.codex/skills/SKILL.md`, and runners can activate those skills.
 - **Remaining gap**: Session-to-session memory depth and richer project state are still thinner than Claude Code-style continuity.
 - **Impact on Codex**: Teams get baseline project guidance, but long-horizon continuity still requires manual carryover.
@@ -63,6 +65,7 @@ These features are fundamental to competitive parity with Claude Code and Gemini
   - Surface active project context in CLI status output
 
 ### 2. **Skills Interop and Coverage** (Impact: HIGH)
+
 - **Current baseline**: `.codex/skills/` is already consumed and skill activation APIs are present.
 - **Remaining gap**: Cross-harness interoperability and richer skill metadata contracts are incomplete.
 - **Impact on Codex**: Teams can encode reusable workflows, but portability and consistency vary.
@@ -72,6 +75,7 @@ These features are fundamental to competitive parity with Claude Code and Gemini
   - Expand discoverability and docs for skill activation flows
 
 ### 3. **Hooks Lifecycle Breadth** (Impact: MEDIUM)
+
 - **Current baseline**: Codex runs dispatch post-agent hooks via the shared hook dispatcher.
 - **Remaining gap**: Full lifecycle breadth (pre-init, pre/post tool, completion stages) is not yet symmetric with Gemini-style hooks.
 - **Impact on Codex**: Post-run automation works, but teams still need additional hook points for full policy injection.
@@ -81,6 +85,7 @@ These features are fundamental to competitive parity with Claude Code and Gemini
   - Expose hook-point health/status in doctor/governance surfaces
 
 ### 4. **Diff Review UI** (Impact: MEDIUM)
+
 - **Gap**: Codex outputs JSON only; no visual diff review for approvals.
 - **What Claude Code does**: Side-by-side diffs, approval dialogs, easy review.
 - **Impact on Codex**: Users must parse JSON or use external tools; slows approval workflows.
@@ -96,6 +101,7 @@ These features are fundamental to competitive parity with Claude Code and Gemini
 These significantly enhance agent and developer experience without breaking current workflows:
 
 ### 1. **Session Persistence & Resumption** (Impact: MEDIUM-HIGH)
+
 - **Gap**: Each Codex invocation is stateless; no resumable sessions.
 - **What Claude Code does**: `--continue` flag, session IDs, state preservation.
 - **Benefit**: Users can resume interrupted tasks, maintain context across multiple calls.
@@ -105,6 +111,7 @@ These significantly enhance agent and developer experience without breaking curr
   - Auto-save state after each tool execution
 
 ### 2. **Context Compression/Adaptive Thinking** (Impact: MEDIUM)
+
 - **Current baseline**: Context compaction already runs before Codex/LiteLLM execution.
 - **Gap**: Heuristics and transparency are still weaker than top-tier adaptive systems.
 - **What Claude Code does**: Adaptive thinking, selective context injection.
@@ -115,6 +122,7 @@ These significantly enhance agent and developer experience without breaking curr
   - Cache and reuse file digests
 
 ### 3. **Interactive Mode Enhancements** (Impact: MEDIUM)
+
 - **Gap**: No interactive TUI except JSON output; all approval is manual/external.
 - **What Claude Code does**: Rich TUI with confirmations, diffs, inline approvals.
 - **Benefit**: Better UX for developers; clear visibility into agent actions.
@@ -124,6 +132,7 @@ These significantly enhance agent and developer experience without breaking curr
   - Show diffs inline with approve/reject options
 
 ### 4. **Hooks Middleware System** (Impact: MEDIUM)
+
 - **Current baseline**: Post-agent hook dispatch exists and is integrated.
 - **Gap**: Missing broader lifecycle hook surface and config ergonomics.
 - **What Gemini CLI does**: Full hook lifecycle for customization.
@@ -140,22 +149,27 @@ These significantly enhance agent and developer experience without breaking curr
 These are low-effort, high-value additions:
 
 ### 1. **Better Error Messages**
+
 - Current: Generic "Agent stopped" or LiteLLM errors
 - Recommended: Contextual errors with recovery hints, actionable messages
 
 ### 2. **Explicit Session IDs in Output**
+
 - Current: No way to track or resume sessions
 - Recommended: Print session ID at start, in JSON output
 
 ### 3. **Improved Hang Detection Logging**
+
 - Current: Silent kill after idle timeout
 - Recommended: Log why agent was killed, timestamps, last action
 
 ### 4. **Config File Support** (`.codexrc` or `.codex/config.yaml`)
+
 - Current: All config via CLI flags and env vars
 - Recommended: Project-level defaults (sandbox mode, model, timeout, hooks)
 
 ### 5. **Better Sandboxing Documentation**
+
 - Current: `--sandbox workspace-write` and `--full-auto` are unclear
 - Recommended: Clear matrix of what each mode allows (file ops, network, etc.)
 
@@ -165,15 +179,15 @@ These are low-effort, high-value additions:
 
 These are areas where Codex excels and should be highlighted:
 
-| Strength | Why It Matters | Current State |
-|---|---|---|
-| **Native Rust Binary** | Fast startup, no interpreter overhead, strong isolation | ✅ Unique among CLI agents |
-| **Direct MCP Support** | Can talk directly to MCP servers; no proxy needed | ✅ Already fully integrated |
-| **Multiple Sandbox Modes** | Fine-grained control (workspace-write, full-auto, read-only) | ✅ Better than most |
-| **Activity-Based Hang Detection** | Intelligent timeout (monitors actual activity, not wall time) | ✅ Unique feature |
-| **Retry + Adaptive Backoff** | Transient error recovery is solid | ✅ Via resilience module |
-| **LiteLLM Router Integration** | Can route to 11+ provider APIs transparently | ✅ Already working |
-| **Provider Abstraction** | Supports claude, gemini, copilot, minimax, glm via same CLI | ✅ Strong multi-provider story |
+| Strength                          | Why It Matters                                                | Current State                  |
+| --------------------------------- | ------------------------------------------------------------- | ------------------------------ |
+| **Native Rust Binary**            | Fast startup, no interpreter overhead, strong isolation       | ✅ Unique among CLI agents     |
+| **Direct MCP Support**            | Can talk directly to MCP servers; no proxy needed             | ✅ Already fully integrated    |
+| **Multiple Sandbox Modes**        | Fine-grained control (workspace-write, full-auto, read-only)  | ✅ Better than most            |
+| **Activity-Based Hang Detection** | Intelligent timeout (monitors actual activity, not wall time) | ✅ Unique feature              |
+| **Retry + Adaptive Backoff**      | Transient error recovery is solid                             | ✅ Via resilience module       |
+| **LiteLLM Router Integration**    | Can route to 11+ provider APIs transparently                  | ✅ Already working             |
+| **Provider Abstraction**          | Supports claude, gemini, copilot, minimax, glm via same CLI   | ✅ Strong multi-provider story |
 
 ---
 
@@ -184,6 +198,7 @@ Use this spec to evaluate agent harnesses on standard tasks. Benchmarks should r
 ### Test Categories
 
 #### 1. **Code Generation** (Baseline capability)
+
 - **Task**: Implement a function given a specification
 - **Metrics**:
   - Success rate (code compiles, passes tests)
@@ -196,6 +211,7 @@ Use this spec to evaluate agent harnesses on standard tasks. Benchmarks should r
   - REST API handler (complex, multi-file, dependencies)
 
 #### 2. **File Manipulation** (Core agent capability)
+
 - **Task**: Modify, create, or refactor files per specification
 - **Metrics**:
   - Correctness (changes match spec, no regressions)
@@ -207,6 +223,7 @@ Use this spec to evaluate agent harnesses on standard tasks. Benchmarks should r
   - Refactor class into multiple files
 
 #### 3. **Multi-Step Workflows** (Agent reasoning)
+
 - **Task**: Complete a task requiring multiple tool calls and decisions
 - **Metrics**:
   - Success rate
@@ -218,6 +235,7 @@ Use this spec to evaluate agent harnesses on standard tasks. Benchmarks should r
   - Dependency upgrade (find outdated deps, update, run tests, fix breakage)
 
 #### 4. **Tool Use & Error Recovery** (Robustness)
+
 - **Task**: Recover from errors and use available tools correctly
 - **Metrics**:
   - Recovery rate (tries again vs. gives up)
@@ -229,6 +247,7 @@ Use this spec to evaluate agent harnesses on standard tasks. Benchmarks should r
   - Broken reference (agent searches, finds, and fixes)
 
 #### 5. **Codebase Understanding** (Context awareness)
+
 - **Task**: Answer questions about codebase structure, dependencies, patterns
 - **Metrics**:
   - Accuracy (correct answer rate)
@@ -239,6 +258,7 @@ Use this spec to evaluate agent harnesses on standard tasks. Benchmarks should r
   - Find similar patterns (where is similar code?)
 
 #### 6. **Git Awareness** (Workflow integration)
+
 - **Task**: Understand and use git history/state
 - **Metrics**:
   - Correctness (right files, right changes)
@@ -303,47 +323,51 @@ Summary table:
 
 ### Where Claude Code Leads
 
-| Feature | Codex | Claude Code | Codex Path to Parity |
-|---|---|---|---|
-| **Project Context** | Baseline via synced `.codex/skills` | CLAUDE.md + session memory | Add deeper persisted session memory + project metadata |
-| **Skills** | Active skills discovery + activation | Agent Skills (standard) | Improve interop contracts + validation |
-| **Hooks** | Post-run dispatcher active | Pre/post tool hooks | Expand lifecycle coverage and hook UX |
-| **Session Resume** | Stateless | `--continue <id>` | Add session ID tracking, state storage |
-| **Diff UI** | None | Side-by-side diffs | Add TUI diff viewer |
-| **Error Messages** | Generic | Contextual + actionable | Improve error module, add recovery hints |
-| **Interactive Mode** | JSON only | Rich TUI with approvals | Implement interactive TUI |
+| Feature              | Codex                                | Claude Code                | Codex Path to Parity                                   |
+| -------------------- | ------------------------------------ | -------------------------- | ------------------------------------------------------ |
+| **Project Context**  | Baseline via synced `.codex/skills`  | CLAUDE.md + session memory | Add deeper persisted session memory + project metadata |
+| **Skills**           | Active skills discovery + activation | Agent Skills (standard)    | Improve interop contracts + validation                 |
+| **Hooks**            | Post-run dispatcher active           | Pre/post tool hooks        | Expand lifecycle coverage and hook UX                  |
+| **Session Resume**   | Stateless                            | `--continue <id>`          | Add session ID tracking, state storage                 |
+| **Diff UI**          | None                                 | Side-by-side diffs         | Add TUI diff viewer                                    |
+| **Error Messages**   | Generic                              | Contextual + actionable    | Improve error module, add recovery hints               |
+| **Interactive Mode** | JSON only                            | Rich TUI with approvals    | Implement interactive TUI                              |
 
 ### Where Codex Leads
 
-| Feature | Codex | Claude Code | Advantage |
-|---|---|---|---|
-| **Startup Speed** | <100ms (Rust binary) | ~200ms (Node/TypeScript) | 2x faster |
-| **Direct MCP** | Native support | Via proxy | Lower latency, no overhead |
-| **Sandbox Isolation** | Fine-grained (workspace-write, full-auto) | Sandbox mode (newer) | More control |
-| **Multi-Provider** | 11+ providers (via routing) | Native + routing | Same parity |
-| **Hang Detection** | Activity-based (smarter) | Timeout-based | Better hang recovery |
+| Feature               | Codex                                     | Claude Code              | Advantage                  |
+| --------------------- | ----------------------------------------- | ------------------------ | -------------------------- |
+| **Startup Speed**     | <100ms (Rust binary)                      | ~200ms (Node/TypeScript) | 2x faster                  |
+| **Direct MCP**        | Native support                            | Via proxy                | Lower latency, no overhead |
+| **Sandbox Isolation** | Fine-grained (workspace-write, full-auto) | Sandbox mode (newer)     | More control               |
+| **Multi-Provider**    | 11+ providers (via routing)               | Native + routing         | Same parity                |
+| **Hang Detection**    | Activity-based (smarter)                  | Timeout-based            | Better hang recovery       |
 
 ---
 
 ## Roadmap Summary
 
 ### Phase 1: Foundation (Month 1-2)
+
 - [x] Baseline project-context sync (`.thegent/rules` -> `.codex/skills`)
 - [x] Baseline skills activation and MCP skill tooling
 - [x] Baseline post-run hook dispatcher
 - [ ] Add deeper project/session memory system (`.codex/project.yaml` + `.codex/memory/`)
 
 ### Phase 2: UX Improvements (Month 2-3)
+
 - [ ] Implement session persistence and resumption
 - [ ] Add TUI diff viewer for review
 - [ ] Enhance error messages with recovery hints
 
 ### Phase 3: Advanced Features (Month 3+)
+
 - [ ] Context compaction heuristic upgrades and operator controls
 - [ ] Full hooks lifecycle customization
 - [ ] Benchmarking harness for competitive analysis
 
 ### Phase 4: Optimization (Ongoing)
+
 - [ ] Token efficiency improvements
 - [ ] Cost-aware model routing
 - [ ] Performance profiling and tuning

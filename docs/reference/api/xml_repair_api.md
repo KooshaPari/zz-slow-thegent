@@ -11,7 +11,7 @@ ROB-015: Handles 95%+ of incomplete XML output.
 
 ### Methods
 
-#### SloppyXMLRepair.__init__
+#### SloppyXMLRepair.**init**
 
 ```python
 __init__(self: Any)
@@ -38,6 +38,7 @@ repair(self: Any, text: str)
 Attempt to repair malformed XML structures.
 
 ROB-001: Enhanced with tag balancing heuristics to handle:
+
 - Unclosed trailing tags
 - Naked tags
 - Tags with unclosed attributes
@@ -67,6 +68,7 @@ repair(self: Any, text: str)
 Attempt to repair malformed XML structures.
 
 ROB-001: Enhanced with tag balancing heuristics to handle:
+
 - Unclosed trailing tags
 - Naked tags
 - Tags with unclosed attributes

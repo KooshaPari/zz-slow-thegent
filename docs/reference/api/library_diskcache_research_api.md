@@ -12,7 +12,7 @@ Research for diskcache library replacement.
 
 ### Methods
 
-#### LibraryDiskcacheResearch.__init__
+#### LibraryDiskcacheResearch.**init**
 
 ```python
 __init__(self: Any)

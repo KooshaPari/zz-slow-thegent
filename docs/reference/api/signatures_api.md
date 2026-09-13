@@ -15,7 +15,7 @@ Manager for signing and verifying governance artifacts.
 
 ### Methods
 
-#### ArtifactSigner.__init__
+#### ArtifactSigner.**init**
 
 ```python
 __init__(self: Any, settings: Any)

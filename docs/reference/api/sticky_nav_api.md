@@ -12,7 +12,7 @@ Sticky navigation component for documentation.
 
 ### Methods
 
-#### StickyNav.__init__
+#### StickyNav.**init**
 
 ```python
 __init__(self: Any, sidebar: bool, header: bool)

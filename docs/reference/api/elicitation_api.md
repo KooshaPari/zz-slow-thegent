@@ -5,6 +5,7 @@
 MCP tools exposing FastMCP elicitation API for interactive user input.
 
 Provides three composable primitives for requesting user input mid-execution:
+
 - elicit_confirmation: yes/no boolean
 - elicit_choice: single selection from a list
 - elicit_text: free-form text entry

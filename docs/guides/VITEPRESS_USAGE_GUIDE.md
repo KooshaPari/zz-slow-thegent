@@ -18,6 +18,7 @@ This guide explains how to use the rich documentation features implemented in Vi
 Mermaid diagrams are automatically rendered from markdown code blocks.
 
 **Usage**:
+
 ````markdown
 ```mermaid
 graph TD
@@ -30,6 +31,7 @@ graph TD
 ````
 
 **Supported Diagram Types**:
+
 - Flowcharts (`graph TD`, `graph LR`)
 - Sequence diagrams (`sequenceDiagram`)
 - Class diagrams (`classDiagram`)
@@ -46,6 +48,7 @@ graph TD
 Interactive code playgrounds for tryable code examples.
 
 **Usage**:
+
 ```vue
 <CodePlayground
   lang="python"
@@ -58,12 +61,14 @@ print(result)"
 ```
 
 **Props**:
+
 - `lang` - Language (python, bash, javascript, etc.)
 - `code` - Code to display
 - `title` - Optional title
 - `endpoint` - Optional API endpoint for execution (future)
 
 **Features**:
+
 - Copy code button
 - Run button (ready for API integration)
 - Output/error display
@@ -76,20 +81,19 @@ print(result)"
 Display demo GIFs in documentation.
 
 **Usage**:
+
 ```vue
-<DemoGif
-  src="cli-demo.gif"
-  alt="CLI Demo"
-  caption="Running thegent commands"
-/>
+<DemoGif src="cli-demo.gif" alt="CLI Demo" caption="Running thegent commands" />
 ```
 
 **Props**:
+
 - `src` - GIF filename (in `docs/public/assets/demos/`)
 - `alt` - Alt text
 - `caption` - Optional caption
 
 **Generating GIFs**:
+
 ```bash
 # Generate from VHS tape files
 ./scripts/generate-demo-gifs.sh
@@ -105,6 +109,7 @@ python3 scripts/agent-generate-demos.py
 Display callouts, warnings, tips, etc.
 
 **Usage**:
+
 ```vue
 <Callout type="warning">
   This is a warning callout
@@ -118,6 +123,7 @@ Display callouts, warnings, tips, etc.
 **Types**: `info`, `warning`, `danger`, `tip`, `note`, `success`, `question`, `example`
 
 **Collapsible Callouts**:
+
 ```vue
 <Callout type="tip" collapsible>
   Click to expand this tip
@@ -131,11 +137,13 @@ Display callouts, warnings, tips, etc.
 Render mathematical equations using KaTeX.
 
 **Inline Math**:
+
 ```markdown
 The formula $E = mc^2$ shows mass-energy equivalence.
 ```
 
 **Block Math**:
+
 ```markdown
 $$
 \int_0^1 x^2 dx = \frac{1}{3}
@@ -143,6 +151,7 @@ $$
 ```
 
 **Complex Equations**:
+
 ```markdown
 $$
 \begin{pmatrix}
@@ -162,6 +171,7 @@ $$
 ```
 
 **Features**:
+
 - Automatic rendering
 - Syntax highlighting
 - Responsive display
@@ -176,11 +186,13 @@ $$
 Use emojis in your documentation.
 
 **Usage**:
+
 ```markdown
 :smile: :rocket: :heart: :fire: :star:
 ```
 
 **Common Emojis**:
+
 - `:smile:` 😄
 - `:rocket:` 🚀
 - `:heart:` ❤️
@@ -190,12 +202,14 @@ Use emojis in your documentation.
 - `:ok_hand:` 👌
 
 **Technical Emojis**:
+
 - `:computer:` 💻
 - `:keyboard:` ⌨️
 - `:file_folder:` 📁
 - `:page_facing_up:` 📄
 
 **Status Emojis**:
+
 - `:white_check_mark:` ✅
 - `:x:` ❌
 - `:warning:` ⚠️
@@ -210,6 +224,7 @@ Use emojis in your documentation.
 Add helpful tooltips to text.
 
 **Usage**:
+
 ```vue
 <Tooltip content="This is a helpful tooltip" position="top">
   Hover over this text
@@ -217,17 +232,20 @@ Add helpful tooltips to text.
 ```
 
 **Positions**:
+
 - `top` - Tooltip above (default)
 - `bottom` - Tooltip below
 - `left` - Tooltip to the left
 - `right` - Tooltip to the right
 
 **Props**:
+
 - `content` - Tooltip text (required)
 - `position` - Position (`top`, `bottom`, `left`, `right`)
 - `delay` - Delay in milliseconds (default: 200)
 
 **Examples**:
+
 ```vue
 <!-- Basic tooltip -->
 <Tooltip content="Application Programming Interface">API</Tooltip>
@@ -240,6 +258,7 @@ Add helpful tooltips to text.
 ```
 
 **Features**:
+
 - Smooth animations
 - Keyboard accessible
 - Responsive positioning
@@ -254,6 +273,7 @@ Add helpful tooltips to text.
 Display breadcrumb navigation.
 
 **Usage**:
+
 ```vue
 <Breadcrumb />
 
@@ -262,7 +282,7 @@ Display breadcrumb navigation.
   :items="[
     { text: 'Home', link: '/' },
     { text: 'Guides', link: '/guides/' },
-    { text: 'Current Page' }
+    { text: 'Current Page' },
   ]"
   separator="/"
 />
@@ -279,6 +299,7 @@ Display breadcrumb navigation.
 Smooth scroll to top button (automatically included).
 
 **Features**:
+
 - Appears after scrolling 400px
 - Smooth scroll animation
 - Keyboard accessible
@@ -293,6 +314,7 @@ Smooth scroll to top button (automatically included).
 Auto-generated from Python docstrings.
 
 **Generate**:
+
 ```bash
 # Generate all API docs
 python3 scripts/generate-api-docs.py
@@ -312,6 +334,7 @@ python3 scripts/generate-api-docs.py --module agents/base.py
 Auto-generated Mermaid diagrams from code structure.
 
 **Generate**:
+
 ```bash
 # Generate dependency graph and class hierarchy
 python3 scripts/generate-architecture-diagrams.py
@@ -323,6 +346,7 @@ python3 scripts/generate-architecture-diagrams.py --type dependencies
 **Output**: `docs/reference/architecture/`
 
 **Diagrams**:
+
 - Dependency graph (module imports)
 - Class hierarchy (inheritance)
 
@@ -333,6 +357,7 @@ python3 scripts/generate-architecture-diagrams.py --type dependencies
 Auto-generated interactive CLI examples from Typer commands.
 
 **Generate**:
+
 ```bash
 python3 scripts/generate-cli-examples.py
 ```
@@ -348,6 +373,7 @@ python3 scripts/generate-cli-examples.py
 Auto-generated from directory structure.
 
 **Generate**:
+
 ```bash
 python3 scripts/generate-sidebar.py
 ```
@@ -355,6 +381,7 @@ python3 scripts/generate-sidebar.py
 **Output**: `docs/.vitepress/sidebar.ts`
 
 **Features**:
+
 - Automatically extracts titles from frontmatter or H1
 - Supports nested directories
 - Excludes special directories (.vitepress, node_modules, etc.)
@@ -368,6 +395,7 @@ python3 scripts/generate-sidebar.py
 Generate `.llms.txt` files for LLM consumption.
 
 **Generate**:
+
 ```bash
 python3 scripts/generate-llms-docs.py
 ```
@@ -375,6 +403,7 @@ python3 scripts/generate-llms-docs.py
 **Output**: `.llms/` directory
 
 **Features**:
+
 - Removes Vue components
 - Cleans HTML comments
 - Optionally includes/excludes code blocks
@@ -401,6 +430,7 @@ python3 scripts/vitepress-agent-workflow.py --api-docs --sidebar
 ```
 
 **Phases**:
+
 1. API Documentation Generation
 2. Architecture Diagrams Generation
 3. CLI Examples Generation
@@ -420,11 +450,13 @@ python3 scripts/vitepress-agent-workflow.py --api-docs --sidebar
    - Add new CLI commands (for CLI examples)
 
 2. **Regenerate Content**:
+
    ```bash
    bun run docs:generate
    ```
 
 3. **Preview Changes**:
+
    ```bash
    bun run docs:dev
    ```
@@ -437,28 +469,34 @@ python3 scripts/vitepress-agent-workflow.py --api-docs --sidebar
 ### 2. Adding New Features
 
 **New Mermaid Diagram**:
+
 - Add markdown code block with ` ```mermaid `
 - Diagram renders automatically
 
 **New CodePlayground**:
+
 - Use `<CodePlayground>` component in markdown
 - Or Vue file
 
 **New Demo GIF**:
+
 1. Create VHS tape file in `docs/demos/cli/`
 2. Or create Playwright script in `docs/demos/web/`
 3. Run `./scripts/generate-demo-gifs.sh`
 
 **New Math Equation**:
+
 - Use `$...$` for inline math
 - Use `$$...$$` for block math
 - KaTeX automatically renders
 
 **New Emoji**:
+
 - Use `:emoji_name:` syntax
 - See [emoji list](https://github.com/markdown-it/markdown-it-emoji)
 
 **New Tooltip**:
+
 - Use `<Tooltip>` component
 - Wrap text that needs explanation
 

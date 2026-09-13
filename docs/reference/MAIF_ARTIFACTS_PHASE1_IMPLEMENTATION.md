@@ -59,6 +59,7 @@ artifact.add_tag("critical")
 #### Code Artifacts (`code_artifacts.py`)
 
 **CodeChangeArtifact**: Track code modifications
+
 - File path and language
 - Change type (edit, refactor, bug fix, feature, formatting)
 - Affected symbols (functions, classes)
@@ -66,6 +67,7 @@ artifact.add_tag("critical")
 - Lint violations
 
 **FileOperationArtifact**: Track file operations
+
 - Operation type (create, delete, rename, move, copy)
 - Source and destination paths
 - File metadata (size, permissions)
@@ -75,6 +77,7 @@ artifact.add_tag("critical")
 #### Tool Artifacts (`tool_artifacts.py`)
 
 **ToolInvocationArtifact**: Track external tool calls
+
 - Tool type (MCP, API, CLI, subprocess, database)
 - Input arguments and parameters
 - Execution result and status
@@ -82,6 +85,7 @@ artifact.add_tag("critical")
 - Retry information
 
 **MCPCallArtifact**: Specialized for MCP interactions
+
 - Server and tool names
 - Request/response schemas
 - Error handling and validation
@@ -90,6 +94,7 @@ artifact.add_tag("critical")
 #### Decision Artifacts (`decision_artifacts.py`)
 
 **DecisionArtifact**: Track agent decisions
+
 - Decision type (routing, resource allocation, strategy, parameter choice, error recovery)
 - Options considered and scoring
 - Decision criteria and rationale
@@ -97,6 +102,7 @@ artifact.add_tag("critical")
 - Outcome and feedback
 
 **BranchingPointArtifact**: Track conditional branching
+
 - Condition evaluated
 - True/false branch descriptions
 - Which branch was taken
@@ -122,6 +128,7 @@ class ArtifactStorage(ABC):
 #### In-Memory Implementation
 
 `MemoryArtifactStorage` for Phase 1:
+
 - Stores artifacts in Python dict
 - Maintains indices for fast lookup
 - Supports queries by session, category, tags
@@ -336,17 +343,18 @@ print(stats)
 
 ## Phase 2+ Roadmap
 
-| Phase | Focus | Timeline |
-|-------|-------|----------|
-| **Phase 1** (Current) | Base classes, artifact types, memory storage | ✅ Complete |
-| **Phase 2** | Supermemory L4 integration | WIP |
-| **Phase 3** | Event hooks (auto-capture on tool use, file writes) | Planned |
-| **Phase 4** | Analytics and dashboards | Planned |
-| **Phase 5** | Replay engine integration | Planned |
+| Phase                 | Focus                                               | Timeline    |
+| --------------------- | --------------------------------------------------- | ----------- |
+| **Phase 1** (Current) | Base classes, artifact types, memory storage        | ✅ Complete |
+| **Phase 2**           | Supermemory L4 integration                          | WIP         |
+| **Phase 3**           | Event hooks (auto-capture on tool use, file writes) | Planned     |
+| **Phase 4**           | Analytics and dashboards                            | Planned     |
+| **Phase 5**           | Replay engine integration                           | Planned     |
 
 ## Testing
 
 Tests should cover:
+
 - Artifact creation with all specialized types
 - Serialization/deserialization round-trips
 - Hash chain verification

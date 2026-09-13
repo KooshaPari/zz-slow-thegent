@@ -15,4 +15,3 @@ This lane reviewed connector reliability work around rollup and telemetry initia
 1. Wire the replay engine into a scheduled job or CLI hook.
 2. Expose queue depth/age and throttle state in metrics.
 3. Validate traceable resume examples in the worklog docs.
-

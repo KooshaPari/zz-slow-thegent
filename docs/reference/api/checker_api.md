@@ -12,7 +12,7 @@ Head LLM that decides the next action in a loop.
 
 ### Methods
 
-#### CheckerAgent.__init__
+#### CheckerAgent.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings, agent_name: str)

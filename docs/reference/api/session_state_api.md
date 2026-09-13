@@ -12,7 +12,7 @@ Manages session state persistence.
 
 ### Methods
 
-#### SessionState.__init__
+#### SessionState.**init**
 
 ```python
 __init__(self: Any, session_id: str, session_dir: Any)

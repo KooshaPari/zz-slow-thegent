@@ -2,6 +2,7 @@
 # Claude Code: Queue Pending & Blocking Messages (Research & Plan)
 
 **Goal:** Replicate Codex/Cursor-agent behavior in Claude Code:
+
 1. **Queue messages pending session stop** — add messages that are saved and processed when the session stops
 2. **Blocking messages** — messages that block until the user resolves them
 
@@ -13,10 +14,10 @@
 
 From user description and common agent UX patterns:
 
-| Feature | Likely behavior |
-|---------|-----------------|
+| Feature           | Likely behavior                                                                                                                                                                                           |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Pending queue** | User adds messages (e.g. `$defer`, `$later`) that are not sent immediately. They are stored and either: (a) dumped to a handoff file for the next session, or (b) shown/processed when the session stops. |
-| **Blocking** | User sends a message that requires human input before the agent continues. The agent pauses; user must acknowledge/resolve (e.g. approve, reject, add context) before work resumes. |
+| **Blocking**      | User sends a message that requires human input before the agent continues. The agent pauses; user must acknowledge/resolve (e.g. approve, reject, add context) before work resumes.                       |
 
 **Note:** Codex and Cursor-agent are proprietary. Exact APIs/schemas are not publicly documented. This plan infers behavior from UX patterns.
 
@@ -24,13 +25,13 @@ From user description and common agent UX patterns:
 
 The existing **$idea** flow (see [IDEA_SEEDS_SESSION_STORAGE.md](./IDEA_SEEDS_SESSION_STORAGE.md)) provides a precedent:
 
-| Aspect | $idea | $defer / $pending |
-|--------|-------|-------------------|
-| **Immediate save** | UserPromptSubmit saves to `docs/research/idea-seeds/` | UserPromptSubmit appends to pending queue |
-| **Harvest** | harvest-idea-seeds.sh scans Claude/Codex/Cursor history | Same script extended to scan for $defer/$pending |
-| **Block prompt?** | No (advisory only) | Yes (exit 1) |
-| **On Stop** | harvest-idea-seeds-stop.sh runs harvest | harvest-pending-queue.sh flushes queue to handoff |
-| **Output** | Per-prompt seed file | Consolidated handoff file |
+| Aspect             | $idea                                                   | $defer / $pending                                 |
+| ------------------ | ------------------------------------------------------- | ------------------------------------------------- |
+| **Immediate save** | UserPromptSubmit saves to `docs/research/idea-seeds/`   | UserPromptSubmit appends to pending queue         |
+| **Harvest**        | harvest-idea-seeds.sh scans Claude/Codex/Cursor history | Same script extended to scan for $defer/$pending  |
+| **Block prompt?**  | No (advisory only)                                      | Yes (exit 1)                                      |
+| **On Stop**        | harvest-idea-seeds-stop.sh runs harvest                 | harvest-pending-queue.sh flushes queue to handoff |
+| **Output**         | Per-prompt seed file                                    | Consolidated handoff file                         |
 
 **Design principle:** Reuse harvest-idea-seeds.sh pattern for Cursor/Claude/Codex session pull. Add $defer/$pending to the harvest filter; write to pending-handoff instead of idea-seeds when flag is $defer/$pending.
 
@@ -41,11 +42,13 @@ The existing **$idea** flow (see [IDEA_SEEDS_SESSION_STORAGE.md](./IDEA_SEEDS_SE
 **User ask:** "pull from cursor-agent cli sessions too?"
 
 Cursor agent transcripts live at `~/.cursor/projects/<project-id>/agent-transcripts/<session>.jsonl`. The harvest-idea-seeds.sh already pulls $idea from:
+
 - Claude: `~/.claude/history.jsonl`
 - Codex: `~/.codex/history.jsonl`
 - Cursor: `~/.cursor/projects/Users-*/agent-transcripts/*.jsonl`
 
 **Extension:** Add $defer and $pending to the harvest filter. When found:
+
 - **$idea** → write to `docs/research/idea-seeds/` (unchanged)
 - **$defer** / **$pending** → append to project-scoped pending queue or write directly to `docs/research/pending-handoff.md` (append section)
 
@@ -61,16 +64,17 @@ Cursor agent transcripts live at `~/.cursor/projects/<project-id>/agent-transcri
 
 Claude Code exposes these lifecycle hooks (from `hooks/hook-dispatcher`):
 
-| Event | When | Blocking? | Use for queue |
-|-------|------|-----------|---------------|
+| Event                | When                           | Blocking?       | Use for queue                              |
+| -------------------- | ------------------------------ | --------------- | ------------------------------------------ |
 | **UserPromptSubmit** | Before prompt is sent to model | Yes (fail-fast) | Intercept prompts with `$defer` / `$block` |
-| **Stop** | When user ends session | No (parallel) | Process pending queue, write handoff |
-| **SessionStart** | When new session begins | No | Load pending queue from previous session |
-| **SessionEnd** | When session ends (cleanup) | No | Alternative to Stop for queue flush |
-| **PreToolUse** | Before each tool call | Yes | Could block tool use until resolution |
-| **PostToolUse** | After each tool call | No | Advisory |
+| **Stop**             | When user ends session         | No (parallel)   | Process pending queue, write handoff       |
+| **SessionStart**     | When new session begins        | No              | Load pending queue from previous session   |
+| **SessionEnd**       | When session ends (cleanup)    | No              | Alternative to Stop for queue flush        |
+| **PreToolUse**       | Before each tool call          | Yes             | Could block tool use until resolution      |
+| **PostToolUse**      | After each tool call           | No              | Advisory                                   |
 
-**Key insight:** UserPromptSubmit is the only hook that runs *before* the prompt is sent. It can:
+**Key insight:** UserPromptSubmit is the only hook that runs _before_ the prompt is sent. It can:
+
 - Return non-zero → block the prompt (Claude Code will not send it)
 - Return zero → allow the prompt through
 
@@ -80,10 +84,10 @@ Claude Code exposes these lifecycle hooks (from `hooks/hook-dispatcher`):
 
 ### 3.1 Prompt flags
 
-| Flag | Meaning |
-|------|---------|
+| Flag                   | Meaning                                                 |
+| ---------------------- | ------------------------------------------------------- |
 | `$defer` or `$pending` | Do not send now; add to pending queue. Process on Stop. |
-| `$block` | Block until user resolves (see §4). |
+| `$block`               | Block until user resolves (see §4).                     |
 
 ### 3.2 Flow
 
@@ -160,7 +164,7 @@ harvest-idea-seeds.sh    Cursor transcripts       pending-handoff.md
 Or structured JSON for programmatic consumption:
 
 ```json
-{"session_stopped_at": "...", "prompts": ["Add tests for auth.py", "..."]}
+{ "session_stopped_at": "...", "prompts": ["Add tests for auth.py", "..."] }
 ```
 
 ---
@@ -170,15 +174,18 @@ Or structured JSON for programmatic consumption:
 ### 4.1 Challenge
 
 Claude Code hooks are synchronous. A "blocking" message in Codex/Cursor-agent typically means:
+
 - Agent pauses
 - User sees a modal or inline prompt
 - User must respond (approve, reject, add context)
 - Agent continues with that response
 
 Claude Code does not expose a "pause/resume" API to hooks. The only blocking we can do is:
+
 - **UserPromptSubmit returns non-zero** → prompt is rejected and never sent
 
 So we cannot "pause and wait for user input" in the traditional sense. We can only:
+
 1. Block the prompt (reject it)
 2. Show the user where to resolve (file, CLI command)
 3. User resolves manually (e.g. edits a file, runs a command)
@@ -242,49 +249,49 @@ User: "Deploy to prod $block"
 
 ## 5. Alternatives Considered
 
-| Alternative | Pros | Cons |
-|-------------|------|------|
+| Alternative                                              | Pros                                             | Cons                                                    |
+| -------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------- |
 | **MCP tool** (`thegent_queue_add`, `thegent_queue_list`) | Agent can queue via tool; no prompt interception | Requires agent to call tool; user must type differently |
-| **Native Claude Code support** | Ideal UX if Claude adds it | Not available; out of our control |
-| **Separate queue CLI only** | `thegent queue add "prompt"` — no hook | User must leave Claude Code to queue; friction |
-| **Hook + handoff file (chosen)** | Works with current Claude Code; no API needed | Blocking is "reject + escalate", not true pause |
+| **Native Claude Code support**                           | Ideal UX if Claude adds it                       | Not available; out of our control                       |
+| **Separate queue CLI only**                              | `thegent queue add "prompt"` — no hook           | User must leave Claude Code to queue; friction          |
+| **Hook + handoff file (chosen)**                         | Works with current Claude Code; no API needed    | Blocking is "reject + escalate", not true pause         |
 
 ---
 
 ## 6. Edge Cases & Error Handling
 
-| Edge case | Handling |
-|-----------|----------|
+| Edge case                                              | Handling                                                                                                                                                                                                                                                                                                             |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Concurrent sessions** (multiple Claude Code windows) | Project-scoped queue: `PROJECT_DIR/.claude/pending-queue.jsonl`. Each session writes to same file; append is atomic at line level. Stop hook runs per session; last one to stop flushes. Risk: duplicate handoff if two sessions stop close together. Mitigation: handoff file append with session_id; or lock file. |
-| **Multi-project** | Queue keyed by `PROJECT_DIR` (git root). Handoff written to `$PROJECT_DIR/docs/research/pending-handoff.md`. |
-| **Queue file missing/corrupt** | On read: if not exists, treat as empty. On write: mkdir -p parent; append. Corrupt line: skip, log to stderr. |
-| **PROJECT_DIR unset** | Fallback: `~/.claude/pending-queue.jsonl` and `~/.claude/pending-handoff.md`. User can set PROJECT_DIR in env. |
-| **Harvest script timeout** | Cursor harvest can take 1–2 min. Run in background on Stop? Or accept; user can `CURSOR_PROJECTS=` to skip. |
-| **$defer and $block in same prompt** | Precedence: $block wins (blocking is stricter). Block prompt, add to escalation. |
-| **Empty prompt with only $defer** | Reject; do not add empty string to queue. |
+| **Multi-project**                                      | Queue keyed by `PROJECT_DIR` (git root). Handoff written to `$PROJECT_DIR/docs/research/pending-handoff.md`.                                                                                                                                                                                                         |
+| **Queue file missing/corrupt**                         | On read: if not exists, treat as empty. On write: mkdir -p parent; append. Corrupt line: skip, log to stderr.                                                                                                                                                                                                        |
+| **PROJECT_DIR unset**                                  | Fallback: `~/.claude/pending-queue.jsonl` and `~/.claude/pending-handoff.md`. User can set PROJECT_DIR in env.                                                                                                                                                                                                       |
+| **Harvest script timeout**                             | Cursor harvest can take 1–2 min. Run in background on Stop? Or accept; user can `CURSOR_PROJECTS=` to skip.                                                                                                                                                                                                          |
+| **$defer and $block in same prompt**                   | Precedence: $block wins (blocking is stricter). Block prompt, add to escalation.                                                                                                                                                                                                                                     |
+| **Empty prompt with only $defer**                      | Reject; do not add empty string to queue.                                                                                                                                                                                                                                                                            |
 
 ---
 
 ## 7. Configuration
 
-| Env / config | Default | Purpose |
-|--------------|---------|---------|
-| `PENDING_QUEUE_FILE` | `$PROJECT_DIR/.claude/pending-queue.jsonl` or `~/.claude/pending-queue.jsonl` | Queue storage |
-| `PENDING_HANDOFF_FILE` | `$PROJECT_DIR/docs/research/pending-handoff.md` | Output on Stop |
-| `PENDING_QUEUE_ENABLED` | `1` | Set to `0` to disable $defer/$pending handling |
-| `BLOCK_ESCALATION_ENABLED` | `1` | Set to `0` to disable $block → escalation |
-| `CURSOR_PROJECTS` | `~/.cursor/projects` | Cursor harvest root; `=` to skip |
+| Env / config               | Default                                                                       | Purpose                                        |
+| -------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------- |
+| `PENDING_QUEUE_FILE`       | `$PROJECT_DIR/.claude/pending-queue.jsonl` or `~/.claude/pending-queue.jsonl` | Queue storage                                  |
+| `PENDING_HANDOFF_FILE`     | `$PROJECT_DIR/docs/research/pending-handoff.md`                               | Output on Stop                                 |
+| `PENDING_QUEUE_ENABLED`    | `1`                                                                           | Set to `0` to disable $defer/$pending handling |
+| `BLOCK_ESCALATION_ENABLED` | `1`                                                                           | Set to `0` to disable $block → escalation      |
+| `CURSOR_PROJECTS`          | `~/.cursor/projects`                                                          | Cursor harvest root; `=` to skip               |
 
 ---
 
 ## 8. Integration with Existing Workflows
 
-| Workflow | Integration |
-|----------|-------------|
-| **Next thing to do** | `thegent_do_next` / `thegent plan do-next` should include items from pending-handoff.md and escalation queue. Add handoff path to "read from" list. |
-| **Gardening** | `thegent govern escalate list --past-sla` already shows escalations. Pending handoff can be a "pre-escalation" — items not yet escalated but queued for next session. |
-| **Skills** | Update agent-orchestra and sitback-agent: "Use $defer to queue for session stop; use $block to require approval before proceeding." |
-| **Stop hook order** | harvest-idea-seeds-stop runs; harvest-pending-queue (new) runs. Order: harvest-idea-seeds (captures $idea from history), then harvest-pending-queue (flushes Claude Code queue + any Cursor $defer from harvest). |
+| Workflow             | Integration                                                                                                                                                                                                       |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Next thing to do** | `thegent_do_next` / `thegent plan do-next` should include items from pending-handoff.md and escalation queue. Add handoff path to "read from" list.                                                               |
+| **Gardening**        | `thegent govern escalate list --past-sla` already shows escalations. Pending handoff can be a "pre-escalation" — items not yet escalated but queued for next session.                                             |
+| **Skills**           | Update agent-orchestra and sitback-agent: "Use $defer to queue for session stop; use $block to require approval before proceeding."                                                                               |
+| **Stop hook order**  | harvest-idea-seeds-stop runs; harvest-pending-queue (new) runs. Order: harvest-idea-seeds (captures $idea from history), then harvest-pending-queue (flushes Claude Code queue + any Cursor $defer from harvest). |
 
 ---
 
@@ -292,48 +299,48 @@ User: "Deploy to prod $block"
 
 ### Phase 1: Pending queue (MVP)
 
-| Task | Location | Effort |
-|------|----------|--------|
-| Add `$defer` / `$pending` detection in prompt-submit-guard | `hooks/prompt-submit-guard.sh` | Small |
-| Add pending queue file: `~/.claude/pending-queue.jsonl` or `PROJECT_DIR/.claude/pending-queue.jsonl` | New | Small |
-| On `$defer`: append to queue, exit 1, print friendly message | prompt-submit-guard | Small |
-| Add Stop hook: `harvest-pending-queue.sh` | `hooks/` | Small |
-| On Stop: read queue, write handoff to `docs/research/pending-handoff.md` or `.claude/next-session-prompts.md`, clear queue | harvest-pending-queue | Small |
-| Add SessionStart hook: optionally inject "You have N pending prompts from last session" | Optional | Small |
+| Task                                                                                                                       | Location                       | Effort |
+| -------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | ------ |
+| Add `$defer` / `$pending` detection in prompt-submit-guard                                                                 | `hooks/prompt-submit-guard.sh` | Small  |
+| Add pending queue file: `~/.claude/pending-queue.jsonl` or `PROJECT_DIR/.claude/pending-queue.jsonl`                       | New                            | Small  |
+| On `$defer`: append to queue, exit 1, print friendly message                                                               | prompt-submit-guard            | Small  |
+| Add Stop hook: `harvest-pending-queue.sh`                                                                                  | `hooks/`                       | Small  |
+| On Stop: read queue, write handoff to `docs/research/pending-handoff.md` or `.claude/next-session-prompts.md`, clear queue | harvest-pending-queue          | Small  |
+| Add SessionStart hook: optionally inject "You have N pending prompts from last session"                                    | Optional                       | Small  |
 
 ### Phase 1b: Cursor pull (harvest $defer/$pending)
 
-| Task | Location | Effort |
-|------|----------|--------|
-| Extend harvest-idea-seeds.sh to filter for $defer/$pending in addition to $idea | `scripts/harvest-idea-seeds.sh` | Small |
-| For $defer/$pending: append to pending-handoff or project pending queue | Same script | Small |
-| Reuse cursor_project_path() and offset tracking | Same script | — |
+| Task                                                                            | Location                        | Effort |
+| ------------------------------------------------------------------------------- | ------------------------------- | ------ |
+| Extend harvest-idea-seeds.sh to filter for $defer/$pending in addition to $idea | `scripts/harvest-idea-seeds.sh` | Small  |
+| For $defer/$pending: append to pending-handoff or project pending queue         | Same script                     | Small  |
+| Reuse cursor_project_path() and offset tracking                                 | Same script                     | —      |
 
 ### Phase 2: Blocking (as escalation)
 
-| Task | Location | Effort |
-|------|----------|--------|
-| Add `$block` detection in prompt-submit-guard | prompt-submit-guard | Small |
+| Task                                                                          | Location                        | Effort |
+| ----------------------------------------------------------------------------- | ------------------------------- | ------ |
+| Add `$block` detection in prompt-submit-guard                                 | prompt-submit-guard             | Small  |
 | On `$block`: call `thegent govern escalate add` with prompt as reason, exit 1 | prompt-submit-guard or new hook | Medium |
-| Ensure escalation queue is visible in "next thing to do" / handoff | Already exists | — |
-| Add `thegent queue resolve` or use existing `thegent govern escalate resolve` | CLI | Small |
+| Ensure escalation queue is visible in "next thing to do" / handoff            | Already exists                  | —      |
+| Add `thegent queue resolve` or use existing `thegent govern escalate resolve` | CLI                             | Small  |
 
 ### Phase 3: SessionStart integration (optional)
 
-| Task | Location | Effort |
-|------|----------|--------|
-| SessionStart hook reads `next-session-prompts.md` | New hook | Small |
-| Inject summary into session context (if Claude Code supports it) | Research needed | — |
+| Task                                                             | Location        | Effort |
+| ---------------------------------------------------------------- | --------------- | ------ |
+| SessionStart hook reads `next-session-prompts.md`                | New hook        | Small  |
+| Inject summary into session context (if Claude Code supports it) | Research needed | —      |
 
 **Note:** Claude Code may not support injecting text into the session on start. If not, the handoff file is purely for human/agent reference.
 
 ### Phase 4: Skills and docs
 
-| Task | Location | Effort |
-|------|----------|--------|
-| Update agent-orchestra, sitback-agent with $defer/$block usage | `skills/` | Small |
-| Add thegent_do_next to read pending-handoff | MCP / cli_impl | Small |
-| Document in IDEA_SEEDS_SESSION_STORAGE.md | docs/research | Small |
+| Task                                                           | Location       | Effort |
+| -------------------------------------------------------------- | -------------- | ------ |
+| Update agent-orchestra, sitback-agent with $defer/$block usage | `skills/`      | Small  |
+| Add thegent_do_next to read pending-handoff                    | MCP / cli_impl | Small  |
+| Document in IDEA_SEEDS_SESSION_STORAGE.md                      | docs/research  | Small  |
 
 ---
 
@@ -348,40 +355,46 @@ User: "Deploy to prod $block"
 ### Blocked prompts (or use escalation queue)
 
 ```jsonl
-{"id": "block-1739...", "ts": "...", "prompt": "Deploy to prod", "status": "pending", "project": "..."}
+{
+  "id": "block-1739...",
+  "ts": "...",
+  "prompt": "Deploy to prod",
+  "status": "pending",
+  "project": "..."
+}
 ```
 
 ---
 
 ## 11. Testing Strategy
 
-| Test type | Approach | Status |
-|-----------|----------|--------|
-| **Unit (prompt-submit-guard)** | Invoke hook with mock stdin containing `$defer`; assert exit 1, queue file appended | ✓ `tests/test_hooks_pending_queue.py` |
-| **Unit (harvest-pending-queue)** | Create temp queue file; run hook; assert handoff written, queue cleared | ✓ `tests/test_hooks_pending_queue.py` |
-| **Integration (harvest-idea-seeds)** | Add $defer line to temp Claude history; run harvest; assert pending-handoff updated | ✓ `tests/test_hooks_pending_queue.py` |
-| **E2E** | Manual: type "test $defer" in Claude Code; verify queued; stop session; verify handoff | Manual |
+| Test type                            | Approach                                                                               | Status                                |
+| ------------------------------------ | -------------------------------------------------------------------------------------- | ------------------------------------- |
+| **Unit (prompt-submit-guard)**       | Invoke hook with mock stdin containing `$defer`; assert exit 1, queue file appended    | ✓ `tests/test_hooks_pending_queue.py` |
+| **Unit (harvest-pending-queue)**     | Create temp queue file; run hook; assert handoff written, queue cleared                | ✓ `tests/test_hooks_pending_queue.py` |
+| **Integration (harvest-idea-seeds)** | Add $defer line to temp Claude history; run harvest; assert pending-handoff updated    | ✓ `tests/test_hooks_pending_queue.py` |
+| **E2E**                              | Manual: type "test $defer" in Claude Code; verify queued; stop session; verify handoff | Manual                                |
 
 ---
 
 ## 12. Gaps & Risks
 
-| Gap | Mitigation |
-|-----|-------------|
-| Claude Code may not support SessionStart context injection | Handoff file is sufficient; user opens next session and says "process pending handoff" |
-| Blocking is not true "pause until user responds" | Use escalation + manual resolve; document as "blocking = requires approval before proceeding" |
-| Multiple projects sharing same queue | Use project-scoped queue: `PROJECT_DIR/.claude/pending-queue.jsonl` |
-| Queue file grows unbounded | Stop hook clears after processing; add retention for archived handoffs |
+| Gap                                                        | Mitigation                                                                                    |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Claude Code may not support SessionStart context injection | Handoff file is sufficient; user opens next session and says "process pending handoff"        |
+| Blocking is not true "pause until user responds"           | Use escalation + manual resolve; document as "blocking = requires approval before proceeding" |
+| Multiple projects sharing same queue                       | Use project-scoped queue: `PROJECT_DIR/.claude/pending-queue.jsonl`                           |
+| Queue file grows unbounded                                 | Stop hook clears after processing; add retention for archived handoffs                        |
 
 ---
 
 ## 13. Summary
 
-| Feature | Approach |
-|---------|----------|
-| **Pending queue** | `$defer` / `$pending` → prompt-submit-guard blocks, appends to queue → Stop hook flushes to handoff file |
-| **Blocking** | `$block` → prompt-submit-guard blocks, adds to escalation queue → user resolves via `thegent govern escalate resolve` |
-| **Cursor pull** | harvest-idea-seeds.sh extended to filter $defer/$pending from Cursor transcripts; append to handoff |
+| Feature           | Approach                                                                                                              |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **Pending queue** | `$defer` / `$pending` → prompt-submit-guard blocks, appends to queue → Stop hook flushes to handoff file              |
+| **Blocking**      | `$block` → prompt-submit-guard blocks, adds to escalation queue → user resolves via `thegent govern escalate resolve` |
+| **Cursor pull**   | harvest-idea-seeds.sh extended to filter $defer/$pending from Cursor transcripts; append to handoff                   |
 
 ### Implementation DAG
 
@@ -408,15 +421,18 @@ P4: Skills + thegent_do_next                   ───────┘
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added queue implementation patterns
 2. Added blocking/deferral workflow diagrams
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - USER_QUEUE_TUI_AND_AGENT_POLL.md
 - CLAUDE_CODE_FEATURE_PARITY_AUDIT.md
 
 ### Practical Additions
+
 - Queue storage patterns
 - Blocking workflow implementation
 

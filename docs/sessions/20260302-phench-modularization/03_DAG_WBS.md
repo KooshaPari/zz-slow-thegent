@@ -1,6 +1,7 @@
 # Phench Modularization and Project-Orchestration WBS
 
 Current milestone state:
+
 - [done] feat(thegent): add projects modules command and manifest listing (`018c148c3`)
 - [done] feat(phench): expose runtime module discovery helper (`8a0cf4bbe`)
 - [done] chore(phench): sync audit metadata and module source roots (`e692ba7e5`)

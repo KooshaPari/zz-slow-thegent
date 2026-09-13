@@ -12,7 +12,7 @@ Manages retention and archival of compliance evidence.
 
 ### Methods
 
-#### EvidenceRetentionManager.__init__
+#### EvidenceRetentionManager.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings)

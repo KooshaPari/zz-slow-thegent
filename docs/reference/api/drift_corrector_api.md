@@ -15,7 +15,7 @@ Orchestrates self-correction of agent infrastructure drift.
 
 ### Methods
 
-#### DriftCorrector.__init__
+#### DriftCorrector.**init**
 
 ```python
 __init__(self: Any, provisioner: InfraProvisioner)

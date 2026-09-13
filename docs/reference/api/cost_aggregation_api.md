@@ -12,7 +12,7 @@ Per-run cost aggregation.
 
 ### Methods
 
-#### CostAggregator.__init__
+#### CostAggregator.**init**
 
 ```python
 __init__(self: Any)

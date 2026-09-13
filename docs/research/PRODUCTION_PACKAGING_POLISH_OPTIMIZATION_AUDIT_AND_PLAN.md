@@ -13,6 +13,7 @@
 **Goal:** Transform thegent from a dev-focused tool into a **production-ready, shipping-quality cross-platform package** that can be distributed via PyPI, Nix, Homebrew, Windows Installer, Linux packages (deb/rpm), and other package managers with a polished, intuitive user experience across Windows, macOS, and Linux.
 
 **Current State:**
+
 - ✅ Core functionality working (macOS/Linux)
 - ⚠️ Windows support partial (WSL2, some native)
 - ⚠️ Assumes dev repository directory
@@ -24,6 +25,7 @@
 - ⚠️ Missing upgrade/migration paths
 
 **Target State:**
+
 - ✅ Installable via `pip install thegent`, `nix profile install`, `brew install`, `winget install`, `apt install`, `yum install`
 - ✅ Works without repository directory on all platforms
 - ✅ Platform-aware paths (XDG on Linux, AppData on Windows, Library on macOS)
@@ -58,12 +60,12 @@
 
 ### 1.1 Platform Support Matrix
 
-| Platform | Status | Package Managers | Shell Support | Desktop Automation | Service Management |
-|----------|--------|------------------|---------------|-------------------|-------------------|
-| **macOS** (10.15+) | ✅ Primary | Homebrew, pip, nix | zsh, bash | AppleScript | launchd |
-| **Linux** (Ubuntu 20.04+, Debian 11+, RHEL 8+) | ✅ Primary | apt, yum, pip, nix, snap | bash, zsh | AT-SPI | systemd |
-| **Windows** (10/11) | ⚠️ Partial | pip, winget, chocolatey | PowerShell, WSL2 bash | UI Automation | Task Scheduler, NSSM |
-| **WSL2** | ✅ Supported | pip, apt (via WSL2) | bash | Via native Windows | systemd (WSL2) |
+| Platform                                       | Status       | Package Managers         | Shell Support         | Desktop Automation | Service Management   |
+| ---------------------------------------------- | ------------ | ------------------------ | --------------------- | ------------------ | -------------------- |
+| **macOS** (10.15+)                             | ✅ Primary   | Homebrew, pip, nix       | zsh, bash             | AppleScript        | launchd              |
+| **Linux** (Ubuntu 20.04+, Debian 11+, RHEL 8+) | ✅ Primary   | apt, yum, pip, nix, snap | bash, zsh             | AT-SPI             | systemd              |
+| **Windows** (10/11)                            | ⚠️ Partial   | pip, winget, chocolatey  | PowerShell, WSL2 bash | UI Automation      | Task Scheduler, NSSM |
+| **WSL2**                                       | ✅ Supported | pip, apt (via WSL2)      | bash                  | Via native Windows | systemd (WSL2)       |
 
 ### 1.2 Platform Detection Strategy
 
@@ -130,13 +132,13 @@ def is_unix() -> bool:
 
 ### 1.3 Shell Strategy by Platform
 
-| Context | macOS | Linux | Windows (native) | WSL2 |
-|---------|-------|-------|------------------|------|
-| **Hooks** | bash | bash | WSL2 bash or pwsh | bash |
-| **Agent Subprocess** | bash/zsh | bash | pwsh or WSL2 bash | bash |
-| **OS Admin** | bash (dscl) | bash (useradd) | pwsh (New-LocalUser) | bash (via WSL2) |
-| **Desktop Automation** | AppleScript | Python+AT-SPI | pwsh + UI Automation | Via native Windows |
-| **thegent CLI** | Python | Python | Python | Python |
+| Context                | macOS       | Linux          | Windows (native)     | WSL2               |
+| ---------------------- | ----------- | -------------- | -------------------- | ------------------ |
+| **Hooks**              | bash        | bash           | WSL2 bash or pwsh    | bash               |
+| **Agent Subprocess**   | bash/zsh    | bash           | pwsh or WSL2 bash    | bash               |
+| **OS Admin**           | bash (dscl) | bash (useradd) | pwsh (New-LocalUser) | bash (via WSL2)    |
+| **Desktop Automation** | AppleScript | Python+AT-SPI  | pwsh + UI Automation | Via native Windows |
+| **thegent CLI**        | Python      | Python         | Python               | Python             |
 
 **Implementation:** `src/thegent/infra/shell_detection.py`
 
@@ -175,20 +177,21 @@ def _wsl_available() -> bool:
 
 ### 2.1 Current State Audit
 
-| Aspect | macOS | Linux | Windows | Status |
-|--------|-------|-------|---------|--------|
-| **Python Package (PyPI)** | ⚠️ Partial | ⚠️ Partial | ⚠️ Partial | Missing package data, no release |
-| **Nix Package** | ⚠️ Dev-only | ⚠️ Dev-only | ❌ Missing | Only dev shell |
-| **Homebrew** | ❌ Missing | ❌ Missing | N/A | No formula |
-| **Windows Installer** | N/A | N/A | ❌ Missing | No MSI/EXE |
-| **Linux Packages** | N/A | ❌ Missing | N/A | No deb/rpm |
-| **Package Data** | ❌ Missing | ❌ Missing | ❌ Missing | Hooks/templates not included |
-| **Version Management** | ⚠️ Manual | ⚠️ Manual | ⚠️ Manual | Hardcoded `0.1.0` |
-| **Release Process** | ❌ Manual | ❌ Manual | ❌ Manual | No automation |
+| Aspect                    | macOS       | Linux       | Windows    | Status                           |
+| ------------------------- | ----------- | ----------- | ---------- | -------------------------------- |
+| **Python Package (PyPI)** | ⚠️ Partial  | ⚠️ Partial  | ⚠️ Partial | Missing package data, no release |
+| **Nix Package**           | ⚠️ Dev-only | ⚠️ Dev-only | ❌ Missing | Only dev shell                   |
+| **Homebrew**              | ❌ Missing  | ❌ Missing  | N/A        | No formula                       |
+| **Windows Installer**     | N/A         | N/A         | ❌ Missing | No MSI/EXE                       |
+| **Linux Packages**        | N/A         | ❌ Missing  | N/A        | No deb/rpm                       |
+| **Package Data**          | ❌ Missing  | ❌ Missing  | ❌ Missing | Hooks/templates not included     |
+| **Version Management**    | ⚠️ Manual   | ⚠️ Manual   | ⚠️ Manual  | Hardcoded `0.1.0`                |
+| **Release Process**       | ❌ Manual   | ❌ Manual   | ❌ Manual  | No automation                    |
 
 ### 2.2 Python Package (PyPI) — Cross-Platform
 
 **Current `pyproject.toml` Issues:**
+
 - Missing `package_data` for hooks/templates/scripts
 - No platform-specific classifiers
 - Missing Windows/Linux-specific dependencies
@@ -332,6 +335,7 @@ jobs:
 ### 2.3 Nix Package — Cross-Platform
 
 **Current `flake.nix` Issues:**
+
 - Only provides `devShells.default`
 - No `packages.default` output
 - Missing Rust extensions build
@@ -505,6 +509,7 @@ end
 ### 2.5 Windows Installer (MSI/EXE)
 
 **Tools:**
+
 - **cx_Freeze** — Cross-platform freezing
 - **PyInstaller** — Standalone executables
 - **Inno Setup** — Windows installer creation
@@ -681,13 +686,13 @@ Installers:
 
 ```yaml
 name: thegent
-version: '0.1.0'
+version: "0.1.0"
 summary: Agentic orchestration & governance platform
 description: |
   Thegent is a unified agent orchestration CLI for Factory skills and droids.
 
 grade: stable
-confinement: classic  # Required for hooks/desktop automation
+confinement: classic # Required for hooks/desktop automation
 
 parts:
   thegent:
@@ -830,15 +835,15 @@ def get_log_dir() -> Path:
 
 ### 3.2 Path Usage Matrix
 
-| Purpose | macOS | Linux | Windows | WSL2 |
-|---------|-------|-------|---------|------|
-| **Config** | `~/Library/Application Support/thegent/` | `~/.config/thegent/` | `%APPDATA%\thegent\` | `~/.config/thegent/` |
-| **Cache** | `~/Library/Caches/thegent/` | `~/.cache/thegent/` | `%LOCALAPPDATA%\thegent\cache\` | `~/.cache/thegent/` |
-| **Data** | `~/Library/Application Support/thegent/data/` | `~/.local/share/thegent/` | `%LOCALAPPDATA%\thegent\` | `~/.local/share/thegent/` |
-| **Binaries** | `~/.local/bin/` | `~/.local/bin/` | `%LOCALAPPDATA%\thegent\bin\` | `~/.local/bin/` |
-| **Logs** | `~/Library/Logs/thegent/` | `~/.local/share/thegent/logs/` | `%LOCALAPPDATA%\thegent\logs\` | `~/.local/share/thegent/logs/` |
-| **Hooks** | `~/.config/thegent/hooks/` | `~/.config/thegent/hooks/` | `%APPDATA%\thegent\hooks\` | `~/.config/thegent/hooks/` |
-| **Templates** | `~/.config/thegent/templates/` | `~/.config/thegent/templates/` | `%APPDATA%\thegent\templates\` | `~/.config/thegent/templates/` |
+| Purpose       | macOS                                         | Linux                          | Windows                         | WSL2                           |
+| ------------- | --------------------------------------------- | ------------------------------ | ------------------------------- | ------------------------------ |
+| **Config**    | `~/Library/Application Support/thegent/`      | `~/.config/thegent/`           | `%APPDATA%\thegent\`            | `~/.config/thegent/`           |
+| **Cache**     | `~/Library/Caches/thegent/`                   | `~/.cache/thegent/`            | `%LOCALAPPDATA%\thegent\cache\` | `~/.cache/thegent/`            |
+| **Data**      | `~/Library/Application Support/thegent/data/` | `~/.local/share/thegent/`      | `%LOCALAPPDATA%\thegent\`       | `~/.local/share/thegent/`      |
+| **Binaries**  | `~/.local/bin/`                               | `~/.local/bin/`                | `%LOCALAPPDATA%\thegent\bin\`   | `~/.local/bin/`                |
+| **Logs**      | `~/Library/Logs/thegent/`                     | `~/.local/share/thegent/logs/` | `%LOCALAPPDATA%\thegent\logs\`  | `~/.local/share/thegent/logs/` |
+| **Hooks**     | `~/.config/thegent/hooks/`                    | `~/.config/thegent/hooks/`     | `%APPDATA%\thegent\hooks\`      | `~/.config/thegent/hooks/`     |
+| **Templates** | `~/.config/thegent/templates/`                | `~/.config/thegent/templates/` | `%APPDATA%\thegent\templates\`  | `~/.config/thegent/templates/` |
 
 ### 3.3 Path Migration
 
@@ -881,13 +886,13 @@ def migrate_paths() -> None:
 
 ### 4.1 Current Dependencies (Cross-Platform Audit)
 
-| File | Dependency | macOS | Linux | Windows | Impact |
-|------|-----------|-------|-------|---------|--------|
-| `.envrc` | `$(pwd)/.starship.toml` | ⚠️ High | ⚠️ High | ❌ N/A | Starship config not found |
-| `.envrc` | `$(pwd)/.venv` | ⚠️ Medium | ⚠️ Medium | ❌ N/A | Dev venv only |
-| `.envrc` | `$(pwd)/src` | ⚠️ High | ⚠️ High | ❌ N/A | PYTHONPATH for dev |
-| `doctor.py` | `Path.cwd() / "src/thegent"` | ⚠️ High | ⚠️ High | ⚠️ High | Assumes repo structure |
-| `mcp_manage.py` | `Path(thegent.__file__).parent.parent.parent` | ⚠️ High | ⚠️ High | ⚠️ High | Assumes repo structure |
+| File            | Dependency                                    | macOS     | Linux     | Windows | Impact                    |
+| --------------- | --------------------------------------------- | --------- | --------- | ------- | ------------------------- |
+| `.envrc`        | `$(pwd)/.starship.toml`                       | ⚠️ High   | ⚠️ High   | ❌ N/A  | Starship config not found |
+| `.envrc`        | `$(pwd)/.venv`                                | ⚠️ Medium | ⚠️ Medium | ❌ N/A  | Dev venv only             |
+| `.envrc`        | `$(pwd)/src`                                  | ⚠️ High   | ⚠️ High   | ❌ N/A  | PYTHONPATH for dev        |
+| `doctor.py`     | `Path.cwd() / "src/thegent"`                  | ⚠️ High   | ⚠️ High   | ⚠️ High | Assumes repo structure    |
+| `mcp_manage.py` | `Path(thegent.__file__).parent.parent.parent` | ⚠️ High   | ⚠️ High   | ⚠️ High | Assumes repo structure    |
 
 ### 4.2 Dev/Installed Detection (Cross-Platform)
 
@@ -1070,14 +1075,14 @@ raise PermissionError(
 
 ### 5.2 Platform-Specific Error Remediation
 
-| Error | macOS | Linux | Windows |
-|-------|-------|-------|---------|
-| **Provider not configured** | `thegent cliproxy login <provider>` | `thegent cliproxy login <provider>` | `thegent cliproxy login <provider>` or `pwsh -Command '...'` |
-| **MCP server not reachable** | `thegent serve` | `thegent serve` | `thegent serve` or check firewall |
-| **Permission denied** | `chmod 755 ~/Library/Application\ Support/thegent` | `chmod 755 ~/.config/thegent` | Run as Administrator or check folder permissions |
-| **Hook not found** | `thegent install --target hooks` | `thegent install --target hooks` | `thegent install --target hooks` |
-| **WSL2 not available** | N/A | N/A | Install WSL2: `wsl --install` |
-| **PowerShell not found** | N/A | N/A | Install PowerShell: `winget install Microsoft.PowerShell` |
+| Error                        | macOS                                              | Linux                               | Windows                                                      |
+| ---------------------------- | -------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------ |
+| **Provider not configured**  | `thegent cliproxy login <provider>`                | `thegent cliproxy login <provider>` | `thegent cliproxy login <provider>` or `pwsh -Command '...'` |
+| **MCP server not reachable** | `thegent serve`                                    | `thegent serve`                     | `thegent serve` or check firewall                            |
+| **Permission denied**        | `chmod 755 ~/Library/Application\ Support/thegent` | `chmod 755 ~/.config/thegent`       | Run as Administrator or check folder permissions             |
+| **Hook not found**           | `thegent install --target hooks`                   | `thegent install --target hooks`    | `thegent install --target hooks`                             |
+| **WSL2 not available**       | N/A                                                | N/A                                 | Install WSL2: `wsl --install`                                |
+| **PowerShell not found**     | N/A                                                | N/A                                 | Install PowerShell: `winget install Microsoft.PowerShell`    |
 
 ---
 
@@ -1085,21 +1090,23 @@ raise PermissionError(
 
 ### 6.1 Platform-Specific Optimizations
 
-| Optimization | macOS | Linux | Windows | Impact |
-|--------------|-------|-------|---------|--------|
-| **Git shim caching** | ✅ Fixed | ✅ Fixed | ⚠️ Needs testing | High |
-| **Hook resolution** | ⚠️ Multiple fallbacks | ⚠️ Multiple fallbacks | ⚠️ WSL2 detection | Medium |
-| **Path resolution** | ⚠️ Library paths | ⚠️ XDG paths | ⚠️ AppData paths | Medium |
-| **Startup time** | ⚠️ Lazy imports | ⚠️ Lazy imports | ⚠️ PowerShell startup | Medium |
+| Optimization         | macOS                 | Linux                 | Windows               | Impact |
+| -------------------- | --------------------- | --------------------- | --------------------- | ------ |
+| **Git shim caching** | ✅ Fixed              | ✅ Fixed              | ⚠️ Needs testing      | High   |
+| **Hook resolution**  | ⚠️ Multiple fallbacks | ⚠️ Multiple fallbacks | ⚠️ WSL2 detection     | Medium |
+| **Path resolution**  | ⚠️ Library paths      | ⚠️ XDG paths          | ⚠️ AppData paths      | Medium |
+| **Startup time**     | ⚠️ Lazy imports       | ⚠️ Lazy imports       | ⚠️ PowerShell startup | Medium |
 
 ### 6.2 Windows-Specific Optimizations
 
 **PowerShell Startup:**
+
 - Use `pwsh -NoProfile` for faster startup
 - Cache PowerShell module imports
 - Use native Windows APIs where possible
 
 **WSL2 Detection:**
+
 - Cache WSL2 availability check
 - Prefer native Windows when WSL2 not needed
 
@@ -1169,6 +1176,7 @@ eval (env _THEGENT_COMPLETE=fish_source thegent) | source
 ### 7.2 Platform-Specific First-Run Experience
 
 **macOS:**
+
 ```python
 def first_run_wizard_macos() -> None:
     """macOS-specific first-run wizard."""
@@ -1188,6 +1196,7 @@ def first_run_wizard_macos() -> None:
 ```
 
 **Linux:**
+
 ```python
 def first_run_wizard_linux() -> None:
     """Linux-specific first-run wizard."""
@@ -1210,6 +1219,7 @@ def first_run_wizard_linux() -> None:
 ```
 
 **Windows:**
+
 ```python
 def first_run_wizard_windows() -> None:
     """Windows-specific first-run wizard."""
@@ -1271,12 +1281,12 @@ def run(
 
 **Required Documentation:**
 
-| Document | macOS | Linux | Windows | Status |
-|----------|-------|-------|---------|--------|
+| Document               | macOS      | Linux      | Windows    | Status                        |
+| ---------------------- | ---------- | ---------- | ---------- | ----------------------------- |
 | **Installation Guide** | ⚠️ Partial | ⚠️ Partial | ❌ Missing | Need platform-specific guides |
-| **Quick Start** | ⚠️ Partial | ⚠️ Partial | ❌ Missing | Need Windows quick start |
-| **Troubleshooting** | ⚠️ Partial | ⚠️ Partial | ❌ Missing | Need Windows troubleshooting |
-| **Configuration** | ⚠️ Partial | ⚠️ Partial | ❌ Missing | Need Windows config guide |
+| **Quick Start**        | ⚠️ Partial | ⚠️ Partial | ❌ Missing | Need Windows quick start      |
+| **Troubleshooting**    | ⚠️ Partial | ⚠️ Partial | ❌ Missing | Need Windows troubleshooting  |
+| **Configuration**      | ⚠️ Partial | ⚠️ Partial | ❌ Missing | Need Windows config guide     |
 
 **Documentation Structure:**
 
@@ -1302,27 +1312,32 @@ docs/
 
 **macOS Examples:**
 
-```markdown
+````markdown
 # macOS Installation
 
 ## Homebrew (Recommended)
+
 ```bash
 brew install thegent
 thegent install --target all
 ```
+````
 
 ## pip
+
 ```bash
 pip3 install thegent
 thegent install --target all
 ```
 
 ## Nix
+
 ```bash
 nix profile install github:router-for-me/thegent
 thegent install --target all
 ```
-```
+
+````
 
 **Linux Examples:**
 
@@ -1333,20 +1348,23 @@ thegent install --target all
 ```bash
 sudo apt install thegent
 thegent install --target all
-```
+````
 
 ## RHEL/CentOS (yum)
+
 ```bash
 sudo yum install thegent
 thegent install --target all
 ```
 
 ## pip
+
 ```bash
 pip3 install thegent
 thegent install --target all
 ```
-```
+
+````
 
 **Windows Examples:**
 
@@ -1357,18 +1375,21 @@ thegent install --target all
 ```powershell
 pip install thegent
 thegent install --target all
-```
+````
 
 ## Winget
+
 ```powershell
 winget install router-for-me.thegent
 thegent install --target all
 ```
 
 ## MSI Installer
+
 1. Download `thegent-setup.exe` from releases
 2. Run installer
 3. Run `thegent install --target all` in PowerShell
+
 ```
 
 ---
@@ -1391,21 +1412,23 @@ thegent install --target all
 **Test Structure:**
 
 ```
+
 tests/
 ├── unit/
-│   ├── test_platform_detection.py
-│   ├── test_platform_paths.py
-│   └── test_shell_detection.py
+│ ├── test_platform_detection.py
+│ ├── test_platform_paths.py
+│ └── test_shell_detection.py
 ├── integration/
-│   ├── test_install_macos.py
-│   ├── test_install_linux.py
-│   ├── test_install_windows.py
-│   └── test_cross_platform_paths.py
+│ ├── test_install_macos.py
+│ ├── test_install_linux.py
+│ ├── test_install_windows.py
+│ └── test_cross_platform_paths.py
 └── e2e/
-    ├── test_cli_macos.py
-    ├── test_cli_linux.py
-    └── test_cli_windows.py
-```
+├── test_cli_macos.py
+├── test_cli_linux.py
+└── test_cli_windows.py
+
+````
 
 **Platform Detection Tests:**
 
@@ -1431,7 +1454,7 @@ def test_wsl2_detection():
          patch("os.path.exists", return_value=True), \
          patch("builtins.open", mock_open(read_data="Linux version 5.10.0 Microsoft")):
         assert detect_platform() == Platform.WSL2
-```
+````
 
 **Path Resolution Tests:**
 
@@ -1626,12 +1649,12 @@ jobs:
 
 ### 11.1 Platform-Specific Security Considerations
 
-| Aspect | macOS | Linux | Windows |
-|--------|-------|-------|---------|
-| **File Permissions** | Unix permissions (755) | Unix permissions (755) | ACLs, folder permissions |
-| **Secret Storage** | Keychain | Keyring | Credential Manager |
-| **Service Permissions** | launchd plist | systemd service | Task Scheduler, NSSM |
-| **Sandboxing** | App Sandbox | SELinux/AppArmor | Windows Sandbox |
+| Aspect                  | macOS                  | Linux                  | Windows                  |
+| ----------------------- | ---------------------- | ---------------------- | ------------------------ |
+| **File Permissions**    | Unix permissions (755) | Unix permissions (755) | ACLs, folder permissions |
+| **Secret Storage**      | Keychain               | Keyring                | Credential Manager       |
+| **Service Permissions** | launchd plist          | systemd service        | Task Scheduler, NSSM     |
+| **Sandboxing**          | App Sandbox            | SELinux/AppArmor       | Windows Sandbox          |
 
 ### 11.2 Cross-Platform Secret Management
 
@@ -1677,11 +1700,11 @@ def get_secret_storage():
 
 **Log Locations:**
 
-| Platform | Default Log Location | Environment Variable |
-|----------|---------------------|---------------------|
-| **macOS** | `~/Library/Logs/thegent/thegent.log` | `THGENT_LOG_FILE` |
-| **Linux** | `~/.local/share/thegent/logs/thegent.log` | `THGENT_LOG_FILE` |
-| **Windows** | `%LOCALAPPDATA%\thegent\logs\thegent.log` | `THGENT_LOG_FILE` |
+| Platform    | Default Log Location                      | Environment Variable |
+| ----------- | ----------------------------------------- | -------------------- |
+| **macOS**   | `~/Library/Logs/thegent/thegent.log`      | `THGENT_LOG_FILE`    |
+| **Linux**   | `~/.local/share/thegent/logs/thegent.log` | `THGENT_LOG_FILE`    |
+| **Windows** | `%LOCALAPPDATA%\thegent\logs\thegent.log` | `THGENT_LOG_FILE`    |
 
 **Unified Logging:**
 
@@ -1765,25 +1788,26 @@ def upgrade() -> None:
 
 ### 14.1 Phase Breakdown (Cross-Platform)
 
-| Phase | Duration | Effort | Platforms | Risk |
-|-------|----------|--------|-----------|------|
-| **Phase 1: Platform Detection** | Week 1 | 4-6h | All | Low |
-| **Phase 2: Path Resolution** | Week 1 | 6-8h | All | Medium |
-| **Phase 3: Directory Dependencies** | Week 1-2 | 8-12h | All | Medium |
-| **Phase 4: Packaging (PyPI)** | Week 2 | 8-10h | All | Low |
-| **Phase 5: Packaging (Platform-Specific)** | Week 2-3 | 12-16h | macOS/Linux/Windows | Medium |
-| **Phase 6: Error Handling** | Week 3 | 10-14h | All | Medium |
-| **Phase 7: UX Polish** | Week 3-4 | 8-12h | All | Low |
-| **Phase 8: Documentation** | Week 4 | 12-16h | All | Low |
-| **Phase 9: Testing** | Week 4-5 | 10-14h | All | Low |
-| **Phase 10: CI/CD** | Week 5 | 8-12h | All | Medium |
-| **Phase 11: Security** | Week 5 | 6-8h | All | Low |
-| **Phase 12: Observability** | Week 5 | 4-6h | All | Low |
-| **Total** | **5 weeks** | **104-142h** | **All** | **Medium** |
+| Phase                                      | Duration    | Effort       | Platforms           | Risk       |
+| ------------------------------------------ | ----------- | ------------ | ------------------- | ---------- |
+| **Phase 1: Platform Detection**            | Week 1      | 4-6h         | All                 | Low        |
+| **Phase 2: Path Resolution**               | Week 1      | 6-8h         | All                 | Medium     |
+| **Phase 3: Directory Dependencies**        | Week 1-2    | 8-12h        | All                 | Medium     |
+| **Phase 4: Packaging (PyPI)**              | Week 2      | 8-10h        | All                 | Low        |
+| **Phase 5: Packaging (Platform-Specific)** | Week 2-3    | 12-16h       | macOS/Linux/Windows | Medium     |
+| **Phase 6: Error Handling**                | Week 3      | 10-14h       | All                 | Medium     |
+| **Phase 7: UX Polish**                     | Week 3-4    | 8-12h        | All                 | Low        |
+| **Phase 8: Documentation**                 | Week 4      | 12-16h       | All                 | Low        |
+| **Phase 9: Testing**                       | Week 4-5    | 10-14h       | All                 | Low        |
+| **Phase 10: CI/CD**                        | Week 5      | 8-12h        | All                 | Medium     |
+| **Phase 11: Security**                     | Week 5      | 6-8h         | All                 | Low        |
+| **Phase 12: Observability**                | Week 5      | 4-6h         | All                 | Low        |
+| **Total**                                  | **5 weeks** | **104-142h** | **All**             | **Medium** |
 
 ### 14.2 Platform Priority
 
 **Priority Order:**
+
 1. **macOS** — Primary platform, most users
 2. **Linux** — Primary platform, server deployments
 3. **Windows** — Secondary platform, WSL2 support
@@ -1791,15 +1815,15 @@ def upgrade() -> None:
 
 ### 14.3 Success Criteria (Cross-Platform)
 
-| Criterion | macOS | Linux | Windows | WSL2 |
-|-----------|-------|-------|---------|------|
-| **Installation works** | ✅ | ✅ | ✅ | ✅ |
-| **Works without repo** | ✅ | ✅ | ✅ | ✅ |
-| **Platform paths correct** | ✅ | ✅ | ✅ | ✅ |
-| **Error messages actionable** | ✅ | ✅ | ✅ | ✅ |
-| **Documentation complete** | ✅ | ✅ | ✅ | ✅ |
-| **Tests passing** | ✅ | ✅ | ✅ | ✅ |
-| **CI/CD automated** | ✅ | ✅ | ✅ | ✅ |
+| Criterion                     | macOS | Linux | Windows | WSL2 |
+| ----------------------------- | ----- | ----- | ------- | ---- |
+| **Installation works**        | ✅    | ✅    | ✅      | ✅   |
+| **Works without repo**        | ✅    | ✅    | ✅      | ✅   |
+| **Platform paths correct**    | ✅    | ✅    | ✅      | ✅   |
+| **Error messages actionable** | ✅    | ✅    | ✅      | ✅   |
+| **Documentation complete**    | ✅    | ✅    | ✅      | ✅   |
+| **Tests passing**             | ✅    | ✅    | ✅      | ✅   |
+| **CI/CD automated**           | ✅    | ✅    | ✅      | ✅   |
 
 ---
 
@@ -1916,34 +1940,34 @@ def upgrade() -> None:
 
 ### 16.1 Installation Commands
 
-| Platform | Command |
-|----------|---------|
-| **macOS (Homebrew)** | `brew install thegent` |
-| **macOS (pip)** | `pip3 install thegent` |
-| **macOS (Nix)** | `nix profile install github:router-for-me/thegent` |
-| **Linux (apt)** | `sudo apt install thegent` |
-| **Linux (yum)** | `sudo yum install thegent` |
-| **Linux (pip)** | `pip3 install thegent` |
-| **Linux (Nix)** | `nix profile install github:router-for-me/thegent` |
-| **Windows (pip)** | `pip install thegent` |
-| **Windows (winget)** | `winget install router-for-me.thegent` |
-| **Windows (MSI)** | Download and run `thegent-setup.exe` |
+| Platform             | Command                                            |
+| -------------------- | -------------------------------------------------- |
+| **macOS (Homebrew)** | `brew install thegent`                             |
+| **macOS (pip)**      | `pip3 install thegent`                             |
+| **macOS (Nix)**      | `nix profile install github:router-for-me/thegent` |
+| **Linux (apt)**      | `sudo apt install thegent`                         |
+| **Linux (yum)**      | `sudo yum install thegent`                         |
+| **Linux (pip)**      | `pip3 install thegent`                             |
+| **Linux (Nix)**      | `nix profile install github:router-for-me/thegent` |
+| **Windows (pip)**    | `pip install thegent`                              |
+| **Windows (winget)** | `winget install router-for-me.thegent`             |
+| **Windows (MSI)**    | Download and run `thegent-setup.exe`               |
 
 ### 16.2 Post-Installation
 
-| Platform | Command |
-|----------|---------|
-| **All** | `thegent install --target all` |
-| **macOS** | `thegent install --target shell` (for zsh) |
-| **Linux** | `thegent install --target shell` (for bash/zsh) |
+| Platform    | Command                                           |
+| ----------- | ------------------------------------------------- |
+| **All**     | `thegent install --target all`                    |
+| **macOS**   | `thegent install --target shell` (for zsh)        |
+| **Linux**   | `thegent install --target shell` (for bash/zsh)   |
 | **Windows** | `thegent install --target shell` (for PowerShell) |
 
 ### 16.3 Verification
 
-| Platform | Command |
-|----------|---------|
-| **All** | `thegent --version` |
-| **All** | `thegent doctor` |
+| Platform | Command             |
+| -------- | ------------------- |
+| **All**  | `thegent --version` |
+| **All**  | `thegent doctor`    |
 
 ---
 
@@ -1951,14 +1975,14 @@ def upgrade() -> None:
 
 ### 17.1 Common Issues by Platform
 
-| Issue | macOS | Linux | Windows |
-|-------|-------|-------|---------|
-| **Command not found** | Check `~/.local/bin` in PATH | Check `~/.local/bin` in PATH | Check `%LOCALAPPDATA%\thegent\bin` in PATH |
-| **Permission denied** | `chmod 755 ~/Library/Application\ Support/thegent` | `chmod 755 ~/.config/thegent` | Run PowerShell as Administrator |
-| **Provider not configured** | `thegent cliproxy login <provider>` | `thegent cliproxy login <provider>` | `thegent cliproxy login <provider>` |
-| **MCP server not reachable** | `thegent serve` | `thegent serve` | `thegent serve` (check firewall) |
-| **WSL2 not available** | N/A | N/A | `wsl --install` |
-| **PowerShell not found** | N/A | N/A | `winget install Microsoft.PowerShell` |
+| Issue                        | macOS                                              | Linux                               | Windows                                    |
+| ---------------------------- | -------------------------------------------------- | ----------------------------------- | ------------------------------------------ |
+| **Command not found**        | Check `~/.local/bin` in PATH                       | Check `~/.local/bin` in PATH        | Check `%LOCALAPPDATA%\thegent\bin` in PATH |
+| **Permission denied**        | `chmod 755 ~/Library/Application\ Support/thegent` | `chmod 755 ~/.config/thegent`       | Run PowerShell as Administrator            |
+| **Provider not configured**  | `thegent cliproxy login <provider>`                | `thegent cliproxy login <provider>` | `thegent cliproxy login <provider>`        |
+| **MCP server not reachable** | `thegent serve`                                    | `thegent serve`                     | `thegent serve` (check firewall)           |
+| **WSL2 not available**       | N/A                                                | N/A                                 | `wsl --install`                            |
+| **PowerShell not found**     | N/A                                                | N/A                                 | `winget install Microsoft.PowerShell`      |
 
 ---
 
@@ -1966,15 +1990,15 @@ def upgrade() -> None:
 
 ### 18.1 Platform-Specific Edge Cases
 
-| Platform | Edge Case | Impact | Solution |
-|----------|-----------|--------|----------|
-| **macOS** | Case-insensitive filesystem | Path collisions | Use case-sensitive checks |
-| **macOS** | SIP (System Integrity Protection) | Cannot modify system directories | Use user directories |
-| **Linux** | Multiple Python versions | Wrong Python used | Check `python3 --version` |
-| **Linux** | SELinux/AppArmor | Permission denied | Configure policies |
-| **Windows** | Long paths (>260 chars) | Path too long | Enable long path support |
-| **Windows** | Antivirus interference | Slow execution | Add exclusions |
-| **WSL2** | Windows/Unix path mixing | Path resolution failures | Use `wslpath` for conversion |
+| Platform    | Edge Case                         | Impact                           | Solution                     |
+| ----------- | --------------------------------- | -------------------------------- | ---------------------------- |
+| **macOS**   | Case-insensitive filesystem       | Path collisions                  | Use case-sensitive checks    |
+| **macOS**   | SIP (System Integrity Protection) | Cannot modify system directories | Use user directories         |
+| **Linux**   | Multiple Python versions          | Wrong Python used                | Check `python3 --version`    |
+| **Linux**   | SELinux/AppArmor                  | Permission denied                | Configure policies           |
+| **Windows** | Long paths (>260 chars)           | Path too long                    | Enable long path support     |
+| **Windows** | Antivirus interference            | Slow execution                   | Add exclusions               |
+| **WSL2**    | Windows/Unix path mixing          | Path resolution failures         | Use `wslpath` for conversion |
 
 ### 18.2 Path Length Handling (Windows)
 
@@ -2109,6 +2133,7 @@ thegent run "Hello, world!" --agent codex
 **Scenario:** Developer has been using thegent from dev repo, now wants to install via package manager.
 
 **Steps:**
+
 1. Backup current config: `cp -r ~/.config/thegent ~/.config/thegent.backup`
 2. Install via package manager: `pip install thegent` (or brew, etc.)
 3. Run migration: `thegent migrate-paths`
@@ -2120,6 +2145,7 @@ thegent run "Hello, world!" --agent codex
 **Scenario:** User migrates from macOS to Linux (or vice versa).
 
 **Steps:**
+
 1. Export config: `thegent config export > thegent-config.json`
 2. On new platform, install thegent
 3. Import config: `thegent config import < thegent-config.json`
@@ -2131,6 +2157,7 @@ thegent run "Hello, world!" --agent codex
 **Scenario:** Upgrading from v0.1.0 to v0.2.0 with breaking changes.
 
 **Steps:**
+
 1. Check current version: `thegent --version`
 2. Backup config: `cp -r ~/.config/thegent ~/.config/thegent.v0.1.0`
 3. Upgrade: `pip install --upgrade thegent` (or platform-specific)
@@ -2144,17 +2171,20 @@ thegent run "Hello, world!" --agent codex
 ### 21.1 Package Rollback
 
 **PyPI:**
+
 ```bash
 pip install thegent==0.1.0  # Specific version
 ```
 
 **Homebrew:**
+
 ```bash
 brew uninstall thegent
 brew install thegent@0.1.0  # If versioned formula exists
 ```
 
 **Nix:**
+
 ```bash
 nix profile remove thegent
 nix profile install github:router-for-me/thegent/v0.1.0
@@ -2176,12 +2206,12 @@ cp ~/.config/thegent.backup/cliproxy-config.yaml ~/.config/thegent/
 
 ### 22.1 Platform-Specific Performance Targets
 
-| Operation | macOS Target | Linux Target | Windows Target |
-|-----------|--------------|--------------|----------------|
-| **Startup time** | < 100ms | < 100ms | < 200ms (PowerShell overhead) |
-| **Hook resolution** | < 10ms | < 10ms | < 20ms (WSL2 detection) |
-| **Path resolution** | < 5ms | < 5ms | < 10ms (AppData resolution) |
-| **Package data access** | < 5ms | < 5ms | < 10ms |
+| Operation               | macOS Target | Linux Target | Windows Target                |
+| ----------------------- | ------------ | ------------ | ----------------------------- |
+| **Startup time**        | < 100ms      | < 100ms      | < 200ms (PowerShell overhead) |
+| **Hook resolution**     | < 10ms       | < 10ms       | < 20ms (WSL2 detection)       |
+| **Path resolution**     | < 5ms        | < 5ms        | < 10ms (AppData resolution)   |
+| **Package data access** | < 5ms        | < 5ms        | < 10ms                        |
 
 ### 22.2 Optimization Checklist
 
@@ -2198,6 +2228,7 @@ cp ~/.config/thegent.backup/cliproxy-config.yaml ~/.config/thegent/
 ### 23.1 User Mental Model
 
 **What users expect:**
+
 1. **Install once, works everywhere** — Same commands on all platforms
 2. **Platform-aware defaults** — Uses correct paths automatically
 3. **Clear error messages** — Knows what went wrong and how to fix it
@@ -2206,17 +2237,18 @@ cp ~/.config/thegent.backup/cliproxy-config.yaml ~/.config/thegent/
 
 ### 23.2 Design Decisions
 
-| Decision | Rationale | Implementation |
-|----------|-----------|----------------|
+| Decision                     | Rationale                                        | Implementation                   |
+| ---------------------------- | ------------------------------------------------ | -------------------------------- |
 | **Platform detection first** | Need to know platform before any path operations | `detect_platform()` called early |
-| **Fallback chains** | Robustness — always have a working path | Multiple fallback levels |
-| **Explicit overrides** | User control — can override defaults | Environment variables |
-| **Caching everywhere** | Performance — avoid repeated work | Cache platform, paths, hooks |
-| **Platform-specific errors** | UX — actionable remediation | Platform-aware error messages |
+| **Fallback chains**          | Robustness — always have a working path          | Multiple fallback levels         |
+| **Explicit overrides**       | User control — can override defaults             | Environment variables            |
+| **Caching everywhere**       | Performance — avoid repeated work                | Cache platform, paths, hooks     |
+| **Platform-specific errors** | UX — actionable remediation                      | Platform-aware error messages    |
 
 ### 23.3 Intuitive API Design
 
 **Consistent Commands:**
+
 ```bash
 # Same on all platforms
 thegent install --target all
@@ -2226,6 +2258,7 @@ thegent run "task"
 ```
 
 **Platform-Aware Behavior:**
+
 ```bash
 # Automatically uses correct paths
 thegent install --target shell  # zsh on macOS, bash on Linux, pwsh on Windows
@@ -2361,6 +2394,7 @@ def _install_task_scheduler_service() -> bool:
 ### 25.1 Platform-Specific Test Scenarios
 
 **macOS Test Scenarios:**
+
 - [ ] Homebrew installation
 - [ ] pip installation
 - [ ] Nix installation
@@ -2370,6 +2404,7 @@ def _install_task_scheduler_service() -> bool:
 - [ ] SIP restrictions
 
 **Linux Test Scenarios:**
+
 - [ ] apt/yum/dnf installation
 - [ ] pip installation
 - [ ] Nix installation
@@ -2379,6 +2414,7 @@ def _install_task_scheduler_service() -> bool:
 - [ ] Multiple Python versions
 
 **Windows Test Scenarios:**
+
 - [ ] pip installation
 - [ ] winget installation
 - [ ] MSI installer
@@ -2390,14 +2426,14 @@ def _install_task_scheduler_service() -> bool:
 
 ### 25.2 Cross-Platform Test Matrix
 
-| Test | macOS | Linux | Windows | WSL2 |
-|------|-------|-------|---------|------|
-| **Platform detection** | ✅ | ✅ | ✅ | ✅ |
-| **Path resolution** | ✅ | ✅ | ✅ | ✅ |
-| **Package installation** | ✅ | ✅ | ✅ | ✅ |
-| **Service installation** | ✅ | ✅ | ✅ | N/A |
-| **Error handling** | ✅ | ✅ | ✅ | ✅ |
-| **Shell detection** | ✅ | ✅ | ✅ | ✅ |
+| Test                     | macOS | Linux | Windows | WSL2 |
+| ------------------------ | ----- | ----- | ------- | ---- |
+| **Platform detection**   | ✅    | ✅    | ✅      | ✅   |
+| **Path resolution**      | ✅    | ✅    | ✅      | ✅   |
+| **Package installation** | ✅    | ✅    | ✅      | ✅   |
+| **Service installation** | ✅    | ✅    | ✅      | N/A  |
+| **Error handling**       | ✅    | ✅    | ✅      | ✅   |
+| **Shell detection**      | ✅    | ✅    | ✅      | ✅   |
 
 ---
 
@@ -2454,27 +2490,27 @@ def _install_task_scheduler_service() -> bool:
 
 ### 27.1 Installation Success Rate
 
-| Platform | Target | Measurement |
-|----------|--------|-------------|
-| **macOS** | > 95% | Track installation failures |
-| **Linux** | > 95% | Track installation failures |
-| **Windows** | > 90% | Track installation failures |
+| Platform    | Target | Measurement                 |
+| ----------- | ------ | --------------------------- |
+| **macOS**   | > 95%  | Track installation failures |
+| **Linux**   | > 95%  | Track installation failures |
+| **Windows** | > 90%  | Track installation failures |
 
 ### 27.2 User Satisfaction
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **First-run success** | > 90% | Track `thegent doctor` passes |
-| **Error resolution** | > 80% | Track error remediation success |
-| **Documentation helpfulness** | > 85% | User surveys |
+| Metric                        | Target | Measurement                     |
+| ----------------------------- | ------ | ------------------------------- |
+| **First-run success**         | > 90%  | Track `thegent doctor` passes   |
+| **Error resolution**          | > 80%  | Track error remediation success |
+| **Documentation helpfulness** | > 85%  | User surveys                    |
 
 ### 27.3 Performance Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **Startup time** | < 200ms | Measure `thegent --version` |
-| **Path resolution** | < 20ms | Measure path function calls |
-| **Hook resolution** | < 20ms | Measure hook directory access |
+| Metric              | Target  | Measurement                   |
+| ------------------- | ------- | ----------------------------- |
+| **Startup time**    | < 200ms | Measure `thegent --version`   |
+| **Path resolution** | < 20ms  | Measure path function calls   |
+| **Hook resolution** | < 20ms  | Measure hook directory access |
 
 ---
 
@@ -3672,7 +3708,7 @@ def test_install_command():
 
 **Pattern:** Create interactive documentation with examples.
 
-```python
+````python
 """Interactive documentation generator."""
 from pathlib import Path
 import subprocess
@@ -3697,7 +3733,7 @@ def generate_interactive_docs():
 # Verify installation
 thegent --version
 thegent doctor
-```
+````
 
 ## First Steps
 
@@ -3716,8 +3752,9 @@ thegent run "Hello, world!" --agent codex
 
 All examples in this guide are runnable. Copy and paste into your terminal!
 """
-        example_file.write_text(example_content)
-```
+example_file.write_text(example_content)
+
+````
 
 ### 35.2 Platform-Specific Troubleshooting Trees
 
@@ -3742,7 +3779,7 @@ All examples in this guide are runnable. Copy and paste into your terminal!
 1. Check PATH: `$env:PATH -split ';' | Select-String ".local"`
 2. Add to PATH: `[Environment]::SetEnvironmentVariable("Path", "$env:Path;$env:LOCALAPPDATA\thegent\bin", "User")`
 3. Restart PowerShell
-```
+````
 
 ---
 
@@ -3877,7 +3914,7 @@ CMD ["thegent", "serve"]
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 
 services:
   thegent-mcp:
@@ -3919,29 +3956,29 @@ spec:
         app: thegent-mcp
     spec:
       containers:
-      - name: thegent
-        image: thegent:latest
-        ports:
-        - containerPort: 3847
-        env:
-        - name: THGENT_MODE
-          value: "installed"
-        - name: THGENT_CONFIG_DIR
-          value: "/config"
-        - name: THGENT_CACHE_DIR
-          value: "/cache"
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        - name: cache
-          mountPath: /cache
+        - name: thegent
+          image: thegent:latest
+          ports:
+            - containerPort: 3847
+          env:
+            - name: THGENT_MODE
+              value: "installed"
+            - name: THGENT_CONFIG_DIR
+              value: "/config"
+            - name: THGENT_CACHE_DIR
+              value: "/cache"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: cache
+              mountPath: /cache
       volumes:
-      - name: config
-        persistentVolumeClaim:
-          claimName: thegent-config
-      - name: cache
-        persistentVolumeClaim:
-          claimName: thegent-cache
+        - name: config
+          persistentVolumeClaim:
+            claimName: thegent-config
+        - name: cache
+          persistentVolumeClaim:
+            claimName: thegent-cache
 ---
 apiVersion: v1
 kind: Service
@@ -3951,8 +3988,8 @@ spec:
   selector:
     app: thegent-mcp
   ports:
-  - port: 3847
-    targetPort: 3847
+    - port: 3847
+      targetPort: 3847
   type: LoadBalancer
 ```
 
@@ -4514,6 +4551,7 @@ def _sign_linux(package_path: Path) -> bool:
 This comprehensive cross-platform audit and plan provides a complete roadmap for production-ready packaging across Windows, macOS, and Linux. The 12-phase implementation plan covers all aspects from platform detection to final release, with platform-specific considerations throughout.
 
 **Key Priorities:**
+
 1. **Platform Detection & Paths** (Phase 1-2) — Foundation for everything
 2. **Packaging** (Phase 4-5) — Enable distribution on all platforms
 3. **Error Handling** (Phase 6) — Critical for user experience
@@ -6668,7 +6706,7 @@ cleanup.register_cleanup(cleanup.cleanup_old_sessions)
 
 **Pattern:** Integrate video tutorials into documentation.
 
-```markdown
+````markdown
 # Installation Guide
 
 ## Video Tutorial
@@ -6683,6 +6721,7 @@ cleanup.register_cleanup(cleanup.cleanup_old_sessions)
    ```bash
    brew install thegent
    ```
+````
 
 2. Run post-installation setup:
    ```bash
@@ -6690,7 +6729,8 @@ cleanup.register_cleanup(cleanup.cleanup_old_sessions)
    ```
 
 [Continue with text instructions...]
-```
+
+````
 
 ### 70.2 Interactive Code Playground
 
@@ -6749,7 +6789,7 @@ print(f"Platform: {detect_platform().value}")
     </html>
     """
     return HTMLResponse(content=html)
-```
+````
 
 ---
 
@@ -6758,6 +6798,7 @@ print(f"Platform: {detect_platform().value}")
 This comprehensive cross-platform audit and plan provides a complete roadmap for production-ready packaging across Windows, macOS, and Linux. The 12-phase implementation plan covers all aspects from platform detection to final release, with platform-specific considerations throughout.
 
 **Key Priorities:**
+
 1. **Platform Detection & Paths** (Phase 1-2) — Foundation for everything
 2. **Packaging** (Phase 4-5) — Enable distribution on all platforms
 3. **Error Handling** (Phase 6) — Critical for user experience
@@ -8430,6 +8471,7 @@ This comprehensive cross-platform audit and plan provides a complete roadmap for
 ### Document Structure
 
 **Foundation (Sections 1-27):**
+
 - Cross-platform architecture and platform detection
 - Packaging strategies (PyPI, Nix, Homebrew, Windows Installer, Linux packages)
 - Platform-specific paths and conventions
@@ -8437,6 +8479,7 @@ This comprehensive cross-platform audit and plan provides a complete roadmap for
 - Error handling, performance, UX, documentation, testing, CI/CD, security, monitoring, migration
 
 **Advanced Patterns (Sections 28-70):**
+
 - Advanced implementation patterns (DI, Strategy, Factory, Observer)
 - Advanced error handling & recovery (Retry, Circuit Breaker, Graceful Degradation)
 - Advanced caching strategies (Multi-Level, Invalidation)
@@ -8482,6 +8525,7 @@ This comprehensive cross-platform audit and plan provides a complete roadmap for
 - Advanced documentation features (Video Tutorial Integration, Interactive Code Playground)
 
 **System Integration & Harmonization (Sections 71-80):**
+
 - Advanced system integration patterns (manage devkit, WORK_STREAM, PLAN system)
 - Advanced cross-system harmonization (unified config, harmonized paths)
 - Advanced holistic design patterns (consistency, harmonious APIs)
@@ -8517,6 +8561,7 @@ A production-ready, shipping-quality cross-platform package that can be installe
 ### Implementation Approach
 
 **12-Phase Implementation Plan:**
+
 1. Platform Detection & Architecture
 2. Path Resolution & Conventions
 3. Directory Dependencies Removal
@@ -8537,6 +8582,7 @@ A production-ready, shipping-quality cross-platform package that can be installe
 ### Integration Points
 
 This plan integrates harmoniously with:
+
 - **manage devkit** — Shared paths, tool registration, unified configuration
 - **WORK_STREAM.md** — Work item claiming, completion tracking, next item selection
 - **PLAN.md / PLAN_STATUS.md** — Task status updates, phase tracking, dependency resolution
@@ -8545,6 +8591,7 @@ This plan integrates harmoniously with:
 ### Next Steps
 
 After completing this comprehensive audit and plan, the next phase will focus on:
+
 1. **Holistic + Harmonious Design** — Ensuring all components work together seamlessly
 2. **Full Integration** — Complete integration with existing systems and plans
 3. **Implementation** — Begin phased implementation starting with Phase 1 (Platform Detection)
@@ -8699,7 +8746,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Build wheel
         run: |
@@ -9345,7 +9392,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build-wheels:
@@ -9354,12 +9401,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ['3.12']
+        python-version: ["3.12"]
 
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Needed for version detection
+          fetch-depth: 0 # Needed for version detection
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -9434,6 +9481,7 @@ jobs:
 **Extended Research Document:** See [CLIENT_SIDE_PACKAGE_DESIGN_RESEARCH.md](CLIENT_SIDE_PACKAGE_DESIGN_RESEARCH.md) for comprehensive advanced patterns covering **26 major sections** with extensive depth and breadth:
 
 **Core Packaging (Sections 1-6):**
+
 - Modern Python packaging with PEP 517/518 standards
 - Package data access with importlib.resources
 - Dynamic versioning from git tags
@@ -9442,53 +9490,63 @@ jobs:
 - Security fundamentals (code signing, dependency auditing)
 
 **Advanced Packaging Patterns (Section 13):**
+
 - **Namespace Packages (PEP 420)** — Modular distribution strategy for splitting `thegent` into `thegent-core`, `thegent-plugins`, `thegent-integrations`
 - **Editable Installs (PEP 660)** — Wheel-based editable installs for development workflow
 - **Advanced Build Tools** — PyOxidizer (Rust-based bundler) and Nuitka (Python compiler) for single-file executables
 
 **SBOM & Supply Chain Security (Section 14):**
+
 - **SBOM Standards** — CycloneDX, SPDX (ISO/IEC 5962:2021), Package URL (PURL) for universal package identification
 - **SBOM Generation** — Syft, pip-audit integration for automated SBOM creation
 - **Supply Chain Security** — SLSA (Supply-chain Levels), cosign signing, OSV-Scanner vulnerability detection
 - **Best Practices** — Sign all release artifacts, generate SBOMs for every release, scan dependencies regularly
 
 **Reproducible Builds (Section 15):**
+
 - **Deterministic Builds** — Same source → same binary (bit-for-bit)
 - **Python-Specific** — `SOURCE_DATE_EPOCH`, fixed build environment, deterministic file ordering
 - **Verification** — diffoscope, reprotest for build reproducibility validation
 
 **Advanced CI/CD Patterns (Section 16):**
+
 - **Matrix Builds** — Comprehensive platform coverage with cibuildwheel
 - **Parallel Execution** — Build for all platforms simultaneously
 - **Caching Strategies** — pip cache, build dependencies cache
 - **Release Automation** — Complete workflow: build → test → sign → publish → update package managers
 
 **Performance Optimization (Section 17):**
+
 - **Wheel Optimization** — Lazy loading, binary size reduction, compression
 - **Installation Performance** — Parallel installation, pre-compiled wheels, uv alternative
 - **Best Practices** — Provide wheels for all platforms, minimize package size, optimize import paths
 
 **Advanced Testing Strategies (Section 18):**
+
 - **Package Installation Testing** — Test in clean environments, verify resource access
 - **Cross-Platform Testing** — Platform-specific tests, wheel compatibility validation
 - **Comprehensive Coverage** — Matrix testing across platforms and Python versions
 
 **Advanced Security Frameworks (Section 19):**
+
 - **TUF (The Update Framework)** — Secure content delivery and updates, protection against supply chain attacks
 - **in-toto Attestations** — Verifiable claims about software production process
 - **DSSE (Dead Simple Signing Envelope)** — Simple, foolproof standard for signing arbitrary data
 
 **Additional Distribution Platforms (Section 20):**
+
 - **Snap Packages** — Linux app distribution via Snap Store with snapcraft.yaml
 - **Flatpak** — Cross-distribution Linux application packaging with org.thegent.json
 - **AppImage** — Portable Linux application format
 
 **Advanced Package Management Tools (Section 21):**
+
 - **uv** — Ultra-fast Python package manager (10-100x faster than pip), single tool replacing pip, pip-tools, pipx, poetry, pyenv, twine, virtualenv
 - **pipx** — Isolated application installation and execution
 - **pipenv** — Dependency management with Pipfile and Pipfile.lock
 
 **Developer Experience & Code Quality (Section 22):**
+
 - **Pre-commit Hooks** — Automated code quality checks before commit
 - **Ruff** — Ultra-fast linter and formatter (replaces flake8, black, isort)
 - **Black** — Uncompromising Python code formatter
@@ -9496,62 +9554,74 @@ jobs:
 - **Hypothesis** — Property-based testing framework
 
 **Advanced Performance Optimization (Section 23):**
+
 - **Startup Time** — Lazy imports, deferred CLI loading, module caching
-- **Memory Optimization** — __slots__, generators, streaming patterns
+- **Memory Optimization** — **slots**, generators, streaming patterns
 - **Binary Size** — Exclude unnecessary files, strip debug symbols, compression
 
 **Advanced CI/CD Patterns Extended (Section 24):**
+
 - **GitOps** — Automated package manager updates
 - **Progressive Delivery** — Canary releases, feature flags
 - **Advanced Caching** — Dependency caching, Docker layer caching
 
 **Monitoring & Observability (Section 25):**
+
 - **Telemetry** — Structured logging, error reporting, analytics
 - **Health Checks** — System diagnostics, actionable error messages
 - **Metrics** — Installation tracking, usage analytics, performance monitoring
 
 **Compliance & Legal Considerations (Section 26):**
+
 - **License Compliance** — License detection, attribution, compatibility checking
 - **Export Control** — Compliance with international export regulations
 
 **Additional Package Management Tools (Section 27):**
+
 - **Poetry** — Dependency management with pyproject.toml and poetry.lock
 - **PDM** — PEP 621 compliant package manager with fast resolver
 - **Hatch** — Modern project manager with environment management
 - **Conda** — Cross-platform binary package manager
 
 **Windows Package Managers (Section 28):**
+
 - **Chocolatey** — Windows package manager (like apt-get/yum for Windows)
 - **Scoop** — Portable app installer for Windows
 
 **Advanced Testing Strategies Extended (Section 29):**
+
 - **Fuzzing** — OSS-Fuzz integration for continuous security testing
 - **Mutation Testing** — MutPy for evaluating test quality
 - **Chaos Engineering** — Chaos Toolkit for resilience testing
 
 **Advanced Distribution Strategies (Section 30):**
+
 - **Multi-Channel Distribution** — Simultaneous distribution across platforms
 - **Staged Rollouts** — Gradual release to minimize risk
 - **A/B Testing** — Test new versions with subset of users
 
 **Advanced Error Handling & Recovery (Section 31):**
+
 - **Structured Error Handling** — Consistent error classes with codes
 - **Error Recovery** — Automatic recovery from transient failures
 - **User-Friendly Messages** — Actionable error messages with suggestions
 
 **Advanced Configuration Management (Section 32):**
+
 - **Hierarchical Configuration** — Multiple sources with precedence
 - **Configuration Validation** — Schema-based validation with Pydantic
 
 ### 84.2 Implementation Priorities
 
 **Phase 1: Foundation (Sections 1-6)**
+
 - ✅ Platform detection and path resolution (already implemented)
 - ✅ Dynamic versioning (integrate hatch-vcs)
 - ✅ Package data access (importlib.resources with fallback)
 - ✅ Native package managers (Homebrew, Nix, Windows Installer, Linux packages)
 
 **Phase 2: Security & Compliance (Sections 14, 19, 26)**
+
 - 🔄 SBOM generation (CycloneDX, SPDX)
 - 🔄 Code signing (cosign integration)
 - 🔄 Vulnerability scanning (pip-audit, osv-scanner in CI/CD)
@@ -9562,6 +9632,7 @@ jobs:
 - 📋 License compliance and export control
 
 **Phase 3: Advanced Patterns (Sections 13, 15-18, 20-21)**
+
 - 📋 Namespace packages (if modular distribution needed)
 - 📋 Reproducible builds (SOURCE_DATE_EPOCH, deterministic builds)
 - 📋 Advanced CI/CD (matrix builds, parallel execution, caching)
@@ -9571,6 +9642,7 @@ jobs:
 - 📋 Advanced package management tools (uv, pipx, pipenv integration)
 
 **Phase 4: Developer Experience (Section 22)**
+
 - 📋 Pre-commit hooks for code quality
 - 📋 Ruff integration (linting and formatting)
 - 📋 Mypy type checking
@@ -9578,34 +9650,40 @@ jobs:
 - 📋 Comprehensive type hints
 
 **Phase 5: Performance & Monitoring (Sections 23, 25)**
+
 - 📋 Startup time optimization (lazy imports, deferred loading)
-- 📋 Memory optimization (__slots__, generators)
+- 📋 Memory optimization (**slots**, generators)
 - 📋 Binary size reduction
 - 📋 Telemetry and observability
 - 📋 Health checks and diagnostics
 
 **Phase 6: Advanced CI/CD (Section 24)**
+
 - 📋 GitOps for package distribution
 - 📋 Progressive delivery (canary releases, feature flags)
 - 📋 Advanced caching strategies
 
 **Phase 7: Additional Package Managers (Sections 27-28)**
+
 - 📋 Support Poetry, PDM, Hatch for Python projects
 - 📋 Conda package support
 - 📋 Chocolatey package for Windows
 - 📋 Scoop manifest for Windows
 
 **Phase 8: Advanced Testing (Section 29)**
+
 - 📋 OSS-Fuzz integration for fuzzing
 - 📋 Mutation testing with MutPy
 - 📋 Chaos engineering experiments
 
 **Phase 9: Advanced Distribution (Section 30)**
+
 - 📋 Multi-channel distribution automation
 - 📋 Staged rollout mechanisms
 - 📋 A/B testing infrastructure
 
 **Phase 10: Error Handling & Configuration (Sections 31-32)**
+
 - 📋 Structured error handling system
 - 📋 Error recovery mechanisms
 - 📋 User-friendly error messages
@@ -9663,7 +9741,6 @@ jobs:
 - [CROSS_PLATFORM_RESEARCH_COMPLETE.md](CROSS_PLATFORM_RESEARCH_COMPLETE.md) — cross-platform research
 - [CLIENT_SIDE_PACKAGE_DESIGN_RESEARCH.md](CLIENT_SIDE_PACKAGE_DESIGN_RESEARCH.md) — comprehensive research on package design
 
-
 ---
 
 ## 8. EXTENSION_SUMMARY
@@ -9672,15 +9749,18 @@ jobs:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added planning patterns
 2. Added implementation roadmap
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - WORK_STREAM.md
 - Implementation guides
 
 ### Practical Additions
+
 - Planning templates
 - Roadmap configurations
 

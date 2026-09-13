@@ -12,7 +12,7 @@ Least-privilege session for platform support engineers.
 
 ### Methods
 
-#### SupportModeSession.__init__
+#### SupportModeSession.**init**
 
 ```python
 __init__(self: Any, engineer_id: str)
@@ -38,7 +38,7 @@ Automatic redaction of PII and secrets for support mode (WP-15005).
 
 ### Methods
 
-#### SupportRedactor.__init__
+#### SupportRedactor.**init**
 
 ```python
 __init__(self: Any)

@@ -15,7 +15,7 @@ Protect each PERT node before it advances:
 
 Respond with:
 PrimaryOutput: agent-handoffs/phases/06-qa/<gate-report>.md
-Scratch: agent-handoffs/_scratch/quality-gatekeeper/<note>.md
+Scratch: agent-handoffs/\_scratch/quality-gatekeeper/<note>.md
 Summary: <gate decision>
 Checks:
 

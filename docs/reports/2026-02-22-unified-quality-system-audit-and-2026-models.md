@@ -4,9 +4,11 @@ Date: 2026-02-22
 Scope: `thegent` + available sibling repos in `/Users/kooshapari/temp-PRODVERCEL/485/kush`
 
 ## Executive Answer
+
 You already have meaningful groundwork for an in-house unified quality platform, but it is not yet a full cross-language, project-system orchestrator with first-class custom rules and centralized scoring.
 
 Current state is best described as:
+
 - `thegent`: strong runtime/orchestration skeleton (`thegent-hooks` Rust runtime + hook dispatcher + Taskfile quality chains).
 - `trace`: advanced consumer of shared quality DAG/task templates.
 - `atoms-mcp-prod`: robust Python quality/testing conventions, but not unified with `thegent-hooks` runtime.
@@ -15,6 +17,7 @@ Current state is best described as:
 ## What Exists Today (Concrete Evidence)
 
 ### A) Thegent has a native quality/security runtime (Rust)
+
 - Wrapper -> native runtime:
   - `hooks/quality-gate.sh` executes `thegent-hooks quality-gate`.
   - `hooks/security-pipeline.sh` executes `thegent-hooks security-pipeline`.
@@ -25,6 +28,7 @@ Current state is best described as:
   - `crates/thegent-hooks/src/main.rs`
 
 ### B) Existing evaluator capabilities are real but still narrow
+
 - Quality evaluator currently parses:
   - Ruff JSON
   - OXlint JSON
@@ -38,16 +42,19 @@ Current state is best described as:
   - File: `crates/thegent-hooks/src/security.rs`
 
 ### C) Hook dispatcher already encodes anti-pattern governance signals
+
 - Dispatcher references anti-pattern categories (`test-skipping`, `lint-skipping`, `quality-shortcut`, etc.)
   - File: `hooks/hook-dispatcher/src/main.rs`
 - Hook execution registry includes quality/security and multiple QA/gate hooks.
 
 ### D) Task-level orchestration is already broad in thegent
+
 - Full quality chain task exists (`quality:`) and includes lint/tests/contracts/traceability.
   - File: `Taskfile.yml`
 - Includes strict lanes such as harness contracts, provider gate, runtime contracts, instruction architecture checks.
 
 ### E) Cross-repo signals
+
 - `trace` imports shared quality task templates and exposes quality DAG/TUI/report workflows.
   - File: `trace/Taskfile.yml`
 - `atoms-mcp-prod` has strong test/marker/lint/type infra (pytest markers, ruff, mypy, xdist), but appears as a separate quality system rather than unified runtime.
@@ -57,6 +64,7 @@ Current state is best described as:
   - `/Users/kooshapari/temp-PRODVERCEL/485/kush/atomsAgent`
 
 ## Gap: Why this is not yet the full “Unified Quality Tool”
+
 1. No single canonical finding schema across all tools/projects (SARIF is not yet the universal internal contract).
 2. No project-system profile engine that cleanly maps language/toolchain/project-type -> required gates.
 3. Custom rule story is fragmented (tool-native configs, scripts, hook logic), not one plugin/rulepack API.
@@ -66,36 +74,44 @@ Current state is best described as:
 ## 2026 Model Systems Research (Primary-source oriented)
 
 ### Sonar model (SonarQube/SonarCloud)
+
 What it gives you out-of-the-box:
+
 - Centralized quality profiles/gates, issue triage, trend dashboards, and PR decoration.
 - Broad language coverage and rule catalogs.
 - Strong governance model for teams/orgs.
 
 What it does not remove:
+
 - You still need custom orchestration when combining non-Sonar scanners and custom in-house analyzers.
 - Toolchain-specific scripts and non-native metrics (e.g., mutation/perf/test-graph metrics) still require integration work.
 
 Useful if you want:
+
 - A ready control-plane and UI fast.
 - Standardized gate governance and auditability.
 
 ### GitHub Code Scanning + SARIF model
+
 - SARIF upload/action model is a powerful neutral interchange layer.
 - Good for multi-tool ingestion and centralized PR feedback in GitHub.
 - Strong fit if your repos already operate heavily in GitHub Actions.
 
 ### Semgrep/CodeQL model
+
 - Semgrep: fast custom rule authoring and broad language support.
 - CodeQL: deep semantic/security analysis with high signal for supported languages.
 - Together: practical “fast + deep” security/code-quality stack.
 
 ### Qodana/other platform models
+
 - IDE-friendly and CI integrations; useful for team productivity and policy baseline.
 - Still not a replacement for a custom cross-repo orchestration layer if you need bespoke scoring and rule economics.
 
 ## Recommended Target Architecture (Build your own, integrate best-of-breed)
 
 ### 1) Core Contract: Unified Finding + Metric Schema
+
 - Use SARIF as external interchange.
 - Define internal envelope:
   - `finding` (normalized SARIF-derived fields)
@@ -103,7 +119,9 @@ Useful if you want:
   - `policy_decision` (gate, waiver, owner, expiry)
 
 ### 2) Adapter Layer
+
 Implement adapters for:
+
 - Ruff/OXlint/Pylint/ESLint
 - Semgrep/CodeQL/Bandit
 - SCA scanners (OSV/pip-audit/etc.)
@@ -112,6 +130,7 @@ Implement adapters for:
 Each adapter outputs unified schema + provenance.
 
 ### 3) Rulepack + Custom Checker SDK
+
 - `rulepacks/<org>/<domain>/<version>/...`
 - checker SDK contract:
   - input manifest (files, language, diff range, project profile)
@@ -119,6 +138,7 @@ Each adapter outputs unified schema + provenance.
 - Allow custom checkers in Python/Rust/Go with one wire format.
 
 ### 4) Project-System Profiles
+
 - Profile examples:
   - `python-service-strict`
   - `go-cli-fast`
@@ -126,6 +146,7 @@ Each adapter outputs unified schema + provenance.
 - Profiles define required lanes and thresholds, not raw commands.
 
 ### 5) Decision Engine (Policy)
+
 - Keep/extend existing policy gate capability (OPA-style conditions already present in thegent governance surfaces).
 - Evaluate:
   - block/warn/allow
@@ -133,6 +154,7 @@ Each adapter outputs unified schema + provenance.
   - regression budgets
 
 ### 6) Portfolio Visibility
+
 - Repo-level + org-level scorecards:
   - quality score
   - security score
@@ -140,7 +162,9 @@ Each adapter outputs unified schema + provenance.
   - trend + burn-down + flake budget
 
 ## Generated-Code-Specific Quality Model (Must-have)
+
 Add first-class metrics for generated code:
+
 1. Anti-pattern density (per KLOC)
 2. Mutation score (critical modules)
 3. Property-test coverage (critical logic paths)
@@ -151,6 +175,7 @@ Add first-class metrics for generated code:
 Gate on these, not only lint/test pass.
 
 ## Build-vs-Buy Decision (Pragmatic)
+
 - If you need speed and governance UI now: pilot SonarQube/SonarCloud as control-plane, keep custom adapters for gaps.
 - If you need maximum flexibility/custom scoring across many bespoke tools: keep building in-house orchestrator with SARIF core and policy engine.
 - Likely best path: hybrid.
@@ -160,23 +185,28 @@ Gate on these, not only lint/test pass.
 ## 90-Day Rollout Proposal
 
 ### Phase 1 (Weeks 1-3): Normalize
+
 - Freeze unified schema (SARIF+metrics envelope).
 - Build adapters for currently used core tools in thegent.
 - Emit machine-readable artifacts per run.
 
 ### Phase 2 (Weeks 4-7): Govern
+
 - Add profile system and policy decisions (block/warn/waive).
 - Add waiver lifecycle enforcement (owner + expiry + audit).
 
 ### Phase 3 (Weeks 8-10): Generated-code intelligence
+
 - Add mutation/property/perf adapters.
 - Introduce generated-code risk gates for selected repos.
 
 ### Phase 4 (Weeks 11-13): Portfolio
+
 - Cross-repo dashboard and trend reporting.
 - Promote stable gates to required checks.
 
 ## Immediate Next Actions (High-Leverage)
+
 1. Extract current `thegent-hooks` output into one explicit JSON contract file and version it.
    - Status (2026-02-22): complete for v1 baseline.
    - Added v1 input contracts and executable validation tests:
@@ -207,6 +237,7 @@ Gate on these, not only lint/test pass.
    - Enforced by contract: `contracts/quality-control-plane-v1.json` validated via `schemas/quality-control-plane-v1.schema.json`.
 
 ## Execution Addendum: "Do It + 10 More" (2026-02-22)
+
 - Added control-plane ADR and policy contract validation/report scripts.
 - Added unified quality aggregate lane (`quality:ci:unified`) and explicit contract/report tasks.
 - Added tests for SARIF export, generated-Python checker, mutation/perf pilot, and control-plane scripts.
@@ -229,6 +260,7 @@ Gate on these, not only lint/test pass.
   - `tests/e2e/test_unified_quality_ci_contract.py`
 
 ## Sources (for this research pass)
+
 - SonarQube docs (quality gates): https://docs.sonarsource.com/sonarqube-server/latest/quality-standards-administration/managing-quality-gates/introduction-to-quality-gates/
 - SonarQube docs (quality profiles): https://docs.sonarsource.com/sonarqube-server/latest/quality-standards-administration/managing-quality-profiles/introduction-to-quality-profiles/
 - SonarQube server latest docs index: https://docs.sonarsource.com/sonarqube-server/latest/

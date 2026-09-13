@@ -13,9 +13,11 @@ This is the complete reference guide for the **Pareto Frontier algorithm** and *
 ## Documents in This Analysis
 
 ### 1. **PARETO_EXECUTIVE_SUMMARY.md** ← START HERE
+
 **Purpose:** Quick overview for decision-makers
 **Length:** 2 pages
 **Contents:**
+
 - The problem (Haiku ranking was wrong)
 - The solution (Pareto frontier)
 - Correct ranking (3 frontier models)
@@ -28,9 +30,11 @@ This is the complete reference guide for the **Pareto Frontier algorithm** and *
 ---
 
 ### 2. **MODEL_RANKING_CORRECTED.md** ← FOR MODEL SELECTION
+
 **Purpose:** Visual comparison and corrected rankings
 **Length:** 3 pages
 **Contents:**
+
 - Quick summary table (3 frontier models)
 - Models off frontier (8 suboptimal models)
 - Dominance proof (MiniMax vs Haiku)
@@ -43,9 +47,11 @@ This is the complete reference guide for the **Pareto Frontier algorithm** and *
 ---
 
 ### 3. **PARETO_FRONTIER_ANALYSIS.md** ← COMPREHENSIVE REFERENCE
+
 **Purpose:** Complete technical analysis
 **Length:** 8 pages
 **Contents:**
+
 - Algorithm definition
 - Speed level mapping (5 levels)
 - Pseudocode (detailed)
@@ -61,9 +67,11 @@ This is the complete reference guide for the **Pareto Frontier algorithm** and *
 ---
 
 ### 4. **PARETO_ALGORITHM_PSEUDOCODE.md** ← FOR IMPLEMENTATION
+
 **Purpose:** Ready-to-implement algorithm code
 **Length:** 6 pages
 **Contents:**
+
 - Core algorithm (pseudocode)
 - Dominance check function
 - Pareto ranking function
@@ -79,9 +87,11 @@ This is the complete reference guide for the **Pareto Frontier algorithm** and *
 ---
 
 ### 5. **PARETO_FRONTIER_TABLE.md** ← DATA REFERENCE
+
 **Purpose:** Complete data tables and rankings
 **Length:** 5 pages
 **Contents:**
+
 - Master table (all 13 models)
 - Frontier models (3 detailed)
 - Dominated models (8 with reasons)
@@ -97,9 +107,11 @@ This is the complete reference guide for the **Pareto Frontier algorithm** and *
 ---
 
 ### 6. **PARETO_VISUALIZATION.md** ← DIAGRAMS & CHARTS
+
 **Purpose:** Visual explanation of the algorithm
 **Length:** 5 pages
 **Contents:**
+
 - 2D cost vs quality frontier chart
 - 3D frontier visualization
 - Dominance relationship graph
@@ -119,16 +131,19 @@ This is the complete reference guide for the **Pareto Frontier algorithm** and *
 ## Quick Navigation by Use Case
 
 ### I Need to Understand the Problem
+
 1. Read: **PARETO_EXECUTIVE_SUMMARY.md** (2 min)
 2. Look at: Comparison table in **MODEL_RANKING_CORRECTED.md**
 3. See: Dominance proof chart in **PARETO_VISUALIZATION.md**
 
 ### I Need to Select a Model for a Task
+
 1. Check: Task category assignments in **MODEL_RANKING_CORRECTED.md**
 2. Verify: Cost efficiency in **PARETO_FRONTIER_TABLE.md**
 3. Compare: MiniMax vs alternatives in **PARETO_FRONTIER_TABLE.md**
 
 ### I Need to Implement the Algorithm
+
 1. Read: **PARETO_ALGORITHM_PSEUDOCODE.md** (pseudocode section)
 2. Copy: Python implementation from same document
 3. Integrate: See integration points section
@@ -136,12 +151,15 @@ This is the complete reference guide for the **Pareto Frontier algorithm** and *
 5. Reference: **PARETO_FRONTIER_ANALYSIS.md** for detailed algorithm explanation
 
 ### I Need to Explain This to Others
+
 1. Show: **PARETO_VISUALIZATION.md** (visual explanations)
 2. Share: **PARETO_EXECUTIVE_SUMMARY.md** (brief summary)
 3. Reference: **MODEL_RANKING_CORRECTED.md** (corrected rankings)
 
 ### I Need All the Details
+
 Read in order:
+
 1. **PARETO_EXECUTIVE_SUMMARY.md** (overview)
 2. **PARETO_FRONTIER_ANALYSIS.md** (comprehensive)
 3. **PARETO_ALGORITHM_PSEUDOCODE.md** (implementation)
@@ -152,16 +170,16 @@ Read in order:
 
 ## Key Findings Summary
 
-| Finding | Details |
-|---------|---------|
-| **Problem** | Claude Haiku ranked #1, but MiniMax M2.5 dominates it |
-| **Solution** | Use Pareto frontier for multi-objective optimization |
-| **Frontier Size** | 3 models (GPT-4o mini, MiniMax M2.5, Claude Opus) |
-| **Primary Model** | MiniMax M2.5 (best value: 80.2% quality, $0.79/M, very fast) |
-| **Haiku Status** | DOMINATED (off frontier, should not be recommended) |
-| **Algorithm Time** | O(n²) ≈ <1ms for 11 models |
-| **Implementation** | Ready (Python + TypeScript code provided) |
-| **Status** | Complete, ready for integration |
+| Finding            | Details                                                      |
+| ------------------ | ------------------------------------------------------------ |
+| **Problem**        | Claude Haiku ranked #1, but MiniMax M2.5 dominates it        |
+| **Solution**       | Use Pareto frontier for multi-objective optimization         |
+| **Frontier Size**  | 3 models (GPT-4o mini, MiniMax M2.5, Claude Opus)            |
+| **Primary Model**  | MiniMax M2.5 (best value: 80.2% quality, $0.79/M, very fast) |
+| **Haiku Status**   | DOMINATED (off frontier, should not be recommended)          |
+| **Algorithm Time** | O(n²) ≈ <1ms for 11 models                                   |
+| **Implementation** | Ready (Python + TypeScript code provided)                    |
+| **Status**         | Complete, ready for integration                              |
 
 ---
 
@@ -169,28 +187,28 @@ Read in order:
 
 All task categories now use **MiniMax M2.5** as primary model:
 
-| Category | Budget | Primary | Fallback | Tokens | Quality |
-|----------|--------|---------|----------|--------|---------|
-| **FAST** | $50 | MiniMax M2.5 | GPT-4o mini | 63K | 80.2% |
-| **NORMAL** | $200 | MiniMax M2.5 | GPT-4o mini | 253K | 80.2% |
-| **COMPLEX** | $150 | MiniMax M2.5 | Claude Opus* | 190K | 80.2% |
-| **HIGH_COMPLEX** | $50 | MiniMax M2.5 | None | 63K | 80.2% |
+| Category         | Budget | Primary      | Fallback      | Tokens | Quality |
+| ---------------- | ------ | ------------ | ------------- | ------ | ------- |
+| **FAST**         | $50    | MiniMax M2.5 | GPT-4o mini   | 63K    | 80.2%   |
+| **NORMAL**       | $200   | MiniMax M2.5 | GPT-4o mini   | 253K   | 80.2%   |
+| **COMPLEX**      | $150   | MiniMax M2.5 | Claude Opus\* | 190K   | 80.2%   |
+| **HIGH_COMPLEX** | $50    | MiniMax M2.5 | None          | 63K    | 80.2%   |
 
-*Opus only viable if budget increases to $175+
+\*Opus only viable if budget increases to $175+
 
 ---
 
 ## Implementation Status
 
-| Phase | Status | Details |
-|-------|--------|---------|
-| **Analysis** | ✓ COMPLETE | Algorithm defined, models ranked, frontier computed |
-| **Documentation** | ✓ COMPLETE | 6 markdown documents created (25 pages total) |
-| **Pseudocode** | ✓ COMPLETE | Algorithm and test cases ready |
-| **Code** | ✓ COMPLETE | Python and TypeScript implementations provided |
-| **Integration** | ⏳ PENDING | Ready for `src/thegent/models/optimizer.py` |
-| **Testing** | ⏳ PENDING | Test cases provided, ready to run |
-| **Deployment** | ⏳ PENDING | Ready after integration and testing |
+| Phase             | Status     | Details                                             |
+| ----------------- | ---------- | --------------------------------------------------- |
+| **Analysis**      | ✓ COMPLETE | Algorithm defined, models ranked, frontier computed |
+| **Documentation** | ✓ COMPLETE | 6 markdown documents created (25 pages total)       |
+| **Pseudocode**    | ✓ COMPLETE | Algorithm and test cases ready                      |
+| **Code**          | ✓ COMPLETE | Python and TypeScript implementations provided      |
+| **Integration**   | ⏳ PENDING | Ready for `src/thegent/models/optimizer.py`         |
+| **Testing**       | ⏳ PENDING | Test cases provided, ready to run                   |
+| **Deployment**    | ⏳ PENDING | Ready after integration and testing                 |
 
 ---
 
@@ -238,11 +256,11 @@ frontier = [gpt4o_mini, minimax_m2p5, claude_opus]
 
 ### MiniMax M2.5 dominates Claude Haiku on ALL metrics:
 
-| Metric | MiniMax | Haiku | Winner | Margin |
-|--------|---------|-------|--------|--------|
-| Quality | 80.2% | 73.3% | MiniMax | +6.9pp |
-| Speed | 85 | 70 | MiniMax | +15pts |
-| Cost | $0.79 | $3.50 | MiniMax | 4.4x cheaper |
+| Metric  | MiniMax | Haiku | Winner  | Margin       |
+| ------- | ------- | ----- | ------- | ------------ |
+| Quality | 80.2%   | 73.3% | MiniMax | +6.9pp       |
+| Speed   | 85      | 70    | MiniMax | +15pts       |
+| Cost    | $0.79   | $3.50 | MiniMax | 4.4x cheaper |
 
 **Conclusion:** MiniMax wins all three metrics. There is no trade-off. Haiku should never be recommended.
 
@@ -301,23 +319,25 @@ frontier = [gpt4o_mini, minimax_m2p5, claude_opus]
 
 ## Performance Notes
 
-| Metric | Value |
-|--------|-------|
-| Algorithm complexity | O(n²) time, O(n) space |
-| Computation time (11 models) | <1ms |
-| Computation time (100 models) | <10ms |
-| Memory footprint | ~1KB per model |
-| Scalability | Excellent; can compute on every request |
+| Metric                        | Value                                   |
+| ----------------------------- | --------------------------------------- |
+| Algorithm complexity          | O(n²) time, O(n) space                  |
+| Computation time (11 models)  | <1ms                                    |
+| Computation time (100 models) | <10ms                                   |
+| Memory footprint              | ~1KB per model                          |
+| Scalability                   | Excellent; can compute on every request |
 
 ---
 
 ## References & Citations
 
 ### Multi-Objective Optimization (Pareto)
+
 - Wikipedia: https://en.wikipedia.org/wiki/Pareto_front
 - Multi-objective optimization: https://en.wikipedia.org/wiki/Multi-objective_optimization
 
 ### Applications
+
 - Portfolio optimization (finance)
 - Resource allocation (operations)
 - Trade-off analysis (engineering)
@@ -346,22 +366,23 @@ A: Because MiniMax M2.5 is cheaper ($0.79 vs $3.50) AND has better quality (80.2
 
 ## Document Statistics
 
-| Document | Pages | Size | Key Section |
-|----------|-------|------|------------|
-| PARETO_EXECUTIVE_SUMMARY.md | 2 | 4KB | Quick Overview |
-| MODEL_RANKING_CORRECTED.md | 3 | 5KB | Visual Proof |
-| PARETO_FRONTIER_ANALYSIS.md | 8 | 12KB | Full Technical |
-| PARETO_ALGORITHM_PSEUDOCODE.md | 6 | 10KB | Implementation |
-| PARETO_FRONTIER_TABLE.md | 5 | 8KB | Data & Tables |
-| PARETO_VISUALIZATION.md | 5 | 10KB | Diagrams |
-| PARETO_INDEX.md (this) | 3 | 6KB | Navigation |
-| **TOTAL** | **32** | **55KB** | Complete Reference |
+| Document                       | Pages  | Size     | Key Section        |
+| ------------------------------ | ------ | -------- | ------------------ |
+| PARETO_EXECUTIVE_SUMMARY.md    | 2      | 4KB      | Quick Overview     |
+| MODEL_RANKING_CORRECTED.md     | 3      | 5KB      | Visual Proof       |
+| PARETO_FRONTIER_ANALYSIS.md    | 8      | 12KB     | Full Technical     |
+| PARETO_ALGORITHM_PSEUDOCODE.md | 6      | 10KB     | Implementation     |
+| PARETO_FRONTIER_TABLE.md       | 5      | 8KB      | Data & Tables      |
+| PARETO_VISUALIZATION.md        | 5      | 10KB     | Diagrams           |
+| PARETO_INDEX.md (this)         | 3      | 6KB      | Navigation         |
+| **TOTAL**                      | **32** | **55KB** | Complete Reference |
 
 ---
 
 ## Contact & Questions
 
 For questions about this analysis:
+
 1. Review relevant document from this index
 2. Check FAQ section above
 3. Reference implementation guides in PARETO_ALGORITHM_PSEUDOCODE.md
@@ -371,9 +392,9 @@ For questions about this analysis:
 
 ## Version History
 
-| Date | Version | Status | Notes |
-|------|---------|--------|-------|
-| 2026-02-15 | 1.0 | COMPLETE | Initial analysis and documentation |
+| Date       | Version | Status   | Notes                              |
+| ---------- | ------- | -------- | ---------------------------------- |
+| 2026-02-15 | 1.0     | COMPLETE | Initial analysis and documentation |
 
 ---
 
@@ -393,7 +414,6 @@ Next session: Implement in thegent codebase.
 **Total Analysis Scope:** 32 pages, 55KB, 7 documents
 **Status:** READY FOR REVIEW AND IMPLEMENTATION
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -402,15 +422,18 @@ Next session: Implement in thegent codebase.
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

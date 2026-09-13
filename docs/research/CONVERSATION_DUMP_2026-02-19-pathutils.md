@@ -26,7 +26,7 @@ Created `scripts/path_utils.py` with 11 cross-platform utilities and comprehensi
    - Returns absolute Path if base provided
    - Type-safe: rejects non-path types
 
-2. **safe_join(*parts)**
+2. **safe_join(\*parts)**
    - Safely joins path components
    - Prevents directory traversal attacks
    - Normalizes `..` components
@@ -130,21 +130,25 @@ Modified `CLAUDE.md` to include path_utils reference:
 ## Key Improvements
 
 ### Security
+
 - Directory traversal prevention via `safe_join()` validation
 - User path containment checking via `is_within()`
 - No silent failures; explicit error handling
 
 ### Consistency
+
 - All paths go through `normalize_path()` → always Path objects
 - No more str/Path mixing → type safety
 - Consistent tilde expansion across codebase
 
 ### Cross-Platform
+
 - Windows drive letters, UNC paths handled
 - POSIX and Windows paths work transparently
 - Symlink resolution handled correctly
 
 ### Developer Experience
+
 - Single import: `from scripts.path_utils import ...`
 - Fallback for different import contexts (installed vs. development)
 - Clear, documented API with examples
@@ -171,6 +175,7 @@ path = normalize_path(user_input)
 ```
 
 Can be gradually adopted without breaking changes:
+
 1. New code uses utilities
 2. Existing code continues working
 3. Refactor existing code when touched

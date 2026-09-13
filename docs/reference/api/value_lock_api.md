@@ -23,7 +23,7 @@ Manages immutable ethical constraints for thegent.
 
 ### Methods
 
-#### ValueLock.__init__
+#### ValueLock.**init**
 
 ```python
 __init__(self: Any, lock_path: Path)

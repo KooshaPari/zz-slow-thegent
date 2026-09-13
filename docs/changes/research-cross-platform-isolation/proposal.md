@@ -13,6 +13,7 @@ This proposal outlines the implementation strategy for **cross-platform user iso
 ### 1.1 Problem Statement
 
 Current thegent architecture lacks tenant-aware isolation mechanisms, creating risk when:
+
 - Multiple agents execute concurrently
 - Untrusted agents must be sandboxed
 - Production deployments require strong isolation guarantees
@@ -21,11 +22,13 @@ Current thegent architecture lacks tenant-aware isolation mechanisms, creating r
 ### 1.2 Proposed Solution
 
 **Hybrid User Isolation Model**:
+
 - **Default (Development)**: Sub-user isolation (process-level, no permissions required)
 - **Opt-in (Production)**: OS user isolation (full OS-level separation, requires admin)
 - **Future (Enterprise)**: Container-based isolation (Docker/systemd-nspawn)
 
 **Multi-Tenant Coordination**:
+
 - File-level: Tenant-aware edit leases
 - UI Automation: Desktop automation coordinator with activity detection
 - Process: Tenant-aware concurrency limits
@@ -36,15 +39,15 @@ Current thegent architecture lacks tenant-aware isolation mechanisms, creating r
 
 ### 2.1 What's Included
 
-| Component | Scope | Effort |
-|-----------|-------|--------|
-| **Sub-user Isolation** | Process-level user context, default mode | M (Medium) |
-| **OS User Isolation** | Full OS user switching (sudoers config), optional | M |
-| **Desktop Automation Coordinator** | Multi-tenant UI action scheduling | L (Large) |
-| **Edit Lease Manager** | Tenant-aware file locks | S (Small) |
-| **Concurrency Controller** | Per-tenant execution limits | S |
-| **Cross-Platform Providers** | macOS/Linux/Windows implementations | L |
-| **Security & Compliance** | Audit logging, capability enforcement | M |
+| Component                          | Scope                                             | Effort     |
+| ---------------------------------- | ------------------------------------------------- | ---------- |
+| **Sub-user Isolation**             | Process-level user context, default mode          | M (Medium) |
+| **OS User Isolation**              | Full OS user switching (sudoers config), optional | M          |
+| **Desktop Automation Coordinator** | Multi-tenant UI action scheduling                 | L (Large)  |
+| **Edit Lease Manager**             | Tenant-aware file locks                           | S (Small)  |
+| **Concurrency Controller**         | Per-tenant execution limits                       | S          |
+| **Cross-Platform Providers**       | macOS/Linux/Windows implementations               | L          |
+| **Security & Compliance**          | Audit logging, capability enforcement             | M          |
 
 ### 2.2 What's Excluded (Future/Backlog)
 
@@ -93,11 +96,13 @@ Current thegent architecture lacks tenant-aware isolation mechanisms, creating r
 ### 3.2 Coordination Mechanisms
 
 **File-Level Coordination**:
+
 - Extend `EditLeaseManager` with tenant awareness
 - File locks: `/run/thegent/leases/{tenant_id}/{hash(filepath)}.lock`
 - Conflict resolution: User > Agent (FIFO for agent-agent)
 
 **UI Automation Coordination**:
+
 - Desktop Automation Coordinator monitors:
   - Current active window (user focus)
   - Pending agent actions (queue)
@@ -105,6 +110,7 @@ Current thegent architecture lacks tenant-aware isolation mechanisms, creating r
 - Scheduling: User actions preempt agents; agents batch by tenant
 
 **Process Concurrency**:
+
 - Per-tenant concurrency caps (configurable)
 - Shared pool for user actions (unlimited priority)
 - Escalation queue for backpressure
@@ -113,19 +119,20 @@ Current thegent architecture lacks tenant-aware isolation mechanisms, creating r
 
 ## 4. Key Design Decisions
 
-| Decision | Rationale | Trade-offs |
-|----------|-----------|-----------|
-| **Sub-user default** | Fast, zero-permission, suitable for dev | Less isolation than OS users |
-| **FIFO for agent conflicts** | Deterministic, simple, fair | No priority scheduling |
-| **Native desktop providers** | Platform-optimized, no dependencies | Maintenance burden (3 platforms) |
-| **Activity detection** | Detect user focus; prevent agent UI collisions | Added latency/complexity |
-| **Hybrid model** | Balance dev velocity with prod security | Operational complexity |
+| Decision                     | Rationale                                      | Trade-offs                       |
+| ---------------------------- | ---------------------------------------------- | -------------------------------- |
+| **Sub-user default**         | Fast, zero-permission, suitable for dev        | Less isolation than OS users     |
+| **FIFO for agent conflicts** | Deterministic, simple, fair                    | No priority scheduling           |
+| **Native desktop providers** | Platform-optimized, no dependencies            | Maintenance burden (3 platforms) |
+| **Activity detection**       | Detect user focus; prevent agent UI collisions | Added latency/complexity         |
+| **Hybrid model**             | Balance dev velocity with prod security        | Operational complexity           |
 
 ---
 
 ## 5. Success Criteria
 
 ### Functional Requirements
+
 - [ ] Sub-user isolation configurable via `isolation_mode: "sub-user"`
 - [ ] OS user isolation configurable via `isolation_mode: "os-user"`
 - [ ] Desktop automation coordinator prevents 95%+ of UI conflicts
@@ -133,12 +140,14 @@ Current thegent architecture lacks tenant-aware isolation mechanisms, creating r
 - [ ] Per-tenant concurrency limits enforced
 
 ### Non-Functional Requirements
+
 - [ ] Isolation overhead: <5ms (sub-user), <100ms (OS user)
 - [ ] Edit lease latency: <50ms (p95)
 - [ ] Desktop automation decision latency: <200ms (p95)
 - [ ] Success rate: >95% for isolated actions
 
 ### Compliance & Security
+
 - [ ] Audit log: all tenant isolation events
 - [ ] Capability matrix: document per-tenant capabilities
 - [ ] Penetration test: attempt cross-tenant data access (fail expected)
@@ -148,18 +157,21 @@ Current thegent architecture lacks tenant-aware isolation mechanisms, creating r
 ## 6. Implementation Roadmap
 
 ### Phase 1: Sub-User Isolation (Weeks 1-2)
+
 - Implement `SubUserIsolationProvider`
 - Extend process execution to set uid/gid context
 - Add config: `isolation_mode`, `sub_user_prefix`
 - Tests: 10+ scenarios (file access, env vars, credentials)
 
 ### Phase 2: Edit Lease Manager Enhancement (Week 3)
+
 - Extend `EditLeaseManager` with tenant ID tracking
 - Implement file lock paths: `/run/thegent/leases/{tenant_id}/`
 - Conflict detection & logging
 - Tests: 5+ multi-tenant edit scenarios
 
 ### Phase 3: Desktop Automation Coordinator (Week 4-5)
+
 - Implement `DesktopAutomationCoordinator`
 - Platform providers: macOS (AppleScript), Linux (AT-SPI), Windows (UI Automation)
 - User activity detection (window focus, active app)
@@ -167,12 +179,14 @@ Current thegent architecture lacks tenant-aware isolation mechanisms, creating r
 - Tests: 15+ scenarios (concurrency, preemption, user activity)
 
 ### Phase 4: OS User Isolation (Week 6)
+
 - Implement `OSUserIsolationProvider`
 - Sudoers config generator
 - Test on macOS (doas), Linux (sudo), Windows (RunAs)
 - Tests: 8+ scenarios (permissions, home directory, isolation)
 
 ### Phase 5: Integration & Hardening (Week 7-8)
+
 - Wire isolation mode into agent executor
 - Concurrency controller integration
 - Audit logging, telemetry
@@ -183,19 +197,20 @@ Current thegent architecture lacks tenant-aware isolation mechanisms, creating r
 
 ## 7. Risk & Mitigation
 
-| Risk | Impact | Mitigation |
-|------|--------|-----------|
-| **Cross-tenant data leaks** | Critical | Penetration tests, audit logging, code review |
-| **OS user isolation complexity** | High | Clear documentation, helper scripts, CI tests |
-| **Desktop automation flakiness** | High | Extensive testing, fallback behaviors, activity detection |
-| **Performance regression** | Medium | Benchmarking, overhead budgets per phase |
-| **Platform-specific bugs** | Medium | Three separate provider implementations, test matrix |
+| Risk                             | Impact   | Mitigation                                                |
+| -------------------------------- | -------- | --------------------------------------------------------- |
+| **Cross-tenant data leaks**      | Critical | Penetration tests, audit logging, code review             |
+| **OS user isolation complexity** | High     | Clear documentation, helper scripts, CI tests             |
+| **Desktop automation flakiness** | High     | Extensive testing, fallback behaviors, activity detection |
+| **Performance regression**       | Medium   | Benchmarking, overhead budgets per phase                  |
+| **Platform-specific bugs**       | Medium   | Three separate provider implementations, test matrix      |
 
 ---
 
 ## 8. Acceptance Criteria
 
 **Definition of Done**:
+
 1. All phases 1-5 implemented and tested
 2. All success criteria (functional, non-functional, compliance) met
 3. Documentation complete (design.md, deployment guide, troubleshooting)

@@ -34,6 +34,7 @@ docker compose up
 ```
 
 The compose stack includes:
+
 - `litellm` container (the proxy itself)
 - `postgres` container (required for virtual keys, spend tracking, audit logs)
 - Optional `redis` container (required for distributed load balancing, rate-limit counters, caching)
@@ -53,11 +54,11 @@ dedicated support).
 
 ### 2.4 Infrastructure Dependencies
 
-| Dependency | Required for |
-|------------|-------------|
-| PostgreSQL  | Virtual key management, spend logs, audit logs, user/team/org tables |
-| Redis       | Distributed rate-limiting, cross-instance load-balancing state, caching |
-| Prometheus  | `/metrics` endpoint scraping |
+| Dependency | Required for                                                            |
+| ---------- | ----------------------------------------------------------------------- |
+| PostgreSQL | Virtual key management, spend logs, audit logs, user/team/org tables    |
+| Redis      | Distributed rate-limiting, cross-instance load-balancing state, caching |
+| Prometheus | `/metrics` endpoint scraping                                            |
 
 Redis and PostgreSQL are optional for single-instance testing but required for production.
 
@@ -69,39 +70,39 @@ The primary configuration is a YAML file passed with `--config config.yaml`:
 
 ```yaml
 model_list:
-  - model_name: gpt-4o                         # User-facing name
+  - model_name: gpt-4o # User-facing name
     litellm_params:
-      model: azure/gpt-4o                      # Provider/model-id
+      model: azure/gpt-4o # Provider/model-id
       api_base: https://endpoint.openai.azure.com/
-      api_key: os.environ/AZURE_API_KEY        # Env var reference
-      rpm: 100                                 # Rate limit: req/min
-      tpm: 100000                              # Rate limit: tokens/min
+      api_key: os.environ/AZURE_API_KEY # Env var reference
+      rpm: 100 # Rate limit: req/min
+      tpm: 100000 # Rate limit: tokens/min
       temperature: 0.9
       max_tokens: 4000
       organization: my-org
-      extra_headers: {"X-Custom": "value"}
-      aws_region_name: us-east-1              # Bedrock only
-      api_version: 2024-02-15-preview         # Azure only
+      extra_headers: { "X-Custom": "value" }
+      aws_region_name: us-east-1 # Bedrock only
+      api_version: 2024-02-15-preview # Azure only
     model_info:
       mode: chat
       access_groups: ["team-a", "team-b"]
-      id: "gpt4o-primary-deployment"          # Stable ID for fallback references
+      id: "gpt4o-primary-deployment" # Stable ID for fallback references
 
 router_settings:
   routing_strategy: "usage-based-routing-v2" # see §5
   model_group_alias:
-    gpt-4: gpt-4o                            # Maps incoming "gpt-4" to group "gpt-4o"
+    gpt-4: gpt-4o # Maps incoming "gpt-4" to group "gpt-4o"
   num_retries: 3
   timeout: 30
   redis_host: redis
   redis_port: 6379
   redis_password: os.environ/REDIS_PASSWORD
   redis_ssl: true
-  enable_pre_call_checks: true               # Context window + region checks before calling
+  enable_pre_call_checks: true # Context window + region checks before calling
   enable_tag_filtering: true
 
 litellm_settings:
-  drop_params: true                          # Drop unsupported params per provider
+  drop_params: true # Drop unsupported params per provider
   set_verbose: false
   cache: true
   cache_params:
@@ -116,20 +117,20 @@ litellm_settings:
   num_retries: 2
   request_timeout: 30
   fallbacks:
-    - {"gpt-4o": ["claude-sonnet", "gemini-pro"]}
+    - { "gpt-4o": ["claude-sonnet", "gemini-pro"] }
   context_window_fallbacks:
-    - {"gpt-4o": ["gpt-4o-128k"]}
-  allowed_fails: 3                           # Failures before cooldown
-  cooldown_time: 60                          # Cooldown seconds
+    - { "gpt-4o": ["gpt-4o-128k"] }
+  allowed_fails: 3 # Failures before cooldown
+  cooldown_time: 60 # Cooldown seconds
 
 general_settings:
-  master_key: sk-my-admin-key               # Proxy admin key (must start with sk-)
+  master_key: sk-my-admin-key # Proxy admin key (must start with sk-)
   database_url: postgresql://user:pass@postgres/litellm
   database_connection_pool_limit: 10
   database_connection_timeout: 30
   alerting: ["slack"]
-  alerting_threshold: 0.8                   # Alert at 80% budget usage
-  litellm_key_header_name: "X-My-Key"      # Custom key header name
+  alerting_threshold: 0.8 # Alert at 80% budget usage
+  litellm_key_header_name: "X-My-Key" # Custom key header name
 
 environment_variables:
   REDIS_HOST: redis
@@ -170,6 +171,7 @@ Alternatively set via `LITELLM_PROXY_MASTER_KEY` environment variable.
 The primary auth mechanism for external callers. Format: `sk-{random_url_safe_16_bytes}`.
 
 Generated via:
+
 ```bash
 POST /key/generate
 Authorization: Bearer sk-master-key
@@ -195,6 +197,7 @@ Authorization: Bearer sk-master-key
 Only the hashed key is stored in PostgreSQL. Plaintext is returned once at creation time.
 
 Key management endpoints:
+
 - `POST /key/generate` — create
 - `POST /key/update` — modify limits/metadata
 - `POST /key/delete` — soft-delete
@@ -233,9 +236,9 @@ LiteLLM enforces budgets at 8 levels (checked in this order, blocking at first e
 
 ```yaml
 general_settings:
-  max_budget: 10000           # Global proxy cap (USD)
-  max_internal_user_budget: 50  # Default per internal user
-  max_end_user_budget: 5       # Default per end-user (via `user` param)
+  max_budget: 10000 # Global proxy cap (USD)
+  max_internal_user_budget: 50 # Default per internal user
+  max_end_user_budget: 5 # Default per end-user (via `user` param)
 ```
 
 Budget reset periods: seconds (`Xs`), minutes (`Xm`), hours (`Xh`), days (`Xd`), months (`Xmo`).
@@ -252,14 +255,14 @@ that the router load-balances across.
 
 ### 5.1 Available Strategies
 
-| Strategy | Description | Recommended for |
-|----------|-------------|----------------|
-| `simple-shuffle` | Weighted random selection (default) | General use; lowest overhead |
+| Strategy                 | Description                                                                      | Recommended for                       |
+| ------------------------ | -------------------------------------------------------------------------------- | ------------------------------------- |
+| `simple-shuffle`         | Weighted random selection (default)                                              | General use; lowest overhead          |
 | `usage-based-routing-v2` | Routes to deployment with lowest TPM usage for the current minute (Redis-backed) | High-throughput, rate-limit avoidance |
-| `latency-based-routing` | Selects deployment with lowest recent TTFT/latency; configurable TTL window | Latency-sensitive workloads |
-| `least-busy` | Fewest in-flight concurrent requests | Parallel-heavy workloads |
-| `cost-based-routing` | Selects cheapest deployment via LiteLLM cost map | Budget optimization |
-| Custom | Implement `CustomRoutingStrategyBase` | Application-specific logic |
+| `latency-based-routing`  | Selects deployment with lowest recent TTFT/latency; configurable TTL window      | Latency-sensitive workloads           |
+| `least-busy`             | Fewest in-flight concurrent requests                                             | Parallel-heavy workloads              |
+| `cost-based-routing`     | Selects cheapest deployment via LiteLLM cost map                                 | Budget optimization                   |
+| Custom                   | Implement `CustomRoutingStrategyBase`                                            | Application-specific logic            |
 
 ### 5.2 Weight-Based Distribution
 
@@ -269,14 +272,14 @@ model_list:
     litellm_params:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_KEY
-    weight: 9              # 90% of traffic
+    weight: 9 # 90% of traffic
 
   - model_name: gpt-4o
     litellm_params:
       model: azure/gpt-4o
       api_base: https://endpoint.openai.azure.com/
       api_key: os.environ/AZURE_KEY
-    weight: 1              # 10% of traffic
+    weight: 1 # 10% of traffic
 ```
 
 ### 5.3 RPM/TPM-Based Filtering
@@ -301,13 +304,13 @@ model_list:
     litellm_params:
       model: openai/gpt-4o
     model_info:
-      order: 1           # Primary (lower = higher priority)
+      order: 1 # Primary (lower = higher priority)
 
   - model_name: gpt-4o
     litellm_params:
       model: azure/gpt-4o
     model_info:
-      order: 2           # Secondary fallback
+      order: 2 # Secondary fallback
 ```
 
 ### 5.5 Max Parallel Requests Per Deployment
@@ -323,6 +326,7 @@ for evaluation without affecting production responses.
 ### 5.7 Pre-Call Checks
 
 With `enable_pre_call_checks: true` in `router_settings`:
+
 - **Context window check**: Request is rejected before sending if it would exceed the model's
   context window, routing to `context_window_fallbacks` instead.
 - **Regional compliance check**: Routes only to deployments matching the request's region
@@ -335,28 +339,32 @@ With `enable_pre_call_checks: true` in `router_settings`:
 ### 6.1 Fallback Types
 
 **Regular fallbacks** — triggered on any error (rate limit, timeout, model error):
+
 ```yaml
 litellm_settings:
   fallbacks:
-    - {"gpt-4o": ["claude-sonnet", "gemini-pro"]}
-    - {"claude-sonnet": ["gpt-4o-mini"]}
+    - { "gpt-4o": ["claude-sonnet", "gemini-pro"] }
+    - { "claude-sonnet": ["gpt-4o-mini"] }
 ```
 
 **Context window fallbacks** — triggered when the prompt exceeds the model's context limit:
+
 ```yaml
 litellm_settings:
   context_window_fallbacks:
-    - {"gpt-4o": ["gpt-4o-128k"]}
+    - { "gpt-4o": ["gpt-4o-128k"] }
 ```
 
 **Content policy fallbacks** — triggered on content policy violation errors:
+
 ```yaml
 litellm_settings:
   content_policy_fallbacks:
-    - {"gpt-4o": ["claude-sonnet"]}
+    - { "gpt-4o": ["claude-sonnet"] }
 ```
 
 **Default fallbacks** — catch-all if no specific fallback is configured:
+
 ```yaml
 litellm_settings:
   default_fallbacks: ["gpt-4o-mini"]
@@ -371,9 +379,9 @@ model group names.
 
 ```yaml
 litellm_settings:
-  num_retries: 3           # Retry each model before fallback
-  retry_after: 5           # Delay between retries (seconds)
-  request_timeout: 30      # Timeout per request
+  num_retries: 3 # Retry each model before fallback
+  retry_after: 5 # Delay between retries (seconds)
+  request_timeout: 30 # Timeout per request
 ```
 
 `RateLimitError` retries use exponential backoff. Generic errors retry immediately.
@@ -383,8 +391,8 @@ If all retries on the primary model fail, fallback is attempted.
 
 ```yaml
 litellm_settings:
-  allowed_fails: 3        # Failures allowed in cooldown_time window
-  cooldown_time: 60       # Seconds to exclude deployment after threshold exceeded
+  allowed_fails: 3 # Failures allowed in cooldown_time window
+  cooldown_time: 60 # Seconds to exclude deployment after threshold exceeded
 ```
 
 When a deployment exceeds `allowed_fails`, it is removed from the routing pool for
@@ -397,19 +405,20 @@ implementation. Prometheus metric `litellm_deployment_cooled_down` tracks cooled
 
 ### 7.1 Supported Cache Backends (7 types)
 
-| Backend | Notes |
-|---------|-------|
-| `local` (in-memory) | In-process Python dict; single-instance only |
-| `disk` | File-based; no external dep; persistence without Redis |
-| `redis` | Distributed; required for multi-instance shared state |
-| `redis-semantic` | Redis + vector search (RediSearch module); requires Redis >= 4.2 + RediSearch |
-| `qdrant-semantic` | Qdrant vector DB; for semantic similarity caching |
-| `s3` | AWS S3; long-term archival with lifecycle policies |
-| `gcs` | Google Cloud Storage |
+| Backend             | Notes                                                                         |
+| ------------------- | ----------------------------------------------------------------------------- |
+| `local` (in-memory) | In-process Python dict; single-instance only                                  |
+| `disk`              | File-based; no external dep; persistence without Redis                        |
+| `redis`             | Distributed; required for multi-instance shared state                         |
+| `redis-semantic`    | Redis + vector search (RediSearch module); requires Redis >= 4.2 + RediSearch |
+| `qdrant-semantic`   | Qdrant vector DB; for semantic similarity caching                             |
+| `s3`                | AWS S3; long-term archival with lifecycle policies                            |
+| `gcs`               | Google Cloud Storage                                                          |
 
 ### 7.2 DualCache Architecture
 
 LiteLLM uses a two-tier DualCache internally:
+
 - **L1 (in-memory)**: Sub-millisecond local lookups
 - **L2 (Redis)**: Shared state across all proxy instances
 
@@ -423,16 +432,16 @@ litellm_settings:
   cache: true
   cache_params:
     type: redis-semantic
-    ttl: 600                        # Default TTL (seconds)
-    default_in_memory_ttl: 60       # L1 (in-memory) TTL
-    default_in_redis_ttl: 3600      # L2 (Redis) TTL
-    namespace: "litellm.prod"       # Key prefix for isolation
-    supported_call_types:           # Restrict to specific API types
+    ttl: 600 # Default TTL (seconds)
+    default_in_memory_ttl: 60 # L1 (in-memory) TTL
+    default_in_redis_ttl: 3600 # L2 (Redis) TTL
+    namespace: "litellm.prod" # Key prefix for isolation
+    supported_call_types: # Restrict to specific API types
       - completion
       - acompletion
       - embedding
-    mode: default_off               # Opt-in mode: clients must pass cache.use-cache=true
-    similarity_threshold: 0.85      # Semantic cache threshold (0-1)
+    mode: default_off # Opt-in mode: clients must pass cache.use-cache=true
+    similarity_threshold: 0.85 # Semantic cache threshold (0-1)
     embedding_model: "text-embedding-3-small"
 ```
 
@@ -445,14 +454,16 @@ Cache keys are hashed from request parameters. Provider-specific parameters (e.g
 ### 7.5 Response Headers
 
 Cache-hit detection via response headers:
+
 - `x-litellm-cache-key`: The matched cache hash
 - `x-litellm-semantic-similarity`: Similarity score (0-1) for semantic matches
 
 ### 7.6 Per-Request Cache Control
 
 Client can explicitly force caching:
+
 ```json
-{"cache": {"use-cache": true}}
+{ "cache": { "use-cache": true } }
 ```
 
 Or opt out when `mode: default_off` is set. Setting `supported_call_types: []` disables response
@@ -493,11 +504,13 @@ Provider **margins** (markup) and **discounts** are also configurable.
 ### 8.3 Tag-Based Cost Tracking
 
 Attach tags at multiple levels:
+
 - **Request-level**: `"metadata": {"tags": ["cost-center-eng", "project-alpha"]}`
 - **Key-level**: Stored in key metadata, applied to all requests from that key
 - **Team-level**: Auto-applied to all team members' requests
 
 Tag budgets (Enterprise):
+
 ```yaml
 litellm_settings:
   tag_budgets:
@@ -540,7 +553,7 @@ per end-user via `max_end_user_budget` without creating explicit keys:
 
 ```yaml
 general_settings:
-  max_end_user_budget: 5.0  # USD per end-user per budget_duration
+  max_end_user_budget: 5.0 # USD per end-user per budget_duration
 ```
 
 ---
@@ -568,12 +581,12 @@ litellm_settings:
         mode: pre_call
         presidio_analyzer_api_base: http://presidio-analyzer:3000
         presidio_anonymizer_api_base: http://presidio-anonymizer:3001
-        presidio_filter_scope: both   # "input", "output", or "both"
+        presidio_filter_scope: both # "input", "output", or "both"
         output_parse_pii: true
         pii_entities_config:
           PHONE_NUMBER: MASK
           EMAIL_ADDRESS: MASK
-          SSN: BLOCK            # Block request if SSN detected
+          SSN: BLOCK # Block request if SSN detected
           CREDIT_CARD: BLOCK
 ```
 
@@ -625,7 +638,7 @@ team-based routing.
 ```yaml
 router_settings:
   enable_tag_filtering: true
-  tag_filtering_match_any: true   # Match if request has ANY configured tag
+  tag_filtering_match_any: true # Match if request has ANY configured tag
 
 model_list:
   - model_name: gpt-4o
@@ -648,7 +661,7 @@ model_list:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_KEY_DEFAULT
     model_info:
-      tags: ["default"]           # Fallback for untagged requests
+      tags: ["default"] # Fallback for untagged requests
 ```
 
 ### 10.2 Request Tagging
@@ -656,11 +669,13 @@ model_list:
 Two methods to tag a request:
 
 **JSON body:**
+
 ```json
 {"model": "gpt-4o", "messages": [...], "tags": ["paid"]}
 ```
 
 **Request header:**
+
 ```
 x-litellm-tags: paid,eu
 ```
@@ -711,11 +726,13 @@ Authorization: Bearer sk-master-key
 ### 11.3 Role-Based Access Control
 
 Platform-wide roles:
+
 - `proxy_admin` — full access, bypasses rate limits
 - `proxy_admin_viewer` — read-only
 - `internal_user` — default user role
 
 Scoped roles (Enterprise):
+
 - `org_admin` — manages their organization's teams
 - `team_admin` — manages their team only
 
@@ -740,7 +757,7 @@ enabled per model group:
 
 ```yaml
 general_settings:
-  forward_client_headers_to_llm_api: true   # Global (risky)
+  forward_client_headers_to_llm_api: true # Global (risky)
   # Or per model group:
 model_group_settings:
   - model_name: gpt-4o
@@ -769,7 +786,7 @@ litellm_settings:
       target: https://api.example.com/v1/endpoint
       headers:
         Authorization: "Bearer os.environ/CUSTOM_KEY"
-      include_subpath: true   # Forward /custom-api/* not just /custom-api
+      include_subpath: true # Forward /custom-api/* not just /custom-api
       auth_type: api_key
 ```
 
@@ -779,8 +796,9 @@ Services, etc.
 ### 12.4 Request Metadata
 
 Clients can attach metadata to requests:
+
 ```json
-{"metadata": {"generation_name": "my-task", "user_id": "alice"}}
+{ "metadata": { "generation_name": "my-task", "user_id": "alice" } }
 ```
 
 This metadata flows into spend logs and observability callbacks.
@@ -795,6 +813,7 @@ LiteLLM proxy passes streaming chunks through largely unchanged. For providers t
 support streaming, LiteLLM handles the buffering and SSE formatting.
 
 The proxy exposes `POST /v1/chat/completions` with `stream: true`. Chunks are in OpenAI SSE format:
+
 ```
 data: {"id":"...","object":"chat.completion.chunk","created":...,"model":"...","choices":[{"index":0,"delta":{"content":"..."},"finish_reason":null}]}
 ```
@@ -830,15 +849,16 @@ Maps incoming model names to deployment pools:
 ```yaml
 router_settings:
   model_group_alias:
-    gpt-4: gpt-4o              # Requests for "gpt-4" go to the "gpt-4o" group
+    gpt-4: gpt-4o # Requests for "gpt-4" go to the "gpt-4o" group
     claude: claude-sonnet
 ```
 
 ### 14.2 Per-Key Aliases
 
 Virtual keys can carry their own model alias table, stored in key metadata:
+
 ```json
-{"aliases": {"gpt-4": "gpt-4o-mini"}}
+{ "aliases": { "gpt-4": "gpt-4o-mini" } }
 ```
 
 A key holder who requests `gpt-4` is silently served `gpt-4o-mini`, allowing cost control without
@@ -864,7 +884,7 @@ Route all models from a provider without listing each individually:
 model_list:
   - model_name: openai/*
     litellm_params:
-      model: openai/*          # Wildcard: any model name under openai/
+      model: openai/* # Wildcard: any model name under openai/
       api_key: os.environ/OPENAI_API_KEY
 
   - model_name: xai/*
@@ -873,7 +893,7 @@ model_list:
       api_key: os.environ/XAI_API_KEY
 
 litellm_settings:
-  check_provider_endpoint: true  # Validate model exists at provider before forwarding
+  check_provider_endpoint: true # Validate model exists at provider before forwarding
 ```
 
 With wildcard routing, a client requesting any `openai/gpt-5-whatever` will be proxied to
@@ -892,15 +912,15 @@ metadata.
 
 ### 16.2 Observability Platforms (Pre-Built Callbacks)
 
-| Platform | Config |
-|----------|--------|
-| Langfuse | `success_callback: ["langfuse"]` |
-| MLflow | `success_callback: ["mlflow"]` |
-| Helicone | `success_callback: ["helicone"]` |
-| Lunary | `success_callback: ["lunary"]` |
-| Promptlayer | `success_callback: ["promptlayer"]` |
-| Traceloop/OpenTelemetry | `success_callback: ["traceloop"]` |
-| Datadog | Via Prometheus + Datadog Agent (`/metrics` endpoint) |
+| Platform                | Config                                               |
+| ----------------------- | ---------------------------------------------------- |
+| Langfuse                | `success_callback: ["langfuse"]`                     |
+| MLflow                  | `success_callback: ["mlflow"]`                       |
+| Helicone                | `success_callback: ["helicone"]`                     |
+| Lunary                  | `success_callback: ["lunary"]`                       |
+| Promptlayer             | `success_callback: ["promptlayer"]`                  |
+| Traceloop/OpenTelemetry | `success_callback: ["traceloop"]`                    |
+| Datadog                 | Via Prometheus + Datadog Agent (`/metrics` endpoint) |
 
 ### 16.3 Alerting Webhooks
 
@@ -914,6 +934,7 @@ environment_variables:
 ```
 
 Supports 24+ alert types, including:
+
 - `llm_exceptions`, `llm_too_slow`, `llm_requests_hanging` (on by default)
 - `budget_alerts`, `spend_reports`, `daily_reports`
 - `region_outage_alerts` (Enterprise — triggers when ≥5 requests to a region fail in 1 minute)
@@ -923,6 +944,7 @@ Alert routing: specific alert types can be sent to dedicated Slack channels. Dis
 appended to webhook URL) and Microsoft Teams are also supported.
 
 Budget alert webhook payload (beta):
+
 ```json
 {
   "spend": 95.0,
@@ -945,6 +967,7 @@ and register with `litellm.callbacks = [MyCustomLogger()]`.
 ### 17.1 Prometheus
 
 Enable via:
+
 ```yaml
 litellm_settings:
   callbacks: ["prometheus"]
@@ -956,6 +979,7 @@ Metrics endpoint: `GET /metrics` (unauthenticated by default; opt-in auth via
 Key metric families:
 
 **Spend & Budget:**
+
 - `litellm_spend_metric` — total spend, labeled by `end_user`, `hashed_api_key`, `api_key_alias`, `model`, `team`
 - `litellm_total_tokens_metric`, `litellm_input_tokens_metric`, `litellm_output_tokens_metric`
 - `litellm_team_max_budget_metric`, `litellm_remaining_team_budget_metric`, `litellm_team_budget_remaining_hours_metric`
@@ -964,11 +988,13 @@ Key metric families:
 - `litellm_provider_remaining_budget_metric`
 
 **Request Tracking:**
+
 - `litellm_proxy_total_requests_metric` — all client requests
 - `litellm_proxy_failed_requests_metric` — failed responses with exception details
 - `litellm_callback_logging_failures_metric` — downstream callback failures
 
 **Deployment Health:**
+
 - `litellm_deployment_success_responses`, `litellm_deployment_failure_responses`
 - `litellm_remaining_requests_metric`, `litellm_remaining_tokens_metric`
 - `litellm_deployment_state` — 0=healthy, 1=partial, 2=outage
@@ -976,12 +1002,14 @@ Key metric families:
 - `litellm_deployment_successful_fallbacks`, `litellm_deployment_failed_fallbacks`
 
 **Latency:**
+
 - `litellm_request_total_latency_metric` — end-to-end (histogram)
 - `litellm_overhead_latency_metric` — LiteLLM processing overhead
 - `litellm_llm_api_latency_metric` — upstream API response time
 - `litellm_llm_api_time_to_first_token_metric` — TTFT for streaming
 
 **Infrastructure:**
+
 - `litellm_redis_latency` — Redis call latency histogram
 - `litellm_in_memory_daily_spend_update_queue_size`
 - `litellm_pod_lock_manager_size`
@@ -991,6 +1019,7 @@ Standard labels on most metrics: `hashed_api_key`, `api_key_alias`, `model`, `re
 `api_provider`, `model_id`.
 
 **Advanced options:**
+
 - `prometheus_initialize_budget_metrics: true` — emit metrics for inactive keys/teams every 5 min
 - `enable_end_user_cost_tracking_prometheus_only: true` — track per end-user cost in Prometheus
 - `custom_prometheus_metadata_labels` — custom label dimensions
@@ -1000,6 +1029,7 @@ Standard labels on most metrics: `hashed_api_key`, `api_key_alias`, `model`, `re
 ### 17.2 Datadog
 
 No native Datadog integration; Datadog Agent uses the OpenMetrics check to scrape `/metrics`:
+
 ```yaml
 init_config: {}
 instances:
@@ -1020,6 +1050,7 @@ completion. Supports per-team Langfuse project routing (Enterprise).
 ### 18.1 Core (Open Source)
 
 The proxy ships with a built-in web UI at `http://localhost:4000/ui`:
+
 - Dashboard: usage, token burn, latency over time
 - Key management: create, view, revoke virtual keys
 - Spend tracking: view spend per key/model/team
@@ -1039,30 +1070,30 @@ The proxy ships with a built-in web UI at `http://localhost:4000/ui`:
 
 ## 19. Unique Features vs. OpenRouter
 
-| Feature | LiteLLM Proxy | OpenRouter |
-|---------|---------------|------------|
-| **Deployment model** | Self-hosted, full infra control | SaaS, no infrastructure |
-| **Data residency** | All data stays on-prem | Data passes through OpenRouter |
-| **Config-as-code** | YAML `config.yaml`, GitOps-friendly | Web UI / API only |
-| **Virtual key system** | Full key lifecycle (create, rotate, block, budget) | Single-tier API keys |
-| **Budget hierarchy** | 8 levels: key, user, team, org, model, global, provider, tag | Per-key credits only |
-| **Tag-based routing** | Route by request/key/team tags to deployment pools | Not supported |
-| **Provider budget routing** | Cap spend per provider, auto-skip when exhausted | Not supported |
-| **Semantic caching** | Redis-semantic, Qdrant-semantic with threshold config | Prompt caching (exact match) |
-| **PII/PHI masking** | Presidio integration (pre-call scrubbing) | Not supported |
-| **Prompt injection detection** | In-memory detection + Pillar/Lasso integrations | Not supported |
-| **MCP Gateway** | Full MCP server registry, OAuth, per-key permissions | Not supported |
-| **Prometheus metrics** | ~25 metric families with full label dimensions | Not supported |
-| **Circuit breaker** | `allowed_fails` + `cooldown_time` per deployment | Implicit (via routing) |
-| **Traffic mirroring** | Shadow deployments for A/B testing | Not supported |
-| **Wildcard routing** | `provider/*` — route any model without listing it | Not applicable (all models listed) |
-| **Pre-call validation** | Context window check, region check before API call | Implicit |
-| **Custom routing strategy** | `CustomRoutingStrategyBase` — implement any logic | Not supported |
-| **Audit logs** | Enterprise: who did what, when | Not supported |
-| **SSO for admin UI** | Enterprise SAML/OIDC | Not supported |
-| **Per-team Langfuse projects** | Each team's traces go to their own project | Not supported |
-| **Model discovery endpoint** | `/v1/models` queries provider for wildcard models | `/api/v1/models` static list |
-| **GDPR-compliant logging** | Per-team logging opt-out | Not supported |
+| Feature                        | LiteLLM Proxy                                                | OpenRouter                         |
+| ------------------------------ | ------------------------------------------------------------ | ---------------------------------- |
+| **Deployment model**           | Self-hosted, full infra control                              | SaaS, no infrastructure            |
+| **Data residency**             | All data stays on-prem                                       | Data passes through OpenRouter     |
+| **Config-as-code**             | YAML `config.yaml`, GitOps-friendly                          | Web UI / API only                  |
+| **Virtual key system**         | Full key lifecycle (create, rotate, block, budget)           | Single-tier API keys               |
+| **Budget hierarchy**           | 8 levels: key, user, team, org, model, global, provider, tag | Per-key credits only               |
+| **Tag-based routing**          | Route by request/key/team tags to deployment pools           | Not supported                      |
+| **Provider budget routing**    | Cap spend per provider, auto-skip when exhausted             | Not supported                      |
+| **Semantic caching**           | Redis-semantic, Qdrant-semantic with threshold config        | Prompt caching (exact match)       |
+| **PII/PHI masking**            | Presidio integration (pre-call scrubbing)                    | Not supported                      |
+| **Prompt injection detection** | In-memory detection + Pillar/Lasso integrations              | Not supported                      |
+| **MCP Gateway**                | Full MCP server registry, OAuth, per-key permissions         | Not supported                      |
+| **Prometheus metrics**         | ~25 metric families with full label dimensions               | Not supported                      |
+| **Circuit breaker**            | `allowed_fails` + `cooldown_time` per deployment             | Implicit (via routing)             |
+| **Traffic mirroring**          | Shadow deployments for A/B testing                           | Not supported                      |
+| **Wildcard routing**           | `provider/*` — route any model without listing it            | Not applicable (all models listed) |
+| **Pre-call validation**        | Context window check, region check before API call           | Implicit                           |
+| **Custom routing strategy**    | `CustomRoutingStrategyBase` — implement any logic            | Not supported                      |
+| **Audit logs**                 | Enterprise: who did what, when                               | Not supported                      |
+| **SSO for admin UI**           | Enterprise SAML/OIDC                                         | Not supported                      |
+| **Per-team Langfuse projects** | Each team's traces go to their own project                   | Not supported                      |
+| **Model discovery endpoint**   | `/v1/models` queries provider for wildcard models            | `/api/v1/models` static list       |
+| **GDPR-compliant logging**     | Per-team logging opt-out                                     | Not supported                      |
 
 ---
 
@@ -1071,6 +1102,7 @@ The proxy ships with a built-in web UI at `http://localhost:4000/ui`:
 ### 20.1 Custom Request Headers
 
 Headers the proxy reads from client requests:
+
 - `Authorization: Bearer <virtual-key>` — standard auth (or custom header per config)
 - `x-litellm-tags: tag1,tag2` — route request to tagged deployments
 - `x-litellm-end-user-id: user123` — attribute cost to end-user
@@ -1079,6 +1111,7 @@ Headers the proxy reads from client requests:
 ### 20.2 Custom Response Headers
 
 Headers the proxy adds to responses:
+
 - `x-litellm-model-id` — stable deployment UUID of the model that handled the request
 - `x-litellm-cache-key` — cache hash (on cache hit)
 - `x-litellm-semantic-similarity` — similarity score for semantic cache hits
@@ -1089,6 +1122,7 @@ Headers the proxy adds to responses:
 ### 20.3 Request Body Extensions
 
 Non-standard fields accepted by LiteLLM proxy in the request body:
+
 - `metadata` — arbitrary key-value pairs forwarded to callbacks and spend logs
 - `cache` — `{"use-cache": true/false}` to control per-request caching
 - `ttl` — custom cache TTL for this request
@@ -1097,6 +1131,7 @@ Non-standard fields accepted by LiteLLM proxy in the request body:
 ### 20.4 Management API
 
 The proxy exposes extensive management endpoints beyond the OpenAI-compatible ones:
+
 - `/key/*` — key CRUD, rotation, blocking
 - `/team/*` — team CRUD, budget management
 - `/user/*` — user management

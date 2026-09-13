@@ -6,9 +6,11 @@ labels: bug
 ---
 
 ## Describe the bug
+
 <!-- Clear, concise description -->
 
 ## Reproduction steps
+
 1.
 2.
 3.
@@ -18,6 +20,7 @@ labels: bug
 ## Actual behavior
 
 ## Environment
+
 - OS:
 - Rust version:
 - Crate version:

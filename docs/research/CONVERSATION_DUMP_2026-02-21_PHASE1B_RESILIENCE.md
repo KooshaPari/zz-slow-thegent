@@ -1,10 +1,11 @@
-<DONE>
----
+## <DONE>
+
 title: Phase 1B Zero-Bloat Refactor - Unified Resilience Implementation
 date: 2026-02-21
 status: COMPLETED
 author: Claude Code Agent
 tags: [resilience, tenacity, retry, zero-bloat, governance]
+
 ---
 
 ## Issues Addressed
@@ -17,6 +18,7 @@ tags: [resilience, tenacity, retry, zero-bloat, governance]
 ## Fixes Applied
 
 ### 1. Created Unified Resilience Module
+
 **File**: `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/resilience.py`
 
 A new top-level module providing four standardized decorators using tenacity:
@@ -44,15 +46,18 @@ A new top-level module providing four standardized decorators using tenacity:
   - Default: 3 attempts
 
 **Governance Compliance**:
+
 - Zero fallback code patterns
 - No silent error handling (reraise=True)
 - All errors logged explicitly before raising
 - Library-first: tenacity only, no custom loops
 
 ### 2. Created Comprehensive Test Suite
+
 **File**: `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_resilience.py`
 
 27 tests covering:
+
 - **TestTransientRetry**: 7 tests (success, retry then success, max attempts, logging, async)
 - **TestCasRetry**: 5 tests (success, collision, max failures, logging)
 - **TestUserInputRetry**: 7 tests (valid input, invalid with retry, async, max invalid, short waits, logging, error filtering)
@@ -62,14 +67,17 @@ A new top-level module providing four standardized decorators using tenacity:
 **Test Results**: ✅ 27 passed in 23.14s (100% pass rate)
 
 **Coverage Targets Met**:
+
 - Unit: 100% (all decorator paths tested)
 - Assertions: Never silently swallows errors, always reraises or retries
 - Governance: All tests marked @trace FR-RESILIENCE-001
 
 ### 3. Deprecated Old Resilience Module
+
 **File**: `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/agents/resilience.py`
 
 Added deprecation note explaining:
+
 - agents/resilience.py: Agent-specific failure classification and provider fallback
 - thegent/resilience.py: Generic retry logic (use this instead of manual loops)
 - Clear differentiation: one is domain-specific, one is reusable
@@ -107,6 +115,7 @@ Worst offenders (manual retry patterns requiring migration):
 ### Existing Tenacity Usage
 
 Already in codebase:
+
 - **src/thegent/infra/fast_http_client.py**: Uses tenacity with custom retry decorator `_get_retry_decorator()`
   - Retry on exceptions: 3 attempts, exponential backoff 1-10s
   - **Migration Opportunity**: Replace with @http_retry() from new module
@@ -118,27 +127,33 @@ Already in codebase:
 ## Plans
 
 ### Phase 1B.1 (COMPLETED)
+
 ✅ Created unified resilience.py module
 ✅ Wrote 27-test TDD suite (100% pass)
 ✅ Deprecated old module appropriately
 ✅ All governance rules followed
 
 ### Phase 1B.2 (Next: Git CAS Retry Migration)
+
 Priority 1: Migrate `src/thegent/mesh/git.py` (Line 130) to @cas_retry()
+
 - Replace manual `for i in range(max_retries)` loop
 - Use @cas_retry(max_attempts=5, base_delay=0.1)
 - Verify CAS collision detection still works
 - Update tests
 
 Priority 2: Migrate HTTP client retry logic
+
 - Replace `_get_retry_decorator()` in fast_http_client.py with @http_retry()
 - Consolidate retry strategies
 
 Priority 3: Audit remaining `while True` loops
+
 - Determine which are retry-based vs. polling/event loops
 - Create migration plan for actual retry patterns
 
 ### Phase 1B.3 (Later: Cleanup and Metrics)
+
 - Remove manual retry loop instances
 - Generate before/after metrics (lines of code, retry consistency)
 - Update LIBRARY_FIRST_AUDIT_AND_PLAN.md with completion status
@@ -200,13 +215,16 @@ grep -n "except.*pass" src/thegent/resilience.py  # Should be empty
 Created a unified, governance-compliant retry system using tenacity. All four decorator types tested comprehensively (27 tests, 100% pass rate). No fallback code, no silent error handling. Ready for Phase 1B.2 migration of existing manual retry loops (git CAS, HTTP client, etc.).
 
 **Files created**:
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/resilience.py` (227 lines)
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/tests/unit/test_resilience.py` (503 lines)
 
 **Files modified**:
+
 - `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/agents/resilience.py` (added deprecation note)
 
 **Metrics**:
+
 - 4 unified retry decorators
 - 27 tests, 100% pass rate
 - 0 fallback patterns

@@ -8,6 +8,7 @@ Implements Pareto frontier routing based on Terminal Bench 2.0 benchmarks.
 Routes tasks to optimal models based on complexity, cost constraints, and quality requirements.
 
 Key components:
+
 - TaskRouter: Main routing engine with constraint validation
 - TaskClassifier: Categorizes tasks (FAST/NORMAL/COMPLEX/HIGH_COMPLEX)
 - ConstraintValidator: Validates hard constraints (quality, cost, speed)

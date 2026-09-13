@@ -8,11 +8,13 @@
 ## Monitoring Setup
 
 ### Command Used
+
 ```bash
 thegent plan loop --max 1000 --sleep 10 --wait
 ```
 
 **Behavior**:
+
 - Blocks when no work is available
 - Processes work when it appears
 - Sleeps 10 seconds between checks
@@ -24,10 +26,12 @@ thegent plan loop --max 1000 --sleep 10 --wait
 ## Current Status
 
 ### Active Agents (15 Claimed)
+
 - 10 original infrastructure/primitive items
 - 5 new items added (library replacements, cross-platform work)
 
 ### Progress Detected
+
 - ✅ `pybreaker` dependency added
 - ✅ `cli_sync.py` created (sync-unified-command)
 - ⏳ Circuit breaker migration pending

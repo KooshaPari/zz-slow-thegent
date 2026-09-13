@@ -30,11 +30,11 @@ docs/
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `pnpm docs:dev` | Start dev server with hot reload |
-| `pnpm docs:build` | Build for production |
-| `pnpm docs:preview` | Preview built site locally |
+| Command             | Description                      |
+| ------------------- | -------------------------------- |
+| `pnpm docs:dev`     | Start dev server with hot reload |
+| `pnpm docs:build`   | Build for production             |
+| `pnpm docs:preview` | Preview built site locally       |
 
 ## Configuration
 
@@ -48,6 +48,7 @@ The main configuration file is `docs/.vitepress/config.ts`. Key options:
 ## Multi-Version Builds
 
 For projects with multiple versions, see `scripts/build-docs.sh` for the multi-version build process. This script:
+
 - Builds each version into separate directories
 - Generates version navigation
 - Creates version landing page
@@ -98,14 +99,12 @@ pnpm docs:preview
 # Deploy docs-dist/ to your hosting platform
 ```
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -115,15 +114,18 @@ pnpm docs:preview
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

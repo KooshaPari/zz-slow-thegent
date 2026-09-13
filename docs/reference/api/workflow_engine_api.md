@@ -12,7 +12,7 @@ Engine for managing agent workflows.
 
 ### Methods
 
-#### WorkflowEngine.__init__
+#### WorkflowEngine.**init**
 
 ```python
 __init__(self: Any)

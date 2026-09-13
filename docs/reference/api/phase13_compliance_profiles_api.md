@@ -12,7 +12,7 @@ Research framework for compliance profiles.
 
 ### Methods
 
-#### Phase13ComplianceProfilesResearch.__init__
+#### Phase13ComplianceProfilesResearch.**init**
 
 ```python
 __init__(self: Any)

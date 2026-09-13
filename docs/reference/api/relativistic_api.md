@@ -15,7 +15,7 @@ Manages time dilation compensation for interstellar agent coordination.
 
 ### Methods
 
-#### RelativisticClockSync.__init__
+#### RelativisticClockSync.**init**
 
 ```python
 __init__(self: Any, base_node: RelativisticNode)

@@ -13,6 +13,7 @@ This document provides a complete analysis of why certain models (GLM-5, Claude 
 **Key Finding**: A model is on the Pareto frontier if no other model is **strictly better** on multiple dimensions (quality, cost, speed). A model is **dominated** if another model beats it on at least two dimensions.
 
 **Final 3-Model Frontier** (for all categories):
+
 1. **GPT-4o mini**: 70% quality, $0.375/M (ULTIMATE FALLBACK)
 2. **MiniMax M2.5**: 80.2% quality, $0.79/M (BEST VALUE, dominates most)
 3. **Claude Opus 4.6**: 80.8% quality, $17.50/M (PREMIUM QUALITY, reserved)
@@ -21,28 +22,29 @@ This document provides a complete analysis of why certain models (GLM-5, Claude 
 
 ## Complete Model Comparison Table
 
-| Model | Quality (SWE-Bench %) | Speed | Cost/M | Reasoning (AIME %) | On Frontier? | Status | Primary Reason |
-|-------|--------|-------|--------|--------|---|---|---|
-| **GPT-4o mini** | 70.0% | fast | $0.375 | N/A | YES | Tier 1 Fallback | Cheapest; meets minimum quality floor |
-| **MiniMax M2.5** | 80.2% | moderate | $0.79 | 60% | YES | Tier 2 Primary | Best value; dominates 9 other models |
-| **Claude Opus 4.6** | 80.8% | slow | $17.50 | 85% | YES | Tier 3 Premium | Highest quality; mission-critical only |
-| **Claude Haiku 4.5** | 62.5% | moderate | $0.80 | 40% | NO | Dominated | MiniMax: 80.2% > 62.5%, $0.79 ≈ $0.80 |
-| **Claude Sonnet 4.5** | 77.2% | moderate | $10.50 | 68% | NO | Dominated | MiniMax: 80.2% > 77.2%, $0.79 < $10.50 (13.3x cheaper) |
-| **Gemini 3 Flash** | 78.0% | ultra-fast (218 tok/s) | $1.50 | 50% | NO | Dominated* | MiniMax: 80.2% > 78%, $0.79 < $1.50; BUT fallback for <300ms SLA |
-| **Gemini 2.5 Pro** | 75.0% | moderate | $4.07 | 55% | NO | Dominated | MiniMax: 80.2% > 75%, $0.79 < $4.07 (5.2x cheaper) |
-| **GLM-5** | 92.7% (AIME) | slow | $2.60 | 92.7% | NO | Dominated | MiniMax: $0.79 better value (3.3x cheaper) for comparable output; Opus better for quality-critical |
-| **GPT-5.3-Codex** | 56.8% | fast | $1.25 | N/A | NO | Rejected | Quality floor: 56.8% < 70%; GPT-4o mini: $0.375 cheaper, 70% > 56.8% |
-| **GPT-5.3-Codex-Spark** | ~50-55% | ultra-fast | $1.00 | N/A | NO | Rejected | Poor quality; speed doesn't compensate for sub-60% accuracy |
-| **Gemini 2.0 Flash** | ~72% | very fast | $0.30 | N/A | NO | Dominated | MiniMax: 80.2% > 72%; similar cost tier but lower quality |
-| **Claude 3 Haiku** | 60% | moderate | $0.80 | 35% | NO | Blacklisted | Anthropic model < 4.5 version |
-| **GPT-4** | ~78% | moderate | $30.00+ | 65% | NO | Blacklisted | Expired model; cost prohibitive |
-| **Codex 4.0** | ~65% | fast | $2.50 | N/A | NO | Blacklisted | Expired codex version; not 5.3 |
+| Model                   | Quality (SWE-Bench %) | Speed                  | Cost/M  | Reasoning (AIME %) | On Frontier? | Status          | Primary Reason                                                                                     |
+| ----------------------- | --------------------- | ---------------------- | ------- | ------------------ | ------------ | --------------- | -------------------------------------------------------------------------------------------------- |
+| **GPT-4o mini**         | 70.0%                 | fast                   | $0.375  | N/A                | YES          | Tier 1 Fallback | Cheapest; meets minimum quality floor                                                              |
+| **MiniMax M2.5**        | 80.2%                 | moderate               | $0.79   | 60%                | YES          | Tier 2 Primary  | Best value; dominates 9 other models                                                               |
+| **Claude Opus 4.6**     | 80.8%                 | slow                   | $17.50  | 85%                | YES          | Tier 3 Premium  | Highest quality; mission-critical only                                                             |
+| **Claude Haiku 4.5**    | 62.5%                 | moderate               | $0.80   | 40%                | NO           | Dominated       | MiniMax: 80.2% > 62.5%, $0.79 ≈ $0.80                                                              |
+| **Claude Sonnet 4.5**   | 77.2%                 | moderate               | $10.50  | 68%                | NO           | Dominated       | MiniMax: 80.2% > 77.2%, $0.79 < $10.50 (13.3x cheaper)                                             |
+| **Gemini 3 Flash**      | 78.0%                 | ultra-fast (218 tok/s) | $1.50   | 50%                | NO           | Dominated\*     | MiniMax: 80.2% > 78%, $0.79 < $1.50; BUT fallback for <300ms SLA                                   |
+| **Gemini 2.5 Pro**      | 75.0%                 | moderate               | $4.07   | 55%                | NO           | Dominated       | MiniMax: 80.2% > 75%, $0.79 < $4.07 (5.2x cheaper)                                                 |
+| **GLM-5**               | 92.7% (AIME)          | slow                   | $2.60   | 92.7%              | NO           | Dominated       | MiniMax: $0.79 better value (3.3x cheaper) for comparable output; Opus better for quality-critical |
+| **GPT-5.3-Codex**       | 56.8%                 | fast                   | $1.25   | N/A                | NO           | Rejected        | Quality floor: 56.8% < 70%; GPT-4o mini: $0.375 cheaper, 70% > 56.8%                               |
+| **GPT-5.3-Codex-Spark** | ~50-55%               | ultra-fast             | $1.00   | N/A                | NO           | Rejected        | Poor quality; speed doesn't compensate for sub-60% accuracy                                        |
+| **Gemini 2.0 Flash**    | ~72%                  | very fast              | $0.30   | N/A                | NO           | Dominated       | MiniMax: 80.2% > 72%; similar cost tier but lower quality                                          |
+| **Claude 3 Haiku**      | 60%                   | moderate               | $0.80   | 35%                | NO           | Blacklisted     | Anthropic model < 4.5 version                                                                      |
+| **GPT-4**               | ~78%                  | moderate               | $30.00+ | 65%                | NO           | Blacklisted     | Expired model; cost prohibitive                                                                    |
+| **Codex 4.0**           | ~65%                  | fast                   | $2.50   | N/A                | NO           | Blacklisted     | Expired codex version; not 5.3                                                                     |
 
 **Legend:**
+
 - Frontier (YES): No other model strictly dominates on multiple dimensions
 - Dominated: Another model is better on ≥2 of {quality, cost, speed}
 - Rejected: Falls below quality floor (60%) or is blacklisted
-- * Fallback: Off frontier but acceptable for specific SLA constraints
+- - Fallback: Off frontier but acceptable for specific SLA constraints
 
 ---
 
@@ -111,11 +113,13 @@ GPT-4o mini (70%, $0.375/M)
 ### 1. GLM-5 (92.7% AIME) — Why Not Selected?
 
 **Strengths:**
+
 - **Best reasoning performance**: 92.7% AIME (vs MiniMax 60%, Opus 85%)
 - **High general knowledge**: 86% GPQA
 - Specialized for math/reasoning-heavy tasks
 
 **Weaknesses:**
+
 - **Slow latency**: "slow" speed tier (100-200 tok/s estimated)
 - **Expensive**: $2.60/M (3.3x cost of MiniMax M2.5)
 - **Limited coding capability**: Optimized for reasoning, not SWE-Bench tasks (estimated 65-70%)
@@ -149,6 +153,7 @@ Conclusion: GLM-5 dominated by Opus on quality, MiniMax on cost-value
 ```
 
 **Why not selected for COMPLEX category?**
+
 - MiniMax provides 80% of GLM-5's reasoning at 1/3 cost
 - Diminishing returns: 92.7% → 80% is 12.7% drop for 69% cost savings
 - For reasoning-specific tasks: Claude Opus (85% AIME, higher reliability) > GLM-5 (92.7% AIME, less reliable coding)
@@ -160,12 +165,14 @@ Conclusion: GLM-5 dominated by Opus on quality, MiniMax on cost-value
 ### 2. Claude Opus 4.6 (80.8% SWE-Bench) — Why Reserved for Premium Only?
 
 **Strengths:**
+
 - **Highest overall quality**: 80.8% SWE-Bench (engineering benchmarks)
 - **Best reasoning**: 85% AIME
 - **Most reliable**: Low hallucination rate, detailed explanations
 - **Slowness is acceptable** for mission-critical tasks
 
 **Weaknesses:**
+
 - **Extremely expensive**: $17.50/M (22.2x MiniMax, 46.7x GPT-4o mini)
 - **Slow inference**: Not suitable for latency-critical tasks
 - **Overkill for most tasks**: Only 0.6% quality edge over MiniMax ($17.21/M additional cost)
@@ -202,11 +209,11 @@ Assignment: RESERVE for HIGH_COMPLEX only (criticality_level == "mission_critica
 
 **Cost-Quality Trade-off Analysis:**
 
-| Model | Quality | Cost | Cost per 1% Quality |
-|-------|---------|------|---|
-| GPT-4o mini | 70% | $0.375 | $0.00536/% |
-| MiniMax M2.5 | 80.2% | $0.79 | $0.00985/% |
-| Claude Opus 4.6 | 80.8% | $17.50 | $0.21655/% |
+| Model           | Quality | Cost   | Cost per 1% Quality |
+| --------------- | ------- | ------ | ------------------- |
+| GPT-4o mini     | 70%     | $0.375 | $0.00536/%          |
+| MiniMax M2.5    | 80.2%   | $0.79  | $0.00985/%          |
+| Claude Opus 4.6 | 80.8%   | $17.50 | $0.21655/%          |
 
 **Finding**: Opus costs **22x more per quality percentage** than MiniMax for only 0.6% improvement.
 
@@ -219,11 +226,13 @@ Assignment: RESERVE for HIGH_COMPLEX only (criticality_level == "mission_critica
 ### 3. Claude Sonnet 4.5 (77.2% SWE-Bench) — Why Dominated?
 
 **Strengths:**
+
 - Balanced: 77.2% quality, reasonable cost
 - Moderate latency (good for general tasks)
 - Reliable
 
 **Weaknesses:**
+
 - **Lower quality than MiniMax**: 77.2% vs 80.2% (-3%)
 - **More expensive than MiniMax**: $10.50/M vs $0.79/M (13.3x)
 - **Double dominated**: Loses on both quality AND cost
@@ -253,9 +262,10 @@ Ratio: MiniMax is 13.8x more efficient
 **Why off frontier?** When one model is strictly better on TWO dimensions, the other is eliminated. Sonnet loses on both quality and cost simultaneously—no reason to pick it.
 
 **Fallback consideration?** Sonnet could serve as fallback IF:
+
 - MiniMax unavailable (provider outage)
 - Need reasoning boost (68% AIME vs MiniMax 60%)
-But standard routing: never primary choice.
+  But standard routing: never primary choice.
 
 **Final Verdict**: **DOMINATED** by MiniMax M2.5. Excluded from all categories.
 
@@ -264,11 +274,13 @@ But standard routing: never primary choice.
 ### 4. Gemini 3 Flash (78% SWE-Bench, 218 tok/s) — Why Off Frontier Despite Speed?
 
 **Strengths:**
+
 - **Fastest inference**: 218 tok/s (2.8x faster than MiniMax ~75 tok/s)
 - Good quality: 78% SWE-Bench
 - Cheap: $1.50/M
 
 **Weaknesses:**
+
 - **Slower than Spark/Codex**: Not the fastest per-token (Spark ~300+ tok/s)
 - **Lower quality than MiniMax**: 78% vs 80.2%
 - **Slightly more expensive**: $1.50 vs $0.79/M (1.9x)
@@ -309,6 +321,7 @@ ELSE:
 ```
 
 **Example latency calculations:**
+
 - 1K tokens at 218 tok/s: 1000/218 = 4.6 seconds (Gemini)
 - 1K tokens at 75 tok/s: 1000/75 = 13.3 seconds (MiniMax)
 - **Latency-sensitive work** (interactive agents, streaming): Gemini faster by 2.8x
@@ -320,11 +333,13 @@ ELSE:
 ### 5. GPT-5.3-Codex & GPT-5.3-Codex-Spark (56.8% / ~50% Quality) — Why Rejected?
 
 **Strengths:**
+
 - **Very cheap**: $1.25/M (Codex), ~$1.00/M (Spark)
 - Fast: 150-200 tok/s (Codex), 250+ tok/s (Spark)
 - Codex specialized for code generation
 
 **Weaknesses:**
+
 - **POOR quality**: 56.8% SWE-Bench (Codex), ~50% (Spark)
 - **Below minimum floor**: 56.8% < 70% quality threshold
 - **Dominated by GPT-4o mini**: 70% quality, $0.375 (cheaper AND higher quality)
@@ -363,6 +378,7 @@ Ratio: GPT-4o mini is 4.1x more efficient
 ```
 
 **Why Spark is even worse:**
+
 - Same poor quality (~50%) as Codex
 - Speed advantage doesn't help (general models are fast enough)
 - Cost savings are minimal ($1.00 vs $1.25) compared to massive quality gap
@@ -374,11 +390,13 @@ Ratio: GPT-4o mini is 4.1x more efficient
 ### 6. Gemini 2.5 Pro (75% SWE-Bench, $4.07/M) — Why Dominated?
 
 **Strengths:**
+
 - Multi-modal: Strong image understanding
 - Balanced: 75% quality, moderate speed
 - Competitive on reasoning: 55% AIME
 
 **Weaknesses:**
+
 - **Lower quality than MiniMax**: 75% vs 80.2% (-5.2%)
 - **More expensive than MiniMax**: $4.07/M vs $0.79/M (5.2x)
 - **Double dominated**: Loses on quality AND cost
@@ -501,22 +519,24 @@ HIGH_COMPLEX ($0.85+/call)
 
 ### Why These Benchmarks Matter
 
-| Benchmark | What It Tests | Relevance | Key Models |
-|-----------|---|---|---|
+| Benchmark              | What It Tests                                                         | Relevance                                                         | Key Models                             |
+| ---------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------- |
 | **SWE-Bench Verified** | Software engineering task completion (coding, debugging, refactoring) | **MOST RELEVANT** for agent tasks; directly measures code quality | MiniMax 80.2%, Opus 80.8%, Codex 56.8% |
-| **AIME** | Advanced high school math competition (pure reasoning) | Measures logical reasoning, problem decomposition | GLM-5 92.7%, Opus 85%, MiniMax 60% |
-| **GPQA** | Graduate-level science questions (domain knowledge) | Measures advanced knowledge, less relevant for agents | GLM-5 86%, Opus 80%, MiniMax ~70% |
-| **MMLU** | Multiple-choice general knowledge (broad reasoning) | General intelligence measure; less specific to agent tasks | GPT-4o 89%, Opus 88%, MiniMax ~75% |
+| **AIME**               | Advanced high school math competition (pure reasoning)                | Measures logical reasoning, problem decomposition                 | GLM-5 92.7%, Opus 85%, MiniMax 60%     |
+| **GPQA**               | Graduate-level science questions (domain knowledge)                   | Measures advanced knowledge, less relevant for agents             | GLM-5 86%, Opus 80%, MiniMax ~70%      |
+| **MMLU**               | Multiple-choice general knowledge (broad reasoning)                   | General intelligence measure; less specific to agent tasks        | GPT-4o 89%, Opus 88%, MiniMax ~75%     |
 
 **Agent Routing Focus**: SWE-Bench > AIME > GPQA > MMLU
 
 **Why SWE-Bench is primary:**
+
 - Directly measures coding task completion (90% of agent work)
 - Includes real-world debugging, file operations, integration
 - Better predictor of agent reliability than general benchmarks
 - Codex scoring poorly (56.8%) despite "code specialization" proves generalist models are better
 
 **Why AIME matters as secondary:**
+
 - Captures reasoning capability for complex problem decomposition
 - GLM-5 edge (92.7% vs MiniMax 60%) is real but narrow use case
 - Most agents don't need pure reasoning; they need code execution
@@ -574,18 +594,18 @@ Efficiency (quality per dollar):
 
 ## Summary Decision Matrix
 
-| Question | Answer | Implication |
-|----------|--------|---|
-| **Is GLM-5 on frontier?** | NO | Dominated by MiniMax (cost-value) for normal tasks; Opus for quality-critical |
-| **Is Opus on frontier?** | YES, but reserved | Only for mission-critical (HIGH_COMPLEX) tier; dominated by MiniMax elsewhere |
-| **Is Sonnet on frontier?** | NO | Dominated by MiniMax on both quality and cost |
-| **Is Gemini Flash on frontier?** | NO (standard) | Dominated on quality-cost, but fallback for <300ms latency SLA |
-| **Are Codex/Spark on frontier?** | NO | Fail quality floor (60%), dominated by GPT-4o mini |
-| **Is Gemini 2.5 Pro on frontier?** | NO | Dominated by MiniMax; fallback for image-specific tasks |
-| **Why only 3 models?** | Pareto optimization | Any 4th model is dominated on 2+ dimensions; no competitive niche |
-| **Why MiniMax dominates?** | Cost-quality sweet spot | Best value: 80.2% quality at $0.79/M beats cost-conscious AND quality-conscious |
-| **When use Opus?** | mission_critical = True | Only when cost is irrelevant and quality is absolute requirement |
-| **When use GPT-4o mini?** | budget < $0.0005/call | Ultimate fallback for cost-sensitive applications |
+| Question                           | Answer                  | Implication                                                                     |
+| ---------------------------------- | ----------------------- | ------------------------------------------------------------------------------- |
+| **Is GLM-5 on frontier?**          | NO                      | Dominated by MiniMax (cost-value) for normal tasks; Opus for quality-critical   |
+| **Is Opus on frontier?**           | YES, but reserved       | Only for mission-critical (HIGH_COMPLEX) tier; dominated by MiniMax elsewhere   |
+| **Is Sonnet on frontier?**         | NO                      | Dominated by MiniMax on both quality and cost                                   |
+| **Is Gemini Flash on frontier?**   | NO (standard)           | Dominated on quality-cost, but fallback for <300ms latency SLA                  |
+| **Are Codex/Spark on frontier?**   | NO                      | Fail quality floor (60%), dominated by GPT-4o mini                              |
+| **Is Gemini 2.5 Pro on frontier?** | NO                      | Dominated by MiniMax; fallback for image-specific tasks                         |
+| **Why only 3 models?**             | Pareto optimization     | Any 4th model is dominated on 2+ dimensions; no competitive niche               |
+| **Why MiniMax dominates?**         | Cost-quality sweet spot | Best value: 80.2% quality at $0.79/M beats cost-conscious AND quality-conscious |
+| **When use Opus?**                 | mission_critical = True | Only when cost is irrelevant and quality is absolute requirement                |
+| **When use GPT-4o mini?**          | budget < $0.0005/call   | Ultimate fallback for cost-sensitive applications                               |
 
 ---
 
@@ -602,7 +622,6 @@ Efficiency (quality per dollar):
 **Document Status**: Reference; Reviewed 2026-02-15
 **Next Review**: Quarterly (when new models released or pricing changes >10%)
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -611,15 +630,18 @@ Efficiency (quality per dollar):
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

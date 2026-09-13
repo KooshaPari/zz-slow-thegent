@@ -9,11 +9,13 @@
 ## Current Architecture
 
 ### Current Flow
+
 ```
 Codex CLI → cliproxy_adapter.py → CLIProxyAPIPlus → Providers
 ```
 
 ### Issues
+
 1. **Double Translation**: Adapter translates Responses API → Chat Completions, then CLIProxyAPIPlus may translate again
 2. **Model Routing**: Model routing happens in CLIProxyAPIPlus, not leveraging LiteLLM Router's capabilities
 3. **Unnecessary Complexity**: codex-proxy exists because Responses API isn't properly handled
@@ -23,11 +25,13 @@ Codex CLI → cliproxy_adapter.py → CLIProxyAPIPlus → Providers
 ## Target Architecture
 
 ### Target Flow
+
 ```
 Codex CLI → LiteLLM Router (with Responses API adapter) → Individual Providers
 ```
 
 ### Benefits
+
 1. **Single Translation Layer**: Responses API → Chat Completions happens once
 2. **LiteLLM Routing**: Leverages LiteLLM's routing, fallback, caching, cost tracking
 3. **Simpler Stack**: No need for codex-proxy if LiteLLM handles routing correctly
@@ -39,17 +43,20 @@ Codex CLI → LiteLLM Router (with Responses API adapter) → Individual Provide
 ### Option 1: LiteLLM Router with Responses API Adapter (Recommended)
 
 **Approach**: Create a LiteLLM-compatible Responses API handler that:
+
 1. Accepts Responses API format from Codex CLI
 2. Translates to Chat Completions format
 3. Routes through LiteLLM Router
 4. Translates responses back to Responses API format
 
 **Files to Modify**:
+
 - `src/thegent/cliproxy_adapter.py` - Add LiteLLM Router backend option
 - `src/thegent/routing/litellm_router.py` - Add Responses API handler
 - `src/thegent/agents/codex_proxy.py` - Update to use LiteLLM Router when available
 
 **Key Changes**:
+
 ```python
 # In cliproxy_adapter.py
 async def proxy_handler(request: Request) -> Response:
@@ -70,6 +77,7 @@ async def proxy_handler(request: Request) -> Response:
 **Approach**: Configure CLIProxyAPIPlus to route through LiteLLM Router for certain providers
 
 **Files to Modify**:
+
 - `src/thegent/agents/cliproxy_manager.py` - Add LiteLLM Router configuration
 - CLIProxyAPIPlus config generation - Add LiteLLM Router as backend
 
@@ -80,6 +88,7 @@ async def proxy_handler(request: Request) -> Response:
 ### 1. Responses API Format Support
 
 Codex CLI sends:
+
 ```json
 {
   "model": "gpt-5-mini",
@@ -87,7 +96,7 @@ Codex CLI sends:
     {
       "type": "message",
       "role": "user",
-      "content": [{"type": "text", "text": "Hello"}]
+      "content": [{ "type": "text", "text": "Hello" }]
     }
   ],
   "stream": true
@@ -95,12 +104,11 @@ Codex CLI sends:
 ```
 
 Must translate to Chat Completions:
+
 ```json
 {
   "model": "gpt-5-mini",
-  "messages": [
-    {"role": "user", "content": "Hello"}
-  ],
+  "messages": [{ "role": "user", "content": "Hello" }],
   "stream": true
 }
 ```
@@ -108,6 +116,7 @@ Must translate to Chat Completions:
 ### 2. Model Routing
 
 LiteLLM Router should handle:
+
 - Model name resolution (aliases → provider/model)
 - Provider selection based on routing policy
 - Fallback chains
@@ -116,22 +125,26 @@ LiteLLM Router should handle:
 ### 3. Response Translation
 
 LiteLLM Chat Completions response:
+
 ```json
 {
-  "choices": [{
-    "delta": {"content": "Hello"}
-  }]
+  "choices": [
+    {
+      "delta": { "content": "Hello" }
+    }
+  ]
 }
 ```
 
 Must translate back to Responses API:
+
 ```json
 {
   "type": "response.output_item.added",
   "item": {
     "type": "message",
     "role": "assistant",
-    "content": [{"type": "text", "text": "Hello"}]
+    "content": [{ "type": "text", "text": "Hello" }]
   }
 }
 ```
@@ -165,6 +178,7 @@ Must translate back to Responses API:
 ### Phase 3: Testing
 
 1. **Test Responses API endpoint**:
+
    ```bash
    curl -X POST http://localhost:8765/v1/responses \
      -H "Content-Type: application/json" \

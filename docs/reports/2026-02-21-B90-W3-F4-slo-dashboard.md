@@ -14,21 +14,21 @@ Trace: WL-135 B90-W3-F4
 
 Collected via `uv run python scripts/collect_loc_metrics.py`:
 
-| Metric | Value |
-|--------|-------|
-| Total LOC | 167,814 |
-| Total files | 1,101 |
-| Oversized functions (>40 lines) | 839 |
+| Metric                          | Value   |
+| ------------------------------- | ------- |
+| Total LOC                       | 167,814 |
+| Total files                     | 1,101   |
+| Oversized functions (>40 lines) | 839     |
 
 ### Top 5 Largest Files
 
-| Rank | File | LOC |
-|------|------|-----|
-| 1 | `src/thegent/cli/commands/cli.py` | 5,665 |
-| 2 | `src/thegent/cli/commands/impl.py` | 5,367 |
-| 3 | `src/thegent/mcp/server.py` | 3,179 |
-| 4 | `src/thegent/execution.py` | 2,048 |
-| 5 | `src/thegent/doctor.py` | 1,692 |
+| Rank | File                               | LOC   |
+| ---- | ---------------------------------- | ----- |
+| 1    | `src/thegent/cli/commands/cli.py`  | 5,665 |
+| 2    | `src/thegent/cli/commands/impl.py` | 5,367 |
+| 3    | `src/thegent/mcp/server.py`        | 3,179 |
+| 4    | `src/thegent/execution.py`         | 2,048 |
+| 5    | `src/thegent/doctor.py`            | 1,692 |
 
 ## SLO Trend
 
@@ -38,11 +38,11 @@ Collected via `uv run python scripts/collect_loc_metrics.py`:
 
 ## Key SLO Thresholds
 
-| SLO Name | Green (pass) | Yellow (warn) | Red (fail) | Current | Status |
-|----------|-------------|---------------|------------|---------|--------|
-| `file_loc` | ≤ 1,200 LOC | 1,200–1,800 | ≥ 1,800 | 5,665 (cli.py) | RED |
-| `function_loc_p95` | ≤ 80 lines | 80–120 | ≥ 120 | 839 oversized | RED |
-| `impl_importers` | ≤ 20 | 20–40 | ≥ 40 | TBD (not yet counted) | UNKNOWN |
+| SLO Name           | Green (pass) | Yellow (warn) | Red (fail) | Current               | Status  |
+| ------------------ | ------------ | ------------- | ---------- | --------------------- | ------- |
+| `file_loc`         | ≤ 1,200 LOC  | 1,200–1,800   | ≥ 1,800    | 5,665 (cli.py)        | RED     |
+| `function_loc_p95` | ≤ 80 lines   | 80–120        | ≥ 120      | 839 oversized         | RED     |
+| `impl_importers`   | ≤ 20         | 20–40         | ≥ 40       | TBD (not yet counted) | UNKNOWN |
 
 ## Current cli.py Status
 

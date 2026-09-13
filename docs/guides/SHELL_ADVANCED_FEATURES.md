@@ -19,6 +19,7 @@ The advanced shell optimization system extends thegent's shell environment with 
 **Goal**: Zero perceived startup lag by printing prompt immediately.
 
 **How it works**:
+
 1. Print minimal prompt immediately on shell start
 2. Redirect stdout/stderr to temp file during initialization
 3. Load expensive plugins/tools in background
@@ -26,17 +27,20 @@ The advanced shell optimization system extends thegent's shell environment with 
 5. Replace prompt with full version once ready
 
 **Configuration**:
+
 ```bash
 # Enable/disable instant prompt (default: enabled)
 export THEGENT_INSTANT_PROMPT_ENABLED=1  # or 0 to disable
 ```
 
 **Benefits**:
+
 - Zero perceived startup lag
 - Can start typing immediately
 - Background loading doesn't block interaction
 
 **Cache Location**:
+
 - `~/.cache/thegent/instant-prompt-${USER}.zsh`
 
 ### 2. Async/Turbo Loading System
@@ -44,12 +48,14 @@ export THEGENT_INSTANT_PROMPT_ENABLED=1  # or 0 to disable
 **Goal**: Load plugins/tools asynchronously with wait conditions.
 
 **Wait Conditions**:
+
 - `wait"0"` or `wait` (no value): Load immediately in background
 - `wait"N"`: Load after N seconds
 - `wait'[[ condition ]]'`: Load when condition is met
 - `trigger-load`: Create function that loads plugin on first call
 
 **Usage**:
+
 ```bash
 # Load plugin immediately in background
 _thegent_async_load "0" "_load_plugin" "arg1" "arg2"
@@ -65,12 +71,14 @@ _thegent_trigger_load "kubectl" "_load_kubectl"
 ```
 
 **Configuration**:
+
 ```bash
 # Enable/disable async loading (default: enabled)
 export THEGENT_ASYNC_LOADING_ENABLED=1  # or 0 to disable
 ```
 
 **Benefits**:
+
 - 50-80% faster startup
 - Non-blocking initialization
 - Progressive enhancement
@@ -80,11 +88,13 @@ export THEGENT_ASYNC_LOADING_ENABLED=1  # or 0 to disable
 **Goal**: Multi-level caching with predictive preloading.
 
 **Cache Levels**:
+
 - **L1 (Memory)**: Fastest, session-scoped, in-memory
 - **L2 (File)**: Fast, persistent across sessions, file-based
 - **Eval Cache**: Cached `eval "$(tool init -)"` outputs
 
 **Usage**:
+
 ```bash
 # Get from cache (tries L1, then L2)
 _thegent_cache_get "tool:git"
@@ -97,16 +107,19 @@ _thegent_predictive_preload  # Preloads common tools
 ```
 
 **Cache Locations**:
+
 - L1: In-memory (session-scoped)
 - L2: `~/.cache/thegent/advanced/cache-l2/`
 - Eval: `~/.cache/thegent/eval-cache/`
 
 **Benefits**:
+
 - Near-instant tool detection
 - Reduced disk I/O
 - Better performance for frequently used tools
 
 **Management**:
+
 ```bash
 # View cache statistics
 thegent shell cache-stats
@@ -120,12 +133,14 @@ thegent shell clear-cache
 **Goal**: Circuit breakers, graceful degradation, retry logic.
 
 **Circuit Breaker Pattern**:
+
 - Tracks failures per service
 - Opens circuit after threshold failures
 - Cooldown period before retry
 - Automatic recovery
 
 **Usage**:
+
 ```bash
 # Check if circuit breaker is open
 _thegent_circuit_breaker_is_open "service_name"
@@ -141,6 +156,7 @@ _thegent_safe_exec "command" "arg1" "arg2"
 ```
 
 **Configuration**:
+
 ```bash
 # Maximum retries (default: 3)
 export THEGENT_MAX_RETRIES=3
@@ -150,11 +166,13 @@ export THEGENT_RETRY_DELAY=1
 ```
 
 **Benefits**:
+
 - Resilient to transient failures
 - Better user experience during outages
 - Automatic recovery without manual intervention
 
 **Management**:
+
 ```bash
 # List all circuit breakers
 thegent shell circuit-breaker --list
@@ -168,6 +186,7 @@ thegent shell circuit-breaker --reset service_name
 **Goal**: Track and manage background initialization jobs.
 
 **Usage**:
+
 ```bash
 # Register background job
 _thegent_job_register "job_name" $PID
@@ -180,16 +199,19 @@ _thegent_job_cleanup
 ```
 
 **Job Registry**:
+
 - Location: `~/.cache/thegent/advanced/jobs/registry`
 - Format: `job_name:PID`
 
 **Management**:
+
 ```bash
 # View background jobs
 thegent shell jobs
 ```
 
 **Benefits**:
+
 - Better visibility into background operations
 - Prevents zombie processes
 - Cleaner resource management
@@ -199,27 +221,32 @@ thegent shell jobs
 **Goal**: Seamless operation on macOS, Linux, Windows (WSL).
 
 **Platform Detection**:
+
 - Automatically detects platform from `$OSTYPE` or `uname`
 - Sets `THEGENT_PLATFORM` variable (`macos`, `linux`, `windows`, `unknown`)
 
 **Platform-Specific Optimizations**:
+
 - **macOS**: Uses `gtimeout` instead of `timeout`
 - **Linux**: Uses `timeout`
 - **Windows/WSL**: Limited timeout support, fallback to direct execution
 
 **Usage**:
+
 ```bash
 # Platform-specific timeout command
 _thegent_timeout_cmd 30 command find "$@"
 ```
 
 **Configuration**:
+
 ```bash
 # View platform information
 thegent shell platform
 ```
 
 **Benefits**:
+
 - Single configuration works everywhere
 - Platform-specific optimizations
 - Better developer experience
@@ -229,6 +256,7 @@ thegent shell platform
 **Goal**: Detailed metrics, performance tracking, diagnostics.
 
 **Metrics Collected**:
+
 - Cache hit/miss rates
 - Tool detection counts
 - Error rates
@@ -236,6 +264,7 @@ thegent shell platform
 - Performance timings
 
 **Usage**:
+
 ```bash
 # Record metric
 _thegent_metrics_record "cache_hit" 1
@@ -248,21 +277,25 @@ _thegent_metrics_report
 ```
 
 **Configuration**:
+
 ```bash
 # Enable/disable metrics (default: disabled)
 export THEGENT_METRICS_ENABLED=1  # or 0 to disable
 ```
 
 **Metrics Location**:
+
 - `~/.cache/thegent/advanced/metrics/stats`
 
 **Management**:
+
 ```bash
 # View metrics
 thegent shell metrics
 ```
 
 **Benefits**:
+
 - Identify bottlenecks
 - Optimize based on real data
 - Better debugging capabilities
@@ -270,35 +303,46 @@ thegent shell metrics
 ## CLI Commands
 
 ### `thegent shell status`
+
 Show shell environment status and configuration.
 
 ### `thegent shell metrics`
+
 Show shell performance metrics and statistics.
 
 ### `thegent shell jobs`
+
 Show background job status.
 
 ### `thegent shell cache-stats`
+
 Show cache statistics (hit/miss rates, sizes).
 
 ### `thegent shell circuit-breaker`
+
 Manage circuit breakers for error recovery.
+
 - `--list`: List all circuit breakers
 - `--reset SERVICE`: Reset circuit breaker for service
 
 ### `thegent shell platform`
+
 Show platform detection and compatibility information.
 
 ### `thegent shell benchmark`
+
 Benchmark shell startup time.
 
 ### `thegent shell doctor`
+
 Diagnose shell environment issues.
 
 ### `thegent shell clear-cache`
+
 Clear shell optimization cache.
 
 ### `thegent shell reload`
+
 Reload shell configuration.
 
 ## Configuration
@@ -344,26 +388,31 @@ Based on zsh-bench research and human perception thresholds:
 ## Troubleshooting
 
 ### Instant prompt not working
+
 1. Check `THEGENT_INSTANT_PROMPT_ENABLED=1`
 2. Verify cache directory is writable
 3. Check for errors in `~/.cache/thegent/instant-prompt-*.zsh`
 
 ### Async loading not working
+
 1. Check `THEGENT_ASYNC_LOADING_ENABLED=1`
 2. Verify background jobs are running: `thegent shell jobs`
 3. Check for errors in job registry
 
 ### Cache issues
+
 1. Clear cache: `thegent shell clear-cache`
 2. Check cache statistics: `thegent shell cache-stats`
 3. Verify cache directory permissions
 
 ### Circuit breaker stuck open
+
 1. List circuit breakers: `thegent shell circuit-breaker --list`
 2. Reset circuit breaker: `thegent shell circuit-breaker --reset SERVICE`
 3. Check failure counts in `~/.cache/thegent/advanced/circuit-breakers/`
 
 ### Platform detection issues
+
 1. Check platform: `thegent shell platform`
 2. Verify `$OSTYPE` or `uname` output
 3. Manually set `THEGENT_PLATFORM` if needed
@@ -394,6 +443,7 @@ The advanced system extends the basic optimization system. No migration needed -
 ### Disabling Advanced Features
 
 Set environment variables to `0`:
+
 ```bash
 export THEGENT_INSTANT_PROMPT_ENABLED=0
 export THEGENT_ASYNC_LOADING_ENABLED=0
@@ -406,14 +456,12 @@ export THEGENT_METRICS_ENABLED=0
 - [Shell Optimization Guide](SHELL_OPTIMIZATION_GUIDE.md)
 - [Advanced Enhancement Plan](../plans/SHELL_ENVIRONMENT_ADVANCED_ENHANCEMENT_PLAN.md)
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -423,15 +471,18 @@ export THEGENT_METRICS_ENABLED=0
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

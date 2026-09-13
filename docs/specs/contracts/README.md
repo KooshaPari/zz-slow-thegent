@@ -8,20 +8,20 @@ Contract management, capability registry, and conformance validation.
 
 ### Contract Types
 
-| Type | Purpose | Files |
-|------|---------|-------|
+| Type       | Purpose          | Files                              |
+| ---------- | ---------------- | ---------------------------------- |
 | Capability | Feature registry | `contracts/capability_registry.py` |
-| Policy | Rules engine | `contracts/policy.py` |
-| Validation | Conformance | `contracts/conformance.py` |
-| Migration | Schema evolution | `contracts/migration.py` |
+| Policy     | Rules engine     | `contracts/policy.py`              |
+| Validation | Conformance      | `contracts/conformance.py`         |
+| Migration  | Schema evolution | `contracts/migration.py`           |
 
 ### Registry
 
-| Registry | Purpose |
-|----------|---------|
-| Capability | Features |
-| Policy | Rules |
-| Market | Marketplace |
+| Registry   | Purpose     |
+| ---------- | ----------- |
+| Capability | Features    |
+| Policy     | Rules       |
+| Market     | Marketplace |
 
 ## Conformance
 
@@ -32,8 +32,8 @@ Contract management, capability registry, and conformance validation.
 
 ## Performance
 
-| Metric | Target |
-|--------|--------|
-| Validation | <10ms |
-| Schema check | <5ms |
-| Policy eval | <1ms |
+| Metric       | Target |
+| ------------ | ------ |
+| Validation   | <10ms  |
+| Schema check | <5ms   |
+| Policy eval  | <1ms   |

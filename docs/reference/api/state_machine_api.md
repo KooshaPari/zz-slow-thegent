@@ -15,7 +15,7 @@ State machine for managing orchestration fallbacks.
 
 ### Methods
 
-#### FallbackStateMachine.__init__
+#### FallbackStateMachine.**init**
 
 ```python
 __init__(self: Any, providers: list[str], run_id: Any, policy: Any, telemetry: Any, max_retries_per_provider: int, retry_delay_base: float)
@@ -67,7 +67,7 @@ WP-1005: Evidence capture and validation before state promotion.
 
 ### Methods
 
-#### PromotionGate.__init__
+#### PromotionGate.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)

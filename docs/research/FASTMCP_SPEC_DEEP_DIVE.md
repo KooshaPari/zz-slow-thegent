@@ -40,13 +40,13 @@ Provider → [Provider Transforms] → [Server Transforms] → Client
 
 ### 2.1 Core Semantics
 
-| Aspect | Behavior |
-|--------|----------|
-| **Registration** | `@mcp.tool` decorator; name, description inferred from function |
-| **Arguments** | Type hints → JSON Schema; `Depends()` excluded from schema |
-| **Return** | `str`, `bytes`, `dict`, `ToolResult`, Pydantic models, `Image`/`Audio`/`File` |
-| **Structured output** | 6/18/2025 MCP spec: `structuredContent` + `output_schema` |
-| **Validation** | `strict_input_validation=False` (default): coerce; `True`: strict JSON Schema |
+| Aspect                | Behavior                                                                      |
+| --------------------- | ----------------------------------------------------------------------------- |
+| **Registration**      | `@mcp.tool` decorator; name, description inferred from function               |
+| **Arguments**         | Type hints → JSON Schema; `Depends()` excluded from schema                    |
+| **Return**            | `str`, `bytes`, `dict`, `ToolResult`, Pydantic models, `Image`/`Audio`/`File` |
+| **Structured output** | 6/18/2025 MCP spec: `structuredContent` + `output_schema`                     |
+| **Validation**        | `strict_input_validation=False` (default): coerce; `True`: strict JSON Schema |
 
 ### 2.2 ToolResult
 
@@ -64,15 +64,15 @@ ToolResult(
 
 ### 2.3 Annotations
 
-| Annotation | Purpose |
-|------------|---------|
-| `readOnlyHint` | Tool does not modify environment |
-| `destructiveHint` | May perform destructive updates |
-| `idempotentHint` | Repeated calls same effect |
-| `openWorldHint` | Interacts with external entities |
-| `timeout` | Execution timeout (seconds) |
-| `tags` | Categorization; filtering |
-| `version` | Versioning |
+| Annotation        | Purpose                          |
+| ----------------- | -------------------------------- |
+| `readOnlyHint`    | Tool does not modify environment |
+| `destructiveHint` | May perform destructive updates  |
+| `idempotentHint`  | Repeated calls same effect       |
+| `openWorldHint`   | Interacts with external entities |
+| `timeout`         | Execution timeout (seconds)      |
+| `tags`            | Categorization; filtering        |
+| `version`         | Versioning                       |
 
 ### 2.4 Tool Execution Modes
 
@@ -128,11 +128,11 @@ ctx: Context = CurrentContext()  # Preferred
 
 ### 5.2 Capabilities
 
-| Method/Property | Purpose |
-|-----------------|---------|
-| `ctx.elicit()` | Request structured user input (SEP-1330) |
-| `ctx.sample()` | Request LLM completion from client |
-| `ctx.report_progress()` | Progress updates |
+| Method/Property         | Purpose                                  |
+| ----------------------- | ---------------------------------------- |
+| `ctx.elicit()`          | Request structured user input (SEP-1330) |
+| `ctx.sample()`          | Request LLM completion from client       |
+| `ctx.report_progress()` | Progress updates                         |
 
 | `ctx.get_state()` / `ctx.set_state()` | Session state (persists across requests) |
 | `ctx.session_id` | MCP session ID |
@@ -175,21 +175,21 @@ ctx: Context = CurrentContext()  # Preferred
 
 ### 6.2 Response Types
 
-| Type | Example |
-|------|---------|
-| Scalar | `response_type=str`, `int`, `bool` |
-| Enum | `response_type=["low","medium","high"]` or `Literal["low","medium","high"]` |
-| Multi-select | `response_type=[["bug","feature","docs"]]` |
-| Structured | `response_type=TaskDetails` (dataclass/Pydantic) |
-| No response | `response_type=None` (approve/reject only) |
+| Type         | Example                                                                     |
+| ------------ | --------------------------------------------------------------------------- |
+| Scalar       | `response_type=str`, `int`, `bool`                                          |
+| Enum         | `response_type=["low","medium","high"]` or `Literal["low","medium","high"]` |
+| Multi-select | `response_type=[["bug","feature","docs"]]`                                  |
+| Structured   | `response_type=TaskDetails` (dataclass/Pydantic)                            |
+| No response  | `response_type=None` (approve/reject only)                                  |
 
 ### 6.3 Result Actions
 
-| Action | Result | `data` |
-|--------|--------|--------|
-| `accept` | `AcceptedElicitation` | User input |
-| `decline` | `DeclinedElicitation` | — |
-| `cancel` | `CancelledElicitation` | — |
+| Action    | Result                 | `data`     |
+| --------- | ---------------------- | ---------- |
+| `accept`  | `AcceptedElicitation`  | User input |
+| `decline` | `DeclinedElicitation`  | —          |
+| `cancel`  | `CancelledElicitation` | —          |
 
 ### 6.4 Client Requirement
 
@@ -261,11 +261,11 @@ result = await ctx.sample(
 
 ### 8.2 Execution Modes
 
-| Mode | Without task | With task |
-|------|--------------|-----------|
-| `forbidden` | Sync | Error |
-| `optional` | Sync | Background |
-| `required` | Error | Background |
+| Mode        | Without task | With task  |
+| ----------- | ------------ | ---------- |
+| `forbidden` | Sync         | Error      |
+| `optional`  | Sync         | Background |
+| `required`  | Error        | Background |
 
 ### 8.3 Backends
 
@@ -286,14 +286,14 @@ result = await ctx.sample(
 
 ### 9.1 Built-in
 
-| Transform | Purpose |
-|-----------|---------|
-| `Namespace` | Prefix component names |
-| `ToolTransform` | Rename, reshape, customize description |
-| `ResourcesAsTools` | Expose resources as tools |
-| `PromptsAsTools` | Expose prompts as tools |
-| `Enabled` | Visibility control |
-| `VersionFilter` | Version-based filtering |
+| Transform          | Purpose                                |
+| ------------------ | -------------------------------------- |
+| `Namespace`        | Prefix component names                 |
+| `ToolTransform`    | Rename, reshape, customize description |
+| `ResourcesAsTools` | Expose resources as tools              |
+| `PromptsAsTools`   | Expose prompts as tools                |
+| `Enabled`          | Visibility control                     |
+| `VersionFilter`    | Version-based filtering                |
 
 ### 9.2 Order
 
@@ -316,24 +316,24 @@ Request → Middleware A → Middleware B → Handler → Middleware B → Middl
 
 ### 10.2 Hooks
 
-| Level | Hook | Purpose |
-|-------|------|---------|
-| Message | `on_message` | All MCP traffic |
-| Type | `on_request`, `on_notification` | Requests vs notifications |
-| Operation | `on_call_tool`, `on_read_resource`, `on_get_prompt`, etc. | Per-operation |
+| Level     | Hook                                                      | Purpose                   |
+| --------- | --------------------------------------------------------- | ------------------------- |
+| Message   | `on_message`                                              | All MCP traffic           |
+| Type      | `on_request`, `on_notification`                           | Requests vs notifications |
+| Operation | `on_call_tool`, `on_read_resource`, `on_get_prompt`, etc. | Per-operation             |
 
 ### 10.3 Built-in Middleware
 
-| Middleware | Purpose |
-|------------|---------|
-| `ErrorHandlingMiddleware` | Centralized error handling |
-| `RateLimitingMiddleware` | Token bucket |
-| `TimingMiddleware` | Execution duration |
-| `LoggingMiddleware` | Request/response logging |
-| `ResponseCachingMiddleware` | TTL-based caching |
-| `ResponseLimitingMiddleware` | Max response size |
-| `PingMiddleware` | Keep-alive |
-| `ToolInjectionMiddleware` | Dynamic tool injection |
+| Middleware                   | Purpose                    |
+| ---------------------------- | -------------------------- |
+| `ErrorHandlingMiddleware`    | Centralized error handling |
+| `RateLimitingMiddleware`     | Token bucket               |
+| `TimingMiddleware`           | Execution duration         |
+| `LoggingMiddleware`          | Request/response logging   |
+| `ResponseCachingMiddleware`  | TTL-based caching          |
+| `ResponseLimitingMiddleware` | Max response size          |
+| `PingMiddleware`             | Keep-alive                 |
+| `ToolInjectionMiddleware`    | Dynamic tool injection     |
 
 ### 10.4 thegent Usage
 
@@ -366,13 +366,13 @@ Request → Middleware A → Middleware B → Handler → Middleware B → Middl
 
 ## 12. MCP SEPs & Alignment
 
-| SEP | Title | FastMCP | Client Gaps |
-|-----|-------|---------|-------------|
-| 1330 | Elicitation enum schema | ✓ Full | Claude Code, Cursor, Codex: unknown |
-| 1577 | Sampling with tools | ✓ Full | Client must implement sampling_handler |
-| 1686 | Background tasks | ✓ tasks extra | Unknown |
-| 1699 | SSE Polling | ✓ EventStore | Client must send Last-Event-ID |
-| 1036 | URL-mode elicitation | — | Out-of-band secure elicitation |
+| SEP  | Title                   | FastMCP       | Client Gaps                            |
+| ---- | ----------------------- | ------------- | -------------------------------------- |
+| 1330 | Elicitation enum schema | ✓ Full        | Claude Code, Cursor, Codex: unknown    |
+| 1577 | Sampling with tools     | ✓ Full        | Client must implement sampling_handler |
+| 1686 | Background tasks        | ✓ tasks extra | Unknown                                |
+| 1699 | SSE Polling             | ✓ EventStore  | Client must send Last-Event-ID         |
+| 1036 | URL-mode elicitation    | —             | Out-of-band secure elicitation         |
 
 ---
 
@@ -392,36 +392,36 @@ Request → Middleware A → Middleware B → Handler → Middleware B → Middl
 
 ### 13.2 High-Value Additions
 
-| Feature | Benefit | Effort |
-|---------|---------|--------|
-| Background tasks for long runs | Return task ID; client polls | Medium |
-| Progress in more tools | Better UX (quality, DAG) | Small |
-| Session state | Per-session preferences | Small |
-| Notifications | tools/list_changed on DAG update | Small |
-| Per-session visibility | Namespace activation | Medium |
+| Feature                        | Benefit                          | Effort |
+| ------------------------------ | -------------------------------- | ------ |
+| Background tasks for long runs | Return task ID; client polls     | Medium |
+| Progress in more tools         | Better UX (quality, DAG)         | Small  |
+| Session state                  | Per-session preferences          | Small  |
+| Notifications                  | tools/list_changed on DAG update | Small  |
+| Per-session visibility         | Namespace activation             | Medium |
 
 ### 13.3 Queue Integration
 
-| Tool | Purpose |
-|------|---------|
-| `thegent_queue_add` | Add to pending queue |
-| `thegent_queue_list` | List pending |
-| `thegent_queue_claim` | Claim for processing |
-| `thegent_queue_done` | Mark done |
-| `thegent_queue_release` | Release claim |
-| `thegent_queue_extend_lease` | Extend lease |
+| Tool                         | Purpose              |
+| ---------------------------- | -------------------- |
+| `thegent_queue_add`          | Add to pending queue |
+| `thegent_queue_list`         | List pending         |
+| `thegent_queue_claim`        | Claim for processing |
+| `thegent_queue_done`         | Mark done            |
+| `thegent_queue_release`      | Release claim        |
+| `thegent_queue_extend_lease` | Extend lease         |
 
 ---
 
 ## 14. Client Verification Matrix
 
-| Capability | Verify | Claude Code | Cursor | Codex |
-|------------|--------|-------------|--------|-------|
-| Elicitation | Tool that elicits | ? | ? | ? |
-| Progress | Long tool | ? | ? | ? |
-| Sampling | thegent_suggest_prompt | ? | ? | ? |
-| Background tasks | task=True | ? | ? | ? |
-| Notifications | list_changed | ? | ? | ? |
+| Capability       | Verify                 | Claude Code | Cursor | Codex |
+| ---------------- | ---------------------- | ----------- | ------ | ----- |
+| Elicitation      | Tool that elicits      | ?           | ?      | ?     |
+| Progress         | Long tool              | ?           | ?      | ?     |
+| Sampling         | thegent_suggest_prompt | ?           | ?      | ?     |
+| Background tasks | task=True              | ?           | ?      | ?     |
+| Notifications    | list_changed           | ?           | ?      | ?     |
 
 ---
 
@@ -443,14 +443,15 @@ Request → Middleware A → Middleware B → Handler → Middleware B → Middl
 
 #### 16.1 MCP Protocol Version Compatibility
 
-| MCP Version | FastMCP Support | thegent Compatibility |
-|-------------|-----------------|----------------------|
-| 2024-11-05 (Latest) | ✓ Full | ✓ Compatible |
-| 2024-10-07 | ✓ Full | ✓ Compatible |
-| 2024-07-15 | ✓ Full | ✓ Compatible |
-| Legacy | ⚠ Partial | ⚠ Verify per feature |
+| MCP Version         | FastMCP Support | thegent Compatibility |
+| ------------------- | --------------- | --------------------- |
+| 2024-11-05 (Latest) | ✓ Full          | ✓ Compatible          |
+| 2024-10-07          | ✓ Full          | ✓ Compatible          |
+| 2024-07-15          | ✓ Full          | ✓ Compatible          |
+| Legacy              | ⚠ Partial      | ⚠ Verify per feature |
 
 **Verification Command:**
+
 ```bash
 python -c "import fastmcp; print(fastmcp.__mcp_version__)"
 ```
@@ -459,16 +460,16 @@ python -c "import fastmcp; print(fastmcp.__mcp_version__)"
 
 #### 16.2 Required vs Optional Capabilities
 
-| Capability | MCP Spec | thegent Requirement |
-|------------|----------|---------------------|
-| tools/list | Required | ✓ Implemented |
-| tools/call | Required | ✓ Implemented |
-| resources/list | Optional | ✓ Implemented |
-| resources/read | Optional | ✓ Implemented |
-| prompts/list | Optional | ✓ Not used |
-| prompts/get | Optional | ✓ Not used |
-| sampling | Optional | ✓ Used |
-| elicitation | Optional | ✓ Used |
+| Capability     | MCP Spec | thegent Requirement |
+| -------------- | -------- | ------------------- |
+| tools/list     | Required | ✓ Implemented       |
+| tools/call     | Required | ✓ Implemented       |
+| resources/list | Optional | ✓ Implemented       |
+| resources/read | Optional | ✓ Implemented       |
+| prompts/list   | Optional | ✓ Not used          |
+| prompts/get    | Optional | ✓ Not used          |
+| sampling       | Optional | ✓ Used              |
+| elicitation    | Optional | ✓ Used              |
 
 ### 17. Error Handling Patterns
 
@@ -501,6 +502,7 @@ async def thegent_run(agents: list[str]) -> dict:
 ```
 
 **Error Schema (MCP compliant):**
+
 ```json
 {
   "code": "AGENT_NOT_FOUND",
@@ -555,11 +557,11 @@ async def thegent_run_v2(agents: list[str]) -> dict:
 
 **Version Migration Strategy:**
 
-| Version | Status | Migration Action |
-|---------|--------|------------------|
-| v1.0 | Deprecated | Auto-redirect to v2 |
-| v2.0 | Stable | Default for existing clients |
-| v2.1 | Latest | Recommended for new clients |
+| Version | Status     | Migration Action             |
+| ------- | ---------- | ---------------------------- |
+| v1.0    | Deprecated | Auto-redirect to v2          |
+| v2.0    | Stable     | Default for existing clients |
+| v2.1    | Latest     | Recommended for new clients  |
 
 #### 18.2 Schema Evolution
 
@@ -589,15 +591,15 @@ class AgentConfigV2(BaseModel):
 
 ### 19. Cross-Document References
 
-| Reference | Purpose |
-|-----------|---------|
-| `FASTMCP_IMPLEMENTATION_GUIDE.md` | Implementation patterns and examples |
-| `FASTMCP_MIDDLEWARE.md` | Middleware specification details |
-| `FASTMCP_STORAGE_EVENTSTORE.md` | Storage and event specifications |
-| `FASTMCP_TRANSFORMS_DEPLOYMENT.md` | Transform specifications |
-| `FASTMCP_FEATURES_AND_TRANSPORT_GAPS.md` | Feature gaps and transport specs |
-| `src/thegent/contracts/validation.py` | Contract validation patterns |
-| `docs/guides/TESTING.md` | Testing specifications |
+| Reference                                | Purpose                              |
+| ---------------------------------------- | ------------------------------------ |
+| `FASTMCP_IMPLEMENTATION_GUIDE.md`        | Implementation patterns and examples |
+| `FASTMCP_MIDDLEWARE.md`                  | Middleware specification details     |
+| `FASTMCP_STORAGE_EVENTSTORE.md`          | Storage and event specifications     |
+| `FASTMCP_TRANSFORMS_DEPLOYMENT.md`       | Transform specifications             |
+| `FASTMCP_FEATURES_AND_TRANSPORT_GAPS.md` | Feature gaps and transport specs     |
+| `src/thegent/contracts/validation.py`    | Contract validation patterns         |
+| `docs/guides/TESTING.md`                 | Testing specifications               |
 
 ---
 

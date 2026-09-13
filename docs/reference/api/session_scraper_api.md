@@ -10,7 +10,7 @@ Focuses on terminal panes (tmux) and local history files.
 
 ### Methods
 
-#### SessionScraper.__init__
+#### SessionScraper.**init**
 
 ```python
 __init__(self: Any, project_root: Path)

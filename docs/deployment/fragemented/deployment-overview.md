@@ -20,37 +20,41 @@
 
 CRUN can be deployed in multiple ways depending on your infrastructure and use case:
 
-| Deployment Type | Use Case | Complexity | Scalability |
-|-----------------|----------|-----------|-------------|
-| **Local** | Development, testing | Low | Single machine |
-| **Server** | Production on dedicated hardware | Medium | Up to 100 agents |
-| **Docker** | Container orchestration | High | Multi-container |
-| **Kubernetes** | Enterprise scale | High | 1000+ agents |
-| **Cloud** | AWS/GCP/Azure | Medium-High | Auto-scaling |
+| Deployment Type | Use Case                         | Complexity  | Scalability      |
+| --------------- | -------------------------------- | ----------- | ---------------- |
+| **Local**       | Development, testing             | Low         | Single machine   |
+| **Server**      | Production on dedicated hardware | Medium      | Up to 100 agents |
+| **Docker**      | Container orchestration          | High        | Multi-container  |
+| **Kubernetes**  | Enterprise scale                 | High        | 1000+ agents     |
+| **Cloud**       | AWS/GCP/Azure                    | Medium-High | Auto-scaling     |
 
 ---
 
 ## Deployment Options
 
 ### 1. Local Deployment
+
 - **Best for:** Development, proof-of-concept
 - **Requirements:** Single machine with Python 3.11+
 - **Setup time:** 15 minutes
 - **Scalability:** Limited to single machine resources
 
 ### 2. Server Deployment
+
 - **Best for:** Production on dedicated hardware
 - **Requirements:** Ubuntu/Debian server, systemd
 - **Setup time:** 30 minutes
 - **Scalability:** Up to 100 agents with proper resources
 
 ### 3. Docker Deployment
+
 - **Best for:** Cloud platforms, CI/CD pipelines
 - **Requirements:** Docker/Docker Compose
 - **Setup time:** 20 minutes
 - **Scalability:** Unlimited (horizontal scaling)
 
 ### 4. Kubernetes Deployment
+
 - **Best for:** Enterprise, high availability
 - **Requirements:** Kubernetes cluster
 - **Setup time:** 1-2 hours
@@ -268,7 +272,7 @@ CMD ["crun", "gui", "--host", "0.0.0.0", "--port", "8000"]
 Create `docker-compose.yml`:
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   crun:

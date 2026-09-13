@@ -11,13 +11,14 @@ ExecutionEngine for coordinating agent runs with MAIF, policies, and resource ma
 Orchestrates agent execution with integrated MAIF artifact generation.
 
 This engine coordinates:
+
 1. Pre-execution signing (MAIF run_start)
 2. Agent execution (via AgentRunner)
 3. Post-execution artifact generation (MAIF run_complete)
 
 ### Methods
 
-#### ExecutionEngine.__init__
+#### ExecutionEngine.**init**
 
 ```python
 __init__(self: Any, settings: Any)

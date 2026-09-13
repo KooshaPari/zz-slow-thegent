@@ -11,6 +11,7 @@
 This guide provides step-by-step instructions for integrating projects across the kush ecosystem. It covers common integration patterns, code examples, best practices, and troubleshooting.
 
 **Target Audience**:
+
 - Developers integrating multiple kush projects
 - Architects designing cross-project solutions
 - DevOps engineers setting up integrated deployments
@@ -573,7 +574,7 @@ async def test_integrated_workflow():
 
 ```yaml
 # docker-compose.yml for integrated deployment
-version: '3.8'
+version: "3.8"
 
 services:
   thegent:
@@ -654,15 +655,19 @@ async def monitored_integration():
 ### 11.1 Common Issues
 
 **Issue**: Agent not found
+
 - **Solution**: Check agent registry, verify agent registration
 
 **Issue**: MCP server connection failed
+
 - **Solution**: Check server URL, verify server is running
 
 **Issue**: Configuration mismatch
+
 - **Solution**: Verify environment variables, check config files
 
 **Issue**: Performance degradation
+
 - **Solution**: Add caching, optimize queries, use async operations
 
 ---

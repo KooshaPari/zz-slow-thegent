@@ -12,7 +12,7 @@ Shapley-value causal influence tracking (SCLI-P3.2).
 
 ### Methods
 
-#### CausalInfluenceTracker.__init__
+#### CausalInfluenceTracker.**init**
 
 ```python
 __init__(self: Any, mesh_root: Path)
@@ -38,7 +38,7 @@ Crash-Preventing Weighted Byzantine Fault Tolerance (CP-WBFT) (ADR-013, SCLI-P3.
 
 ### Methods
 
-#### ConsensusProtocol.__init__
+#### ConsensusProtocol.**init**
 
 ```python
 __init__(self: Any, mesh_root: Path)
@@ -110,7 +110,7 @@ Phase 3: SHARE (ADR-013). Finalize the proposal after drafting period.
 
 ### Methods
 
-#### EscalationWorkflow.__init__
+#### EscalationWorkflow.**init**
 
 ```python
 __init__(self: Any, mesh_root: Path)

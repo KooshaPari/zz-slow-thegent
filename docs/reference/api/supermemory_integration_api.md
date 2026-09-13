@@ -12,7 +12,7 @@ Integration with Supermemory.ai Universal Memory.
 
 ### Methods
 
-#### SupermemoryIntegration.__init__
+#### SupermemoryIntegration.**init**
 
 ```python
 __init__(self: Any, api_key: Any)

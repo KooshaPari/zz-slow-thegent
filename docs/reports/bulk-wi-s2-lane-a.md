@@ -1,4 +1,5 @@
 ### [WL-5190] Implement Base Agent Run Contract
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -8,6 +9,7 @@
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5191] Add Crew Task Assignment Default
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -17,6 +19,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5192] Add Router Import Fallback Diagnostics
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -26,6 +29,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5193] Handle Frontmatter Read Failures Explicitly
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -35,6 +39,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5194] Surface Teammate Runner Init Errors
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -44,6 +49,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5195] Decode Linux Screenshot Bytes Properly
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -53,6 +59,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5196] Replace macOS Capture Placeholder Path
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -62,6 +69,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5197] Implement Windows DXGI Capture Path
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -71,6 +79,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5198] Complete Session Fork CLI Wiring
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk
@@ -80,6 +89,7 @@ Implement concrete logic here and remove the stub/placeholder signal with focuse
 Implement concrete logic here and remove the stub/placeholder signal with focused coverage.
 
 ### [WL-5199] Complete Session Rollback CLI Wiring
+
 **Status:** OPEN
 **Priority:** P2
 **Area:** backlog,bulk

@@ -73,7 +73,7 @@ GET /metrics  # Prometheus metrics
 ```json
 {
   "model": "claude-4.5-sonnet",
-  "messages": [{"role": "user", "content": "Hello!"}],
+  "messages": [{ "role": "user", "content": "Hello!" }],
   "stream": false,
   "temperature": 0.7,
   "max_tokens": 1024,
@@ -83,7 +83,7 @@ GET /metrics  # Prometheus metrics
     "organization_id": "org-uuid",
     "user_id": "user-uuid",
     "workflow": "customer_support",
-    "variables": {"customer_name": "John"},
+    "variables": { "customer_name": "John" },
     "allowed_tools": ["calculator", "web_search"],
     "mcp_servers": {}
   }
@@ -98,12 +98,14 @@ GET /metrics  # Prometheus metrics
   "object": "chat.completion",
   "created": 1234567890,
   "model": "claude-4.5-sonnet",
-  "choices": [{
-    "index": 0,
-    "message": {"role": "assistant", "content": "Hello! How can I help?"},
-    "finish_reason": "stop"
-  }],
-  "usage": {"prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15}
+  "choices": [
+    {
+      "index": 0,
+      "message": { "role": "assistant", "content": "Hello! How can I help?" },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": { "prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15 }
 }
 ```
 
@@ -128,12 +130,13 @@ data: [DONE]
 
 ## Authentication
 
-| Method | Header | Description |
-|--------|--------|-------------|
+| Method    | Header                          | Description                            |
+| --------- | ------------------------------- | -------------------------------------- |
 | JWT Token | `Authorization: Bearer <token>` | WorkOS JWT with user_id, org_id claims |
-| API Key | `X-API-Key: <key>` | Static API key for service-to-service |
+| API Key   | `X-API-Key: <key>`              | Static API key for service-to-service  |
 
 **JWT Claims Expected:**
+
 - `user_id` - User identifier
 - `org_id` - Organization identifier (multi-tenant)
 - `permissions` - Permission array (cached for 5 minutes for performance)
@@ -151,18 +154,19 @@ data: [DONE]
 | Gemini 2.5 Flash | Fast, multimodal |
 
 **Fallback API:**
+
 - Anthropic Claude API: https://api.anthropic.com/v1/messages
 
 ## 4-Level Prompt Orchestration
 
 The system composes system prompts from 4 hierarchical levels:
 
-| Level | Source | Purpose |
-|-------|--------|---------|
-| **Platform** | Config file | Default prompt for all users |
-| **Organization** | Database table | Custom prompts per organization |
-| **User** | Database table | User-specific customizations |
-| **Workflow** | Config/Database | Workflow-specific context |
+| Level            | Source          | Purpose                         |
+| ---------------- | --------------- | ------------------------------- |
+| **Platform**     | Config file     | Default prompt for all users    |
+| **Organization** | Database table  | Custom prompts per organization |
+| **User**         | Database table  | User-specific customizations    |
+| **Workflow**     | Config/Database | Workflow-specific context       |
 
 **Composition Logic:** Platform + Organization + User + Workflow = Final System Prompt
 
@@ -171,6 +175,7 @@ The system composes system prompts from 4 hierarchical levels:
 ## MCP Server Integration
 
 **Registration Workflow:**
+
 1. Register via CLI: `atoms-agent mcp create --org <uuid> --name "My Tool" --url https://mcp.example.com`
 2. Store in Database with auth config (bearer token, OAuth, API key)
 3. User enables specific servers from marketplace

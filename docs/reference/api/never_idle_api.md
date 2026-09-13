@@ -5,6 +5,7 @@
 Never-idle loop engine for Sitback Agent.
 
 Provides continuous resident loop with:
+
 - Non-blocking background task completion detection
 - Rotating gardening checks
 - Wake-on-completion callbacks
@@ -20,7 +21,7 @@ Checks for background task completions (non-blocking) and runs gardening steps.
 
 ### Methods
 
-#### NeverIdleLoop.__init__
+#### NeverIdleLoop.**init**
 
 ```python
 __init__(self: Any, session_dir: Any, sleep_interval: int, project_root: Any)

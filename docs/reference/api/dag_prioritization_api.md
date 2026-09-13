@@ -41,7 +41,7 @@ or :meth:`topological_sort` is called.
 
 ### Methods
 
-#### DagPrioritizer.__init__
+#### DagPrioritizer.**init**
 
 ```python
 __init__(self: Any)
@@ -55,9 +55,9 @@ __init__(self: Any)
 add_task(self: Any, task: DagTask)
 ```
 
-Register *task* with the prioritizer.
+Register _task_ with the prioritizer.
 
-Duplicate ``task_id`` values overwrite the previous entry.
+Duplicate `task_id` values overwrite the previous entry.
 
 ---
 
@@ -69,8 +69,8 @@ compute_critical_path(self: Any)
 
 Return the ordered list of task IDs on the critical path.
 
-The critical path is the longest path (by total ``estimated_duration_s``)
-from any source node to any sink node.  The returned list is ordered
+The critical path is the longest path (by total `estimated_duration_s`)
+from any source node to any sink node. The returned list is ordered
 from the first task to execute to the last.
 
 Raises :class:`DagCycleError` if the graph contains a cycle.
@@ -84,14 +84,14 @@ Raises :class:`ValueError` if any dependency references an unknown task.
 get_priority_score(self: Any, task_id: str)
 ```
 
-Return a priority score for *task_id*.
+Return a priority score for _task_id_.
 
 Higher values indicate that the task is on (or close to) the critical
-path.  The score equals the ``estimated_duration_s`` of the longest
-path that passes *through* this task — that is, the sum of the
+path. The score equals the `estimated_duration_s` of the longest
+path that passes _through_ this task — that is, the sum of the
 critical sub-path from this task to any sink.
 
-Raises :class:`KeyError` if *task_id* is not registered.
+Raises :class:`KeyError` if _task_id_ is not registered.
 Raises :class:`DagCycleError` if the graph contains a cycle.
 
 ---
@@ -104,8 +104,8 @@ ready_tasks(self: Any, completed: set[str])
 
 Return tasks whose dependencies are all satisfied, sorted by priority.
 
-*completed* is the set of already-finished ``task_id`` values.  Tasks
-in *completed* are excluded from the result.
+_completed_ is the set of already-finished `task_id` values. Tasks
+in _completed_ are excluded from the result.
 
 Tasks are returned in descending priority order (highest
 
@@ -138,9 +138,9 @@ A single node in the scheduling DAG.
 add_task(self: Any, task: DagTask)
 ```
 
-Register *task* with the prioritizer.
+Register _task_ with the prioritizer.
 
-Duplicate ``task_id`` values overwrite the previous entry.
+Duplicate `task_id` values overwrite the previous entry.
 
 ---
 
@@ -152,8 +152,8 @@ compute_critical_path(self: Any)
 
 Return the ordered list of task IDs on the critical path.
 
-The critical path is the longest path (by total ``estimated_duration_s``)
-from any source node to any sink node.  The returned list is ordered
+The critical path is the longest path (by total `estimated_duration_s`)
+from any source node to any sink node. The returned list is ordered
 from the first task to execute to the last.
 
 Raises :class:`DagCycleError` if the graph contains a cycle.
@@ -167,14 +167,14 @@ Raises :class:`ValueError` if any dependency references an unknown task.
 get_priority_score(self: Any, task_id: str)
 ```
 
-Return a priority score for *task_id*.
+Return a priority score for _task_id_.
 
 Higher values indicate that the task is on (or close to) the critical
-path.  The score equals the ``estimated_duration_s`` of the longest
-path that passes *through* this task — that is, the sum of the
+path. The score equals the `estimated_duration_s` of the longest
+path that passes _through_ this task — that is, the sum of the
 critical sub-path from this task to any sink.
 
-Raises :class:`KeyError` if *task_id* is not registered.
+Raises :class:`KeyError` if _task_id_ is not registered.
 Raises :class:`DagCycleError` if the graph contains a cycle.
 
 ---
@@ -187,8 +187,8 @@ ready_tasks(self: Any, completed: set[str])
 
 Return tasks whose dependencies are all satisfied, sorted by priority.
 
-*completed* is the set of already-finished ``task_id`` values.  Tasks
-in *completed* are excluded from the result.
+_completed_ is the set of already-finished `task_id` values. Tasks
+in _completed_ are excluded from the result.
 
 Tasks are returned in descending priority order (highest
 

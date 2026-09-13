@@ -36,7 +36,7 @@ into a weighted 0-100 composite score.
 
 ### Methods
 
-#### HealthScoreComputer.__init__
+#### HealthScoreComputer.**init**
 
 ```python
 __init__(self: Any, health_targets_path: Path)
@@ -55,8 +55,8 @@ Compute a health score from raw dimension measurements.
 **Parameters**:
 
 - `dimension_values`: mapping of dimension name to raw measured value.
-Dimensions not present in the dict default to their worst case
-(0 for higher_is_better, target*2 for lower_is_better).
+  Dimensions not present in the dict default to their worst case
+  (0 for higher_is_better, target\*2 for lower_is_better).
 
 **Returns**: A fully populated HealthScore.
 
@@ -85,8 +85,8 @@ Compute a health score from raw dimension measurements.
 **Parameters**:
 
 - `dimension_values`: mapping of dimension name to raw measured value.
-Dimensions not present in the dict default to their worst case
-(0 for higher_is_better, target*2 for lower_is_better).
+  Dimensions not present in the dict default to their worst case
+  (0 for higher_is_better, target\*2 for lower_is_better).
 
 **Returns**: A fully populated HealthScore.
 

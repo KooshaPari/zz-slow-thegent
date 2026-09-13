@@ -23,25 +23,25 @@
 
 ### 1.1 Issues Addressed
 
-| Issue | Location | Status | Fix |
-|-------|----------|--------|-----|
-| `NameError: name 'Optional' is not defined` | `thegent/src/thegent/main.py` (lines 3526, 3550) | ✅ Fixed | Replaced `Optional[Path]` with `Path \| None` |
-| `git: '/opt/homebrew/bin/codex' is not a git command` | Git shim routing | ✅ Fixed | Added `_install_agent_accelerators()` |
-| `git: '/opt/homebrew/bin/copilot' is not a git command` | Git shim routing | ✅ Fixed | Added `_install_agent_accelerators()` |
-| Copilot parse error: `no matches found: /*---` | Zsh parsing Node.js script | ✅ Fixed | Exec real binary directly |
-| Zsh setup stripped | `~/.zshenv`, `~/.zshrc` | ✅ Fixed | Restored from `thegent/shell/` |
-| Ghostty config missing | `~/.config/ghostty/config` | ✅ Fixed | Created config file |
+| Issue                                                   | Location                                         | Status   | Fix                                           |
+| ------------------------------------------------------- | ------------------------------------------------ | -------- | --------------------------------------------- |
+| `NameError: name 'Optional' is not defined`             | `thegent/src/thegent/main.py` (lines 3526, 3550) | ✅ Fixed | Replaced `Optional[Path]` with `Path \| None` |
+| `git: '/opt/homebrew/bin/codex' is not a git command`   | Git shim routing                                 | ✅ Fixed | Added `_install_agent_accelerators()`         |
+| `git: '/opt/homebrew/bin/copilot' is not a git command` | Git shim routing                                 | ✅ Fixed | Added `_install_agent_accelerators()`         |
+| Copilot parse error: `no matches found: /*---`          | Zsh parsing Node.js script                       | ✅ Fixed | Exec real binary directly                     |
+| Zsh setup stripped                                      | `~/.zshenv`, `~/.zshrc`                          | ✅ Fixed | Restored from `thegent/shell/`                |
+| Ghostty config missing                                  | `~/.config/ghostty/config`                       | ✅ Fixed | Created config file                           |
 
 ### 1.2 Shim Architecture (MTSP-10)
 
 #### Component Breakdown
 
-| Component | Purpose | Implementation | Status |
-|-----------|---------|----------------|--------|
-| **Git Shim** | Multi-tenant lock coordination | `hooks/lib/git-wrapper.sh` | ✅ Complete |
-| **Tool Accelerators** | grep→rg, find→fd, jq→jaq, uv | `hooks/lib/common.sh` | ✅ Complete |
+| Component              | Purpose                           | Implementation                   | Status      |
+| ---------------------- | --------------------------------- | -------------------------------- | ----------- |
+| **Git Shim**           | Multi-tenant lock coordination    | `hooks/lib/git-wrapper.sh`       | ✅ Complete |
+| **Tool Accelerators**  | grep→rg, find→fd, jq→jaq, uv      | `hooks/lib/common.sh`            | ✅ Complete |
 | **Agent Accelerators** | codex, copilot (exec real binary) | `thegent/src/thegent/install.py` | ✅ Complete |
-| **Role Accelerators** | run, bg, ps → `thegent {role}` | `hooks/lib/common.sh` | ✅ Complete |
+| **Role Accelerators**  | run, bg, ps → `thegent {role}`    | `hooks/lib/common.sh`            | ✅ Complete |
 
 #### Implementation Details
 
@@ -63,6 +63,7 @@ def _install_agent_accelerators(self):
 ```
 
 **Benefits**:
+
 - Avoids zsh parsing issues
 - Prevents git routing confusion
 - Direct binary execution (fastest)
@@ -74,6 +75,7 @@ def _install_agent_accelerators(self):
 - **FULL_SHELL_TO_RUST**: Shell to Rust migration (ongoing)
 
 **See Also**:
+
 - [FULL_SHELL_TO_RUST_WHERE_BENEFICIAL.md](../plans/FULL_SHELL_TO_RUST_WHERE_BENEFICIAL.md)
 - [SETUP-RESTORE.md](../SETUP-RESTORE.md)
 
@@ -91,14 +93,15 @@ def _install_agent_accelerators(self):
 
 #### Multiplexers
 
-| Project | Stars | Language | Features | Recommendation |
-|---------|-------|----------|----------|----------------|
-| **Zellij** | 29k | Rust | Layouts, plugins, floating panes | ⭐ Recommended |
-| **tmux** | - | C | Standard, widely supported | ✅ Fallback |
-| **mprocs** | 2.4k | Rust | Process management | ⚠️ Limited |
-| **trex** | 10 | - | AI agent tracking | 🔍 Experimental |
+| Project    | Stars | Language | Features                         | Recommendation  |
+| ---------- | ----- | -------- | -------------------------------- | --------------- |
+| **Zellij** | 29k   | Rust     | Layouts, plugins, floating panes | ⭐ Recommended  |
+| **tmux**   | -     | C        | Standard, widely supported       | ✅ Fallback     |
+| **mprocs** | 2.4k  | Rust     | Process management               | ⚠️ Limited      |
+| **trex**   | 10    | -        | AI agent tracking                | 🔍 Experimental |
 
 **Zellij Advantages**:
+
 - Modern Rust implementation
 - Plugin system
 - Floating panes
@@ -107,13 +110,14 @@ def _install_agent_accelerators(self):
 
 #### TUI Frameworks
 
-| Framework | Stars | Language | Features | Use Case |
-|-----------|-------|----------|----------|----------|
-| **Textual** | 34k | Python | CSS-like styling, web export | ⭐ Recommended |
-| **Ratatui** | 18k | Rust | Terminal UI library | ✅ Alternative |
-| **Bubble Tea** | 39k | Go | TUI framework | ✅ Alternative |
+| Framework      | Stars | Language | Features                     | Use Case       |
+| -------------- | ----- | -------- | ---------------------------- | -------------- |
+| **Textual**    | 34k   | Python   | CSS-like styling, web export | ⭐ Recommended |
+| **Ratatui**    | 18k   | Rust     | Terminal UI library          | ✅ Alternative |
+| **Bubble Tea** | 39k   | Go       | TUI framework                | ✅ Alternative |
 
 **Textual Advantages**:
+
 - Python (matches thegent stack)
 - CSS-like styling
 - `textual serve` for web export
@@ -122,12 +126,12 @@ def _install_agent_accelerators(self):
 
 #### Dashboard Applications (Reference UX)
 
-| Application | Purpose | UX Pattern |
-|-------------|---------|------------|
-| **Superfile** | File manager | Tree navigation |
-| **Glow** | Markdown viewer | Content display |
-| **gitui** | Git interface | Status panels |
-| **taskwarrior-tui** | Task management | List views |
+| Application         | Purpose         | UX Pattern      |
+| ------------------- | --------------- | --------------- |
+| **Superfile**       | File manager    | Tree navigation |
+| **Glow**            | Markdown viewer | Content display |
+| **gitui**           | Git interface   | Status panels   |
+| **taskwarrior-tui** | Task management | List views      |
 
 ### 2.3 Recommended Architecture
 
@@ -161,12 +165,14 @@ def _install_agent_accelerators(self):
 #### Implementation Paths
 
 **Path A: Zellij + Custom Plugin**
+
 - Use Zellij as compositor
 - Build custom TUI plugin for menubar/statusbar
 - Pros: Leverage Zellij's features
 - Cons: Plugin development overhead
 
 **Path B: Textual App Hosting Compositor**
+
 - Build Textual app with menubar/statusbar
 - Embed terminal panes (via libvterm or similar)
 - Pros: Full control, Python integration
@@ -199,12 +205,12 @@ def _install_agent_accelerators(self):
 
 ### 2.5 Performance Targets
 
-| Metric | Target | Notes |
-|--------|--------|-------|
-| App startup | <500ms | Fast initialization |
-| Pane creation | <100ms | Quick pane spawning |
-| Layout switch | <50ms | Smooth transitions |
-| Memory usage | <100MB | Efficient resource use |
+| Metric        | Target | Notes                  |
+| ------------- | ------ | ---------------------- |
+| App startup   | <500ms | Fast initialization    |
+| Pane creation | <100ms | Quick pane spawning    |
+| Layout switch | <50ms  | Smooth transitions     |
+| Memory usage  | <100MB | Efficient resource use |
 
 ### 2.6 Related Work Items
 
@@ -213,6 +219,7 @@ def _install_agent_accelerators(self):
 - **UNIFIED_SYSTEM_APPLICATION_PLAN**: Unified application plan
 
 **See Also**:
+
 - [UNIFIED_SYSTEM_APPLICATION_PLAN.md](../plans/UNIFIED_SYSTEM_APPLICATION_PLAN.md)
 - [Textual Documentation](https://textual.textualize.io/)
 - [Zellij Documentation](https://zellij.dev/)
@@ -232,13 +239,13 @@ def _install_agent_accelerators(self):
 
 #### Hardware Setup
 
-| Component | Mac | Windows PC |
-|-----------|-----|------------|
-| **Role** | Client (Cursor, Claude Code) | Compute base |
-| **RAM** | 16GB | 64GB |
-| **VRAM** | Integrated | 16GB |
-| **CPU** | Apple Silicon | 8-core |
-| **Storage** | 512GB SSD | 5TB |
+| Component   | Mac                          | Windows PC   |
+| ----------- | ---------------------------- | ------------ |
+| **Role**    | Client (Cursor, Claude Code) | Compute base |
+| **RAM**     | 16GB                         | 64GB         |
+| **VRAM**    | Integrated                   | 16GB         |
+| **CPU**     | Apple Silicon                | 8-core       |
+| **Storage** | 512GB SSD                    | 5TB          |
 
 #### Network Architecture
 
@@ -263,12 +270,14 @@ def _install_agent_accelerators(self):
 #### Sync Architecture
 
 **Syncthing**:
+
 - Bi-directional sync of `kush/` directory
 - Real-time file synchronization
 - Conflict resolution
 - Bandwidth throttling
 
 **Remote Access**:
+
 - **Parsec RDP**: Low-latency remote desktop
 - **SSH**: Command-line access
 - **Tailscale**: Secure VPN tunnel
@@ -327,12 +336,12 @@ class ComputeOffloader:
 
 ### 3.4 Performance Characteristics
 
-| Operation | Latency | Throughput | Notes |
-|-----------|---------|------------|-------|
-| File sync (initial) | 30s-2m | Variable | Depends on size |
-| File sync (incremental) | 1-5s | Fast | Only changes |
-| Remote execution | 100-500ms | 10/s | Network dependent |
-| Parsec RDP | <50ms | Real-time | Low latency |
+| Operation               | Latency   | Throughput | Notes             |
+| ----------------------- | --------- | ---------- | ----------------- |
+| File sync (initial)     | 30s-2m    | Variable   | Depends on size   |
+| File sync (incremental) | 1-5s      | Fast       | Only changes      |
+| Remote execution        | 100-500ms | 10/s       | Network dependent |
+| Parsec RDP              | <50ms     | Real-time  | Low latency       |
 
 ### 3.5 Failure Modes & Mitigation
 
@@ -357,6 +366,7 @@ class ComputeOffloader:
 - **HYBRID_ENV_IMPLEMENTATION**: Hybrid environment setup
 
 **See Also**:
+
 - [HYBRID_MAC_WIN_DEV_ENVIRONMENT.md](../architecture/HYBRID_MAC_WIN_DEV_ENVIRONMENT.md)
 - [HYBRID_ENV_IMPLEMENTATION_PLAN.md](../plans/HYBRID_ENV_IMPLEMENTATION_PLAN.md)
 - [HYBRID_ENV_SUMMARY.md](../reference/HYBRID_ENV_SUMMARY.md)
@@ -385,16 +395,19 @@ class ComputeOffloader:
 #### Claude Code Sessions
 
 **macOS**:
+
 ```
 ~/Library/Application Support/Claude/claude-code/sessions/
 ```
 
 **Linux**:
+
 ```
 ~/.local/share/claude-code/sessions/
 ```
 
 **Windows**:
+
 ```
 %APPDATA%\Claude\claude-code\sessions\
 ```
@@ -402,16 +415,19 @@ class ComputeOffloader:
 #### Codex Sessions
 
 **macOS**:
+
 ```
 ~/.config/codex/sessions/
 ```
 
 **Linux**:
+
 ```
 ~/.config/codex/sessions/
 ```
 
 **Windows**:
+
 ```
 %APPDATA%\codex\sessions\
 ```
@@ -419,6 +435,7 @@ class ComputeOffloader:
 #### Cursor Sessions
 
 **macOS**:
+
 ```
 ~/Library/Application Support/Cursor/User/globalStorage/
 ```
@@ -651,12 +668,12 @@ class SessionMonitor:
 
 ### 4.7 Performance Characteristics
 
-| Operation | Latency | Throughput |
-|-----------|---------|------------|
-| Idea detection | <1ms | 10,000/s |
-| Session parsing | <10ms | 100/s |
-| File watching | Real-time | Event-driven |
-| Storage | <5ms | 1,000/s |
+| Operation       | Latency   | Throughput   |
+| --------------- | --------- | ------------ |
+| Idea detection  | <1ms      | 10,000/s     |
+| Session parsing | <10ms     | 100/s        |
+| File watching   | Real-time | Event-driven |
+| Storage         | <5ms      | 1,000/s      |
 
 ### 4.8 Failure Modes & Mitigation
 
@@ -675,6 +692,7 @@ class SessionMonitor:
 - **PROMPT_HISTORY_COLLECTION**: Prompt history collection system
 
 **See Also**:
+
 - [PROMPT_HISTORY_COLLECTION_AND_AUDIT_SYSTEM.md](../plans/PROMPT_HISTORY_COLLECTION_AND_AUDIT_SYSTEM.md)
 - [IDEA_SEEDS_SESSION_STORAGE.md](./IDEA_SEEDS_SESSION_STORAGE.md)
 
@@ -686,21 +704,21 @@ class SessionMonitor:
 
 Add to [WORK_STREAM.md](../reference/WORK_STREAM.md) BACKLOG:
 
-| ID | Title | Source | Priority | Depends |
-|----|-------|--------|----------|---------|
-| **research-shell-shim-fixes** | Shell & shim fixes (completed) | CONVERSATION_DUMP | P0 | - |
-| **research-tui-compositor** | TUI compositor implementation | CONVERSATION_DUMP | P1 | - |
-| **research-compute-offload** | Compute offloading Mac↔PC | CONVERSATION_DUMP | P2 | HYBRID_ENV |
-| **research-idea-seed-system** | Idea seed detection & storage | CONVERSATION_DUMP | P1 | PROMPT_HISTORY |
+| ID                            | Title                          | Source            | Priority | Depends        |
+| ----------------------------- | ------------------------------ | ----------------- | -------- | -------------- |
+| **research-shell-shim-fixes** | Shell & shim fixes (completed) | CONVERSATION_DUMP | P0       | -              |
+| **research-tui-compositor**   | TUI compositor implementation  | CONVERSATION_DUMP | P1       | -              |
+| **research-compute-offload**  | Compute offloading Mac↔PC     | CONVERSATION_DUMP | P2       | HYBRID_ENV     |
+| **research-idea-seed-system** | Idea seed detection & storage  | CONVERSATION_DUMP | P1       | PROMPT_HISTORY |
 
 ### 5.2 Implementation Status
 
-| Work Item | Status | Notes |
-|-----------|--------|-------|
-| Shell & shim fixes | ✅ Complete | Already implemented |
-| TUI compositor | 📅 Planned | Architecture designed |
-| Compute offload | 📅 Planned | Architecture complete |
-| Idea seed system | 📅 Planned | Research complete |
+| Work Item          | Status      | Notes                 |
+| ------------------ | ----------- | --------------------- |
+| Shell & shim fixes | ✅ Complete | Already implemented   |
+| TUI compositor     | 📅 Planned  | Architecture designed |
+| Compute offload    | 📅 Planned  | Architecture complete |
+| Idea seed system   | 📅 Planned  | Research complete     |
 
 ---
 
@@ -779,27 +797,30 @@ Add to [WORK_STREAM.md](../reference/WORK_STREAM.md) BACKLOG:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices
 
 ## Evidence Retention Rules
 
-| Evidence Type | Retention Window | Store Path | Required Command |
-|---|---|---|---|
-| Command output logs | 30 days | `thegent/logs/` | `mkdir -p thegent/logs && script -q thegent/logs/session-$(date +%Y%m%d-%H%M%S).log` |
-| Test artifacts (junit/coverage) | 14 days | `thegent/artifacts/tests/` | `mkdir -p thegent/artifacts/tests && cp -f .coverage thegent/artifacts/tests/ 2>/dev/null || true` |
-| Research snapshots | 90 days | `thegent/docs/research/archive/` | `mkdir -p thegent/docs/research/archive && cp -f thegent/docs/research/CONVERSATION_DUMP_2026-02-16_EXPANDED.md thegent/docs/research/archive/` |
-| Verification command transcripts | 30 days | `thegent/artifacts/verify/` | `mkdir -p thegent/artifacts/verify && task quality | tee thegent/artifacts/verify/quality-$(date +%Y%m%d-%H%M%S).log` |
+| Evidence Type                    | Retention Window | Store Path                       | Required Command                                                                                                                                |
+| -------------------------------- | ---------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ----- |
+| Command output logs              | 30 days          | `thegent/logs/`                  | `mkdir -p thegent/logs && script -q thegent/logs/session-$(date +%Y%m%d-%H%M%S).log`                                                            |
+| Test artifacts (junit/coverage)  | 14 days          | `thegent/artifacts/tests/`       | `mkdir -p thegent/artifacts/tests && cp -f .coverage thegent/artifacts/tests/ 2>/dev/null                                                       |                                                                  | true` |
+| Research snapshots               | 90 days          | `thegent/docs/research/archive/` | `mkdir -p thegent/docs/research/archive && cp -f thegent/docs/research/CONVERSATION_DUMP_2026-02-16_EXPANDED.md thegent/docs/research/archive/` |
+| Verification command transcripts | 30 days          | `thegent/artifacts/verify/`      | `mkdir -p thegent/artifacts/verify && task quality                                                                                              | tee thegent/artifacts/verify/quality-$(date +%Y%m%d-%H%M%S).log` |
 
 - Purge expired logs weekly: `find thegent/logs thegent/artifacts/tests thegent/artifacts/verify -type f -mtime +30 -delete`
 - Purge expired research snapshots monthly: `find thegent/docs/research/archive -type f -mtime +90 -delete`

@@ -437,42 +437,42 @@ IMPORTANT: All other .md files should be in docs/ or .archived/
 
 ### File Count Validation
 
-| Category | Count | Status |
-|----------|-------|--------|
-| Root files (before) | 67 | ✓ Counted |
-| Root files (after) | 11 | ✓ Target |
-| Archive files (Section A) | 31 | ✓ Planned |
-| Archive files (Section F) | 12 | ✓ Planned |
-| Consolidate files (Sections B-E, G) | 20+ | ✓ Planned |
-| **Total files mapped** | **67** | ✓ 100% |
+| Category                            | Count  | Status    |
+| ----------------------------------- | ------ | --------- |
+| Root files (before)                 | 67     | ✓ Counted |
+| Root files (after)                  | 11     | ✓ Target  |
+| Archive files (Section A)           | 31     | ✓ Planned |
+| Archive files (Section F)           | 12     | ✓ Planned |
+| Consolidate files (Sections B-E, G) | 20+    | ✓ Planned |
+| **Total files mapped**              | **67** | ✓ 100%    |
 
 ### Directory Structure Validation
 
-| Directory Level | Count | Status |
-|-----------------|-------|--------|
-| docs/ subdirectories | 13 | ✓ Created |
-| docs/guides/ files | 9-11 | ✓ Target |
-| docs/api/ files | 4 | ✓ Target |
-| docs/architecture/ files | 8 | ✓ Target |
-| docs/deployment/ with runbooks/ | 9 | ✓ Target |
-| docs/development/ files | 8 | ✓ Target |
-| docs/concepts/ files | 6 | ✓ Target |
-| docs/troubleshooting/ files | 7 | ✓ Target |
-| docs/projects/ subdirs | 5-10 | ✓ Target |
-| docs/references/ files | 5 | ✓ Target |
-| docs/archives/ subdirs | 6 | ✓ Target |
-| .archived/ subdirs | 4 | ✓ Target |
+| Directory Level                 | Count | Status    |
+| ------------------------------- | ----- | --------- |
+| docs/ subdirectories            | 13    | ✓ Created |
+| docs/guides/ files              | 9-11  | ✓ Target  |
+| docs/api/ files                 | 4     | ✓ Target  |
+| docs/architecture/ files        | 8     | ✓ Target  |
+| docs/deployment/ with runbooks/ | 9     | ✓ Target  |
+| docs/development/ files         | 8     | ✓ Target  |
+| docs/concepts/ files            | 6     | ✓ Target  |
+| docs/troubleshooting/ files     | 7     | ✓ Target  |
+| docs/projects/ subdirs          | 5-10  | ✓ Target  |
+| docs/references/ files          | 5     | ✓ Target  |
+| docs/archives/ subdirs          | 6     | ✓ Target  |
+| .archived/ subdirs              | 4     | ✓ Target  |
 
 ### Quality Metrics
 
-| Metric | Before | After | Target |
-|--------|--------|-------|--------|
-| Root clutter | 67 files | 11 files | ✓ 84% ↓ |
-| Fragmentation | 19 docs dirs | 1 unified | ✓ 95% ↓ |
-| Conversation clutter | 31+ files at root | Archived | ✓ 100% ✓ |
-| Single source of truth | No | Yes | ✓ Achieved |
-| Navigation clarity | Confusing | Clear hierarchy | ✓ Improved |
-| Documentation organization | 3.8/10 | Target 7+/10 | ✓ In progress |
+| Metric                     | Before            | After           | Target        |
+| -------------------------- | ----------------- | --------------- | ------------- |
+| Root clutter               | 67 files          | 11 files        | ✓ 84% ↓       |
+| Fragmentation              | 19 docs dirs      | 1 unified       | ✓ 95% ↓       |
+| Conversation clutter       | 31+ files at root | Archived        | ✓ 100% ✓      |
+| Single source of truth     | No                | Yes             | ✓ Achieved    |
+| Navigation clarity         | Confusing         | Clear hierarchy | ✓ Improved    |
+| Documentation organization | 3.8/10            | Target 7+/10    | ✓ In progress |
 
 ---
 
@@ -514,4 +514,3 @@ Ready to execute when:
 **Last Updated**: 2026-02-20  
 **Status**: READY FOR EXECUTION  
 **Next Step**: Review with team, then begin Phase 1 (Create Structure)
-

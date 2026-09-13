@@ -12,7 +12,7 @@ Research for cachetools migration.
 
 ### Methods
 
-#### LibraryCacheResearch.__init__
+#### LibraryCacheResearch.**init**
 
 ```python
 __init__(self: Any)

@@ -15,7 +15,7 @@ including parsing PLAN.md, tracking task status, and managing dependencies.
 
 ### Methods
 
-#### PlanSystemIntegration.__init__
+#### PlanSystemIntegration.**init**
 
 ```python
 __init__(self: Any, plan_file: Any, plan_status_file: Any)
@@ -27,7 +27,7 @@ Initialize plan system integration.
 
 - `plan_file`: Path to PLAN.md file. Defaults to PLAN.md
 - `plan_status_file`: Path to PLAN_STATUS.md file.
-Defaults to docs/reference/PLAN_STATUS.md
+  Defaults to docs/reference/PLAN_STATUS.md
 
 ---
 

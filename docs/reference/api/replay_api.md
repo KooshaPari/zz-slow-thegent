@@ -12,7 +12,7 @@ Deterministic simulation replay.
 
 ### Methods
 
-#### SimulationReplay.__init__
+#### SimulationReplay.**init**
 
 ```python
 __init__(self: Any, replay_dir: Any)

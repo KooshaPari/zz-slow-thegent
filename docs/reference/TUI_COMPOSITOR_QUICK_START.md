@@ -280,11 +280,13 @@ OutputWidget {
 ## Performance Tips
 
 1. **Batch Updates** - Update multiple metrics at once
+
    ```python
    metrics.update_metrics({...})  # Better than individual updates
    ```
 
 2. **Reuse Components** - Create once, update many times
+
    ```python
    output = OutputWidget()  # Create once
    # ... use many times with write()
@@ -333,15 +335,15 @@ print(css)
 
 ## Quick Reference
 
-| Component | Purpose | Key Method |
-|-----------|---------|-----------|
-| LayoutEngine | Layout calculations | create_vertical_stack() |
-| OutputWidget | Display output | write() |
-| StatusWidget | Show status | update_status() |
-| SidebarWidget | Track agents | add_agent() |
-| HeaderWidget | App title | render() |
-| MetricsPanel | Show metrics | update_metrics() |
-| ProgressIndicator | Show progress | update_progress() |
+| Component         | Purpose             | Key Method              |
+| ----------------- | ------------------- | ----------------------- |
+| LayoutEngine      | Layout calculations | create_vertical_stack() |
+| OutputWidget      | Display output      | write()                 |
+| StatusWidget      | Show status         | update_status()         |
+| SidebarWidget     | Track agents        | add_agent()             |
+| HeaderWidget      | App title           | render()                |
+| MetricsPanel      | Show metrics        | update_metrics()        |
+| ProgressIndicator | Show progress       | update_progress()       |
 
 ---
 

@@ -6,7 +6,8 @@ This manifest documents the 100 modern, high-performance, and agent-friendly too
 ---
 
 ## 1. Workstation QOL: The "Modern Unix" Suite (30 items)
-*These tools are the primary interface for both the human and the agents.*
+
+_These tools are the primary interface for both the human and the agents._
 
 1.  **eza**: High-performance `ls` replacement with icons and git integration (Rust).
 2.  **bat**: A `cat` clone with syntax highlighting and Git integration (Rust).
@@ -42,7 +43,8 @@ This manifest documents the 100 modern, high-performance, and agent-friendly too
 ---
 
 ## 2. Rust High-Performance Libraries (20 items)
-*Integrated into thegent Rust crates for maximum throughput.*
+
+_Integrated into thegent Rust crates for maximum throughput._
 
 31. **sonic-rs**: Extremely fast JSON library using SIMD (Rust).
 32. **jiter**: High-performance JSON iterator used for agent stream parsing (Rust).
@@ -68,7 +70,8 @@ This manifest documents the 100 modern, high-performance, and agent-friendly too
 ---
 
 ## 3. Python Performance Ecosystem (15 items)
-*Used for thegent Python agent core and CLI.*
+
+_Used for thegent Python agent core and CLI._
 
 51. **granian**: Rust-powered HTTP server for high-throughput Python APIs.
 52. **robyn**: Rust-powered Python web framework for minimal latency.
@@ -89,7 +92,8 @@ This manifest documents the 100 modern, high-performance, and agent-friendly too
 ---
 
 ## 4. Go Backend & System Libraries (15 items)
-*Integrated into thegent Go services and tools.*
+
+_Integrated into thegent Go services and tools._
 
 66. **zap**: Blazing fast, structured, leveled logging from Uber.
 67. **zerolog**: Zero-allocation JSON logger for microservices.
@@ -110,7 +114,8 @@ This manifest documents the 100 modern, high-performance, and agent-friendly too
 ---
 
 ## 5. Node.js & Frontend Modern Tools (10 items)
-*Used for thegent web UI and tray applications.*
+
+_Used for thegent web UI and tray applications._
 
 81. **bun**: Fast all-in-one JavaScript runtime, package manager, and bundler.
 82. **zod**: TypeScript-first schema validation with static type inference.
@@ -126,7 +131,8 @@ This manifest documents the 100 modern, high-performance, and agent-friendly too
 ---
 
 ## 6. System & Infrastructure (10 items)
-*The foundational layer for thegent workstation.*
+
+_The foundational layer for thegent workstation._
 
 91. **mise**: Polyglot version manager used to manage all dev runtimes.
 92. **proto**: Unified toolchain manager for consistent agent environments.
@@ -137,11 +143,12 @@ This manifest documents the 100 modern, high-performance, and agent-friendly too
 97. **Arc Browser**: High-performance browser with workspace management.
 98. **Raycast**: The fastest, most extensible launcher for macOS.
 99. **Nix**: Functional package manager for reproducible system setups.
-100. **Homebrew**: The missing package manager for macOS/Linux (Thegent fallback).
+100.  **Homebrew**: The missing package manager for macOS/Linux (Thegent fallback).
 
 ---
 
 ## Summary of 2026 Strategy Integration
+
 - **Nested Isolation**: Layer 1 (OS User) and Layer 2 (Sub-user) utilize the above performance libs for IPC and VFS.
 - **CLI-Share**: Uses `thegent_shm` (Rust) and `sonic-rs` for ultra-low latency command debouncing.
 - **Predictive Governance**: Uses `ResourceDistribution` models powered by `statistics` and `psutil` to throttle speculators.

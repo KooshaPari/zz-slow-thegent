@@ -61,6 +61,7 @@
   - **Target:** Day 3
 
 **Acceptance Criteria:**
+
 - [ ] Dispatcher detects shell correctly on all platforms
 - [ ] Dispatcher resolves hook files (.sh/.ps1)
 - [ ] Dispatcher executes hooks with correct environment
@@ -123,6 +124,7 @@
   - [ ] **Target:** Day 3
 
 **Acceptance Criteria:**
+
 - [ ] bash_lib.sh is 200-300 LOC
 - [ ] All public functions documented
 - [ ] All functions tested on multiple shells
@@ -190,6 +192,7 @@
   - [ ] **Target:** Day 3
 
 **Acceptance Criteria:**
+
 - [ ] pwsh_lib.ps1 is 200-300 LOC
 - [ ] All functions have PowerShell help
 - [ ] All functions tested on pwsh 7+
@@ -246,6 +249,7 @@
   - [ ] **Target:** Day 3
 
 **Acceptance Criteria:**
+
 - [ ] Shell detection works on all platforms
 - [ ] ShellEnvironment properly caches shell detection
 - [ ] run_command() executes in correct shell
@@ -290,6 +294,7 @@
   - [ ] **Target:** Week 3, Day 4
 
 **Acceptance Criteria:**
+
 - [ ] Both .sh and .ps1 versions exist
 - [ ] Behavior is identical
 - [ ] All tests pass on both platforms
@@ -474,6 +479,7 @@
   - [ ] **Target:** Week 7, Day 4
 
 **Acceptance Criteria:**
+
 - [ ] User creation works on Linux, macOS, Windows
 - [ ] Proper error messages for permission issues
 - [ ] Idempotent (can call multiple times safely)
@@ -702,11 +708,13 @@
 **Risk:** PowerShell library development, deployment complexity
 
 **Mitigation:**
+
 - Early spike (Week 1) to validate PowerShell module approach
 - Windows developer on team from Week 3
 - Extended testing (Week 9-10)
 
 **Contingency:**
+
 - If pwsh library too complex, fall back to single .ps1 file
 - Defer OS-level adapters (Phase 2D) if time pressure
 
@@ -715,11 +723,13 @@
 **Risk:** Dispatcher overhead, environment setup
 
 **Mitigation:**
+
 - Benchmark prototype (end of Week 1)
 - Caching shell detection
 - Profile hook execution
 
 **Contingency:**
+
 - Optimize dispatcher further (compile flags, caching)
 - Fallback to direct bash for POSIX if needed
 
@@ -728,11 +738,13 @@
 **Risk:** bash_lib.sh and pwsh_lib.ps1 behavior divergence
 
 **Mitigation:**
+
 - Detailed API specs (Week 1)
 - Pair programming on libraries
 - Comprehensive test coverage
 
 **Contingency:**
+
 - API compatibility tests: run same test on both shells
 - Regular code review checkpoints
 
@@ -741,6 +753,7 @@
 ## Team & Resources
 
 **Recommended Team:**
+
 - 1 Rust engineer (dispatcher, adapters)
 - 1 PowerShell engineer (pwsh library, testing)
 - 1 Python engineer (integration, config)
@@ -749,6 +762,7 @@
 **Effort:** ~7 weeks @ 4 FTE = ~28 person-weeks
 
 **Alternatives:**
+
 - 1 fullstack engineer: 3 months
 - 2 engineers (POSIX + PowerShell split): 10-12 weeks
 

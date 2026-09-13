@@ -7,18 +7,19 @@
 > **WORK_STREAM ID:** phase14-cost-sensing
 
 ## 1. Objective
+
 Verify that autonomous learning actions are financially bounded and policy-safe.
 
 ## 2. Test Cases
 
-| ID | Category | Description | Success Criteria |
-|----|----------|-------------|------------------|
-| AL-001 | Bounding | Set cost cap to $5. Attempt a learning action that might exceed it. | Action blocked or throttled. |
-| AL-002 | Selection | Provide objectives: "Cheapest" vs "Fastest". | Selector picks correct model path. |
-| AL-003 | Rollback | Simulate a canary model failure (e.g., latency > 2s). | Automatic rollback to baseline model. |
-| AL-004 | HITL | Attempt to promote a canary model to "default" without approval. | Promotion blocked. |
-| AL-005 | Drift | Policy changes during a learning session. | Learning session re-evaluates against new policy. |
-| AL-006 | Feedback | Record feedback on a learning action. | Trust score/calibration updated for the learning candidate. |
+| ID     | Category  | Description                                                         | Success Criteria                                            |
+| ------ | --------- | ------------------------------------------------------------------- | ----------------------------------------------------------- |
+| AL-001 | Bounding  | Set cost cap to $5. Attempt a learning action that might exceed it. | Action blocked or throttled.                                |
+| AL-002 | Selection | Provide objectives: "Cheapest" vs "Fastest".                        | Selector picks correct model path.                          |
+| AL-003 | Rollback  | Simulate a canary model failure (e.g., latency > 2s).               | Automatic rollback to baseline model.                       |
+| AL-004 | HITL      | Attempt to promote a canary model to "default" without approval.    | Promotion blocked.                                          |
+| AL-005 | Drift     | Policy changes during a learning session.                           | Learning session re-evaluates against new policy.           |
+| AL-006 | Feedback  | Record feedback on a learning action.                               | Trust score/calibration updated for the learning candidate. |
 
 ## 3. Test Implementation
 
@@ -203,11 +204,11 @@ def test_cost_prediction_accuracy():
 - [ ] All tests passing (pending implementation)
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -217,15 +218,18 @@ def test_cost_prediction_accuracy():
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

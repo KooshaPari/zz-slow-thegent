@@ -13,12 +13,14 @@
 
 **Architects & Technical Leads**
 Start here → Read in this order:
+
 1. INTEGRATION_ARCHITECTURE.md § 1–3 (Executive Summary + Module Map + Data Flow)
 2. INTEGRATION_ARCHITECTURE.md § 5 (Constraint Enforcement Matrix)
 3. INTEGRATION_ARCHITECTURE.md § 7 (Phase Breakdown)
 
 **Software Engineers (Implementers)**
 Start here → Read in this order:
+
 1. INTEGRATION_QUICK_START.md (25-action checklist)
 2. INTEGRATION_ARCHITECTURE.md § 2 (Module-by-module changes with code examples)
 3. INTEGRATION_ARCHITECTURE.md § 4 (File Changes Summary table)
@@ -26,6 +28,7 @@ Start here → Read in this order:
 
 **Operations & Monitoring**
 Start here → Read in this order:
+
 1. INTEGRATION_QUICK_START.md § "Risky Spots"
 2. INTEGRATION_QUICK_START.md § "Debugging & Troubleshooting"
 3. INTEGRATION_ARCHITECTURE.md § 9 (Monitoring & Metrics)
@@ -113,7 +116,7 @@ Comprehensive technical design document covering all aspects of TaskRouter + Par
    - Classifier accuracy (token estimation can be off by 2–3x)
    - Config parsing (JSON can fail silently)
    - Fallback chain unbounding (memory leak risk)
-   Each with risk, mitigation, and action
+     Each with risk, mitigation, and action
 
 5. **Success Criteria by Phase**
    Checkpoints for Phase 1 (core routing), Phase 2 (cost enforcement), Phase 3 (production)
@@ -132,12 +135,14 @@ Comprehensive technical design document covering all aspects of TaskRouter + Par
 ## Implementation Roadmap
 
 ### Pre-Work (Week 0)
+
 - [ ] Read architecture + quick-start documents
 - [ ] Set up feature branches (feature/taskrouter-phase1, etc.)
 - [ ] Prepare test environment
 - [ ] Schedule code review pairing sessions
 
 ### Week 1: Core Routing (Days 1–5)
+
 - [ ] Action 1–6: Create routing/ module (TaskRouter, TaskClassifier, ConstraintValidator)
 - [ ] Action 7–10: Extend config.py + RunMeta
 - [ ] Action 11–13: Integrate into cli_impl.py
@@ -145,12 +150,14 @@ Comprehensive technical design document covering all aspects of TaskRouter + Par
 - **Deliverable**: TaskRouter integrated, 90%+ tested, 100 test tasks classified
 
 ### Week 2: Policy + Cost (Days 6–10)
+
 - [ ] Action 19–21: Extend CostAggregator + PolicyEngine
 - [ ] Action 22–24: Pareto routing (Phase 2, optional)
 - [ ] Action 25: Monitoring setup
 - **Deliverable**: Cost enforcement working, integration tests pass, dashboard ready
 
 ### Week 3: Testing + Rollout (Days 11–15)
+
 - [ ] Day 11–12: Shadow run (no enforcement, collect calibration data)
 - [ ] Day 13: Full enforcement rollout
 - [ ] Day 14: Tuning + documentation
@@ -163,14 +170,14 @@ Comprehensive technical design document covering all aspects of TaskRouter + Par
 
 ### Success Criteria (End of Phase 3)
 
-| Metric | Target | Current | Owner |
-|--------|--------|---------|-------|
-| Cost Reduction | 18% ($550→$450/mo) | TBD | Finance |
-| Routing Latency (p99) | < 100ms | Baseline | Eng |
-| Budget Accuracy | < 10% error | Baseline | Eng |
-| Constraint Violation Rate | < 1% (false positives) | Baseline | Eng |
-| Fallback Frequency (HIGH_COMPLEX) | < 5% | Baseline | Eng |
-| Code Coverage (routing/) | ≥90% | Baseline | Eng |
+| Metric                            | Target                 | Current  | Owner   |
+| --------------------------------- | ---------------------- | -------- | ------- |
+| Cost Reduction                    | 18% ($550→$450/mo)     | TBD      | Finance |
+| Routing Latency (p99)             | < 100ms                | Baseline | Eng     |
+| Budget Accuracy                   | < 10% error            | Baseline | Eng     |
+| Constraint Violation Rate         | < 1% (false positives) | Baseline | Eng     |
+| Fallback Frequency (HIGH_COMPLEX) | < 5%                   | Baseline | Eng     |
+| Code Coverage (routing/)          | ≥90%                   | Baseline | Eng     |
 
 ### Hard Constraints (Must Pass)
 
@@ -277,21 +284,25 @@ A: 4 SLOs with alerts: routing latency, budget accuracy, violation rate, fallbac
 ## Communication & Escalation
 
 ### Daily Standup (Week 1–3)
+
 - [ ] Update checklist items (✓ completed, ⚠ blocked, ⏳ in progress)
 - [ ] Report blockers to tech lead
 - [ ] Share risky spot updates
 
 ### Code Review Pairing (Suggested)
+
 - [ ] routing/task_router.py (classifier accuracy + complexity scoring)
 - [ ] cli_impl.py integration (early TaskRouter call)
 - [ ] governance/cost.py (per-category tracking logic)
 
 ### Metrics Review (Weekly)
+
 - [ ] Shadow run metrics (Days 11–12): Cost estimates within 20%?
 - [ ] Phase 2 metrics (Days 6–10): Integration tests green?
 - [ ] Phase 1 metrics (Days 1–5): Coverage ≥90%?
 
 ### Post-Launch (Day 15+)
+
 - [ ] Daily monitoring of 4 SLOs
 - [ ] On-call response to alerts
 - [ ] Weekly retrospective on cost reduction, incidents, improvements
@@ -300,33 +311,28 @@ A: 4 SLOs with alerts: routing latency, budget accuracy, violation rate, fallbac
 
 ## References & Resources
 
-| Document | Purpose | Where |
-|----------|---------|-------|
-| INTEGRATION_ARCHITECTURE.md | Full technical design | docs/reference/ |
-| INTEGRATION_QUICK_START.md | 25-action checklist | docs/reference/ |
-| src/thegent/config.py | Config schema reference | Source code |
-| src/thegent/execution.py | RunMeta + RunRegistry API | Source code |
-| tests/test_unit_routing.py | Unit test examples | Tests |
-| tests/test_integration_routing.py | Integration test examples | Tests |
+| Document                          | Purpose                   | Where           |
+| --------------------------------- | ------------------------- | --------------- |
+| INTEGRATION_ARCHITECTURE.md       | Full technical design     | docs/reference/ |
+| INTEGRATION_QUICK_START.md        | 25-action checklist       | docs/reference/ |
+| src/thegent/config.py             | Config schema reference   | Source code     |
+| src/thegent/execution.py          | RunMeta + RunRegistry API | Source code     |
+| tests/test_unit_routing.py        | Unit test examples        | Tests           |
+| tests/test_integration_routing.py | Integration test examples | Tests           |
 
 ---
 
 ## Next Actions
 
 **Immediate (Today)**
+
 1. [ ] Share this index with team
 2. [ ] Schedule 30-min walkthrough of INTEGRATION_ARCHITECTURE.md § 1–3
 3. [ ] Schedule 30-min walkthrough of INTEGRATION_QUICK_START.md
 
-**This Week**
-4. [ ] Assign Week 1 owner (Action 1–18)
-5. [ ] Set up feature branches
-6. [ ] Prepare test environment
+**This Week** 4. [ ] Assign Week 1 owner (Action 1–18) 5. [ ] Set up feature branches 6. [ ] Prepare test environment
 
-**Week 1 Kickoff**
-7. [ ] Begin Action #1 (routing/models.py)
-8. [ ] Daily standup on progress vs. checklist
-9. [ ] Pair on Action #3 (task_router.py)
+**Week 1 Kickoff** 7. [ ] Begin Action #1 (routing/models.py) 8. [ ] Daily standup on progress vs. checklist 9. [ ] Pair on Action #3 (task_router.py)
 
 ---
 
@@ -334,7 +340,6 @@ A: 4 SLOs with alerts: routing latency, budget accuracy, violation rate, fallbac
 **Last Updated**: 2026-02-15
 **Status**: Ready for Implementation
 **Contact**: [Core Team]
-
 
 ---
 
@@ -344,15 +349,18 @@ A: 4 SLOs with alerts: routing latency, budget accuracy, violation rate, fallbac
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

@@ -8,7 +8,7 @@ OpenAI documents **Zero Data Retention** and **Modified Abuse Monitoring** as **
 
 - Source: [OpenAI Platform — Data controls / Zero Data Retention](https://platform.openai.com/docs/guides/your-data)
 
-**Factoring for your stack:** “We have ZDR on harnesses” is **provider-specific**. It justifies **not** treating OpenAI-route keys like generic long-lived SaaS passwords *when* the org is actually on an approved ZDR/MAM project. It does **not** automatically apply to MiniMax, Anthropic, or self-hosted CLIProxy; each route needs its **own** DPA / dashboard / policy citation.
+**Factoring for your stack:** “We have ZDR on harnesses” is **provider-specific**. It justifies **not** treating OpenAI-route keys like generic long-lived SaaS passwords _when_ the org is actually on an approved ZDR/MAM project. It does **not** automatically apply to MiniMax, Anthropic, or self-hosted CLIProxy; each route needs its **own** DPA / dashboard / policy citation.
 
 ## Mesh VPN — implementation reality (2026)
 
@@ -44,12 +44,12 @@ See the focused note (repo wiring + citations): [`LANGUAGE_INVARIANTS_AND_VALE_2
 
 ## Cross-check summary
 
-| Claim | Independent lines |
-|--------|---------------------|
-| ZDR reduces retained **customer content** in OpenAI API abuse logs | OpenAI data-controls doc |
-| OIDC reduces long-lived **GitHub↔cloud** secrets | GitHub OIDC doc + Vault JWT doc |
-| SOPS+age is a **standard** git-friendly encrypted-file workflow | SOPS upstream README |
-| Tailscale **mesh** is actively maintained (2026 validation stamp) | Tailscale KB page metadata |
+| Claim                                                              | Independent lines               |
+| ------------------------------------------------------------------ | ------------------------------- |
+| ZDR reduces retained **customer content** in OpenAI API abuse logs | OpenAI data-controls doc        |
+| OIDC reduces long-lived **GitHub↔cloud** secrets                  | GitHub OIDC doc + Vault JWT doc |
+| SOPS+age is a **standard** git-friendly encrypted-file workflow    | SOPS upstream README            |
+| Tailscale **mesh** is actively maintained (2026 validation stamp)  | Tailscale KB page metadata      |
 
 ## Gaps (honest)
 

@@ -8,19 +8,12 @@ Wraps thegent agent capabilities as an ACP-compatible HTTP endpoint using
 Starlette, consistent with the existing MCP server pattern.
 
 ACP request format:
-    {"type": "task", "payload": {...}, "agent_id": "..."}
+{"type": "task", "payload": {...}, "agent_id": "..."}
 
 ACP response format:
-    {"type": "result", "result": {...}, "agent_id": "..."}
+{"type": "result", "result": {...}, "agent_id": "..."}
 
-JSON-RPC methods supported (over HTTP POST /rpc and stdio):
-    - initialize       -&gt; server capabilities
-    - agent/spawn      -&gt; spawn an agent with a prompt, returns result
-    - agent/message    -&gt; send a follow-up message to an existing session
-    - agent/stop       -&gt; stop an active session
-    - session/attach   -&gt; attach to or create a named mux session
-    - session/inspect  -&gt; capture pane output from a mux session
-    - session/send     -&gt; send keystrokes to a mux session
+JSON-RPC methods supported (over HTTP POST /rpc and stdio): - initialize -&gt; server capabilities - agent/spawn -&gt; spawn an agent with a prompt, returns result - agent/message -&gt; send a follow-up message to an existing session - agent/stop -&gt; stop an active session - session/attach -&gt; attach to or create a named mux session - session/inspect -&gt; capture pane output from a mux session - session/send -&gt; send keystrokes to a mux session
 
 Independently startable::
 
@@ -37,12 +30,12 @@ Handles both simple task/result messages (native ACP format) and the
 JSON-RPC method envelope used by the stdio transport.
 
 ACP message flow:
-    Client  -&gt;  {"type": "task", "payload": {...}, "agent_id": "..."}
-    Server  -&gt;  {"type": "result", "result": {...}, "agent_id": "..."}
+Client -&gt; {"type": "task", "payload": {...}, "agent_id": "..."}
+Server -&gt; {"type": "result", "result": {...}, "agent_id": "..."}
 
 ### Methods
 
-#### ACPServerAdapter.__init__
+#### ACPServerAdapter.**init**
 
 ```python
 __init__(self: Any, session_endpoints: Any)
@@ -59,9 +52,9 @@ build_starlette_app(self: Any)
 Build a Starlette ASGI application exposing the ACP server over HTTP.
 
 Endpoints:
-    GET  /health    Liveness probe.
-    POST /rpc       JSON-RPC 2.0 endpoint.
-    POST /acp       Native ACP message endpoint.
+GET /health Liveness probe.
+POST /rpc JSON-RPC 2.0 endpoint.
+POST /acp Native ACP message endpoint.
 
 ---
 
@@ -75,7 +68,7 @@ Start the HTTP server (blocking).
 
 **Parameters**:
 
-- `host`: Bind address (default ``127.0.0.1``).
+- `host`: Bind address (default `127.0.0.1`).
 - `port`: Bind port (default :data:`ACP_DEFAULT_PORT`).
 
 ---
@@ -88,7 +81,7 @@ Represents an active ACP agent session.
 
 ### Methods
 
-#### AgentSession.__init__
+#### AgentSession.**init**
 
 ```python
 __init__(self: Any, session_id: str, runner: AgentRunner, cwd: Any)
@@ -120,10 +113,10 @@ Signal the session to stop.
 
 ## SessionEndpoints
 
-Wraps session-backend calls for the session/* ACP RPC methods.
+Wraps session-backend calls for the session/\* ACP RPC methods.
 
 Keeps session management logic separate from agent lifecycle logic for
-testability.  Callers should use :meth:`get_or_resolve_backend` rather
+testability. Callers should use :meth:`get_or_resolve_backend` rather
 than constructing a backend themselves so that the backend is shared and
 lazily resolved.
 
@@ -131,19 +124,19 @@ lazily resolved.
 
 ### Methods
 
-#### SessionEndpoints.__init__
+#### SessionEndpoints.**init**
 
 ```python
 __init__(self: Any, backend: Any)
 ```
 
-Create a ``SessionEndpoints`` instance.
+Create a `SessionEndpoints` instance.
 
 **Parameters**:
 
-- `backend`: Optional pre-constructed backend.  When *None* the backend
-is resolved lazily on first use via
-:func:`~thegent.session.resolve_session_backend`.
+- `backend`: Optional pre-constructed backend. When _None_ the backend
+  is resolved lazily on first use via
+  :func:`~thegent.session.resolve_session_backend`.
 
 ---
 
@@ -153,11 +146,11 @@ is resolved lazily on first use via
 attach(self: Any, session_name: str)
 ```
 
-Attach to *session_name*, creating it if it does not exist.
+Attach to _session_name_, creating it if it does not exist.
 
-Returns a dict with ``session_id`` (same as *session_name* for
-backend-managed sessions) and ``status`` (``"attached"`` or
-``"created"``).
+Returns a dict with `session_id` (same as _session_name_ for
+backend-managed sessions) and `status` (`"attached"` or
+`"created"`).
 
 # @trace FR-SES-001
 
@@ -179,9 +172,9 @@ Return the session backend, resolving it lazily if needed.
 inspect(self: Any, session_id: str, last_lines: int)
 ```
 
-Capture *last_lines* lines of output from *session_id*.
+Capture _last_lines_ lines of output from _session_id_.
 
-Returns a dict with ``lines`` (list[str]) and ``backend`` (str name).
+Returns a dict with `lines` (list[str]) and `backend` (str name).
 
 # @trace FR-SES-001
 
@@ -193,10 +186,10 @@ Returns a dict with ``lines`` (list[str]) and ``backend`` (str name).
 send(self: Any, session_id: str, text: str)
 ```
 
-Send *text* (and optionally a carriage return) to *session_id*.
+Send _text_ (and optionally a carriage return) to _session_id_.
 
-The send is implemented as ``zmx send-keys`` semantics: if *enter* is
-True, a newline character is appended.  Returns ``{"success": bool}``.
+The send is implemented as `zmx send-keys` semantics: if _enter_ is
+True, a newline character is appended. Returns `{"success": bool}`.
 
 # @trace FR-SES-001
 
@@ -220,11 +213,11 @@ Append a message to the session conversation history.
 attach(self: Any, session_name: str)
 ```
 
-Attach to *session_name*, creating it if it does not exist.
+Attach to _session_name_, creating it if it does not exist.
 
-Returns a dict with ``session_id`` (same as *session_name* for
-backend-managed sessions) and ``status`` (``"attached"`` or
-``"created"``).
+Returns a dict with `session_id` (same as _session_name_ for
+backend-managed sessions) and `status` (`"attached"` or
+`"created"`).
 
 # @trace FR-SES-001
 
@@ -239,9 +232,9 @@ build_starlette_app(self: Any)
 Build a Starlette ASGI application exposing the ACP server over HTTP.
 
 Endpoints:
-    GET  /health    Liveness probe.
-    POST /rpc       JSON-RPC 2.0 endpoint.
-    POST /acp       Native ACP message endpoint.
+GET /health Liveness probe.
+POST /rpc JSON-RPC 2.0 endpoint.
+POST /acp Native ACP message endpoint.
 
 ---
 
@@ -251,7 +244,7 @@ Endpoints:
 cli(http: bool, host: str, port: int, log_level: str)
 ```
 
-Run ACP server in stdio mode by default, or HTTP mode with ``--http``.
+Run ACP server in stdio mode by default, or HTTP mode with `--http`.
 
 ---
 
@@ -271,9 +264,9 @@ Return the session backend, resolving it lazily if needed.
 inspect(self: Any, session_id: str, last_lines: int)
 ```
 
-Capture *last_lines* lines of output from *session_id*.
+Capture _last_lines_ lines of output from _session_id_.
 
-Returns a dict with ``lines`` (list[str]) and ``backend`` (str name).
+Returns a dict with `lines` (list[str]) and `backend` (str name).
 
 # @trace FR-SES-001
 
@@ -281,7 +274,7 @@ Returns a dict with ``lines`` (list[str]) and ``backend`` (str name).
 
 ## main
 
-CLI entry point.  Use ``--http`` flag to start HTTP server.
+CLI entry point. Use `--http` flag to start HTTP server.
 
 ---
 
@@ -295,7 +288,7 @@ Start the HTTP server (blocking).
 
 **Parameters**:
 
-- `host`: Bind address (default ``127.0.0.1``).
+- `host`: Bind address (default `127.0.0.1`).
 - `port`: Bind port (default :data:`ACP_DEFAULT_PORT`).
 
 ---
@@ -306,10 +299,10 @@ Start the HTTP server (blocking).
 send(self: Any, session_id: str, text: str)
 ```
 
-Send *text* (and optionally a carriage return) to *session_id*.
+Send _text_ (and optionally a carriage return) to _session_id_.
 
-The send is implemented as ``zmx send-keys`` semantics: if *enter* is
-True, a newline character is appended.  Returns ``{"success": bool}``.
+The send is implemented as `zmx send-keys` semantics: if _enter_ is
+True, a newline character is appended. Returns `{"success": bool}`.
 
 # @trace FR-SES-001
 

@@ -13,9 +13,7 @@ Plugins are loaded from `~/.claude/sitback-plugins/`:
 
 ```json
 {
-  "startup_steps": [
-    "Check harness status before presenting dashboard."
-  ],
+  "startup_steps": ["Check harness status before presenting dashboard."],
   "widgets": {
     "my-widget": {
       "title": "Custom Panel",
@@ -42,11 +40,11 @@ def register_sitback(registry):
 
 ### Registry Methods
 
-| Method | Purpose |
-|--------|---------|
-| `register_widget(name, fn)` | `fn()` → `{title, content, border_style}` |
-| `register_startup_step(step)` | Append line to startup prompt |
-| `register_harness_status(fn)` | `fn()` → `dict | None` (heliosShield/FUSE) |
+| Method                        | Purpose                                   |
+| ----------------------------- | ----------------------------------------- | ------------------------- |
+| `register_widget(name, fn)`   | `fn()` → `{title, content, border_style}` |
+| `register_startup_step(step)` | Append line to startup prompt             |
+| `register_harness_status(fn)` | `fn()` → `dict                            | None` (heliosShield/FUSE) |
 
 ## Harness / heliosShield Placeholder
 
@@ -54,20 +52,18 @@ When `THGENT_SITBACK_HARNESS=1`, the built-in harness placeholder shows a "helio
 
 ## Profiles
 
-| Profile | Dashboard content |
-|---------|-------------------|
-| `light` | Summary line only |
+| Profile  | Dashboard content                            |
+| -------- | -------------------------------------------- |
+| `light`  | Summary line only                            |
 | `medium` | Sessions, circuits, drift, budget, terminals |
-| `full` | Medium + plugin widgets + harness status |
-
+| `full`   | Medium + plugin widgets + harness status     |
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -77,15 +73,18 @@ When `THGENT_SITBACK_HARNESS=1`, the built-in harness placeholder shows a "helio
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

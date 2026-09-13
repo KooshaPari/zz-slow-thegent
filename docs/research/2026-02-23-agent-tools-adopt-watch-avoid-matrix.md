@@ -5,6 +5,7 @@ Date: 2026-02-23
 Basis: synthesized strictly from Wave 74 child-agent lane outputs (`A`..`F`), 30 total researched items.
 
 ## Adopt Now
+
 - Claude Code workflow hardening (review gates, CI checks, traceability)
   - Why: repeatedly tied to reliable delivery in lane A/B/E.
   - Links:
@@ -32,6 +33,7 @@ Basis: synthesized strictly from Wave 74 child-agent lane outputs (`A`..`F`), 30
     - https://docs.anthropic.com/en/api/data-usage-cost-api
 
 ## Watch
+
 - Multi-agent orchestration wrappers and integrations
   - Why: high upside, but fragility without strict decomposition/handoff.
   - Links:
@@ -49,6 +51,7 @@ Basis: synthesized strictly from Wave 74 child-agent lane outputs (`A`..`F`), 30
     - https://docs.e2b.dev/
 
 ## Avoid Hype
+
 - Skill-catalog marketing and "autonomous" claims without production evidence
   - Why: lane A/E repeatedly flagged evidence gaps and overclaim risk.
   - Links:
@@ -61,6 +64,7 @@ Basis: synthesized strictly from Wave 74 child-agent lane outputs (`A`..`F`), 30
     - https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html
 
 ## Short Adoption Order
+
 1. Adopt baseline reliability stack first (`MCP + eval + telemetry + memory controls`).
 2. Expand with orchestration/deployment add-ons after reliability SLOs are met.
 3. Reject claims that do not include reproducible evaluation and security evidence.

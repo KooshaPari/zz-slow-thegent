@@ -15,7 +15,7 @@ Orchestrates Zero-Knowledge governance for sensitive context.
 
 ### Methods
 
-#### ZKGovernor.__init__
+#### ZKGovernor.**init**
 
 ```python
 __init__(self: Any, agent_id: str)

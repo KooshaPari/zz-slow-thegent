@@ -15,7 +15,7 @@ Manages semantic injection vectors for steering black-box agents.
 
 ### Methods
 
-#### ControlVectorManager.__init__
+#### ControlVectorManager.**init**
 
 ```python
 __init__(self: Any, agent_id: str)

@@ -12,7 +12,7 @@ Manages alert volume and prevents operator fatigue.
 
 ### Methods
 
-#### AlertFatigueController.__init__
+#### AlertFatigueController.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings)

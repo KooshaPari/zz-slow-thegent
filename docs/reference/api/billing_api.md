@@ -14,7 +14,7 @@ Manages resource quotas and billing for multi-tenant teams.
 
 ### Methods
 
-#### TeamBillingManager.__init__
+#### TeamBillingManager.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)

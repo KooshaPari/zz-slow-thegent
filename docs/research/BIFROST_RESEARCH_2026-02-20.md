@@ -13,6 +13,7 @@
 There are several products named "Bifrost" in the software ecosystem (a network security product, a game engine bridge, etc.). The one relevant to AI/LLM is:
 
 **Bifrost by Maxim AI (maximhq/bifrost)**
+
 - GitHub: https://github.com/maximhq/bifrost
 - Website: https://www.getmaxim.ai/bifrost/
 - Docs: https://docs.getbifrost.ai
@@ -44,10 +45,12 @@ Its primary positioning is: **"50x faster than LiteLLM with enterprise-grade gov
 near-zero overhead."**
 
 The performance claim is backed by benchmarks on AWS t3.medium at 500 RPS:
+
 - Bifrost: 100% success rate, P99 = 1.68s, throughput = 424 req/s, memory = 120MB
 - LiteLLM: 88.78% success rate, P99 = 90.72s, throughput = 44.84 req/s, memory = 372MB
 
 At 5,000 RPS on t3.xlarge:
+
 - Gateway overhead: 11 µs (mean)
 - Queue wait time: 1.67 µs
 - Success rate: 100%
@@ -86,6 +89,7 @@ bifrost/
 Bifrost offers three integration patterns:
 
 **Mode 1 — HTTP Gateway (most common)**
+
 ```bash
 # NPX one-liner
 npx -y @maximhq/bifrost
@@ -96,9 +100,11 @@ docker run -p 8080:8080 maximhq/bifrost
 # Docker with persistence
 docker run -p 8080:8080 -v $(pwd)/data:/app/data maximhq/bifrost
 ```
+
 Default port: 8080. Optional flags: `-port`, `APP_PORT`, host binding, log format.
 
 **Mode 2 — Go SDK Embedded**
+
 ```go
 import "github.com/maximhq/bifrost/core"
 // Direct in-process integration; bypasses HTTP transport
@@ -106,6 +112,7 @@ import "github.com/maximhq/bifrost/core"
 
 **Mode 3 — Drop-in SDK Replacement**
 Change the base URL in existing SDK calls:
+
 - OpenAI SDK: `base_url = "http://localhost:8080/openai"`
 - Anthropic SDK: `base_url = "http://localhost:8080/anthropic"`
 - Google GenAI: `base_url = "http://localhost:8080/genai"`
@@ -117,11 +124,13 @@ Change the base URL in existing SDK calls:
 ### 4.1 Client → Bifrost
 
 Bifrost itself accepts a "dummy" API key from the calling application:
+
 ```python
 api_key = "dummy"  # Bifrost handles actual provider credentials
 ```
 
 The real provider API keys are managed by Bifrost via:
+
 - **Web UI** at `http://localhost:8080`
 - **REST API** POST `/api/providers`
 - **File-based** `config.json` (disables Web UI; requires restart on changes)
@@ -131,6 +140,7 @@ When governance is enabled, clients authenticate using a **virtual key** (`x-bf-
 ### 4.2 Provider Credentials
 
 Keys support environment variable injection using `env.VAR_NAME` syntax:
+
 ```json
 {
   "providers": {
@@ -161,10 +171,11 @@ POST http://localhost:8080/v1/chat/completions
 ```
 
 This is fully OpenAI-compatible. Model IDs use `provider/model` format:
+
 ```json
 {
   "model": "openai/gpt-4o-mini",
-  "messages": [{"role": "user", "content": "Hello"}]
+  "messages": [{ "role": "user", "content": "Hello" }]
 }
 ```
 
@@ -172,20 +183,20 @@ This is fully OpenAI-compatible. Model IDs use `provider/model` format:
 
 Bifrost exposes provider-namespaced endpoints so existing SDK code needs only a base URL change:
 
-| Endpoint Prefix | SDK Compatibility |
-|----------------|-------------------|
-| `http://localhost:8080/openai` | OpenAI SDK |
-| `http://localhost:8080/anthropic` | Anthropic SDK |
-| `http://localhost:8080/genai` | Google GenAI SDK |
+| Endpoint Prefix                             | SDK Compatibility            |
+| ------------------------------------------- | ---------------------------- |
+| `http://localhost:8080/openai`              | OpenAI SDK                   |
+| `http://localhost:8080/anthropic`           | Anthropic SDK                |
+| `http://localhost:8080/genai`               | Google GenAI SDK             |
 | `http://localhost:8080/v1/chat/completions` | Any OpenAI-compatible client |
 
 ### 5.3 Additional Endpoints
 
-| Endpoint | Purpose |
-|----------|---------|
-| `GET /metrics` | Prometheus metrics scrape |
-| `POST /api/providers` | Add/update provider configuration |
-| `/v1/mcp/tool/execute` | Explicit MCP tool execution |
+| Endpoint               | Purpose                           |
+| ---------------------- | --------------------------------- |
+| `GET /metrics`         | Prometheus metrics scrape         |
+| `POST /api/providers`  | Add/update provider configuration |
+| `/v1/mcp/tool/execute` | Explicit MCP tool execution       |
 
 ---
 
@@ -193,26 +204,27 @@ Bifrost exposes provider-namespaced endpoints so existing SDK code needs only a 
 
 As of 2026-02-20 (15–20+ providers):
 
-| Provider | Notes |
-|----------|-------|
-| OpenAI | Full support including Responses API |
-| Anthropic | Claude 3.x, Claude 4.x families |
-| AWS Bedrock | Requires `access_key`, `secret_key`, `region`, `arn`; model-to-ARN mapping |
-| Google Vertex AI | Requires deployment config |
-| Azure OpenAI | Requires `deployments` mapping + `api_version` |
-| Cerebras | Fast inference |
-| Cohere | Command family |
-| Mistral | Mistral 7B, Mixtral, etc. |
-| Ollama | Local models |
-| Groq | Ultra-fast inference |
-| Google GenAI | Gemini family |
-| Hugging Face | Via inference API |
-| Together AI | (documented) |
-| Perplexity | (documented) |
+| Provider         | Notes                                                                      |
+| ---------------- | -------------------------------------------------------------------------- |
+| OpenAI           | Full support including Responses API                                       |
+| Anthropic        | Claude 3.x, Claude 4.x families                                            |
+| AWS Bedrock      | Requires `access_key`, `secret_key`, `region`, `arn`; model-to-ARN mapping |
+| Google Vertex AI | Requires deployment config                                                 |
+| Azure OpenAI     | Requires `deployments` mapping + `api_version`                             |
+| Cerebras         | Fast inference                                                             |
+| Cohere           | Command family                                                             |
+| Mistral          | Mistral 7B, Mixtral, etc.                                                  |
+| Ollama           | Local models                                                               |
+| Groq             | Ultra-fast inference                                                       |
+| Google GenAI     | Gemini family                                                              |
+| Hugging Face     | Via inference API                                                          |
+| Together AI      | (documented)                                                               |
+| Perplexity       | (documented)                                                               |
 
 AWS Bedrock and Azure OpenAI require special key schemas:
 
 **Bedrock key schema:**
+
 ```json
 {
   "access_key": "env.AWS_ACCESS_KEY_ID",
@@ -227,6 +239,7 @@ AWS Bedrock and Azure OpenAI require special key schemas:
 ```
 
 **Azure key schema:**
+
 ```json
 {
   "value": "env.AZURE_API_KEY",
@@ -253,6 +266,7 @@ Request → Routing Rules → Governance Routing → Adaptive Load Balancing
 Evaluated first; override provider/model if matched. Uses Common Expression Language (CEL).
 
 Available context variables:
+
 ```
 model, provider                        // Request model/provider
 headers["x-tier"]                      // Request headers
@@ -263,6 +277,7 @@ request                                // Full request object
 ```
 
 Example rules:
+
 ```cel
 headers["x-tier"] == "premium"                              // Premium tier routing
 budget_used > 85                                             // Failover at budget threshold
@@ -277,12 +292,14 @@ If a rule matches: override provider/model, skip governance, proceed to key sele
 ### 7.2 Governance Routing (Explicit, Weighted)
 
 When no routing rule matches, governance runs. Uses virtual key `provider_configs`:
+
 - Validates requested models against `allowed_models`
 - Filters providers by budget limits and rate limits
 - Applies weighted random selection among eligible providers
 - Generates fallback chain from remaining providers sorted by weight (descending)
 
 **Allowed models configuration:**
+
 - Empty array: delegates to Model Catalog (all models the provider supports)
 - Explicit list: restricts to those models only; supports `openai/gpt-4o` prefix format
 
@@ -291,12 +308,14 @@ When no routing rule matches, governance runs. Uses virtual key `provider_config
 Always runs for key selection; optionally runs for provider selection.
 
 **Level 1 — Provider selection** (skipped if provider already specified by routing rule or governance):
+
 1. Lookup candidate providers from Model Catalog
 2. Filter by allowed models and key availability
 3. Score each provider: error rate (50% weight), latency via MV-TACOS (20%), utilization (5%)
 4. Weighted random selection with jitter
 
 **Level 2 — Key selection** (always runs, even when provider is pre-specified):
+
 1. Fetch all keys for selected provider
 2. Filter by key model restrictions
 3. Score each key: error rate, latency, TPM hits, health state
@@ -304,12 +323,14 @@ Always runs for key selection; optionally runs for provider selection.
 5. Skip circuit-broken keys (zero weight)
 
 **Health state machine:** Healthy → Degraded → Failed → Recovering
+
 - Fast recovery: 90% penalty reduction in 30 seconds
 - Exploration probes allow potentially recovered routes to be retried
 
 ### 7.4 Model Catalog
 
 Bifrost maintains an internal model catalog that:
+
 - Downloads pricing data from `https://getbifrost.ai/datasheet` (synced at startup + every 24h)
 - Calls each provider's `/v1/models` endpoint at startup and on provider add/update
 - Provides `O(1)` lookup for model-to-provider mappings
@@ -324,6 +345,7 @@ Pricing lookup fallback chain: Gemini→Vertex, vertex format stripping, Bedrock
 ### 8.1 Automatic Fallbacks
 
 When a request fails (provider error, rate limit, timeout):
+
 - **Governance mode**: remaining providers sorted by weight (descending), tried in order
 - **Load balancing mode**: remaining providers sorted by performance score (descending)
 - **Routing rules**: explicitly defined fallback chains within rule conditions
@@ -331,6 +353,7 @@ When a request fails (provider error, rate limit, timeout):
 ### 8.2 Circuit Breaking
 
 Bifrost's key health state machine acts as a circuit breaker per API key:
+
 - Keys in `Failed` state are assigned zero weight (skipped)
 - Keys in `Recovering` state are probed by the 25% exploration factor
 - Error penalties applied immediately on failure
@@ -366,22 +389,22 @@ string matching. This is the differentiating feature vs. most gateways that use 
 }
 ```
 
-| Parameter | Description |
-|-----------|-------------|
-| `embedding_model` | Model used to embed prompts for similarity search |
-| `ttl` | Time-to-live in seconds |
-| `threshold` | Cosine similarity cutoff (0.8 = 80% similar) |
-| `conversation_history_threshold` | Threshold for multi-turn caching |
-| `cache_by_model` | Separate cache per model |
-| `cache_by_provider` | Separate cache per provider |
+| Parameter                        | Description                                       |
+| -------------------------------- | ------------------------------------------------- |
+| `embedding_model`                | Model used to embed prompts for similarity search |
+| `ttl`                            | Time-to-live in seconds                           |
+| `threshold`                      | Cosine similarity cutoff (0.8 = 80% similar)      |
+| `conversation_history_threshold` | Threshold for multi-turn caching                  |
+| `cache_by_model`                 | Separate cache per model                          |
+| `cache_by_provider`              | Separate cache per provider                       |
 
 ### 9.2 Vector Store Backends
 
-| Backend | Notes |
-|---------|-------|
+| Backend  | Notes                            |
+| -------- | -------------------------------- |
 | Weaviate | 50Gi+ recommended for production |
-| Qdrant | External instance supported |
-| Redis | Supported |
+| Qdrant   | External instance supported      |
+| Redis    | Supported                        |
 
 Vector store is optional; can be disabled if semantic caching is not needed.
 
@@ -406,11 +429,11 @@ bifrost_cache_hits_total    // Count of cache hits
 
 Native Prometheus at `/metrics` endpoint. Key metrics:
 
-| Metric | Description |
-|--------|-------------|
+| Metric                            | Description                 |
+| --------------------------------- | --------------------------- |
 | `bifrost_upstream_requests_total` | Total requests to providers |
-| `bifrost_cost_total` | Real-time USD cost tracking |
-| `bifrost_cache_hits_total` | Cache hit count |
+| `bifrost_cost_total`              | Real-time USD cost tracking |
+| `bifrost_cache_hits_total`        | Cache hit count             |
 
 **Custom labels via request headers:**
 | Header | Purpose |
@@ -421,13 +444,14 @@ Native Prometheus at `/metrics` endpoint. Key metrics:
 ### 10.2 OpenTelemetry
 
 Native OTLP (HTTP collector) support:
+
 ```json
 {
   "telemetry": {
     "service_name": "bifrost-gateway",
     "collector_url": "http://otel-collector:4318",
     "trace_type": "genai_extension",
-    "headers": {"Authorization": "Bearer ..."}
+    "headers": { "Authorization": "Bearer ..." }
   }
 }
 ```
@@ -437,6 +461,7 @@ Uses GenAI OpenTelemetry semantic conventions (`genai_extension` trace type).
 ### 10.3 Structured Logging
 
 Request/response logging with two backends:
+
 - **SQLite** (default, development): `logs.db`
 - **PostgreSQL** (production): configurable via connection string
 
@@ -445,6 +470,7 @@ Logged fields: request/response content, token usage, costs, latency, error deta
 ### 10.4 Maxim AI Native Integration
 
 Plugin-based integration with Maxim's observability platform:
+
 - Automatic trace forwarding (all requests/responses)
 - Session grouping via `session-id` tag
 - Trace/generation ID propagation
@@ -453,6 +479,7 @@ Plugin-based integration with Maxim's observability platform:
 - A/B testing and simulation support
 
 **Plugin config (Go SDK):**
+
 ```go
 cfg := maxim.Config{
     ApiKey:    "MAXIM_API_KEY",
@@ -463,6 +490,7 @@ cfg := maxim.Config{
 ### 10.5 Web UI Dashboard
 
 Built-in real-time dashboard at `http://localhost:8080`:
+
 - Request analytics (volume, latency, cost, errors)
 - Provider health status
 - Cache hit rate visualization
@@ -485,14 +513,16 @@ The Web UI requires SQLite backend (`config.db`). File-only mode disables the UI
 ### 11.2 Budget Management
 
 **Hierarchical budget structure:**
+
 ```
 Customer → Team → Virtual Key → Provider Config
 ```
 
 Each level supports:
+
 ```json
 {
-  "max_limit": 500.00,
+  "max_limit": 500.0,
   "duration": "1M",
   "rate_limits": {
     "max_tokens_per_hour": 1000000,
@@ -502,6 +532,7 @@ Each level supports:
 ```
 
 When a budget is exhausted:
+
 - Requests at that scope are blocked (hard limit, not silent degradation)
 - Fallback logic can be configured to try alternative providers within budget
 - Monthly auto-reset supported
@@ -513,10 +544,12 @@ When a budget is exhausted:
 Rate limiting operates at two levels:
 
 **Virtual Key level:**
+
 - `max_tokens_per_hour`: Token-based rate limiting
 - `max_requests_per_hour`: Request count rate limiting
 
 **Adaptive Load Balancing:**
+
 - Keys at or near TPM (tokens per minute) limits are down-weighted
 - Circuit breaker transitions to `Failed` state prevent key abuse
 - 25% exploration keeps recovering keys in the rotation
@@ -553,6 +586,7 @@ limit in the hierarchy.
 ### 13.3 Enterprise SSO
 
 OpenID Connect (OIDC) integration:
+
 - Supported IdPs: Okta, Microsoft Entra ID (Azure AD)
 - SAML 2.0 support (Enterprise tier)
 - Active Directory / LDAP sync
@@ -611,6 +645,7 @@ Automated compliance monitoring, policy enforcement, and audit trail generation.
 ### 15.3 Audit Logs
 
 Four audit report types:
+
 1. Access audits (authentication events)
 2. Usage audits (API consumption)
 3. Data audits (access/modification tracking)
@@ -637,6 +672,7 @@ helm install bifrost maximhq/bifrost --set image.tag=latest
 ```
 
 **Production HA configuration:**
+
 - 3 replicas minimum; HPA scaling to 20 replicas
 - CPU target: 70% utilization
 - Memory target: 80% utilization
@@ -646,6 +682,7 @@ helm install bifrost maximhq/bifrost --set image.tag=latest
 - NGINX ingress with TLS/cert-manager
 
 **Storage backends:**
+
 - Development: SQLite with 10Gi PVC
 - Production: PostgreSQL (recommended)
 - Vector store: Weaviate, Qdrant, or Redis
@@ -727,6 +764,7 @@ Supports Google Artifact Registry, AWS ECR, Azure ACR, or self-hosted registries
 ### 17.2 Key Schema Fields
 
 From `core/schemas/account.go`:
+
 - `id`: Unique key identifier
 - `name`: Human-readable name
 - `value`: API key (or `env.VAR_NAME`)
@@ -742,49 +780,49 @@ From `core/schemas/account.go`:
 
 ### 18.1 vs. OpenRouter
 
-| Feature | Bifrost | OpenRouter |
-|---------|---------|------------|
-| Self-hosted | Yes (core value prop) | No (SaaS only) |
-| Data sovereignty | Full (never leaves infra) | Data goes through OpenRouter |
-| Semantic caching | Yes (vector similarity) | No |
-| Virtual keys / budgets | Yes (hierarchical) | Yes (credit system) |
-| CEL routing rules | Yes | No (order/ignore arrays only) |
-| Adaptive load balancing | Yes (ML scoring) | Yes (performance sort) |
-| MCP gateway | Yes (built-in) | No |
-| Web UI | Yes | Yes (openrouter.ai) |
-| Pricing | Free + Enterprise tier | Per-token markup |
-| Compliance (HIPAA/SOC2) | Yes | Not documented |
-| Go implementation | Yes (ultra-low latency) | Not open-source |
-| Provider count | 15–20+ | 300+ models, 50+ providers |
-| Model catalog | Self-maintained + pricing API | Extensive (community maintained) |
+| Feature                 | Bifrost                       | OpenRouter                       |
+| ----------------------- | ----------------------------- | -------------------------------- |
+| Self-hosted             | Yes (core value prop)         | No (SaaS only)                   |
+| Data sovereignty        | Full (never leaves infra)     | Data goes through OpenRouter     |
+| Semantic caching        | Yes (vector similarity)       | No                               |
+| Virtual keys / budgets  | Yes (hierarchical)            | Yes (credit system)              |
+| CEL routing rules       | Yes                           | No (order/ignore arrays only)    |
+| Adaptive load balancing | Yes (ML scoring)              | Yes (performance sort)           |
+| MCP gateway             | Yes (built-in)                | No                               |
+| Web UI                  | Yes                           | Yes (openrouter.ai)              |
+| Pricing                 | Free + Enterprise tier        | Per-token markup                 |
+| Compliance (HIPAA/SOC2) | Yes                           | Not documented                   |
+| Go implementation       | Yes (ultra-low latency)       | Not open-source                  |
+| Provider count          | 15–20+                        | 300+ models, 50+ providers       |
+| Model catalog           | Self-maintained + pricing API | Extensive (community maintained) |
 
 ### 18.2 vs. LiteLLM
 
-| Feature | Bifrost | LiteLLM |
-|---------|---------|---------|
-| Language | Go | Python |
-| Gateway overhead | 11 µs | ~1,000+ µs |
-| P99 at 500 RPS | 1.68s | 90.72s |
-| Memory (500 RPS) | 120MB | 372MB |
-| Semantic caching | Yes (vector) | Yes (exact match + semantic option) |
-| Provider count | 15–20 | 100+ |
-| CEL routing rules | Yes | No |
-| MCP gateway | Yes | No |
-| Go SDK embed | Yes | No (Python only) |
-| Enterprise features | Yes (SSO, RBAC, SOC2) | Yes (proxy + enterprise tier) |
+| Feature             | Bifrost               | LiteLLM                             |
+| ------------------- | --------------------- | ----------------------------------- |
+| Language            | Go                    | Python                              |
+| Gateway overhead    | 11 µs                 | ~1,000+ µs                          |
+| P99 at 500 RPS      | 1.68s                 | 90.72s                              |
+| Memory (500 RPS)    | 120MB                 | 372MB                               |
+| Semantic caching    | Yes (vector)          | Yes (exact match + semantic option) |
+| Provider count      | 15–20                 | 100+                                |
+| CEL routing rules   | Yes                   | No                                  |
+| MCP gateway         | Yes                   | No                                  |
+| Go SDK embed        | Yes                   | No (Python only)                    |
+| Enterprise features | Yes (SSO, RBAC, SOC2) | Yes (proxy + enterprise tier)       |
 
 ### 18.3 vs. Portkey
 
-| Feature | Bifrost | Portkey |
-|---------|---------|---------|
-| Self-hosted | Yes | Yes (open source) |
-| Language | Go | TypeScript/Node |
-| Gateway binary size | Small | 122KB |
-| Provider count | 15–20+ | 1600+ models |
-| Semantic caching | Yes | Yes |
-| CEL routing rules | Yes | Config-based rules |
-| Guardrails | Yes | Yes (50+) |
-| MCP gateway | Yes | Not documented |
+| Feature             | Bifrost | Portkey            |
+| ------------------- | ------- | ------------------ |
+| Self-hosted         | Yes     | Yes (open source)  |
+| Language            | Go      | TypeScript/Node    |
+| Gateway binary size | Small   | 122KB              |
+| Provider count      | 15–20+  | 1600+ models       |
+| Semantic caching    | Yes     | Yes                |
+| CEL routing rules   | Yes     | Config-based rules |
+| Guardrails          | Yes     | Yes (50+)          |
+| MCP gateway         | Yes     | Not documented     |
 
 ---
 
@@ -792,16 +830,16 @@ From `core/schemas/account.go`:
 
 Beyond standard OpenAI spec, Bifrost-specific behaviors:
 
-| Extension | Description |
-|-----------|-------------|
-| `x-bf-vk` header | Virtual key authentication for governance |
-| `x-bf-prom-team` header | Tag Prometheus metrics by team |
-| `x-bf-prom-environment` header | Tag Prometheus metrics by environment |
-| `provider/model` model format | Provider prefix required for routing (e.g., `openai/gpt-4o`) |
-| `env.VAR_NAME` in config | Secure env var injection in config.json |
-| `/v1/mcp/tool/execute` endpoint | Explicit MCP tool execution |
-| `/api/providers` POST | REST API for dynamic provider configuration |
-| `/metrics` GET | Prometheus metrics scrape endpoint |
+| Extension                       | Description                                                  |
+| ------------------------------- | ------------------------------------------------------------ |
+| `x-bf-vk` header                | Virtual key authentication for governance                    |
+| `x-bf-prom-team` header         | Tag Prometheus metrics by team                               |
+| `x-bf-prom-environment` header  | Tag Prometheus metrics by environment                        |
+| `provider/model` model format   | Provider prefix required for routing (e.g., `openai/gpt-4o`) |
+| `env.VAR_NAME` in config        | Secure env var injection in config.json                      |
+| `/v1/mcp/tool/execute` endpoint | Explicit MCP tool execution                                  |
+| `/api/providers` POST           | REST API for dynamic provider configuration                  |
+| `/metrics` GET                  | Prometheus metrics scrape endpoint                           |
 
 ---
 
@@ -828,18 +866,18 @@ Beyond standard OpenAI spec, Bifrost-specific behaviors:
 
 For completeness, other notable gateways in this space (in case "Bifrost" was ambiguous):
 
-| Gateway | Language | Self-hosted | Notable For |
-|---------|----------|-------------|-------------|
-| **Portkey** | TypeScript | Yes | 1600+ models, 50+ guardrails, Configs API |
-| **LiteLLM** | Python | Yes | 100+ providers, established ecosystem |
-| **Helicone** | TypeScript | Yes | Developer-focused logging and replay |
-| **OpenRouter** | N/A (SaaS) | No | Largest model catalog, community |
-| **Martian** | N/A (SaaS) | No | Task-aware model routing |
-| **Not Diamond** | N/A (SaaS) | No | ML-based model selection |
-| **Unify** | N/A (SaaS) | No | Benchmark-driven routing |
-| **Cloudflare AI Gateway** | N/A (SaaS) | No | Edge-native, Cloudflare ecosystem |
-| **Kong AI Gateway** | Go/Nginx | Yes | Enterprise Kong plugin |
-| **Envoy AI Gateway** | Go | Yes | Envoy-based, Kubernetes native |
+| Gateway                   | Language   | Self-hosted | Notable For                               |
+| ------------------------- | ---------- | ----------- | ----------------------------------------- |
+| **Portkey**               | TypeScript | Yes         | 1600+ models, 50+ guardrails, Configs API |
+| **LiteLLM**               | Python     | Yes         | 100+ providers, established ecosystem     |
+| **Helicone**              | TypeScript | Yes         | Developer-focused logging and replay      |
+| **OpenRouter**            | N/A (SaaS) | No          | Largest model catalog, community          |
+| **Martian**               | N/A (SaaS) | No          | Task-aware model routing                  |
+| **Not Diamond**           | N/A (SaaS) | No          | ML-based model selection                  |
+| **Unify**                 | N/A (SaaS) | No          | Benchmark-driven routing                  |
+| **Cloudflare AI Gateway** | N/A (SaaS) | No          | Edge-native, Cloudflare ecosystem         |
+| **Kong AI Gateway**       | Go/Nginx   | Yes         | Enterprise Kong plugin                    |
+| **Envoy AI Gateway**      | Go         | Yes         | Envoy-based, Kubernetes native            |
 
 ---
 

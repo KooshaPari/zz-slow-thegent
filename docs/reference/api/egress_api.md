@@ -16,7 +16,7 @@ Pushes normalized events to external enterprise security systems (WP-15001).
 
 ### Methods
 
-#### SIEMEgress.__init__
+#### SIEMEgress.**init**
 
 ```python
 __init__(self: Any, endpoint_url: Any)

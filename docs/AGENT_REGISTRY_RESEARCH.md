@@ -6,6 +6,7 @@
 ## Goal
 
 Create an automatic agent registry system that allows:
+
 1. **Viewing all agent processes** (thegent run agents, internal sub-agents like "cc task", user/system called agents)
 2. **For each agent process, being able to:**
    - "Open" the process
@@ -71,24 +72,28 @@ Create an automatic agent registry system that allows:
 ### Option 1: Named Pipes (FIFOs)
 
 **How it works:**
+
 - Create a FIFO per session: `mkfifo /path/to/session_{id}.in`
 - Agent opens FIFO for reading (blocking read)
 - Registry writes messages to FIFO
 - Agent processes messages as they arrive
 
 **Pros:**
+
 - Standard Unix IPC mechanism
 - Blocking reads (efficient, no polling)
 - File-like interface (easy to use)
 - Works for headless processes
 
 **Cons:**
+
 - Requires agent modification to read from FIFO
 - One reader per FIFO (need separate FIFOs per session)
 - FIFO cleanup needed when session ends
 - May block if no reader attached
 
 **Implementation:**
+
 ```python
 # Registry side
 fifo_path = session_dir / f"{session_id}.in"
@@ -108,24 +113,28 @@ if fifo_path.exists():
 ### Option 2: Unix Domain Sockets
 
 **How it works:**
+
 - Create a socket per session: `/tmp/thegent_{session_id}.sock`
 - Registry connects and sends messages
 - Agent listens on socket
 - Bidirectional communication possible
 
 **Pros:**
+
 - More robust than FIFOs
 - Bidirectional communication
 - Can handle multiple connections (with proper design)
 - Standard IPC mechanism
 
 **Cons:**
+
 - More complex than FIFOs
 - Requires socket programming
 - Need to handle connection management
 - Agent modification required
 
 **Implementation:**
+
 ```python
 # Registry side
 import socket
@@ -146,24 +155,28 @@ data = conn.recv(4096)
 ### Option 3: File-Based Messaging (Current Approach, Enhanced)
 
 **How it works:**
+
 - Write messages to `{session_id}.messages.jsonl`
 - Agent polls file for new messages
 - Use file locking or atomic writes
 - Mark messages as processed
 
 **Pros:**
+
 - Simple, no special IPC setup
 - Works with existing file-based approach
 - Easy to debug (inspect files)
 - No special permissions needed
 
 **Cons:**
+
 - Polling overhead
 - File system latency
 - Need to handle concurrent access
 - Less efficient than FIFOs/sockets
 
 **Implementation:**
+
 ```python
 # Registry side
 msg_file = session_dir / f"{session_id}.messages.jsonl"
@@ -187,17 +200,20 @@ def poll_messages(session_id):
 ### Option 4: PTY/TTY Attachment
 
 **How it works:**
+
 - Create a PTY for the agent process
 - Registry can write to PTY master
 - Agent reads from PTY slave (appears as stdin)
 - Works for interactive processes
 
 **Pros:**
+
 - Agent sees input as normal stdin
 - No agent modification needed (if already reads stdin)
 - Standard terminal interface
 
 **Cons:**
+
 - Only works if agent reads from stdin
 - Background processes typically don't read stdin
 - Requires PTY setup at process start
@@ -206,16 +222,19 @@ def poll_messages(session_id):
 ### Option 5: Signal-Based + File
 
 **How it works:**
+
 - Send SIGUSR1/SIGUSR2 to signal new message
 - Agent handles signal, reads message file
 - Combines signals (notification) with files (data)
 
 **Pros:**
+
 - Immediate notification (no polling)
 - File-based data (simple, debuggable)
 - Standard Unix mechanism
 
 **Cons:**
+
 - Requires signal handler in agent
 - Limited signal types available
 - Need to handle signal delivery issues
@@ -225,12 +244,14 @@ def poll_messages(session_id):
 ### Phase 1: File-Based Messaging (Quick Win)
 
 **Why:**
+
 - Works immediately with existing infrastructure
 - No agent modification required initially
 - Easy to debug and inspect
 - Can be enhanced later
 
 **Implementation:**
+
 1. Create `{session_id}.messages.jsonl` for each session
 2. Registry writes messages to this file
 3. For interactive agents (tmux), use `send_to_tmux_pane()`
@@ -238,6 +259,7 @@ def poll_messages(session_id):
 5. TUI reads from this file to show chat history
 
 **Message Format:**
+
 ```json
 {
   "id": "uuid",
@@ -252,11 +274,13 @@ def poll_messages(session_id):
 ### Phase 2: Named Pipes (For Headless Agents)
 
 **Why:**
+
 - More efficient than polling
 - Standard Unix mechanism
 - Works well for headless processes
 
 **Implementation:**
+
 1. Create FIFO: `{session_id}.in` when session starts
 2. Pass FIFO path via `THGENT_SESSION_INPUT_FIFO` env var
 3. Agent opens FIFO in a background thread
@@ -266,11 +290,13 @@ def poll_messages(session_id):
 ### Phase 3: Chat History Storage
 
 **Why:**
+
 - Need structured conversation history
 - Separate from stdout/stderr logs
 - Enables context-aware reprompting
 
 **Implementation:**
+
 1. Create `{session_id}.chat.jsonl` alongside logs
 2. Each agent interaction writes to chat log:
    - User prompt → chat log
@@ -283,10 +309,12 @@ def poll_messages(session_id):
 ### Phase 4: TUI Chat Interface
 
 **Why:**
+
 - Need interactive interface to view and send messages
 - Should work with opentui/react (project standard)
 
 **Implementation:**
+
 1. Use opentui/react for TUI
 2. Components:
    - Session list (all agents)
@@ -321,16 +349,19 @@ session_dir/
 ### Message Flow
 
 1. **User sends reprompt via TUI:**
+
    ```
    TUI → Registry.write_message() → {session_id}.messages.jsonl
    ```
 
 2. **For tmux sessions:**
+
    ```
    Registry → send_to_tmux_pane() → tmux pane
    ```
 
 3. **For headless agents (future):**
+
    ```
    Registry → write to FIFO → Agent reads FIFO → Processes message
    ```
@@ -375,42 +406,49 @@ class AgentRegistryTUI:
 ## Implementation Plan
 
 ### Step 1: Message Infrastructure (Week 1)
+
 - [ ] Create `MessageRegistry` class
 - [ ] Implement file-based messaging
 - [ ] Add message format validation
 - [ ] Add tests
 
 ### Step 2: Chat History (Week 1)
+
 - [ ] Create `ChatHistory` class
 - [ ] Integrate with agent runners to log interactions
 - [ ] Add context extraction for reprompting
 - [ ] Add tests
 
 ### Step 3: TUI Foundation (Week 2)
+
 - [ ] Set up opentui/react TUI structure
 - [ ] Create session list component
 - [ ] Create chat view component
 - [ ] Add basic navigation
 
 ### Step 4: Interactive Features (Week 2)
+
 - [ ] Add message input component
 - [ ] Implement send message functionality
 - [ ] Add session attachment (tmux support)
 - [ ] Add log viewing
 
 ### Step 5: Headless Support (Week 3)
+
 - [ ] Implement FIFO creation
 - [ ] Add FIFO reading to agent runners
 - [ ] Add fallback to file-based
 - [ ] Test with background processes
 
 ### Step 6: Ghostty Integration (Week 3)
+
 - [ ] Research Ghostty mux API
 - [ ] Add Ghostty session detection
 - [ ] Implement Ghostty attachment
 - [ ] Test integration
 
 ### Step 7: Polish & Documentation (Week 4)
+
 - [ ] Add error handling
 - [ ] Performance optimization
 - [ ] Documentation
@@ -426,19 +464,20 @@ class AgentRegistryTUI:
 
 ## Recommendations from Web Research
 
-| Approach | When to Use | Notes |
-|----------|-------------|-------|
-| **holdpty** | New agent launches | Wrap `thegent run --bg` in `holdpty launch --bg --name {session_id} --`; enables attach/view/logs without tmux |
-| **reptyr** | Existing process in terminal | Linux only; grab PID, run `reptyr PID` in tmux; requires ptrace |
-| **gdb + FIFO** | Headless process, need stdin | Redirect fd 0 to named pipe; write from registry; invasive |
-| **mcp-interactive-terminal** | MCP integration | Consider mounting or adapting for agent PTY sessions; clean output via xterm-headless |
-| **File-based + tmux** | Quick win | Keep current approach; use `send_to_tmux_pane` for tmux sessions; file queue for headless |
+| Approach                     | When to Use                  | Notes                                                                                                          |
+| ---------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **holdpty**                  | New agent launches           | Wrap `thegent run --bg` in `holdpty launch --bg --name {session_id} --`; enables attach/view/logs without tmux |
+| **reptyr**                   | Existing process in terminal | Linux only; grab PID, run `reptyr PID` in tmux; requires ptrace                                                |
+| **gdb + FIFO**               | Headless process, need stdin | Redirect fd 0 to named pipe; write from registry; invasive                                                     |
+| **mcp-interactive-terminal** | MCP integration              | Consider mounting or adapting for agent PTY sessions; clean output via xterm-headless                          |
+| **File-based + tmux**        | Quick win                    | Keep current approach; use `send_to_tmux_pane` for tmux sessions; file queue for headless                      |
 
 ## Web Research Findings (DDG-based)
 
 ### Attaching to Detached/Headless Processes
 
 **Baeldung (Linux):** [Attach a Terminal to a Detached Process](https://www.baeldung.com/linux/attach-terminal-detached-process)
+
 - Detached process = no TTY (stdin closed, stdout/stderr redirected)
 - **gdb approach**: Use `gdb -p PID` to `call close(0/1/2)` then `call open("/path/to/fifo", ...)` — redirects stdin to named pipe; write to pipe from another terminal
 - **reptyr**: Uses ptrace to reparent process to new terminal; changes controlling TTY; works for interactive takeover
@@ -446,6 +485,7 @@ class AgentRegistryTUI:
 - Linux-only; reptyr requires `ptrace_scope=0` on Ubuntu
 
 ### reptyr (nelhage/reptyr) — 6.1k stars
+
 - **Purpose**: Reparent running program to new terminal
 - **Usage**: `reptyr PID` — grabs process, attaches to current terminal
 - **How**: ptrace at syscall level; actually changes controlling terminal
@@ -453,6 +493,7 @@ class AgentRegistryTUI:
 - **Use case**: Process started in one terminal, move to tmux/screen before closing SSH
 
 ### holdpty (marcfargas/holdpty) — Minimal detached PTY
+
 - **Purpose**: Launch commands in real PTY, attach/view/record later
 - **Key insight**: "Between nohup and screen" — preserves PTY (TUI, colors) without window management
 - **Commands**: `holdpty launch --bg --name X -- cmd` | `holdpty attach X` | `holdpty view X` | `holdpty logs X`
@@ -461,6 +502,7 @@ class AgentRegistryTUI:
 - **Relevance**: Could wrap agent launches in holdpty for attachability; no tmux needed
 
 ### mcp-interactive-terminal (amol21p) — MCP server for AI agents
+
 - **Purpose**: Give Claude Code/Cursor real interactive terminal sessions (REPLs, SSH, psql, etc.)
 - **Architecture**: MCP server → node-pty + xterm-headless → clean text output
 - **Tools**: `create_session`, `send_command`, `read_output`, `list_sessions`, `close_session`, `send_control`, `confirm_dangerous_command`
@@ -468,12 +510,14 @@ class AgentRegistryTUI:
 - **Relevance**: Pattern for persistent PTY sessions; could integrate or adapt for thegent agent registry
 
 ### Ghostty
+
 - **Reality**: Ghostty is a terminal emulator (like iTerm/Alacritty), not a multiplexer
 - **Windowing**: Supports multi-window, tabs, splits (native app features)
 - **No mux API**: No tmux-like attach/detach API; sessions are tied to Ghostty windows
 - **Implication**: For Ghostty users, use tmux/screen/holdpty inside Ghostty; Ghostty doesn't replace tmux
 
 ### Prior Art (holdpty credits)
+
 - **dtach** (Ned T. Crigler): Minimal detach/attach for Unix
 - **abduco** (Marc André Tanner): Same concept, composable
 

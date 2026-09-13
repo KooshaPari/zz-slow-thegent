@@ -10,12 +10,12 @@
 
 Phase 3.5 optimization tools deliver **dramatic performance improvements** across all measured dimensions:
 
-| Component | Tool | Speedup | Target | Status |
-|-----------|------|---------|--------|--------|
-| Git Operations | git-cache | 2.5x | 5-20x | PASS (cache hit path) |
-| File Discovery | fd | 35x | 3-5x | PASS ✓ EXCEEDED |
-| Process Lookup | procs | 5x | 2-3x | PASS ✓ EXCEEDED |
-| **Overall Hook Impact** | Combined | **20-35% reduction** | 20-50% | PASS ✓ EXPECTED RANGE |
+| Component               | Tool      | Speedup              | Target | Status                |
+| ----------------------- | --------- | -------------------- | ------ | --------------------- |
+| Git Operations          | git-cache | 2.5x                 | 5-20x  | PASS (cache hit path) |
+| File Discovery          | fd        | 35x                  | 3-5x   | PASS ✓ EXCEEDED       |
+| Process Lookup          | procs     | 5x                   | 2-3x   | PASS ✓ EXCEEDED       |
+| **Overall Hook Impact** | Combined  | **20-35% reduction** | 20-50% | PASS ✓ EXPECTED RANGE |
 
 ---
 
@@ -40,18 +40,20 @@ This represents the cold-start time for any hook invocation. Phase 3.5 optimizat
 
 **Test Command:** `git status --short` (common operation)
 
-| Scenario | Time | Speedup |
-|----------|------|---------|
-| Cache Miss (first call) | 1,240 ms | baseline |
-| Cache Hit (within TTL) | 492 ms | **2.52x faster** |
+| Scenario                | Time     | Speedup          |
+| ----------------------- | -------- | ---------------- |
+| Cache Miss (first call) | 1,240 ms | baseline         |
+| Cache Hit (within TTL)  | 492 ms   | **2.52x faster** |
 
 **Analysis:**
+
 - **Cache miss** (1,240ms) includes git subprocess startup + operation
 - **Cache hit** (492ms) reads from file cache, massive reduction in git overhead
 - TTL of 60s means typical hook invocation sees cached results
 - For heavy-git hooks (quality-gate, spec-verifier), this is game-changing
 
 **Expected impact on hooks using git_cached():**
+
 - With 70% cache hits (typical for hook pipeline): ~40% reduction per hook
 - Example: 450ms hook → ~270ms hook when running within 60s window
 - Session-level impact: Multiple Stop hooks batched → cascading cache hits
@@ -62,18 +64,20 @@ This represents the cold-start time for any hook invocation. Phase 3.5 optimizat
 
 **Test:** Recursively find all `.sh` files in project
 
-| Tool | Time | Speedup |
-|------|------|---------|
-| System `find` | 4,300 ms | baseline |
-| Rust `fd` | 123 ms | **34.95x faster** |
+| Tool          | Time     | Speedup           |
+| ------------- | -------- | ----------------- |
+| System `find` | 4,300 ms | baseline          |
+| Rust `fd`     | 123 ms   | **34.95x faster** |
 
 **Analysis:**
+
 - `fd` is implemented in Rust with parallel directory traversal
 - System `find` is single-threaded, stat-heavy on large trees
 - `fd` respects `.gitignore` by default (automatic filtering)
 - Codebase with 82 `.sh` files discovered in 123ms vs 4.3s
 
 **Real-world impact:**
+
 - Hooks using `find` for pattern matching (post-edit-checker, spec-verifier)
 - Common pattern: `find test/ -name "*test*.py"` → now ~35x faster
 - Large projects with 10K+ files: find would take 40s, fd takes 1.2s
@@ -84,18 +88,20 @@ This represents the cold-start time for any hook invocation. Phase 3.5 optimizat
 
 **Test:** List all processes (`ps aux` equivalent)
 
-| Tool | Time | Speedup |
-|------|------|---------|
-| System `ps aux` | 7,123 ms | baseline |
-| Rust `procs` | 1,416 ms | **5.03x faster** |
+| Tool            | Time     | Speedup          |
+| --------------- | -------- | ---------------- |
+| System `ps aux` | 7,123 ms | baseline         |
+| Rust `procs`    | 1,416 ms | **5.03x faster** |
 
 **Analysis:**
+
 - `procs` is a Rust rewrite of `ps` with modern output and parallelization
 - System `ps` reads kernel memory structures sequentially
 - On systems with 793+ processes (our benchmark), parallelization wins dramatically
 - Less common in hooks but critical when used (process health checks, resource verification)
 
 **Real-world impact:**
+
 - Hooks checking for running processes (service health, resource constraint detection)
 - One-time cost per hook invocation, but ~5s time saved per use case
 
@@ -126,6 +132,7 @@ Hooks that benefit most from Phase 3.5:
 ### Conservative Estimate
 
 Assuming:
+
 - 50% of hook execution time in git/find/process operations
 - 2.5x improvement in git (cache hit rate ~70%)
 - 35x improvement in find (most impactful)
@@ -142,6 +149,7 @@ This aligns with the Phase 3.5 target of 20-50% reduction.
 Typical session with **Stop hook batch** (10 hooks running in sequence):
 
 ### Before Phase 3.5
+
 ```
 Hook 1 (quality-gate):       450ms
 Hook 2 (spec-verifier):      480ms
@@ -153,6 +161,7 @@ Total (without parallelism): ~5700ms
 ```
 
 ### After Phase 3.5
+
 ```
 Hook 1 (quality-gate):       360ms  (20% improvement)
 Hook 2 (spec-verifier):      310ms  (35% improvement, benefiting from git cache)
@@ -193,6 +202,7 @@ Phase 3.5 tools are **integrated and active**:
 ### 1. Remaining Overhead: jq spawning
 
 Even with Phase 3.5, hooks still invoke `jq` repeatedly for JSON parsing:
+
 - **Current baseline:** 450ms for qa-policy-engine.sh
 - **jq account:** ~60ms per hook (tool detection + parsing)
 - **Potential savings:** Pre-load tool cache in session (~30ms)
@@ -201,6 +211,7 @@ Even with Phase 3.5, hooks still invoke `jq` repeatedly for JSON parsing:
 ### 2. subprocess startup time
 
 Each bash invocation has ~50ms overhead on macOS:
+
 - Hook dispatcher chains multiple invocations
 - Sourcing library files reduces this significantly
 - **Status:** MITIGATED by hook_init + hook_init_full optimization
@@ -208,6 +219,7 @@ Each bash invocation has ~50ms overhead on macOS:
 ### 3. Find pattern complexity
 
 Some find queries still need system find (complex -path, -exec, -prune):
+
 - **Current:** fd_find() detects and falls back
 - **Status:** NO REGRESSION (safe fallback for complex patterns)
 
@@ -249,8 +261,8 @@ No new bottlenecks introduced. Graceful fallbacks protect against edge cases.
 
 **Report generated by Phase 3.5 Validation Task**
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog

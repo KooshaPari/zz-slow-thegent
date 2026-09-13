@@ -3,6 +3,7 @@
 ## Overview
 
 This guide walks through setting up comprehensive monitoring for the thegent routing system. The setup includes:
+
 1. Data collection (logging to run_registry.jsonl)
 2. Query infrastructure (SQL database + queries)
 3. Dashboard platform (Grafana, Datadog, or custom)
@@ -15,6 +16,7 @@ This guide walks through setting up comprehensive monitoring for the thegent rou
 **Required Skills:** SQL, dashboard platform (Grafana or similar), monitoring basics
 
 **Prerequisites:**
+
 - Running thegent application with logging enabled
 - SQLite, PostgreSQL, or MySQL database access
 - Slack workspace (for alerts)
@@ -45,6 +47,7 @@ tail -1 ~/.thegent/session/run_registry.jsonl | jq .
 ```
 
 **Expected output:**
+
 ```json
 {
   "event": "finish",
@@ -113,6 +116,7 @@ run_meta.ended_at_utc = datetime.now(UTC).isoformat()
 ```
 
 **Validation Checklist:**
+
 - [ ] All "finish" events have `actual_cost_usd` field
 - [ ] Cost values are > 0 and reasonable (0.001 - 2.0 for typical tasks)
 - [ ] Timestamp fields are in ISO 8601 UTC format
@@ -443,6 +447,7 @@ psql -h localhost -U monitoring -d thegent < monitoring/test_queries.sql
 ```
 
 **Expected Output:**
+
 ```
 date       | fast | normal | total
 -----------|------|--------|-------
@@ -474,12 +479,14 @@ Run Time: real 0.045, user 0.043, sys 0.002
 ```
 
 **Expected Performance:**
+
 - Simple count: < 10ms
 - Grouped queries: 50-200ms (depends on data volume)
 - Percentile queries: 100-500ms
 - Multi-category aggregates: 50-150ms
 
 **If queries are slow:**
+
 1. Add missing indices (see schema above)
 2. Partition data by month (PostgreSQL)
 3. Migrate to materialized views for common aggregates
@@ -493,6 +500,7 @@ Run Time: real 0.045, user 0.043, sys 0.002
 **Objective:** Create dashboards using Grafana.
 
 **Prerequisites:**
+
 - Grafana running (docker, local install, or SaaS)
 - Database connection configured
 
@@ -513,23 +521,27 @@ Run Time: real 0.045, user 0.043, sys 0.002
 2. Add panels:
 
 **Panel 1: Cost Dashboard**
+
 - Query: SQL query from 1.1 (Daily Cost by Category)
 - Visualization: Bar Chart or Stacked Bars
 - Title: "Daily Cost by Category"
 - Y-axis: USD
 
 **Panel 2: Budget Utilization**
+
 - Query: SQL query from 1.2 (Budget Utilization)
 - Visualization: Gauge
 - Thresholds: 80% (orange), 100% (red)
 - Title: "Budget Utilization %"
 
 **Panel 3: Task Volume**
+
 - Query: SQL query from 4.1 (Task Volume)
 - Visualization: Time Series
 - Title: "Tasks Processed (7d)"
 
 **Panel 4: Error Rate**
+
 - Query: SQL query from 4.2 (Error Rate)
 - Visualization: Gauge or Stat
 - Title: "Error Rate %"
@@ -584,7 +596,7 @@ See Phase 5 for alert configuration.
    - Port: 3306 (MySQL) or 5432 (PostgreSQL)
    - Database: monitoring
    - Username: monitoring
-   - Password: ****
+   - Password: \*\*\*\*
 
 **Step 2: Create Custom Metrics**
 
@@ -1021,6 +1033,7 @@ EOF
 ### Issue: Queries Too Slow
 
 **Diagnosis:**
+
 ```bash
 # Check index usage
 sqlite3 monitoring.db "EXPLAIN QUERY PLAN SELECT * FROM run_registry WHERE task_category='normal' AND DATE(ended_at_utc)='2025-02-14';"
@@ -1028,6 +1041,7 @@ sqlite3 monitoring.db "EXPLAIN QUERY PLAN SELECT * FROM run_registry WHERE task_
 ```
 
 **Fix:**
+
 - Add missing indices (see schema)
 - Partition data by month (PostgreSQL)
 - Create materialized views for common aggregates
@@ -1035,12 +1049,14 @@ sqlite3 monitoring.db "EXPLAIN QUERY PLAN SELECT * FROM run_registry WHERE task_
 ### Issue: Missing Fields in run_registry.jsonl
 
 **Diagnosis:**
+
 ```bash
 tail -100 run_registry.jsonl | jq '.task_category' | sort | uniq -c
 # If many nulls: logging not configured correctly
 ```
 
 **Fix:**
+
 - Update execution.py to log required fields
 - Ensure TaskRouter.route_task() is called
 - Verify CostAggregator.estimate_cost() is called
@@ -1048,6 +1064,7 @@ tail -100 run_registry.jsonl | jq '.task_category' | sort | uniq -c
 ### Issue: Dashboard Not Updating
 
 **Diagnosis:**
+
 ```bash
 # Check last data load time
 ls -la monitoring.db
@@ -1056,6 +1073,7 @@ sqlite3 monitoring.db "SELECT MAX(DATE(ended_at_utc)) FROM run_registry;"
 ```
 
 **Fix:**
+
 - Run manual sync: `python monitoring/load_jsonl.py run_registry.jsonl`
 - Check cron job: `crontab -l | grep load_jsonl`
 - Verify database connection in dashboard config
@@ -1063,6 +1081,7 @@ sqlite3 monitoring.db "SELECT MAX(DATE(ended_at_utc)) FROM run_registry;"
 ### Issue: Alerts Not Firing
 
 **Diagnosis:**
+
 ```bash
 # Check alert log
 tail -50 monitoring/alert.log
@@ -1071,6 +1090,7 @@ python monitoring/alert_engine.py check all
 ```
 
 **Fix:**
+
 - Verify Slack webhook URL is valid: `curl -X POST $WEBHOOK_URL ...`
 - Check alert query: run manually and verify results
 - Check alert threshold logic
@@ -1092,6 +1112,7 @@ python monitoring/alert_engine.py check all
 - [ ] Budget utilization alerts are working for all categories
 
 **Document Completion:**
+
 - [ ] MONITORING_DASHBOARD_SPEC.md completed
 - [ ] MONITORING_METRICS_REFERENCE.md completed
 - [ ] MONITORING_ALERT_RULES.md completed
@@ -1100,15 +1121,12 @@ python monitoring/alert_engine.py check all
 - [ ] Dashboard access verified
 - [ ] Alert channels tested
 
-
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -1118,15 +1136,18 @@ python monitoring/alert_engine.py check all
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

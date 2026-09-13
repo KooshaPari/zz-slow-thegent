@@ -35,6 +35,7 @@ verify_compatibility(self: Any, old_schema: dict[(str, Any)], new_schema: dict[(
 Check for breaking changes between old and new schema.
 
 A breaking change is:
+
 - Removal of a field
 - Change of field type (if strictly typed)
 - Making an existing optional field mandatory
@@ -76,6 +77,7 @@ verify_compatibility(self: Any, old_schema: dict[(str, Any)], new_schema: dict[(
 Check for breaking changes between old and new schema.
 
 A breaking change is:
+
 - Removal of a field
 - Change of field type (if strictly typed)
 - Making an existing optional field mandatory

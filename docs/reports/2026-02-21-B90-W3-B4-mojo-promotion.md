@@ -55,15 +55,15 @@ Mojo is **not installed** on this machine:
 
 ### deterministic_score_v1.json
 
-| Property | Value | Status |
-|----------|-------|--------|
-| Path | `tests/mojo/fixtures/deterministic_score_v1.json` | Present |
-| `fixture_id` | `deterministic_score_v1` | Present |
-| `kernel_id` | `score.rank.v1` | Matches contract |
-| Case count | 3 cases | Meets minimum (>= 3) |
-| Case IDs | `basic-two-candidates`, `single-candidate`, `three-candidates-quality-weighted` | All valid |
-| Required fields per case | `case_id`, `input`, `expected_output` | All present |
-| Input schema conformance | `request_id`, `candidates`, `weights` (cost/latency/quality) | All present |
+| Property                 | Value                                                                           | Status               |
+| ------------------------ | ------------------------------------------------------------------------------- | -------------------- |
+| Path                     | `tests/mojo/fixtures/deterministic_score_v1.json`                               | Present              |
+| `fixture_id`             | `deterministic_score_v1`                                                        | Present              |
+| `kernel_id`              | `score.rank.v1`                                                                 | Matches contract     |
+| Case count               | 3 cases                                                                         | Meets minimum (>= 3) |
+| Case IDs                 | `basic-two-candidates`, `single-candidate`, `three-candidates-quality-weighted` | All valid            |
+| Required fields per case | `case_id`, `input`, `expected_output`                                           | All present          |
+| Input schema conformance | `request_id`, `candidates`, `weights` (cost/latency/quality)                    | All present          |
 
 Note: The spec mentions `score_deterministic_v1.json` with 7 cases — this file
 was not found in Wave-2 artifacts. The Wave-2 fixture is `deterministic_score_v1.json`
@@ -75,17 +75,17 @@ with 3 cases. The 7-case fixture is planned for Wave-4 full deterministic replay
 
 ### contracts/runtime/mojo_kernel_contract_v1.json
 
-| Field | Value | Status |
-|-------|-------|--------|
-| `contract_id` | `runtime.mojo_kernel.v1` | Present |
-| `version` | `1.0.0` | Present |
-| `status` | `draft` | Active draft |
-| `kernel_catalog` count | 1 kernel | Non-empty |
-| Kernel `kernel_id` | `score.rank.v1` | Present |
-| Kernel `deterministic` flag | `true` | Required — present |
-| Input schema required fields | `request_id`, `candidates`, `weights` | All defined |
-| Output schema required fields | `request_id`, `ranked` | All defined |
-| Promotion gate | p95 speedup >= 1.5x vs Python; 0 correctness failures | Defined |
+| Field                         | Value                                                 | Status             |
+| ----------------------------- | ----------------------------------------------------- | ------------------ |
+| `contract_id`                 | `runtime.mojo_kernel.v1`                              | Present            |
+| `version`                     | `1.0.0`                                               | Present            |
+| `status`                      | `draft`                                               | Active draft       |
+| `kernel_catalog` count        | 1 kernel                                              | Non-empty          |
+| Kernel `kernel_id`            | `score.rank.v1`                                       | Present            |
+| Kernel `deterministic` flag   | `true`                                                | Required — present |
+| Input schema required fields  | `request_id`, `candidates`, `weights`                 | All defined        |
+| Output schema required fields | `request_id`, `ranked`                                | All defined        |
+| Promotion gate                | p95 speedup >= 1.5x vs Python; 0 correctness failures | Defined            |
 
 ---
 
@@ -104,17 +104,17 @@ The test suite is designed to skip — not fail — when Mojo is unavailable:
 
 ## Promotion Gate Decision
 
-| Gate | Status | Notes |
-|------|--------|-------|
-| Kernel contract JSON valid | PASS | 8 structural tests pass |
-| `deterministic` flag = `true` in catalog | PASS | Verified |
-| Python bridge importable | PASS | `thegent.infra.mojo_bridge` imports clean |
-| Bridge determinism (Python layer) | PASS | `build_provider_score_kernel_script` is deterministic |
-| Fixture schema conformance | PASS | 3/3 cases pass schema checks |
-| Mojo binary available | SKIP | `mojo` not installed; tests skip gracefully |
-| Full deterministic replay (N >= 10 runs) | PENDING | Requires Mojo binary |
-| Python baseline parity | PENDING | Requires Mojo binary for full comparison |
-| p95 speedup >= 1.5x vs Python | PENDING | Requires Mojo binary + benchmark harness |
+| Gate                                     | Status  | Notes                                                 |
+| ---------------------------------------- | ------- | ----------------------------------------------------- |
+| Kernel contract JSON valid               | PASS    | 8 structural tests pass                               |
+| `deterministic` flag = `true` in catalog | PASS    | Verified                                              |
+| Python bridge importable                 | PASS    | `thegent.infra.mojo_bridge` imports clean             |
+| Bridge determinism (Python layer)        | PASS    | `build_provider_score_kernel_script` is deterministic |
+| Fixture schema conformance               | PASS    | 3/3 cases pass schema checks                          |
+| Mojo binary available                    | SKIP    | `mojo` not installed; tests skip gracefully           |
+| Full deterministic replay (N >= 10 runs) | PENDING | Requires Mojo binary                                  |
+| Python baseline parity                   | PENDING | Requires Mojo binary for full comparison              |
+| p95 speedup >= 1.5x vs Python            | PENDING | Requires Mojo binary + benchmark harness              |
 
 **Overall Promotion Gate: SKIP** — deterministic replay cannot be validated
 without the Mojo binary. Python bridge smoke tests all pass.
@@ -138,4 +138,4 @@ run); SKIP if Mojo not installed (current state).
 
 ---
 
-*Generated by B90-W3-B4 agent. Follow-up review date: 2026-03-07.*
+_Generated by B90-W3-B4 agent. Follow-up review date: 2026-03-07._

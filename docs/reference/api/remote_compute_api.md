@@ -12,7 +12,7 @@ Client for remote compute execution using SSH/rsync.
 
 ### Methods
 
-#### RemoteComputeClient.__init__
+#### RemoteComputeClient.**init**
 
 ```python
 __init__(self: Any, remote_host: str, remote_port: int)

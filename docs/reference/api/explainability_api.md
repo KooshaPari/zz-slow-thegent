@@ -21,7 +21,7 @@ Stack for managing and rendering progressive disclosure explanations.
 
 ### Methods
 
-#### ExplainabilityEngine.__init__
+#### ExplainabilityEngine.**init**
 
 ```python
 __init__(self: Any)

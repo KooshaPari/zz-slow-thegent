@@ -11,10 +11,12 @@
 ## Current State Analysis
 
 ### Strengths
+
 ✅ MCP creation tool  
 ✅ Has basic structure
 
 ### Issues
+
 ❌ No modern pyproject.toml  
 ❌ No uv configuration  
 ❌ No YAML configuration  
@@ -26,17 +28,20 @@
 ## Proposed Changes
 
 ### Phase 1: Foundation (10 hours)
+
 - Create modern pyproject.toml with hatch
 - Install uv, create uv.lock
 - Configure ruff, mypy
 - Remove requirements.txt
 
 ### Phase 2: Configuration (10 hours)
+
 - Implement pydantic-settings
 - Create config.yml and secrets.yml
 - Update code to use settings
 
 ### Phase 3: Simplification (10 hours)
+
 - Replace custom implementations with libraries
 - Add quality tools (bandit, vulture)
 - Setup pre-commit hooks
@@ -47,6 +52,7 @@
 ## Key Changes
 
 **pyproject.toml:**
+
 ```toml
 [build-system]
 requires = ["hatchling"]
@@ -64,6 +70,7 @@ dependencies = [
 ```
 
 **Settings:**
+
 ```python
 class MorphSettings(BaseSettings):
     app_name: str = "morph"
@@ -97,4 +104,3 @@ class MorphSettings(BaseSettings):
 ## Dependencies
 
 None
-

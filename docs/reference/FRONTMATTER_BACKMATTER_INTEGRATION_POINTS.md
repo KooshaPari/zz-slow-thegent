@@ -12,6 +12,7 @@
 **Python Module**: `src/thegent/orchestration/load_based_limits.py`
 
 **Integration Point**:
+
 ```python
 def sample_resources() -> ResourceSnapshot:
     """Sample system resources with native fallback."""
@@ -22,6 +23,7 @@ def sample_resources() -> ResourceSnapshot:
 ```
 
 **Rust Crate**: `crates/thegent-resources/`
+
 - **Binary**: `src/bin.rs` (standalone JSON output)
 - **Library**: `src/lib.rs` (PyO3-ready, not yet exposed)
 
@@ -36,10 +38,12 @@ def sample_resources() -> ResourceSnapshot:
 ### 1.2 BKM-02: XML/JSONL Parsing
 
 **Python Modules**:
+
 - `src/thegent/contracts/parser.py` → `extract_tags()`
 - `src/thegent/output_parser.py` → `strip_noise()`, `strip_think_blocks()`
 
 **Integration Points**:
+
 ```python
 # contracts/parser.py
 def extract_tags(text: str, tags: list[str] | None = None) -> dict[str, str]:
@@ -58,6 +62,7 @@ def _strip_think_blocks(text: str) -> str:
 ```
 
 **Rust Crate**: `crates/thegent-parser/`
+
 - **PyO3 Module**: `thegent_parser.thegent_parser`
 - **Functions**: `extract_xml_tags()`, `strip_noise()`, `strip_think_blocks()`
 
@@ -72,6 +77,7 @@ def _strip_think_blocks(text: str) -> str:
 **Python Module**: `src/thegent/governance/signatures.py`
 
 **Integration Points**:
+
 ```python
 def generate_artifact_hash(artifact: dict) -> str:
     native = _get_native_crypto()
@@ -98,6 +104,7 @@ def verify_signature(artifact: dict, signature: str, secret_key: str) -> bool:
 ```
 
 **Rust Crate**: `crates/thegent-crypto/`
+
 - **PyO3 Module**: `thegent_crypto.thegent_crypto`
 - **Functions**: `artifact_hash_bytes()`, `sign_artifact_bytes()`, `verify_signature_bytes()`
 
@@ -116,6 +123,7 @@ def verify_signature(artifact: dict, signature: str, secret_key: str) -> bool:
 **Python Module**: `src/thegent/orchestration/circuit_breaker.py`
 
 **Integration Point** (Planned):
+
 ```python
 class CircuitBreakerRegistry:
     def __init__(self):
@@ -128,6 +136,7 @@ class CircuitBreakerRegistry:
 ```
 
 **Rust Crate**: `crates/thegent-shm/` (to be created)
+
 - **PyO3 Module**: `thegent_shm.thegent_shm`
 - **Functions**: `create_shm_region()`, `read_circuit_breaker()`, `write_circuit_breaker()`
 
@@ -142,6 +151,7 @@ class CircuitBreakerRegistry:
 **Python Module**: `src/thegent/forensics/snapshot.py`
 
 **Integration Points** (Planned):
+
 ```python
 def _get_git_branch(self, root: Path) -> str:
     native = _get_native_git()
@@ -189,6 +199,7 @@ def _get_git_diff(self, root: Path) -> str:
 ```
 
 **Rust Crate**: `crates/thegent-git/` (to be created)
+
 - **PyO3 Module**: `thegent_git.thegent_git`
 - **Functions**: `get_git_metadata()`
 - **Dependencies**: `gix` (gitoxide)
@@ -204,6 +215,7 @@ def _get_git_diff(self, root: Path) -> str:
 **Python Module**: `src/thegent/discovery.py`
 
 **Integration Point** (Planned):
+
 ```python
 def discover_agents() -> list[DiscoveredAgent]:
     """Discover external agents with native fallback."""
@@ -215,6 +227,7 @@ def discover_agents() -> list[DiscoveredAgent]:
 ```
 
 **Rust Crate**: `crates/thegent-discovery/` (to be created)
+
 - **Binary**: `src/bin.rs` (standalone JSON output)
 - **Dependencies**: `sysinfo` for process enumeration
 
@@ -252,6 +265,7 @@ def _get_native_module():
 ```
 
 **Benefits**:
+
 - No import-time failures if Rust toolchain unavailable
 - Graceful degradation to Python fallback
 - Environment flag controls opt-in behavior
@@ -277,6 +291,7 @@ def operation(...):
 ```
 
 **Benefits**:
+
 - Always works (Python fallback guaranteed)
 - Easy A/B testing (toggle environment variable)
 - Gradual migration path
@@ -286,11 +301,13 @@ def operation(...):
 ### 3.3 Error Handling
 
 **PyO3 Errors**:
+
 - Rust panics → PyO3 converts to Python exceptions
 - Python exceptions → Rust `PyResult<T>` propagates
 - Always catch and fallback to Python on exception
 
 **Subprocess Errors**:
+
 - Binary exit code != 0 → Python fallback
 - JSON parse error → Python fallback
 - Timeout → Python fallback
@@ -299,16 +316,16 @@ def operation(...):
 
 ## 4. Environment Variables Reference
 
-| Variable | Purpose | Default | Crate |
-|----------|---------|---------|-------|
-| `THGENT_USE_NATIVE_RESOURCES` | Use Rust resource sampling | `0` (Python) | `thegent-resources` |
-| `THGENT_USE_NATIVE_CRYPTO` | Use Rust crypto | `0` (Python) | `thegent-crypto` |
-| `THGENT_USE_NATIVE_PARSER` | Use Rust parser | `0` (Python) | `thegent-parser` |
-| `THGENT_USE_NATIVE_SHM` | Use Rust shared memory | `0` (Python) | `thegent-shm` (future) |
-| `THGENT_USE_NATIVE_GIT` | Use Rust git operations | `0` (Python) | `thegent-git` (future) |
-| `THGENT_USE_NATIVE_DISCOVERY` | Use Rust discovery | `0` (Python) | `thegent-discovery` (future) |
-| `THGENT_RESOURCES_BIN` | Override resources binary path | Auto-detect | `thegent-resources` |
-| `THGENT_DISCOVERY_BIN` | Override discovery binary path | Auto-detect | `thegent-discovery` (future) |
+| Variable                      | Purpose                        | Default      | Crate                        |
+| ----------------------------- | ------------------------------ | ------------ | ---------------------------- |
+| `THGENT_USE_NATIVE_RESOURCES` | Use Rust resource sampling     | `0` (Python) | `thegent-resources`          |
+| `THGENT_USE_NATIVE_CRYPTO`    | Use Rust crypto                | `0` (Python) | `thegent-crypto`             |
+| `THGENT_USE_NATIVE_PARSER`    | Use Rust parser                | `0` (Python) | `thegent-parser`             |
+| `THGENT_USE_NATIVE_SHM`       | Use Rust shared memory         | `0` (Python) | `thegent-shm` (future)       |
+| `THGENT_USE_NATIVE_GIT`       | Use Rust git operations        | `0` (Python) | `thegent-git` (future)       |
+| `THGENT_USE_NATIVE_DISCOVERY` | Use Rust discovery             | `0` (Python) | `thegent-discovery` (future) |
+| `THGENT_RESOURCES_BIN`        | Override resources binary path | Auto-detect  | `thegent-resources`          |
+| `THGENT_DISCOVERY_BIN`        | Override discovery binary path | Auto-detect  | `thegent-discovery` (future) |
 
 ---
 
@@ -353,6 +370,7 @@ build:rust:
 ### 6.1 Unit Tests (Rust)
 
 Each crate has unit tests:
+
 ```rust
 #[cfg(test)]
 mod tests {
@@ -368,6 +386,7 @@ mod tests {
 ### 6.2 Integration Tests (Python)
 
 Test native + fallback:
+
 ```python
 def test_native_fallback():
     """Test Python fallback when native unavailable."""
@@ -386,6 +405,7 @@ def test_native_fallback():
 ### 6.3 Performance Tests
 
 Benchmark native vs Python:
+
 ```python
 def test_performance():
     """Benchmark native vs Python implementation."""
@@ -421,7 +441,6 @@ For each new integration:
 - [Implementation Guides](../guides/BKM_IMPLEMENTATION_GUIDES.md)
 - [Research Plan](../research/PYTHON_FRONTMATTER_NATIVE_BACKMATTER_AUDIT_PLAN.md)
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -430,15 +449,18 @@ For each new integration:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

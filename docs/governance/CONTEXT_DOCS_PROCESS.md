@@ -6,13 +6,13 @@ This document provides step-by-step procedures for creating, updating, and maint
 
 ## Quick Reference
 
-| Task | When | Owner | Est. Time |
-|------|------|-------|-----------|
-| Create new context doc | Before technology integration | Tech Owner | 2-4 hours |
-| Update existing doc | After major version; >90 days stale | Tech Owner | 1-2 hours |
-| Verify accuracy | Before using in production code | Implementer | 30-60 min |
-| Refresh staleness dates | Monthly/quarterly review | Automation | 5 min |
-| Archive tech doc | Technology deprecated/superseded | Deprecation Lead | 15 min |
+| Task                    | When                                | Owner            | Est. Time |
+| ----------------------- | ----------------------------------- | ---------------- | --------- |
+| Create new context doc  | Before technology integration       | Tech Owner       | 2-4 hours |
+| Update existing doc     | After major version; >90 days stale | Tech Owner       | 1-2 hours |
+| Verify accuracy         | Before using in production code     | Implementer      | 30-60 min |
+| Refresh staleness dates | Monthly/quarterly review            | Automation       | 5 min     |
+| Archive tech doc        | Technology deprecated/superseded    | Deprecation Lead | 15 min    |
 
 ---
 
@@ -73,12 +73,14 @@ Collect authoritative reference materials:
 - Note the fetch date (YYYY-MM-DD)
 
 For local tools/SDKs:
+
 - Extract from installed package docs
 - Run tool help command
 - Check source code for API signatures
 - Run local examples to verify behavior
 
 For APIs:
+
 - Download official API reference
 - Test endpoints with actual requests (rate-limit aware)
 - Document observed behavior vs. stated behavior
@@ -141,16 +143,19 @@ Create a working document and extract:
 #### Step 2.2: Test with real examples
 
 For APIs:
+
 - Get actual response shapes with curl or similar
 - Note the response structure, field types, any nested objects
 - Save to working docs
 
 For SDKs:
+
 - Test in Python REPL or script
 - Check return type
 - Inspect fields
 
 For CLIs:
+
 - Run with --help to document flags
 - Run example commands and capture output
 
@@ -159,6 +164,7 @@ Save all output to working docs for reference during writing.
 #### Step 2.3: Identify gotchas and edge cases
 
 Search docs/repos for:
+
 - "Note:", "Important:", "Gotcha", "Common mistake"
 - GitHub issues marked "documentation" or "FAQ"
 - StackOverflow questions about common problems
@@ -195,6 +201,7 @@ Do not skip sections. Use empty sections if not applicable, but mark them explic
 **Section 4: API/Interfaces**
 
 For HTTP APIs:
+
 - Endpoint path: `METHOD /path`
 - Description of what it does
 - Exact request format (headers, body, query params)
@@ -202,12 +209,14 @@ For HTTP APIs:
 - Status codes (200, 400, 401, 429, 500, etc.)
 
 For SDKs/libraries:
+
 - Class/module name
 - Constructor signature and defaults
 - Method signatures with type hints
 - Return types
 
 For CLIs:
+
 - Command structure: `tool subcommand --flags`
 - Required vs optional flags
 - Output format
@@ -238,6 +247,7 @@ One-page cheat sheet. Include base URL, auth, rate limits, response format, comm
 #### Step 3.3: Cross-check against sources
 
 For each section, verify:
+
 - Every API endpoint exists in official docs
 - Every field type is correct
 - Every error code is documented
@@ -246,6 +256,7 @@ For each section, verify:
 #### Step 3.4: Run code examples
 
 Before finalizing, test all code examples:
+
 - Python: `python -c "..."`
 - Shell: `bash example.sh`
 - Node: `node example.js`
@@ -259,6 +270,7 @@ Capture actual output and include in doc as comments.
 #### Step 4.1: Create the file
 
 If atomic doc:
+
 ```bash
 cat > docs/context/{technology}.md << 'EOF'
 [Full document content]
@@ -266,6 +278,7 @@ EOF
 ```
 
 If doc set:
+
 ```bash
 mkdir -p docs/context/{technology}
 # Create index.md and subdocs
@@ -278,6 +291,7 @@ Add entry to the index table.
 #### Step 4.3: Cross-reference with implementation code
 
 If integrating a new technology:
+
 - Add comments linking to context doc sections
 - Example: `# See docs/context/openrouter.md - API/Interfaces section`
 - Update any README or architecture docs to reference the context doc
@@ -285,6 +299,7 @@ If integrating a new technology:
 #### Step 4.4: Verify against pre-write validation
 
 All required sections should be present:
+
 - Title
 - What is section
 - Key Concepts (if applicable)
@@ -325,16 +340,19 @@ Closes #{issue}
 #### Step 5.2: Link from integration PR
 
 If creating doc as part of implementing a feature:
+
 - Reference the context doc in your implementation PR
 - Mention in PR description: "See docs/context/{tech}.md for API reference"
 
 #### Step 5.3: Update CHANGELOG
 
 If significant new context doc:
+
 ```markdown
 ## [Unreleased]
 
 ### Added
+
 - Context documentation for {Technology} (docs/context/{technology}.md)
   Covers API, authentication, key concepts, and usage patterns.
 ```
@@ -387,24 +405,27 @@ The index is the **canonical catalog** of all context docs.
 
 ## Index by Technology
 
-| Technology | File | Category | Priority | Last Updated | Status |
-|-----------|------|----------|----------|--------------|--------|
-| OpenRouter | openrouter.md | API Gateway | P0 | 2026-02-20 | ✅ Current |
-| Claude Code | claude-code.md | Agent Harness | P0 | 2026-02-20 | ✅ Current |
+| Technology  | File           | Category      | Priority | Last Updated | Status     |
+| ----------- | -------------- | ------------- | -------- | ------------ | ---------- |
+| OpenRouter  | openrouter.md  | API Gateway   | P0       | 2026-02-20   | ✅ Current |
+| Claude Code | claude-code.md | Agent Harness | P0       | 2026-02-20   | ✅ Current |
 
 ## Index by Category
 
 ### Agent Harnesses (P0)
+
 - Ante: ante/index.md
 - Claude Code: claude-code.md
 
 ### API Gateways & Proxies (P0)
+
 - OpenRouter: openrouter.md
 ```
 
 ### Updating INDEX.md
 
 Every time you:
+
 - **Create** a new context doc: Add row to table
 - **Update** a context doc: Update `Last Updated` date and status
 - **Mark stale**: Update status to `⚠️ Stale (N days)`

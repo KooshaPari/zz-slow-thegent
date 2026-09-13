@@ -12,7 +12,7 @@ Scores providers based on historical performance and learning.
 
 ### Methods
 
-#### ProviderScorer.__init__
+#### ProviderScorer.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings)

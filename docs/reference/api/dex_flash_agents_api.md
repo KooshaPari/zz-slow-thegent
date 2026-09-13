@@ -12,7 +12,7 @@ Dex flash agents port.
 
 ### Methods
 
-#### DexFlashAgents.__init__
+#### DexFlashAgents.**init**
 
 ```python
 __init__(self: Any)

@@ -20,11 +20,13 @@
 ## Friction Categories
 
 ### Reusability Friction
+
 - Repetitive patterns → Create reusable helpers
 - Duplicated code → Extract to utilities
 - Non-reusable solutions → Make reusable
 
 **Example**:
+
 ```python
 # ❌ Not reusable (duplicated across agents)
 def read_config():
@@ -41,11 +43,13 @@ from scripts.config_utils import read_config
 ---
 
 ### Automation Friction
+
 - Manual steps → Automate
 - Repetitive tasks → Script them
 - Multi-step workflows → Single command
 
 **Example**:
+
 ```bash
 # ❌ Manual (5 steps)
 read_file("WORK_STREAM.md")
@@ -61,16 +65,20 @@ thegent work complete task-id
 ---
 
 ### Pattern Library Friction
+
 - Missing patterns → Document patterns
 - No pattern library → Create library
 - Patterns not shared → Share them
 
 **Example**:
+
 ```markdown
 # ❌ No pattern library
+
 [Each agent reinvents the wheel]
 
 # ✅ Pattern library
+
 docs/patterns/
 ├── file-operations.md
 ├── path-handling.md
@@ -85,6 +93,7 @@ docs/patterns/
 ### Step 1: Detect AX Friction
 
 **During any task**, identify:
+
 - [ ] Is this pattern reusable?
 - [ ] Can this be automated?
 - [ ] Will other agents benefit?
@@ -113,6 +122,7 @@ task_id = log_friction(
 ### Step 3: Create Reusable Component
 
 **Types**:
+
 - Helper scripts (`scripts/helpers/`)
 - Reusable skills (`agents/`)
 - Pattern templates (`templates/`)
@@ -123,11 +133,13 @@ task_id = log_friction(
 ### Step 4: Document and Share
 
 **Documentation**:
+
 - Usage examples
 - API reference
 - Integration guide
 
 **Sharing**:
+
 - Add to pattern library
 - Update agent instructions
 - Create cross-project guide
@@ -157,15 +169,20 @@ def helper_function(...):
 
 ```markdown
 # agents/[name]-skill.md
+
 ---
+
 name: [name]-skill
 description: [Description]
+
 ---
 
 ## Usage
+
 [Usage examples]
 
 ## Examples
+
 [Code examples]
 ```
 
@@ -188,6 +205,7 @@ def [name]():
 ### Example 1: Config Reading Helper
 
 **Before** (Duplicated):
+
 ```python
 # In 5 different agents
 config_path = Path("config.json")
@@ -197,6 +215,7 @@ return json.loads(config_path.read_text())
 ```
 
 **After** (Reusable):
+
 ```python
 # scripts/config_utils.py
 def read_config(path: str = "config.json") -> dict:
@@ -217,6 +236,7 @@ config = read_config()
 ### Example 2: Work Stream Automation
 
 **Before** (Manual):
+
 ```bash
 # 5 manual steps
 read_file("WORK_STREAM.md")
@@ -227,6 +247,7 @@ update_status()
 ```
 
 **After** (Automated):
+
 ```bash
 # 1 command
 thegent work complete task-id
@@ -239,11 +260,13 @@ thegent work complete task-id
 ### Example 3: Pattern Library
 
 **Before** (No library):
+
 ```
 [Each agent reinvents file reading, path handling, etc.]
 ```
 
 **After** (Pattern library):
+
 ```
 docs/patterns/
 ├── file-operations.md

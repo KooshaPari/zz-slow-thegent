@@ -15,7 +15,7 @@ Coordinate zen-mcp-server initiatives end-to-end:
 
 Respond with:
 PrimaryOutput: agent-handoffs/phases/00-portfolio/<initiative>.md
-Scratch: agent-handoffs/_scratch/portfolio-flow-planner/<note>.md
+Scratch: agent-handoffs/\_scratch/portfolio-flow-planner/<note>.md
 Summary: <portfolio status + key risk>
 Streams:
 

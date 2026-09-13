@@ -28,7 +28,7 @@ Calculates project health based on defined targets.
 
 ### Methods
 
-#### HealthScorer.__init__
+#### HealthScorer.**init**
 
 ```python
 __init__(self: Any, targets_file: Any)

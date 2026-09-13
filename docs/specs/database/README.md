@@ -8,24 +8,25 @@ thegent uses multiple storage mechanisms depending on use case.
 
 ### 1. File-Based Storage
 
-| Store | Format | Use Case |
-|-------|---------|----------|
-| Session logs | JSONL | Audit/telemetry |
-| Conversation history | JSONL | Session persistence |
-| Tool cache | JSON | Tool definitions |
-| Policy files | YAML/TOML | Configuration |
+| Store                | Format    | Use Case            |
+| -------------------- | --------- | ------------------- |
+| Session logs         | JSONL     | Audit/telemetry     |
+| Conversation history | JSONL     | Session persistence |
+| Tool cache           | JSON      | Tool definitions    |
+| Policy files         | YAML/TOML | Configuration       |
 
 ### 2. Database Systems
 
-| Database | Use | Files |
-|---------|-----|-------|
-| SQLite | Local cache | `cache/` |
-| Redis | Distributed state | `orchestration/state/` |
-| Shared memory | IPC | `native/state_shm.py` |
+| Database      | Use               | Files                  |
+| ------------- | ----------------- | ---------------------- |
+| SQLite        | Local cache       | `cache/`               |
+| Redis         | Distributed state | `orchestration/state/` |
+| Shared memory | IPC               | `native/state_shm.py`  |
 
 ### 3. Core Entities
 
 #### Session
+
 ```python
 @dataclass
 class Session:
@@ -37,6 +38,7 @@ class Session:
 ```
 
 #### Task
+
 ```python
 @dataclass
 class Task:
@@ -48,6 +50,7 @@ class Task:
 ```
 
 #### Agent
+
 ```python
 @dataclass
 class Agent:
@@ -58,6 +61,7 @@ class Agent:
 ```
 
 #### Tool
+
 ```python
 @dataclass
 class Tool:
@@ -68,6 +72,7 @@ class Tool:
 ```
 
 #### Policy
+
 ```python
 @dataclass
 class Policy:
@@ -79,17 +84,17 @@ class Policy:
 
 ## Migration Paths
 
-| From | To | Status |
-|------|-----|--------|
-| JSONL files | SQLite | P1 |
-| YAML configs | TOML | P2 |
-| In-memory | Redis cluster | P2 |
+| From         | To            | Status |
+| ------------ | ------------- | ------ |
+| JSONL files  | SQLite        | P1     |
+| YAML configs | TOML          | P2     |
+| In-memory    | Redis cluster | P2     |
 
 ## Performance
 
-| Store | Latency | Throughput |
-|-------|----------|------------|
-| SHM | <1ms | 100k ops/s |
-| Redis | <5ms | 10k ops/s |
-| SQLite | <10ms | 1k ops/s |
-| JSONL | <50ms | 100 ops/s |
+| Store  | Latency | Throughput |
+| ------ | ------- | ---------- |
+| SHM    | <1ms    | 100k ops/s |
+| Redis  | <5ms    | 10k ops/s  |
+| SQLite | <10ms   | 1k ops/s   |
+| JSONL  | <50ms   | 100 ops/s  |

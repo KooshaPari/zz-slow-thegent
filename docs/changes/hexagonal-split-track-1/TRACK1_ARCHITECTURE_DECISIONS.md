@@ -5,12 +5,14 @@
 **Decision:** Rewrite the Pareto frontier routing algorithm from Python (thegent) in Go (CLIProxy), rather than exposing thegent's router via FFI.
 
 **Rationale:**
+
 - **Pure Go implementation:** Allows CLIProxy to run standalone without Python dependency
 - **Performance:** Native Go is 5–10x faster than Python-via-FFI for constraint filtering + frontier computation
 - **Maintenance:** Single algorithm in one language, easier to reason about and optimize
 - **Terminal Bench 2.0 integration:** Model metrics are already in Go (CLIProxy registry), no translation needed
 
 **Alternative Rejected:** Expose thegent's Pareto router via cgo/FFI
+
 - Adds complexity (FFI boundary)
 - Slower (marshaling overhead)
 - Ties CLIProxy to Python runtime
@@ -26,6 +28,7 @@
 **Decision:** CLIProxy exposes routing via `POST /v1/routing/select` HTTP endpoint, not as a Go library that thegent imports.
 
 **Rationale:**
+
 - **Decoupling:** thegent and CLIProxy are independent processes; no shared code
 - **Boundary clarity:** Clear separation of concerns (orchestration vs. routing)
 - **Scalability:** CLIProxy can scale independently; multiple thegent instances share routing service
@@ -33,6 +36,7 @@
 - **Testing:** HTTP mocking is simpler than mocking Go libraries
 
 **Alternative Rejected:** Go library that thegent calls via cgo
+
 - Adds FFI complexity
 - Couples thegent to CLIProxy's Go runtime
 - Harder to scale (processes tied together)
@@ -48,12 +52,14 @@
 **Decision:** Merge thegent's OAuth lifecycle management into CLIProxy's centralized token manager, with HTTP endpoints for refresh/revoke.
 
 **Rationale:**
+
 - **Single source of truth:** One OAuth state for all agents/providers
 - **Token refresh in one place:** CLIProxy manages expiration/refresh logic
 - **Credential security:** Tokens stored in CLIProxy process, not scattered across agent instances
 - **HTTP for token ops:** thegent calls `POST /v1/auth/oauth/refresh` instead of managing tokens locally
 
 **Alternative Rejected:** Keep OAuth in thegent, have CLIProxy call back to thegent
+
 - Circular dependency (thegent ↔ CLIProxy)
 - Difficult to reason about token state
 - Harder to add new agents (each must re-implement OAuth)
@@ -69,17 +75,20 @@
 **Decision:** Move thegent's ACP, MCP adapters into CLIProxy's translator registry; thegent calls CLIProxy translators, not local adapters.
 
 **Rationale:**
+
 - **Provider abstraction in one place:** Translators handle Claude↔OpenAI↔ACP format conversions
 - **Reduces code duplication:** thegent and other harnesses use same translators
 - **Provider registry:** CLIProxy can add/remove providers without modifying thegent
 - **Request/response tracing:** All translations happen in one service, easier to debug
 
 **Alternative Rejected:** Keep adapters in thegent, let CLIProxy call them
+
 - Requires FFI or network calls back to thegent
 - Circular dependency
 - Harder to support new providers
 
 **Architecture:**
+
 ```
 thegent
   ↓ (chat completion request)
@@ -99,12 +108,14 @@ provider (AWS Bedrock, Anthropic, OpenAI, etc.)
 **Decision:** Move quota enforcement from thegent integrations to CLIProxy's usage subsystem. All requests checked against quota before forwarding to provider.
 
 **Rationale:**
+
 - **Single point of enforcement:** CLIProxy is gatekeeper for all LLM calls
 - **Prevents cost overruns:** Quota check happens before provider call (saves money)
 - **Fair queuing:** If quota exhausted, CLIProxy can queue/reject fairly across tenants
 - **Real-time metrics:** CLIProxy tracks actual usage in one place
 
 **Alternative Rejected:** Keep quota checks in thegent
+
 - Multiple agents can exceed quota if not coordinated
 - Hard to enforce hard limit across distributed system
 - Requires synchronization between agents
@@ -120,16 +131,19 @@ provider (AWS Bedrock, Anthropic, OpenAI, etc.)
 **Decision:** Separate task classification (FAST/NORMAL/COMPLEX/HIGH_COMPLEX) from Pareto routing. Classification happens first, then routes within tier-specific frontier.
 
 **Rationale:**
+
 - **Modularity:** TaskClassifier is testable independently
 - **Extensibility:** Can add new classification strategies without touching Pareto router
 - **Clarity:** Routing decision is: classify → filter by constraints → Pareto selection
 - **Performance:** Classification is fast (token count check); can cache classifiers per task type
 
 **Alternative Rejected:** Inline classification in Pareto router
+
 - Harder to test classification separately
 - Mixing concerns (task analysis + routing)
 
 **Architecture:**
+
 ```
 Task metadata (tokens_in, tokens_out, category)
   ↓ (classify)
@@ -149,12 +163,14 @@ Selected model
 **Decision:** Keep thegent's local routing/adapters/auth intact during Track 1; run parity tests comparing thegent implementation to CLIProxy. Only delete thegent code after parity is verified.
 
 **Rationale:**
+
 - **Safe migration:** Can fall back to thegent implementation if CLIProxy breaks
 - **Verification by example:** Parity tests serve as specifications
 - **Gradual rollout:** Can canary CLIProxy routing before full cutover
 - **Debugging:** Easier to spot diffs if both implementations run side-by-side
 
 **Alternative Rejected:** Migrate immediately, delete old code
+
 - Risk: If CLIProxy has a bug, no fallback
 - Harder to debug subtle diffs
 
@@ -169,12 +185,14 @@ Selected model
 **Decision:** CLIProxy runs as separate process (localhost:8317), thegent calls via HTTP. Don't embed CLIProxy into thegent binary.
 
 **Rationale:**
+
 - **Independent scaling:** CLIProxy can be deployed separately, shared across multiple thegent instances
 - **Language agnostic:** Non-Python harnesses (Codex, Gemini) can use same CLIProxy
 - **Operational clarity:** Separate process, separate logs, separate restarts
 - **Zero deployment coupling:** Deploying thegent doesn't require CLIProxy deploy
 
 **Alternative Rejected:** Link CLIProxy as Go library in thegent
+
 - Adds build complexity (cgo)
 - Ties process lifetimes
 - Can't scale independently
@@ -285,14 +303,14 @@ Selected model
 
 ## Risk Register
 
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|-----------|
-| CLIProxy endpoint is slow | Medium | High | Implement timeout (10s), circuit breaker, cache |
-| Parity test reveals subtle diffs | Medium | Medium | Dual-run parity tests before deleting code (T5.3) |
-| Quota enforcement breaks existing workflows | Low | High | Feature flag to opt-in to CLIProxy quota (fallback to thegent) |
-| OAuth token refresh fails silently | Low | High | Explicit error on refresh failure, not fallback |
-| Model metadata diverges between systems | Medium | Medium | CLIProxy is source of truth, thegent polls; version control |
-| Old routing code still used after deletion | Low | High | grep -r to verify no imports after T5.3 |
+| Risk                                        | Probability | Impact | Mitigation                                                     |
+| ------------------------------------------- | ----------- | ------ | -------------------------------------------------------------- |
+| CLIProxy endpoint is slow                   | Medium      | High   | Implement timeout (10s), circuit breaker, cache                |
+| Parity test reveals subtle diffs            | Medium      | Medium | Dual-run parity tests before deleting code (T5.3)              |
+| Quota enforcement breaks existing workflows | Low         | High   | Feature flag to opt-in to CLIProxy quota (fallback to thegent) |
+| OAuth token refresh fails silently          | Low         | High   | Explicit error on refresh failure, not fallback                |
+| Model metadata diverges between systems     | Medium      | Medium | CLIProxy is source of truth, thegent polls; version control    |
+| Old routing code still used after deletion  | Low         | High   | grep -r to verify no imports after T5.3                        |
 
 ---
 
@@ -315,16 +333,19 @@ Track 1 is **DONE** when:
 ## Next Steps (After Track 1)
 
 ### Track 2: Integrations & Lifecycle
+
 - Migrate remaining cost tracking integrations
 - Migrate credential source validation
 - Add CLIProxy endpoints for credential refresh lifecycle
 
 ### Track 3: Optimization
+
 - Implement response caching in CLIProxy
 - Batch multiple routing requests
 - Add latency metrics/SLOs
 
 ### Track 4: Production Rollout
+
 - Canary CLIProxy routing to 10% of agents
 - Monitor for parity diffs, latency
 - Full rollout to 100%

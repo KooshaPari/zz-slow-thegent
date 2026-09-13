@@ -12,7 +12,7 @@ Generates compliance attestations for governance reviews.
 
 ### Methods
 
-#### AttestationGenerator.__init__
+#### AttestationGenerator.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings)
@@ -38,7 +38,7 @@ WP-15004: Enterprise compliance and audit reports.
 
 ### Methods
 
-#### AuditReportGenerator.__init__
+#### AuditReportGenerator.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings)

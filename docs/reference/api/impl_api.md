@@ -4,7 +4,7 @@
 
 Thegent implementation layer: functions that return dict/str instead of printing.
 
-_resolve_cwd() defaults to Path.cwd() when no project indicators found, so no
+\_resolve_cwd() defaults to Path.cwd() when no project indicators found, so no
 "cd &amp;&amp;" patterns are needed. Use --cd /path for explicit directory override.
 MCP tools may still elicit cwd when meta.cwd is absent (see gofastmcp.com/servers/elicitation).
 
@@ -147,6 +147,7 @@ do_next_impl(cd: Any, limit: int)
 Find next actionable work items from WORK_STREAM.md and all queued sources.
 
 Sources (in priority order):
+
 - ESCALATION: Past-SLA blocked runs (resolve first)
 - PROMPT_QUEUE: $defer prompts (use thegent_queue_claim/done)
 - DEFERRAL: Deferred runs to resume (use thegent orchestrate deferral resume)
@@ -159,6 +160,7 @@ Sources (in priority order):
 - `limit`: Max items to return (default: 5, min: 1, max: 100)
 
 **Returns**: dict with:
+
 - next_items: list of {id, description, source, prompt_suggestion, queue_item_id?, run_id?}
 - count: number of items returned
 - sources_checked: list of sources checked
@@ -744,6 +746,7 @@ Block until next actionable work exists, polling at intervals.
 - `sources`: Tuple of source names to check (default: ("do_next",))
 
 **Returns**: dict with:
+
 - action: dict with {id, description, source, prompt_suggestion} or None if timeout
 - elapsed_s: seconds elapsed
 - poll_count: number of polls performed

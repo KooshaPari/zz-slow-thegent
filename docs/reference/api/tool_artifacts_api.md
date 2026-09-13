@@ -5,6 +5,7 @@
 Tool-Related Artifacts - External tool invocations and API calls.
 
 Provides specialized artifacts for:
+
 - MCP (Model Context Protocol) tool calls
 - External API invocations
 - Command-line tool execution
@@ -16,6 +17,7 @@ Provides specialized artifacts for:
 Artifact for MCP (Model Context Protocol) tool calls.
 
 Specialized tracking for MCP interactions with:
+
 - Server and tool information
 - Request/response schemas
 - Error handling
@@ -51,6 +53,7 @@ Create MCP call artifact.
 Artifact for external tool invocations.
 
 Tracks:
+
 - Tool name, type, and version
 - Input arguments and parameters
 - Output/result

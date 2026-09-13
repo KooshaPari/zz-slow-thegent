@@ -15,4 +15,3 @@ This lane analyzed CLIProxyAPI bug items that affect thegent indirectly or direc
 1. Add a focused parity test for `tool_choice.name` vs `tools[].name`.
 2. Add a streaming regression test for completion markers.
 3. Add request-shape guards for known `INVALID_ARGUMENT` patterns.
-

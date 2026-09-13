@@ -10,9 +10,11 @@
 ## The Three Documents (What Goes Where)
 
 ### 1. PARETO_FRONTIER_MATRIX.md
+
 **Use this to:** Choose the right model for your needs at a glance.
 
 **Contains:**
+
 - Performance tiers (Excellent/Good/Acceptable/Budget)
 - Speed tiers (Instant to Batch)
 - Cost tiers (Ultra-Low to Premium)
@@ -26,9 +28,11 @@
 ---
 
 ### 2. ROUTING_DECISION_MATRIX.md
+
 **Use this to:** Route requests programmatically with full constraint checking.
 
 **Contains:**
+
 - 4 task categories (FAST, NORMAL, COMPLEX, HIGH_COMPLEX) with token ranges and budgets
 - For each category:
   - Hard constraint checks (quality, cost, speed, cumulative budget)
@@ -46,9 +50,11 @@
 ---
 
 ### 3. COST_ENFORCEMENT_POLICY.md
+
 **Use this to:** Implement cost tracking, budget limits, and escalation procedures.
 
 **Contains:**
+
 - 2-tier cost limits (per-call instantaneous + monthly cumulative)
 - Budget tracking ledger format
 - Alert levels (Informational → Warning → Critical → Emergency)
@@ -66,9 +72,11 @@
 ## Quick Decision Workflow
 
 ### Step 1: Incoming Request
+
 Capture: tokens, complexity, reasoning_depth, latency_SLA, cost_priority
 
 ### Step 2: Categorize
+
 ```
 if tokens ≤ 500:
   category = FAST
@@ -81,6 +89,7 @@ else:
 ```
 
 ### Step 3: Route Within Category (See ROUTING_DECISION_MATRIX.md)
+
 ```
 Check hard constraints (quality, cost, speed, budget)
   ├─ All pass? → Use primary model
@@ -89,6 +98,7 @@ Check hard constraints (quality, cost, speed, budget)
 ```
 
 ### Step 4: Enforce Budget (See COST_ENFORCEMENT_POLICY.md)
+
 ```
 Validate cost estimate ≤ per-call limit
   ├─ OK? → Route and log
@@ -101,6 +111,7 @@ Track cumulative cost per category
 ```
 
 ### Step 5: Fallback Chain
+
 If primary model unavailable (quota/cost), auto-route to fallback. If all exhausted, escalate deterministically (don't silently degrade).
 
 ---
@@ -109,41 +120,41 @@ If primary model unavailable (quota/cost), auto-route to fallback. If all exhaus
 
 ### By Use Case
 
-| Use Case | Primary | Fallback | Budget |
-|---|---|---|---|
-| Quick chat, API test | Gemini Flash | Haiku | $0.001/call |
-| Standard coding task | Haiku | Gemini Flash | $0.02/call |
-| Complex debugging, multi-step | Sonnet | Haiku → Minimax | $0.05/call |
-| Architecture design, novel problem | Opus | Sonnet | $0.15+/call |
-| Agentic loop (1000+ calls) | Minimax | Haiku | $0.005/call |
-| Emergency fallback (budget critical) | GPT-4o mini | N/A | $0.001/call |
+| Use Case                             | Primary      | Fallback        | Budget      |
+| ------------------------------------ | ------------ | --------------- | ----------- |
+| Quick chat, API test                 | Gemini Flash | Haiku           | $0.001/call |
+| Standard coding task                 | Haiku        | Gemini Flash    | $0.02/call  |
+| Complex debugging, multi-step        | Sonnet       | Haiku → Minimax | $0.05/call  |
+| Architecture design, novel problem   | Opus         | Sonnet          | $0.15+/call |
+| Agentic loop (1000+ calls)           | Minimax      | Haiku           | $0.005/call |
+| Emergency fallback (budget critical) | GPT-4o mini  | N/A             | $0.001/call |
 
 ### By Performance Need
 
-| Threshold | Models | Note |
-|---|---|---|
-| ≥80% (mission-critical) | Opus, Minimax, GLM-5 | Best reasoning; slower |
-| ≥75% (standard engineering) | Sonnet, Gemini Flash, Minimax | Balanced tier |
-| ≥70% (quick fixes) | Haiku, GPT-4o mini | Fast, cheap |
-| <70% (extreme budget constraint) | GLM Flash, Minimax M2 | Acceptable for simple tasks |
+| Threshold                        | Models                        | Note                        |
+| -------------------------------- | ----------------------------- | --------------------------- |
+| ≥80% (mission-critical)          | Opus, Minimax, GLM-5          | Best reasoning; slower      |
+| ≥75% (standard engineering)      | Sonnet, Gemini Flash, Minimax | Balanced tier               |
+| ≥70% (quick fixes)               | Haiku, GPT-4o mini            | Fast, cheap                 |
+| <70% (extreme budget constraint) | GLM Flash, Minimax M2         | Acceptable for simple tasks |
 
 ### By Speed Need
 
-| SLA | Models | Typical Use |
-|---|---|---|
-| <1s (interactive, chat) | Gemini Flash, GPT-4o mini | User-facing, REPL |
-| <5s (standard) | Haiku, Cursor Ultra | CLI, editor commands |
-| <20s (normal) | Sonnet, Gemini Pro | Engineering tasks |
-| <60s+ (offline) | Opus, reasoning models | Batch processing |
+| SLA                     | Models                    | Typical Use          |
+| ----------------------- | ------------------------- | -------------------- |
+| <1s (interactive, chat) | Gemini Flash, GPT-4o mini | User-facing, REPL    |
+| <5s (standard)          | Haiku, Cursor Ultra       | CLI, editor commands |
+| <20s (normal)           | Sonnet, Gemini Pro        | Engineering tasks    |
+| <60s+ (offline)         | Opus, reasoning models    | Batch processing     |
 
 ### By Cost Need
 
-| Budget | Models | Example |
-|---|---|---|
+| Budget       | Models                          | Example                 |
+| ------------ | ------------------------------- | ----------------------- |
 | <$0.001/call | Minimax, GLM Flash, GPT-4o mini | Ultra-high-volume loops |
-| <$0.01/call | Haiku, Gemini Flash | High-volume, daily ops |
-| <$0.05/call | Sonnet | Standard tier |
-| <$0.50/call | Opus | Mission-critical, rare |
+| <$0.01/call  | Haiku, Gemini Flash             | High-volume, daily ops  |
+| <$0.05/call  | Sonnet                          | Standard tier           |
+| <$0.50/call  | Opus                            | Mission-critical, rare  |
 
 ---
 
@@ -264,14 +275,14 @@ HIGH_COMPLEX (5% of volume, mission-critical):
 
 ## Escalation Contact List
 
-| Scenario | Owner | Action |
-|---|---|---|
-| Category approaching 80% budget | Operations | Email alert; prepare contingency |
-| Category at 100% budget | Manager | Email alert; decide reallocation or queue |
-| Single request exceeds per-call limit | Manager | Review; approve or deny override |
-| Quality regression (model underperforming) | Engineering | Investigate; adjust routing rules |
-| Provider outage (model unavailable) | DevOps | Activate fallback chain; escalate |
-| Monthly budget reallocation needed | Finance + Manager | Document; update routing rules |
+| Scenario                                   | Owner             | Action                                    |
+| ------------------------------------------ | ----------------- | ----------------------------------------- |
+| Category approaching 80% budget            | Operations        | Email alert; prepare contingency          |
+| Category at 100% budget                    | Manager           | Email alert; decide reallocation or queue |
+| Single request exceeds per-call limit      | Manager           | Review; approve or deny override          |
+| Quality regression (model underperforming) | Engineering       | Investigate; adjust routing rules         |
+| Provider outage (model unavailable)        | DevOps            | Activate fallback chain; escalate         |
+| Monthly budget reallocation needed         | Finance + Manager | Document; update routing rules            |
 
 ---
 
@@ -284,6 +295,7 @@ HIGH_COMPLEX (5% of volume, mission-critical):
 5. **Minimax M2.5 unproven in production.** Strong benchmarks; less track record. Use cautiously for critical paths.
 
 **Future Enhancements:**
+
 - Implement A/B testing framework to validate model choices on real workloads
 - Add cost predictability improvements (confidence intervals on cost estimates)
 - Build feedback loop to update benchmarks based on actual performance
@@ -300,8 +312,6 @@ HIGH_COMPLEX (5% of volume, mission-critical):
 - **PLAN.md** (root) — Project roadmap; check if cost governance work is scheduled
 - **.claude/qa-config.json** — QA governance config; ensure consistency with routing tiers
 
-
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -310,15 +320,18 @@ HIGH_COMPLEX (5% of volume, mission-critical):
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

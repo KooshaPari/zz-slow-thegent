@@ -22,13 +22,13 @@ The civilization must manage finite compute resources (CPU, memory, network) fai
 
 ### Resource Types
 
-| Resource | Unit | Typical Limit | Notes |
-|----------|------|---------------|-------|
-| CPU | percent (0-100) | 80-100% | Share 1 CPU core across civilization |
-| Memory | MB/GB | 8-16 GB total | Per-agent quotas sum to total |
-| Network | Mbps | 10-100 Mbps | Per-project bandwidth limits |
-| Disk I/O | MB/s | Unlimited (local) | Not constrained in this design |
-| Concurrency | tasks | 5-20 parallel | Max L2 agents × max tasks per L2 |
+| Resource    | Unit            | Typical Limit     | Notes                                |
+| ----------- | --------------- | ----------------- | ------------------------------------ |
+| CPU         | percent (0-100) | 80-100%           | Share 1 CPU core across civilization |
+| Memory      | MB/GB           | 8-16 GB total     | Per-agent quotas sum to total        |
+| Network     | Mbps            | 10-100 Mbps       | Per-project bandwidth limits         |
+| Disk I/O    | MB/s            | Unlimited (local) | Not constrained in this design       |
+| Concurrency | tasks           | 5-20 parallel     | Max L2 agents × max tasks per L2     |
 
 ### Resource State
 
@@ -127,6 +127,7 @@ The civilization must manage finite compute resources (CPU, memory, network) fai
 **Goal**: Fair distribution while respecting project importance/activity.
 
 **Factors**:
+
 - Civilization total resources (fixed)
 - Number of projects (variable, 2-10)
 - Project activity level (L1 agents per project)
@@ -136,6 +137,7 @@ The civilization must manage finite compute resources (CPU, memory, network) fai
 ### Quota Allocation Algorithm
 
 **Option 1: Equal Share (Simplest)**
+
 ```
 quota_per_project = total_resources / num_projects
 
@@ -149,6 +151,7 @@ Example (3 projects, 100 CPU):
 **Cons**: Doesn't account for activity, one idle project wastes quota
 
 **Option 2: Usage-Based (Adaptive)**
+
 ```
 historical_usage_per_project = average_last_7_days_usage
 quota_per_project = (historical_usage / sum(historical_usage)) * total_resources
@@ -163,6 +166,7 @@ Example:
 **Cons**: Unused capacity if project slows down, takes time to converge
 
 **Option 3: Priority-Based (Flexible)**
+
 ```
 priority_per_project = {kush: 1.0 (high), atoms: 0.8 (medium), thegent: 0.6 (low)}
 quota_per_project = (priority / sum(priorities)) * total_resources
@@ -180,6 +184,7 @@ Example:
 ### Recommended Approach: Hybrid (Options 2 + 3)
 
 **Strategy**:
+
 1. Start with equal share (safe baseline)
 2. Monitor historical usage for 7 days
 3. Shift to usage-based allocation (adapts automatically)
@@ -278,11 +283,13 @@ def select_agent_locality_first(task_id: str, required_capability: str, source_p
 ```
 
 **Advantages**:
+
 - Minimizes cross-project overhead (no network crossing)
 - Agents stay focused on their project
 - Easier to reason about (work stays local)
 
 **Disadvantages**:
+
 - May not use idle capacity in other projects
 - Blocks task if no capacity in source project
 
@@ -314,11 +321,13 @@ def select_agent_load_balanced(task_id: str, required_capability: str) -> AgentE
 ```
 
 **Advantages**:
+
 - Maximizes utilization (no idle agents)
 - Fair distribution of work
 - Better for cross-project optimization
 
 **Disadvantages**:
+
 - Higher latency (cross-project communication)
 - More complex coordination
 - May create cascading failures
@@ -349,6 +358,7 @@ def select_agent_hybrid(
 ```
 
 **Parameters**:
+
 - `locality_threshold_percent`: When to abandon locality preference (default: 80%)
 - `capability`: Required agent capability
 - `task_priority`: Higher priority tasks can use cross-project resources
@@ -360,6 +370,7 @@ def select_agent_hybrid(
 ### Admission Control (Accept/Reject Decision)
 
 **When to reject a task:**
+
 ```python
 def can_allocate_task(task: Task, agent: AgentEntry) -> tuple[bool, str]:
     """
@@ -511,6 +522,7 @@ def request_resource_borrow(
 ```
 
 **Message Schema (Borrow Request)**:
+
 ```json
 {
   "message_type": "resource_borrow_request",
@@ -533,6 +545,7 @@ def request_resource_borrow(
 ```
 
 **Approval (with Terms)**:
+
 ```json
 {
   "message_type": "resource_borrow_response",
@@ -646,6 +659,7 @@ class SharedResultCache:
 ```
 
 **Cache Locations**:
+
 ```
 ~/.claude/civilization/cache/
 ├── research-http-libs.json       (created by atoms:researcher)
@@ -654,6 +668,7 @@ class SharedResultCache:
 ```
 
 **Cross-Project Cache Hit Example**:
+
 ```
 Task: "research HTTP libraries"
 Requested by: kush:runner-1
@@ -669,6 +684,7 @@ Requested by: kush:runner-1
 **Goal**: Start next task before current task completes (pipelining).
 
 **Example**:
+
 ```
 L2 working on Task A
   ├─ Task A estimated 10 min remaining
@@ -683,6 +699,7 @@ L2 working on Task A
 ```
 
 **Implementation**:
+
 ```python
 def speculative_dispatch(current_task: Task, queue: list[Task]) -> bool:
     """
@@ -792,16 +809,15 @@ class AgentMetrics:
 
 ## Glossary
 
-| Term | Definition |
-|------|-----------|
-| **Quota** | Resource limit for a project (CPU %, memory, network) |
-| **Usage** | Actual resource consumption by agents in project |
-| **Available** | quota - usage = unused capacity |
-| **Headroom** | available - safety_margin = reclaimable |
-| **Locality** | Preferring same-project agents (low latency) |
-| **Load Balancing** | Distributing work across agents evenly |
-| **Backpressure** | Rejecting tasks when overloaded |
-| **Borrowing** | Project A uses Project B's excess capacity temporarily |
-| **Speculation** | Starting next task before current task completes |
-| **Memoization** | Caching results to avoid redundant work |
-
+| Term               | Definition                                             |
+| ------------------ | ------------------------------------------------------ |
+| **Quota**          | Resource limit for a project (CPU %, memory, network)  |
+| **Usage**          | Actual resource consumption by agents in project       |
+| **Available**      | quota - usage = unused capacity                        |
+| **Headroom**       | available - safety_margin = reclaimable                |
+| **Locality**       | Preferring same-project agents (low latency)           |
+| **Load Balancing** | Distributing work across agents evenly                 |
+| **Backpressure**   | Rejecting tasks when overloaded                        |
+| **Borrowing**      | Project A uses Project B's excess capacity temporarily |
+| **Speculation**    | Starting next task before current task completes       |
+| **Memoization**    | Caching results to avoid redundant work                |

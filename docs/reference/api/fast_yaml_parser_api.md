@@ -6,11 +6,13 @@ Fast YAML parser with optimized backends.
 
 This module provides a high-performance abstraction layer for YAML parsing
 that automatically selects the fastest available backend:
+
 - oyaml (orjson-based): 3-5x faster than PyYAML
 - ruamel.yaml: 2-3x faster, preserves formatting
 - PyYAML: Standard fallback
 
 Performance improvements:
+
 - oyaml uses orjson for JSON-like speed (3-5x faster)
 - ruamel.yaml optimized C implementation (2-3x faster)
 - Automatic backend selection based on availability
@@ -22,13 +24,14 @@ Performance improvements:
 High-performance YAML parser with automatic backend selection.
 
 Backend priority (fastest first):
+
 1. oyaml (if installed) - 3-5x faster, orjson-based
 2. ruamel.yaml (if installed) - 2-3x faster, preserves formatting
 3. PyYAML (standard fallback) - baseline performance
 
 ### Methods
 
-#### FastYAMLParser.__init__
+#### FastYAMLParser.**init**
 
 ```python
 __init__(self: Any, preserve_formatting: bool)

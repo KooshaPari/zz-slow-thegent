@@ -12,12 +12,12 @@ Economic governance provides budget allocation, cost tracking, and routing decis
 
 ### Budget Types
 
-| Type | Scope | Renewal | Use Case |
-|------|-------|---------|----------|
-| Monthly | Project | Calendar month | General operations |
-| Quarterly | Organization | Quarter | Planning |
-| Per-model | Model | Per-request | Cost control |
-| Emergency | Override | Manual | Fail-safe |
+| Type      | Scope        | Renewal        | Use Case           |
+| --------- | ------------ | -------------- | ------------------ |
+| Monthly   | Project      | Calendar month | General operations |
+| Quarterly | Organization | Quarter        | Planning           |
+| Per-model | Model        | Per-request    | Cost control       |
+| Emergency | Override     | Manual         | Fail-safe          |
 
 ### Budget Allocation
 
@@ -189,7 +189,7 @@ class EconomicGovernance:
 
 ### Changes Made
 
-1. **Created standalone research document** from COST_ROUTING_*.md and COST_ENFORCEMENT_POLICY.md
+1. **Created standalone research document** from COST*ROUTING*\*.md and COST_ENFORCEMENT_POLICY.md
 2. **Defined budget model** with 4 budget types
 3. **Implemented cost tracking** with real-time metering
 4. **Added routing integration** with budget-aware decisions
@@ -209,6 +209,7 @@ class EconomicGovernance:
 - Overage handling policies
 
 <!-- PHENOTYPE_GOVERNANCE_OVERLAY_V1 -->
+
 ## Phenotype Governance Overlay v1
 
 - Enforce `TDD + BDD + SDD` for all feature and workflow changes.
@@ -217,4 +218,3 @@ class EconomicGovernance:
 - Keep local hot paths deterministic and low-latency; place distributed workflow logic behind durable orchestration boundaries.
 - Require policy gating, auditability, and traceable correlation IDs for agent and workflow actions.
 - Document architectural and protocol decisions before broad rollout changes.
-

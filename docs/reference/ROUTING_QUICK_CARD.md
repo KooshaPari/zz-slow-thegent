@@ -171,6 +171,7 @@ Estimate wrong?
 ## QUICK EXAMPLES
 
 ### Example 1: 750-token implementation task
+
 ```
 Tokens: 750 → NORMAL category
 Check constraints:
@@ -184,6 +185,7 @@ Log: cost_estimate=$0.0035, status=ROUTED
 ```
 
 ### Example 2: 8K-token debugging task (complex)
+
 ```
 Tokens: 8000 → COMPLEX category
 Check constraints:
@@ -198,6 +200,7 @@ If all exhausted: QUEUE with priority="debugging"
 ```
 
 ### Example 3: 100-token quick query (FAST)
+
 ```
 Tokens: 100 → FAST category
 Check constraints:
@@ -211,6 +214,7 @@ Log: cost_estimate=$0.0002, status=ROUTED
 ```
 
 ### Example 4: 12K-token architecture task (HIGH_COMPLEX)
+
 ```
 Tokens: 12000 → HIGH_COMPLEX category
 Check constraints:
@@ -284,15 +288,12 @@ Navigation → Use MODEL_ROUTING_INDEX.md as guide
 
 **Print & Post. Reference Daily. Questions? Check the full docs in /docs/reference/**
 
-
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -302,15 +303,18 @@ Navigation → Use MODEL_ROUTING_INDEX.md as guide
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

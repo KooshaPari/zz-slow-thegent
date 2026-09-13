@@ -12,7 +12,7 @@ WP-3001: Manages project principles and critique logic.
 
 ### Methods
 
-#### ConstitutionManager.__init__
+#### ConstitutionManager.**init**
 
 ```python
 __init__(self: Any, constitution_path: Path)

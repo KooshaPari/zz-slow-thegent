@@ -12,7 +12,7 @@ Replays agent execution traces from immutable ledger entries (WP-15002).
 
 ### Methods
 
-#### IncidentReplayer.__init__
+#### IncidentReplayer.**init**
 
 ```python
 __init__(self: Any, ledger: IncidentLedger)

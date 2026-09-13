@@ -239,8 +239,8 @@ class ToolManager:
         return resolve_binary(name)
 ```
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog

@@ -12,29 +12,29 @@
 - [x] Optimize `git` and `find` via high-performance shims (`gix`, `fd`)
 - [x] Enhance `thegent doctor` with Provider Success Matrix & Headless Runs
 - [ ] Implement proactive `doctor --fix` for detected environment issues
-- [ ] **Consolidate tool acceleration → thegent-shims (Rust)** — *was* "unified Go ultra-shim"; see [FULL_SHELL_TO_RUST](../plans/FULL_SHELL_TO_RUST_WHERE_BENEFICIAL.md) Phase 0–2 (thegent-shims for git, grep, find, agent)
+- [ ] **Consolidate tool acceleration → thegent-shims (Rust)** — _was_ "unified Go ultra-shim"; see [FULL_SHELL_TO_RUST](../plans/FULL_SHELL_TO_RUST_WHERE_BENEFICIAL.md) Phase 0–2 (thegent-shims for git, grep, find, agent)
 
 ---
 
 ## Issues identified
 
-| Issue | Impact | Status | Fix / mitigation |
-|-------|--------|--------|-------------------|
-| `grep -r` collision | 5m+ search times | Done | grep-wrapper.sh / install shim strip `-r` for rg; **target:** thegent-shims find/grep |
-| `rg -E` conflict | CLI noise / errors | Done | grep-wrapper.sh + install shim strip `-E`; **target:** thegent-shims |
-| Multi-bin overhead | Slow startup | In progress | **thegent-shims** (Rust) single binary for git, grep, find, agent — Phase 2 FULL_SHELL_TO_RUST |
-| Provider drift | Unclear health | Done | `thegent doctor` provider success matrix |
+| Issue               | Impact             | Status      | Fix / mitigation                                                                               |
+| ------------------- | ------------------ | ----------- | ---------------------------------------------------------------------------------------------- |
+| `grep -r` collision | 5m+ search times   | Done        | grep-wrapper.sh / install shim strip `-r` for rg; **target:** thegent-shims find/grep          |
+| `rg -E` conflict    | CLI noise / errors | Done        | grep-wrapper.sh + install shim strip `-E`; **target:** thegent-shims                           |
+| Multi-bin overhead  | Slow startup       | In progress | **thegent-shims** (Rust) single binary for git, grep, find, agent — Phase 2 FULL_SHELL_TO_RUST |
+| Provider drift      | Unclear health     | Done        | `thegent doctor` provider success matrix                                                       |
 
 ---
 
 ## Speed & conciseness (aligned with plans)
 
-| Goal | Current / plan |
-|------|-----------------|
-| **Unified shims** | Shell wrappers in hooks/lib; install.py generates bash shims. **Target:** [FULL_SHELL_TO_RUST](../plans/FULL_SHELL_TO_RUST_WHERE_BENEFICIAL.md) Phase 2: **thegent-shims** (Rust) for git, grep, find, codex/copilot/dex/claude/cursor. Replaces ultra-shim (Go) and bash shims. |
-| **Proactive health** | Expand `thegent doctor` to check shim versions and binary availability. |
-| **Headless preflights** | Ensure `clode` and `dex` are ready before long tasks. |
-| **MCP acceleration** | Expose gix/fd/rg via MCP to bypass CLI/shell; optional after thegent-hooks/thegent-shims. |
+| Goal                    | Current / plan                                                                                                                                                                                                                                                                   |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Unified shims**       | Shell wrappers in hooks/lib; install.py generates bash shims. **Target:** [FULL_SHELL_TO_RUST](../plans/FULL_SHELL_TO_RUST_WHERE_BENEFICIAL.md) Phase 2: **thegent-shims** (Rust) for git, grep, find, codex/copilot/dex/claude/cursor. Replaces ultra-shim (Go) and bash shims. |
+| **Proactive health**    | Expand `thegent doctor` to check shim versions and binary availability.                                                                                                                                                                                                          |
+| **Headless preflights** | Ensure `clode` and `dex` are ready before long tasks.                                                                                                                                                                                                                            |
+| **MCP acceleration**    | Expose gix/fd/rg via MCP to bypass CLI/shell; optional after thegent-hooks/thegent-shims.                                                                                                                                                                                        |
 
 ---
 
@@ -49,11 +49,11 @@
 
 ## BACKLOG items (for WORK_STREAM)
 
-| ID | Title | Source | Priority |
-|----|-------|--------|----------|
-| scratch-doctor-fix | Implement proactive `doctor --fix` for detected issues | scratchpad/session_review.md | P2 |
-| scratch-thegent-shims | Ship thegent-shims (Rust) for git/grep/find/agent; Phase 2 FULL_SHELL_TO_RUST | FULL_SHELL_TO_RUST_WHERE_BENEFICIAL.md | P1 |
-| scratch-doctor-shim-check | thegent doctor: check shim version and binary availability | scratchpad/session_review.md | P2 |
+| ID                        | Title                                                                         | Source                                 | Priority |
+| ------------------------- | ----------------------------------------------------------------------------- | -------------------------------------- | -------- |
+| scratch-doctor-fix        | Implement proactive `doctor --fix` for detected issues                        | scratchpad/session_review.md           | P2       |
+| scratch-thegent-shims     | Ship thegent-shims (Rust) for git/grep/find/agent; Phase 2 FULL_SHELL_TO_RUST | FULL_SHELL_TO_RUST_WHERE_BENEFICIAL.md | P1       |
+| scratch-doctor-shim-check | thegent doctor: check shim version and binary availability                    | scratchpad/session_review.md           | P2       |
 
 ---
 
@@ -65,11 +65,11 @@
 
 ## Ongoing snippets
 
-- *2026-02-16:* Optimized `find` to handle glob patterns in install shim; validated 7 providers in doctor.
-- *2026-02-17:* Scratchpad aligned with FULL_SHELL_TO_RUST; BACKLOG items added; ultra-shim marked superseded by thegent-shims.
-
+- _2026-02-16:_ Optimized `find` to handle glob patterns in install shim; validated 7 providers in doctor.
+- _2026-02-17:_ Scratchpad aligned with FULL_SHELL_TO_RUST; BACKLOG items added; ultra-shim marked superseded by thegent-shims.
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog

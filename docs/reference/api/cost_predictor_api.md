@@ -12,7 +12,7 @@ Predicts costs for future agent actions based on model and token estimates.
 
 ### Methods
 
-#### CostPredictor.__init__
+#### CostPredictor.**init**
 
 ```python
 __init__(self: Any)

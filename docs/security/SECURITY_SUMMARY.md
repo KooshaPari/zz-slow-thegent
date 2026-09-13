@@ -11,6 +11,7 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 **Location**: `thegent/src/thegent/security/guardrails.py`, `thegent/src/thegent/infra/fast_subprocess.py`, `thegent/src/thegent/utils/shell.py`
 
 **Protections**:
+
 - ✅ Blocks commands that kill protected processes (agents, terminals)
 - ✅ Prevents dangerous system operations (`rm -rf /`, `format`, etc.)
 - ✅ Validates command length and argument count
@@ -19,6 +20,7 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 - ✅ Protects terminal emulators (Ghostty, Terminal.app, etc.)
 
 **Integration Points**:
+
 - `run_subprocess_optimized()` - All subprocess calls
 - `run_shell_command()` - All shell commands
 - `popen_shell_command()` - All shell process creation
@@ -28,6 +30,7 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 **Location**: `thegent/src/thegent/security/context_optimizer.py`
 
 **Features**:
+
 - ✅ Secret removal (API keys → `${VAR}` placeholders)
 - ✅ Smart truncation (keeps start/end, truncates middle)
 - ✅ Whitespace compression
@@ -35,6 +38,7 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 - ✅ Token estimation
 
 **Integration Points**:
+
 - `_build_continuation_prompt()` - Session continuation prompts
 - `_inject_time_constraint()` - Time-constrained prompts
 
@@ -45,6 +49,7 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 **Location**: `thegent/src/thegent/security/guardrails.py`
 
 **Limits**:
+
 - Commands: 100/minute
 - File operations: 200/minute
 - Network requests: 50/minute
@@ -55,6 +60,7 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 **Location**: `thegent/src/thegent/security/input_sanitizer.py`
 
 **Protections**:
+
 - ✅ SQL injection detection
 - ✅ XSS (Cross-Site Scripting) detection
 - ✅ Command injection detection
@@ -66,11 +72,13 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 **Location**: `thegent/src/thegent/security/guardrails.py`
 
 **Features**:
+
 - ✅ Environment variable mapping
 - ✅ Secret masking for logging
 - ✅ No hardcoded secrets
 
 **Mapping**:
+
 - `openai_api_key` → `OPENAI_API_KEY`
 - `anthropic_api_key` → `ANTHROPIC_API_KEY`
 - `github_token` → `GITHUB_TOKEN`
@@ -81,6 +89,7 @@ Comprehensive security guardrails, token optimization, and safety mechanisms hav
 **Location**: `thegent/src/thegent/orchestration/pruning/`
 
 **Fixes**:
+
 - ✅ Removed shell patterns from pruning (bash, zsh, sh)
 - ✅ Terminal protection (even with `force=True`)
 - ✅ Comprehensive logging
@@ -101,11 +110,13 @@ These invariants are enforced:
 ## 📊 Token Optimization Results
 
 **Before**:
+
 - Context: 100K tokens
 - Secrets exposed: Yes
 - Cost: High
 
 **After**:
+
 - Context: 30-50K tokens (50-70% reduction)
 - Secrets: Replaced with `${VAR}` placeholders
 - Cost: 50-80% reduction
@@ -179,6 +190,7 @@ api_key = get_secret("openai_api_key")  # Reads OPENAI_API_KEY env var
 ## 📈 Monitoring
 
 Security events are logged:
+
 - Blocked commands → `SECURITY BLOCKED`
 - Rate limit violations → `RATE_LIMIT_EXCEEDED`
 - Token optimization → `TOKEN_OPTIMIZATION`
@@ -223,6 +235,7 @@ thegent run "ls -la"
 **Description:** The diskcache library uses pickle for serialization by default, which allows arbitrary code execution if an attacker has write access to the cache directory.
 
 **Mitigation:**
+
 1. diskcache is pinned to 5.6.3 in pyproject.toml
 2. Cache directory permissions restricted to owner only
 3. Consider alternatives: PersistDict (LMDB-based), picocache (SQLite/Redis backends)

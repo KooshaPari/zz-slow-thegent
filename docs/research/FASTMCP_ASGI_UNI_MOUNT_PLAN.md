@@ -13,11 +13,11 @@
 
 FastMCP provides native support for mounting ASGI-compatible servers, enabling true uni-mount (single process) instead of multi-process process-compose.
 
-| Approach | Process Count | Use Case |
-|----------|---------------|----------|
+| Approach            | Process Count              | Use Case                       |
+| ------------------- | -------------------------- | ------------------------------ |
 | **process-compose** | N+1 (parent + MCP servers) | Legacy, backward compatibility |
-| **FastMCP mount** | 1 (single monolith) | Recommended for production |
-| **HTTP proxy** | 2+ (thegent + MCP servers) | Remote/multi-tenant |
+| **FastMCP mount**   | 1 (single monolith)        | Recommended for production     |
+| **HTTP proxy**      | 2+ (thegent + MCP servers) | Remote/multi-tenant            |
 
 ### Key Findings
 
@@ -172,30 +172,30 @@ mcp_app.mount(proxy, namespace="legacy")
 
 ### 4.1 Phase 1: ASGI Mount Support (Core)
 
-| Task | Effort | Deps |
-|------|--------|------|
-| Add `mount_asgi()` helper for FastMCP→FastMCP mounting | Small | — |
-| Add `mount_starlette()` helper for ASGI apps | Small | — |
-| Update lifespan to support ASGI mounting | Medium | mount helpers |
-| Document ASGI mounting patterns | Small | — |
+| Task                                                   | Effort | Deps          |
+| ------------------------------------------------------ | ------ | ------------- |
+| Add `mount_asgi()` helper for FastMCP→FastMCP mounting | Small  | —             |
+| Add `mount_starlette()` helper for ASGI apps           | Small  | —             |
+| Update lifespan to support ASGI mounting               | Medium | mount helpers |
+| Document ASGI mounting patterns                        | Small  | —             |
 
 ### 4.2 Phase 2: Uvicorn Configuration
 
-| Task | Effort | Notes |
-|------|--------|-------|
-| Configure uvicorn workers for production | Small | `workers=CPU_COUNT` |
-| Add graceful shutdown handling | Small | `timeout_graceful_shutdown` |
-| Configure log level and format | Small | — |
-| Add health check endpoint | Small | — |
+| Task                                     | Effort | Notes                       |
+| ---------------------------------------- | ------ | --------------------------- |
+| Configure uvicorn workers for production | Small  | `workers=CPU_COUNT`         |
+| Add graceful shutdown handling           | Small  | `timeout_graceful_shutdown` |
+| Configure log level and format           | Small  | —                           |
+| Add health check endpoint                | Small  | —                           |
 
 ### 4.3 Phase 3: Server Consolidation
 
-| Task | Effort | Notes |
-|------|--------|-------|
+| Task                             | Effort | Notes                                |
+| -------------------------------- | ------ | ------------------------------------ |
 | Migrate playwright to ASGI mount | Medium | Requires playwright-mcp ASGI support |
-| Migrate serena to ASGI mount | Medium | Serena has HTTP transport |
-| Migrate octocode to ASGI mount | Medium | octocode-mcp ASGI support |
-| Add namespace conflict detection | Small | — |
+| Migrate serena to ASGI mount     | Medium | Serena has HTTP transport            |
+| Migrate octocode to ASGI mount   | Medium | octocode-mcp ASGI support            |
+| Add namespace conflict detection | Small  | —                                    |
 
 ---
 
@@ -245,14 +245,14 @@ class ThegentSettings:
 
 ### 6.1 Process Reduction
 
-| Before (process-compose) | After (ASGI mount) |
-|--------------------------|---------------------|
-| process-compose (1) | uvicorn (1) |
-| thegent MCP (1) | thegent + mounts (1) |
-| playwright MCP (1) | — |
-| serena MCP (1) | — |
-| octocode MCP (1) | — |
-| **Total: 5** | **Total: 1** |
+| Before (process-compose) | After (ASGI mount)   |
+| ------------------------ | -------------------- |
+| process-compose (1)      | uvicorn (1)          |
+| thegent MCP (1)          | thegent + mounts (1) |
+| playwright MCP (1)       | —                    |
+| serena MCP (1)           | —                    |
+| octocode MCP (1)         | —                    |
+| **Total: 5**             | **Total: 1**         |
 
 ### 6.2 Performance Benefits
 
@@ -272,12 +272,12 @@ class ThegentSettings:
 
 ## 7. Limitations & Mitigations
 
-| Limitation | Impact | Mitigation |
-|------------|--------|------------|
-| Server crashes affect all tools | High | Process supervision for critical mounts |
-| Memory pressure scales | Medium | Per-mount resource limits |
-| No isolation between mounts | Medium | Namespaces prevent tool collision |
-| ASGI required for direct mount | Medium | Use HTTP proxy for non-ASGI servers |
+| Limitation                      | Impact | Mitigation                              |
+| ------------------------------- | ------ | --------------------------------------- |
+| Server crashes affect all tools | High   | Process supervision for critical mounts |
+| Memory pressure scales          | Medium | Per-mount resource limits               |
+| No isolation between mounts     | Medium | Namespaces prevent tool collision       |
+| ASGI required for direct mount  | Medium | Use HTTP proxy for non-ASGI servers     |
 
 ---
 
@@ -334,13 +334,13 @@ thegent mcp up
 
 ## 10. References
 
-| Source | URL | Key Content |
-|--------|-----|-------------|
-| FastMCP ASGI Mount | [asgi.md](https://gofastmcp.com/servers/asgi.md) | mount_asgi, mount_starlette |
-| FastMCP HTTP Deployment | [http.md](https://gofastmcp.com/deployment/http.md) | uvicorn, stateless, EventStore |
-| FastMCP Proxies | [proxies.md](https://gofastmcp.com/servers/proxies.md) | create_proxy, config patterns |
-| Starlette ASGI | [starlette.io](https://www.starlette.io/applications/) | ASGI app patterns |
-| Uvicorn | [uvicorn.org](https://www.uvicorn.org/) | Server configuration |
+| Source                  | URL                                                    | Key Content                    |
+| ----------------------- | ------------------------------------------------------ | ------------------------------ |
+| FastMCP ASGI Mount      | [asgi.md](https://gofastmcp.com/servers/asgi.md)       | mount_asgi, mount_starlette    |
+| FastMCP HTTP Deployment | [http.md](https://gofastmcp.com/deployment/http.md)    | uvicorn, stateless, EventStore |
+| FastMCP Proxies         | [proxies.md](https://gofastmcp.com/servers/proxies.md) | create_proxy, config patterns  |
+| Starlette ASGI          | [starlette.io](https://www.starlette.io/applications/) | ASGI app patterns              |
+| Uvicorn                 | [uvicorn.org](https://www.uvicorn.org/)                | Server configuration           |
 
 ---
 

@@ -11,6 +11,7 @@ source ~/.zshrc  # or ~/.bashrc
 ```
 
 **Verify it works:**
+
 ```bash
 time which codex  # Should be instant (<10ms)
 ```
@@ -22,6 +23,7 @@ bash scripts/build-all-rust-extensions.sh
 ```
 
 **Verify installation:**
+
 ```python
 python3 -c "from thegent_discovery import DiscoveryInterface; print('✅ OK')"
 ```
@@ -31,12 +33,14 @@ python3 -c "from thegent_discovery import DiscoveryInterface; print('✅ OK')"
 ## 📖 What Changed?
 
 ### Before
+
 - `which codex` timed out after 2+ minutes ❌
 - Hook execution took 200ms average 🐌
 - Frequent fork failures 💥
 - High process count (100+ per hook) 📈
 
 ### After
+
 - `which codex` completes in <10ms ✅
 - Hook execution: 20ms average (10x faster) ⚡
 - No fork failures 🛡️
@@ -49,6 +53,7 @@ python3 -c "from thegent_discovery import DiscoveryInterface; print('✅ OK')"
 ### Tool Detection
 
 **Command-line:**
+
 ```bash
 # Detect all tools (human-readable)
 thegent-tool-detect
@@ -70,6 +75,7 @@ thegent-tool-detect --clear-cache
 ```
 
 **Python:**
+
 ```python
 from thegent_tool_detect import detect_tools, detect_tool
 
@@ -85,6 +91,7 @@ print(path)  # '/usr/bin/jq' or None
 ### PATH Resolution
 
 **Command-line:**
+
 ```bash
 # Resolve single binary
 thegent-path-resolve codex
@@ -100,6 +107,7 @@ thegent-path-resolve codex --format json
 ```
 
 **Python:**
+
 ```python
 from thegent_path_resolve import resolve_binary, PathResolver
 
@@ -118,6 +126,7 @@ results = resolver.resolve_many(["codex", "maturin", "cargo"])
 ### Process Discovery
 
 **Python:**
+
 ```python
 from thegent_discovery import DiscoveryInterface
 
@@ -137,16 +146,19 @@ for agent in agents:
 Tool detection cache is stored at `/tmp/thegent-tools-cache.json` and expires after 1 hour.
 
 **Clear cache:**
+
 ```bash
 thegent-tool-detect --clear-cache
 ```
 
 **Check cache status:**
+
 ```bash
 thegent-tool-detect --cache-stats
 ```
 
 **Or manually:**
+
 ```bash
 rm /tmp/thegent-tools-cache.json
 ```
@@ -163,16 +175,19 @@ rm /tmp/thegent-tools-cache.json
 ### `which` Still Times Out
 
 1. **Check process count:**
+
    ```bash
    ps aux | wc -l  # Should be <200
    ```
 
 2. **Restart shell:**
+
    ```bash
    exec zsh  # or exec bash
    ```
 
 3. **Check for recursive sourcing:**
+
    ```bash
    grep -r "source.*common.sh" ~/.zshrc ~/.bashrc
    ```
@@ -185,11 +200,13 @@ rm /tmp/thegent-tools-cache.json
 ### Build Failures
 
 1. **Install Rust:**
+
    ```bash
    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
    ```
 
 2. **Install maturin:**
+
    ```bash
    cargo install maturin
    # or
@@ -258,6 +275,7 @@ bash scripts/monitor-process-count.sh
 ## 📞 Support
 
 For issues or questions:
+
 1. Check [Troubleshooting](#-troubleshooting) section
 2. Review logs in `/tmp/`
 3. Run diagnostic scripts

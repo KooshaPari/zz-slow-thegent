@@ -17,10 +17,12 @@
 ## Completed Tasks
 
 ### ✅ 1. Frontmatter/H1 Audit
+
 - All 118 files have proper frontmatter or H1 title
 - No action needed
 
 ### ✅ 2. "See Also" Sections Added
+
 - [SESSION_RESEARCH_FRAGMENTS.md](./SESSION_RESEARCH_FRAGMENTS.md) ✅
 - [CONVERSATION_DUMP_2026-02-16.md](./CONVERSATION_DUMP_2026-02-16.md) ✅
 - [PHASE_DOCUMENTS_EXPANDED.md](./PHASE_DOCUMENTS_EXPANDED.md) ✅
@@ -32,6 +34,7 @@
 ### Pending "See Also" Sections (48 files)
 
 **High Priority**:
+
 - [ ] GOVERNANCE_WP_GAPS_EXPANDED.md
 - [ ] MCP_FULL_PARITY_AND_FASTMCP_AUDIT.md
 - [ ] CROSS_PLATFORM_RESEARCH_INDEX.md
@@ -40,12 +43,14 @@
 - [ ] ADR-013-POLICY-FEDERATION.md
 
 **Medium Priority**:
-- [ ] All phase13-*, phase14-*, phase15-* documents
-- [ ] CROSS_PLATFORM_* documents
-- [ ] FASTMCP_* documents
+
+- [ ] All phase13-_, phase14-_, phase15-\* documents
+- [ ] CROSS*PLATFORM*\* documents
+- [ ] FASTMCP\_\* documents
 - [ ] Idea seed files
 
 **Low Priority**:
+
 - [ ] Index/summary documents (may not need "See also")
 - [ ] Completion/status documents
 
@@ -76,15 +81,18 @@
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

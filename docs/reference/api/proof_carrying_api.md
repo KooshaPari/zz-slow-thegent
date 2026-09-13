@@ -14,7 +14,7 @@ Verifies proof-carrying code for MCP tools.
 
 ### Methods
 
-#### PCCVerifier.__init__
+#### PCCVerifier.**init**
 
 ```python
 __init__(self: Any)

@@ -38,7 +38,6 @@ history:
     agent: "system"
     action: "Prompt generated via /agileplus.tasks"
 ---
-
 # Work Package Prompt: WP01 – Work Package Title
 
 [Content follows...]
@@ -54,11 +53,13 @@ history:
 ## Moving Between Lanes
 
 Use the CLI (updates frontmatter only, no file movement):
+
 ```bash
 agileplus agent tasks move-task <WPID> --to <lane>
 ```
 
 Example:
+
 ```bash
 agileplus agent tasks move-task WP01 --to doing
 ```

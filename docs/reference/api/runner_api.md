@@ -13,16 +13,16 @@ All errors are caught and logged; this module never raises to the caller.
 
 Thin wrapper that records agent run lifecycle as signed MAIF artifacts.
 
-Enabled when ``THGENT_MAIF_ENABLED=1`` is set in the environment.
-The DB path is read from ``THGENT_MAIF_DB_PATH`` (default:
-``~/.thegent/maif/artifacts.db``).
+Enabled when `THGENT_MAIF_ENABLED=1` is set in the environment.
+The DB path is read from `THGENT_MAIF_DB_PATH` (default:
+`~/.thegent/maif/artifacts.db`).
 
 All public methods catch every exception internally and log at DEBUG level
 so that MAIF recording never blocks or fails execution.
 
 ### Methods
 
-#### MAIFRunner.__init__
+#### MAIFRunner.**init**
 
 ```python
 __init__(self: Any)
@@ -41,13 +41,13 @@ Record the completion of an agent run as a MAIF artifact.
 **Parameters**:
 
 - `run_id`: Unique identifier for the run, matching the one passed to
-:meth:`record_run_start`.
-- `status`: Final status string (e.g. ``"completed"``, ``"failed"``,
-``"timed_out"``).
+  :meth:`record_run_start`.
+- `status`: Final status string (e.g. `"completed"`, `"failed"`,
+  `"timed_out"`).
 - `output_summary`: Truncated stdout/stderr summary for the artifact.
 
-**Returns**: The artifact ``id`` (hex UUID) when MAIF is enabled and recording
-succeeds; ``None`` otherwise.
+**Returns**: The artifact `id` (hex UUID) when MAIF is enabled and recording
+succeeds; `None` otherwise.
 
 ---
 
@@ -61,13 +61,13 @@ Record the start of an agent run as a MAIF artifact.
 
 **Parameters**:
 
-- `run_id`: Unique identifier for the run (e.g. ``run_abc123``).
+- `run_id`: Unique identifier for the run (e.g. `run_abc123`).
 - `owner`: The user or system that initiated the run.
 - `prompt`: The prompt sent to the agent (may be truncated in the artifact).
-- `agent`: The agent/provider name (e.g. ``"claude"``, ``"antigravity"``).
+- `agent`: The agent/provider name (e.g. `"claude"`, `"antigravity"`).
 
-**Returns**: The artifact ``id`` (hex UUID) when MAIF is enabled and recording
-succeeds; ``None`` otherwise.
+**Returns**: The artifact `id` (hex UUID) when MAIF is enabled and recording
+succeeds; `None` otherwise.
 
 ---
 
@@ -84,13 +84,13 @@ Record the completion of an agent run as a MAIF artifact.
 **Parameters**:
 
 - `run_id`: Unique identifier for the run, matching the one passed to
-:meth:`record_run_start`.
-- `status`: Final status string (e.g. ``"completed"``, ``"failed"``,
-``"timed_out"``).
+  :meth:`record_run_start`.
+- `status`: Final status string (e.g. `"completed"`, `"failed"`,
+  `"timed_out"`).
 - `output_summary`: Truncated stdout/stderr summary for the artifact.
 
-**Returns**: The artifact ``id`` (hex UUID) when MAIF is enabled and recording
-succeeds; ``None`` otherwise.
+**Returns**: The artifact `id` (hex UUID) when MAIF is enabled and recording
+succeeds; `None` otherwise.
 
 ---
 
@@ -104,12 +104,12 @@ Record the start of an agent run as a MAIF artifact.
 
 **Parameters**:
 
-- `run_id`: Unique identifier for the run (e.g. ``run_abc123``).
+- `run_id`: Unique identifier for the run (e.g. `run_abc123`).
 - `owner`: The user or system that initiated the run.
 - `prompt`: The prompt sent to the agent (may be truncated in the artifact).
-- `agent`: The agent/provider name (e.g. ``"claude"``, ``"antigravity"``).
+- `agent`: The agent/provider name (e.g. `"claude"`, `"antigravity"`).
 
-**Returns**: The artifact ``id`` (hex UUID) when MAIF is enabled and recording
-succeeds; ``None`` otherwise.
+**Returns**: The artifact `id` (hex UUID) when MAIF is enabled and recording
+succeeds; `None` otherwise.
 
 ---

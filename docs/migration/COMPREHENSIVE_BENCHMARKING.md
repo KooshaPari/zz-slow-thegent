@@ -11,6 +11,7 @@ This document outlines a comprehensive benchmarking strategy for measuring and v
 ### 1. Hyperfine (Command-Line Benchmarking)
 
 **Installation**:
+
 ```bash
 cargo install hyperfine
 # or
@@ -18,6 +19,7 @@ brew install hyperfine
 ```
 
 **Usage**:
+
 ```bash
 hyperfine \
   --warmup 3 \
@@ -28,6 +30,7 @@ hyperfine \
 ```
 
 **Features**:
+
 - Statistical analysis across multiple runs
 - Warmup runs to account for caching
 - Outlier detection
@@ -36,6 +39,7 @@ hyperfine \
 ### 2. Criterion.rs (Rust Micro-Benchmarking)
 
 **Setup** (`Cargo.toml`):
+
 ```toml
 [dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }
@@ -46,6 +50,7 @@ harness = false
 ```
 
 **Benchmark** (`benches/tool_detection.rs`):
+
 ```rust
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use thegent_tool_detect::ToolDetector;
@@ -72,6 +77,7 @@ criterion_main!(benches);
 ```
 
 **Run**:
+
 ```bash
 cargo bench --bench tool_detection
 ```
@@ -79,6 +85,7 @@ cargo bench --bench tool_detection
 ### 3. Custom Benchmark Suite
 
 **Implementation** (`thegent-benchmark` crate):
+
 - End-to-end benchmarks
 - Real-world workload simulation
 - Performance regression detection
@@ -91,6 +98,7 @@ cargo bench --bench tool_detection
 ### Scenario 1: Tool Detection
 
 **Bash Implementation**:
+
 ```bash
 time (
   JQ_CMD="$(command -v jaq 2>/dev/null || command -v jq 2>/dev/null || echo jq)"
@@ -101,11 +109,13 @@ time (
 ```
 
 **Rust Implementation**:
+
 ```bash
 time thegent-tool-detect --json
 ```
 
 **Expected Results**:
+
 - Bash: 60ms average
 - Rust: 1ms average (cached), 10ms (uncached)
 - Improvement: 60x (cached), 6x (uncached)
@@ -113,6 +123,7 @@ time thegent-tool-detect --json
 ### Scenario 2: PATH Resolution
 
 **Bash Implementation**:
+
 ```bash
 time (
   for dir in $(echo $PATH | tr ':' ' '); do
@@ -125,11 +136,13 @@ time (
 ```
 
 **Rust Implementation**:
+
 ```bash
 time thegent-path-resolve codex
 ```
 
 **Expected Results**:
+
 - Bash: 20ms average
 - Rust: 0.5ms average
 - Improvement: 40x
@@ -137,6 +150,7 @@ time thegent-path-resolve codex
 ### Scenario 3: Process Scanning
 
 **Python Implementation**:
+
 ```python
 import subprocess
 import time
@@ -148,6 +162,7 @@ print(f"Duration: {duration * 1000:.2f}ms")
 ```
 
 **Rust Implementation**:
+
 ```rust
 use sysinfo::System;
 
@@ -159,6 +174,7 @@ println!("Duration: {:?}", duration);
 ```
 
 **Expected Results**:
+
 - Python: 50ms average
 - Rust: 0.5ms average
 - Improvement: 100x
@@ -166,6 +182,7 @@ println!("Duration: {:?}", duration);
 ### Scenario 4: Hook Execution
 
 **Bash Implementation**:
+
 ```bash
 time (
   source hooks/lib/common.sh
@@ -176,11 +193,13 @@ time (
 ```
 
 **Rust Implementation**:
+
 ```bash
 time thegent-hook-dispatcher pretool event.json
 ```
 
 **Expected Results**:
+
 - Bash: 200ms average
 - Rust: 20ms average
 - Improvement: 10x
@@ -234,15 +253,15 @@ cargo bench --bench tool_detection
 
 ## Performance Targets
 
-| Operation | Current (bash) | Target (Rust) | Status |
-|-----------|---------------|---------------|--------|
-| Tool detection | 60ms | 1ms (cached) | ✅ |
-| PATH resolution | 20ms | 0.5ms | ✅ |
-| Process scanning | 50ms | 0.5ms | ✅ |
-| File discovery | 30ms | 2ms | 🔄 |
-| Git operations | 100ms | 10ms | 🔄 |
-| Hook dispatch | 200ms | 20ms | 🔄 |
-| JSON parsing | 5ms | 0.1ms | ✅ |
+| Operation        | Current (bash) | Target (Rust) | Status |
+| ---------------- | -------------- | ------------- | ------ |
+| Tool detection   | 60ms           | 1ms (cached)  | ✅     |
+| PATH resolution  | 20ms           | 0.5ms         | ✅     |
+| Process scanning | 50ms           | 0.5ms         | ✅     |
+| File discovery   | 30ms           | 2ms           | 🔄     |
+| Git operations   | 100ms          | 10ms          | 🔄     |
+| Hook dispatch    | 200ms          | 20ms          | 🔄     |
+| JSON parsing     | 5ms            | 0.1ms         | ✅     |
 
 ---
 
@@ -268,8 +287,8 @@ jobs:
       - run: cargo bench --bench path_resolution
       - uses: benchmark-action/github-action@v1
         with:
-          tool: 'cargo'
-          output-file-path: 'benchmark-results.json'
+          tool: "cargo"
+          output-file-path: "benchmark-results.json"
 ```
 
 ### Performance Regression Detection
@@ -308,8 +327,8 @@ pub fn check_regression(current: Duration, baseline: Duration) -> bool {
 - [perf](https://perf.wiki.kernel.org/) - Linux performance analysis
 - [Instruments](https://developer.apple.com/instruments/) - macOS performance analysis
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog

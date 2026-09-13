@@ -12,7 +12,7 @@ Manages human-in-the-loop signals and approvals.
 
 ### Methods
 
-#### HITLManager.__init__
+#### HITLManager.**init**
 
 ```python
 __init__(self: Any)

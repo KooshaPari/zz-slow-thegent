@@ -13,51 +13,51 @@
 
 ## Base path status
 
-| Path | Status |
-|------|--------|
-| `/Users/kooshapari/CodeProjects/orphans` | Present |
-| `/Users/kooshapari/CodeProjects/Dev` | Present |
+| Path                                      | Status  |
+| ----------------------------------------- | ------- |
+| `/Users/kooshapari/CodeProjects/orphans`  | Present |
+| `/Users/kooshapari/CodeProjects/Dev`      | Present |
 | `/Users/kooshapari/CodeProjects/learning` | Present |
 
 ## `/Users/kooshapari/CodeProjects/orphans`
 
-| Path | `.git` | README | Approx. size |
-|------|--------|--------|--------------|
-| `/Users/kooshapari/CodeProjects/orphans/agslag-new` | no | no | 3.6M |
-| `/Users/kooshapari/CodeProjects/orphans/can-2` | no | no | 35M |
-| `/Users/kooshapari/CodeProjects/orphans/canvasApp` | yes | yes | 166M |
-| `/Users/kooshapari/CodeProjects/orphans/experiments` | no | no | 0B |
-| `/Users/kooshapari/CodeProjects/orphans/heliosHarness` | no | no | 8.0K |
-| `/Users/kooshapari/CodeProjects/orphans/hoohacks` | no | no | 183M |
-| `/Users/kooshapari/CodeProjects/orphans/infrastructure` | no | no | 0B |
-| `/Users/kooshapari/CodeProjects/orphans/ob` | no | yes | 88M |
-| `/Users/kooshapari/CodeProjects/orphans/personal-docs` | no | no | 384K |
-| `/Users/kooshapari/CodeProjects/orphans/schizo` | no | no | 17M |
-| `/Users/kooshapari/CodeProjects/orphans/smartcp` | no | no | 4.0K |
-| `/Users/kooshapari/CodeProjects/orphans/swift` | no | no | 468K |
-| `/Users/kooshapari/CodeProjects/orphans/test-vendor` | no | no | 6.6M |
+| Path                                                    | `.git` | README | Approx. size |
+| ------------------------------------------------------- | ------ | ------ | ------------ |
+| `/Users/kooshapari/CodeProjects/orphans/agslag-new`     | no     | no     | 3.6M         |
+| `/Users/kooshapari/CodeProjects/orphans/can-2`          | no     | no     | 35M          |
+| `/Users/kooshapari/CodeProjects/orphans/canvasApp`      | yes    | yes    | 166M         |
+| `/Users/kooshapari/CodeProjects/orphans/experiments`    | no     | no     | 0B           |
+| `/Users/kooshapari/CodeProjects/orphans/heliosHarness`  | no     | no     | 8.0K         |
+| `/Users/kooshapari/CodeProjects/orphans/hoohacks`       | no     | no     | 183M         |
+| `/Users/kooshapari/CodeProjects/orphans/infrastructure` | no     | no     | 0B           |
+| `/Users/kooshapari/CodeProjects/orphans/ob`             | no     | yes    | 88M          |
+| `/Users/kooshapari/CodeProjects/orphans/personal-docs`  | no     | no     | 384K         |
+| `/Users/kooshapari/CodeProjects/orphans/schizo`         | no     | no     | 17M          |
+| `/Users/kooshapari/CodeProjects/orphans/smartcp`        | no     | no     | 4.0K         |
+| `/Users/kooshapari/CodeProjects/orphans/swift`          | no     | no     | 468K         |
+| `/Users/kooshapari/CodeProjects/orphans/test-vendor`    | no     | no     | 6.6M         |
 
 ## `/Users/kooshapari/CodeProjects/Dev`
 
-| Path | `.git` | README | Approx. size |
-|------|--------|--------|--------------|
-| `/Users/kooshapari/CodeProjects/Dev/job-hunter` | no | no | 96K |
+| Path                                            | `.git` | README | Approx. size |
+| ----------------------------------------------- | ------ | ------ | ------------ |
+| `/Users/kooshapari/CodeProjects/Dev/job-hunter` | no     | no     | 96K          |
 
 ## `/Users/kooshapari/CodeProjects/learning`
 
 Only immediate subdirectory observed: `courses/`. Rows below are **immediate children of `learning/courses/`** (per maxdepth-3 course layout).
 
-| Path | `.git` | README | Approx. size |
-|------|--------|--------|--------------|
-| `/Users/kooshapari/CodeProjects/learning/courses/atoms` | no | no | 563M |
-| `/Users/kooshapari/CodeProjects/learning/courses/prior` | no | no | 1.5G |
-| `/Users/kooshapari/CodeProjects/learning/courses/spr26` | no | yes | 98M |
+| Path                                                    | `.git` | README | Approx. size |
+| ------------------------------------------------------- | ------ | ------ | ------------ |
+| `/Users/kooshapari/CodeProjects/learning/courses/atoms` | no     | no     | 563M         |
+| `/Users/kooshapari/CodeProjects/learning/courses/prior` | no     | no     | 1.5G         |
+| `/Users/kooshapari/CodeProjects/learning/courses/spr26` | no     | yes    | 98M          |
 
 ## Summary counts
 
-| Base | Project-like rows |
-|------|-------------------|
-| orphans | 13 |
-| Dev | 1 |
-| learning (courses children) | 3 |
-| **Total** | **17** |
+| Base                        | Project-like rows |
+| --------------------------- | ----------------- |
+| orphans                     | 13                |
+| Dev                         | 1                 |
+| learning (courses children) | 3                 |
+| **Total**                   | **17**            |

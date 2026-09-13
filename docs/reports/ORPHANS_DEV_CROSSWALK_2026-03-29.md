@@ -4,26 +4,26 @@
 
 ## `/Users/kooshapari/CodeProjects/orphans` (13)
 
-| Folder | Suggested remote / disposition |
-|--------|--------------------------------|
-| agslag-new | Check `KooshaPari/agslag` family; duplicate lineage. |
-| can-2 | Local only unless matching remote exists. |
-| canvasApp | Verify `KooshaPari/canvasApp`; else local only. |
-| experiments | Local only. |
-| heliosHarness | Compare `heliosApp` / `heliosCLI`; GitHub `heliosHarness` archived. |
-| hoohacks | Verify `KooshaPari/hoohacks`. |
-| infrastructure | Local only unless tied to specific infra repo. |
-| ob | Local only. |
-| personal-docs | Local only. |
-| schizo | Local only unless known remote. |
-| smartcp | Verify `KooshaPari/smartcp` or similar. |
-| swift | Local only unless clone of repo named `swift`. |
-| test-vendor | Local fixtures. |
+| Folder         | Suggested remote / disposition                                      |
+| -------------- | ------------------------------------------------------------------- |
+| agslag-new     | Check `KooshaPari/agslag` family; duplicate lineage.                |
+| can-2          | Local only unless matching remote exists.                           |
+| canvasApp      | Verify `KooshaPari/canvasApp`; else local only.                     |
+| experiments    | Local only.                                                         |
+| heliosHarness  | Compare `heliosApp` / `heliosCLI`; GitHub `heliosHarness` archived. |
+| hoohacks       | Verify `KooshaPari/hoohacks`.                                       |
+| infrastructure | Local only unless tied to specific infra repo.                      |
+| ob             | Local only.                                                         |
+| personal-docs  | Local only.                                                         |
+| schizo         | Local only unless known remote.                                     |
+| smartcp        | Verify `KooshaPari/smartcp` or similar.                             |
+| swift          | Local only unless clone of repo named `swift`.                      |
+| test-vendor    | Local fixtures.                                                     |
 
 ## `/Users/kooshapari/CodeProjects/Dev`
 
-| Folder | Suggested remote / disposition |
-|--------|--------------------------------|
+| Folder     | Suggested remote / disposition                   |
+| ---------- | ------------------------------------------------ |
 | job-hunter | Verify `KooshaPari/job-hunter` or personal fork. |
 
 ## Archive README gaps addressed

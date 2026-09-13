@@ -25,6 +25,7 @@ Hooks (Bash scripts)
 ```
 
 **Pain Points**:
+
 - 50ms startup per hook (bash + tool loading)
 - External tools (rg, jq, semgrep) spawned per operation
 - No type checking, shared governance logic duplicated
@@ -54,6 +55,7 @@ Hook binaries (Rust, Phase 1+)
 ```
 
 **Benefits**:
+
 - ~10ms startup (80% reduction)
 - Native regex, JSON, no subprocesses for core logic
 - Type-safe governance rules
@@ -67,6 +69,7 @@ Hook binaries (Rust, Phase 1+)
 ### 1. Governance Library (`thegent-hooks`)
 
 **Crate Structure**:
+
 ```
 thegent-hooks/
 ├── Cargo.toml
@@ -103,6 +106,7 @@ thegent-hooks/
 **Purpose**: Load governance rules and evaluate against project state.
 
 **Public API**:
+
 ```rust
 pub struct PolicyEngine {
     rules: Vec<PolicyRule>,
@@ -142,6 +146,7 @@ pub struct EvaluationContext {
 ```
 
 **Example Usage** (in quality-gate hook):
+
 ```rust
 use thegent_hooks::policy::{PolicyEngine, EvaluationContext};
 
@@ -168,6 +173,7 @@ fn main() -> Result<ExitCode> {
 **Purpose**: Token-based cost estimation for routing decisions.
 
 **Public API**:
+
 ```rust
 pub struct CostCalculator {
     providers: HashMap<String, ProviderPricing>,
@@ -198,12 +204,14 @@ impl CostCalculator {
 ```
 
 **Supported Models** (seeded from pricing data):
+
 - `claude-opus-4.6`, `claude-sonnet-4.6`, `claude-haiku-4.5`
 - `gpt-5-mini`, `gpt-5.3-codex`
 - `gemini-3-flash`, `gemini-4`
 - Proxy providers: minimax, kiro, nim, glm
 
 **Data Source**:
+
 ```yaml
 # ~/.claude/hooks-config/pricing.yaml
 providers:
@@ -225,6 +233,7 @@ providers:
 **Purpose**: Parse and aggregate quality metrics across multiple tools.
 
 **Public API**:
+
 ```rust
 pub struct QualityEvaluator;
 
@@ -264,19 +273,20 @@ pub struct LintIssue {
 
 **Tool Integration Matrix**:
 
-| Tool | Format | Parser | Status |
-|------|--------|--------|--------|
-| ruff | JSON | `parse_ruff_json()` | PoC |
-| oxlint | JSON | `parse_oxlint_json()` | PoC |
-| coverage.py | JSON | `parse_coverage_json()` | Phase 2 |
-| pytest-cov | JSON | `parse_pytest_cov_json()` | Phase 2 |
-| semgrep | JSON | `parse_semgrep_json()` | Phase 2 |
+| Tool        | Format | Parser                    | Status  |
+| ----------- | ------ | ------------------------- | ------- |
+| ruff        | JSON   | `parse_ruff_json()`       | PoC     |
+| oxlint      | JSON   | `parse_oxlint_json()`     | PoC     |
+| coverage.py | JSON   | `parse_coverage_json()`   | Phase 2 |
+| pytest-cov  | JSON   | `parse_pytest_cov_json()` | Phase 2 |
+| semgrep     | JSON   | `parse_semgrep_json()`    | Phase 2 |
 
 #### 1.4 SecurityScanner
 
 **Purpose**: Detect secrets, SAST findings, and supply chain risks.
 
 **Public API**:
+
 ```rust
 pub struct SecurityScanner {
     secret_patterns: Vec<Regex>,
@@ -307,6 +317,7 @@ pub struct SecretFinding {
 ```
 
 **Secret Patterns** (compiled regex):
+
 ```rust
 lazy_static! {
     static ref SECRETS: Vec<Regex> = vec![
@@ -325,6 +336,7 @@ lazy_static! {
 **Purpose**: Verify FR → test traceability and coverage.
 
 **Public API**:
+
 ```rust
 pub struct SpecVerifier {
     fr_index: HashMap<String, FunctionalRequirement>,
@@ -366,6 +378,7 @@ pub struct SpecCoverageReport {
 **Pattern**: Each Rust hook is a standalone binary that uses the thegent-hooks library.
 
 **Structure**:
+
 ```
 thegent-hooks-quality-gate/
 ├── Cargo.toml
@@ -385,6 +398,7 @@ thegent-hooks-security-pipeline/
 **Input/Output Contract** (same as Bash hooks):
 
 **Stdin** (JSON):
+
 ```json
 {
   "tool_name": "Write",
@@ -396,12 +410,14 @@ thegent-hooks-security-pipeline/
 ```
 
 **Exit Codes**:
+
 - 0: Success (policy passed)
 - 1: Failure (violations found, actionable)
 - 124: Timeout
 - 127+: Reserved for future use
 
 **Stderr** (logging):
+
 ```
 HOOK quality-gate: evaluating governance policy
 HOOK quality-gate: loaded 5 rules from /path/to/policy.yaml
@@ -414,6 +430,7 @@ HOOK quality-gate: VIOLATION - new lint suppressions (2) without justification
 ### 3. Configuration
 
 **Governance Rules** (YAML):
+
 ```yaml
 # ~/.claude/hooks/governance.yaml
 policies:
@@ -450,6 +467,7 @@ policies:
 ```
 
 **Quality Thresholds** (JSON):
+
 ```json
 {
   "hooks": {
@@ -472,6 +490,7 @@ policies:
 ### 4. Error Handling & Logging
 
 **Custom Error Type**:
+
 ```rust
 use thiserror::Error;
 
@@ -497,6 +516,7 @@ pub type Result<T> = std::result::Result<T, HookError>;
 ```
 
 **Logging** (structured, to stderr):
+
 ```rust
 eprintln!("HOOK quality-gate: {}", message);
 eprintln!("HOOK quality-gate ERROR: {}", error);
@@ -508,6 +528,7 @@ eprintln!("HOOK quality-gate DEBUG: {}", debug_info);
 ### 5. Testing Strategy
 
 **Unit Tests** (src/lib.rs):
+
 ```rust
 #[cfg(test)]
 mod tests {
@@ -528,6 +549,7 @@ mod tests {
 ```
 
 **Integration Tests** (tests/integration_tests.rs):
+
 ```rust
 #[test]
 fn test_quality_gate_end_to_end_pass() {
@@ -545,6 +567,7 @@ fn test_quality_gate_end_to_end_fail_low_coverage() {
 ```
 
 **Cross-Platform Testing**:
+
 - macOS: Native build + test
 - Linux: CI container (Ubuntu 22.04)
 - Windows: WSL simulation (GitHub Actions)
@@ -558,6 +581,7 @@ fn test_quality_gate_end_to_end_fail_low_coverage() {
 **Key Optimizations**:
 
 1. **Lazy Static Regex**: Compile patterns once
+
    ```rust
    lazy_static! {
        static ref SECRET_REGEXES: Vec<Regex> = vec![...];
@@ -565,6 +589,7 @@ fn test_quality_gate_end_to_end_fail_low_coverage() {
    ```
 
 2. **Parallel File Scanning**: Use rayon for multi-threaded analysis
+
    ```rust
    use rayon::prelude::*;
 
@@ -574,6 +599,7 @@ fn test_quality_gate_end_to_end_fail_low_coverage() {
    ```
 
 3. **Caching**: DashMap for inter-hook result sharing
+
    ```rust
    static CACHE: Lazy<DashMap<String, PolicyOutcome>> =
        Lazy::new(DashMap::new);
@@ -588,12 +614,12 @@ fn test_quality_gate_end_to_end_fail_low_coverage() {
 
 **Expected Latency Improvements**:
 
-| Operation | Bash | Rust | Gain |
-|-----------|------|------|------|
-| Parse 100 ruff JSON issues | 150ms | 25ms | 83% |
-| Scan directory for secrets | 200ms | 40ms | 80% |
-| Evaluate 10 policy rules | 100ms | 15ms | 85% |
-| Aggregate coverage from 3 tools | 180ms | 30ms | 83% |
+| Operation                       | Bash  | Rust | Gain |
+| ------------------------------- | ----- | ---- | ---- |
+| Parse 100 ruff JSON issues      | 150ms | 25ms | 83%  |
+| Scan directory for secrets      | 200ms | 40ms | 80%  |
+| Evaluate 10 policy rules        | 100ms | 15ms | 85%  |
+| Aggregate coverage from 3 tools | 180ms | 30ms | 83%  |
 
 ---
 
@@ -604,6 +630,7 @@ fn test_quality_gate_end_to_end_fail_low_coverage() {
 **No changes to hook-dispatcher Rust binary required for Phase 1**.
 
 The dispatcher continues to:
+
 1. Resolve hooks directory
 2. Spawn hook scripts
 3. Pass JSON via stdin
@@ -617,6 +644,7 @@ For Phase 2+, could add direct Rust hook execution (no spawning), but out of sco
 **Backward Compatible**: Existing Bash hooks continue to work. Rust hooks coexist.
 
 **Gradual Migration**:
+
 - Phase 1: Rust quality-gate, security-pipeline, stop-reconcile (3 hooks)
 - Phase 1.5: Update dispatcher to recognize Rust vs Bash (optional optimization)
 - Phase 2+: Migrate remaining 9 hooks incrementally
@@ -628,12 +656,14 @@ For Phase 2+, could add direct Rust hook execution (no spawning), but out of sco
 ### Build & Distribution
 
 **Build**:
+
 ```bash
 cargo build --release
 # Outputs: target/release/quality-gate, target/release/security-pipeline, etc.
 ```
 
 **Installation**:
+
 ```bash
 # Copy to ~/.claude/hooks/
 cp target/release/quality-gate ~/.claude/hooks/quality-gate-rs
@@ -646,6 +676,7 @@ Hook dispatcher recognizes `.rs` suffix → calls directly (no bash spawn)
 ### Versioning
 
 **Semantic Versioning**:
+
 - `thegent-hooks 1.0.0` - PoC (Phase 1)
 - `thegent-hooks 1.1.0` - Core library stable (Phase 1.5)
 - `thegent-hooks 2.0.0` - Async runtime added (Phase 2)
@@ -658,14 +689,14 @@ Hook dispatcher recognizes `.rs` suffix → calls directly (no bash spawn)
 
 ### Phase 1 Completion Criteria
 
-| Criterion | Target | Status |
-|-----------|--------|--------|
-| Governance library compiles | ✓ | Design |
-| quality-gate PoC in Rust | ✓ | Design |
-| Performance 50% faster | ✓ | Design |
-| 85%+ test coverage | ✓ | Design |
-| Runs on macOS + Linux + WSL | ✓ | Design |
-| Tech spec documented | ✓ | In Progress |
+| Criterion                   | Target | Status      |
+| --------------------------- | ------ | ----------- |
+| Governance library compiles | ✓      | Design      |
+| quality-gate PoC in Rust    | ✓      | Design      |
+| Performance 50% faster      | ✓      | Design      |
+| 85%+ test coverage          | ✓      | Design      |
+| Runs on macOS + Linux + WSL | ✓      | Design      |
+| Tech spec documented        | ✓      | In Progress |
 
 ### Phase 1.1 Specific
 
@@ -685,25 +716,27 @@ Hook dispatcher recognizes `.rs` suffix → calls directly (no bash spawn)
 
 ## Risk Mitigation
 
-| Risk | Mitigation |
-|------|-----------|
-| Rust learning curve | Provide templates, patterns, code review |
-| Async complexity | Phase 1 is sync; Phase 2 optional async |
-| Breaking API changes | Semantic versioning, deprecation warnings |
-| Tool integration gaps | Phase 2 covers remaining tools (semgrep, etc.) |
-| Dependency vulnerabilities | Weekly audits via `cargo-audit` |
+| Risk                       | Mitigation                                     |
+| -------------------------- | ---------------------------------------------- |
+| Rust learning curve        | Provide templates, patterns, code review       |
+| Async complexity           | Phase 1 is sync; Phase 2 optional async        |
+| Breaking API changes       | Semantic versioning, deprecation warnings      |
+| Tool integration gaps      | Phase 2 covers remaining tools (semgrep, etc.) |
+| Dependency vulnerabilities | Weekly audits via `cargo-audit`                |
 
 ---
 
 ## Appendix: Benchmark Methodology
 
 **Baseline Run** (10 iterations, average):
+
 ```bash
 time hook-dispatcher stop < hook-input.json
 # Example: 1200ms (12 hooks × 100ms avg)
 ```
 
 **PoC Rust Run** (10 iterations, average):
+
 ```bash
 time ./quality-gate < hook-input.json
 # Expected: 300-400ms total (quality-gate + security-pipeline + stop-reconcile)
@@ -711,6 +744,7 @@ time ./quality-gate < hook-input.json
 ```
 
 **Metrics Collected**:
+
 - Wall-clock time (start to exit)
 - CPU time (user + system)
 - Memory usage (peak RSS)

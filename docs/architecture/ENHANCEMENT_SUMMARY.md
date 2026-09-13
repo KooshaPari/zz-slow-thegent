@@ -27,6 +27,7 @@ This document summarizes the enhancements implemented to elevate `thegent` with 
 **File**: `src/thegent/infra/enhanced_errors.py`
 
 **Features**:
+
 - Rich error context with "What happened", "Why it happened", "How to fix"
 - Specialized error types (ConfigurationError, RuntimeError, DependencyError, NetworkError)
 - Actionable error messages with file paths, config references, and command suggestions
@@ -34,6 +35,7 @@ This document summarizes the enhancements implemented to elevate `thegent` with 
 - Beautiful Rich formatting for error display
 
 **Usage**:
+
 ```python
 from thegent.infra.enhanced_errors import create_config_error, format_error_with_context
 
@@ -49,6 +51,7 @@ except Exception as e:
 **File**: `src/thegent/infra/progress.py`
 
 **Features**:
+
 - Progress bars for long-running operations
 - Spinner context managers for indeterminate operations
 - Status messages with icons (info, success, warning, error)
@@ -57,6 +60,7 @@ except Exception as e:
 - Time measurement decorator
 
 **Usage**:
+
 ```python
 from thegent.infra.progress import progress_context, spinner_context, print_status
 
@@ -75,6 +79,7 @@ print_status("Operation completed", "success")
 **File**: `src/thegent/infra/multi_runtime_diagnostics.py`
 
 **Features**:
+
 - Comprehensive runtime health checks for:
   - PyPy 3.11
   - CPython 3.13
@@ -88,6 +93,7 @@ print_status("Operation completed", "success")
 - Beautiful table display of runtime status
 
 **Usage**:
+
 ```python
 from thegent.infra.multi_runtime_diagnostics import check_all_runtimes, display_runtime_status
 
@@ -100,6 +106,7 @@ display_runtime_status(statuses)
 **File**: `docs/guides/TROUBLESHOOTING.md`
 
 **Features**:
+
 - Common issues and solutions
 - Quick diagnostics commands
 - Installation troubleshooting
@@ -113,15 +120,18 @@ display_runtime_status(statuses)
 ### 6. Shell Completion Scripts
 
 **Files**:
+
 - `scripts/completion/thegent.bash` - Bash completion
 - `scripts/completion/thegent.zsh` - Zsh completion
 
 **Features**:
+
 - Command completion for all thegent commands
 - Subcommand completion (doctor, config, setup, plan, govern)
 - Flag completion for common options
 
 **Installation**:
+
 ```bash
 # Bash
 source scripts/completion/thegent.bash
@@ -198,6 +208,7 @@ def long_operation():
 **Status**: Pending
 
 **Planned Features**:
+
 - Interactive setup wizard (`thegent setup --wizard`)
 - Step-by-step configuration
 - Validation at each step
@@ -209,6 +220,7 @@ def long_operation():
 **Status**: In Progress
 
 **Planned Features**:
+
 - Integration of multi-runtime diagnostics
 - Network diagnostics (`--network`)
 - Process health checks (`--processes`)
@@ -220,6 +232,7 @@ def long_operation():
 **Status**: Pending
 
 **Planned Features**:
+
 - Command suggestions for typos
 - Interactive prompts with Rich
 - Output formatting consistency
@@ -231,6 +244,7 @@ def long_operation():
 **Status**: Pending
 
 **Planned Features**:
+
 - Better task organization
 - Task help (`task --help <task>`)
 - Task timing
@@ -242,6 +256,7 @@ def long_operation():
 **Status**: Pending
 
 **Planned Features**:
+
 - Enhanced docstrings with examples
 - Auto-generated API reference
 - Tutorial series

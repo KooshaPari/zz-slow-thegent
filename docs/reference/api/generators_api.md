@@ -14,7 +14,7 @@ Factory for creating specialized artifact generators.
 
 ### Methods
 
-#### ArtifactGeneratorFactory.__init__
+#### ArtifactGeneratorFactory.**init**
 
 ```python
 __init__(self: Any, maif_generator: MAIFArtifactGenerator)
@@ -72,7 +72,7 @@ Generator for code-related artifacts.
 
 ### Methods
 
-#### CodeArtifactGenerator.__init__
+#### CodeArtifactGenerator.**init**
 
 ```python
 __init__(self: Any, maif_generator: MAIFArtifactGenerator)
@@ -140,7 +140,7 @@ Generator for decision-related artifacts.
 
 ### Methods
 
-#### DecisionArtifactGenerator.__init__
+#### DecisionArtifactGenerator.**init**
 
 ```python
 __init__(self: Any, maif_generator: MAIFArtifactGenerator)
@@ -209,7 +209,7 @@ Generator for tool-related artifacts.
 
 ### Methods
 
-#### ToolArtifactGenerator.__init__
+#### ToolArtifactGenerator.**init**
 
 ```python
 __init__(self: Any, maif_generator: MAIFArtifactGenerator)

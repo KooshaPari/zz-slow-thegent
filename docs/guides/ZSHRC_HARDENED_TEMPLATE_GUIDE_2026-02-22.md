@@ -1,12 +1,14 @@
 # Hardened Minimal `~/.zshrc` Template (2026)
 
 ## Goals
+
 - Fast startup
 - Predictable behavior
 - Safer command workflow
 - Optional AI helper hooks with explicit confirmation
 
 ## Template
+
 ```zsh
 # ------------------------------
 # Hardened Minimal zshrc (2026)
@@ -118,6 +120,7 @@ confirm-run() {
 ```
 
 ## Optional plugin block
+
 Load only if installed; keep list short.
 
 ```zsh
@@ -131,17 +134,20 @@ Load only if installed; keep list short.
 ```
 
 ## Optional prompt block (Powerlevel10k)
+
 ```zsh
 [[ -r "${HOME}/.p10k.zsh" ]] && source "${HOME}/.p10k.zsh"
 ```
 
 ## Hardening notes
+
 - Keep AI helpers as suggestion-only.
 - Avoid `curl ... | sh` installers unless verified.
 - Keep plugin count low; measure with `timezsh` after each change.
 - Prefer lazy/deferred load for heavy tooling.
 
 ## Quick install flow
+
 ```zsh
 cp ~/.zshrc ~/.zshrc.bak.$(date +%Y%m%d%H%M%S)
 # paste template into ~/.zshrc

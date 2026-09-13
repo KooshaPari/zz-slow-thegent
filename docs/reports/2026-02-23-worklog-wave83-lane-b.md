@@ -2,23 +2,23 @@
 
 ## 1) Covered items table (issue id/title/status)
 
-| Global item | QOL item | Issue ID | Title | Status |
-|---|---:|---|---|---|
-| #110 | #31 | UNKNOWN | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
-| #111 | #32 | UNKNOWN | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
-| #112 | #33 | UNKNOWN | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
-| #113 | #34 | UNKNOWN | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
-| #114 | #35 | UNKNOWN | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
-| #115 | #36 | UNKNOWN | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
-| #116 | #37 | UNKNOWN | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
-| #117 | #38 | UNKNOWN | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
-| #118 | #39 | UNKNOWN | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
+| Global item | QOL item | Issue ID | Title                                                       | Status                   |
+| ----------- | -------: | -------- | ----------------------------------------------------------- | ------------------------ |
+| #110        |      #31 | UNKNOWN  | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
+| #111        |      #32 | UNKNOWN  | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
+| #112        |      #33 | UNKNOWN  | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
+| #113        |      #34 | UNKNOWN  | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
+| #114        |      #35 | UNKNOWN  | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
+| #115        |      #36 | UNKNOWN  | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
+| #116        |      #37 | UNKNOWN  | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
+| #117        |      #38 | UNKNOWN  | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
+| #118        |      #39 | UNKNOWN  | Not present in `docs/reference/WORK_STREAM_CLIPROXY_ALL.md` | blocked (source missing) |
 
 ## 2) thegent impact classification (direct/indirect/external)
 
-| Global item | Classification | Basis |
-|---|---|---|
-| #110..#118 | external (currently) | Missing issue rows in source doc prevent code-path mapping or ownership determination. |
+| Global item | Classification       | Basis                                                                                  |
+| ----------- | -------------------- | -------------------------------------------------------------------------------------- |
+| #110..#118  | external (currently) | Missing issue rows in source doc prevent code-path mapping or ownership determination. |
 
 ## 3) Proposed local actions (tests/docs/code touchpoints) with priority P0/P1/P2
 

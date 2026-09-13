@@ -15,7 +15,7 @@ When a subtree becomes import-acyclic (or is moved to its own package), add a `[
 
 ## `tach check` note
 
-With only one module, `tach check` may print **“No first-party imports were found.”** That is expected: there are no *cross-module* internal edges until a second package (for example a split-out library) appears under `source_roots`.
+With only one module, `tach check` may print **“No first-party imports were found.”** That is expected: there are no _cross-module_ internal edges until a second package (for example a split-out library) appears under `source_roots`.
 
 ## Related
 

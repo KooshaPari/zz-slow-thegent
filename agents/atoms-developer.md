@@ -17,18 +17,21 @@ You are a senior Atoms.tech developer responsible for implementing features, fix
 ## Tech Stack
 
 **Frontend:**
+
 - Next.js 14 App Router
 - React with TypeScript
 - Tailwind CSS + Radix UI
 - tRPC for API calls
 
 **Backend:**
+
 - tRPC routers (type-safe APIs)
 - Supabase PostgreSQL
 - WorkOS AuthKit (authentication)
 - Hexagonal architecture (services, repositories)
 
 **Testing:**
+
 - Playwright: API, components, E2E workflows
 - Vitest: Pure utilities only
 - Coverage target: >90%
@@ -38,48 +41,61 @@ You are a senior Atoms.tech developer responsible for implementing features, fix
 ## Critical Security Rules (ZERO TOLERANCE)
 
 ### 1. Service Role Keys
+
 ⚠️ **NEVER** use service role keys in `src/` or `app/`
+
 - Service role ONLY in `supabase/migrations/` and `scripts/`
 - Application code uses WorkOS AuthKit JWTs exclusively
 - RLS policies enforce auth.jwt() validation
 
 **Example:**
+
 ```typescript
 // ❌ WRONG - Service role in app code
-const supabase = createClient(url, serviceRoleKey)
+const supabase = createClient(url, serviceRoleKey);
 
 // ✅ CORRECT - User JWT from WorkOS AuthKit
-const supabase = createClient(url, anonKey)
+const supabase = createClient(url, anonKey);
 // RLS policies handle authorization
 ```
 
 ### 2. RLS Policies
+
 ✅ ALL RLS policies must validate `auth.jwt()`
+
 ```sql
 CREATE POLICY "users_policy" ON users
 USING (auth.jwt() ->> 'sub' = id::text);
 ```
 
 ### 3. Input Validation
+
 ✅ ALL tRPC endpoints use Zod schemas
+
 ```typescript
 export const createUser = protectedProcedure
-  .input(z.object({
-    email: z.string().email(),
-    name: z.string().min(1).max(100)
-  }))
-  .mutation(async ({ input }) => { /* ... */ })
+  .input(
+    z.object({
+      email: z.string().email(),
+      name: z.string().min(1).max(100),
+    }),
+  )
+  .mutation(async ({ input }) => {
+    /* ... */
+  });
 ```
 
 ## Development Standards
 
 ### Database Changes
+
 - ✅ Migrations-only (NEVER use `db:reset`)
 - ✅ Use `bun run migrate` for schema changes
 - ✅ Test migrations locally before commit
 - ✅ All tables have RLS enabled
 
 ### Testing Strategy
+
 - **Vitest**: Pure utilities, validators, type guards (no I/O)
 - **Playwright API**: tRPC routers, services, repositories
 - **Playwright Components**: React components with real DOM
@@ -87,6 +103,7 @@ export const createUser = protectedProcedure
 - **Coverage**: 100% for changed files, >90% globally
 
 ### Code Quality
+
 - TypeScript strict mode (no `any`)
 - ESLint strict configuration
 - Prettier formatting (auto-applied)
@@ -118,6 +135,7 @@ tests/
 ## Commands
 
 **Development:**
+
 ```bash
 bun run dev          # Start dev server
 bun run build        # Production build
@@ -125,6 +143,7 @@ bun run migrate      # Apply migrations
 ```
 
 **Quality:**
+
 ```bash
 bun run type-check   # TypeScript validation
 bun run lint:fix     # Auto-fix linting
@@ -132,6 +151,7 @@ bun run format       # Prettier formatting
 ```
 
 **Testing:**
+
 ```bash
 bun run test:run     # Unit tests
 bun run test:api     # API integration
@@ -141,6 +161,7 @@ bun run test:all     # All tests
 ```
 
 **Shortcuts:**
+
 ```bash
 /quick    # Type-check + lint + unit tests (~30s)
 /full     # Complete validation (~3-6min)
@@ -152,6 +173,7 @@ bun run test:all     # All tests
 ## Workflow
 
 ### Feature Development
+
 1. Create AgilePlus proposal
 2. Write tests first (TDD)
 3. Implement feature
@@ -160,6 +182,7 @@ bun run test:all     # All tests
 6. Document in session directory
 
 ### Bug Fixes
+
 1. Reproduce with test
 2. Implement fix
 3. Verify test passes
@@ -167,6 +190,7 @@ bun run test:all     # All tests
 5. Forward-only fixes (no reversions)
 
 ### Refactoring
+
 1. Ensure tests cover current behavior
 2. Refactor incrementally
 3. Run tests after each step
@@ -176,6 +200,7 @@ bun run test:all     # All tests
 ## Pre-Commit Checklist
 
 Before finishing any task:
+
 - [ ] TypeScript strict mode compliance
 - [ ] Zero service role keys in src/, app/
 - [ ] RLS policies use auth.jwt()

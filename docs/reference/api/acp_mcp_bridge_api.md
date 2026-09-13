@@ -6,14 +6,14 @@ ACP &lt;-&gt; MCP Bridge Adapter.
 
 Bridges MCP tools to ACP task endpoints and vice versa:
 
-- ``mcp_tool_to_acp_task``: Wrap an MCP tool call as an ACP task sent to a
+- `mcp_tool_to_acp_task`: Wrap an MCP tool call as an ACP task sent to a
   remote ACP server.
-- ``acp_agent_to_mcp_tool``: Call a remote ACP agent and return its output in
+- `acp_agent_to_mcp_tool`: Call a remote ACP agent and return its output in
   MCP tool response format (plain string).
-- ``get_mcp_tool_manifest``: Introspect all registered FastMCP tools and return
+- `get_mcp_tool_manifest`: Introspect all registered FastMCP tools and return
   them as ACP-compatible task descriptors.
 
-The bridge is deliberately stateless.  Callers are responsible for providing an
+The bridge is deliberately stateless. Callers are responsible for providing an
 
 ---
 
@@ -27,7 +27,7 @@ Raised when calling an ACP agent fails non-transiently.
 
 ### Methods
 
-#### ACPAgentCallError.__init__
+#### ACPAgentCallError.**init**
 
 ```python
 __init__(self: Any, agent_url: str, detail: str)
@@ -61,7 +61,7 @@ Bridges MCP tools to ACP task endpoints and vice versa.
 
 ### Methods
 
-#### AcpMcpBridge.__init__
+#### AcpMcpBridge.**init**
 
 ```python
 __init__(self: Any, acp_client: ACPClient, mcp_app: Any, mcp_server_url: Any)
@@ -84,8 +84,8 @@ serialised as a plain dict.
 When no FastMCP application is available the method returns an empty
 list rather than raising, so callers can safely call it unconditionally.
 
-**Returns**: List of dicts, each with keys ``name``, ``description``,
-``parameters``, and ``version``.
+**Returns**: List of dicts, each with keys `name`, `description`,
+`parameters`, and `version`.
 
 ---
 
@@ -109,7 +109,7 @@ Raised when a requested MCP tool is not registered.
 
 ### Methods
 
-#### MCPToolNotFoundError.__init__
+#### MCPToolNotFoundError.**init**
 
 ```python
 __init__(self: Any, tool_name: str)
@@ -134,8 +134,8 @@ serialised as a plain dict.
 When no FastMCP application is available the method returns an empty
 list rather than raising, so callers can safely call it unconditionally.
 
-**Returns**: List of dicts, each with keys ``name``, ``description``,
-``parameters``, and ``version``.
+**Returns**: List of dicts, each with keys `name`, `description`,
+`parameters`, and `version`.
 
 ---
 

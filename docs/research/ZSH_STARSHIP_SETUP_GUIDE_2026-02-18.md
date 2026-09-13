@@ -65,6 +65,7 @@ zsh --version  # Should be 5.0.8+
 **Purpose:** Fish-like autosuggestions based on history
 
 **Installation:**
+
 ```bash
 # Manual
 git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/plugins/zsh-autosuggestions
@@ -74,6 +75,7 @@ git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/plugins/zsh-au
 ```
 
 **Configuration:**
+
 ```bash
 # ~/.zshrc
 source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -89,6 +91,7 @@ bindkey '^f' autosuggest-accept  # Ctrl+F to accept
 ```
 
 **Features:**
+
 - History-based suggestions
 - Completion-based suggestions
 - Async fetching (fast)
@@ -99,6 +102,7 @@ bindkey '^f' autosuggest-accept  # Ctrl+F to accept
 **Purpose:** Syntax highlighting for commands
 
 **Installation:**
+
 ```bash
 # Manual
 git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/plugins/zsh-syntax-highlighting
@@ -108,6 +112,7 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/plugins/zs
 ```
 
 **Configuration:**
+
 ```bash
 # ~/.zshrc (MUST be sourced LAST)
 source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -123,6 +128,7 @@ ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=magenta'
 ```
 
 **Features:**
+
 - Real-time syntax highlighting
 - Command validation
 - Error detection
@@ -133,6 +139,7 @@ ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=magenta'
 **Purpose:** Fuzzy completion for zsh
 
 **Installation:**
+
 ```bash
 # Requires fzf first
 brew install fzf  # macOS
@@ -144,6 +151,7 @@ git clone https://github.com/Aloxaf/fzf-tab ~/.zsh/plugins/fzf-tab
 ```
 
 **Configuration:**
+
 ```bash
 # ~/.zshrc
 source ~/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
@@ -155,6 +163,7 @@ zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 ```
 
 **Features:**
+
 - Fuzzy file completion
 - History search
 - Process completion
@@ -167,11 +176,13 @@ zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 **Purpose:** Additional completion definitions
 
 **Installation:**
+
 ```bash
 git clone https://github.com/zsh-users/zsh-completions ~/.zsh/plugins/zsh-completions
 ```
 
 **Configuration:**
+
 ```bash
 # ~/.zshrc
 fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
@@ -183,11 +194,13 @@ autoload -Uz compinit && compinit
 **Purpose:** Search history with substring matching
 
 **Installation:**
+
 ```bash
 git clone https://github.com/zsh-users/zsh-history-substring-search ~/.zsh/plugins/zsh-history-substring-search
 ```
 
 **Configuration:**
+
 ```bash
 # ~/.zshrc
 source ~/.zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
@@ -204,11 +217,13 @@ bindkey '^N' history-substring-search-down
 **Purpose:** Alternative syntax highlighter (faster)
 
 **Installation:**
+
 ```bash
 git clone https://github.com/zdharma-continuum/fast-syntax-highlighting ~/.zsh/plugins/fast-syntax-highlighting
 ```
 
 **Configuration:**
+
 ```bash
 # ~/.zshrc (alternative to zsh-syntax-highlighting)
 source ~/.zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
@@ -223,6 +238,7 @@ source ~/.zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.z
 **Purpose:** Git flow completion
 
 **Installation:**
+
 ```bash
 git clone https://github.com/bobthecow/git-flow-completion ~/.zsh/plugins/git-flow-completion
 ```
@@ -232,11 +248,13 @@ git clone https://github.com/bobthecow/git-flow-completion ~/.zsh/plugins/git-fl
 **Purpose:** Open git repo in browser
 
 **Installation:**
+
 ```bash
 git clone https://github.com/paulirish/git-open ~/.zsh/plugins/git-open
 ```
 
 **Usage:**
+
 ```bash
 git open  # Opens repo in browser
 git open --issue  # Opens issues page
@@ -249,11 +267,13 @@ git open --issue  # Opens issues page
 **Purpose:** Node Version Manager integration
 
 **Installation:**
+
 ```bash
 git clone https://github.com/lukechilds/zsh-nvm ~/.zsh/plugins/zsh-nvm
 ```
 
 **Features:**
+
 - Lazy-loads nvm
 - Auto-switches node versions
 - Faster than manual nvm
@@ -263,6 +283,7 @@ git clone https://github.com/lukechilds/zsh-nvm ~/.zsh/plugins/zsh-nvm
 **Purpose:** Python version manager integration
 
 **Installation:**
+
 ```bash
 git clone https://github.com/davidparsson/zsh-pyenv-lazy ~/.zsh/plugins/pyenv-lazy
 ```
@@ -274,11 +295,13 @@ git clone https://github.com/davidparsson/zsh-pyenv-lazy ~/.zsh/plugins/pyenv-la
 **Purpose:** Reminds you of aliases
 
 **Installation:**
+
 ```bash
 git clone https://github.com/MichaelAquilina/zsh-you-should-use ~/.zsh/plugins/zsh-you-should-use
 ```
 
 **Features:**
+
 - Shows alias when you type full command
 - Helps learn aliases
 - Customizable
@@ -288,6 +311,7 @@ git clone https://github.com/MichaelAquilina/zsh-you-should-use ~/.zsh/plugins/z
 **Purpose:** Better npm completion
 
 **Installation:**
+
 ```bash
 git clone https://github.com/lukechilds/zsh-better-npm-completion ~/.zsh/plugins/zsh-better-npm-completion
 ```
@@ -299,6 +323,7 @@ git clone https://github.com/lukechilds/zsh-better-npm-completion ~/.zsh/plugins
 ### Performance Optimization
 
 **Lazy Loading:**
+
 ```bash
 # ~/.zshrc
 
@@ -320,6 +345,7 @@ add-zsh-hook precmd _load_plugins_deferred
 ```
 
 **History Optimization:**
+
 ```bash
 # ~/.zshrc
 
@@ -336,6 +362,7 @@ setopt HIST_FIND_NO_DUPS      # Don't show duplicates in search
 ```
 
 **Startup Speed:**
+
 ```bash
 # ~/.zshrc
 
@@ -432,6 +459,7 @@ starship --version
 **Default:** `~/.config/starship.toml`
 
 **Custom Location:**
+
 ```bash
 export STARSHIP_CONFIG=~/custom/path/starship.toml
 ```
@@ -529,6 +557,7 @@ format = "at [$time]($style) "
 ### Essential Modules
 
 #### 1. Character Module
+
 ```toml
 [character]
 success_symbol = "[➜](bold green)"
@@ -537,6 +566,7 @@ vimcmd_symbol = "[❮](bold green)"
 ```
 
 #### 2. Directory Module
+
 ```toml
 [directory]
 truncation_length = 3
@@ -546,6 +576,7 @@ style = "bold cyan"
 ```
 
 #### 3. Git Branch Module
+
 ```toml
 [git_branch]
 symbol = " "
@@ -554,6 +585,7 @@ style = "bold purple"
 ```
 
 #### 4. Git Status Module
+
 ```toml
 [git_status]
 format = '([\[$all_status$ahead_behind\]]($style) )'
@@ -567,6 +599,7 @@ behind = "⇣${count}"
 ```
 
 #### 5. Command Duration Module
+
 ```toml
 [cmd_duration]
 min_time = 500
@@ -575,6 +608,7 @@ style = "bold yellow"
 ```
 
 #### 6. Time Module
+
 ```toml
 [time]
 disabled = false
@@ -586,6 +620,7 @@ time_format = "%T"
 ### Language Modules (Enable as Needed)
 
 #### Python
+
 ```toml
 [python]
 symbol = " "
@@ -594,6 +629,7 @@ style = "yellow bold"
 ```
 
 #### Node.js
+
 ```toml
 [nodejs]
 symbol = " "
@@ -602,6 +638,7 @@ style = "green bold"
 ```
 
 #### Rust
+
 ```toml
 [rust]
 symbol = " "
@@ -610,6 +647,7 @@ style = "red bold"
 ```
 
 #### Go
+
 ```toml
 [golang]
 symbol = " "
@@ -620,30 +658,35 @@ style = "cyan bold"
 ### Presets
 
 #### No Nerd Fonts Preset
+
 ```toml
 # Use plain text symbols (no Nerd Fonts required)
 # Copy from: https://starship.rs/presets/no-nerd-font
 ```
 
 #### Bracketed Segments Preset
+
 ```toml
 # All modules in brackets
 # Copy from: https://starship.rs/presets/bracketed-segments
 ```
 
 #### Pure Prompt Preset
+
 ```toml
 # Emulates Pure prompt
 # Copy from: https://starship.rs/presets/pure-prompt
 ```
 
 #### Tokyo Night Preset
+
 ```toml
 # Tokyo Night theme colors
 # Copy from: https://starship.rs/presets/tokyo-night
 ```
 
 #### Gruvbox Rainbow Preset
+
 ```toml
 # Gruvbox colors with rainbow segments
 # Copy from: https://starship.rs/presets/gruvbox-rainbow
@@ -738,6 +781,7 @@ zstyle ':omz:update' mode disabled
 **Achieved:** ~32ms (with optimizations)
 
 **Breakdown:**
+
 - Base zsh: ~10ms
 - Completions: ~5ms (lazy-loaded)
 - Plugins: ~10ms (deferred)
@@ -809,6 +853,7 @@ detect_folders = [".venv", "venv"]
 **Purpose:** Show active agent (Claude Code, Codex, OpenCode)
 
 **Implementation:**
+
 ```toml
 # Custom module (requires starship custom module support)
 [agent]
@@ -824,6 +869,7 @@ detect_commands = ["claude", "codex", "opencode"]
 **Purpose:** Show git worktree status
 
 **Implementation:**
+
 ```toml
 [worktree]
 disabled = false
@@ -836,6 +882,7 @@ style = "bold yellow"
 **Purpose:** Show agent workflow status
 
 **Features:**
+
 - Active agent indicator
 - Agent session count
 - Agent status (running/idle)
@@ -845,17 +892,20 @@ style = "bold yellow"
 **Purpose:** zsh integration for agent workflows
 
 **Features:**
+
 - Agent command aliases
 - Agent session management
 - Agent output formatting
 - Agent history tracking
 
 **Installation:**
+
 ```bash
 git clone https://github.com/yourusername/zsh-agent-integration ~/.zsh/plugins/zsh-agent-integration
 ```
 
 **Configuration:**
+
 ```bash
 # ~/.zshrc
 source ~/.zsh/plugins/zsh-agent-integration/zsh-agent-integration.zsh
@@ -871,17 +921,20 @@ alias opencode="opencode-cli"
 **Purpose:** Git worktree management
 
 **Features:**
+
 - Quick worktree creation
 - Worktree switching
 - Worktree status
 - Worktree cleanup
 
 **Installation:**
+
 ```bash
 git clone https://github.com/yourusername/zsh-worktree ~/.zsh/plugins/zsh-worktree
 ```
 
 **Usage:**
+
 ```bash
 wt create feature-branch  # Create worktree
 wt switch feature-branch   # Switch to worktree
@@ -918,6 +971,7 @@ fi
 ```
 
 **Ghostty Configuration:**
+
 ```ini
 # ~/.config/ghostty/config
 
@@ -935,6 +989,7 @@ theme = "auto"
 ```
 
 **Starship Configuration:**
+
 ```toml
 # ~/.config/starship.toml
 
@@ -1029,5 +1084,5 @@ ghostty +list-themes       # List available themes
 
 ---
 
-*Research Date: 2026-02-18*
-*Sources: zsh documentation, Starship documentation, plugin repositories, community feedback*
+_Research Date: 2026-02-18_
+_Sources: zsh documentation, Starship documentation, plugin repositories, community feedback_

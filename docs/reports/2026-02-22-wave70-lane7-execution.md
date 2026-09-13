@@ -4,6 +4,7 @@ Date: 2026-02-22
 Scope: Lane 7 implementation batch from wave70.
 
 ## Implemented WLs
+
 - WL-240 GA Readiness Criteria
 - WL-203 Local Decision Journal
 - WL-204 Conflict Surface Command
@@ -16,7 +17,9 @@ Scope: Lane 7 implementation batch from wave70.
 - WL-212 Pull-Only-on-Failure Mode
 
 ## Code + Test Evidence
+
 Code touched:
+
 - `src/thegent/sync/journal.py`
 - `src/thegent/sync/conflicts.py`
 - `src/thegent/sync/queue.py`
@@ -32,6 +35,7 @@ Code touched:
 - `src/thegent/cli/apps/sync.py`
 
 Tests added/updated:
+
 - `tests/test_unit_sync_journal.py`
 - `tests/test_unit_sync_conflicts.py`
 - `tests/test_unit_sync_queue.py`
@@ -45,7 +49,9 @@ Tests added/updated:
 - `tests/test_cli_sync.py`
 
 ## Verification
+
 Command:
+
 ```bash
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run python -m pytest -q \
   tests/test_unit_sync_journal.py \
@@ -62,4 +68,5 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run python -m pytest -q \
 ```
 
 Result:
+
 - `29 passed in 20.07s`

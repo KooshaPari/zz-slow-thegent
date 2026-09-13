@@ -13,6 +13,7 @@ Phase 1.5 enhances the git subcommand in `thegent-hooks` with production-grade f
 **Solution:** Operation-specific TTLs configured by command type.
 
 **Default TTLs:**
+
 ```
 rev-parse, symbolic-ref, describe     5 seconds  (quick queries)
 status, ls-files, branch             15 seconds  (moderate queries)
@@ -21,11 +22,13 @@ unknown commands                      60 seconds  (default)
 ```
 
 **Configuration:**
+
 - Environment: `THEGENT_CACHE_DIR` (cache location)
 - Environment: `GIT_CACHE_TTL` (override default TTL)
 - CLI Flag: `--ttl <seconds>` (override for specific operation)
 
 **Usage:**
+
 ```bash
 # Use default TTL (15s for status)
 thegent-hooks git status --porcelain
@@ -38,6 +41,7 @@ THEGENT_CACHE_DIR=/custom/dir thegent-hooks git status
 ```
 
 **Cache Layout:**
+
 ```
 ~/.git-cache/
 ├── <blake3-hash-16>        (cached git status output)
@@ -46,6 +50,7 @@ THEGENT_CACHE_DIR=/custom/dir thegent-hooks git status
 ```
 
 **Cache Key Includes:**
+
 - Git command and arguments
 - SESSION_ID (if set, for agent isolation)
 - .git/config mtime (invalidation on repo changes)
@@ -57,12 +62,14 @@ THEGENT_CACHE_DIR=/custom/dir thegent-hooks git status
 **Solution:** Explicit lock detection with diagnostic output.
 
 **Lock Detection Features:**
+
 - Detects `.git/index.lock` presence
 - Reports lock age (seconds old)
 - Identifies stale locks (>10 seconds)
 - Suggests recovery options
 
 **Diagnostic Output:**
+
 ```
 GIT-LOCK-DETECTED: .git/index.lock (age: 15.2s, stale: true)
 GIT-MUTEX: Stealing stale lock (15 seconds old) from crashed process...
@@ -70,11 +77,13 @@ GIT-LOCK-TIMEOUT: Failed to acquire lock after 30s
 ```
 
 **Configuration:**
+
 - Environment: `THEGENT_GIT_LOCK_TIMEOUT` (max wait time, default: 30s)
 - CLI Flag: `--detect-lock` (detect-only mode)
 - CLI Flag: `--wait-timeout <s>` (override wait timeout)
 
 **Usage:**
+
 ```bash
 # Check if lock exists (exit code 2 = lock detected, 0 = no lock)
 thegent-hooks git --detect-lock status
@@ -87,6 +96,7 @@ THEGENT_GIT_LOCK_TIMEOUT=120 thegent-hooks git commit -m "message"
 ```
 
 **Exit Codes:**
+
 - `0`: Success or lock query succeeded (no lock)
 - `1`: Lock acquisition timeout / general failure
 - `2`: Lock detected (with `--detect-lock` flag)
@@ -98,12 +108,14 @@ THEGENT_GIT_LOCK_TIMEOUT=120 thegent-hooks git commit -m "message"
 **Solution:** Agent metadata passed via environment variables, injected as git config.
 
 **Metadata Fields:**
+
 - `THEGENT_AGENT_ID`: Unique agent identifier (e.g., "agent-1", "copilot-xyz")
 - `SESSION_ID`: Session ID for operation tracing (e.g., "session-abc123")
 - `THEGENT_CORRELATION_ID`: Correlation ID for multi-step operations (e.g., "build-123")
 
 **Implementation:**
 Metadata is passed to git via config flags:
+
 ```bash
 git -c user.thegent_agent=agent-1 \
     -c user.thegent_session=session-abc \
@@ -112,6 +124,7 @@ git -c user.thegent_agent=agent-1 \
 ```
 
 **Git Inspection:**
+
 ```bash
 # View agent metadata from commit
 git log --format="%an %ae" -1
@@ -123,6 +136,7 @@ git config user.thegent_agent
 ```
 
 **Usage with Rust API:**
+
 ```rust
 use thegent_hooks::git_ops::{GitOps, AgentMetadata};
 
@@ -138,6 +152,7 @@ let output = ops.execute("status", &["--porcelain".to_string()])?;
 ```
 
 **Usage with CLI:**
+
 ```bash
 # Agent-initiated commit with metadata
 export THEGENT_AGENT_ID=copilot-xyz
@@ -152,6 +167,7 @@ thegent-hooks git commit -m "Deploy: update config"
 ### Rust API (thegent-hooks library)
 
 **New Types:**
+
 ```rust
 pub struct AgentMetadata {
     pub agent_id: Option<String>,
@@ -174,6 +190,7 @@ pub struct GitOps {
 ```
 
 **New Methods:**
+
 ```rust
 impl GitOps {
     pub fn new() -> Result<Self, GitOpsError>;
@@ -192,6 +209,7 @@ impl AgentMetadata {
 ### CLI (thegent-hooks binary)
 
 **Enhanced `git` Subcommand:**
+
 ```
 thegent-hooks git [OPTIONS] <COMMAND> [ARGS...]
 
@@ -209,6 +227,7 @@ COMMAND:
 ### Cache Management
 
 **TTL Calculation:**
+
 ```rust
 // Operation-specific TTL
 let ttl = self.get_ttl(cmd);  // 5s, 15s, 30s, or 60s
@@ -223,6 +242,7 @@ let cache_key = blake3_hash(&format!(
 ```
 
 **Cache Validation:**
+
 ```rust
 pub fn get_age(&self, cmd: &[String]) -> Result<Duration, GitCacheError> {
     // Check memory cache first (fast)
@@ -234,15 +254,17 @@ pub fn get_age(&self, cmd: &[String]) -> Result<Duration, GitCacheError> {
 ### Lock Management
 
 **Lock Detection Flow:**
+
 1. Check `.git/index.lock` existence
 2. If exists, get file metadata (age)
 3. If age > 10s, mark as stale
 4. Report diagnostic info to stderr
 5. Attempt recovery (remove stale lock)
-6. Wait with exponential backoff (0.1s + 0.1s*retry)
+6. Wait with exponential backoff (0.1s + 0.1s\*retry)
 7. Timeout after THEGENT_GIT_LOCK_TIMEOUT (default 30s)
 
 **Stale Lock Recovery:**
+
 ```
 Lock detected:                   report age
 Lock age > 10s (stale):          remove and retry
@@ -254,18 +276,19 @@ Still locked after timeout:      error with exit code 1
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `THEGENT_CACHE_DIR` | `~/.git-cache` | Cache directory location |
-| `GIT_CACHE_TTL` | `60` | Default cache TTL in seconds |
-| `THEGENT_GIT_LOCK_TIMEOUT` | `30` | Max wait for lock in seconds |
-| `THEGENT_AGENT_ID` | (empty) | Agent identifier for operations |
-| `SESSION_ID` | (empty) | Session ID for tracing |
-| `THEGENT_CORRELATION_ID` | (empty) | Correlation ID for multi-step ops |
+| Variable                   | Default        | Description                       |
+| -------------------------- | -------------- | --------------------------------- |
+| `THEGENT_CACHE_DIR`        | `~/.git-cache` | Cache directory location          |
+| `GIT_CACHE_TTL`            | `60`           | Default cache TTL in seconds      |
+| `THEGENT_GIT_LOCK_TIMEOUT` | `30`           | Max wait for lock in seconds      |
+| `THEGENT_AGENT_ID`         | (empty)        | Agent identifier for operations   |
+| `SESSION_ID`               | (empty)        | Session ID for tracing            |
+| `THEGENT_CORRELATION_ID`   | (empty)        | Correlation ID for multi-step ops |
 
 ### Config Files
 
 **`.thegent/git-config.json`** (optional):
+
 ```json
 {
   "cache_ttl_defaults": {
@@ -366,12 +389,14 @@ None. All Phase 1 features continue to work.
 ### Recommendations
 
 1. **Enable agent metadata** for multi-agent deployments:
+
    ```bash
    export THEGENT_AGENT_ID=$(whoami)
    export SESSION_ID=$(uuidgen)
    ```
 
 2. **Configure custom TTLs** if needed:
+
    ```bash
    # For high-churn repos, use shorter TTLs
    export GIT_CACHE_TTL=5
@@ -385,16 +410,19 @@ None. All Phase 1 features continue to work.
 ## Performance Characteristics
 
 ### Cache Hit Rate
+
 - **Typical:** 70-80% cache hit rate for read-only operations
 - **High-churn:** 40-50% with frequently changing working directory
 - **Stable:** 90%+ for builds in stable branches
 
 ### Lock Contention
+
 - **No lock:** <1ms (instant success)
 - **Fresh lock:** 1-10 retries (~0.5-5s wait)
 - **Stale lock:** ~20ms (removal + retry)
 
 ### Memory Usage
+
 - **Per operation:** ~1-5KB (cached output size)
 - **Typical repo:** 1-10MB (memory cache)
 - **Disk cache:** Unbounded (cleanup recommended)
@@ -402,12 +430,14 @@ None. All Phase 1 features continue to work.
 ## Future Enhancements
 
 ### Phase 2 (Proposed)
+
 1. **Persistent metrics:** Track cache hit rate, lock wait times
 2. **Adaptive TTLs:** Auto-adjust TTL based on repo activity
 3. **Lock queue:** Fair lock acquisition order for high contention
 4. **Git hooks integration:** Hook into git operations at lower level
 
 ### Phase 3 (Proposed)
+
 1. **Distributed caching:** Redis/memcached backend for shared agents
 2. **Cost tracking:** Per-agent git operation accounting
 3. **Replay capability:** Audit trail for agent-initiated commits

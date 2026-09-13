@@ -26,7 +26,7 @@ Parses and caches rules from heliosShield/rules.conf.
 
 ### Methods
 
-#### RulesLoader.__init__
+#### RulesLoader.**init**
 
 ```python
 __init__(self: Any, rules_path: Path)

@@ -16,6 +16,7 @@ Successfully migrated subprocess calls throughout the codebase to use `run_subpr
 ## Files Migrated
 
 ### ✅ doctor.py
+
 - **Total calls migrated**: 10+
 - **Changes**:
   - Node.js version check
@@ -30,6 +31,7 @@ Successfully migrated subprocess calls throughout the codebase to use `run_subpr
 - **Performance**: Optimized process creation flags, better resource management
 
 ### ✅ install.py
+
 - **Total calls migrated**: 1
 - **Changes**:
   - `_run_command()` function now uses `run_subprocess_optimized()`
@@ -37,6 +39,7 @@ Successfully migrated subprocess calls throughout the codebase to use `run_subpr
 - **Performance**: Better error handling and retry logic
 
 ### ✅ main.py
+
 - **Total calls migrated**: 5+
 - **Changes**:
   - Hook watcher execution
@@ -47,6 +50,7 @@ Successfully migrated subprocess calls throughout the codebase to use `run_subpr
 - **Performance**: Optimized process creation, better stdout handling
 
 ### ✅ cli.py
+
 - **Total calls migrated**: 6+
 - **Changes**:
   - Cursor model listing
@@ -61,6 +65,7 @@ Successfully migrated subprocess calls throughout the codebase to use `run_subpr
 ## Migration Pattern
 
 ### Before
+
 ```python
 import subprocess
 
@@ -76,6 +81,7 @@ if result.returncode == 0:
 ```
 
 ### After
+
 ```python
 from thegent.infra import run_subprocess_optimized
 

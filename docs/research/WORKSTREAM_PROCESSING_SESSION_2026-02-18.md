@@ -37,6 +37,7 @@
 **Impact**: Cannot use native `thegent plan wait-next` for monitor→act loop
 
 **Solution**:
+
 - Use Python helper script (`scripts/workstream_helper.py`) as fallback
 - Fix Python environment issue (delegate to environment agent)
 - Create alternative monitor command
@@ -82,6 +83,7 @@ Using `scripts/workstream_helper.py`:
 **Decision**: Using Orama Search (OSS, self-hosted) per governance "OSS and Free First" policy
 
 **Implementation**:
+
 1. ✅ Installed `@orama/plugin-vitepress`
 2. ✅ Added plugin import (`OramaPlugin`) to config
 3. ✅ Configured Vite plugin
@@ -89,6 +91,7 @@ Using `scripts/workstream_helper.py`:
 5. ⚠️ Build error: unrelated markdown plugin issue (`contentTabsPlugin`)
 
 **Friction Identified**:
+
 - Wrong export name initially (`pluginOrama` vs `OramaPlugin`) — fixed
 - Build error from `contentTabsPlugin` (unrelated to Orama)
 
@@ -113,6 +116,7 @@ Using `scripts/workstream_helper.py`:
 ### 4.2 Waiting Pattern
 
 **When idle**:
+
 - Use `scripts/workstream_helper.py` to check for ready items
 - Process items sequentially
 - Log friction as encountered
@@ -157,6 +161,7 @@ Using `scripts/workstream_helper.py`:
 **CRITICAL**: Do not end conversations. Use proper wait commands to maintain monitor→act loop.
 
 **Pattern**:
+
 ```bash
 # Check for work
 python3 scripts/workstream_helper.py
@@ -202,6 +207,7 @@ done
 ### 6.1 Loop Pattern
 
 **Current Implementation**:
+
 - Using `scripts/workstream_helper.py` to check for ready items
 - Processing items sequentially
 - Logging friction as encountered
@@ -212,6 +218,7 @@ done
 ### 6.2 Next Processing Cycle
 
 **Ready Items**:
+
 1. `vitepress-vhs-setup` - Set up VHS for terminal recordings
 2. `vitepress-playwright-setup` - Set up Playwright for browser recordings
 3. `vitepress-api-docs-generator` - Auto-generate API docs from docstrings
@@ -237,6 +244,7 @@ done
 ### 8.2 Next Processing Cycle
 
 **Ready Items** (from workstream helper):
+
 1. `research-phase13-policy-federation` - Multi-tenant policy federation
 2. `vitepress-playwright-setup` - Set up Playwright for browser recordings (already completed per COMPLETED)
 3. `vitepress-api-docs-generator` - Auto-generate API docs from docstrings

@@ -14,17 +14,20 @@ Phase 4 implementation of the Multi-Tenant Civilization Framework is **complete 
 ### What's Delivered
 
 **Phase 4A: MCP Server Setup (92 LOC)**
+
 - 6 MCP resources for registry data access
 - 6 MCP tools for registry operations
 - Resource and tool definitions with full metadata
 
 **Phase 4B: Real-time Sync (110 LOC)**
+
 - Heartbeat streaming at 1 Hz
 - Subscriber management (subscribe/unsubscribe)
 - Registry change notifications
 - Non-blocking broadcast messaging
 
 **Phase 4C: Cross-Civilization Communication (340 LOC)**
+
 - Agent message broker for inter-agent messaging
 - Direct message routing with ACK mechanism
 - Broadcast messaging to all agents in project
@@ -41,26 +44,29 @@ Phase 4 implementation of the Multi-Tenant Civilization Framework is **complete 
 ### Phase 4A: MCP Server Setup
 
 #### Resources (6 total)
-| Resource | URI | Purpose |
-|----------|-----|---------|
-| Agent | `civilization://agents/{agent_id}` | Get single agent metadata |
-| Project | `civilization://projects/{project}` | List all agents in project |
-| Statistics | `civilization://statistics` | Registry-wide statistics |
-| Hierarchy | `civilization://hierarchy/{parent_id}` | Get children of agent |
-| Active | `civilization://active` | List active agents (not stale) |
-| Stale | `civilization://stale` | List stale agents (>5 min) |
+
+| Resource   | URI                                    | Purpose                        |
+| ---------- | -------------------------------------- | ------------------------------ |
+| Agent      | `civilization://agents/{agent_id}`     | Get single agent metadata      |
+| Project    | `civilization://projects/{project}`    | List all agents in project     |
+| Statistics | `civilization://statistics`            | Registry-wide statistics       |
+| Hierarchy  | `civilization://hierarchy/{parent_id}` | Get children of agent          |
+| Active     | `civilization://active`                | List active agents (not stale) |
+| Stale      | `civilization://stale`                 | List stale agents (>5 min)     |
 
 #### Tools (6 total)
-| Tool | Input | Output |
-|------|-------|--------|
-| `update_heartbeat` | `{agent_id}` | `{success, timestamp}` |
-| `register_agent` | Agent metadata | `{agent_id}` |
-| `unregister_agent` | `{agent_id}` | `{success}` |
-| `recover_stale` | `{agent_id}` | `{success, recovered}` |
-| `get_civilization_status` | `{}` | Dashboard JSON |
-| `query_agents` | `{filters}` | Filtered agent list |
+
+| Tool                      | Input          | Output                 |
+| ------------------------- | -------------- | ---------------------- |
+| `update_heartbeat`        | `{agent_id}`   | `{success, timestamp}` |
+| `register_agent`          | Agent metadata | `{agent_id}`           |
+| `unregister_agent`        | `{agent_id}`   | `{success}`            |
+| `recover_stale`           | `{agent_id}`   | `{success, recovered}` |
+| `get_civilization_status` | `{}`           | Dashboard JSON         |
+| `query_agents`            | `{filters}`    | Filtered agent list    |
 
 #### Implementation Details
+
 ```python
 class CivilizationMCPServer:
     """MCP server exposing registry to external clients."""
@@ -86,6 +92,7 @@ class CivilizationMCPServer:
 ### Phase 4B: Real-time Sync (Heartbeat Streaming)
 
 #### Stream Protocol
+
 ```
 Heartbeat Stream (1 Hz):
 ├─ Timestamp
@@ -96,6 +103,7 @@ Heartbeat Stream (1 Hz):
 ```
 
 #### Implementation Details
+
 ```python
 async def stream_heartbeats(self):
     """Stream heartbeats at 1 Hz to all subscribers."""
@@ -107,6 +115,7 @@ async def stream_heartbeats(self):
 ```
 
 #### Subscriber Management
+
 ```python
 await server.subscribe_heartbeats("client_1")
 await server.unsubscribe_heartbeats("client_1")
@@ -118,6 +127,7 @@ await server.unsubscribe_heartbeats("client_1")
 ### Phase 4C: Cross-Civilization Communication
 
 #### Message Format
+
 ```python
 @dataclass
 class AgentMessage:
@@ -132,17 +142,19 @@ class AgentMessage:
 ```
 
 #### Message Types
-| Type | Direction | Purpose |
-|------|-----------|---------|
-| `heartbeat_request` | L2→L1 | Health check |
-| `status_query` | L1→L2 | Request status |
-| `task_assignment` | L1→L2 | Assign work |
-| `result_report` | L2→L1 | Report completion |
-| `error_alert` | L2→L1 | Alert to error |
-| `coordination` | L1→L1 | Cross-civilization |
-| `broadcast` | L1/L2→All | Notify all agents |
+
+| Type                | Direction | Purpose            |
+| ------------------- | --------- | ------------------ |
+| `heartbeat_request` | L2→L1     | Health check       |
+| `status_query`      | L1→L2     | Request status     |
+| `task_assignment`   | L1→L2     | Assign work        |
+| `result_report`     | L2→L1     | Report completion  |
+| `error_alert`       | L2→L1     | Alert to error     |
+| `coordination`      | L1→L1     | Cross-civilization |
+| `broadcast`         | L1/L2→All | Notify all agents  |
 
 #### Broker Implementation
+
 ```python
 class AgentMessageBroker:
     """Broker for inter-agent messages."""
@@ -172,15 +184,17 @@ class AgentMessageBroker:
 ## Testing Results
 
 ### Phase 1-3 Backward Compatibility
+
 ✅ **All 17 tests passing** (0.025s)
 
-| Test Class | Tests | Status |
-|-----------|-------|--------|
-| TestAgentIdentity | 4 | ✅ |
-| TestGlobalAgentRegistry | 10 | ✅ |
-| TestAgentIdentityFactory | 4 | ✅ |
+| Test Class               | Tests | Status |
+| ------------------------ | ----- | ------ |
+| TestAgentIdentity        | 4     | ✅     |
+| TestGlobalAgentRegistry  | 10    | ✅     |
+| TestAgentIdentityFactory | 4     | ✅     |
 
 ### Phase 4 Integration Testing
+
 ✅ **Comprehensive manual integration tests passing**
 
 - MCP Server initialization: ✅
@@ -196,6 +210,7 @@ class AgentMessageBroker:
 ## Code Structure
 
 ### New Files Created
+
 ```
 scripts/
 ├── civilization_mcp_server.py     (442 LOC)
@@ -213,6 +228,7 @@ scripts/
 ```
 
 ### Modified Files
+
 ```
 docs/plans/
 └── PHASE_4_MCP_TRANSPORT_SPECIFICATION.md  (420 LOC specification)
@@ -222,20 +238,21 @@ docs/plans/
 
 ## Performance Metrics
 
-| Operation | Latency | Status |
-|-----------|---------|--------|
-| Resource read | <2ms | ✅ |
-| Tool call | <3ms | ✅ |
-| Heartbeat stream | 1 Hz | ✅ |
-| Message send (direct) | <5ms | ✅ |
-| Message broadcast | <10ms | ✅ |
-| Handler registration | <1ms | ✅ |
+| Operation             | Latency | Status |
+| --------------------- | ------- | ------ |
+| Resource read         | <2ms    | ✅     |
+| Tool call             | <3ms    | ✅     |
+| Heartbeat stream      | 1 Hz    | ✅     |
+| Message send (direct) | <5ms    | ✅     |
+| Message broadcast     | <10ms   | ✅     |
+| Handler registration  | <1ms    | ✅     |
 
 ---
 
 ## Architecture Impact
 
 ### Full Civilization Framework
+
 ```
 Phase 1: Agent Identity System (427 LOC, 17 tests)
 ├─ Unique agent IDs
@@ -266,26 +283,26 @@ Phase 4: MCP Transport (542 LOC) ← NEW
 
 ## Quality Metrics
 
-| Metric | Value | Status |
-|--------|-------|--------|
-| **Code Quality** |
-| Total LOC | 1,330+ | ✅ |
-| Phase 4 LOC | 542 | ✅ |
-| Syntax Valid | 100% | ✅ |
-| Type Safe | Mostly* | ⚠️ |
-| **Test Coverage** |
-| Phase 1-3 Tests | 17/17 | ✅ 100% |
-| Backward Compat | 100% | ✅ |
-| Manual Integration | 15/15 | ✅ 100% |
-| **Performance** |
-| Resource read | <2ms | ✅ |
-| Tool call | <3ms | ✅ |
-| Heartbeat rate | 1 Hz | ✅ |
-| Per-cycle overhead | <15ms | ✅ |
-| **Reliability** |
-| Error handling | Graceful | ✅ |
-| Backward compatible | 100% | ✅ |
-| Persistence | Verified | ✅ |
+| Metric              | Value    | Status  |
+| ------------------- | -------- | ------- |
+| **Code Quality**    |
+| Total LOC           | 1,330+   | ✅      |
+| Phase 4 LOC         | 542      | ✅      |
+| Syntax Valid        | 100%     | ✅      |
+| Type Safe           | Mostly\* | ⚠️      |
+| **Test Coverage**   |
+| Phase 1-3 Tests     | 17/17    | ✅ 100% |
+| Backward Compat     | 100%     | ✅      |
+| Manual Integration  | 15/15    | ✅ 100% |
+| **Performance**     |
+| Resource read       | <2ms     | ✅      |
+| Tool call           | <3ms     | ✅      |
+| Heartbeat rate      | 1 Hz     | ✅      |
+| Per-cycle overhead  | <15ms    | ✅      |
+| **Reliability**     |
+| Error handling      | Graceful | ✅      |
+| Backward compatible | 100%     | ✅      |
+| Persistence         | Verified | ✅      |
 
 \* Type annotations: Pyright reports possible unbound warnings on conditional imports (by design)
 
@@ -294,6 +311,7 @@ Phase 4: MCP Transport (542 LOC) ← NEW
 ## Feature Checklist
 
 ### Phase 4A: MCP Server Setup
+
 - [x] MCP resource definitions (6 resources)
 - [x] MCP tool definitions (6 tools)
 - [x] Resource read implementation
@@ -302,6 +320,7 @@ Phase 4: MCP Transport (542 LOC) ← NEW
 - [x] Metadata serialization
 
 ### Phase 4B: Real-time Sync
+
 - [x] Heartbeat stream implementation (1 Hz)
 - [x] Subscriber management (add/remove)
 - [x] Async message broadcasting
@@ -309,6 +328,7 @@ Phase 4: MCP Transport (542 LOC) ← NEW
 - [x] Error recovery
 
 ### Phase 4C: Cross-Civilization Communication
+
 - [x] Agent message dataclass
 - [x] Message broker initialization
 - [x] Direct message routing
@@ -319,6 +339,7 @@ Phase 4: MCP Transport (542 LOC) ← NEW
 - [x] Async message processing
 
 ### Backward Compatibility
+
 - [x] All Phase 1 tests passing (4/4)
 - [x] All Phase 2 tests passing (implicit)
 - [x] All Phase 3 tests passing (implicit)
@@ -331,14 +352,16 @@ Phase 4: MCP Transport (542 LOC) ← NEW
 ## Known Limitations & Future Work
 
 ### Current Limitations
-| Issue | Severity | Mitigation | Future Phase |
-|-------|----------|-----------|--------------|
-| Message queue in-memory | Low | Use Redis/RabbitMQ | Phase 5 |
-| No encryption | Medium | Add TLS/encryption | Phase 5 |
-| Single-threaded broker | Low | Use worker pool | Phase 6 |
-| No rate limiting | Low | Add token bucket | Phase 6 |
+
+| Issue                   | Severity | Mitigation         | Future Phase |
+| ----------------------- | -------- | ------------------ | ------------ |
+| Message queue in-memory | Low      | Use Redis/RabbitMQ | Phase 5      |
+| No encryption           | Medium   | Add TLS/encryption | Phase 5      |
+| Single-threaded broker  | Low      | Use worker pool    | Phase 6      |
+| No rate limiting        | Low      | Add token bucket   | Phase 6      |
 
 ### Future Enhancements (Phase 5+)
+
 - [ ] Distributed message broker (Kafka/RabbitMQ)
 - [ ] TLS encryption for MCP connections
 - [ ] Rate limiting on heartbeat stream
@@ -404,7 +427,7 @@ asyncio.run(communicate())
 
 - [x] Code written (442 LOC MCP server + 454 LOC tests)
 - [x] Syntax validation (py_compile)
-- [x] Type checking (Pyright - mostly clean*)
+- [x] Type checking (Pyright - mostly clean\*)
 - [x] Backward compatibility tests (17/17 passing)
 - [x] Integration tests (15/15 passing)
 - [x] Documentation (420 LOC spec + this report)
@@ -417,31 +440,34 @@ asyncio.run(communicate())
 
 ## Session Statistics
 
-| Metric | Value |
-|--------|-------|
-| **Duration** | ~60 min (this session) |
-| **Files Created** | 4 (MCP server + tests + 2 docs) |
-| **Lines of Code** | 542 (Phase 4) |
-| **Total (All Phases)** | 1,330+ |
-| **Test Coverage** | 100% backward compatible |
-| **Confidence** | 90% |
+| Metric                 | Value                           |
+| ---------------------- | ------------------------------- |
+| **Duration**           | ~60 min (this session)          |
+| **Files Created**      | 4 (MCP server + tests + 2 docs) |
+| **Lines of Code**      | 542 (Phase 4)                   |
+| **Total (All Phases)** | 1,330+                          |
+| **Test Coverage**      | 100% backward compatible        |
+| **Confidence**         | 90%                             |
 
 ---
 
 ## Next Steps
 
 ### Immediate (Ready Now)
+
 - Deploy Phase 4 to production
 - Start using MCP resources for external clients
 - Enable heartbeat streaming for monitoring
 
 ### Short-term (Phase 5)
+
 - Add message queue backend (Redis/RabbitMQ)
 - Implement TLS encryption
 - Create civilization-wide dashboards
 - Add conflict resolution protocol
 
 ### Medium-term (Phase 6)
+
 - Scale to 1000+ agents
 - Distributed message broker
 - Agent memory persistence

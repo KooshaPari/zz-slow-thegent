@@ -23,7 +23,7 @@ Protects the agent environment from unsafe model outputs.
 
 ### Methods
 
-#### SemanticFirewall.__init__
+#### SemanticFirewall.**init**
 
 ```python
 __init__(self: Any)

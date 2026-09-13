@@ -33,4 +33,3 @@ This directory defines the unified API/SDK bridge contract for metaprovider exec
 
 - Schemas intentionally use strict `additionalProperties: false`.
 - Version every payload with `bridge_schema_version`.
-

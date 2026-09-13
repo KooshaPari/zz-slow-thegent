@@ -10,6 +10,7 @@
 ## Problem
 
 Droid commands (`CodexRunner` and `CustomCliRunner`) were using `subprocess.run()` directly instead of the optimized `run_subprocess_optimized()` function. This could cause hangs if:
+
 1. Timeout wasn't properly enforced
 2. stdin/stdout/stderr deadlocks occurred
 3. Process creation wasn't optimized
@@ -47,6 +48,7 @@ Droid commands (`CodexRunner` and `CustomCliRunner`) were using `subprocess.run(
 ## Changes Made
 
 ### fast_subprocess.py
+
 ```python
 # Added input parameter support
 def run_subprocess_optimized(
@@ -61,6 +63,7 @@ def run_subprocess_optimized(
 ```
 
 ### droid.py
+
 ```python
 # Before
 proc = subprocess.run(
@@ -95,6 +98,7 @@ proc = run_subprocess_optimized(
 ## Testing
 
 To verify the fix:
+
 ```bash
 # Test droid command (should not hang)
 thegent droid flash "test prompt"

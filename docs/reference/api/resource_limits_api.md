@@ -12,7 +12,7 @@ Manage and enforce resource limits.
 
 ### Methods
 
-#### ResourceLimits.__init__
+#### ResourceLimits.**init**
 
 ```python
 __init__(self: Any)

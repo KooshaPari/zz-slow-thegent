@@ -36,6 +36,7 @@ This research proposes a **dual-shell architecture** that provides:
 - **Library-first design** to minimize code duplication
 
 **Key Finding:** Shell execution is not the critical path. **The critical paths are:**
+
 1. Hook dispatcher (currently POSIX bash shims + hooks) → needs unified cross-platform routing
 2. Agent subprocess execution (Python subprocess + env setup) → needs shell selection abstraction
 3. OS-level operations (user creation, desktop automation) → needs shell-specific adapters
@@ -63,6 +64,7 @@ def get_fastest_shell() -> str:
 **Status:** ✓ Works well on POSIX platforms
 
 **Limitations:**
+
 - No PowerShell support
 - No shell availability checking for edge cases
 - No graceful degradation for restricted environments
@@ -79,6 +81,7 @@ def detect_platform() -> Platform:
 **Status:** ✓ Comprehensive platform detection including WSL2
 
 **Limitations:**
+
 - No distinction between native Windows and WSL2 for shell selection
 - No shell auto-detection on Windows (defaults to zsh path)
 
@@ -96,6 +99,7 @@ def get_shell_env(optimize_startup: bool = True) -> dict:
 **Status:** ✓ Partial optimization for zsh
 
 **Limitations:**
+
 - Only zsh optimization (ZDOTDIR trick)
 - No bash/sh optimization
 - No PowerShell profile handling
@@ -120,6 +124,7 @@ class FastSubprocess:
 **Status:** ✓ Platform-aware optimizations (Windows flags, Unix session management)
 
 **Limitations:**
+
 - No shell-specific command wrapping
 - Assumes list-format commands (not shell strings)
 - No PowerShell-specific error handling
@@ -132,6 +137,7 @@ class FastSubprocess:
 **Status:** ✓ Works on macOS/Linux
 
 **Limitations:**
+
 - **Windows native:** Must use WSL2 bash or fail
 - **No PowerShell hooks:** Can't leverage pwsh-specific functionality
 - **No unified dispatcher:** Each hook manually detects platform
@@ -140,6 +146,7 @@ class FastSubprocess:
 ### 1.6 Configuration & Installation
 
 **Current:**
+
 - POSIX installer: `/scripts/install.sh`
 - Windows installer: `/scripts/install.ps1`
 - Config defaults: `/src/thegent/config.py` (zsh-centric)
@@ -148,6 +155,7 @@ class FastSubprocess:
 **Status:** ✓ Dual installers exist
 
 **Limitations:**
+
 - Config doesn't expose shell selection
 - No PowerShell profile (e.g., $PROFILE) setup
 - No bash initialization for Windows users
@@ -159,68 +167,73 @@ class FastSubprocess:
 
 ### 2.1 Available Shells by Platform
 
-| Platform | Shells | Default | Notes |
-|----------|--------|---------|-------|
-| **macOS** | zsh, bash, sh | zsh | Bash deprecated (5.0.x) |
-| **Linux** | bash, sh, zsh, ksh, fish, dash | bash | Varies by distro |
-| **Windows native** | PowerShell 5.1 (legacy), pwsh 7+ | pwsh | POSIX shells via WSL2/MinGW/Cygwin |
-| **WSL2** | bash, zsh, sh | bash | Full POSIX compatibility |
-| **Minimal (CI)** | sh, busybox sh | sh | No bash/zsh guaranteed |
+| Platform           | Shells                           | Default | Notes                              |
+| ------------------ | -------------------------------- | ------- | ---------------------------------- |
+| **macOS**          | zsh, bash, sh                    | zsh     | Bash deprecated (5.0.x)            |
+| **Linux**          | bash, sh, zsh, ksh, fish, dash   | bash    | Varies by distro                   |
+| **Windows native** | PowerShell 5.1 (legacy), pwsh 7+ | pwsh    | POSIX shells via WSL2/MinGW/Cygwin |
+| **WSL2**           | bash, zsh, sh                    | bash    | Full POSIX compatibility           |
+| **Minimal (CI)**   | sh, busybox sh                   | sh      | No bash/zsh guaranteed             |
 
 ### 2.2 Shell Capabilities Matrix
 
-| Feature | Bash | Zsh | PowerShell | sh |
-|---------|------|-----|-----------|-----|
-| **POSIX compliance** | ~80% | ~90% | 0% | 100% |
-| **Speed (relative)** | 1x | 2x | 3x | 1x |
-| **Startup (ms)** | 50 | 25 | 150 | 10 |
-| **Memory (MB)** | 5 | 6 | 50 | 2 |
-| **Structured logging** | No | No | Yes (built-in) |
-| **Object piping** | No | No | Yes (.NET objects) |
-| **Strong typing** | No | No | Yes (static) |
-| **Error handling** | Weak | Weak | Strong (exceptions) |
-| **Module system** | sourcing | sourcing | PowerShell modules |
-| **Cross-platform (7+)** | Limited | Limited | Yes |
-| **Windows native** | WSL2 | WSL2 | Yes |
+| Feature                 | Bash     | Zsh      | PowerShell          | sh   |
+| ----------------------- | -------- | -------- | ------------------- | ---- |
+| **POSIX compliance**    | ~80%     | ~90%     | 0%                  | 100% |
+| **Speed (relative)**    | 1x       | 2x       | 3x                  | 1x   |
+| **Startup (ms)**        | 50       | 25       | 150                 | 10   |
+| **Memory (MB)**         | 5        | 6        | 50                  | 2    |
+| **Structured logging**  | No       | No       | Yes (built-in)      |
+| **Object piping**       | No       | No       | Yes (.NET objects)  |
+| **Strong typing**       | No       | No       | Yes (static)        |
+| **Error handling**      | Weak     | Weak     | Strong (exceptions) |
+| **Module system**       | sourcing | sourcing | PowerShell modules  |
+| **Cross-platform (7+)** | Limited  | Limited  | Yes                 |
+| **Windows native**      | WSL2     | WSL2     | Yes                 |
 
 ### 2.3 Hook Execution Requirements
 
-| Hook Category | POSIX | PowerShell | Notes |
-|---------------|-------|-----------|-------|
-| **QA (lint, test, coverage)** | ✓ | Can adapt (via Python) | Most logic in Python anyway |
-| **Git operations** | ✓ | ✓ (via git binary) | Shell only as wrapper |
-| **File operations** | ✓ | ✓ (via Python) | Path handling differs |
-| **OS user creation** | ✓ (useradd) | ✓ (New-LocalUser) | Shell-specific required |
-| **Desktop automation** | ✓ (AppleScript/xdotool) | ✓ (UI Automation) | Shell-specific required |
-| **Environment setup** | ✓ | ✓ (with adapters) | Both needed |
-| **Process monitoring** | ✓ (/proc, ps) | ✓ (Get-Process) | Shell-specific |
+| Hook Category                 | POSIX                   | PowerShell             | Notes                       |
+| ----------------------------- | ----------------------- | ---------------------- | --------------------------- |
+| **QA (lint, test, coverage)** | ✓                       | Can adapt (via Python) | Most logic in Python anyway |
+| **Git operations**            | ✓                       | ✓ (via git binary)     | Shell only as wrapper       |
+| **File operations**           | ✓                       | ✓ (via Python)         | Path handling differs       |
+| **OS user creation**          | ✓ (useradd)             | ✓ (New-LocalUser)      | Shell-specific required     |
+| **Desktop automation**        | ✓ (AppleScript/xdotool) | ✓ (UI Automation)      | Shell-specific required     |
+| **Environment setup**         | ✓                       | ✓ (with adapters)      | Both needed                 |
+| **Process monitoring**        | ✓ (/proc, ps)           | ✓ (Get-Process)        | Shell-specific              |
 
 ### 2.4 Critical Differences
 
 #### Path Separators
+
 - **POSIX:** `/home/user/project`
 - **Windows (native):** `C:\Users\user\project`
 - **Windows (PowerShell):** Both work; prefers backslash
 - **WSL2:** `/mnt/c/Users/user/project`
 
 #### Environment Variables
-| Feature | POSIX | PowerShell |
-|---------|-------|-----------|
-| **Case-sensitive** | Yes | No |
-| **Separator (PATH)** | `:` | `;` |
-| **Home directory var** | `$HOME` | `$env:USERPROFILE` |
-| **Config location** | `~/.bashrc`, `~/.zshrc` | `$PROFILE` |
-| **System paths** | `/usr/bin`, `/usr/local/bin` | `C:\Windows\System32` |
+
+| Feature                | POSIX                        | PowerShell            |
+| ---------------------- | ---------------------------- | --------------------- |
+| **Case-sensitive**     | Yes                          | No                    |
+| **Separator (PATH)**   | `:`                          | `;`                   |
+| **Home directory var** | `$HOME`                      | `$env:USERPROFILE`    |
+| **Config location**    | `~/.bashrc`, `~/.zshrc`      | `$PROFILE`            |
+| **System paths**       | `/usr/bin`, `/usr/local/bin` | `C:\Windows\System32` |
 
 #### Command Quoting
+
 - **POSIX:** Single quotes literal, double quotes with expansion, backslash escape
 - **PowerShell:** Double quotes with expansion, single quotes literal, backtick escape
 
 #### Error Handling
+
 - **POSIX:** Exit codes (0=success, non-zero=failure)
 - **PowerShell:** Exceptions + exit codes; ErrorActionPreference controls behavior
 
 #### Process Management
+
 - **POSIX:** PID-based, `/proc/`, `ps` command
 - **PowerShell:** Object-based, `Get-Process` cmdlet, `$?` for last status
 
@@ -386,6 +399,7 @@ impl HookDispatcher {
 ```
 
 **Error Handling:**
+
 - If hook not found: log warning, return non-zero
 - If shell not available: try fallback (e.g., bash → /bin/sh)
 - If timeout: kill process, log error
@@ -440,6 +454,7 @@ get_process_children(){ pgrep -P "$1" || true; }
 ```
 
 **Features:**
+
 - Strict mode by default (`set -euo pipefail`)
 - Structured logging with timestamps
 - Error exit codes consistent across platforms
@@ -529,6 +544,7 @@ function Invoke-CheckLint {
 ```
 
 **Features:**
+
 - PowerShell 7+ (cross-platform)
 - Strict mode equivalent (`Set-StrictMode`)
 - Structured logging (built-in PowerShell Logging Module pattern)
@@ -716,22 +732,24 @@ executor.run_script(Path("scripts/setup.sh"))
 
 **Goal:** Build dispatcher and library infrastructure
 
-| Task | Effort | Deps | Outputs |
-|------|--------|------|---------|
-| Design Rust dispatcher | 1d | - | Architecture ADR |
-| Implement shell detection | 2d | - | `src/thegent/shell/detection.py` |
-| Build Rust dispatcher binary | 3d | detection | `hooks/hook-dispatcher` |
-| Create bash_lib.sh | 2d | - | `hooks/lib/bash_lib.sh` (200 LOC) |
-| Create pwsh_lib.ps1 | 2d | - | `hooks/lib/pwsh_lib.ps1` (200 LOC) |
-| **Subtotal** | **2 weeks** | - | Core infrastructure |
+| Task                         | Effort      | Deps      | Outputs                            |
+| ---------------------------- | ----------- | --------- | ---------------------------------- |
+| Design Rust dispatcher       | 1d          | -         | Architecture ADR                   |
+| Implement shell detection    | 2d          | -         | `src/thegent/shell/detection.py`   |
+| Build Rust dispatcher binary | 3d          | detection | `hooks/hook-dispatcher`            |
+| Create bash_lib.sh           | 2d          | -         | `hooks/lib/bash_lib.sh` (200 LOC)  |
+| Create pwsh_lib.ps1          | 2d          | -         | `hooks/lib/pwsh_lib.ps1` (200 LOC) |
+| **Subtotal**                 | **2 weeks** | -         | Core infrastructure                |
 
 **Deliverables:**
+
 - `hooks/hook-dispatcher` (Rust binary) with shell detection
 - `hooks/lib/bash_lib.sh` with standard functions
 - `hooks/lib/pwsh_lib.ps1` (PowerShell module) with standard functions
 - `src/thegent/shell/` module with ShellEnvironment class
 
 **Acceptance Criteria:**
+
 - Dispatcher can detect shell on all platforms
 - Both libraries provide core functions (logging, file ops, validation)
 - All functions have consistent signatures across shells
@@ -743,21 +761,23 @@ executor.run_script(Path("scripts/setup.sh"))
 
 **Goal:** Convert critical hooks to dual-shell
 
-| Task | Effort | Deps | Hooks |
-|------|--------|------|-------|
-| Convert qa-check (lint/test) | 1d | 2A | Biggest impact |
-| Convert doc-location-guard | 1d | 2A | Medium |
-| Convert change-doc-tracker | 1d | 2A | Medium |
-| Convert complexity-ratchet | 1d | 2A | Complex |
-| Convert security-pipeline | 1d | 2A | Medium |
-| **Subtotal** | **1 week** | 2A | 5 critical hooks |
+| Task                         | Effort     | Deps | Hooks            |
+| ---------------------------- | ---------- | ---- | ---------------- |
+| Convert qa-check (lint/test) | 1d         | 2A   | Biggest impact   |
+| Convert doc-location-guard   | 1d         | 2A   | Medium           |
+| Convert change-doc-tracker   | 1d         | 2A   | Medium           |
+| Convert complexity-ratchet   | 1d         | 2A   | Complex          |
+| Convert security-pipeline    | 1d         | 2A   | Medium           |
+| **Subtotal**                 | **1 week** | 2A   | 5 critical hooks |
 
 **Deliverables:**
+
 - `hooks/qa-check.sh` → `hooks/qa-check.ps1`
 - `hooks/doc-location-guard.sh` → `hooks/doc-location-guard.ps1`
 - (And 3 more)
 
 **Acceptance Criteria:**
+
 - All critical hooks have both `.sh` and `.ps1` versions
 - Hooks execute successfully via dispatcher on both POSIX and Windows
 - Test coverage for both shell versions
@@ -768,21 +788,23 @@ executor.run_script(Path("scripts/setup.sh"))
 
 **Goal:** Unify shell execution in Python codebase
 
-| Task | Effort | Deps |
-|------|--------|------|
-| Implement ShellEnvironment class | 1d | 2A |
-| Implement ShellExecutor class | 1d | 2A |
-| Migrate fast_subprocess to use ShellEnvironment | 1d | prev |
-| Migrate agent subprocess execution | 1d | prev |
-| Update config to expose shell selection | 1d | - |
-| **Subtotal** | **1 week** | 2A, 2B |
+| Task                                            | Effort     | Deps   |
+| ----------------------------------------------- | ---------- | ------ |
+| Implement ShellEnvironment class                | 1d         | 2A     |
+| Implement ShellExecutor class                   | 1d         | 2A     |
+| Migrate fast_subprocess to use ShellEnvironment | 1d         | prev   |
+| Migrate agent subprocess execution              | 1d         | prev   |
+| Update config to expose shell selection         | 1d         | -      |
+| **Subtotal**                                    | **1 week** | 2A, 2B |
 
 **Deliverables:**
+
 - `src/thegent/shell/environment.py` (ShellEnvironment)
 - `src/thegent/shell/executor.py` (ShellExecutor)
 - Updated `src/thegent/config.py` with shell settings
 
 **Acceptance Criteria:**
+
 - All subprocess execution uses ShellEnvironment
 - Shell is detected once per session (cached)
 - Config allows shell override
@@ -794,19 +816,21 @@ executor.run_script(Path("scripts/setup.sh"))
 
 **Goal:** Implement shell-specific adapters for OS operations
 
-| Task | Effort | Deps | Examples |
-|------|--------|------|----------|
-| OS user creation adapter | 1d | 2A | useradd (Linux) / New-LocalUser (Windows) |
-| Desktop automation adapter | 1d | 2A | AppleScript (macOS) / UI Automation (Windows) |
-| Process monitoring adapter | 1d | 2A | /proc (Linux) / Get-Process (Windows) |
-| File watcher adapter | 1d | 2A | inotify (Linux) / FileSystemWatcher (Windows) |
-| **Subtotal** | **1 week** | 2A | 4 critical adapters |
+| Task                       | Effort     | Deps | Examples                                      |
+| -------------------------- | ---------- | ---- | --------------------------------------------- |
+| OS user creation adapter   | 1d         | 2A   | useradd (Linux) / New-LocalUser (Windows)     |
+| Desktop automation adapter | 1d         | 2A   | AppleScript (macOS) / UI Automation (Windows) |
+| Process monitoring adapter | 1d         | 2A   | /proc (Linux) / Get-Process (Windows)         |
+| File watcher adapter       | 1d         | 2A   | inotify (Linux) / FileSystemWatcher (Windows) |
+| **Subtotal**               | **1 week** | 2A   | 4 critical adapters                           |
 
 **Deliverables:**
+
 - `src/thegent/shell/adapters/` directory with adapter implementations
 - Each adapter has POSIX and PowerShell versions
 
 **Acceptance Criteria:**
+
 - All adapters work on respective platforms
 - Graceful fallback when unavailable
 - Integration tests pass
@@ -817,22 +841,24 @@ executor.run_script(Path("scripts/setup.sh"))
 
 **Goal:** Document patterns; migrate installer; rollout
 
-| Task | Effort | Deps |
-|------|--------|------|
-| Write shell strategy guide | 2d | 2A-D |
-| Write hook development guide | 2d | 2A-D |
-| Update installer (install.sh/ps1) | 1d | 2A-D |
-| Write migration guide for hooks | 1d | 2A-D |
-| Comprehensive testing on all platforms | 2d | 2A-D |
-| **Subtotal** | **2 weeks** | 2A-D |
+| Task                                   | Effort      | Deps |
+| -------------------------------------- | ----------- | ---- |
+| Write shell strategy guide             | 2d          | 2A-D |
+| Write hook development guide           | 2d          | 2A-D |
+| Update installer (install.sh/ps1)      | 1d          | 2A-D |
+| Write migration guide for hooks        | 1d          | 2A-D |
+| Comprehensive testing on all platforms | 2d          | 2A-D |
+| **Subtotal**                           | **2 weeks** | 2A-D |
 
 **Deliverables:**
+
 - `docs/guides/SHELL_STRATEGY.md`
 - `docs/guides/HOOK_DEVELOPMENT.md` with examples
 - Updated installers
 - Integration test suite
 
 **Acceptance Criteria:**
+
 - All documentation complete
 - New developers can write hooks for both shells
 - Zero manual shell selection needed
@@ -842,14 +868,14 @@ executor.run_script(Path("scripts/setup.sh"))
 
 ### Phase 2 Summary
 
-| Phase | Duration | Output | Complexity |
-|-------|----------|--------|------------|
-| 2A | 2 weeks | Dispatcher + libraries | Medium |
-| 2B | 1 week | 5 dual-shell hooks | Medium |
-| 2C | 1 week | Python unified interface | Medium |
-| 2D | 1 week | 4 OS-level adapters | High |
-| 2E | 2 weeks | Docs + testing + migration | Medium |
-| **Total** | **7 weeks** | Full dual-shell system | **Medium** |
+| Phase     | Duration    | Output                     | Complexity |
+| --------- | ----------- | -------------------------- | ---------- |
+| 2A        | 2 weeks     | Dispatcher + libraries     | Medium     |
+| 2B        | 1 week      | 5 dual-shell hooks         | Medium     |
+| 2C        | 1 week      | Python unified interface   | Medium     |
+| 2D        | 1 week      | 4 OS-level adapters        | High       |
+| 2E        | 2 weeks     | Docs + testing + migration | Medium     |
+| **Total** | **7 weeks** | Full dual-shell system     | **Medium** |
 
 **Parallel work possible:** 2A and docs planning (Week 1)
 
@@ -866,6 +892,7 @@ executor.run_script(Path("scripts/setup.sh"))
 **Impact:** File paths in commands, config, environment variables
 
 **Solution:**
+
 ```python
 from pathlib import Path
 # Always use pathlib.Path for path operations
@@ -876,6 +903,7 @@ from pathlib import PureWindowsPath, PurePosixPath
 ```
 
 **In shell scripts:**
+
 ```bash
 # POSIX: Use $THGENT_ROOT/scripts/foo.sh
 # PowerShell: Use $env:THGENT_ROOT\scripts\foo.ps1
@@ -889,6 +917,7 @@ from pathlib import PureWindowsPath, PurePosixPath
 **Impact:** `$PATH` vs `$path`, environment lookups
 
 **Solution:**
+
 ```python
 # Always use uppercase: PATH, HOME, USER
 # Never rely on mixed case
@@ -899,6 +928,7 @@ $env:Path  # Works but inconsistent
 ```
 
 **In hook libraries:**
+
 ```bash
 # POSIX: PATH is always uppercase
 # PowerShell: $env:PATH (not $env:path)
@@ -908,14 +938,15 @@ $env:Path  # Works but inconsistent
 
 **Gotcha:** Different escaping rules in POSIX vs PowerShell
 
-| Context | POSIX | PowerShell |
-|---------|-------|-----------|
-| String with spaces | `'hello world'` | `"hello world"` |
-| String with variable | `"$VAR"` | `$var` or `"$var"` |
-| Escape character | `\` | `` ` `` (backtick) |
-| Command substitution | `` `cmd` `` or `$(cmd)` | `$(cmd)` |
+| Context              | POSIX                   | PowerShell         |
+| -------------------- | ----------------------- | ------------------ |
+| String with spaces   | `'hello world'`         | `"hello world"`    |
+| String with variable | `"$VAR"`                | `$var` or `"$var"` |
+| Escape character     | `\`                     | `` ` `` (backtick) |
+| Command substitution | `` `cmd` `` or `$(cmd)` | `$(cmd)`           |
 
 **Solution:**
+
 ```bash
 # POSIX: Use double quotes, escape $
 CMD="echo \$HOME"
@@ -932,13 +963,14 @@ subprocess.run(cmd_list)
 
 **Gotcha:** PowerShell has different error semantics
 
-| Behavior | POSIX | PowerShell |
-|----------|-------|-----------|
-| Exit code on error | Non-zero (varies) | $LASTEXITCODE |
-| Exceptions | Not standard | Native (Try-Catch) |
-| Fail-fast | `set -e` | `$ErrorActionPreference = Stop` |
+| Behavior           | POSIX             | PowerShell                      |
+| ------------------ | ----------------- | ------------------------------- |
+| Exit code on error | Non-zero (varies) | $LASTEXITCODE                   |
+| Exceptions         | Not standard      | Native (Try-Catch)              |
+| Fail-fast          | `set -e`          | `$ErrorActionPreference = Stop` |
 
 **Solution:**
+
 ```powershell
 # Always use:
 Set-StrictMode -Version Latest
@@ -951,15 +983,16 @@ $ErrorActionPreference = "Stop"
 
 **Gotcha:** WSL2 bash has different mount points, filesystem behavior
 
-| Issue | Symptom | Solution |
-|-------|---------|----------|
-| **Interop not enabled** | Can't call Windows .exe | Enable in WSL2 config |
-| **Mount points** | `/mnt/c/...` vs `C:/...` | Normalize with wslpath |
-| **File permissions** | Windows files appear 777 | Use umask or mount options |
-| **PATH resolution** | Both Windows and Linux PATH | Clean PATH before use |
-| **Git index lock** | git.exe vs /usr/bin/git conflict | Disable Windows git |
+| Issue                   | Symptom                          | Solution                   |
+| ----------------------- | -------------------------------- | -------------------------- |
+| **Interop not enabled** | Can't call Windows .exe          | Enable in WSL2 config      |
+| **Mount points**        | `/mnt/c/...` vs `C:/...`         | Normalize with wslpath     |
+| **File permissions**    | Windows files appear 777         | Use umask or mount options |
+| **PATH resolution**     | Both Windows and Linux PATH      | Clean PATH before use      |
+| **Git index lock**      | git.exe vs /usr/bin/git conflict | Disable Windows git        |
 
 **Solution:**
+
 ```bash
 # Use wslpath for conversion
 if [ -n "${WSL_DISTRO_NAME:-}" ]; then
@@ -973,13 +1006,14 @@ fi
 
 **Gotcha:** POSIX vs PowerShell libraries must have identical semantics
 
-| Function | POSIX Behavior | PowerShell Behavior | Gap |
-|----------|----------------|-------------------|-----|
-| `log_info` | Writes to stderr | Writes to stdout | Different streams |
-| `validate_changes` | Returns exit code | Throws exception | Different error model |
-| `get_config_value` | Returns string or empty | Returns $null | Type differences |
+| Function           | POSIX Behavior          | PowerShell Behavior | Gap                   |
+| ------------------ | ----------------------- | ------------------- | --------------------- |
+| `log_info`         | Writes to stderr        | Writes to stdout    | Different streams     |
+| `validate_changes` | Returns exit code       | Throws exception    | Different error model |
+| `get_config_value` | Returns string or empty | Returns $null       | Type differences      |
 
 **Solution:**
+
 ```bash
 # POSIX library: Always write to stderr
 log_info() { echo "[INFO] $*" >&2; }
@@ -998,14 +1032,15 @@ log_info "Starting..."
 
 **Gotcha:** Not all shells available everywhere
 
-| Environment | Available Shells | Problem |
-|-------------|------------------|---------|
-| Docker (alpine) | sh only | No bash/zsh |
-| CI (GitHub) | bash, pwsh | No zsh |
-| Minimal Linux | sh only | Performance |
-| Windows (corporate) | pwsh, WSL2? | No native bash |
+| Environment         | Available Shells | Problem        |
+| ------------------- | ---------------- | -------------- |
+| Docker (alpine)     | sh only          | No bash/zsh    |
+| CI (GitHub)         | bash, pwsh       | No zsh         |
+| Minimal Linux       | sh only          | Performance    |
+| Windows (corporate) | pwsh, WSL2?      | No native bash |
 
 **Solution:**
+
 ```python
 def get_fastest_available_shell() -> str:
     """Return fastest shell, fallback to sh if needed."""
@@ -1022,6 +1057,7 @@ def get_fastest_available_shell() -> str:
 ### 5.1 POSIX Shell Patterns
 
 #### Pattern: Strict Mode
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1029,6 +1065,7 @@ IFS=$'\n\t'  # Safer word splitting
 ```
 
 #### Pattern: Logging
+
 ```bash
 log_level="${LOG_LEVEL:-INFO}"
 log_info()   { [ "$log_level" != "SILENT" ] && echo "[INFO] $(date +%s): $*" >&2; }
@@ -1038,6 +1075,7 @@ die()        { log_error "$@"; exit 1; }
 ```
 
 #### Pattern: Safe Command Execution
+
 ```bash
 # Run command, capture output, handle failure
 if ! output=$(some_command 2>&1); then
@@ -1048,6 +1086,7 @@ echo "$output"
 ```
 
 #### Pattern: Array Iteration
+
 ```bash
 declare -a items=("a" "b" "c")
 for item in "${items[@]}"; do
@@ -1056,6 +1095,7 @@ done
 ```
 
 #### Pattern: Trap for Cleanup
+
 ```bash
 cleanup() {
     rm -f "$temp_file"
@@ -1067,6 +1107,7 @@ trap cleanup EXIT
 ### 5.2 PowerShell Patterns
 
 #### Pattern: Strict Mode
+
 ```powershell
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
@@ -1074,6 +1115,7 @@ $PSDefaultParameterValues['*:ErrorAction'] = 'Stop'
 ```
 
 #### Pattern: Logging
+
 ```powershell
 function Write-Log {
     param(
@@ -1092,6 +1134,7 @@ function Write-Log {
 ```
 
 #### Pattern: Safe Command Execution
+
 ```powershell
 try {
     $output = & { some_command }
@@ -1103,6 +1146,7 @@ try {
 ```
 
 #### Pattern: Array Iteration
+
 ```powershell
 $items = @('a', 'b', 'c')
 foreach ($item in $items) {
@@ -1116,6 +1160,7 @@ foreach ($item in $items) {
 ```
 
 #### Pattern: Try-Finally for Cleanup
+
 ```powershell
 $tempFile = New-TemporaryFile
 try {
@@ -1129,6 +1174,7 @@ try {
 ### 5.3 Hybrid Patterns (POSIX + PowerShell)
 
 #### Pattern: Environment Detection
+
 ```bash
 # In POSIX
 if [ "$THGENT_PLATFORM" = "windows" ]; then
@@ -1152,6 +1198,7 @@ if ($env:THGENT_PLATFORM -eq "linux" -or $env:THGENT_PLATFORM -eq "macos") {
 ```
 
 #### Pattern: Shared Library Delegation
+
 ```bash
 # POSIX hook: Delegate complex logic to Python
 validate_changes() {
@@ -1229,6 +1276,7 @@ tests/
 ### 6.3 Test Examples
 
 **Unit Test: Shell Detection (Python)**
+
 ```python
 # tests/shell/test_shell_detection.py
 import pytest
@@ -1249,6 +1297,7 @@ def test_shell_detection(platform, expected):
 ```
 
 **Integration Test: POSIX Hook**
+
 ```bash
 # tests/shell/bash_lib_test.sh
 #!/usr/bin/env bash
@@ -1277,6 +1326,7 @@ echo "All tests passed"
 ```
 
 **Integration Test: Dispatcher**
+
 ```python
 # tests/integration/test_dispatcher.py
 import subprocess
@@ -1314,16 +1364,19 @@ def test_dispatcher_powershell_hook():
 **Principle:** No breaking changes; graceful fallback to current behavior
 
 **Current State:**
+
 - POSIX hooks only (bash/sh)
 - Works on macOS/Linux
 - Windows via WSL2 (best effort)
 
 **New State:**
+
 - Dual-shell hooks (bash + pwsh)
 - Works on macOS/Linux/Windows
 - WSL2 explicitly supported
 
 **Transition:**
+
 1. **Week 1-2:** Deploy dispatcher + libraries (silent, no hook changes)
 2. **Week 3-4:** Gradually convert hooks to dual-shell (5 critical hooks first)
 3. **Week 5-6:** Update Python interfaces (ShellEnvironment, ShellExecutor)
@@ -1331,6 +1384,7 @@ def test_dispatcher_powershell_hook():
 5. **Week 9-10:** Full rollout; deprecate old direct-bash patterns
 
 **Rollback Plan:**
+
 - If dispatcher fails, fall back to direct bash invocation
 - All hooks continue to work with `bash` directly if dispatcher unavailable
 - Remove dispatcher from PATH to revert to old behavior
@@ -1342,13 +1396,14 @@ def test_dispatcher_powershell_hook():
 ```yaml
 # ~/.thegent/config.yaml
 shell:
-  agent_shell: "auto"        # auto-detect
-  hook_shell: "auto"         # auto-detect
-  prefer_posix: false        # Use native shell for platform
-  fallback_shell: "sh"       # Last resort
+  agent_shell: "auto" # auto-detect
+  hook_shell: "auto" # auto-detect
+  prefer_posix: false # Use native shell for platform
+  fallback_shell: "sh" # Last resort
 ```
 
 **Environment Overrides:**
+
 ```bash
 export THGENT_AGENT_SHELL=bash      # Force agent to use bash
 export THGENT_HOOK_SHELL=pwsh       # Force hooks to use PowerShell
@@ -1360,12 +1415,14 @@ export THGENT_PREFER_POSIX=1        # Use bash on Windows via WSL2
 **Current:** `scripts/install.sh` (POSIX) + `scripts/install.ps1` (PowerShell)
 
 **Updates:**
+
 1. Both installers compile Rust dispatcher
 2. Both installers set up shell-specific library paths
 3. Both installers create shims with shell detection
 4. Config wizard asks for shell preference
 
 **New `scripts/install.sh`:**
+
 ```bash
 # ... existing logic ...
 
@@ -1384,25 +1441,27 @@ cp hooks/lib/*.ps1 ~/.thegent/lib/
 ### 7.4 Documentation Updates
 
 **New Guides:**
+
 - `docs/guides/SHELL_STRATEGY.md` — Overview
 - `docs/guides/HOOK_DEVELOPMENT.md` — Write new hooks
 - `docs/reference/POSIX_PWSH_COMPARISON.md` — Detailed comparison
 - `docs/guides/CROSS_PLATFORM_TROUBLESHOOTING.md` — Common issues
 
 **Updated Guides:**
+
 - `README.md` — Add Windows support note
 - `INSTALLATION.md` — Update for dual-shell
 - `docs/guides/TROUBLESHOOTING.md` — Add shell-specific section
 
 ### 7.5 Rollout Timeline
 
-| Week | Phase | Milestones | Risk |
-|------|-------|-----------|------|
-| 1-2 | Dispatcher + libraries | Core infrastructure deployed | **LOW** (hidden) |
-| 3-4 | Hook migration | 5 critical hooks dual-shell | **MEDIUM** (new paths tested) |
-| 5-6 | Python interface | ShellEnvironment integrated | **MEDIUM** (behavior change) |
-| 7-8 | OS adapters | Platform-specific operations | **HIGH** (system calls) |
-| 9-10 | Rollout + docs | Fully deployed | **MEDIUM** (migration needed) |
+| Week | Phase                  | Milestones                   | Risk                          |
+| ---- | ---------------------- | ---------------------------- | ----------------------------- |
+| 1-2  | Dispatcher + libraries | Core infrastructure deployed | **LOW** (hidden)              |
+| 3-4  | Hook migration         | 5 critical hooks dual-shell  | **MEDIUM** (new paths tested) |
+| 5-6  | Python interface       | ShellEnvironment integrated  | **MEDIUM** (behavior change)  |
+| 7-8  | OS adapters            | Platform-specific operations | **HIGH** (system calls)       |
+| 9-10 | Rollout + docs         | Fully deployed               | **MEDIUM** (migration needed) |
 
 ---
 
@@ -1410,17 +1469,17 @@ cp hooks/lib/*.ps1 ~/.thegent/lib/
 
 ### A. Glossary
 
-| Term | Definition |
-|------|-----------|
-| **POSIX** | Portable Operating System Interface; bash/sh/zsh family |
-| **pwsh** | PowerShell 7+ (cross-platform) |
-| **WSL2** | Windows Subsystem for Linux 2; POSIX on Windows |
-| **Dispatcher** | Router that detects shell and invokes appropriate hook |
-| **Hook** | Event-triggered script (pre/post tool use, stop, etc.) |
-| **Library** | Shared functions for hooks (bash_lib.sh, pwsh_lib.ps1) |
-| **Shim** | Thin wrapper (Python/Rust) that delegates to CLI |
-| **Adapter** | Platform/shell-specific implementation |
-| **Runner** | Component that executes shell code |
+| Term           | Definition                                              |
+| -------------- | ------------------------------------------------------- |
+| **POSIX**      | Portable Operating System Interface; bash/sh/zsh family |
+| **pwsh**       | PowerShell 7+ (cross-platform)                          |
+| **WSL2**       | Windows Subsystem for Linux 2; POSIX on Windows         |
+| **Dispatcher** | Router that detects shell and invokes appropriate hook  |
+| **Hook**       | Event-triggered script (pre/post tool use, stop, etc.)  |
+| **Library**    | Shared functions for hooks (bash_lib.sh, pwsh_lib.ps1)  |
+| **Shim**       | Thin wrapper (Python/Rust) that delegates to CLI        |
+| **Adapter**    | Platform/shell-specific implementation                  |
+| **Runner**     | Component that executes shell code                      |
 
 ### B. Related Documentation
 
@@ -1431,32 +1490,32 @@ cp hooks/lib/*.ps1 ~/.thegent/lib/
 
 ### C. External References
 
-| Resource | Link | Relevance |
-|----------|------|-----------|
-| PowerShell 7+ Docs | https://learn.microsoft.com/en-us/powershell/ | Shell spec |
-| Bash Best Practices | https://mywiki.wooledge.org/BashGuide | Shell patterns |
-| POSIX Shell | https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html | Standard |
-| Rust subprocess | https://doc.rust-lang.org/std/process/ | Dispatcher impl |
+| Resource            | Link                                                                      | Relevance       |
+| ------------------- | ------------------------------------------------------------------------- | --------------- |
+| PowerShell 7+ Docs  | https://learn.microsoft.com/en-us/powershell/                             | Shell spec      |
+| Bash Best Practices | https://mywiki.wooledge.org/BashGuide                                     | Shell patterns  |
+| POSIX Shell         | https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html | Standard        |
+| Rust subprocess     | https://doc.rust-lang.org/std/process/                                    | Dispatcher impl |
 
 ### D. Risk Mitigation
 
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|-----------|
-| PowerShell not available | **MEDIUM** | HIGH | Fallback to bash via WSL2 |
-| Hook library API mismatch | **LOW** | HIGH | Comprehensive testing |
-| Performance regression | **LOW** | MEDIUM | Benchmark before/after |
-| WSL2 interop issues | **MEDIUM** | MEDIUM | Clear error messages + docs |
-| Windows path handling | **HIGH** | MEDIUM | pathlib, test coverage |
+| Risk                      | Probability | Impact | Mitigation                  |
+| ------------------------- | ----------- | ------ | --------------------------- |
+| PowerShell not available  | **MEDIUM**  | HIGH   | Fallback to bash via WSL2   |
+| Hook library API mismatch | **LOW**     | HIGH   | Comprehensive testing       |
+| Performance regression    | **LOW**     | MEDIUM | Benchmark before/after      |
+| WSL2 interop issues       | **MEDIUM**  | MEDIUM | Clear error messages + docs |
+| Windows path handling     | **HIGH**    | MEDIUM | pathlib, test coverage      |
 
 ### E. Success Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **Hook success rate on Windows** | >95% | Test suite pass rate |
-| **Shell detection latency** | <10ms | Benchmark tool |
-| **Fallback activation** | <1% of runs | Monitoring + logging |
-| **Documentation coverage** | 100% | Code + guides for all functions |
-| **Cross-platform test coverage** | >90% | pytest coverage report |
+| Metric                           | Target      | Measurement                     |
+| -------------------------------- | ----------- | ------------------------------- |
+| **Hook success rate on Windows** | >95%        | Test suite pass rate            |
+| **Shell detection latency**      | <10ms       | Benchmark tool                  |
+| **Fallback activation**          | <1% of runs | Monitoring + logging            |
+| **Documentation coverage**       | 100%        | Code + guides for all functions |
+| **Cross-platform test coverage** | >90%        | pytest coverage report          |
 
 ---
 

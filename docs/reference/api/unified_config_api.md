@@ -11,6 +11,7 @@ Unified configuration system across all systems.
 Unified configuration across systems.
 
 This class harmonizes configuration from multiple sources:
+
 - thegent (primary)
 - manage devkit
 - workstream
@@ -18,7 +19,7 @@ This class harmonizes configuration from multiple sources:
 
 ### Methods
 
-#### UnifiedConfigManager.__init__
+#### UnifiedConfigManager.**init**
 
 ```python
 __init__(self: Any)

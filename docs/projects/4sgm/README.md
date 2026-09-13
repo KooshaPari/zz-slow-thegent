@@ -38,18 +38,21 @@
 ## Key Features
 
 ### 1. LangFuse Integration
+
 - Agent tracing
 - Span management
 - Context propagation
 - See: `docs/LANGFUSE_SETUP.md`
 
 ### 2. Monitoring
+
 - Performance metrics
 - Token counting
 - Cost analysis
 - See: `docs/architecture/`
 
 ### 3. Quality Tracking
+
 - Quality scores
 - Evaluation results
 - Analytics
@@ -58,12 +61,14 @@
 ## Development
 
 ### Setup
+
 ```bash
 cd 4sgm
 # Follow docs/LANGFUSE_SETUP.md
 ```
 
 ### Running Tests
+
 ```bash
 pytest tests/
 ```

@@ -15,7 +15,7 @@ JSONL-based storage for idea seeds.
 
 ### Methods
 
-#### SeedStorage.__init__
+#### SeedStorage.**init**
 
 ```python
 __init__(self: Any, storage_path: Any)

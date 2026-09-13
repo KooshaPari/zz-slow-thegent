@@ -19,7 +19,7 @@ and DAG synchronization.
 
 ### Methods
 
-#### GardeningManager.__init__
+#### GardeningManager.**init**
 
 ```python
 __init__(self: Any, project_root: Any)

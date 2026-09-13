@@ -14,7 +14,7 @@ Closed-loop controller for regulating system performance against SLOs.
 
 ### Methods
 
-#### SLORegulator.__init__
+#### SLORegulator.**init**
 
 ```python
 __init__(self: Any, target_latency_ms: float)

@@ -25,12 +25,12 @@ All Python projects in the portfolio use **import-linter** to enforce hexagonal 
 
 **Dependency rule**: Arrows point inward only. An inner layer NEVER imports from an outer layer.
 
-| Layer | Can Import From | Cannot Import From |
-|-------|----------------|-------------------|
-| domain | stdlib, third-party only | application, adapters, infrastructure |
-| application | domain | adapters, infrastructure |
-| adapters | domain, application | infrastructure |
-| infrastructure | domain, application, adapters | (unrestricted) |
+| Layer          | Can Import From               | Cannot Import From                    |
+| -------------- | ----------------------------- | ------------------------------------- |
+| domain         | stdlib, third-party only      | application, adapters, infrastructure |
+| application    | domain                        | adapters, infrastructure              |
+| adapters       | domain, application           | infrastructure                        |
+| infrastructure | domain, application, adapters | (unrestricted)                        |
 
 ### import-linter Configuration
 
@@ -216,14 +216,12 @@ Some projects (e.g. thegent) also use `tach` for module-level boundary enforceme
 
 Both can run in the same project. `tach` is more granular; import-linter is more structural.
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -233,15 +231,18 @@ Both can run in the same project. `tach` is more granular; import-linter is more
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices
@@ -253,6 +254,7 @@ Both can run in the same project. `tach` is more granular; import-linter is more
 ### 7.1 Domain Importing Application
 
 **Violation:**
+
 ```
 domain/service.py imports application/use_cases.py
 ```
@@ -271,6 +273,7 @@ from application.dependencies import get_user_repository
 ### 7.2 Application Importing Infrastructure
 
 **Violation:**
+
 ```
 application/service.py imports infrastructure/email.py
 ```
@@ -299,6 +302,7 @@ class UserService:
 ### 7.3 Adapter Importing Infrastructure
 
 **Violation:**
+
 ```
 adapters/http.py imports infrastructure/config.py
 ```
@@ -415,12 +419,7 @@ class SQLAlchemyUserRepository(UserRepository):
     {
       "name": "hexagonal-layers",
       "type": "layers",
-      "layers": [
-        "domain",
-        "application",
-        "adapters",
-        "infrastructure"
-      ]
+      "layers": ["domain", "application", "adapters", "infrastructure"]
     },
     {
       "name": "application-no-adapters",

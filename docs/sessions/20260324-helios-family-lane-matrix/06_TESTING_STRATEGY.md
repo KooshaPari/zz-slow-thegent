@@ -1,11 +1,13 @@
 # 06_TESTING_STRATEGY
 
 ## Validation Used
+
 - `git worktree list --porcelain` on `heliosApp`, `heliosCLI`, `helios-cli`, `colab`, and `helMo`
 - `git status --short` on the same roots
 - Direct directory inspection for worktree-family children
 
 ## Recommended Follow-Up
+
 1. Expand `heliosApp-wtrees` children into a lane-by-lane prune/migrate queue.
 2. Expand `heliosCLI-wtrees` children and split clean vs dirty lanes.
 3. Resolve the detached `heliosCLI-composite-actions` root.

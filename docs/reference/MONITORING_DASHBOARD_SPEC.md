@@ -9,6 +9,7 @@ This document defines comprehensive monitoring dashboards for the thegent routin
 **Data Source:** `run_registry.jsonl` - JSONL event log with run metadata
 
 **Fields Used:**
+
 - `task_category`: FAST, NORMAL, COMPLEX, HIGH_COMPLEX
 - `complexity_score`: 0-100 integer
 - `estimated_cost`: USD decimal
@@ -31,6 +32,7 @@ This document defines comprehensive monitoring dashboards for the thegent routin
 **Refresh Frequency:** Hourly (budget utilization), Daily (forecasts)
 
 **Alert Thresholds:**
+
 - WARNING: 80% of category budget used
 - CRITICAL: 100% of category budget used
 
@@ -41,6 +43,7 @@ This document defines comprehensive monitoring dashboards for the thegent routin
 **Refresh:** Real-time (every 5 minutes)
 
 **Sample Output:**
+
 ```
 date       | fast  | normal | complex | high_complex | total
 -----------|-------|--------|---------|--------------|-------
@@ -50,6 +53,7 @@ date       | fast  | normal | complex | high_complex | total
 ```
 
 **SQL Query:**
+
 ```sql
 SELECT
   DATE(r.ended_at_utc) as date,
@@ -70,6 +74,7 @@ LIMIT 30;
 **Visualization:** Stacked bar chart (x-axis: date, y-axis: cost, stack: category)
 
 **Indices Recommended:**
+
 ```sql
 CREATE INDEX idx_run_registry_category_date ON run_registry(task_category, DATE(ended_at_utc));
 ```
@@ -83,6 +88,7 @@ CREATE INDEX idx_run_registry_category_date ON run_registry(task_category, DATE(
 **Refresh:** Hourly
 
 **Sample Output:**
+
 ```
 category     | mtd_cost | budget | utilization_pct | status
 -------------|----------|--------|-----------------|----------
@@ -93,6 +99,7 @@ high_complex | 48.00    | 50.00  | 96.0%           | WARNING
 ```
 
 **SQL Query:**
+
 ```sql
 SELECT
   r.task_category as category,
@@ -141,9 +148,10 @@ ORDER BY utilization_pct DESC;
 **Visualization:** Gauge chart per category (0-100% scale, red zone 80-100%)
 
 **Metrics Definition:**
+
 - `mtd_cost`: Sum of actual_cost_usd for category in current month
 - `budget`: Hard-coded category budget limit
-- `utilization_pct`: (mtd_cost / budget) * 100
+- `utilization_pct`: (mtd_cost / budget) \* 100
 
 ---
 
@@ -154,6 +162,7 @@ ORDER BY utilization_pct DESC;
 **Refresh:** Daily (update at end of day)
 
 **Sample Output:**
+
 ```
 metric          | value
 ----------------|----------
@@ -166,6 +175,7 @@ days_at_budget  | 6.72
 ```
 
 **SQL Query:**
+
 ```sql
 WITH mtd_data AS (
   SELECT
@@ -209,12 +219,14 @@ FROM mtd_data;
 ```
 
 **Visualization:**
+
 - Line chart: X-axis (day of month), Y-axis (cumulative cost), two lines (actual vs forecast)
 - Gauge: Days remaining at current burn rate
 
 **Metrics Definition:**
+
 - `burn_rate_daily`: MTD cost / days elapsed
-- `forecast_mtd`: burn_rate_daily * 30
+- `forecast_mtd`: burn_rate_daily \* 30
 - `days_at_budget`: total_monthly_budget / burn_rate_daily
 
 **Note:** Total monthly budget = $450 (sum of all categories: 50 + 200 + 150 + 50)
@@ -228,6 +240,7 @@ FROM mtd_data;
 **Refresh:** Daily
 
 **Sample Output:**
+
 ```
 category     | task_count | total_cost | avg_cost | min_cost | max_cost
 -------------|------------|-----------|----------|----------|----------
@@ -238,6 +251,7 @@ fast         | 4500       | 40.00     | 0.0089   | 0.0010   | 0.0150
 ```
 
 **SQL Query:**
+
 ```sql
 SELECT
   r.task_category as category,
@@ -257,7 +271,8 @@ ORDER BY avg_cost DESC;
 **Visualization:** Bar chart (x-axis: category, y-axis: avg_cost) with count labels
 
 **Metrics Definition:**
-- `avg_cost`: SUM(actual_cost_usd) / COUNT(*)
+
+- `avg_cost`: SUM(actual_cost_usd) / COUNT(\*)
 - `min_cost`: Minimum cost for any task in category
 - `max_cost`: Maximum cost for any task in category
 
@@ -276,6 +291,7 @@ ORDER BY avg_cost DESC;
 **Purpose:** Average quality score achieved per category vs threshold.
 
 **Sample Output:**
+
 ```
 category     | avg_quality | threshold | meets_threshold_pct | status
 -------------|------------|-----------|---------------------|--------
@@ -286,6 +302,7 @@ fast         | 0.68       | 0.60      | 95.1%               | OK
 ```
 
 **SQL Query:**
+
 ```sql
 SELECT
   r.task_category as category,
@@ -330,6 +347,7 @@ ORDER BY category;
 **Visualization:** Heatmap (rows: categories, columns: quality metrics)
 
 **Metrics Definition:**
+
 - `avg_quality`: Average quality score (0.0-1.0) for tasks in category
 - `threshold`: Minimum acceptable quality for category
 - `meets_threshold_pct`: % of tasks meeting or exceeding threshold
@@ -341,6 +359,7 @@ ORDER BY category;
 **Purpose:** Which models are being used most, by category.
 
 **Sample Output:**
+
 ```
 category     | model              | task_count | percentage | avg_cost
 -------------|-------------------|------------|-----------|----------
@@ -352,6 +371,7 @@ fast         | minimax-m2.5       | 4485       | 99.7%     | 0.009
 ```
 
 **SQL Query:**
+
 ```sql
 SELECT
   r.task_category as category,
@@ -369,8 +389,9 @@ ORDER BY r.task_category, task_count DESC;
 **Visualization:** Pie chart (per category) showing model distribution
 
 **Metrics Definition:**
-- `percentage`: (model task_count / category total) * 100
-- `avg_cost`: SUM(actual_cost_usd) / COUNT(*) for that model in category
+
+- `percentage`: (model task_count / category total) \* 100
+- `avg_cost`: SUM(actual_cost_usd) / COUNT(\*) for that model in category
 
 ---
 
@@ -379,6 +400,7 @@ ORDER BY r.task_category, task_count DESC;
 **Purpose:** % of tasks that used fallback model (not primary choice).
 
 **Sample Output:**
+
 ```
 category     | total_tasks | fallback_tasks | fallback_rate_pct | reason_top
 -------------|------------|--------------|------------------|------------------
@@ -389,6 +411,7 @@ high_complex | 45         | 0            | 0.0%             | N/A
 ```
 
 **SQL Query:**
+
 ```sql
 SELECT
   r.task_category as category,
@@ -413,7 +436,8 @@ ORDER BY fallback_rate_pct DESC;
 **Visualization:** Bar chart (x-axis: category, y-axis: fallback_rate_pct)
 
 **Metrics Definition:**
-- `fallback_rate_pct`: (fallback tasks / total tasks) * 100
+
+- `fallback_rate_pct`: (fallback tasks / total tasks) \* 100
 - `reason_top`: Most common constraint violation for fallbacks in category
 
 ---
@@ -423,6 +447,7 @@ ORDER BY fallback_rate_pct DESC;
 **Purpose:** Track constraint failures and violations by type.
 
 **Sample Output:**
+
 ```
 violation_type      | category     | count | pct_of_category
 --------------------|--------------|-------|----------------
@@ -434,6 +459,7 @@ speed               | fast         | 15    | 0.3%
 ```
 
 **SQL Query:**
+
 ```sql
 WITH violations AS (
   SELECT
@@ -459,8 +485,9 @@ ORDER BY count DESC;
 **Visualization:** Stacked bar chart (x-axis: category, y-axis: violation count, stack: violation_type)
 
 **Metrics Definition:**
+
 - `violation_type`: performance, instantaneous_cost, cumulative_cost, speed
-- `pct_of_category`: (violations / total tasks in category) * 100
+- `pct_of_category`: (violations / total tasks in category) \* 100
 
 ---
 
@@ -477,6 +504,7 @@ ORDER BY count DESC;
 **Purpose:** P50, P99 latency and SLA target by category.
 
 **Sample Output:**
+
 ```
 category     | p50_ms | p99_ms | sla_target_ms | sla_attainment_pct
 -------------|--------|--------|---------------|-------------------
@@ -487,6 +515,7 @@ high_complex | 35000  | 55000  | 60000         | 94.8%
 ```
 
 **SQL Query:**
+
 ```sql
 WITH latencies AS (
   SELECT
@@ -535,12 +564,14 @@ ORDER BY l.task_category;
 ```
 
 **Visualization:**
+
 - Table (latency percentiles by category)
 - Line chart overlay (SLA target line + actual p50/p99 over time)
 
 **Metrics Definition:**
-- `p50_ms`: 50th percentile (median) of duration_s * 1000
-- `p99_ms`: 99th percentile of duration_s * 1000
+
+- `p50_ms`: 50th percentile (median) of duration_s \* 1000
+- `p99_ms`: 99th percentile of duration_s \* 1000
 - `sla_target_ms`: Hard-coded target (FAST: 1s, NORMAL: 5s, COMPLEX: 20s, HIGH_COMPLEX: 60s)
 - `sla_attainment_pct`: % of tasks finishing within sla_target_ms
 
@@ -551,6 +582,7 @@ ORDER BY l.task_category;
 **Purpose:** Detailed breakdown of tasks meeting vs missing SLA.
 
 **Sample Output:**
+
 ```
 category     | sla_met | sla_missed | total | attainment_pct
 -------------|---------|-----------|-------|---------------
@@ -561,6 +593,7 @@ high_complex | 43      | 2         | 45    | 95.6%
 ```
 
 **SQL Query:**
+
 ```sql
 SELECT
   r.task_category as category,
@@ -603,6 +636,7 @@ ORDER BY attainment_pct ASC;
 **Purpose:** Track hard failures (non-zero exit code, timeout, escalated).
 
 **Sample Output:**
+
 ```
 category     | total_tasks | successful | timeout | error | escalated | error_rate_pct
 -------------|------------|-----------|---------|-------|-----------|---------------
@@ -613,6 +647,7 @@ high_complex | 45         | 43        | 2       | 0     | 0         | 4.4%
 ```
 
 **SQL Query:**
+
 ```sql
 SELECT
   r.task_category as category,
@@ -634,7 +669,8 @@ ORDER BY error_rate_pct DESC;
 **Visualization:** Stacked bar chart (x-axis: category, y-axis: task count, stack: successful/timeout/error/escalated)
 
 **Metrics Definition:**
-- `error_rate_pct`: (timeout + error + escalated) / total * 100
+
+- `error_rate_pct`: (timeout + error + escalated) / total \* 100
 
 ---
 
@@ -649,6 +685,7 @@ ORDER BY error_rate_pct DESC;
 **Purpose:** Daily task volume by category and overall.
 
 **Sample Output:**
+
 ```
 date       | fast  | normal | complex | high_complex | total | avg_daily
 -----------|-------|--------|---------|--------------|-------|----------
@@ -658,6 +695,7 @@ date       | fast  | normal | complex | high_complex | total | avg_daily
 ```
 
 **SQL Query:**
+
 ```sql
 SELECT
   DATE(r.ended_at_utc) as date,
@@ -675,6 +713,7 @@ ORDER BY date DESC;
 ```
 
 **Visualization:**
+
 - Line chart (daily volume with 7-day moving average)
 - Counter (today's total tasks)
 
@@ -685,6 +724,7 @@ ORDER BY date DESC;
 **Purpose:** Non-zero exit code rate by category.
 
 **Sample Output:**
+
 ```
 category     | total_tasks | error_count | error_rate_pct | status
 -------------|------------|------------|--------------|--------
@@ -695,6 +735,7 @@ high_complex | 45         | 2          | 4.4%         | OK
 ```
 
 **SQL Query:**
+
 ```sql
 SELECT
   r.task_category as category,
@@ -721,6 +762,7 @@ ORDER BY error_rate_pct DESC;
 **Purpose:** Which constraints are violated most frequently.
 
 **Sample Output:**
+
 ```
 violation_type      | count | pct_of_total | trend
 --------------------|-------|-------------|-------
@@ -731,6 +773,7 @@ cumulative_cost     | 2     | 4.5%        | ↓ -1
 ```
 
 **SQL Query:**
+
 ```sql
 WITH violations AS (
   SELECT json_each.value as violation_type
@@ -758,6 +801,7 @@ ORDER BY count DESC;
 **Purpose:** Track escalations pending review.
 
 **Sample Output:**
+
 ```
 status      | count | min_age_hours | max_age_hours | avg_age_hours
 ------------|-------|---------------|---------------|---------------
@@ -767,6 +811,7 @@ completed   | 45    | 0.2           | 12.5          | 2.1
 ```
 
 **SQL Query:**
+
 ```sql
 SELECT
   r.escalation_status as status,
@@ -782,6 +827,7 @@ ORDER BY CASE WHEN r.escalation_status = 'pending' THEN 0 WHEN r.escalation_stat
 ```
 
 **Visualization:**
+
 - Counter (pending escalations - alert if > 10)
 - Timeline (escalation age distribution)
 
@@ -798,6 +844,7 @@ ORDER BY CASE WHEN r.escalation_status = 'pending' THEN 0 WHEN r.escalation_stat
 **Purpose:** Project month-end spend and remaining budget.
 
 **Sample Output:**
+
 ```
 metric                    | value
 --------------------------|----------
@@ -815,6 +862,7 @@ burn_out_risk             | LOW
 ```
 
 **SQL Query:**
+
 ```sql
 WITH dates AS (
   SELECT
@@ -861,6 +909,7 @@ END;
 ```
 
 **Visualization:**
+
 - Gauge chart (projected spend vs 450 budget)
 - Counter (days remaining at current burn)
 - Risk indicator (color-coded: LOW/MEDIUM/HIGH/CRITICAL)
@@ -872,6 +921,7 @@ END;
 **Purpose:** Forecast spend per category by month end.
 
 **Sample Output:**
+
 ```
 category     | budget | mtd_cost | pct_used | projected_eom | budget_remaining | status
 -------------|--------|----------|----------|--------------|-----------------|--------
@@ -882,6 +932,7 @@ high_complex | 50.00  | 15.00    | 30.0%    | 30.00        | 20.00            | 
 ```
 
 **SQL Query:**
+
 ```sql
 WITH category_budgets AS (
   SELECT 'fast' as category, 50.00 as budget
@@ -976,10 +1027,12 @@ CREATE INDEX idx_run_registry_month ON run_registry(STRFTIME('%Y-%m', ended_at_u
 **Data Retention:** 90 days of detailed records, 1 year of daily aggregates
 
 **JSONL Storage:**
+
 - ~2MB per day with default volume (~500 tasks/day)
 - 90 days = ~180MB raw logs
 
 **Database Optimization:**
+
 - Create materialized views for daily aggregates
 - Partition by month for archival
 - Archive older data to compressed storage
@@ -989,25 +1042,24 @@ CREATE INDEX idx_run_registry_month ON run_registry(STRFTIME('%Y-%m', ended_at_u
 ## Query Performance Notes
 
 **Expected Query Execution Time:**
+
 - Daily/category queries: 10-50ms (on indexed data)
 - Percentile queries: 100-500ms (requires sorting)
 - Trend/forecast queries: 50-200ms
 
 **Optimization Tips:**
+
 1. Index on `task_category` + `DATE(ended_at_utc)` for most queries
 2. Use date range filters (WHERE DATE(...) >= DATE('now', '-30 days'))
 3. Pre-aggregate hourly summaries for real-time dashboards
 4. Cache computed metrics (burn rate, forecast) for 1 hour
 
-
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -1017,15 +1069,18 @@ CREATE INDEX idx_run_registry_month ON run_registry(STRFTIME('%Y-%m', ended_at_u
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

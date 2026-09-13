@@ -5,6 +5,7 @@
 Advanced resource management with extended indices, prediction, and harness modeling.
 
 Features:
+
 - Extended resource indices (CPU, memory, FD, network, disk, GPU, etc.)
 - Statistical distributions (min, avg, peak, stddev, percentiles) for all resources
 - Prediction engine for forecasting resource needs
@@ -23,7 +24,7 @@ Detect bottlenecks in agent execution loops.
 
 ### Methods
 
-#### BottleneckDetector.__init__
+#### BottleneckDetector.**init**
 
 ```python
 __init__(self: Any)
@@ -134,7 +135,7 @@ Predict future resource needs based on historical patterns.
 
 ### Methods
 
-#### ResourcePredictionEngine.__init__
+#### ResourcePredictionEngine.**init**
 
 ```python
 __init__(self: Any, history_file: Any)

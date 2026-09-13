@@ -12,7 +12,7 @@ CC (Claude Code) harness for agent execution.
 
 ### Methods
 
-#### CCHarness.__init__
+#### CCHarness.**init**
 
 ```python
 __init__(self: Any)
@@ -46,7 +46,7 @@ Codex harness for agent execution.
 
 ### Methods
 
-#### CodexHarness.__init__
+#### CodexHarness.**init**
 
 ```python
 __init__(self: Any)
@@ -96,7 +96,7 @@ Droid harness for agent execution.
 
 ### Methods
 
-#### DroidHarness.__init__
+#### DroidHarness.**init**
 
 ```python
 __init__(self: Any)
@@ -130,7 +130,7 @@ Adapter to wire harnesses as agent_executor for Crew.
 
 ### Methods
 
-#### HarnessAdapter.__init__
+#### HarnessAdapter.**init**
 
 ```python
 __init__(self: Any)

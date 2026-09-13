@@ -12,7 +12,7 @@ Wrapper for JetBrains IDE CLI tools.
 
 ### Methods
 
-#### JetBrainsCLI.__init__
+#### JetBrainsCLI.**init**
 
 ```python
 __init__(self: Any, ide_path: Any)
@@ -23,7 +23,7 @@ Initialize JetBrains CLI wrapper.
 **Parameters**:
 
 - `ide_path`: Path to IntelliJ IDEA executable (e.g., /Applications/IntelliJ IDEA.app/Contents/MacOS/idea)
-If None, tries to find in PATH or common locations.
+  If None, tries to find in PATH or common locations.
 
 ---
 

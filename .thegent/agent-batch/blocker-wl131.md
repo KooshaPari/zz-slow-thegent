@@ -10,10 +10,12 @@ WL-131 blocker is closed.
 ## What Was Fixed
 
 1. Parser parity suite collection issue
+
 - Fixed parametrized argument/signature mismatches in `tests/routing/test_wl131_parser_parity.py`.
 - Result: parity collection and execution now succeed.
 
 2. Perf-budget evidence artifacts refreshed
+
 - Regenerated WL-131 baseline run artifact:
   - `benchmarks/results/wl131/raw-20260221T104605Z.json`
 - Refreshed budget evidence artifacts:
@@ -23,6 +25,7 @@ WL-131 blocker is closed.
   - `benchmarks/baseline-wl131-parse-model-suffix.json`
 
 3. Workstream status + historical row
+
 - Updated `docs/reference/WORK_STREAM.md` WL-131 entry to `COMPLETED (2026-02-21 closeout)`.
 - Cleared blocker state (`Blocked by: none`).
 - Linked refreshed perf-budget evidence in WL-131 sources.
@@ -34,15 +37,19 @@ WL-131 blocker is closed.
 Executed commands and outcomes:
 
 1. `uv run pytest -q tests/routing/test_wl131_parser_parity.py`
+
 - `41 passed, 1 skipped`
 
 2. `uv run pytest -q tests/routing/test_wl131_rust_python_parity.py`
+
 - `22 passed, 4 skipped`
 
 3. `uv run pytest -q tests/test_wl131_benchmark_baseline.py`
+
 - `7 passed`
 
 Perf budget snapshot (`benchmarks/results/wl131/perf-budget-latest.json`):
+
 - `budget_per_call_us_max`: `1000.0`
 - `measured_per_call_us`: `0.14869000000544474`
 - `budget_pass`: `true`

@@ -8,26 +8,31 @@
 ## Friction Points Identified
 
 ### 1. Verbose Command Patterns
+
 **Issue:** Repeatedly typing `uv run thegent free --bg "long task description"`
 **Impact:** High verbosity, slow iteration
 **Action:** Delegated to agent to create CLI shortcuts
 
 ### 2. Multi-Step Work Stream Operations
+
 **Issue:** Need to run multiple commands: `plan do-next` → check → `free --bg` → monitor
 **Impact:** Context switching, manual coordination
 **Action:** Delegated to agent to create unified `thegent work` command
 
 ### 3. Work Stream Discovery
+
 **Issue:** No clear way to see what's pending without reading markdown files
 **Impact:** Manual file reading, unclear status
 **Action:** Need better work stream visualization
 
 ### 4. Agent Status Monitoring
+
 **Issue:** Hard to see what agents are doing without checking processes manually
 **Impact:** Lack of visibility into parallel work
 **Action:** ✅ Delegated to agent to create `thegent status` command
 
 ### 5. Manual Work Stream Claiming
+
 **Issue:** Need to manually update WORK_STREAM.md when delegating work
 **Impact:** Coordination overhead, easy to forget
 **Action:** ✅ Delegated to agent to add auto-claim feature

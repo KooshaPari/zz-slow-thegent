@@ -12,7 +12,7 @@ Breaks the flow when usage spikes are detected.
 
 ### Methods
 
-#### CircuitBreaker.__init__
+#### CircuitBreaker.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)

@@ -1206,7 +1206,7 @@ thegent_workstream_query(query: str)
 Execute SQL query on workstream database.
 
 Returns query results as JSON. Use for exploring session/workstream data.
-Example: "SELECT * FROM sessions WHERE status='running' LIMIT 10"
+Example: "SELECT \* FROM sessions WHERE status='running' LIMIT 10"
 
 ---
 

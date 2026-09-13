@@ -11,6 +11,7 @@
 ## Current State Analysis
 
 ### Strengths
+
 ✅ Already has modern pyproject.toml  
 ✅ Uses uv (has uv.lock)  
 ✅ Uses ruff for linting  
@@ -19,6 +20,7 @@
 ✅ Modern dependencies (pydantic 2.x, langgraph)
 
 ### Issues
+
 ❌ Configuration not using pydantic-settings  
 ❌ No YAML configuration files  
 ❌ Missing some quality tools (bandit, vulture)  
@@ -32,7 +34,9 @@
 ### Phase 1: Configuration Modernization (15 hours)
 
 #### 1.1 Create Pydantic Settings
+
 **File:** `src/crun/config/settings.py`
+
 ```python
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field, SecretStr
@@ -86,7 +90,9 @@ class CrunSettings(BaseSettings):
 ```
 
 #### 1.2 Create Configuration Files
+
 **File:** `config.yml`
+
 ```yaml
 app:
   name: "crun"
@@ -109,6 +115,7 @@ features:
 ```
 
 **File:** `secrets.yml.example`
+
 ```yaml
 llm:
   openai_api_key: "sk-..."
@@ -120,6 +127,7 @@ llm:
 ### Phase 2: Code Quality Enhancement (10 hours)
 
 #### 2.1 Add Quality Tools
+
 ```toml
 [project.optional-dependencies]
 dev = [
@@ -131,6 +139,7 @@ dev = [
 ```
 
 #### 2.2 Configure Tools
+
 ```toml
 [tool.bandit]
 targets = ["src"]
@@ -142,7 +151,9 @@ min_confidence = 80
 ```
 
 #### 2.3 Setup Pre-commit
+
 **File:** `.pre-commit-config.yaml`
+
 ```yaml
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -164,7 +175,9 @@ repos:
 ### Phase 3: Multi-Agent Patterns (10 hours)
 
 #### 3.1 Standardize Agent Interface
+
 **File:** `src/crun/agents/base.py`
+
 ```python
 from abc import ABC, abstractmethod
 from typing import Any, Dict
@@ -195,7 +208,9 @@ class Agent(ABC):
 ```
 
 #### 3.2 Implement Orchestration Patterns
+
 **File:** `src/crun/orchestration/coordinator.py`
+
 ```python
 from crun.agents.base import Agent, AgentInput, AgentOutput
 from typing import List
@@ -227,6 +242,7 @@ class AgentCoordinator:
 ### Phase 4: Testing & Documentation (5 hours)
 
 #### 4.1 Update Tests
+
 ```python
 # tests/conftest.py
 import pytest
@@ -239,6 +255,7 @@ def test_settings():
 ```
 
 #### 4.2 Update Documentation
+
 - Configuration guide
 - Agent development guide
 - Orchestration patterns
@@ -285,4 +302,3 @@ None
 1. Create agent development guide
 2. Add more orchestration patterns
 3. Optimize performance
-

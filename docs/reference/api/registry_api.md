@@ -12,7 +12,7 @@ Represents a candidate model or configuration for autonomous learning.
 
 ### Methods
 
-#### LearningCandidate.__init__
+#### LearningCandidate.**init**
 
 ```python
 __init__(self: Any, model_id: str, baseline_id: str)
@@ -36,7 +36,7 @@ Registry for autonomous learning models and metrics (WP-14001).
 
 ### Methods
 
-#### LearningRegistry.__init__
+#### LearningRegistry.**init**
 
 ```python
 __init__(self: Any)

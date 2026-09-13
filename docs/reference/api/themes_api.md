@@ -72,7 +72,7 @@ Manages themes for the TUI compositor.
 
 ### Methods
 
-#### ThemeManager.__init__
+#### ThemeManager.**init**
 
 ```python
 __init__(self: Any, storage_dir: Any)

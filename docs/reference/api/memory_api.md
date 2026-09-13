@@ -26,7 +26,7 @@ Append-only audit log for agent observations, synthesized into formal docs.
 
 ### Methods
 
-#### MemorySystem.__init__
+#### MemorySystem.**init**
 
 ```python
 __init__(self: Any, project_root: Path)

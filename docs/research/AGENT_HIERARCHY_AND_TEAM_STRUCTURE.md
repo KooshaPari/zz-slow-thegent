@@ -10,12 +10,14 @@
 ## Executive Summary
 
 This document defines a comprehensive agent hierarchy system for `thegent` that enables:
+
 - **Hierarchical delegation**: Manager → Subagent relationships with clear ownership
 - **Team-based organization**: Agents grouped into teams with tighter coordination
 - **Cross-team interaction**: Agents can interact across teams while maintaining team boundaries
 - **Role-based capabilities**: Specialized roles with defined responsibilities and permissions
 
 **Research Validation**: This design has been validated through extensive research:
+
 - ✅ **Local Codebase**: 3 coordination strategies, multiple framework implementations, production patterns
 - ✅ **Web Frameworks**: CrewAI hierarchical process, MetaGPT role-based teams, LangGraph stateful workflows, AutoGen multi-agent orchestration
 - ✅ **Academic Research**: Cursor Planner-Worker-Judge hierarchy, MetaGPT global message pool
@@ -63,6 +65,7 @@ This document defines a comprehensive agent hierarchy system for `thegent` that 
 ### 1.2 Role Definitions
 
 #### Level 1: Executive / Orchestrator
+
 - **Purpose**: Primary agent that interfaces with the user
 - **Responsibilities**:
   - Understand user intent and requirements
@@ -78,6 +81,7 @@ This document defines a comprehensive agent hierarchy system for `thegent` that 
 - **Examples**: `sitback`, `manager`, `orchestrator`
 
 #### Level 2: Team Lead
+
 - **Purpose**: Manages a specialized team of agents
 - **Responsibilities**:
   - Coordinate team members
@@ -92,6 +96,7 @@ This document defines a comprehensive agent hierarchy system for `thegent` that 
 - **Examples**: `frontend-lead`, `backend-lead`, `devops-lead`, `qa-lead`
 
 #### Level 3: Specialist
+
 - **Purpose**: Execute specific tasks within domain expertise
 - **Responsibilities**:
   - Complete assigned tasks
@@ -132,6 +137,7 @@ class AgentRelationship:
 ### 2.2 Relationship Types
 
 #### Direct Parent-Child
+
 - **Definition**: Explicit delegation from parent to child
 - **Characteristics**:
   - Parent directly spawns child
@@ -140,6 +146,7 @@ class AgentRelationship:
 - **Example**: Orchestrator → Team Lead → Specialist
 
 #### Team Membership
+
 - **Definition**: Agents working within same team
 - **Characteristics**:
   - Shared team context
@@ -148,6 +155,7 @@ class AgentRelationship:
 - **Example**: Frontend team (lead + 3 specialists)
 
 #### Cross-Team Collaboration
+
 - **Definition**: Agents from different teams working together
 - **Characteristics**:
   - Requires explicit coordination
@@ -213,6 +221,7 @@ class AgentTeam:
 ### 3.2 Team Types
 
 #### Functional Teams
+
 - **Purpose**: Long-lived teams organized by domain expertise
 - **Examples**:
   - Frontend Team (React, CSS, TypeScript specialists)
@@ -224,6 +233,7 @@ class AgentTeam:
   - Reusable across projects
 
 #### Project Teams
+
 - **Purpose**: Temporary teams for specific projects
 - **Examples**:
   - "E-commerce MVP Team" (Frontend + Backend + DevOps)
@@ -234,6 +244,7 @@ class AgentTeam:
   - Disband after project completion
 
 #### Ad-Hoc Teams
+
 - **Purpose**: Temporary teams for specific tasks
 - **Examples**:
   - "Security Audit Team" (Security specialists from multiple teams)
@@ -246,16 +257,19 @@ class AgentTeam:
 ### 3.3 Team Coordination Modes
 
 #### Hierarchical
+
 - **Structure**: Team Lead → Specialists
 - **Use Case**: Clear task breakdown, sequential dependencies
 - **Communication**: Top-down delegation, bottom-up reporting
 
 #### Collaborative
+
 - **Structure**: Peer-to-peer collaboration
 - **Use Case**: Complex problems requiring multiple perspectives
 - **Communication**: Shared context, consensus building
 
 #### Swarm
+
 - **Structure**: Many agents working in parallel
 - **Use Case**: Independent tasks, exploration, testing
 - **Communication**: Minimal coordination, result aggregation
@@ -267,18 +281,21 @@ class AgentTeam:
 ### 4.1 Interaction Patterns
 
 #### Direct Collaboration
+
 - **Pattern**: Specialist ↔ Specialist (cross-team)
 - **Mechanism**: Explicit handoff with context
 - **Example**: Frontend specialist needs API contract from Backend specialist
 - **Protocol**: XML-based handoff with structured context
 
 #### Mediated Collaboration
+
 - **Pattern**: Team Lead ↔ Team Lead
 - **Mechanism**: Coordination through team leads
 - **Example**: Frontend Lead coordinates with Backend Lead on API design
 - **Protocol**: Structured coordination messages
 
 #### Orchestrated Collaboration
+
 - **Pattern**: Orchestrator coordinates multiple teams
 - **Mechanism**: Top-down coordination
 - **Example**: Orchestrator coordinates Frontend + Backend + DevOps for deployment
@@ -289,16 +306,19 @@ class AgentTeam:
 While agents can interact across teams, team boundaries provide:
 
 #### Access Control
+
 - **Team Context**: Agents have full access to team context
 - **Cross-Team Context**: Requires explicit sharing
 - **External Context**: Orchestrator approval required
 
 #### Resource Limits
+
 - **Team Budget**: Each team has resource budget
 - **Cross-Team Requests**: Require approval
 - **Resource Sharing**: Orchestrator manages allocation
 
 #### Quality Gates
+
 - **Team Standards**: Each team enforces own quality standards
 - **Cross-Team Integration**: Requires integration tests
 - **Escalation**: Team leads can escalate to orchestrator
@@ -747,6 +767,7 @@ thegent teammates delegate --to-team <team-id> <prompt>
 ### 8.1 Scenario: Multi-Team Feature Development
 
 **Setup**:
+
 - Orchestrator: `sitback`
 - Frontend Team: Lead + 3 specialists
 - Backend Team: Lead + 2 specialists
@@ -755,6 +776,7 @@ thegent teammates delegate --to-team <team-id> <prompt>
 **Task**: "Build user authentication feature"
 
 **Flow**:
+
 1. Orchestrator breaks down task:
    - Frontend: Login UI
    - Backend: Auth API
@@ -783,12 +805,14 @@ thegent teammates delegate --to-team <team-id> <prompt>
 ### 8.2 Scenario: Ad-Hoc Security Audit
 
 **Setup**:
+
 - Orchestrator creates ad-hoc team
 - Security specialists from multiple teams
 
 **Task**: "Audit authentication security"
 
 **Flow**:
+
 1. Orchestrator creates ad-hoc team:
    - `thegent teams create --name "Security Audit" --type ad-hoc --lead security-lead`
 
@@ -809,21 +833,25 @@ thegent teammates delegate --to-team <team-id> <prompt>
 ## 9. Benefits
 
 ### 9.1 Clear Accountability
+
 - Explicit parent-child relationships
 - Clear ownership chains
 - Traceable delegation paths
 
 ### 9.2 Efficient Coordination
+
 - Team-based organization reduces coordination overhead
 - Cross-team collaboration when needed
 - Hierarchical escalation for conflicts
 
 ### 9.3 Scalability
+
 - Teams can scale independently
 - New teams can be created dynamically
 - Specialists can join multiple teams
 
 ### 9.4 Observability
+
 - Full hierarchy visualization
 - Team activity tracking
 - Relationship graph analysis
@@ -833,24 +861,28 @@ thegent teammates delegate --to-team <team-id> <prompt>
 ## 10. Next Steps
 
 ### Phase 1: Core Hierarchy (Week 1-2)
+
 - [ ] Implement `AgentHierarchyManager`
 - [ ] Extend `TeammateManager` with hierarchy support
 - [ ] Add hierarchy visualization commands
 - [ ] Unit tests for hierarchy operations
 
 ### Phase 2: Team Management (Week 3-4)
+
 - [ ] Implement team creation and management
 - [ ] Add team coordination protocols
 - [ ] Cross-team collaboration support
 - [ ] Integration tests
 
 ### Phase 3: UI/UX (Week 5-6)
+
 - [ ] Hierarchy visualization in dashboard
 - [ ] Team activity monitoring
 - [ ] Relationship graph visualization
 - [ ] CLI improvements
 
 ### Phase 4: Advanced Features (Week 7-8)
+
 - [ ] Dynamic team creation
 - [ ] Team templates
 - [ ] Advanced coordination modes
@@ -863,6 +895,7 @@ thegent teammates delegate --to-team <team-id> <prompt>
 This design has been validated through comprehensive research:
 
 ### 11.1 Local Research
+
 - **CRUN Deep Dive**: Hierarchical, P2P, and hybrid coordination strategies
 - **SmolGents**: Hierarchical execution modes, manager-first assignment
 - **Multi-Swarm Hierarchy**: Hierarchical blackboard, stigmergic handoff
@@ -870,18 +903,21 @@ This design has been validated through comprehensive research:
 - **Teammates System**: Delegation patterns, handoff protocols
 
 ### 11.2 Web Framework Research
+
 - **CrewAI**: Hierarchical process with manager agent, role-based teams
 - **MetaGPT**: Software company simulation, SOP-driven teams, role-based hierarchy
 - **LangGraph**: Stateful workflows, durable execution, graph-based orchestration
 - **AutoGen**: Multi-agent orchestration, AgentTool pattern, group chat
 
 ### 11.3 Academic & Production Research
+
 - **Cursor Research**: Planner-Worker-Judge hierarchy, partitioned work
 - **MetaGPT Patterns**: Global message pool, artifact-based coordination
 - **Claude Code Teams**: Team lead coordination, peer-to-peer messaging
 - **Google A2A Protocol**: Agent Cards, task lifecycle, JSON-RPC
 
 **See**:
+
 - [LOCAL_RESEARCH_AUDIT.md](./LOCAL_RESEARCH_AUDIT.md) - Complete local codebase audit
 - [WEB_RESEARCH_AUDIT.md](./WEB_RESEARCH_AUDIT.md) - Framework and production system analysis
 - [RESEARCH_SYNTHESIS.md](./RESEARCH_SYNTHESIS.md) - Comprehensive synthesis and validation
@@ -902,11 +938,13 @@ This design has been validated through comprehensive research:
 ## Appendix: Role Definitions
 
 ### Executive Roles
+
 - `sitback`: Primary orchestrator, strategic planning
 - `manager`: Project management, coordination
 - `orchestrator`: Multi-team coordination
 
 ### Team Lead Roles
+
 - `frontend-lead`: Frontend team coordination
 - `backend-lead`: Backend team coordination
 - `devops-lead`: DevOps team coordination
@@ -914,6 +952,7 @@ This design has been validated through comprehensive research:
 - `security-lead`: Security team coordination
 
 ### Specialist Roles
+
 - `coder`: Code implementation
 - `researcher`: Research and investigation
 - `reviewer`: Code review

@@ -9,11 +9,11 @@
 
 ## 1. Observed Process Stack (Per Agent Session)
 
-| Process Type | OS Name | Count | Likely Role |
-|--------------|---------|-------|-------------|
-| **zsh** | zsh | 3–4 | Shell for command execution, integrated terminal(s) |
-| **agent-shell** | cursor-shell* | 2–3 | Tool execution, shell integration for agent (Codex, etc.) |
-| **agent** | codex / cursor-agent | 1 | The AI agent process |
+| Process Type    | OS Name              | Count | Likely Role                                               |
+| --------------- | -------------------- | ----- | --------------------------------------------------------- |
+| **zsh**         | zsh                  | 3–4   | Shell for command execution, integrated terminal(s)       |
+| **agent-shell** | cursor-shell\*       | 2–3   | Tool execution, shell integration for agent (Codex, etc.) |
+| **agent**       | codex / cursor-agent | 1     | The AI agent process                                      |
 
 \*The OS process is named `cursor-shell` (AI-named; not Cursor-specific). We refer to it as **agent-shell** — the shell used for agent tool execution.
 
@@ -23,7 +23,7 @@
 
 ## 2. Is This a Lot?
 
-**Relative to thegent's target** (`PROCESS_OPTIMIZATION_PLAN.md`): < 10 persistent processes per session — so 7 is within target for a *single* session.
+**Relative to thegent's target** (`PROCESS_OPTIMIZATION_PLAN.md`): < 10 persistent processes per session — so 7 is within target for a _single_ session.
 
 **The real problem is multiplicative**:
 
@@ -36,12 +36,12 @@ So **7 processes per window is moderate**, but **7 × N windows** becomes signif
 
 ## 3. What We Can vs. Cannot Control
 
-| Layer | Owner | Can Optimize? |
-|------|-------|---------------|
-| **4 zsh + 2–3 agent-shell + 1 agent** | Runtime (proprietary) | **No** — upstream architecture |
-| **MCP servers** (Playwright, Upstash, thegent) | thegent / config | **Yes** — uni-mount, single URL |
-| **LSPs** (clangd, gopls, rust-analyzer) | IDE + thegent | **Partial** — LSP multiplexing (MTSP-04) |
-| **Task / shell-outs** | thegent | **Yes** — consolidated worker, Rust hook-dispatcher |
+| Layer                                          | Owner                 | Can Optimize?                                       |
+| ---------------------------------------------- | --------------------- | --------------------------------------------------- |
+| **4 zsh + 2–3 agent-shell + 1 agent**          | Runtime (proprietary) | **No** — upstream architecture                      |
+| **MCP servers** (Playwright, Upstash, thegent) | thegent / config      | **Yes** — uni-mount, single URL                     |
+| **LSPs** (clangd, gopls, rust-analyzer)        | IDE + thegent         | **Partial** — LSP multiplexing (MTSP-04)            |
+| **Task / shell-outs**                          | thegent               | **Yes** — consolidated worker, Rust hook-dispatcher |
 
 ---
 
@@ -49,27 +49,27 @@ So **7 processes per window is moderate**, but **7 × N windows** becomes signif
 
 The project already has a **Multi-Tenant Single Process (MTSP)** strategy. Relevant items:
 
-| Task | Description | Status |
-|------|-------------|--------|
-| **MTSP-01** | Unified MCP Host — single `thegent serve` URL | Done |
+| Task        | Description                                               | Status  |
+| ----------- | --------------------------------------------------------- | ------- |
+| **MTSP-01** | Unified MCP Host — single `thegent serve` URL             | Done    |
 | **MTSP-02** | In-Process Agent Runner — cwd isolation, fewer shell-outs | Phase 2 |
-| **MTSP-03** | Shared Task Worker — process-compose | Done |
-| **MTSP-04** | LSP Multiplexing — single Serena daemon | Pending |
-| **MTSP-05** | Unified Worker Daemon | Phase 2 |
+| **MTSP-03** | Shared Task Worker — process-compose                      | Done    |
+| **MTSP-04** | LSP Multiplexing — single Serena daemon                   | Pending |
+| **MTSP-05** | Unified Worker Daemon                                     | Phase 2 |
 
-**Recommendation**: Continue MTSP. The zsh + agent-shell stack is runtime internals; we optimize *around* them by consolidating shared services (MCP, LSP, task) so they're not duplicated per session.
+**Recommendation**: Continue MTSP. The zsh + agent-shell stack is runtime internals; we optimize _around_ them by consolidating shared services (MCP, LSP, task) so they're not duplicated per session.
 
 ---
 
 ## 5. Practical Mitigations
 
-| Action | Effect |
-|--------|--------|
-| `thegent mcp migrate-unimount all` | Single MCP URL — fewer duplicate MCP processes |
-| `export THGENT_AUTO_PRUNE=1` | Auto-prune orphans on Stop |
-| `thegent mcp spotlight-exclude` | Reduce mds_stores CPU/memory pressure |
-| `THGENT_CONCURRENCY_MAX_SLOTS_PER_OWNER=2` | Cap concurrent runs per project |
-| Fewer agent tabs | Directly reduces 7×N process count |
+| Action                                     | Effect                                         |
+| ------------------------------------------ | ---------------------------------------------- |
+| `thegent mcp migrate-unimount all`         | Single MCP URL — fewer duplicate MCP processes |
+| `export THGENT_AUTO_PRUNE=1`               | Auto-prune orphans on Stop                     |
+| `thegent mcp spotlight-exclude`            | Reduce mds_stores CPU/memory pressure          |
+| `THGENT_CONCURRENCY_MAX_SLOTS_PER_OWNER=2` | Cap concurrent runs per project                |
+| Fewer agent tabs                           | Directly reduces 7×N process count             |
 
 ---
 
@@ -93,23 +93,22 @@ The process appears as `cursor-shell` in the OS (upstream name, AI-chosen). We u
 
 ## 8. Summary
 
-| Question | Answer |
-|----------|--------|
-| **Is 4 zsh + 2–3 agent-shell + 1 agent a lot?** | For one session: moderate. For N sessions: yes — scales linearly. |
-| **Multi-tenant needed?** | Yes — MTSP is the right direction. Consolidate MCP, LSP, task; the ~7 runtime processes are upstream. |
-| **What to do now?** | Uni-mount MCP, auto-prune, spotlight-exclude, slot caps. Continue MTSP-04 (LSP multiplexing). |
+| Question                                        | Answer                                                                                                |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Is 4 zsh + 2–3 agent-shell + 1 agent a lot?** | For one session: moderate. For N sessions: yes — scales linearly.                                     |
+| **Multi-tenant needed?**                        | Yes — MTSP is the right direction. Consolidate MCP, LSP, task; the ~7 runtime processes are upstream. |
+| **What to do now?**                             | Uni-mount MCP, auto-prune, spotlight-exclude, slot caps. Continue MTSP-04 (LSP multiplexing).         |
 
 ---
 
-*Cross-ref: [PROCESS_OPTIMIZATION_PLAN.md](../plans/PROCESS_OPTIMIZATION_PLAN.md) · [SWARM_PROCESS_OPTIMIZATIONS.md](../reference/SWARM_PROCESS_OPTIMIZATIONS.md) · [MEMORY_OPTIMIZATION_LONG_TERM_PLAN.md](./MEMORY_OPTIMIZATION_LONG_TERM_PLAN.md)*
-
+_Cross-ref: [PROCESS_OPTIMIZATION_PLAN.md](../plans/PROCESS_OPTIMIZATION_PLAN.md) · [SWARM_PROCESS_OPTIMIZATIONS.md](../reference/SWARM_PROCESS_OPTIMIZATIONS.md) · [MEMORY_OPTIMIZATION_LONG_TERM_PLAN.md](./MEMORY_OPTIMIZATION_LONG_TERM_PLAN.md)_
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
 
 ---
 
@@ -119,15 +118,18 @@ The process appears as `cursor-shell` in the OS (upstream name, AI-chosen). We u
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added architecture patterns
 2. Added process examples
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - SWARM_MEMORY_COORDINATION_DEPTH.md
 - SWARM_PROCESS_AUTOMATION_DEEP_RESEARCH.md
 
 ### Practical Additions
+
 - Architecture templates
 - Process configurations
 

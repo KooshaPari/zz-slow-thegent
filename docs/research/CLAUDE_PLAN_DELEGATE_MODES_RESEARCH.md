@@ -13,18 +13,18 @@ Claude Code exposes distinct modes that heavily structure agent work. thegent ex
 
 ### Claude-Native Modes
 
-| Mode | Purpose | Key Mechanism | CLI/MCP Surface |
-|------|---------|---------------|------------------|
-| **Plan Mode** | Read-only exploration → user-approved plan → implementation | `EnterPlanMode` → explore → write plan file → `ExitPlanMode` → user approves → implement | `--permission-mode plan`, `Shift+Tab` cycle |
-| **Delegate Mode** | Lead coordinates only; no direct implementation | Restricts lead to team-management tools (spawn, message, task list) | `Shift+Tab` (when agent team active) |
+| Mode              | Purpose                                                     | Key Mechanism                                                                            | CLI/MCP Surface                             |
+| ----------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------- |
+| **Plan Mode**     | Read-only exploration → user-approved plan → implementation | `EnterPlanMode` → explore → write plan file → `ExitPlanMode` → user approves → implement | `--permission-mode plan`, `Shift+Tab` cycle |
+| **Delegate Mode** | Lead coordinates only; no direct implementation             | Restricts lead to team-management tools (spawn, message, task list)                      | `Shift+Tab` (when agent team active)        |
 
 ### thegent-Extended Modes (Design)
 
-| Mode | Stage | Purpose | Protocol-Driven |
-|------|-------|---------|-----------------|
-| **Discussion** | Elicitation | Clarify idea, scope, constraints before research | Yes — elicitation brief |
-| **Research** | Pre-plan | Explore codebase/docs without changes | Yes — research report |
-| **Validation** | Post-implement | Verify, review, quality gate | Yes — validation checklist |
+| Mode           | Stage          | Purpose                                          | Protocol-Driven            |
+| -------------- | -------------- | ------------------------------------------------ | -------------------------- |
+| **Discussion** | Elicitation    | Clarify idea, scope, constraints before research | Yes — elicitation brief    |
+| **Research**   | Pre-plan       | Explore codebase/docs without changes            | Yes — research report      |
+| **Validation** | Post-implement | Verify, review, quality gate                     | Yes — validation checklist |
 
 All modes support **teams of thegents**: agents can spawn and manage teammates, each in a mode-appropriate role, with protocols enforcing structure.
 
@@ -38,15 +38,16 @@ Plan Mode instructs Claude to **analyze the codebase with read-only operations**
 
 ### 2.2 Tools
 
-| Tool | Role |
-|------|------|
-| **EnterPlanMode** | Transitions into plan mode. Use proactively for non-trivial implementation tasks. Requires user approval. |
-| **ExitPlanMode** | Signals plan is complete and ready for user review. Reads plan from file (does NOT take plan as parameter). Triggers approval UI. |
-| **AskUserQuestion** | Clarify requirements/approach BEFORE finalizing plan. Do NOT use to ask "Is my plan ready?" — that's ExitPlanMode's job. |
+| Tool                | Role                                                                                                                              |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **EnterPlanMode**   | Transitions into plan mode. Use proactively for non-trivial implementation tasks. Requires user approval.                         |
+| **ExitPlanMode**    | Signals plan is complete and ready for user review. Reads plan from file (does NOT take plan as parameter). Triggers approval UI. |
+| **AskUserQuestion** | Clarify requirements/approach BEFORE finalizing plan. Do NOT use to ask "Is my plan ready?" — that's ExitPlanMode's job.          |
 
 ### 2.3 When to Use Plan Mode
 
 **Use EnterPlanMode when:**
+
 - New feature implementation (e.g., "Add logout button", "Add form validation")
 - Multiple valid approaches (e.g., caching: Redis vs in-memory vs file-based)
 - Code modifications affecting existing behavior
@@ -56,6 +57,7 @@ Plan Mode instructs Claude to **analyze the codebase with read-only operations**
 - User preferences matter (would use AskUserQuestion to clarify)
 
 **Skip Plan Mode for:**
+
 - Single-line or few-line fixes (typos, obvious bugs)
 - Single function with clear requirements
 - Very specific, detailed user instructions
@@ -90,6 +92,7 @@ claude --permission-mode plan -p "Analyze auth system and suggest improvements"
 **Permission modes (Shift+Tab cycle):** Normal → Auto-Accept → Plan → (Delegate if team active)
 
 **Default in settings:**
+
 ```json
 // .claude/settings.json
 {
@@ -102,6 +105,7 @@ claude --permission-mode plan -p "Analyze auth system and suggest improvements"
 ### 2.6 Built-in Plan Subagent
 
 Claude Code includes a **Plan** subagent used during plan mode:
+
 - **Purpose:** Codebase research for planning
 - **Tools:** Read-only (no Write, Edit)
 - **Model:** Inherits from main
@@ -138,17 +142,18 @@ Delegate Mode is **only available when an agent team is active**. It is part of 
 
 ### 3.3 Lead Restrictions in Delegate Mode
 
-| Allowed | Blocked |
-|---------|---------|
-| Spawn teammates | Edit, Write, Bash (direct implementation) |
-| Message teammates | |
-| Manage task list | |
-| Shut down teammates | |
-| Clean up team | |
+| Allowed             | Blocked                                   |
+| ------------------- | ----------------------------------------- |
+| Spawn teammates     | Edit, Write, Bash (direct implementation) |
+| Message teammates   |                                           |
+| Manage task list    |                                           |
+| Shut down teammates |                                           |
+| Clean up team       |                                           |
 
 ### 3.4 Subagent Permission Mode: `delegate`
 
 In subagent configuration, `permissionMode: "delegate"` is for **agent team leads**:
+
 - Coordination-only
 - Restricts to team management tools
 
@@ -160,15 +165,16 @@ In subagent configuration, `permissionMode: "delegate"` is for **agent team lead
 
 ## 4. Agent Teams vs Subagents
 
-| | Subagents | Agent Teams |
-|--|-----------|-------------|
-| **Context** | Own context; results return to caller | Own context; fully independent |
-| **Communication** | Report to main agent only | Teammates message each other directly |
-| **Coordination** | Main agent manages all work | Shared task list, self-coordination |
-| **Best for** | Focused tasks, result matters | Complex work, discussion, collaboration |
-| **Token cost** | Lower | Higher (each teammate = separate instance) |
+|                   | Subagents                             | Agent Teams                                |
+| ----------------- | ------------------------------------- | ------------------------------------------ |
+| **Context**       | Own context; results return to caller | Own context; fully independent             |
+| **Communication** | Report to main agent only             | Teammates message each other directly      |
+| **Coordination**  | Main agent manages all work           | Shared task list, self-coordination        |
+| **Best for**      | Focused tasks, result matters         | Complex work, discussion, collaboration    |
+| **Token cost**    | Lower                                 | Higher (each teammate = separate instance) |
 
 **Plan Mode + Teammates:** You can require teammates to plan before implementing:
+
 > "Spawn an architect teammate to refactor the authentication module. Require plan approval before they make any changes."
 
 ---
@@ -177,23 +183,23 @@ In subagent configuration, `permissionMode: "delegate"` is for **agent team lead
 
 ### 5.1 Plan Mode Tooling
 
-| Tool | Description | Implementation |
-|------|-------------|----------------|
-| `thegent plan start` | Start Claude Code in plan mode | `claude --permission-mode plan` (or equivalent for Codex) |
-| `thegent plan analyze` | Headless plan-only analysis | `claude --permission-mode plan -p "..."` |
-| `thegent plan approve` | Programmatic plan approval (if API supports) | TBD — may require MCP or hook |
-| MCP `thegent_plan_status` | Return current plan file path, status | Read `.claude/` or session state |
-| MCP `thegent_plan_save` | Save plan to `docs/plans/` after ExitPlanMode | PostToolUse on ExitPlanMode |
+| Tool                      | Description                                   | Implementation                                            |
+| ------------------------- | --------------------------------------------- | --------------------------------------------------------- |
+| `thegent plan start`      | Start Claude Code in plan mode                | `claude --permission-mode plan` (or equivalent for Codex) |
+| `thegent plan analyze`    | Headless plan-only analysis                   | `claude --permission-mode plan -p "..."`                  |
+| `thegent plan approve`    | Programmatic plan approval (if API supports)  | TBD — may require MCP or hook                             |
+| MCP `thegent_plan_status` | Return current plan file path, status         | Read `.claude/` or session state                          |
+| MCP `thegent_plan_save`   | Save plan to `docs/plans/` after ExitPlanMode | PostToolUse on ExitPlanMode                               |
 
 ### 5.2 Delegate Mode Tooling
 
-| Tool | Description | Implementation |
-|------|-------------|----------------|
-| `thegent team create --delegate` | Create team with lead in delegate mode | Spawn `claude` with team + delegate mode |
-| MCP `thegent_team_assign` | Assign task to teammate | Already in parity audit |
-| MCP `thegent_team_message` | Send message to teammate | Already in parity audit |
-| MCP `thegent_team_task_done` | Mark task complete | Already in parity audit |
-| Hook: `SubagentStart` / `SubagentStop` | Log, notify, or gate subagent lifecycle | thegent wrapper |
+| Tool                                   | Description                             | Implementation                           |
+| -------------------------------------- | --------------------------------------- | ---------------------------------------- |
+| `thegent team create --delegate`       | Create team with lead in delegate mode  | Spawn `claude` with team + delegate mode |
+| MCP `thegent_team_assign`              | Assign task to teammate                 | Already in parity audit                  |
+| MCP `thegent_team_message`             | Send message to teammate                | Already in parity audit                  |
+| MCP `thegent_team_task_done`           | Mark task complete                      | Already in parity audit                  |
+| Hook: `SubagentStart` / `SubagentStop` | Log, notify, or gate subagent lifecycle | thegent wrapper                          |
 
 ### 5.3 Structured Work Loop (Plan → Delegate → Execute)
 
@@ -214,37 +220,37 @@ Proposed flow for thegent to "heavily structure" agent work:
 
 ### 5.4 MCP Tools for Plan/Delegate Integration
 
-| MCP Tool | Purpose |
-|----------|---------|
-| `thegent_plan_create` | Create plan from prompt, return plan ID/path |
-| `thegent_plan_get` | Get plan content by ID |
-| `thegent_plan_approve` | Mark plan approved (for downstream automation) |
-| `thegent_team_create` | Create agent team with optional delegate mode |
-| `thegent_team_lead_mode` | Get/set lead mode (normal, delegate) |
-| `thegent_subagent_spawn` | Spawn subagent with Task tool (Codex parity) |
+| MCP Tool                 | Purpose                                        |
+| ------------------------ | ---------------------------------------------- |
+| `thegent_plan_create`    | Create plan from prompt, return plan ID/path   |
+| `thegent_plan_get`       | Get plan content by ID                         |
+| `thegent_plan_approve`   | Mark plan approved (for downstream automation) |
+| `thegent_team_create`    | Create agent team with optional delegate mode  |
+| `thegent_team_lead_mode` | Get/set lead mode (normal, delegate)           |
+| `thegent_subagent_spawn` | Spawn subagent with Task tool (Codex parity)   |
 
 ### 5.5 Hooks for Looping
 
-| Hook | Use Case |
-|------|----------|
-| `UserPromptSubmit` | Inject plan file path, WORK_STREAM.md, or next-session prompt |
-| `PostToolUse` on `ExitPlanMode` | Save plan to `docs/plans/`, emit event for MCP |
-| `SubagentStop` | Harvest subagent result, update task list, trigger next step |
-| `TaskCompleted` | Exit 2 to block completion + send feedback (quality gate) |
-| `TeammateIdle` | Exit 2 to inject feedback, keep teammate working |
+| Hook                            | Use Case                                                      |
+| ------------------------------- | ------------------------------------------------------------- |
+| `UserPromptSubmit`              | Inject plan file path, WORK_STREAM.md, or next-session prompt |
+| `PostToolUse` on `ExitPlanMode` | Save plan to `docs/plans/`, emit event for MCP                |
+| `SubagentStop`                  | Harvest subagent result, update task list, trigger next step  |
+| `TaskCompleted`                 | Exit 2 to block completion + send feedback (quality gate)     |
+| `TeammateIdle`                  | Exit 2 to inject feedback, keep teammate working              |
 
 ---
 
 ## 6. Permission Modes Reference
 
-| Mode | Behavior |
-|------|----------|
-| `default` | Standard permission prompts |
-| `acceptEdits` | Auto-accept file edits |
-| `plan` | Read-only exploration; plan before implement |
-| `delegate` | Coordination-only (agent team lead) |
-| `dontAsk` | Auto-deny (explicitly allowed tools still work) |
-| `bypassPermissions` | Skip all checks (use with caution) |
+| Mode                | Behavior                                        |
+| ------------------- | ----------------------------------------------- |
+| `default`           | Standard permission prompts                     |
+| `acceptEdits`       | Auto-accept file edits                          |
+| `plan`              | Read-only exploration; plan before implement    |
+| `delegate`          | Coordination-only (agent team lead)             |
+| `dontAsk`           | Auto-deny (explicitly allowed tools still work) |
+| `bypassPermissions` | Skip all checks (use with caution)              |
 
 ---
 
@@ -262,6 +268,7 @@ Proposed flow for thegent to "heavily structure" agent work:
 ## 8. Implementation Priorities for thegent
 
 ### Claude-Native Parity
+
 1. **P1 — Plan Mode CLI:** `thegent plan start`, `thegent plan analyze` wrapping `claude --permission-mode plan`
 2. **P2 — Plan persistence:** Hook or MCP to save plans to `docs/plans/` after ExitPlanMode
 3. **P3 — Delegate Mode:** Integrate with `thegent team` when `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`
@@ -269,6 +276,7 @@ Proposed flow for thegent to "heavily structure" agent work:
 5. **P5 — software-planning-mcp alignment:** Ensure `start_planning`, `add_todo`, `save_plan` work with Claude's plan file format
 
 ### Extended Modes (Discussion, Research, Validation)
+
 6. **P6 — Protocol schema:** Define YAML/JSON schema for structured protocols (phases, steps, outputs, tool allow/deny)
 7. **P7 — Discussion mode:** `thegent discuss` / `thegent elicit`; AskUserQuestion-heavy; brief output
 8. **P8 — Research mode:** `thegent research`; read-only + Explore; report output
@@ -302,19 +310,20 @@ Idea → Discussion (Elicitation) → Research → Plan → Execute → Validati
   └─ Raw user input
 ```
 
-| Mode | Stage | Purpose | Output |
-|------|-------|---------|--------|
-| **Discussion** | Elicitation | Clarify idea, scope, constraints before any deep work | Elicited brief, decision points, success criteria |
-| **Research** | Pre-plan | Explore codebase, docs, options without commitment | Research report, options analysis, recommendations |
-| **Plan** | Pre-implement | Design approach, get approval | Approved plan file |
-| **Delegate** | Execute (teams) | Lead orchestrates; teammates implement | Completed work |
-| **Validation** | Post-implement | Verify, review, quality gate | Pass/fail, findings, recommendations |
+| Mode           | Stage           | Purpose                                               | Output                                             |
+| -------------- | --------------- | ----------------------------------------------------- | -------------------------------------------------- |
+| **Discussion** | Elicitation     | Clarify idea, scope, constraints before any deep work | Elicited brief, decision points, success criteria  |
+| **Research**   | Pre-plan        | Explore codebase, docs, options without commitment    | Research report, options analysis, recommendations |
+| **Plan**       | Pre-implement   | Design approach, get approval                         | Approved plan file                                 |
+| **Delegate**   | Execute (teams) | Lead orchestrates; teammates implement                | Completed work                                     |
+| **Validation** | Post-implement  | Verify, review, quality gate                          | Pass/fail, findings, recommendations               |
 
 ### 10.2 Discussion Mode (Elicitation)
 
 **When:** Idea stage — before research. User has a rough idea; agent must elicit requirements, constraints, and success criteria before proceeding.
 
 **Structured protocol:**
+
 1. **Capture the idea** — Paraphrase and confirm understanding
 2. **Elicit scope** — What's in? What's out? Boundaries?
 3. **Elicit constraints** — Tech stack, timeline, team, compliance
@@ -323,15 +332,18 @@ Idea → Discussion (Elicitation) → Research → Plan → Execute → Validati
 6. **Produce elicitation brief** — Structured artifact (e.g. `docs/briefs/ELICIT_xxx.md`)
 
 **Tool restrictions:**
+
 - **Allowed:** AskUserQuestion, Write (brief only), Read (existing briefs/specs)
 - **Blocked:** Edit (codebase), Bash, Glob/Grep (codebase exploration)
 - **Rationale:** No codebase diving yet — pure elicitation
 
 **Team management:**
+
 - **Elicitation team:** Multiple agents with different lenses (user advocate, technical skeptic, domain expert) can run in parallel to elicit from different angles; lead synthesizes into single brief
 - **MCP:** `thegent_discussion_start`, `thegent_discussion_add_question`, `thegent_discussion_finalize` → produces brief
 
 **CLI surface:**
+
 ```bash
 thegent discuss "Add OAuth2 to our app"
 thegent elicit --prompt "..." --output docs/briefs/
@@ -342,21 +354,25 @@ thegent elicit --prompt "..." --output docs/briefs/
 **When:** After elicitation (or when idea is clear). Deep exploration without making changes.
 
 **Structured protocol:**
+
 1. **Research plan** — What questions to answer? What to explore?
 2. **Execute research** — Read, Grep, Glob, WebSearch, WebFetch, Task(Explore)
 3. **Synthesize** — Options, trade-offs, recommendations
 4. **Produce research report** — `docs/research/RESEARCH_xxx.md`
 
 **Tool restrictions:**
+
 - **Allowed:** Read, Grep, Glob, WebSearch, WebFetch, Task(Explore), Write (report only)
 - **Blocked:** Edit (codebase), Bash (except read-only queries if needed)
 - **Rationale:** Exploration only; no modifications
 
 **Team management:**
+
 - **Research team:** Parallel researchers (e.g. "auth patterns", "OAuth2 libs", "migration risks") each produce findings; lead synthesizes
 - **MCP:** `thegent_research_start`, `thegent_research_assign`, `thegent_research_harvest`, `thegent_research_finalize`
 
 **CLI surface:**
+
 ```bash
 thegent research "OAuth2 migration options for our stack"
 thegent research --brief docs/briefs/ELICIT_xxx.md
@@ -367,22 +383,26 @@ thegent research --brief docs/briefs/ELICIT_xxx.md
 **When:** After implementation. Verify work, run tests, check compliance, review before merge.
 
 **Structured protocol:**
+
 1. **Validation checklist** — Load from protocol (e.g. `.thegent/protocols/validation.md`) or MCP
 2. **Execute checks** — Tests, lint, security scan, coverage, manual review
 3. **Report** — Pass/fail per item, findings, recommendations
 4. **Gate** — Block merge/complete if critical failures (configurable)
 
 **Tool restrictions:**
+
 - **Allowed:** Read, Grep, Glob, Bash (tests, lint, scripts), Write (report only)
 - **Blocked:** Edit (codebase) — validation is read-only + execute tests
 - **Rationale:** Verify, don't change (unless "fix and re-validate" is explicit)
 
 **Team management:**
+
 - **Validation team:** Parallel validators (security, perf, tests, UX review) each run checks; lead aggregates report
 - **Hooks:** `TaskCompleted` exit 2 → block completion until validation passes
 - **MCP:** `thegent_validation_start`, `thegent_validation_run`, `thegent_validation_report`, `thegent_validation_gate`
 
 **CLI surface:**
+
 ```bash
 thegent validate
 thegent validate --protocol .thegent/protocols/pr-review.md
@@ -393,6 +413,7 @@ thegent validate --protocol .thegent/protocols/pr-review.md
 Each mode is **heavily guided** by a protocol — a defined sequence of steps, required outputs, and tool constraints.
 
 **Protocol format (proposed):**
+
 ```yaml
 # .thegent/protocols/discussion.md or discussion.yaml
 name: elicitation
@@ -419,6 +440,7 @@ tool_denylist: [Edit, Bash, Glob, Grep]
 ```
 
 **Protocol loading:**
+
 - MCP: `thegent_protocol_get(mode)` → returns protocol for agent to follow
 - CLI: `thegent discuss --protocol .thegent/protocols/elicitation.yaml`
 - System prompt injection: Protocol steps injected when mode is active
@@ -427,12 +449,12 @@ tool_denylist: [Edit, Bash, Glob, Grep]
 
 **Principle:** Agents can **call and manage teams of thegents**; each teammate can be in a different mode.
 
-| Scenario | Lead mode | Teammate modes | Flow |
-|----------|-----------|----------------|------|
-| Elicitation from multiple angles | Discussion | Discussion (3x: user, tech, domain) | Lead synthesizes brief |
-| Parallel research | Research | Research (Nx: each owns a question) | Lead synthesizes report |
-| Plan + implement | Delegate | Plan (architect) + Normal (implementers) | Architect plans; implementers execute |
-| Parallel validation | Validation | Validation (Nx: security, perf, tests) | Lead aggregates report |
+| Scenario                         | Lead mode  | Teammate modes                           | Flow                                  |
+| -------------------------------- | ---------- | ---------------------------------------- | ------------------------------------- |
+| Elicitation from multiple angles | Discussion | Discussion (3x: user, tech, domain)      | Lead synthesizes brief                |
+| Parallel research                | Research   | Research (Nx: each owns a question)      | Lead synthesizes report               |
+| Plan + implement                 | Delegate   | Plan (architect) + Normal (implementers) | Architect plans; implementers execute |
+| Parallel validation              | Validation | Validation (Nx: security, perf, tests)   | Lead aggregates report                |
 
 **MCP tools for team + mode:**
 | Tool | Purpose |
@@ -444,6 +466,7 @@ tool_denylist: [Edit, Bash, Glob, Grep]
 | `thegent_protocol_get` | Get protocol by mode/name |
 
 **CLI:**
+
 ```bash
 # Elicitation team
 thegent team create --mode discussion --teammates 3 --prompt "Elicit requirements for OAuth2"
@@ -459,15 +482,15 @@ thegent team create --mode validation --teammates 3 --protocol .thegent/protocol
 
 See **§8** for the full priority list. For Discussion, Research, and Validation modes specifically:
 
-| Order | Item | Notes |
-|-------|------|-------|
-| 1 | Protocol schema + loader | YAML/JSON; phases, steps, outputs, tool allow/deny |
-| 2 | Discussion mode | AskUserQuestion-heavy; brief output; tool restrictions |
-| 3 | Research mode | Read-only + Explore; report output |
-| 4 | Validation mode | Checklist-driven; gate on failure |
-| 5 | `thegent team create --mode` | Mode-aware team spawning |
-| 6 | MCP protocol tools | `thegent_protocol_get`, `thegent_team_set_mode` |
-| 7 | Protocol injection | System prompt or skill that enforces protocol steps |
+| Order | Item                         | Notes                                                  |
+| ----- | ---------------------------- | ------------------------------------------------------ |
+| 1     | Protocol schema + loader     | YAML/JSON; phases, steps, outputs, tool allow/deny     |
+| 2     | Discussion mode              | AskUserQuestion-heavy; brief output; tool restrictions |
+| 3     | Research mode                | Read-only + Explore; report output                     |
+| 4     | Validation mode              | Checklist-driven; gate on failure                      |
+| 5     | `thegent team create --mode` | Mode-aware team spawning                               |
+| 6     | MCP protocol tools           | `thegent_protocol_get`, `thegent_team_set_mode`        |
+| 7     | Protocol injection           | System prompt or skill that enforces protocol steps    |
 
 ---
 
@@ -477,15 +500,18 @@ See **§8** for the full priority list. For Discussion, Research, and Validation
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added delegation patterns
 2. Added mode configurations
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - CLAUDE_CODE_FEATURE_PARITY_AUDIT.md
 - SWARM_PROCESS_AUTOMATION_DEEP_RESEARCH.md
 
 ### Practical Additions
+
 - Delegation templates
 - Mode configurations
 

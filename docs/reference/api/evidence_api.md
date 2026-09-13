@@ -15,7 +15,7 @@ WP-1005: Evidence capture and validation before state promotion.
 
 ### Methods
 
-#### PromotionGate.__init__
+#### PromotionGate.**init**
 
 ```python
 __init__(self: Any, session_dir: Path)

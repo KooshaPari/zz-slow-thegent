@@ -7,16 +7,16 @@
 
 ## 1. What Exists Today
 
-| System | What It Does | Command / Config | Status |
-|--------|--------------|------------------|--------|
-| **Spotlight (macOS)** | Excludes heavy dirs from mds_stores indexing | `thegent mcp spotlight-exclude` | ✓ In setup |
-| **Starship** | Reduces prompt scan timeout in large repos | `.starship.toml` (scan_timeout=2000) | ✓ In setup |
-| **Catalog prewarm** | Warms model catalog at MCP startup | `prewarm_catalog()` in lifespan | ✓ |
-| **Git index prewarm** | Warms git index for common commands | `prewarm_git_index()` in lifespan | ✓ |
-| **Quality index** | Cached quality scores (TB2, SWE-Bench, AIME) | `quality_index_cache_ttl_sec`, `quality_index_weight_*` | ✓ Config |
-| **Auto-prune** | Kills orphan Node/LSP processes on Stop | `THGENT_AUTO_PRUNE=1` | Opt-in |
-| **Uni-mount MCP** | Single thegent URL, fewer duplicate MCPs | `thegent mcp migrate-unimount all` | One-time |
-| **Spotlight SessionStart** | Auto spotlight-exclude on first session (macOS) | `session-start-spotlight-exclude.sh` | Opt-in |
+| System                     | What It Does                                    | Command / Config                                        | Status     |
+| -------------------------- | ----------------------------------------------- | ------------------------------------------------------- | ---------- |
+| **Spotlight (macOS)**      | Excludes heavy dirs from mds_stores indexing    | `thegent mcp spotlight-exclude`                         | ✓ In setup |
+| **Starship**               | Reduces prompt scan timeout in large repos      | `.starship.toml` (scan_timeout=2000)                    | ✓ In setup |
+| **Catalog prewarm**        | Warms model catalog at MCP startup              | `prewarm_catalog()` in lifespan                         | ✓          |
+| **Git index prewarm**      | Warms git index for common commands             | `prewarm_git_index()` in lifespan                       | ✓          |
+| **Quality index**          | Cached quality scores (TB2, SWE-Bench, AIME)    | `quality_index_cache_ttl_sec`, `quality_index_weight_*` | ✓ Config   |
+| **Auto-prune**             | Kills orphan Node/LSP processes on Stop         | `THGENT_AUTO_PRUNE=1`                                   | Opt-in     |
+| **Uni-mount MCP**          | Single thegent URL, fewer duplicate MCPs        | `thegent mcp migrate-unimount all`                      | One-time   |
+| **Spotlight SessionStart** | Auto spotlight-exclude on first session (macOS) | `session-start-spotlight-exclude.sh`                    | Opt-in     |
 
 ---
 
@@ -61,34 +61,34 @@ __pycache__/
 
 ## 4. LSP and Code Intelligence
 
-| Item | Status | Notes |
-|------|--------|-------|
-| **MTSP-04: LSP multiplexing** | Pending | Single Serena daemon instead of per-session LSP |
-| **Per-session LSP** | Current | Each agent tab spawns clangd, gopls, rust-analyzer, etc. |
-| **Type checker sharing** | Research | Single tsserver/pyright for workspace; IDE-dependent |
+| Item                          | Status   | Notes                                                    |
+| ----------------------------- | -------- | -------------------------------------------------------- |
+| **MTSP-04: LSP multiplexing** | Pending  | Single Serena daemon instead of per-session LSP          |
+| **Per-session LSP**           | Current  | Each agent tab spawns clangd, gopls, rust-analyzer, etc. |
+| **Type checker sharing**      | Research | Single tsserver/pyright for workspace; IDE-dependent     |
 
 ---
 
 ## 5. Prewarm and Caching
 
-| Component | Location | Purpose |
-|-----------|----------|---------|
-| `prewarm_catalog` | `mcp_server.py` lifespan | Load model catalog before first request |
-| `prewarm_git_index` | `tools/terminal.py` | Warm git index for common commands |
-| `quality_index` | `config.py` | Cache TTL 300s; weights for TB2, SWE, AIME |
-| `speed_index` | `SPEED_QUALITY_INDEX_IMPLEMENTATION_PLAN.md` | Planned; from proxy metrics |
+| Component           | Location                                     | Purpose                                    |
+| ------------------- | -------------------------------------------- | ------------------------------------------ |
+| `prewarm_catalog`   | `mcp_server.py` lifespan                     | Load model catalog before first request    |
+| `prewarm_git_index` | `tools/terminal.py`                          | Warm git index for common commands         |
+| `quality_index`     | `config.py`                                  | Cache TTL 300s; weights for TB2, SWE, AIME |
+| `speed_index`       | `SPEED_QUALITY_INDEX_IMPLEMENTATION_PLAN.md` | Planned; from proxy metrics                |
 
 ---
 
 ## 6. Quick Setup Checklist
 
-| Step | Command / Config | When |
-|------|------------------|------|
-| 1 | `task setup` | One-time (creates .starship.toml, runs spotlight-exclude) |
-| 2 | `direnv allow` | One-time (loads .envrc with STARSHIP_CONFIG) |
-| 3 | `export THGENT_AUTO_PRUNE=1` | Add to .env or shell profile |
-| 4 | `thegent mcp migrate-unimount all` | One-time |
-| 5 | Add `.cursorignore` | One-time (see §3) |
+| Step | Command / Config                   | When                                                      |
+| ---- | ---------------------------------- | --------------------------------------------------------- |
+| 1    | `task setup`                       | One-time (creates .starship.toml, runs spotlight-exclude) |
+| 2    | `direnv allow`                     | One-time (loads .envrc with STARSHIP_CONFIG)              |
+| 3    | `export THGENT_AUTO_PRUNE=1`       | Add to .env or shell profile                              |
+| 4    | `thegent mcp migrate-unimount all` | One-time                                                  |
+| 5    | Add `.cursorignore`                | One-time (see §3)                                         |
 
 ---
 
@@ -98,13 +98,13 @@ __pycache__/
 
 **Long-term strategies:**
 
-| Strategy | Where | What |
-|----------|-------|------|
-| **Prefer fd** | Skills, CLAUDE.md, .cursor/rules | Use `fd -t f -d 1` or `fd -t d -d 1` instead of `ls -l`; fd excludes .git by default, add `-E node_modules -E .venv` |
-| **List subdirs** | Agent instructions | Run `ls -l src/` or `ls -l docs/` instead of project root |
-| **Use ls -1** | Agent instructions | When only names needed, `ls -1` is faster than `ls -l` (no stat) |
-| **.agentignore** | Project root | File listing dirs to exclude; agents read before ls (or inject into prompt) |
-| **Session env** | thegent run/bg | Set `THGENT_LS_EXCLUDE`; agent shell sources it |
+| Strategy         | Where                            | What                                                                                                                 |
+| ---------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Prefer fd**    | Skills, CLAUDE.md, .cursor/rules | Use `fd -t f -d 1` or `fd -t d -d 1` instead of `ls -l`; fd excludes .git by default, add `-E node_modules -E .venv` |
+| **List subdirs** | Agent instructions               | Run `ls -l src/` or `ls -l docs/` instead of project root                                                            |
+| **Use ls -1**    | Agent instructions               | When only names needed, `ls -1` is faster than `ls -l` (no stat)                                                     |
+| **.agentignore** | Project root                     | File listing dirs to exclude; agents read before ls (or inject into prompt)                                          |
+| **Session env**  | thegent run/bg                   | Set `THGENT_LS_EXCLUDE`; agent shell sources it                                                                      |
 
 **Recommended agent instruction (add to skills, CLAUDE.md, rules sync):**
 
@@ -116,11 +116,11 @@ __pycache__/
 
 **Canonical pair for agents (Claude Code, Cursor, Codex):**
 
-| Task | Use | Replaces |
-|------|-----|----------|
-| List files/dirs | `fd -t f -d 1` or `fd -t d -d 1` | ls, find |
-| Find by name | `fd pattern -e ext` | find -name |
-| Search content | `rg pattern` | grep |
+| Task            | Use                              | Replaces   |
+| --------------- | -------------------------------- | ---------- |
+| List files/dirs | `fd -t f -d 1` or `fd -t d -d 1` | ls, find   |
+| Find by name    | `fd pattern -e ext`              | find -name |
+| Search content  | `rg pattern`                     | grep       |
 
 Both respect `.gitignore`. Add `-E node_modules -E .venv -E dist` for heavy dirs. When IDE provides @codebase or read_file, use those first.
 
@@ -130,11 +130,11 @@ Both respect `.gitignore`. Add `-E node_modules -E .venv -E dist` for heavy dirs
 
 ### 8.1 Layered Access Model (Enhanced Baseline)
 
-| Layer | File | Web | Batch Edit |
-|-------|------|-----|------------|
-| **1. IDE** | read_file, list_dir, @codebase | — | N× edit |
-| **2. MCP** | thegent_files (proposed) | thegent_ddg_search | thegent_apply_transaction |
-| **3. Shell** | fd, rg | — | sed (risky) |
+| Layer        | File                           | Web                | Batch Edit                |
+| ------------ | ------------------------------ | ------------------ | ------------------------- |
+| **1. IDE**   | read_file, list_dir, @codebase | —                  | N× edit                   |
+| **2. MCP**   | thegent_files (proposed)       | thegent_ddg_search | thegent_apply_transaction |
+| **3. Shell** | fd, rg                         | —                  | sed (risky)               |
 
 **Rule:** Prefer Layer 1 when available; Layer 2 when MCP connected; Layer 3 for terminal fallback.
 
@@ -144,28 +144,26 @@ Both respect `.gitignore`. Add `-E node_modules -E .venv -E dist` for heavy dirs
 
 ## 9. Gaps and Roadmap
 
-| Gap | Effort | Impact |
-|-----|--------|--------|
-| **.cursorignore** | 1–2 min | High — reduces Cursor index size and memory |
-| **Agent ls instructions** | Add to skills, rules sync | High — prevents 5m+ ls in heavy dirs |
-| **.agentignore** | New file + agent read | Medium — project-level exclusions |
-| **thegent_files MCP tool** | 15–25 tool calls | High — unified fd+rg via MCP across platforms |
-| **MTSP-04 LSP multiplexing** | 15–25 tool calls | High — eliminates N× LSP processes |
-| **Cursor indexing docs** | Doc only | Medium — clarify .cursorignore vs .cursorindexingignore |
-| **Type checker sharing** | Research | High — IDE-specific |
+| Gap                          | Effort                    | Impact                                                  |
+| ---------------------------- | ------------------------- | ------------------------------------------------------- |
+| **.cursorignore**            | 1–2 min                   | High — reduces Cursor index size and memory             |
+| **Agent ls instructions**    | Add to skills, rules sync | High — prevents 5m+ ls in heavy dirs                    |
+| **.agentignore**             | New file + agent read     | Medium — project-level exclusions                       |
+| **thegent_files MCP tool**   | 15–25 tool calls          | High — unified fd+rg via MCP across platforms           |
+| **MTSP-04 LSP multiplexing** | 15–25 tool calls          | High — eliminates N× LSP processes                      |
+| **Cursor indexing docs**     | Doc only                  | Medium — clarify .cursorignore vs .cursorindexingignore |
+| **Type checker sharing**     | Research                  | High — IDE-specific                                     |
 
 ---
 
-*Cross-ref: [AGENT_ACCESS_AND_OPTIMIZATION_AUDIT_PLAN.md](../research/AGENT_ACCESS_AND_OPTIMIZATION_AUDIT_PLAN.md) · [AGENT_FILE_SEARCH_UNIFIED_TOOL_RESEARCH.md](../research/AGENT_FILE_SEARCH_UNIFIED_TOOL_RESEARCH.md) · [SWARM_PROCESS_OPTIMIZATIONS.md](./SWARM_PROCESS_OPTIMIZATIONS.md) · [STARSHIP_SETUP.md](./STARSHIP_SETUP.md) · [PROCESS_OPTIMIZATION_PLAN.md](../plans/PROCESS_OPTIMIZATION_PLAN.md) · [MEMORY_OPTIMIZATION_LONG_TERM_PLAN.md](../research/MEMORY_OPTIMIZATION_LONG_TERM_PLAN.md)*
-
+_Cross-ref: [AGENT_ACCESS_AND_OPTIMIZATION_AUDIT_PLAN.md](../research/AGENT_ACCESS_AND_OPTIMIZATION_AUDIT_PLAN.md) · [AGENT_FILE_SEARCH_UNIFIED_TOOL_RESEARCH.md](../research/AGENT_FILE_SEARCH_UNIFIED_TOOL_RESEARCH.md) · [SWARM_PROCESS_OPTIMIZATIONS.md](./SWARM_PROCESS_OPTIMIZATIONS.md) · [STARSHIP_SETUP.md](./STARSHIP_SETUP.md) · [PROCESS_OPTIMIZATION_PLAN.md](../plans/PROCESS_OPTIMIZATION_PLAN.md) · [MEMORY_OPTIMIZATION_LONG_TERM_PLAN.md](../research/MEMORY_OPTIMIZATION_LONG_TERM_PLAN.md)_
 
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -175,15 +173,18 @@ Both respect `.gitignore`. Add `-E node_modules -E .venv -E dist` for heavy dirs
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

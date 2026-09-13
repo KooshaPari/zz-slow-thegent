@@ -26,10 +26,10 @@
 
 ### 2.2 Configuration
 
-| Env | Default | Description |
-|-----|---------|-------------|
-| THGENT_SHUTDOWN_WAIT_S | 0 | Seconds to wait for in-flight requests before hard exit. 0 = no wait. |
-| THGENT_SHUTDOWN_WAIT_ACTIVE_S | 0 | Seconds to poll for active background runs; wait until count=0 or timeout. 0 = no wait. |
+| Env                           | Default | Description                                                                             |
+| ----------------------------- | ------- | --------------------------------------------------------------------------------------- |
+| THGENT_SHUTDOWN_WAIT_S        | 0       | Seconds to wait for in-flight requests before hard exit. 0 = no wait.                   |
+| THGENT_SHUTDOWN_WAIT_ACTIVE_S | 0       | Seconds to poll for active background runs; wait until count=0 or timeout. 0 = no wait. |
 
 ### 2.3 Active Run Tracking
 
@@ -41,11 +41,11 @@ Background runs (thegent_bg) spawn subprocesses. The server does not block on th
 
 ## 3. Implementation Phases
 
-| Phase | Deliverable | Status |
-|-------|-------------|--------|
-| P1 | Design doc (this) | Done |
-| P2 | THGENT_SHUTDOWN_WAIT_S in lifespan; asyncio.sleep before yield teardown | Done |
-| P3 | Optional: poll ps_impl for active runs; THGENT_SHUTDOWN_WAIT_ACTIVE_S | Done |
+| Phase | Deliverable                                                             | Status |
+| ----- | ----------------------------------------------------------------------- | ------ |
+| P1    | Design doc (this)                                                       | Done   |
+| P2    | THGENT_SHUTDOWN_WAIT_S in lifespan; asyncio.sleep before yield teardown | Done   |
+| P3    | Optional: poll ps_impl for active runs; THGENT_SHUTDOWN_WAIT_ACTIVE_S   | Done   |
 
 ---
 

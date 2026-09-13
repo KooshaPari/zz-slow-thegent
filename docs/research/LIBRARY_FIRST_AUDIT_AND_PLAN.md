@@ -14,19 +14,19 @@
 
 **Principle**: Prefer **library + thin wrapper** over full custom implementation. Libraries provide battle-tested behavior, security fixes, and community maintenance. Custom code should be limited to domain logic and integration glue.
 
-| Category | Custom Today | Library/Wrapper Recommendation | Priority |
-|----------|--------------|---------------------------------|----------|
-| Retry/backoff | Partial (tenacity + custom loops) | tenacity everywhere; migrate remaining | P1 |
-| Caching | Custom TTL, file-based | cachetools, diskcache, or redis wrapper | P2 |
-| File watching | Custom os.walk polling | watchdog (inotify/FSEvents) | P1 |
-| Circuit breaker | Custom ToolCircuitBreaker | pybreaker or tenacity + custom state | P2 |
-| Subprocess | stdlib subprocess (OK) | Keep; consider delegating to plumbum for complex cases | P3 |
-| JSON/Config | stdlib json (OK) | Keep; pydantic for validation | — |
-| Concurrency | ThreadPoolExecutor, asyncio (OK) | Keep stdlib | — |
-| Logging | stdlib logging | structlog for structured (anti-patterns) | P2 |
-| HTTP | httpx | **Replace urllib** (7 files); see LIBRARY_REPLACEMENT_AUDIT_DEEP | P1 |
-| Schema validation | pydantic (OK) | Keep | — |
-| DAG/topology | graphlib (OK) | Keep stdlib | — |
+| Category          | Custom Today                      | Library/Wrapper Recommendation                                   | Priority |
+| ----------------- | --------------------------------- | ---------------------------------------------------------------- | -------- |
+| Retry/backoff     | Partial (tenacity + custom loops) | tenacity everywhere; migrate remaining                           | P1       |
+| Caching           | Custom TTL, file-based            | cachetools, diskcache, or redis wrapper                          | P2       |
+| File watching     | Custom os.walk polling            | watchdog (inotify/FSEvents)                                      | P1       |
+| Circuit breaker   | Custom ToolCircuitBreaker         | pybreaker or tenacity + custom state                             | P2       |
+| Subprocess        | stdlib subprocess (OK)            | Keep; consider delegating to plumbum for complex cases           | P3       |
+| JSON/Config       | stdlib json (OK)                  | Keep; pydantic for validation                                    | —        |
+| Concurrency       | ThreadPoolExecutor, asyncio (OK)  | Keep stdlib                                                      | —        |
+| Logging           | stdlib logging                    | structlog for structured (anti-patterns)                         | P2       |
+| HTTP              | httpx                             | **Replace urllib** (7 files); see LIBRARY_REPLACEMENT_AUDIT_DEEP | P1       |
+| Schema validation | pydantic (OK)                     | Keep                                                             | —        |
+| DAG/topology      | graphlib (OK)                     | Keep stdlib                                                      | —        |
 
 ---
 
@@ -45,10 +45,12 @@
 ### 2.2 Caching
 
 **Current**:
+
 - `tools/cache.py`: ResourceCache — custom ETag + TTL file-based cache
 - `models/speed_values.py`, `quality_values.py`, `catalog.py`: In-memory TTL caches with manual invalidation
 
 **Recommendation**:
+
 - **In-memory TTL**: `cachetools.TTLCache` or `functools.lru_cache` + manual TTL layer
 - **File-based**: `diskcache` or `cachetools` with filesystem backend
 - **Wrapper**: Thin adapter for project-specific keys (e.g. `(model, provider)` → cache key)
@@ -62,6 +64,7 @@
 **Problems**: Polling is CPU- and I/O-heavy; misses events between polls; no native inotify/FSEvents.
 
 **Recommendation**:
+
 - **Library**: `watchdog` — cross-platform (inotify, FSEvents, ReadDirectoryChangesW)
 - **Wrapper**: Thin adapter that maps events to `_trigger_cycle()` with debounce
 
@@ -72,6 +75,7 @@
 **Current**: `resilience.py` — `ToolCircuitBreaker` with manual failure list and time-window pruning.
 
 **Recommendation**:
+
 - **Library**: `pybreaker` — state machine (closed → open → half-open), configurable
 - **Wrapper**: Adapter for tool/model names and integration with cost controller
 
@@ -88,6 +92,7 @@
 **Current**: stdlib `logging` everywhere. Anti-patterns.md recommends structlog.
 
 **Recommendation**:
+
 - **Library**: `structlog` — structured, context-rich, JSON output for aggregation
 - **Wrapper**: Project-specific processors (e.g. add run_id, session_id to context)
 
@@ -122,17 +127,20 @@
 ## 3. Decision Framework
 
 **Use a library when**:
+
 1. The problem is generic (retry, cache, file watch, circuit breaker)
 2. A mature library exists with 1k+ stars or PyPI downloads
 3. The library handles edge cases (e.g. thundering herd, race conditions)
 4. Maintenance burden shifts to upstream
 
 **Use a thin wrapper when**:
+
 1. Library API doesn't match project conventions
 2. Domain-specific behavior (e.g. "retry on usage_limit → fallback provider")
 3. Integration with existing components (e.g. cost controller, evidence ledger)
 
 **Keep custom when**:
+
 1. Pure domain logic (e.g. health score formula, routing policy)
 2. No suitable library exists
 3. Library would add heavy deps for minimal gain
@@ -148,6 +156,7 @@ Add **Library-First** section near top (after Context Management). See Section 5
 ### 4.2 Anti-Patterns
 
 Extend with:
+
 - Custom cache (use cachetools/diskcache)
 - Custom file watcher (use watchdog)
 - Custom circuit breaker (use pybreaker or tenacity)
@@ -155,6 +164,7 @@ Extend with:
 ### 4.3 Pre-Implementation Checklist
 
 Before implementing any new feature, ask:
+
 1. Is there a library that solves this?
 2. Can we use library + thin wrapper (< 50 LOC)?
 3. If custom: document why in ADR.
@@ -177,24 +187,27 @@ Reviewers check: "Could this use a library?" for retry, cache, watch, circuit br
 **CRITICAL**: Prefer **library + thin wrapper** over full custom implementation.
 
 ## When Starting Development
+
 - **Before writing code**: Search PyPI and docs for existing libraries.
 - **Generic problems** (retry, cache, file watch, circuit breaker, rate limit): Use a library.
 - **Thin wrapper**: Adapt library to project conventions; keep wrapper < 50 LOC.
 
 ## Throughout Development
+
 - **New feature**: "Is there a library?" — first question.
 - **Custom logic**: Only for domain-specific behavior (routing, health formula, policy).
 - **ADR required**: If choosing custom over library, document rationale.
 
 ## Project Standards
-| Need | Library | Notes |
-|------|---------|-------|
-| Retry/backoff | tenacity | No manual loops |
-| HTTP | httpx | No requests/urllib |
-| File watching | watchdog | No os.walk polling |
-| Caching | cachetools / diskcache | No custom TTL logic |
-| Circuit breaker | pybreaker | Or tenacity + state |
-| Logging | structlog (aspirational) | Structured, JSON |
+
+| Need            | Library                  | Notes               |
+| --------------- | ------------------------ | ------------------- |
+| Retry/backoff   | tenacity                 | No manual loops     |
+| HTTP            | httpx                    | No requests/urllib  |
+| File watching   | watchdog                 | No os.walk polling  |
+| Caching         | cachetools / diskcache   | No custom TTL logic |
+| Circuit breaker | pybreaker                | Or tenacity + state |
+| Logging         | structlog (aspirational) | Structured, JSON    |
 
 See: docs/research/LIBRARY_FIRST_AUDIT_AND_PLAN.md, docs/guides/anti-patterns.md
 ```
@@ -203,13 +216,13 @@ See: docs/research/LIBRARY_FIRST_AUDIT_AND_PLAN.md, docs/guides/anti-patterns.md
 
 ## 6. Implementation Roadmap
 
-| Phase | Task | Effort |
-|-------|------|--------|
-| 1 | Add Library-First to CLAUDE.md, anti-patterns, governance | 1–2 hrs |
-| 2 | Migrate remaining retry loops to tenacity | 4–6 hrs |
-| 3 | Replace WatchdogTrigger polling with watchdog library | 2–4 hrs |
-| 4 | Introduce cachetools for speed/quality/catalog caches | 2–3 hrs |
-| 5 | Evaluate pybreaker for circuit breaker | 1–2 hrs |
+| Phase | Task                                                      | Effort  |
+| ----- | --------------------------------------------------------- | ------- |
+| 1     | Add Library-First to CLAUDE.md, anti-patterns, governance | 1–2 hrs |
+| 2     | Migrate remaining retry loops to tenacity                 | 4–6 hrs |
+| 3     | Replace WatchdogTrigger polling with watchdog library     | 2–4 hrs |
+| 4     | Introduce cachetools for speed/quality/catalog caches     | 2–3 hrs |
+| 5     | Evaluate pybreaker for circuit breaker                    | 1–2 hrs |
 
 ---
 
@@ -252,37 +265,37 @@ Full checklist and capability→preferred-source matrix: [LIBRARY_REPLACEMENT_AU
 
 ### Library Replacement Checklist
 
-| Priority | Current Custom | Recommended Library | Migration Effort | Status |
-|----------|---------------|-------------------|-----------------|--------|
-| P1 | Retry loops | tenacity | 4-6 hrs | In Progress |
-| P1 | File watching (os.walk polling) | watchdog | 2-4 hrs | Pending |
-| P2 | TTL caches | cachetools | 2-3 hrs | Pending |
-| P2 | File-based cache | diskcache | 2-3 hrs | Pending |
-| P2 | Circuit breaker | pybreaker | 1-2 hrs | Pending |
-| P3 | Logging | structlog | 4-6 hrs | Optional |
+| Priority | Current Custom                  | Recommended Library | Migration Effort | Status      |
+| -------- | ------------------------------- | ------------------- | ---------------- | ----------- |
+| P1       | Retry loops                     | tenacity            | 4-6 hrs          | In Progress |
+| P1       | File watching (os.walk polling) | watchdog            | 2-4 hrs          | Pending     |
+| P2       | TTL caches                      | cachetools          | 2-3 hrs          | Pending     |
+| P2       | File-based cache                | diskcache           | 2-3 hrs          | Pending     |
+| P2       | Circuit breaker                 | pybreaker           | 1-2 hrs          | Pending     |
+| P3       | Logging                         | structlog           | 4-6 hrs          | Optional    |
 
 ### Decision Matrix: Library Selection by Use Case
 
-| Use Case | Recommended Library | Alternative | Rationale |
-|----------|-------------------|-------------|-----------|
-| Retry with backoff | tenacity | Custom loop | Battle-tested, configurable |
-| TTL Cache (memory) | cachetools.TTLCache | Custom dict | Thread-safe, configurable |
-| TTL Cache (disk) | diskcache | Custom files | SQLite-backed, queryable |
-| File watching | watchdog | Custom polling | Native events, cross-platform |
-| Circuit breaker | pybreaker | Custom state | State machine, configurable |
-| Structured logging | structlog | stdlib logging | JSON output, context-aware |
-| HTTP client | httpx | requests | Async, modern API |
+| Use Case           | Recommended Library | Alternative    | Rationale                     |
+| ------------------ | ------------------- | -------------- | ----------------------------- |
+| Retry with backoff | tenacity            | Custom loop    | Battle-tested, configurable   |
+| TTL Cache (memory) | cachetools.TTLCache | Custom dict    | Thread-safe, configurable     |
+| TTL Cache (disk)   | diskcache           | Custom files   | SQLite-backed, queryable      |
+| File watching      | watchdog            | Custom polling | Native events, cross-platform |
+| Circuit breaker    | pybreaker           | Custom state   | State machine, configurable   |
+| Structured logging | structlog           | stdlib logging | JSON output, context-aware    |
+| HTTP client        | httpx               | requests       | Async, modern API             |
 
 ### Practical Examples Added
 
-| Example | Purpose |
-|---------|---------|
-| tenacity retry wrapper | Reusable retry decorator |
-| cachetools TTL cache | Memory cache with TTL |
-| diskcache usage | Disk-backed cache with queries |
-| watchdog file watcher | Event-based file monitoring |
-| pybreaker circuit breaker | Failure protection |
-| structlog integration | Structured logging |
+| Example                   | Purpose                        |
+| ------------------------- | ------------------------------ |
+| tenacity retry wrapper    | Reusable retry decorator       |
+| cachetools TTL cache      | Memory cache with TTL          |
+| diskcache usage           | Disk-backed cache with queries |
+| watchdog file watcher     | Event-based file monitoring    |
+| pybreaker circuit breaker | Failure protection             |
+| structlog integration     | Structured logging             |
 
 ### Cross-References Added
 

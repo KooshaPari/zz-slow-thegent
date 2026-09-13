@@ -23,7 +23,7 @@ Manages tool discovery and semantic routing.
 
 ### Methods
 
-#### ToolRouter.__init__
+#### ToolRouter.**init**
 
 ```python
 __init__(self: Any, registry_path: Optional[Path])

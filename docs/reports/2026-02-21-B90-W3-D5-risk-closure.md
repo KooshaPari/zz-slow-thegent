@@ -95,15 +95,15 @@ Wave-3 risk closure rate: **1/7 risks closed**.
 
 ## Summary Table
 
-| Risk | Description | Status | Wave-4 Action |
-|------|-------------|--------|---------------|
-| R1 | cli.py over LOC ceiling (6,881 / 2,000) | OPEN | Remove duplicate defs |
-| R2 | server.py over LOC ceiling (3,867 / 500) | OPEN | Extract tool groups |
-| R3 | Rust PyO3 not installed via maturin | OPEN | `maturin develop` in Taskfile |
-| R4 | Zig CI job not triggered on real push | OPEN | Manual trigger or push |
-| R5 | Mojo not installed, kernel not validated | OPEN | Install mojo, run replay |
-| R6 | WL-131 correctness baseline was red | RESOLVED | Python baseline verified |
-| R7 | slo_trend not wired to dashboard | OPEN | Wire in render_slo_dashboard.py |
+| Risk | Description                              | Status   | Wave-4 Action                   |
+| ---- | ---------------------------------------- | -------- | ------------------------------- |
+| R1   | cli.py over LOC ceiling (6,881 / 2,000)  | OPEN     | Remove duplicate defs           |
+| R2   | server.py over LOC ceiling (3,867 / 500) | OPEN     | Extract tool groups             |
+| R3   | Rust PyO3 not installed via maturin      | OPEN     | `maturin develop` in Taskfile   |
+| R4   | Zig CI job not triggered on real push    | OPEN     | Manual trigger or push          |
+| R5   | Mojo not installed, kernel not validated | OPEN     | Install mojo, run replay        |
+| R6   | WL-131 correctness baseline was red      | RESOLVED | Python baseline verified        |
+| R7   | slo_trend not wired to dashboard         | OPEN     | Wire in render_slo_dashboard.py |
 
 **Risk closure rate**: 1/7 (14%) this wave.
 

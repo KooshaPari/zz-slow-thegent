@@ -27,7 +27,9 @@ Successfully consolidated environment variable access in two critical thegent fi
 **Changes**: 3 occurrences
 
 #### Change 1: Removed Global Environment Mutation (Line 174)
+
 **Before**:
+
 ```python
 def _get_codex_env(provider: str, model: str) -> dict[str, str]:
     """Get environment variables for Codex CLI pointing to thegent proxy."""
@@ -39,6 +41,7 @@ def _get_codex_env(provider: str, model: str) -> dict[str, str]:
 ```
 
 **After**:
+
 ```python
 def _get_codex_env(provider: str, model: str) -> dict[str, str]:
     """Get environment variables for Codex CLI pointing to thegent proxy."""
@@ -55,7 +58,9 @@ def _get_codex_env(provider: str, model: str) -> dict[str, str]:
 ---
 
 #### Change 2: Added Settings to Subprocess Environment (Lines 212-214)
+
 **Before**:
+
 ```python
     env = os.environ.copy()
     base = f"http://{settings.mcp_host}:{settings.cliproxy_port}/v1"
@@ -63,6 +68,7 @@ def _get_codex_env(provider: str, model: str) -> dict[str, str]:
 ```
 
 **After**:
+
 ```python
     env = os.environ.copy()
     # WP-Y15: Enable Responses API adapter for Codex compatibility
@@ -78,6 +84,7 @@ def _get_codex_env(provider: str, model: str) -> dict[str, str]:
 ---
 
 #### Change 3: System PATH Access (Line 222)
+
 **Status**: UNCHANGED ✓
 
 ```python
@@ -93,7 +100,9 @@ def _get_codex_env(provider: str, model: str) -> dict[str, str]:
 **Changes**: 5 occurrences
 
 #### Change 1: PATH Mutation Removed (Line 251)
+
 **Before**:
+
 ```python
     if rc == 0 or _command_exists("brew"):
         # Add to PATH for Apple Silicon Macs
@@ -105,6 +114,7 @@ def _get_codex_env(provider: str, model: str) -> dict[str, str]:
 ```
 
 **After**:
+
 ```python
     if rc == 0 or _command_exists("brew"):
         # Note: Avoid global PATH mutation. If brew_path is needed for subprocess calls,
@@ -119,11 +129,13 @@ def _get_codex_env(provider: str, model: str) -> dict[str, str]:
 #### Changes 2-4: Shell Detection - Added Settings Parameter
 
 **Functions Updated**:
+
 1. `install_mise()` (Line 277)
 2. `verify_mise_installation()` (Line 378)
 3. `uninstall_mise_hooks()` (Line 437)
 
 **Before** (all three):
+
 ```python
 def install_mise(console: Console | None = None, dry_run: bool = False, use_nix: bool = False) -> tuple[bool, str]:
     # ...
@@ -131,6 +143,7 @@ def install_mise(console: Console | None = None, dry_run: bool = False, use_nix:
 ```
 
 **After** (all three):
+
 ```python
 def install_mise(
     console: Console | None = None,
@@ -149,6 +162,7 @@ def install_mise(
 ```
 
 **Rationale**:
+
 - Centralizes shell detection in `ThegentSettings` (validates and caches the value)
 - Settings parameter is optional (backward compatible)
 - Lazy imports ThegentSettings only when needed
@@ -156,6 +170,7 @@ def install_mise(
 
 **Note on Shell Detection**:
 The shell_path field in ThegentSettings auto-detects from the SHELL environment variable:
+
 ```python
 @field_validator("shell_path", mode="before")
 def _parse_shell_path(cls, v: object) -> str:
@@ -167,9 +182,11 @@ def _parse_shell_path(cls, v: object) -> str:
 ---
 
 #### Change 5: Windows APPDATA Detection (Lines 1692-1694)
+
 **Function**: `run_install()` (line 1621)
 
 **Before**:
+
 ```python
 def run_install(
     target: str = "all",
@@ -186,6 +203,7 @@ def run_install(
 ```
 
 **After**:
+
 ```python
 def run_install(
     target: str = "all",
@@ -212,6 +230,7 @@ def run_install(
 ```
 
 **Rationale**:
+
 - Centralizes Windows APPDATA detection in settings
 - Provides sensible fallback when APPDATA is not set
 - Type-safe access to Path object (settings.appdata_path is Path | None)
@@ -222,13 +241,16 @@ def run_install(
 ## Verification Results
 
 ### Syntax Verification
+
 ```bash
 ✓ python3 -m py_compile src/thegent/dex_main.py
 ✓ python3 -m py_compile src/thegent/install.py
 ```
 
 ### Static Analysis
+
 **dex_main.py**:
+
 ```
 os.environ mutations: 0 (all removed) ✓
 Remaining os.environ access: 2 (expected)
@@ -237,6 +259,7 @@ Remaining os.environ access: 2 (expected)
 ```
 
 **install.py**:
+
 ```
 os.environ mutations: 0 (all removed) ✓
 Shell detection via settings: 3 functions ✓
@@ -250,11 +273,11 @@ Settings parameter added: 5 functions ✓
 
 All fields exist in `ThegentSettings` (confirmed in `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/config.py`):
 
-| Field | Type | Location | Validator |
-|-------|------|----------|-----------|
-| `cliproxy_backend_url` | `str \| None` | dex_main.py:213 | Auto-detects from THGENT_CLIPROXY_BACKEND_URL env var |
-| `shell_path` | `str` | install.py:310,402,447 | Auto-detects from SHELL env var; default "/bin/zsh" |
-| `appdata_path` | `Path \| None` | install.py:1693 | Auto-detects from APPDATA env var (Windows) |
+| Field                  | Type           | Location               | Validator                                             |
+| ---------------------- | -------------- | ---------------------- | ----------------------------------------------------- |
+| `cliproxy_backend_url` | `str \| None`  | dex_main.py:213        | Auto-detects from THGENT_CLIPROXY_BACKEND_URL env var |
+| `shell_path`           | `str`          | install.py:310,402,447 | Auto-detects from SHELL env var; default "/bin/zsh"   |
+| `appdata_path`         | `Path \| None` | install.py:1693        | Auto-detects from APPDATA env var (Windows)           |
 
 ---
 
@@ -269,6 +292,7 @@ All changes are **backward compatible**:
    - Can be called without settings parameter
 
 Example (backward compatible):
+
 ```python
 # Old way (still works)
 install_mise(console=console, dry_run=True)
@@ -285,6 +309,7 @@ install_mise(console=console, dry_run=True, settings=settings)
 ## Testing Recommendations
 
 ### Unit Tests (Recommended)
+
 ```python
 def test_shell_detection_from_settings():
     """Verify shell_path is read from settings, not os.environ."""
@@ -309,6 +334,7 @@ def test_codex_env_isolation():
 ### Platform-Specific Testing (Manual)
 
 **macOS**:
+
 ```bash
 # Test shell detection
 python3 -c "from thegent.config import ThegentSettings; s=ThegentSettings(); print(f'shell_path={s.shell_path}')"
@@ -318,6 +344,7 @@ thegent dex --help
 ```
 
 **Windows**:
+
 ```powershell
 # Test APPDATA detection
 python3 -c "from thegent.config import ThegentSettings; s=ThegentSettings(); print(f'appdata_path={s.appdata_path}')"
@@ -327,6 +354,7 @@ thegent install --dry-run
 ```
 
 **Linux**:
+
 ```bash
 # Test shell detection
 python3 -c "from thegent.config import ThegentSettings; s=ThegentSettings(); print(f'shell_path={s.shell_path}')"
@@ -340,12 +368,14 @@ thegent install --dry-run
 ## Key Benefits
 
 ### Before Consolidation
+
 - Direct `os.environ` access scattered across code
 - Hard to test (environment-dependent)
 - Globals mutations affect entire process
 - No type safety or validation
 
 ### After Consolidation
+
 - Centralized in `ThegentSettings` with validators
 - Easy to test (can mock settings object)
 - No global mutations (env dict passed to subprocess)

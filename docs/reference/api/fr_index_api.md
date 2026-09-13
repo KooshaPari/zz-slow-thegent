@@ -12,7 +12,7 @@ FR (Functional Requirement) parsing and indexing.
 
 ### Methods
 
-#### FRIndexSubcommands.__init__
+#### FRIndexSubcommands.**init**
 
 ```python
 __init__(self: Any)

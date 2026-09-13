@@ -47,12 +47,12 @@ zmx list
 
 Set `THGENT_SESSION_BACKEND` in your environment or `.env` file:
 
-| Value | Behavior |
-|-------|----------|
-| `auto` (default) | Probe for zmx; fall back to tmux/none |
-| `zmx` | Use zmx explicitly; warn + fall back if not installed |
-| `tmux` | Use existing tmux tooling (legacy path) |
-| `none` | Disable session persistence entirely |
+| Value            | Behavior                                              |
+| ---------------- | ----------------------------------------------------- |
+| `auto` (default) | Probe for zmx; fall back to tmux/none                 |
+| `zmx`            | Use zmx explicitly; warn + fall back if not installed |
+| `tmux`           | Use existing tmux tooling (legacy path)               |
+| `none`           | Disable session persistence entirely                  |
 
 ```bash
 # .env or shell profile
@@ -112,13 +112,13 @@ if backend.available:
 
 ### ZmxSession fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `name` | `str` | Session name |
-| `pid` | `int \| None` | Process ID of session leader |
-| `state` | `str` | `running`, `detached`, `exited`, or `unknown` |
-| `cmd` | `str` | Command running in the session |
-| `extra` | `dict[str, str]` | Additional metadata from zmx |
+| Field   | Type             | Description                                   |
+| ------- | ---------------- | --------------------------------------------- |
+| `name`  | `str`            | Session name                                  |
+| `pid`   | `int \| None`    | Process ID of session leader                  |
+| `state` | `str`            | `running`, `detached`, `exited`, or `unknown` |
+| `cmd`   | `str`            | Command running in the session                |
+| `extra` | `dict[str, str]` | Additional metadata from zmx                  |
 
 ---
 

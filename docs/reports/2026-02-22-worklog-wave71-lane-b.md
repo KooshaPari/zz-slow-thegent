@@ -1,7 +1,9 @@
 # Worklog Wave 71 - Lane B Evidence (2026-02-22)
 
 ## Scope
+
 Implemented Lane B backlog items for:
+
 - WL-169 API rate-limit backoff controls
 - WL-172 autopilot doctor command
 - WL-173 cycle metrics emission
@@ -11,6 +13,7 @@ Implemented Lane B backlog items for:
 Constraint honored: `docs/reference/WORK_STREAM.md` was not edited.
 
 ## Code Evidence
+
 - `src/thegent/cli/apps/sync.py:639`
   - Extended `sync_autopilot` to accept `doctor` as subcommand (`thegent sync autopilot doctor`).
 - `src/thegent/cli/apps/sync.py:840`
@@ -36,7 +39,9 @@ Constraint honored: `docs/reference/WORK_STREAM.md` was not edited.
   - `mcp_down` now uses explicit compose file (`-f process-compose.yaml`) for deterministic teardown targeting.
 
 ## Test Evidence
+
 Added focused WL lane tests:
+
 - `tests/test_wl172_wl173_wl176_lane_b.py:40`
   - `test_autopilot_doctor_reports_missing_core_enablement`
 - `tests/test_wl172_wl173_wl176_lane_b.py:54`
@@ -53,23 +58,29 @@ Added focused WL lane tests:
   - `test_mcp_down_uses_explicit_compose_file`
 
 Executed command:
+
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_wl172_wl173_wl176_lane_b.py tests/test_wl169_rate_limit_backoff.py tests/test_wl175_writer_lock.py`
 - Result: `50 passed in 23.86s`
 
 Compile check:
+
 - `./.venv/bin/python -m py_compile src/thegent/cli/apps/sync.py src/thegent/integrations/workstream_autosync.py src/thegent/integrations/writer_lock.py src/thegent/mcp/manage.py tests/test_wl172_wl173_wl176_lane_b.py`
 - Result: pass (no output)
 
 ## Quality Gate Evidence
+
 Executed:
+
 - `task quality`
 
 Result:
+
 - Failed at `quality:max-lines` with:
   - `src/thegent/integrations/workstream_autosync.py: 2888 lines (max 2500)`
 
 This is the remaining blocking quality gap for this lane.
 
 ## Remaining Gaps
+
 - `task quality` is not green due `max-lines` gate on `src/thegent/integrations/workstream_autosync.py`.
 - No edits were made to split/refactor that module in this lane; addressing this requires a dedicated decomposition pass.

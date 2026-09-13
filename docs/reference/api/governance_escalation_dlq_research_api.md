@@ -12,7 +12,7 @@ Research for escalation queue DLQ integration.
 
 ### Methods
 
-#### GovernanceEscalationDLQResearch.__init__
+#### GovernanceEscalationDLQResearch.**init**
 
 ```python
 __init__(self: Any)

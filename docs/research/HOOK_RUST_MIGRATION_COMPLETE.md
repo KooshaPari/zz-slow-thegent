@@ -3,6 +3,7 @@
 
 > **Status**: Complete | **Version**: 1.0 | **Date**: 2026-02-16
 > **Related**:
+>
 > - [Hook Runtime Rust Design](../plans/HOOK_RUNTIME_RUST_DESIGN.md)
 > - [Full Shell to Rust Where Beneficial](../plans/FULL_SHELL_TO_RUST_WHERE_BENEFICIAL.md)
 > - [Rust/Go Migration Plan](../migration/RUST_GO_MIGRATION_PLAN.md)
@@ -42,6 +43,7 @@ This document provides a comprehensive migration strategy and timeline for repla
 ### 1.2 Migration Approach
 
 **Phased Migration**:
+
 1. **Phase 0**: CLI skeleton (1 week)
 2. **Phase 1**: Core functionality (3 weeks)
 3. **Phase 2**: Advanced features (2 weeks)
@@ -78,6 +80,7 @@ Hook Invocation
 ```
 
 **Pain Points**:
+
 - **Shell Sourcing Overhead**: 1600+ lines parsed on every hook run
 - **Subprocess Spawn Cost**: Multiple `command -v`, `git`, `jq` calls
 - **Parsing Errors**: Shell parsing can fail silently
@@ -86,19 +89,20 @@ Hook Invocation
 
 ### 2.2 Current Shell Files
 
-| File | Lines | Purpose | Migration Priority |
-|------|-------|---------|-------------------|
-| **common.sh** | ~1685 | Core hook functions | **P0** - Highest |
-| **git-cache.sh** | ~100 | Git TTL cache | **P0** - Highest |
-| **git-wrapper.sh** | ~80 | Git routing | **P0** - Highest |
-| **fd-wrapper.sh** | ~40 | Find wrapper | **P1** - High |
-| **grep-wrapper.sh** | ~30 | Grep wrapper | **P1** - High |
-| **procs-wrapper.sh** | ~30 | Process wrapper | **P2** - Medium |
-| **pkg-wrapper.sh** | ~20 | Package wrapper | **P3** - Low |
+| File                 | Lines | Purpose             | Migration Priority |
+| -------------------- | ----- | ------------------- | ------------------ |
+| **common.sh**        | ~1685 | Core hook functions | **P0** - Highest   |
+| **git-cache.sh**     | ~100  | Git TTL cache       | **P0** - Highest   |
+| **git-wrapper.sh**   | ~80   | Git routing         | **P0** - Highest   |
+| **fd-wrapper.sh**    | ~40   | Find wrapper        | **P1** - High      |
+| **grep-wrapper.sh**  | ~30   | Grep wrapper        | **P1** - High      |
+| **procs-wrapper.sh** | ~30   | Process wrapper     | **P2** - Medium    |
+| **pkg-wrapper.sh**   | ~20   | Package wrapper     | **P3** - Low       |
 
 ### 2.3 Performance Baseline
 
 **Current Hook Latency** (from performance analysis):
+
 - **Init**: ~50ms (shell sourcing + env build)
 - **Cache Key**: ~30ms (jq + shasum subprocesses)
 - **Git Operations**: ~100ms (subprocess + parsing)
@@ -106,6 +110,7 @@ Hook Invocation
 - **Total Hook Overhead**: ~200ms
 
 **Target Hook Latency**:
+
 - **Init**: ~5ms (Rust JSON parsing + env build)
 - **Cache Key**: ~1ms (blake3 hash, no subprocess)
 - **Git Operations**: ~10ms (gix or cached)
@@ -136,6 +141,7 @@ Hook Invocation
 ### 3.2 Binary Structure
 
 **`thegent-hooks` Binary**:
+
 ```
 thegent-hooks
 ├── init              # Parse JSON, build env
@@ -203,9 +209,11 @@ crates/thegent-hooks/
 ### 4.2 Migration Phases
 
 #### Phase 0: CLI Skeleton (Week 1)
+
 **Goal**: Establish CLI surface, stub implementations
 
 **Tasks**:
+
 - [ ] Create `crates/thegent-hooks/` crate
 - [ ] Define all subcommands with clap
 - [ ] Stub implementations (call shell or return "not implemented")
@@ -213,14 +221,17 @@ crates/thegent-hooks/
 - [ ] Integration tests framework
 
 **Deliverables**:
+
 - CLI binary compiles and runs
 - All subcommands defined
 - Basic help output
 
 #### Phase 1: Core Functionality (Weeks 2-4)
+
 **Goal**: Implement init, cache, git, changed-files, config
 
 **Tasks**:
+
 - [ ] **init**: JSON parsing, PROJECT_DIR resolution, env build
 - [ ] **cache-key**: Blake3 hash computation
 - [ ] **cache-check**: File-based cache validation
@@ -231,14 +242,17 @@ crates/thegent-hooks/
 - [ ] **config-get**: YAML/JSON parsing, value extraction
 
 **Deliverables**:
+
 - Core subcommands functional
 - Performance: 10x improvement on hot paths
 - Migration of 3-5 hooks to use thegent-hooks
 
 #### Phase 2: Advanced Features (Weeks 5-6)
+
 **Goal**: Implement breaker, debounce, incremental, learning
 
 **Tasks**:
+
 - [ ] **breaker-check/record/reset**: Circuit breaker state
 - [ ] **debounce**: File-based debounce coordination
 - [ ] **incremental-check/record**: Manifest-based incremental
@@ -246,15 +260,18 @@ crates/thegent-hooks/
 - [ ] **should-run**: Pattern matching for changed files
 
 **Deliverables**:
+
 - Advanced features functional
 - Migration of 10+ hooks
 - Performance maintained
 
 #### Phase 3: Complex Features (Weeks 7-8)
+
 **Goal**: Implement FR index, affected-tests, prewarm, reports
 
 **Tasks**:
-- [ ] **fr-ids**: Parse FR-* from FUNCTIONAL_REQUIREMENTS.md
+
+- [ ] **fr-ids**: Parse FR-\* from FUNCTIONAL_REQUIREMENTS.md
 - [ ] **fr-index**: Build file:FR index
 - [ ] **affected-tests**: Pattern + coverage + imports
 - [ ] **prewarm**: Shared data, ruff, shellcheck caches
@@ -262,28 +279,34 @@ crates/thegent-hooks/
 - [ ] **report**: JSON report writing
 
 **Deliverables**:
+
 - Complex features functional
 - Migration of 20+ hooks
 - All hooks using thegent-hooks
 
 #### Phase 4: Native Hook Implementations (Weeks 9-10, Optional)
+
 **Goal**: Native Rust implementations for hot hooks
 
 **Tasks**:
+
 - [ ] **run-hook quality-gate**: Native ruff/semgrep execution
 - [ ] **run-hook security-pipeline**: Native security checks
 - [ ] **run-hook test-maturity**: Native test discovery
 - [ ] Integration with hook-dispatcher
 
 **Deliverables**:
+
 - 3-5 hooks with native implementations
 - Maximum performance (no shell at all)
 - Dispatcher can call native hooks directly
 
 #### Phase 5: Deprecation & Cleanup (Week 11)
+
 **Goal**: Remove shell fallbacks, clean up old code
 
 **Tasks**:
+
 - [ ] Mark common.sh as deprecated
 - [ ] Remove shell fallbacks
 - [ ] Update documentation
@@ -291,6 +314,7 @@ crates/thegent-hooks/
 - [ ] Archive old shell code
 
 **Deliverables**:
+
 - Shell code deprecated/removed
 - Full migration complete
 - Documentation updated
@@ -302,18 +326,21 @@ crates/thegent-hooks/
 ### Week 1: CLI Skeleton
 
 **Days 1-2**: Crate Setup
+
 - Create `crates/thegent-hooks/`
 - Add to workspace
 - Basic Cargo.toml with dependencies
 - Module structure
 
 **Days 3-4**: CLI Definition
+
 - Define all subcommands with clap
 - Help text and descriptions
 - Argument parsing
 - Error handling framework
 
 **Days 5**: Stub Implementations
+
 - Each subcommand returns "not implemented"
 - Or calls shell fallback
 - Basic integration tests
@@ -323,17 +350,20 @@ crates/thegent-hooks/
 ### Week 2: Init & Cache
 
 **Days 1-2**: Init Implementation
+
 - JSON parsing (serde_json)
 - PROJECT_DIR resolution (git + heuristics)
 - Env variable computation
 - Output format (KEY=VALUE or NUL-delimited)
 
 **Days 3-4**: Cache Key
+
 - Blake3 hash implementation
 - Input: hook_name, head_sha, changed_files
 - Output: hex string
 
 **Days 5**: Cache Operations
+
 - Cache check (file existence + TTL)
 - Cache read (stdout + exit code)
 - Cache write (atomic write)
@@ -343,18 +373,21 @@ crates/thegent-hooks/
 ### Week 3: Git & Changed Files
 
 **Days 1-2**: Git Cached
+
 - TTL cache implementation
 - Cache key: (cwd, argv, HEAD, config mtime)
 - Read-only command detection
 - Agent passthrough (codex/copilot/dex/claude/cursor)
 
 **Days 3**: Git Write Path
+
 - Index.lock detection
 - Lock wait with timeout
 - Stale lock detection and steal
 - Cache invalidation
 
 **Days 4-5**: Changed Files
+
 - Git diff --name-only HEAD
 - Git ls-files --others --exclude-standard
 - Filtering (node_modules, .git, etc.)
@@ -365,12 +398,14 @@ crates/thegent-hooks/
 ### Week 4: Config & First Migration
 
 **Days 1-2**: Config Reading
+
 - YAML parsing (serde_yaml)
 - hook-config.yaml lookup
 - qa-local.json parsing
 - Value extraction
 
 **Days 3-5**: First Hook Migration
+
 - Migrate 1-2 simple hooks
 - Update hook scripts to use thegent-hooks
 - Remove common.sh sourcing
@@ -381,18 +416,21 @@ crates/thegent-hooks/
 ### Week 5: Breaker & Debounce
 
 **Days 1-2**: Circuit Breaker
+
 - Breaker state management
 - Failure tracking
 - Threshold checking
 - Cooldown handling
 
 **Days 3-4**: Debounce
+
 - File-based debounce
 - Leader/follower pattern
 - Batch file collection
 - Timeout handling
 
 **Days 5**: Testing & Migration
+
 - Test breaker and debounce
 - Migrate hooks using these features
 
@@ -401,18 +439,21 @@ crates/thegent-hooks/
 ### Week 6: Incremental & Learning
 
 **Days 1-2**: Incremental Manifests
+
 - Manifest file format
 - Content hash computation
 - Manifest comparison
 - Record new manifest
 
 **Days 3-4**: Learning-Based Skip
+
 - History file format
 - Pass/fail tracking
 - Pattern matching
 - Skip decision logic
 
 **Days 5**: Testing & Migration
+
 - Test incremental and learning
 - Migrate hooks using these features
 
@@ -421,16 +462,19 @@ crates/thegent-hooks/
 ### Week 7: FR Index & Affected Tests
 
 **Days 1-2**: FR IDs Parsing
+
 - Parse FUNCTIONAL_REQUIREMENTS.md
-- Extract FR-* IDs
+- Extract FR-\* IDs
 - Cache parsed results
 
 **Days 3-4**: FR Index
+
 - Build file:FR mapping
 - Update index on changes
 - Query by file
 
 **Days 5**: Affected Tests (Part 1)
+
 - Pattern-based test discovery
 - Coverage index integration
 
@@ -439,16 +483,19 @@ crates/thegent-hooks/
 ### Week 8: Affected Tests & Prewarm
 
 **Days 1-2**: Affected Tests (Part 2)
+
 - Import-based discovery
 - Coverage-based discovery
 - Test deduplication
 
 **Days 3-4**: Prewarm
+
 - Shared data prewarm
 - Ruff cache prewarm
 - Shellcheck cache prewarm
 
 **Days 5**: Reports & Progress
+
 - JSON report writing
 - Progress reporting
 - Integration testing
@@ -458,17 +505,20 @@ crates/thegent-hooks/
 ### Week 9-10: Native Hook Implementations (Optional)
 
 **Days 1-3**: Native Quality Gate
+
 - Ruff execution
 - Semgrep execution
 - Result aggregation
 - Report generation
 
 **Days 4-6**: Native Security Pipeline
+
 - Security tool execution
 - Vulnerability scanning
 - Result processing
 
 **Days 7-10**: Native Test Maturity
+
 - Test discovery
 - Coverage analysis
 - Maturity scoring
@@ -478,16 +528,19 @@ crates/thegent-hooks/
 ### Week 11: Deprecation & Cleanup
 
 **Days 1-2**: Final Migration
+
 - Migrate remaining hooks
 - Remove shell fallbacks
 - Update all hook scripts
 
 **Days 3-4**: Documentation
+
 - Update hook documentation
 - Migration guide
 - API reference
 
 **Days 5**: Cleanup
+
 - Mark common.sh deprecated
 - Archive old shell code
 - Final performance validation
@@ -501,6 +554,7 @@ crates/thegent-hooks/
 ### 6.1 Init Subcommand
 
 **Input**: JSON stdin
+
 ```json
 {
   "tool_name": "file_editor",
@@ -515,6 +569,7 @@ crates/thegent-hooks/
 ```
 
 **Output**: Environment variables
+
 ```bash
 INPUT='{"tool_name":"file_editor",...}'
 CWD=/path/to/project
@@ -531,6 +586,7 @@ FD_CMD=/usr/local/bin/fd
 ```
 
 **Implementation** (`src/init.rs`):
+
 ```rust
 use serde_json::Value;
 use std::collections::HashMap;
@@ -603,6 +659,7 @@ impl InitConfig {
 ### 6.2 Cache Subcommands
 
 **Cache Key** (`src/cache.rs`):
+
 ```rust
 use blake3;
 use std::collections::hash_map::DefaultHasher;
@@ -630,6 +687,7 @@ pub fn compute_cache_key(
 ```
 
 **Cache Operations**:
+
 ```rust
 use std::fs;
 use std::path::PathBuf;
@@ -708,6 +766,7 @@ impl CacheManager {
 ### 6.3 Git Subcommand
 
 **Git Cached** (`src/git.rs`):
+
 ```rust
 use std::process::Command;
 use std::collections::hash_map::DefaultHasher;
@@ -815,15 +874,15 @@ impl GitManager {
 
 ### 7.1 Latency Targets
 
-| Operation | Current (Shell) | Target (Rust) | Improvement |
-|-----------|----------------|---------------|-------------|
-| **Init** | 50ms | 5ms | 10x |
-| **Cache Key** | 30ms | 1ms | 30x |
-| **Git (cached)** | 100ms | 10ms | 10x |
-| **Git (miss)** | 150ms | 50ms | 3x |
-| **Changed Files** | 40ms | 5ms | 8x |
-| **Config Get** | 20ms | 2ms | 10x |
-| **Total Hook Overhead** | 200ms | 20ms | 10x |
+| Operation               | Current (Shell) | Target (Rust) | Improvement |
+| ----------------------- | --------------- | ------------- | ----------- |
+| **Init**                | 50ms            | 5ms           | 10x         |
+| **Cache Key**           | 30ms            | 1ms           | 30x         |
+| **Git (cached)**        | 100ms           | 10ms          | 10x         |
+| **Git (miss)**          | 150ms           | 50ms          | 3x          |
+| **Changed Files**       | 40ms            | 5ms           | 8x          |
+| **Config Get**          | 20ms            | 2ms           | 10x         |
+| **Total Hook Overhead** | 200ms           | 20ms          | 10x         |
 
 ### 7.2 Throughput Targets
 
@@ -844,16 +903,19 @@ impl GitManager {
 ### 8.1 Technical Risks
 
 **Risk**: Rust implementation doesn't match shell behavior
+
 - **Mitigation**: Comprehensive compatibility tests
 - **Mitigation**: Side-by-side comparison during migration
 - **Mitigation**: Shell fallback during transition
 
 **Risk**: Performance not meeting targets
+
 - **Mitigation**: Profiling and optimization
 - **Mitigation**: Use gix for git operations
 - **Mitigation**: Aggressive caching
 
 **Risk**: Breaking existing hooks
+
 - **Mitigation**: Incremental migration
 - **Mitigation**: Extensive testing
 - **Mitigation**: Rollback plan
@@ -861,11 +923,13 @@ impl GitManager {
 ### 8.2 Schedule Risks
 
 **Risk**: Timeline too aggressive
+
 - **Mitigation**: Buffer time in each phase
 - **Mitigation**: Prioritize core functionality first
 - **Mitigation**: Optional phases can be deferred
 
 **Risk**: Dependencies not ready
+
 - **Mitigation**: Use existing crates (thegent-git, tool-detect)
 - **Mitigation**: Fallback to Command::new() if needed
 - **Mitigation**: Add gix as optional dependency
@@ -965,7 +1029,7 @@ impl GitManager {
 
 ---
 
-*Generated: 2026-02-16 | Version: 1.0 | Status: Complete*
+_Generated: 2026-02-16 | Version: 1.0 | Status: Complete_
 
 ---
 
@@ -975,15 +1039,18 @@ impl GitManager {
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

@@ -3,6 +3,7 @@
 **Follows** `07`–`15`. **Snapshot:** 2026-03-24. **Intent:** Hexagonal Architecture & Polyrepo Migration.
 
 ## Slice 1 — Hexagonal Domain Audit (8)
+
 1. **Domains**: Identify core business domains in `heliosApp` (PTY, Bus, Settings).
 2. **Ports**: Define `InputPort` interfaces for `LocalBus` events.
 3. **Adapters**: Isolate `Bun` or `Node` specific code into `Infrastructure` adapters.
@@ -13,6 +14,7 @@
 8. **Dependency**: Verify `Infrastructure -> Domain` dependency rule (no circular).
 
 ## Slice 2 — Polyrepo Decomposition (8)
+
 9. **Shared**: Identify candidates for extraction into `phenotype-shared`.
 10. **Native**: Split `src/thegent/native` into a standalone polyrepo.
 11. **Config**: Extract common CI/CD workflows into `phenotypeActions`.
@@ -23,6 +25,7 @@
 16. **Contracts**: Audit `contracts` repo for reusable schema definitions.
 
 ## Slice 3 — Libification & Productization (8)
+
 17. **Generic**: Refactor specific adapters into generic libraries.
 18. **Publish**: Prepare `libs/` for private npm registry (e.g., Verdaccio).
 19. **Versioning**: Implement `Changesets` or `Lerna` for versioning.
@@ -33,4 +36,5 @@
 24. **User**: Verify 'developer satisfaction' with new polyrepo layout.
 
 ## Slice 4 — Meta (1)
+
 25. **Task Update**: Record decomposition findings in `05_KNOWN_ISSUES.md`.

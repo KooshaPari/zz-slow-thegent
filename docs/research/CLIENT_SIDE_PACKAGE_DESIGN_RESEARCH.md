@@ -13,6 +13,7 @@
 This research consolidates best practices for building and deploying client-side software systems like thegent. Findings cover Python packaging standards, native package managers (Homebrew, Nix, Windows Installer, Linux packages), update mechanisms, signing, security, and user experience patterns.
 
 **Key Findings:**
+
 1. **Modern Python Packaging** — PEP 517/518 (pyproject.toml) is the standard; wheels preferred over sdists
 2. **Package Data Management** — Use `importlib.resources` for accessing bundled data files
 3. **Version Management** — Dynamic versioning from git tags recommended
@@ -29,6 +30,7 @@ This research consolidates best practices for building and deploying client-side
 ### 1.1 Modern Build System (PEP 517/518)
 
 **Key Standards:**
+
 - **PEP 518** — Specifies `pyproject.toml` for build system requirements
 - **PEP 517** — Build backend interface (hatchling, setuptools, flit)
 - **PEP 440** — Version identification and dependency specification
@@ -65,6 +67,7 @@ packages = ["src/thegent"]
 ```
 
 **Key Insights:**
+
 - Use `hatchling` or `setuptools` as build backend
 - Prefer `dynamic = ["version"]` over hardcoded versions
 - Use `[project.optional-dependencies]` for platform-specific deps
@@ -118,6 +121,7 @@ def get_templates_dir() -> Path:
 ```
 
 **Best Practices:**
+
 - Use `importlib.resources.files()` (Python 3.9+)
 - Fallback chain: package data → dev repo → user config → create default
 - Test both installed and dev modes
@@ -164,6 +168,7 @@ write_to = "src/thegent/_version.py"
 ```
 
 **Best Practices:**
+
 - Use git tags for versioning (semantic versioning recommended)
 - Automate version extraction in build process
 - Support both installed and dev modes
@@ -193,6 +198,7 @@ cibuildwheel --platform linux --platform macos --platform windows
 ```
 
 **Best Practices:**
+
 - Build platform-specific wheels (manylinux, macOS universal, Windows)
 - Use `maturin` for Rust extensions
 - Test wheels on target platforms before release
@@ -238,6 +244,7 @@ end
 ```
 
 **Best Practices:**
+
 - Use `depends_on "python@3.12"` for Python version
 - Platform-specific dependencies with `on_macos` / `on_linux`
 - Test block required for all formulae
@@ -291,6 +298,7 @@ end
 ```
 
 **Best Practices:**
+
 - Use `buildPythonPackage` for Python packages
 - Include Rust build inputs for extensions
 - Install data files to `$out/share/thegent`
@@ -362,6 +370,7 @@ exe = EXE(
 ```
 
 **Best Practices:**
+
 - Use MSIX for modern Windows (Windows 10/11)
 - Use PyInstaller for standalone executables
 - Code sign all Windows binaries
@@ -418,6 +427,7 @@ python3 -m pip install --root %{buildroot} dist/*.whl
 ```
 
 **Best Practices:**
+
 - Use `dh_python3` for Debian packages
 - Follow FHS (Filesystem Hierarchy Standard)
 - Include man pages in `/usr/share/man`
@@ -536,6 +546,7 @@ def get_update_command() -> str:
 ```
 
 **Best Practices:**
+
 - Check for updates on startup (optional, user-configurable)
 - Respect user's package manager (don't mix pip and system packages)
 - Provide clear update instructions
@@ -575,6 +586,7 @@ def is_compatible(current: str, required: str) -> bool:
 ```
 
 **Best Practices:**
+
 - Follow semantic versioning (semver.org)
 - Use `packaging` library for version comparison
 - Document breaking changes in MAJOR versions
@@ -623,6 +635,7 @@ rpm --addsign thegent-0.1.0-1.x86_64.rpm
 ```
 
 **Best Practices:**
+
 - Sign all binaries and installers
 - Use timestamp servers for long-term validity
 - Store signing keys securely (use CI/CD secrets)
@@ -660,6 +673,7 @@ osv-scanner --lockfile pyproject.toml
 ```
 
 **Best Practices:**
+
 - Regularly audit dependencies for vulnerabilities
 - Use Dependabot or Renovate for automated updates
 - Pin security-critical dependencies
@@ -714,6 +728,7 @@ def run_first_run_wizard() -> None:
 ```
 
 **Best Practices:**
+
 - Detect platform automatically
 - Check prerequisites and offer to install
 - Guide user through initial configuration
@@ -748,6 +763,7 @@ def install_with_progress() -> None:
 ```
 
 **Best Practices:**
+
 - Show progress for long-running operations
 - Provide estimated time remaining
 - Allow cancellation where appropriate
@@ -792,6 +808,7 @@ def format_error(error: Exception) -> str:
 ```
 
 **Best Practices:**
+
 - Provide actionable remediation steps
 - Include platform-specific instructions
 - Link to documentation
@@ -829,6 +846,7 @@ def format_error(error: Exception) -> str:
 ```
 
 **Best Practices:**
+
 - Release to PyPI first (primary distribution)
 - Create GitHub releases with assets
 - Update native package managers after PyPI release
@@ -845,7 +863,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build:
@@ -853,7 +871,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ['3.12']
+        python-version: ["3.12"]
 
     steps:
       - uses: actions/checkout@v4
@@ -884,6 +902,7 @@ jobs:
 ```
 
 **Best Practices:**
+
 - Automate releases on git tags
 - Build for all platforms in CI
 - Test before publishing
@@ -896,6 +915,7 @@ jobs:
 ### 7.1 macOS
 
 **Key Considerations:**
+
 - Code signing required for distribution
 - Notarization required for Gatekeeper
 - Universal binaries (x86_64 + arm64) preferred
@@ -903,6 +923,7 @@ jobs:
 - Follow macOS Human Interface Guidelines
 
 **Best Practices:**
+
 - Build universal wheels with `cibuildwheel`
 - Sign and notarize all binaries
 - Use `plist` files for app metadata
@@ -911,6 +932,7 @@ jobs:
 ### 7.2 Linux
 
 **Key Considerations:**
+
 - Multiple package managers (apt, yum, snap, flatpak)
 - FHS compliance required
 - Systemd integration for services
@@ -918,6 +940,7 @@ jobs:
 - GPG signing for packages
 
 **Best Practices:**
+
 - Support multiple package formats
 - Follow FHS for file placement
 - Provide systemd service files
@@ -927,6 +950,7 @@ jobs:
 ### 7.3 Windows
 
 **Key Considerations:**
+
 - Code signing required
 - MSIX preferred over MSI/EXE
 - PowerShell vs CMD compatibility
@@ -934,6 +958,7 @@ jobs:
 - UAC handling
 
 **Best Practices:**
+
 - Use MSIX for modern Windows
 - Sign all executables
 - Support both PowerShell and CMD
@@ -977,10 +1002,11 @@ def test_installation() -> None:
 strategy:
   matrix:
     os: [ubuntu-latest, macos-latest, windows-latest]
-    python-version: ['3.12', '3.13']
+    python-version: ["3.12", "3.13"]
 ```
 
 **Best Practices:**
+
 - Test installation on all platforms
 - Test CLI functionality
 - Test resource access (hooks, templates)
@@ -1000,11 +1026,13 @@ strategy:
 ## macOS
 
 ### Homebrew (Recommended)
+
 \`\`\`bash
 brew install thegent
 \`\`\`
 
 ### pip
+
 \`\`\`bash
 pip install thegent
 \`\`\`
@@ -1012,11 +1040,13 @@ pip install thegent
 ## Linux
 
 ### Debian/Ubuntu
+
 \`\`\`bash
 sudo apt install thegent
 \`\`\`
 
 ### Fedora/RHEL
+
 \`\`\`bash
 sudo yum install python3-thegent
 \`\`\`
@@ -1024,17 +1054,20 @@ sudo yum install python3-thegent
 ## Windows
 
 ### Winget (Recommended)
+
 \`\`\`powershell
 winget install thegent
 \`\`\`
 
 ### pip
+
 \`\`\`powershell
 pip install thegent
 \`\`\`
 ```
 
 **Best Practices:**
+
 - Provide platform-specific instructions
 - Show multiple installation methods
 - Include verification steps
@@ -1052,6 +1085,7 @@ pip install thegent
 **Symptoms:** `thegent: command not found`
 
 **Solutions:**
+
 - macOS: Ensure `/opt/homebrew/bin` is in PATH
 - Linux: Ensure `~/.local/bin` is in PATH
 - Windows: Restart terminal after installation
@@ -1061,12 +1095,14 @@ pip install thegent
 **Symptoms:** Permission errors when running commands
 
 **Solutions:**
+
 - Check file permissions
 - Run with appropriate privileges
 - Check antivirus exclusions (Windows)
 ```
 
 **Best Practices:**
+
 - Document common issues
 - Provide step-by-step solutions
 - Include platform-specific fixes
@@ -1168,22 +1204,26 @@ pip install thegent
 ### 12.1 Enhancements to Production Packaging Plan
 
 **Add to Section 2 (Packaging & Distribution):**
+
 - Dynamic versioning implementation
 - Package data access patterns
 - Binary wheel strategy details
 - Native package manager specifics
 
 **Add to Section 5 (Error Handling):**
+
 - Platform-specific error remediation
 - Actionable error messages
 - Troubleshooting integration
 
 **Add to Section 7 (User Experience):**
+
 - First-run wizard implementation
 - Progress indicators
 - Update notification patterns
 
 **Add to Section 10 (CI/CD):**
+
 - Release automation workflows
 - Multi-channel distribution
 - Code signing automation
@@ -1191,17 +1231,20 @@ pip install thegent
 ### 12.2 New Sections to Add
 
 **Section: Update Mechanisms**
+
 - Auto-update patterns
 - Package manager detection
 - Version compatibility checking
 
 **Section: Security & Signing**
+
 - Code signing requirements
 - Notarization (macOS)
 - GPG signing (Linux)
 - Security best practices
 
 **Section: Distribution Channels**
+
 - Multi-channel strategy
 - Release coordination
 - Channel-specific considerations
@@ -1245,12 +1288,14 @@ name = "thegent-plugins"
 ```
 
 **Benefits:**
+
 - Separate versioning and distribution
 - Independent release cycles
 - Modular installation (users install only what they need)
 - Compatible with regular packages
 
 **Best Practices:**
+
 - Use native namespace packages (PEP 420) for Python 3.3+
 - Omit `__init__.py` from namespace directory
 - Each distribution must omit `__init__.py` or use compatible pattern
@@ -1284,12 +1329,14 @@ pip install -e .
 ```
 
 **Backend Support:**
+
 - `hatchling` — Full PEP 660 support
 - `setuptools` — Via `setuptools_pep660` plugin
 - `flit` — Native support
 - `pdm` — Native support
 
 **Best Practices:**
+
 - Use editable installs for development
 - Test both editable and regular installs
 - Document editable install limitations (entry points, data files may require reinstall)
@@ -1316,6 +1363,7 @@ def make_install(exe):
 ```
 
 **Benefits:**
+
 - Single-file executables
 - No Python installation required
 - Fast startup (Rust bootloader)
@@ -1335,12 +1383,14 @@ python -m nuitka --include-data-dir=hooks=hooks thegent/cli.py
 ```
 
 **Benefits:**
+
 - Faster execution (compiled to C++)
 - Smaller binaries than PyInstaller
 - Better compatibility with CPython
 - Cross-platform support
 
 **Best Practices:**
+
 - Use PyOxidizer for maximum performance and single-file distribution
 - Use Nuitka for compatibility-focused compilation
 - Test compiled binaries on target platforms
@@ -1423,6 +1473,7 @@ pip-audit --sbom=sbom.json
 ```
 
 **Best Practices:**
+
 - Generate SBOMs for all releases
 - Include SBOMs in release artifacts
 - Use PURL for package identification
@@ -1439,13 +1490,13 @@ name: SLSA Build
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build:
     uses: slsa-framework/slsa-github-generator/.github/workflows/builder_go_slsa3.yml@v1.0.0
     with:
-      go-version: '1.21'
+      go-version: "1.21"
 ```
 
 **Cosign** — Container and artifact signing:
@@ -1481,6 +1532,7 @@ osv-scanner --offline --download-offline-databases ./thegent
 ```
 
 **Best Practices:**
+
 - Sign all release artifacts (wheels, SBOMs, containers)
 - Use keyless signing (Sigstore) for simplicity
 - Generate SBOMs for every release
@@ -1494,6 +1546,7 @@ osv-scanner --offline --download-offline-databases ./thegent
 ### 15.1 Principles
 
 **Deterministic Builds:**
+
 - Same source → same binary (bit-for-bit)
 - No timestamps in binaries
 - Deterministic file ordering
@@ -1545,6 +1598,7 @@ reprotest 'python -m build --wheel' dist/*.whl
 ```
 
 **Best Practices:**
+
 - Use `SOURCE_DATE_EPOCH` environment variable
 - Pin all build dependencies
 - Use deterministic file ordering
@@ -1598,8 +1652,8 @@ jobs:
 ```yaml
 env:
   # Build selection
-  CIBW_BUILD_SKIP: "cp38-*"  # Skip Python 3.8
-  CIBW_ARCHS: "x86_64 arm64"  # Specific architectures
+  CIBW_BUILD_SKIP: "cp38-*" # Skip Python 3.8
+  CIBW_ARCHS: "x86_64 arm64" # Specific architectures
 
   # Build customization
   CIBW_BEFORE_BUILD: "pip install build-requirements.txt"
@@ -1630,7 +1684,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ["3.10", "3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -1683,7 +1737,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build:
@@ -1732,6 +1786,7 @@ jobs:
 ```
 
 **Best Practices:**
+
 - Build for all target platforms in parallel
 - Test wheels before publishing
 - Sign all release artifacts
@@ -1812,6 +1867,7 @@ pip install --only-binary=:all: thegent
 ```
 
 **Best Practices:**
+
 - Provide wheels for all platforms
 - Use lazy imports for optional features
 - Minimize package size (exclude tests, docs)
@@ -1915,7 +1971,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-20.04, macos-12, windows-2022]
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ["3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/download-artifact@v4
@@ -1932,6 +1988,7 @@ jobs:
 ```
 
 **Best Practices:**
+
 - Test installation in clean environments
 - Test resource access (hooks, templates)
 - Test platform-specific code paths
@@ -1969,18 +2026,21 @@ updater.download_target(target, "thegent.whl")
 ```
 
 **TUF Roles:**
+
 - **Root** — Defines trusted keys and roles
 - **Timestamp** — Indicates latest snapshot metadata
 - **Snapshot** — Lists available targets metadata
 - **Targets** — Lists actual target files
 
 **Benefits:**
+
 - Protection against repository compromise
 - Key rotation support
 - Rollback prevention
 - Freeze attack prevention
 
 **Best Practices:**
+
 - Use TUF for critical update mechanisms
 - Implement key rotation policies
 - Use threshold signatures for security
@@ -2044,6 +2104,7 @@ envelope.sign(key)
 ```
 
 **Best Practices:**
+
 - Generate attestations for all builds
 - Include comprehensive build metadata
 - Sign attestations with cosign
@@ -2081,12 +2142,14 @@ is_valid = DSSE.verify_envelope(envelope=envelope, verifier=verifier)
 ```
 
 **Benefits:**
+
 - Supports arbitrary message encodings
 - Authenticates message and type
 - Avoids canonicalization issues
 - Allows any crypto primitives
 
 **Best Practices:**
+
 - Use DSSE for signing attestations
 - Store payload type explicitly
 - Use key IDs for key management
@@ -2102,7 +2165,7 @@ is_valid = DSSE.verify_envelope(envelope=envelope, verifier=verifier)
 
 ```yaml
 name: thegent
-version: '0.1.0'
+version: "0.1.0"
 summary: Agentic orchestration & governance platform
 description: |
   Comprehensive platform for AI agent lifecycle management,
@@ -2150,6 +2213,7 @@ snapcraft upload --release=stable thegent_0.1.0_amd64.snap
 ```
 
 **Best Practices:**
+
 - Use strict confinement for security
 - Define required plugs explicitly
 - Test snap in clean environment
@@ -2166,11 +2230,7 @@ snapcraft upload --release=stable thegent_0.1.0_amd64.snap
   "runtime-version": "23.08",
   "sdk": "org.freedesktop.Sdk",
   "command": "thegent",
-  "finish-args": [
-    "--share=network",
-    "--socket=x11",
-    "--filesystem=home"
-  ],
+  "finish-args": ["--share=network", "--socket=x11", "--filesystem=home"],
   "modules": [
     {
       "name": "thegent",
@@ -2205,6 +2265,7 @@ flatpak build-bundle repo thegent.flatpak org.thegent
 ```
 
 **Best Practices:**
+
 - Use stable runtime versions
 - Minimize finish-args for security
 - Test in clean environment
@@ -2240,6 +2301,7 @@ python-appimage build thegent
 ```
 
 **Best Practices:**
+
 - Include desktop file for integration
 - Test on multiple distributions
 - Sign AppImage with GPG
@@ -2252,6 +2314,7 @@ python-appimage build thegent
 ### 21.1 uv — Ultra-Fast Python Package Manager
 
 **Features:**
+
 - 10-100x faster than pip
 - Single tool replacing pip, pip-tools, pipx, poetry, pyenv, twine, virtualenv
 - Universal lockfile support
@@ -2302,6 +2365,7 @@ dev-dependencies = [
 ```
 
 **Best Practices:**
+
 - Use uv for faster dependency resolution
 - Leverage universal lockfile
 - Use uvx for one-off tool execution
@@ -2343,6 +2407,7 @@ thegent-serve = "thegent.server:main"
 ```
 
 **Best Practices:**
+
 - Add console script entry points
 - Test installation with pipx
 - Document pipx installation method
@@ -2395,6 +2460,7 @@ pipenv check
 ```
 
 **Best Practices:**
+
 - Use Pipfile for dependency management
 - Lock dependencies with Pipfile.lock
 - Check for vulnerabilities regularly
@@ -2473,6 +2539,7 @@ git commit -m "message"
 ```
 
 **Best Practices:**
+
 - Use pre-commit for all projects
 - Include security checks (bandit, gitleaks)
 - Format code automatically (black, ruff)
@@ -2537,6 +2604,7 @@ ruff rule E501
 ```
 
 **Best Practices:**
+
 - Use ruff instead of flake8 + plugins
 - Enable auto-fix for common issues
 - Configure per-file ignores
@@ -2585,6 +2653,7 @@ black --diff .
 ```
 
 **Best Practices:**
+
 - Use black for consistent formatting
 - Set line-length to 88 (default)
 - Include in pre-commit hooks
@@ -2653,6 +2722,7 @@ def process_data(data: Dict[str, Union[str, int]], options: Optional[List[str]] 
 ```
 
 **Best Practices:**
+
 - Use type hints throughout codebase
 - Enable strict mode gradually
 - Use mypy daemon for faster checks
@@ -2690,6 +2760,7 @@ def test_path_operations(path_parts: List[int], max_depth: int):
 ```
 
 **Best Practices:**
+
 - Use property-based testing for complex logic
 - Test edge cases automatically
 - Combine with unit tests
@@ -2760,15 +2831,16 @@ def get_platform_info() -> Dict[str, Any]:
 ```
 
 **Best Practices:**
+
 - Use lazy imports for optional features
 - Defer heavy imports until needed
 - Cache expensive computations
-- Minimize imports in __init__.py
+- Minimize imports in **init**.py
 - Profile startup time
 
 ### 23.2 Memory Optimization
 
-**__slots__ for Classes:**
+\***\*slots** for Classes:\*\*
 
 ```python
 class PlatformInfo:
@@ -2798,7 +2870,8 @@ for hook_file in walk_hooks_dir():
 ```
 
 **Best Practices:**
-- Use __slots__ for data classes
+
+- Use **slots** for data classes
 - Use generators for large datasets
 - Avoid loading entire files into memory
 - Use streaming for large operations
@@ -2845,6 +2918,7 @@ python -m zipfile -c wheel.whl -l 9 dist/
 ```
 
 **Best Practices:**
+
 - Exclude tests and development files
 - Strip debug symbols in production
 - Use maximum compression
@@ -2910,6 +2984,7 @@ jobs:
 ```
 
 **Best Practices:**
+
 - Automate package manager updates
 - Use GitOps for version control
 - Test package updates before merging
@@ -2974,6 +3049,7 @@ else:
 ```
 
 **Best Practices:**
+
 - Use canary releases for testing
 - Implement feature flags
 - Monitor canary metrics
@@ -3031,6 +3107,7 @@ RUN python -m build --wheel
 ```
 
 **Best Practices:**
+
 - Cache dependencies separately from source
 - Use content-based cache keys
 - Cache build artifacts
@@ -3081,6 +3158,7 @@ def report_error(error: Exception, context: Dict[str, Any]):
 ```
 
 **Best Practices:**
+
 - Use structured logging
 - Track key metrics (installations, errors)
 - Respect user privacy (opt-in telemetry)
@@ -3127,6 +3205,7 @@ thegent doctor
 ```
 
 **Best Practices:**
+
 - Provide health check command
 - Include actionable diagnostics
 - Test health checks regularly
@@ -3171,6 +3250,7 @@ def generate_license_file() -> str:
 ```
 
 **Best Practices:**
+
 - Document all licenses
 - Include license files in distribution
 - Verify license compatibility
@@ -3198,6 +3278,7 @@ def check_export_compliance() -> bool:
 ```
 
 **Best Practices:**
+
 - Classify software for export control
 - Document encryption usage
 - Comply with international regulations
@@ -3264,6 +3345,7 @@ poetry export -f requirements.txt --output requirements.txt
 ```
 
 **Best Practices:**
+
 - Use Poetry for dependency management
 - Lock dependencies with poetry.lock
 - Use dependency groups for organization
@@ -3325,6 +3407,7 @@ pdm publish
 ```
 
 **Best Practices:**
+
 - Use PDM for PEP 621 compliance
 - Leverage fast dependency resolver
 - Use optional dependencies for groups
@@ -3390,6 +3473,7 @@ hatch publish
 ```
 
 **Best Practices:**
+
 - Use Hatch for modern project management
 - Leverage environment management
 - Use standardized build system
@@ -3456,6 +3540,7 @@ conda install thegent
 ```
 
 **Best Practices:**
+
 - Use Conda for binary packages
 - Support conda-forge distribution
 - Provide comprehensive meta.yaml
@@ -3544,6 +3629,7 @@ choco search thegent
 ```
 
 **Best Practices:**
+
 - Provide Chocolatey package
 - Use proper nuspec metadata
 - Include checksums for security
@@ -3598,6 +3684,7 @@ scoop list
 ```
 
 **Best Practices:**
+
 - Provide Scoop manifest
 - Support auto-update
 - Use portable installation
@@ -3678,6 +3765,7 @@ sanitizers:
 ```
 
 **Best Practices:**
+
 - Integrate OSS-Fuzz for continuous fuzzing
 - Write fuzzing targets for critical code
 - Monitor fuzzing results regularly
@@ -3726,6 +3814,7 @@ mut.py --target thegent.platform --unit-test tests.test_platform --operator AOR 
 ```
 
 **Best Practices:**
+
 - Use mutation testing to evaluate test quality
 - Aim for high mutation scores (>80%)
 - Fix tests that don't kill mutants
@@ -3808,6 +3897,7 @@ chaos validate experiment.json
 ```
 
 **Best Practices:**
+
 - Use chaos engineering for resilience testing
 - Start with safe experiments
 - Define clear steady-state hypotheses
@@ -3867,6 +3957,7 @@ def distribute_all_channels(version: str):
 ```
 
 **Best Practices:**
+
 - Support multiple distribution channels
 - Prioritize channels by user preference
 - Automate multi-channel distribution
@@ -3909,6 +4000,7 @@ def should_release_to_user(user_id: str, phase: str) -> bool:
 ```
 
 **Best Practices:**
+
 - Implement staged rollouts
 - Monitor metrics at each phase
 - Support rollback mechanisms
@@ -3953,6 +4045,7 @@ def get_version_for_user(user_id: str) -> str:
 ```
 
 **Best Practices:**
+
 - Use A/B testing for major releases
 - Monitor key metrics
 - Support gradual rollout
@@ -4028,6 +4121,7 @@ except Exception as e:
 ```
 
 **Best Practices:**
+
 - Use structured error classes
 - Include error codes for programmatic handling
 - Provide actionable error messages
@@ -4079,6 +4173,7 @@ def recover_from_error(error: Exception) -> bool:
 ```
 
 **Best Practices:**
+
 - Implement retry logic for transient failures
 - Use exponential backoff
 - Distinguish recoverable vs. non-recoverable errors
@@ -4137,6 +4232,7 @@ def format_user_error(error: ThegentError) -> str:
 ```
 
 **Best Practices:**
+
 - Provide clear, actionable error messages
 - Include suggestions for resolution
 - Link to documentation
@@ -4230,6 +4326,7 @@ class ConfigManager:
 ```
 
 **Best Practices:**
+
 - Support hierarchical configuration
 - Define clear precedence order
 - Support multiple file formats
@@ -4281,6 +4378,7 @@ def validate_config(config_dict: Dict[str, Any]) -> ConfigSchema:
 ```
 
 **Best Practices:**
+
 - Use schema validation for configuration
 - Provide clear validation errors
 - Support configuration documentation
@@ -4353,7 +4451,7 @@ This research provides comprehensive, in-depth guidance for building and deployi
 ### Performance Optimization (Sections 17, 23)
 
 41. **Startup Time** — Lazy imports, deferred CLI loading, module caching
-42. **Memory Optimization** — __slots__, generators, streaming patterns
+42. **Memory Optimization** — **slots**, generators, streaming patterns
 43. **Binary Size** — Exclude unnecessary files, strip debug symbols, compression
 44. **Wheel Optimization** — Lazy loading, size reduction, parallel installation
 
@@ -4418,6 +4516,7 @@ This research provides comprehensive, in-depth guidance for building and deployi
 ### Key Recommendations
 
 **Immediate Priorities:**
+
 - Implement modern Python packaging with `pyproject.toml`
 - Set up comprehensive CI/CD with matrix builds
 - Generate SBOMs for all releases
@@ -4427,6 +4526,7 @@ This research provides comprehensive, in-depth guidance for building and deployi
 - Implement configuration validation
 
 **Short-Term Goals:**
+
 - Support multiple distribution platforms (Snap, Flatpak, AppImage, Chocolatey, Scoop)
 - Implement TUF for secure updates
 - Add comprehensive health checks and diagnostics
@@ -4437,6 +4537,7 @@ This research provides comprehensive, in-depth guidance for building and deployi
 - Add multi-channel distribution automation
 
 **Long-Term Vision:**
+
 - Achieve SLSA Build Level 3+ compliance
 - Implement in-toto attestations for all builds
 - Support all major package managers natively (Poetry, PDM, Hatch, Conda, uv, pipx, pipenv)

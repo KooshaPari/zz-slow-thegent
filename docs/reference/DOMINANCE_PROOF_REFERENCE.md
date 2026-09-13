@@ -8,6 +8,7 @@
 ## Dominance Definition
 
 **Model A dominates Model B** if:
+
 1. A is ≥ B on quality, cost, and speed (all same or better), AND
 2. A is strictly better on at least 2 dimensions
 
@@ -24,16 +25,19 @@
 **Proof**:
 
 Dimension 1: Quality
+
 - MiniMax: 80.2%
 - Sonnet: 77.2%
 - Result: 80.2% > 77.2% ✓ (MiniMax strictly better)
 
 Dimension 2: Cost
+
 - MiniMax: $0.79/M
 - Sonnet: $10.50/M
 - Result: $0.79 < $10.50 ✓ (MiniMax strictly better, 13.3x cheaper)
 
 Dimension 3: Speed
+
 - MiniMax: moderate (~75 tok/s)
 - Sonnet: moderate (~75 tok/s)
 - Result: equivalent (tie)
@@ -50,16 +54,19 @@ Dimension 3: Speed
 **Proof**:
 
 Dimension 1: Quality
+
 - GPT-4o mini: 70.0%
 - Codex: 56.8%
 - Result: 70.0% > 56.8% ✓ (GPT-4o mini strictly better, 13.2 percentage points)
 
 Dimension 2: Cost
+
 - GPT-4o mini: $0.375/M
 - Codex: $1.25/M
 - Result: $0.375 < $1.25 ✓ (GPT-4o mini strictly better, 3.3x cheaper)
 
 Dimension 3: Speed
+
 - GPT-4o mini: fast (~120 tok/s)
 - Codex: fast (~120 tok/s)
 - Result: equivalent (tie)
@@ -76,16 +83,19 @@ Dimension 3: Speed
 **Proof**:
 
 Dimension 1: Quality
+
 - MiniMax: 80.2%
 - Gemini Flash: 78.0%
 - Result: 80.2% > 78.0% ✓ (MiniMax strictly better, 2.2 percentage points)
 
 Dimension 2: Cost
+
 - MiniMax: $0.79/M
 - Gemini Flash: $1.50/M
 - Result: $0.79 < $1.50 ✓ (MiniMax strictly better, 1.9x cheaper)
 
 Dimension 3: Speed
+
 - MiniMax: moderate (~75 tok/s)
 - Gemini Flash: ultra-fast (218 tok/s)
 - Result: Gemini Flash strictly better (2.8x faster)
@@ -103,21 +113,25 @@ Dimension 3: Speed
 **Proof**:
 
 Dimension 1: Quality
+
 - MiniMax: 80.2%
 - Gemini 2.5 Pro: 75.0%
 - Result: 80.2% > 75.0% ✓ (MiniMax strictly better, 5.2 percentage points)
 
 Dimension 2: Cost
+
 - MiniMax: $0.79/M
 - Gemini 2.5 Pro: $4.07/M
 - Result: $0.79 < $4.07 ✓ (MiniMax strictly better, 5.2x cheaper)
 
 Dimension 3: Speed
+
 - MiniMax: moderate (~75 tok/s)
 - Gemini 2.5 Pro: moderate (~75 tok/s)
 - Result: equivalent (tie)
 
 Dimension 4 (bonus): Modality
+
 - MiniMax: text-only
 - Gemini 2.5 Pro: multi-modal (image + text)
 - Note: Multi-modal is advantage FOR Gemini, not a dimension of dominance
@@ -137,16 +151,19 @@ Dimension 4 (bonus): Modality
 Part A: Reasoning specialist dimension
 
 Dimension 1: Reasoning (AIME %)
+
 - GLM-5: 92.7%
 - MiniMax: 60.0%
 - Result: 92.7% > 60.0% ✓ (GLM-5 strictly better, 32.7 percentage points)
 
 Dimension 2: Cost
+
 - GLM-5: $2.60/M
 - MiniMax: $0.79/M
 - Result: $2.60 > $0.79 ✗ (MiniMax strictly better)
 
 Dimension 3: Coding (SWE-Bench %)
+
 - GLM-5: ~70% (estimated, not published)
 - MiniMax: 80.2%
 - Result: 80.2% > 70% (MiniMax strictly better)
@@ -156,6 +173,7 @@ Dimension 3: Coding (SWE-Bench %)
 Part B: Cost-value analysis
 
 Cost per 1% quality (general tasks, using SWE-Bench):
+
 - MiniMax: $0.79 / 80.2% = $0.00985 per percentage point
 - GLM-5: $2.60 / ~70% = $0.0371 per percentage point
 - Ratio: GLM-5 is 3.7x more expensive per unit quality
@@ -175,11 +193,13 @@ Cost per 1% quality (general tasks, using SWE-Bench):
 Part A: Opus on pure quality dimension
 
 Dimension 1: Quality
+
 - Opus: 80.8%
 - All competitors: ≤ 80.2%
 - Result: 80.8% > all others ✓ (Opus strictly best)
 
 Dimension 2: Cost
+
 - Opus: $17.50/M
 - Competitors: $0.375-$10.50/M
 - Result: Opus is most expensive ✗
@@ -189,11 +209,13 @@ Dimension 2: Cost
 Part B: Quality-cost frontier
 
 Cost per 1% quality:
+
 - GPT-4o mini: $0.375 / 70% = $0.00536 per percentage point
 - MiniMax: $0.79 / 80.2% = $0.00985 per percentage point
 - Opus: $17.50 / 80.8% = $0.21655 per percentage point
 
 Opus cost-benefit:
+
 - vs MiniMax: 80.8% vs 80.2% quality = +0.6% improvement for +$16.71/M cost
   - 0.6% improvement for 22x cost increase = TERRIBLE value for NORMAL tasks
 - vs GPT-4o mini: 80.8% vs 70% quality = +10.8% improvement for +$17.125/M cost
@@ -202,6 +224,7 @@ Opus cost-benefit:
 **Part C: Mission-critical exception**
 
 For mission-critical tasks (medical, financial, legal), cost becomes irrelevant:
+
 - Quality becomes absolute requirement (not preference)
 - Opus's 80.8% vs MiniMax's 80.2% = practical equivalence, BUT
 - Opus's proven reliability for complex tasks = justifies premium
@@ -220,6 +243,7 @@ For mission-critical tasks (medical, financial, legal), cost becomes irrelevant:
 **Proof**:
 
 Dimension 1: Quality Floor Check
+
 - Quality threshold: 60% (minimum acceptable)
 - Spark estimated quality: ~50%
 - Result: 50% < 60% ✗ (Fails floor check immediately)
@@ -230,11 +254,13 @@ Dimension 1: Quality Floor Check
 For completeness, dominance vs GPT-4o mini:
 
 Dimension 1: Quality
+
 - GPT-4o mini: 70%
 - Spark: ~50%
 - Result: 70% > 50% ✓ (GPT-4o mini strictly better, 20 percentage points)
 
 Dimension 2: Cost
+
 - GPT-4o mini: $0.375/M
 - Spark: ~$1.00/M
 - Result: $0.375 < $1.00 ✓ (GPT-4o mini strictly better, 2.7x cheaper)
@@ -246,18 +272,18 @@ Dimension 2: Cost
 
 ## Dominance Summary Table
 
-| Model | Dominated By | Dimensions | Reason |
-|-------|---|---|---|
-| Claude Haiku 4.5 | MiniMax M2.5 | Quality (80.2% > 62.5%), Cost ($0.79 ≈ $0.80) | Higher quality, same cost |
-| Claude Sonnet 4.5 | MiniMax M2.5 | Quality (80.2% > 77.2%), Cost ($0.79 < $10.50) | Higher quality, 13.3x cheaper |
-| Gemini 3 Flash | MiniMax M2.5 | Quality (80.2% > 78%), Cost ($0.79 < $1.50) | Higher quality, 1.9x cheaper (BUT speed fallback) |
-| Gemini 2.5 Pro | MiniMax M2.5 | Quality (80.2% > 75%), Cost ($0.79 < $4.07) | Higher quality, 5.2x cheaper |
-| GLM-5 | MiniMax + Opus | Cost (vs MiniMax), Coding (vs Opus) | 3.7x more expensive for 70% coding quality; Opus better for mixed tasks |
-| Codex 5.3 | GPT-4o mini | Quality (70% > 56.8%), Cost ($0.375 < $1.25) | Higher quality, 3.3x cheaper; ALSO fails quality floor |
-| Codex-Spark | GPT-4o mini | Quality (70% > 50%), Cost ($0.375 < $1.00) | Higher quality, cheaper; ALSO fails quality floor |
-| Claude Opus 4.6 | None on pure quality | (not applicable) | Best quality (80.8%), but off frontier for cost-quality (reserved for mission-critical) |
-| MiniMax M2.5 | None | (not applicable) | On frontier (best cost-quality balance) |
-| GPT-4o mini | None | (not applicable) | On frontier (lowest cost tier) |
+| Model             | Dominated By         | Dimensions                                     | Reason                                                                                  |
+| ----------------- | -------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Claude Haiku 4.5  | MiniMax M2.5         | Quality (80.2% > 62.5%), Cost ($0.79 ≈ $0.80)  | Higher quality, same cost                                                               |
+| Claude Sonnet 4.5 | MiniMax M2.5         | Quality (80.2% > 77.2%), Cost ($0.79 < $10.50) | Higher quality, 13.3x cheaper                                                           |
+| Gemini 3 Flash    | MiniMax M2.5         | Quality (80.2% > 78%), Cost ($0.79 < $1.50)    | Higher quality, 1.9x cheaper (BUT speed fallback)                                       |
+| Gemini 2.5 Pro    | MiniMax M2.5         | Quality (80.2% > 75%), Cost ($0.79 < $4.07)    | Higher quality, 5.2x cheaper                                                            |
+| GLM-5             | MiniMax + Opus       | Cost (vs MiniMax), Coding (vs Opus)            | 3.7x more expensive for 70% coding quality; Opus better for mixed tasks                 |
+| Codex 5.3         | GPT-4o mini          | Quality (70% > 56.8%), Cost ($0.375 < $1.25)   | Higher quality, 3.3x cheaper; ALSO fails quality floor                                  |
+| Codex-Spark       | GPT-4o mini          | Quality (70% > 50%), Cost ($0.375 < $1.00)     | Higher quality, cheaper; ALSO fails quality floor                                       |
+| Claude Opus 4.6   | None on pure quality | (not applicable)                               | Best quality (80.8%), but off frontier for cost-quality (reserved for mission-critical) |
+| MiniMax M2.5      | None                 | (not applicable)                               | On frontier (best cost-quality balance)                                                 |
+| GPT-4o mini       | None                 | (not applicable)                               | On frontier (lowest cost tier)                                                          |
 
 ---
 
@@ -321,11 +347,13 @@ Codex 5.3        $1.25    56.8%     $0.02199         N/A (fails floor)
 ## Conclusion
 
 **Only 3 models on Pareto frontier:**
+
 1. **GPT-4o mini** — Cost floor (lowest acceptable quality at lowest price)
 2. **MiniMax M2.5** — Optimal balance (best cost-quality ratio)
 3. **Claude Opus 4.6** — Quality peak (highest quality for mission-critical)
 
 **All other models are dominated:**
+
 - Claude Sonnet: Loses to MiniMax on both quality and cost
 - Gemini Flash: Loses to MiniMax on cost-quality (speed fallback only)
 - Gemini 2.5 Pro: Loses to MiniMax on cost-quality (image fallback only)
@@ -340,14 +368,12 @@ Codex 5.3        $1.25    56.8%     $0.02199         N/A (fails floor)
 **Verified**: 2026-02-15
 **Method**: Dominance proof via dimension-by-dimension comparison
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog
 - [00-MASTER-INDEX.md](../plans/00-MASTER-INDEX.md) — plan index
-
-
 
 ---
 
@@ -357,15 +383,18 @@ Codex 5.3        $1.25    56.8%     $0.02199         N/A (fails floor)
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

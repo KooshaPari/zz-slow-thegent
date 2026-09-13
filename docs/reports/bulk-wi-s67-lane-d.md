@@ -1,89 +1,109 @@
 ### [WL-8900]
+
 **Title:** Preserve policy enforcement by separating parse and execution branches
 **Source:** [thegent/src/thegent/automation/workflow.go:320]
-**Acceptance checklist:
+\*\*Acceptance checklist:
+
 - [ ] Separate parser failures from execution failures.
 - [ ] Preserve partial behavior on downstream failures.
 - [ ] Add tests for both branch failures.
-**Notes:** Continuation artifact for high-volume work item stream.
+      **Notes:** Continuation artifact for high-volume work item stream.
 
 ### [WL-8901]
+
 **Title:** Preserve command routing by separating parse and execution branches
 **Source:** [thegent/src/thegent/automation/workflow.go:321]
-**Acceptance checklist:
+\*\*Acceptance checklist:
+
 - [ ] Separate parser failures from execution failures.
 - [ ] Preserve partial behavior on downstream failures.
 - [ ] Add tests for both branch failures.
-**Notes:** Continuation artifact for high-volume work item stream.
+      **Notes:** Continuation artifact for high-volume work item stream.
 
 ### [WL-8902]
+
 **Title:** Preserve telemetry pipeline by separating parse and execution branches
 **Source:** [thegent/src/thegent/automation/workflow.go:322]
-**Acceptance checklist:
+\*\*Acceptance checklist:
+
 - [ ] Separate parser failures from execution failures.
 - [ ] Preserve partial behavior on downstream failures.
 - [ ] Add tests for both branch failures.
-**Notes:** Continuation artifact for high-volume work item stream.
+      **Notes:** Continuation artifact for high-volume work item stream.
 
 ### [WL-8903]
+
 **Title:** Preserve health diagnostics by separating parse and execution branches
 **Source:** [thegent/src/thegent/automation/workflow.go:323]
-**Acceptance checklist:
+\*\*Acceptance checklist:
+
 - [ ] Separate parser failures from execution failures.
 - [ ] Preserve partial behavior on downstream failures.
 - [ ] Add tests for both branch failures.
-**Notes:** Continuation artifact for high-volume work item stream.
+      **Notes:** Continuation artifact for high-volume work item stream.
 
 ### [WL-8904]
+
 **Title:** Preserve retry behavior by separating parse and execution branches
 **Source:** [thegent/src/thegent/automation/workflow.go:324]
-**Acceptance checklist:
+\*\*Acceptance checklist:
+
 - [ ] Separate parser failures from execution failures.
 - [ ] Preserve partial behavior on downstream failures.
 - [ ] Add tests for both branch failures.
-**Notes:** Continuation artifact for high-volume work item stream.
+      **Notes:** Continuation artifact for high-volume work item stream.
 
 ### [WL-8905]
+
 **Title:** Preserve connector onboarding by separating parse and execution branches
 **Source:** [thegent/src/thegent/automation/workflow.go:325]
-**Acceptance checklist:
+\*\*Acceptance checklist:
+
 - [ ] Separate parser failures from execution failures.
 - [ ] Preserve partial behavior on downstream failures.
 - [ ] Add tests for both branch failures.
-**Notes:** Continuation artifact for high-volume work item stream.
+      **Notes:** Continuation artifact for high-volume work item stream.
 
 ### [WL-8906]
+
 **Title:** Preserve session restoration by separating parse and execution branches
 **Source:** [thegent/src/thegent/automation/workflow.go:326]
-**Acceptance checklist:
+\*\*Acceptance checklist:
+
 - [ ] Separate parser failures from execution failures.
 - [ ] Preserve partial behavior on downstream failures.
 - [ ] Add tests for both branch failures.
-**Notes:** Continuation artifact for high-volume work item stream.
+      **Notes:** Continuation artifact for high-volume work item stream.
 
 ### [WL-8907]
+
 **Title:** Preserve plugin registration by separating parse and execution branches
 **Source:** [thegent/src/thegent/automation/workflow.go:327]
-**Acceptance checklist:
+\*\*Acceptance checklist:
+
 - [ ] Separate parser failures from execution failures.
 - [ ] Preserve partial behavior on downstream failures.
 - [ ] Add tests for both branch failures.
-**Notes:** Continuation artifact for high-volume work item stream.
+      **Notes:** Continuation artifact for high-volume work item stream.
 
 ### [WL-8908]
+
 **Title:** Preserve routing integrity by separating parse and execution branches
 **Source:** [thegent/src/thegent/automation/workflow.go:328]
-**Acceptance checklist:
+\*\*Acceptance checklist:
+
 - [ ] Separate parser failures from execution failures.
 - [ ] Preserve partial behavior on downstream failures.
 - [ ] Add tests for both branch failures.
-**Notes:** Continuation artifact for high-volume work item stream.
+      **Notes:** Continuation artifact for high-volume work item stream.
 
 ### [WL-8909]
+
 **Title:** Preserve validation flow by separating parse and execution branches
 **Source:** [thegent/src/thegent/automation/workflow.go:329]
-**Acceptance checklist:
+\*\*Acceptance checklist:
+
 - [ ] Separate parser failures from execution failures.
 - [ ] Preserve partial behavior on downstream failures.
 - [ ] Add tests for both branch failures.
-**Notes:** Continuation artifact for high-volume work item stream.
+      **Notes:** Continuation artifact for high-volume work item stream.

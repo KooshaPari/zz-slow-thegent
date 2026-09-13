@@ -86,17 +86,18 @@ Claude Code Cursor Codex Copilot Claude Gemini Etc.
 
 ### 1. **Multi-Provider Orchestration**
 
-| Feature | thegent | heliosCLI | phenotype-infrakit |
-|---------|---------|-----------|-------------------|
-| Multi-agent coordination | ✅ (core) | ⚠️ (harness only) | ❌ |
-| Provider fallback chains | ✅ | ❌ | ❌ |
-| Cost-aware routing | ✅ (via LiteLLM) | ❌ | ❌ |
-| Agent registry | ✅ (canonical) | ⚠️ (helpers only) | ❌ |
-| **Scope** | **Agent orchestration** | **Development harness** | **Shared Rust libs** |
+| Feature                  | thegent                 | heliosCLI               | phenotype-infrakit   |
+| ------------------------ | ----------------------- | ----------------------- | -------------------- |
+| Multi-agent coordination | ✅ (core)               | ⚠️ (harness only)       | ❌                   |
+| Provider fallback chains | ✅                      | ❌                      | ❌                   |
+| Cost-aware routing       | ✅ (via LiteLLM)        | ❌                      | ❌                   |
+| Agent registry           | ✅ (canonical)          | ⚠️ (helpers only)       | ❌                   |
+| **Scope**                | **Agent orchestration** | **Development harness** | **Shared Rust libs** |
 
 ### 2. **Harmonious Experience (HAX)**
 
 thegent implements the **Harmonious Agent Experience (HAX)** initiative:
+
 - **Same rules work everywhere**: `$defer`, `$block`, `$idea` syntax works in Claude Code, Cursor, Codex, Copilot
 - **One memory**: Cloud-scale knowledge graph (Supermemory.ai) shared across all platforms
 - **Unified routing**: Intelligent multi-provider routing with LiteLLM
@@ -111,6 +112,7 @@ thegent implements the **Harmonious Agent Experience (HAX)** initiative:
 ### 4. **Self-Healing Governance**
 
 The **Gardener Agent** automatically:
+
 - Synthesizes session history into `CLAUDE.md`, `ADR.md`, `PRD.md`
 - Updates specs with latest decisions and work items
 - Maintains documentation debt near zero
@@ -225,6 +227,7 @@ pub struct RunResult {
 ```
 
 **Implementations:**
+
 - **DirectAgentRunner**: Native CLI (claude-agent, cursor-agent, gemini, copilot)
 - **CodexProxyRunner**: CLIProxyAPIPlus proxy (minimax, glm, antigravity, cliproxy)
 - **CursorApiRunner**: wisdgod cursor-api HTTP backend
@@ -248,6 +251,7 @@ class AgentRegistry:
 ```
 
 **Canonical Agents:**
+
 - Direct: `claude`, `gemini`, `codex`, `cursor-agent`, `copilot`
 - Proxy: `minimax`, `glm`, `antigravity`, `cliproxy`, `roo`, `kilo`
 - Factory: `droid` (droids via Factory)
@@ -315,13 +319,13 @@ Automatically falls back to alternative providers when one is exhausted.
 
 Defines multi-agent execution patterns for swarms.
 
-| Mode | Min Agents | Streaming | Coordination | Use Case |
-|------|-----------|-----------|-------------|----------|
-| **SOLO** | 1 | ✅ | None | Single agent, direct invocation |
-| **SEQUENTIAL_DELEGATION** | 2+ | ✅ | Chain of agents; one feeds output to next | Refining output through multiple passes |
-| **PARALLEL_CONSENSUS** | 2+ | ❌ | Run all in parallel; vote on best output | Quality consensus, cross-validation |
-| **REVIEW_LOOP** | 2 | ✅ | Worker + Reviewer; iterate until accepted | Self-review, iterative refinement |
-| **ARBITRATION_QUORUM** | 3+ | ❌ | Weighted voting; expert arbiters | Complex decisions requiring expert judgment |
+| Mode                      | Min Agents | Streaming | Coordination                              | Use Case                                    |
+| ------------------------- | ---------- | --------- | ----------------------------------------- | ------------------------------------------- |
+| **SOLO**                  | 1          | ✅        | None                                      | Single agent, direct invocation             |
+| **SEQUENTIAL_DELEGATION** | 2+         | ✅        | Chain of agents; one feeds output to next | Refining output through multiple passes     |
+| **PARALLEL_CONSENSUS**    | 2+         | ❌        | Run all in parallel; vote on best output  | Quality consensus, cross-validation         |
+| **REVIEW_LOOP**           | 2          | ✅        | Worker + Reviewer; iterate until accepted | Self-review, iterative refinement           |
+| **ARBITRATION_QUORUM**    | 3+         | ❌        | Weighted voting; expert arbiters          | Complex decisions requiring expert judgment |
 
 ---
 
@@ -347,6 +351,7 @@ thegent defines a **Cross-Platform Agent Coordination Protocol** for swarms.
 ```
 
 **Features:**
+
 - **Voting**: Agents rank options; weighted voting determines winner
 - **Broadcast**: Coordinated announcements; async acknowledgment
 - **Task Sync**: Assign work packages; agents report status/completion
@@ -370,6 +375,7 @@ Session Storage:
 ```
 
 **Session Recovery:**
+
 1. Agent detects `THEGENT_SESSION_ID` env var or prompt contains `$resume <id>`
 2. Loads session state from `.thegent/sessions/{id}.json`
 3. Restores memory context from local store and/or Supermemory
@@ -437,6 +443,7 @@ Gardener Loop:
 ```
 
 **Benefits:**
+
 - Zero documentation debt
 - Decisions auditable and traceable
 - New agents onboard with full context
@@ -501,6 +508,7 @@ Latency: <10ms tool dispatch overhead
 ```
 
 **Why Dispatch?**
+
 - Reduces process spawn overhead (one binary vs many)
 - Enables unified error handling and caching
 - Allows atomic operations (prevent TOCTTOU races)
@@ -547,14 +555,14 @@ langgraph = "^0.1"       # agent graphs
 
 ### External Integrations
 
-| Service | Purpose | Criticality | Fallback |
-|---------|---------|-------------|----------|
-| **Supermemory.ai** | Knowledge graph, semantic search | Medium | Local JSONL + SQLite |
-| **LiteLLM** | Multi-provider routing, cost optimization | High | Direct provider calls |
-| **NATS** | Inter-agent messaging | Low | JSONL queue (slower) |
-| **Temporal.io** | Workflow orchestration | Low | Simple state machine |
-| **PostgreSQL** | Persistent cache, telemetry | Medium | SQLite fallback |
-| **Sentry / DataDog** | Error tracking, telemetry | Low | File-based logging |
+| Service              | Purpose                                   | Criticality | Fallback              |
+| -------------------- | ----------------------------------------- | ----------- | --------------------- |
+| **Supermemory.ai**   | Knowledge graph, semantic search          | Medium      | Local JSONL + SQLite  |
+| **LiteLLM**          | Multi-provider routing, cost optimization | High        | Direct provider calls |
+| **NATS**             | Inter-agent messaging                     | Low         | JSONL queue (slower)  |
+| **Temporal.io**      | Workflow orchestration                    | Low         | Simple state machine  |
+| **PostgreSQL**       | Persistent cache, telemetry               | Medium      | SQLite fallback       |
+| **Sentry / DataDog** | Error tracking, telemetry                 | Low         | File-based logging    |
 
 ---
 
@@ -603,18 +611,18 @@ Queue Operations:
 
 ### Comparison Table
 
-| Feature | thegent | heliosCLI | phenotype-infrakit |
-|---------|---------|-----------|-------------------|
-| Multi-agent swarms | ✅✅✅ | ⚠️ | ❌ |
-| Provider failover | ✅✅✅ | ❌ | ❌ |
-| Cost routing | ✅✅✅ | ❌ | ❌ |
-| Memory layer | ✅✅ | ⚠️ | ❌ |
-| Dev harness | ⚠️ | ✅✅✅ | ❌ |
-| Process management | ⚠️ | ✅✅ | ❌ |
-| Shared libraries | ⚠️ | ❌ | ✅✅✅ |
-| Error handling | ✅ | ✅ | ✅✅ |
-| Policy engine | ❌ | ❌ | ✅✅ |
-| Local development | ⚠️ | ✅✅✅ | ❌ |
+| Feature            | thegent | heliosCLI | phenotype-infrakit |
+| ------------------ | ------- | --------- | ------------------ |
+| Multi-agent swarms | ✅✅✅  | ⚠️        | ❌                 |
+| Provider failover  | ✅✅✅  | ❌        | ❌                 |
+| Cost routing       | ✅✅✅  | ❌        | ❌                 |
+| Memory layer       | ✅✅    | ⚠️        | ❌                 |
+| Dev harness        | ⚠️      | ✅✅✅    | ❌                 |
+| Process management | ⚠️      | ✅✅      | ❌                 |
+| Shared libraries   | ⚠️      | ❌        | ✅✅✅             |
+| Error handling     | ✅      | ✅        | ✅✅               |
+| Policy engine      | ❌      | ❌        | ✅✅               |
+| Local development  | ⚠️      | ✅✅✅    | ❌                 |
 
 ---
 
@@ -747,6 +755,7 @@ jobs:
 **thegent** is the orchestration backbone of the Phenotype ecosystem. It unifies fragmented agent capabilities into a harmonious, enterprise-grade platform.
 
 **Key Strengths:**
+
 1. Multi-provider abstraction eliminates lock-in
 2. Intelligent fallback chains ensure reliability
 3. Unified memory enables cross-session learning
@@ -754,11 +763,13 @@ jobs:
 5. Queue-based architecture scales to 50+ agents
 
 **When to choose:**
+
 - Multi-agent coordination ➜ Use thegent
 - Local development ➜ Use heliosCLI
 - Shared infrastructure ➜ Use phenotype-infrakit
 
 **Next Steps:**
+
 1. Review PRD.md for detailed user stories
 2. Check PLAN.md for implementation roadmap
 3. Explore src/thegent/ for concrete examples
@@ -767,6 +778,7 @@ jobs:
 ---
 
 **References:**
+
 - PRD.md — Product requirements and user stories
 - PLAN.md — Phased implementation roadmap
 - FUNCTIONAL_REQUIREMENTS.md — Specification details
@@ -776,6 +788,6 @@ jobs:
 
 ---
 
-*Document Generated: 2026-03-30*
-*Status: Active Development*
-*Audience: Developers, Architects, Operators*
+_Document Generated: 2026-03-30_
+_Status: Active Development_
+_Audience: Developers, Architects, Operators_

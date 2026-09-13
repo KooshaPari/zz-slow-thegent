@@ -12,6 +12,7 @@
 **Core Principle**: Minimize human interaction. Auto-install, auto-configure, auto-detect. Only show instructions when automation isn't possible.
 
 **Key Behaviors**:
+
 1. **Auto-install missing dependencies** (LSP servers, tools)
 2. **Auto-detect configurations** (JetBrains IDE, Serena backend, Ghostty)
 3. **Auto-setup integrations** (shell integration, plugin detection)
@@ -24,12 +25,14 @@
 ### 1. Auto-Install LSP Servers (`src/thegent/lsp/auto_install.py`)
 
 **Features**:
+
 - ✅ Auto-install missing LSP servers (Python, TypeScript, Rust, Go, etc.)
 - ✅ Check if already installed before installing
 - ✅ Platform-specific install commands (macOS, Linux)
 - ✅ Silent installation (no prompts)
 
 **Usage**:
+
 ```python
 # Auto-install if missing
 ensure_lsp_server_installed("python", auto_install=True)
@@ -43,12 +46,14 @@ auto_install_all_lsp_servers(auto_confirm=True)
 ### 2. Auto-Setup IDE Integrations (`src/thegent/ide/auto_setup.py`)
 
 **Features**:
+
 - ✅ Auto-detect JetBrains IDE installation
 - ✅ Auto-detect Serena JetBrains plugin
 - ✅ Auto-detect Ghostty shell integration
 - ✅ Unified auto-setup for all integrations
 
 **Usage**:
+
 ```python
 # Auto-setup all integrations
 results = auto_setup_all()
@@ -62,6 +67,7 @@ auto_setup_ghostty_shell_integration()
 ### 3. Auto-Init on Startup (`src/thegent/ide/auto_init.py`)
 
 **Features**:
+
 - ✅ Runs automatically when thegent MCP server starts
 - ✅ Initializes all IDE integrations
 - ✅ Ensures LSP servers are ready
@@ -72,6 +78,7 @@ auto_setup_ghostty_shell_integration()
 ### 4. Enhanced LSP Manager
 
 **Updates**:
+
 - ✅ Auto-install LSP servers when starting if missing
 - ✅ Respects `THGENT_LSP_AUTO_INSTALL` config
 - ✅ Falls back to instructions only if auto-install fails
@@ -79,6 +86,7 @@ auto_setup_ghostty_shell_integration()
 ### 5. New CLI Commands
 
 **Added**:
+
 - ✅ `thegent lsp auto-setup` - Auto-setup all integrations
 - ✅ `thegent lsp start` - Auto-installs missing servers by default
 - ✅ `thegent lsp serena-backend` - Auto-detects backend
@@ -145,23 +153,23 @@ Continue startup (non-blocking)
 
 ### LSP Servers
 
-| Language | Install Command | Platform |
-|----------|----------------|----------|
-| Python | `npm install -g pyright` | All |
-| TypeScript | `npm install -g typescript-language-server typescript` | All |
-| Rust | `rustup component add rust-analyzer` | All |
-| Go | `go install golang.org/x/tools/gopls@latest` | All |
-| C++ | `brew install llvm` (macOS) / `apt-get install clangd` (Linux) | Platform-specific |
-| Bash | `npm install -g bash-language-server` | All |
-| YAML | `npm install -g yaml-language-server` | All |
-| JSON | `npm install -g vscode-json-languageserver` | All |
+| Language   | Install Command                                                | Platform          |
+| ---------- | -------------------------------------------------------------- | ----------------- |
+| Python     | `npm install -g pyright`                                       | All               |
+| TypeScript | `npm install -g typescript-language-server typescript`         | All               |
+| Rust       | `rustup component add rust-analyzer`                           | All               |
+| Go         | `go install golang.org/x/tools/gopls@latest`                   | All               |
+| C++        | `brew install llvm` (macOS) / `apt-get install clangd` (Linux) | Platform-specific |
+| Bash       | `npm install -g bash-language-server`                          | All               |
+| YAML       | `npm install -g yaml-language-server`                          | All               |
+| JSON       | `npm install -g vscode-json-languageserver`                    | All               |
 
 ### IDE Integrations
 
-| Integration | Auto-Detection | Auto-Configuration |
-|-------------|----------------|-------------------|
-| JetBrains IDE | ✅ PATH + common locations | ✅ CLI access |
-| Serena JetBrains Plugin | ✅ Port check (8765) | ✅ Backend selection |
+| Integration               | Auto-Detection             | Auto-Configuration             |
+| ------------------------- | -------------------------- | ------------------------------ |
+| JetBrains IDE             | ✅ PATH + common locations | ✅ CLI access                  |
+| Serena JetBrains Plugin   | ✅ Port check (8765)       | ✅ Backend selection           |
 | Ghostty Shell Integration | ✅ `GHOSTTY_RESOURCES_DIR` | ⚠️ Manual setup (instructions) |
 
 ---
@@ -169,11 +177,13 @@ Continue startup (non-blocking)
 ## When Instructions Are Shown
 
 **Instructions are only shown when**:
+
 1. Auto-installation fails (network error, permission denied, etc.)
 2. User action required (install JetBrains plugin manually)
 3. Configuration requires user input (API keys, auth tokens)
 
 **Examples**:
+
 - ✅ **Auto-install succeeds**: No output, server starts
 - ⚠️ **Auto-install fails**: Error message + manual install command
 - ⚠️ **Plugin not detected**: Setup guide with steps
@@ -270,16 +280,19 @@ async def thegent_lifespan(mcp_app: FastMCP):
 ## Benefits
 
 ### 1. **Zero-Config Experience**
+
 - New users: Run `thegent lsp start python` → Works immediately
 - Missing dependencies: Auto-installed silently
 - No manual setup required
 
 ### 2. **Proactive Setup**
+
 - Startup auto-initializes integrations
 - LSP servers auto-install when needed
 - Backend auto-detection (Serena)
 
 ### 3. **Instructions as Last Resort**
+
 - Only shown when automation fails
 - Clear, actionable steps
 - Minimal user intervention
@@ -289,16 +302,19 @@ async def thegent_lifespan(mcp_app: FastMCP):
 ## Future Enhancements
 
 ### 1. **Auto-Install JetBrains Plugin**
+
 - Detect plugin marketplace API
 - Auto-install via CLI (if possible)
 - Currently: Manual install (instructions)
 
 ### 2. **Auto-Configure Ghostty**
+
 - Auto-add shell integration to `.zshrc`
 - Backup existing config
 - Verify integration works
 
 ### 3. **Auto-Auth Flows**
+
 - OAuth auto-redirect
 - Token refresh automation
 - Minimize auth prompts
@@ -308,12 +324,14 @@ async def thegent_lifespan(mcp_app: FastMCP):
 ## Files Created/Modified
 
 ### New Files
+
 - `src/thegent/lsp/auto_install.py` - Auto-installation logic
 - `src/thegent/ide/auto_setup.py` - Auto-setup for IDE integrations
 - `src/thegent/ide/auto_init.py` - Startup initialization
 - `src/thegent/ide/__init__.py` - IDE module exports
 
 ### Modified Files
+
 - `src/thegent/lsp/headless_manager.py` - Auto-install integration
 - `src/thegent/config.py` - New config options
 - `src/thegent/mcp_server.py` - Auto-init hook

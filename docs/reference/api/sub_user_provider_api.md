@@ -14,7 +14,7 @@ Isolation provider using sub-user UIDs and temporary home directories.
 
 ### Methods
 
-#### SubUserIsolationProvider.__init__
+#### SubUserIsolationProvider.**init**
 
 ```python
 __init__(self: Any, base_home_dir: str, base_uid: int, uid_pool_size: int)

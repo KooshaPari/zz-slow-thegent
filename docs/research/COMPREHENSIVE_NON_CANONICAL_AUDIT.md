@@ -20,6 +20,7 @@
 ### 2.1 Search Patterns
 
 **Variation Suffixes Searched:**
+
 - `.optimized`, `.minimal`, `.dev`, `.prod`, `.test`, `.staging`
 - `.local`, `.template`, `.example`, `.sample`, `.backup`
 - `.old`, `.new`, `.v[0-9]+`
@@ -28,6 +29,7 @@
 - `_old`, `_new`, `_v[0-9]+`
 
 **Legitimate Patterns (Keep):**
+
 - `.template` files (meant to be templates)
 - `.example` files (documentation examples)
 - `.sample` files (git hooks samples)
@@ -40,14 +42,14 @@
 
 ### 3.1 Shell Configuration
 
-| File | Status | Action | Notes |
-|------|--------|--------|-------|
-| `shell/.zshenv` | ✅ Canonical | Keep | System environment |
-| `shell/.zsh_bundle.zsh` | ✅ Canonical | Keep | Core utilities |
-| `shell/.zsh_safeguards.zsh` | ✅ Canonical | Keep | Protection layer |
-| `shell/.zshrc` | ✅ Canonical | Keep | User interactive shell (now includes all optimizations) |
-| `shell/.zshrc.optimized` | ❌ Variation | **DELETED** | Merged into `.zshrc` |
-| `shell/zshrc.local.template` | ✅ Template | Keep | User customization template |
+| File                         | Status       | Action      | Notes                                                   |
+| ---------------------------- | ------------ | ----------- | ------------------------------------------------------- |
+| `shell/.zshenv`              | ✅ Canonical | Keep        | System environment                                      |
+| `shell/.zsh_bundle.zsh`      | ✅ Canonical | Keep        | Core utilities                                          |
+| `shell/.zsh_safeguards.zsh`  | ✅ Canonical | Keep        | Protection layer                                        |
+| `shell/.zshrc`               | ✅ Canonical | Keep        | User interactive shell (now includes all optimizations) |
+| `shell/.zshrc.optimized`     | ❌ Variation | **DELETED** | Merged into `.zshrc`                                    |
+| `shell/zshrc.local.template` | ✅ Template  | Keep        | User customization template                             |
 
 **Status:** ✅ **COMPLETE** - Shell configs consolidated.
 
@@ -57,41 +59,43 @@
 
 #### 3.2.1 Proxy Scripts
 
-| File | Purpose | Status | Action |
-|------|---------|--------|--------|
-| `scripts/start_proxy.py` | Start proxy (canonical) | ✅ Canonical | Keep |
-| `scripts/start_proxy_dev.sh` | Dev wrapper (calls start_proxy.py) | ⚠️ Wrapper | **CONSOLIDATE** → Use `start_proxy.py` directly |
-| `scripts/start_proxy_with_adapter.py` | Adapter mode (different purpose) | ✅ Legitimate | Keep (different feature) |
+| File                                  | Purpose                            | Status        | Action                                          |
+| ------------------------------------- | ---------------------------------- | ------------- | ----------------------------------------------- |
+| `scripts/start_proxy.py`              | Start proxy (canonical)            | ✅ Canonical  | Keep                                            |
+| `scripts/start_proxy_dev.sh`          | Dev wrapper (calls start_proxy.py) | ⚠️ Wrapper    | **CONSOLIDATE** → Use `start_proxy.py` directly |
+| `scripts/start_proxy_with_adapter.py` | Adapter mode (different purpose)   | ✅ Legitimate | Keep (different feature)                        |
 
 **Analysis:**
+
 - `start_proxy_dev.sh` is a thin wrapper that calls `start_proxy.py`
 - **Action:** Remove wrapper, use `start_proxy.py` directly in Taskfile/process-compose
 - `start_proxy_with_adapter.py` serves different purpose (adapter mode) — legitimate variation
 
 #### 3.2.2 Fix Scripts
 
-| File | Purpose | Status | Action |
-|------|---------|--------|--------|
-| `scripts/fix_shell_corruption.sh` | Bash diagnostic script | ⚠️ Duplicate | **CONSOLIDATE** → Use Python version |
-| `scripts/fix_shell_corruption.py` | Python fix script (canonical) | ✅ Canonical | Keep |
-| `scripts/emergency_fix_shell.sh` | Emergency wrapper | ⚠️ Wrapper | **CONSOLIDATE** → Use Python version |
+| File                              | Purpose                       | Status       | Action                               |
+| --------------------------------- | ----------------------------- | ------------ | ------------------------------------ |
+| `scripts/fix_shell_corruption.sh` | Bash diagnostic script        | ⚠️ Duplicate | **CONSOLIDATE** → Use Python version |
+| `scripts/fix_shell_corruption.py` | Python fix script (canonical) | ✅ Canonical | Keep                                 |
+| `scripts/emergency_fix_shell.sh`  | Emergency wrapper             | ⚠️ Wrapper   | **CONSOLIDATE** → Use Python version |
 
 **Analysis:**
+
 - Three scripts doing similar things (shell corruption fix)
 - Python version (`fix_shell_corruption.py`) is more comprehensive
 - **Action:** Consolidate to single Python script, remove bash wrappers
 
 #### 3.2.3 Other Scripts
 
-| File | Purpose | Status | Action |
-|------|---------|--------|--------|
-| `scripts/optimize-runtime.sh` | Runtime optimization | ✅ Utility | Keep (one-time setup script) |
-| `scripts/quality-agent.sh` | Quality gate agent | ✅ Canonical | Keep |
-| `scripts/quality-fix-agent.sh` | Quality fix agent | ✅ Canonical | Keep |
-| `scripts/fix-which-timeout.sh` | Specific fix | ✅ Utility | Keep (specific fix) |
-| `scripts/guard-shim-forks.sh` | Shim validation | ✅ Canonical | Keep |
-| `scripts/install_zsh_plugins.sh` | Plugin installer | ✅ Utility | Keep |
-| `scripts/ensure-cliproxy-config.py` | Config ensure | ✅ Utility | Keep |
+| File                                | Purpose              | Status       | Action                       |
+| ----------------------------------- | -------------------- | ------------ | ---------------------------- |
+| `scripts/optimize-runtime.sh`       | Runtime optimization | ✅ Utility   | Keep (one-time setup script) |
+| `scripts/quality-agent.sh`          | Quality gate agent   | ✅ Canonical | Keep                         |
+| `scripts/quality-fix-agent.sh`      | Quality fix agent    | ✅ Canonical | Keep                         |
+| `scripts/fix-which-timeout.sh`      | Specific fix         | ✅ Utility   | Keep (specific fix)          |
+| `scripts/guard-shim-forks.sh`       | Shim validation      | ✅ Canonical | Keep                         |
+| `scripts/install_zsh_plugins.sh`    | Plugin installer     | ✅ Utility   | Keep                         |
+| `scripts/ensure-cliproxy-config.py` | Config ensure        | ✅ Utility   | Keep                         |
 
 ---
 
@@ -99,28 +103,30 @@
 
 #### 3.3.1 Skills Directory Structure
 
-| Path | Purpose | Status | Action |
-|------|---------|--------|--------|
-| `skills/agent-orchestra/` | Canonical skill | ✅ Canonical | Keep |
-| `.cursor/skills-cursor/agent-orchestra/` | Cursor-specific mapping | ⚠️ Mapping | **REVIEW** |
-| `skills-cursor/` (if exists) | Legacy? | ❓ Check | Audit |
+| Path                                     | Purpose                 | Status       | Action     |
+| ---------------------------------------- | ----------------------- | ------------ | ---------- |
+| `skills/agent-orchestra/`                | Canonical skill         | ✅ Canonical | Keep       |
+| `.cursor/skills-cursor/agent-orchestra/` | Cursor-specific mapping | ⚠️ Mapping   | **REVIEW** |
+| `skills-cursor/` (if exists)             | Legacy?                 | ❓ Check     | Audit      |
 
 **Analysis:**
+
 - `install.py` maps `skills/agent-orchestra` → `skills-cursor/agent-orchestra` for Cursor
 - `.cursor/skills-cursor/` contains Cursor built-in skills (managed by Cursor)
 - **Question:** Is `skills-cursor/` directory needed, or should mapping be handled differently?
 
 **Recommendation:**
+
 - Keep `skills/agent-orchestra/` as canonical
 - Mapping via install.py is fine (platform-specific install target)
 - Remove any standalone `skills-cursor/` directory if it exists
 
 #### 3.3.2 Cursor Built-in Skills
 
-| Path | Purpose | Status | Action |
-|------|---------|--------|--------|
-| `.cursor/skills-cursor/*` | Cursor built-in skills | ✅ System | Keep (managed by Cursor) |
-| `.worktrees/tray-app/.cursor/skills-cursor/*` | Worktree copy | ⚠️ Duplicate | **IGNORE** (worktree) |
+| Path                                          | Purpose                | Status       | Action                   |
+| --------------------------------------------- | ---------------------- | ------------ | ------------------------ |
+| `.cursor/skills-cursor/*`                     | Cursor built-in skills | ✅ System    | Keep (managed by Cursor) |
+| `.worktrees/tray-app/.cursor/skills-cursor/*` | Worktree copy          | ⚠️ Duplicate | **IGNORE** (worktree)    |
 
 **Note:** `.cursor/skills-cursor/` is managed by Cursor, not thegent. These are system files.
 
@@ -130,30 +136,30 @@
 
 #### 3.4.1 Install Targets
 
-| Target | Purpose | Status | Action |
-|--------|---------|--------|--------|
-| `claude-code` | Claude Code install | ✅ Canonical | Keep |
-| `claude-desktop` | Claude Desktop install | ✅ Canonical | Keep |
-| `cursor` | Cursor install | ✅ Canonical | Keep |
-| `codex` | Codex install | ✅ Canonical | Keep |
-| `droid` | Factory/Droid install | ✅ Canonical | Keep |
-| `factory` | Alias for `droid` | ✅ Alias | Keep (legitimate alias) |
-| `claude` | Alias for `claude-code` | ✅ Alias | Keep (legitimate alias) |
-| `system` | System shell files | ✅ Canonical | Keep |
-| `user` | User shell files | ✅ Canonical | Keep |
-| `shell` | Alias for `["system", "user"]` | ✅ Alias | Keep (legitimate alias) |
+| Target           | Purpose                        | Status       | Action                  |
+| ---------------- | ------------------------------ | ------------ | ----------------------- |
+| `claude-code`    | Claude Code install            | ✅ Canonical | Keep                    |
+| `claude-desktop` | Claude Desktop install         | ✅ Canonical | Keep                    |
+| `cursor`         | Cursor install                 | ✅ Canonical | Keep                    |
+| `codex`          | Codex install                  | ✅ Canonical | Keep                    |
+| `droid`          | Factory/Droid install          | ✅ Canonical | Keep                    |
+| `factory`        | Alias for `droid`              | ✅ Alias     | Keep (legitimate alias) |
+| `claude`         | Alias for `claude-code`        | ✅ Alias     | Keep (legitimate alias) |
+| `system`         | System shell files             | ✅ Canonical | Keep                    |
+| `user`           | User shell files               | ✅ Canonical | Keep                    |
+| `shell`          | Alias for `["system", "user"]` | ✅ Alias     | Keep (legitimate alias) |
 
 **Status:** ✅ **GOOD** - All targets are legitimate (canonical or aliases).
 
 #### 3.4.2 Config File Mappings
 
-| Source | Target | Purpose | Status |
-|--------|--------|---------|--------|
-| `shell/.zshenv` | `~/.zshenv` | System env | ✅ Canonical |
-| `shell/.zsh_bundle.zsh` | `~/.zsh_bundle.zsh` | Core utils | ✅ Canonical |
-| `shell/.zsh_safeguards.zsh` | `~/.zsh_safeguards.zsh` | Safeguards | ✅ Canonical |
-| `shell/.zshrc` | `~/.zshrc` | User shell | ✅ Canonical |
-| `skills/agent-orchestra` | `skills-cursor/agent-orchestra` | Cursor mapping | ⚠️ Review |
+| Source                      | Target                          | Purpose        | Status       |
+| --------------------------- | ------------------------------- | -------------- | ------------ |
+| `shell/.zshenv`             | `~/.zshenv`                     | System env     | ✅ Canonical |
+| `shell/.zsh_bundle.zsh`     | `~/.zsh_bundle.zsh`             | Core utils     | ✅ Canonical |
+| `shell/.zsh_safeguards.zsh` | `~/.zsh_safeguards.zsh`         | Safeguards     | ✅ Canonical |
+| `shell/.zshrc`              | `~/.zshrc`                      | User shell     | ✅ Canonical |
+| `skills/agent-orchestra`    | `skills-cursor/agent-orchestra` | Cursor mapping | ⚠️ Review    |
 
 **Status:** ✅ **GOOD** - Mappings are clear and canonical.
 
@@ -161,15 +167,16 @@
 
 ### 3.5 Templates
 
-| Path | Purpose | Status | Action |
-|------|---------|--------|--------|
-| `templates/**/*.template` | Template files | ✅ Template | Keep (legitimate templates) |
-| `templates/**/*.example` | Example files | ✅ Example | Keep (documentation) |
-| `shell/zshrc.local.template` | User config template | ✅ Template | Keep |
-| `templates/vitepress/` | Minimal VitePress template | ⚠️ Review | **CONSOLIDATE** → Use vitepress-full |
-| `templates/vitepress-full/` | Full VitePress template | ✅ Canonical | Keep (comprehensive) |
+| Path                         | Purpose                    | Status       | Action                               |
+| ---------------------------- | -------------------------- | ------------ | ------------------------------------ |
+| `templates/**/*.template`    | Template files             | ✅ Template  | Keep (legitimate templates)          |
+| `templates/**/*.example`     | Example files              | ✅ Example   | Keep (documentation)                 |
+| `shell/zshrc.local.template` | User config template       | ✅ Template  | Keep                                 |
+| `templates/vitepress/`       | Minimal VitePress template | ⚠️ Review    | **CONSOLIDATE** → Use vitepress-full |
+| `templates/vitepress-full/`  | Full VitePress template    | ✅ Canonical | Keep (comprehensive)                 |
 
 **Analysis:**
+
 - `vitepress/` is minimal template
 - `vitepress-full/` is comprehensive template
 - **Principle:** We want maximal, comprehensive, optimal — not minimal
@@ -183,23 +190,23 @@
 
 #### 3.6.1 Guide Variations
 
-| File | Purpose | Status | Action |
-|------|---------|--------|--------|
-| `docs/guides/RUNTIME_OPTIMIZATION.md` | Optimization guide | ✅ Updated | Keep (references canonical) |
-| `docs/guides/SHELL_ZSH_PLUGIN_SETUP.md` | Plugin setup | ✅ Canonical | Keep |
-| `docs/guides/FIX_SHELL_CORRUPTION.md` | Fix guide | ✅ Canonical | Keep |
-| `docs/guides/SHELL_CORRUPTION_FIX_COMPLETE.md` | Completion report | ✅ Report | Keep (historical) |
-| `docs/guides/SHELL_ENVIRONMENT_MANAGEMENT.md` | Management guide | ✅ Canonical | Keep |
+| File                                           | Purpose            | Status       | Action                      |
+| ---------------------------------------------- | ------------------ | ------------ | --------------------------- |
+| `docs/guides/RUNTIME_OPTIMIZATION.md`          | Optimization guide | ✅ Updated   | Keep (references canonical) |
+| `docs/guides/SHELL_ZSH_PLUGIN_SETUP.md`        | Plugin setup       | ✅ Canonical | Keep                        |
+| `docs/guides/FIX_SHELL_CORRUPTION.md`          | Fix guide          | ✅ Canonical | Keep                        |
+| `docs/guides/SHELL_CORRUPTION_FIX_COMPLETE.md` | Completion report  | ✅ Report    | Keep (historical)           |
+| `docs/guides/SHELL_ENVIRONMENT_MANAGEMENT.md`  | Management guide   | ✅ Canonical | Keep                        |
 
 **Status:** ✅ **GOOD** - Documentation is canonical or historical reports.
 
 #### 3.6.2 Research and Plans
 
-| Pattern | Count | Status | Action |
-|---------|-------|--------|--------|
-| `docs/research/*.md` | Many | ✅ Research | Keep (research docs) |
-| `docs/plans/*.md` | Many | ✅ Plans | Keep (plan docs) |
-| `docs/docset/*.md` | Many | ✅ Docset | Keep (docset) |
+| Pattern              | Count | Status      | Action               |
+| -------------------- | ----- | ----------- | -------------------- |
+| `docs/research/*.md` | Many  | ✅ Research | Keep (research docs) |
+| `docs/plans/*.md`    | Many  | ✅ Plans    | Keep (plan docs)     |
+| `docs/docset/*.md`   | Many  | ✅ Docset   | Keep (docset)        |
 
 **Status:** ✅ **GOOD** - Research/plans/docset are legitimate categories.
 
@@ -207,8 +214,8 @@
 
 ### 3.7 Worktrees
 
-| Path | Purpose | Status | Action |
-|------|---------|--------|--------|
+| Path                   | Purpose      | Status      | Action                                   |
+| ---------------------- | ------------ | ----------- | ---------------------------------------- |
 | `.worktrees/tray-app/` | Git worktree | ✅ Worktree | **IGNORE** (git worktree, not variation) |
 
 **Status:** ✅ **GOOD** - Worktrees are git feature, not variations.
@@ -217,11 +224,11 @@
 
 ### 3.8 Backup Files
 
-| Path | Purpose | Status | Action |
-|------|---------|--------|--------|
-| `.thegent/sessions/claude-config/.claude.json.backup.*` | Auto-backups | ⚠️ Auto-backup | **CLEANUP** (old backups) |
-| `test_clode/claude-config/.claude.json.backup.*` | Test backups | ⚠️ Test | **CLEANUP** (test artifacts) |
-| `.thegent/sessions/run_registry.jsonl.bak` | Manual backup | ⚠️ Manual | **REVIEW** (may be needed) |
+| Path                                                    | Purpose       | Status         | Action                       |
+| ------------------------------------------------------- | ------------- | -------------- | ---------------------------- |
+| `.thegent/sessions/claude-config/.claude.json.backup.*` | Auto-backups  | ⚠️ Auto-backup | **CLEANUP** (old backups)    |
+| `test_clode/claude-config/.claude.json.backup.*`        | Test backups  | ⚠️ Test        | **CLEANUP** (test artifacts) |
+| `.thegent/sessions/run_registry.jsonl.bak`              | Manual backup | ⚠️ Manual      | **REVIEW** (may be needed)   |
 
 **Status:** ⚠️ **CLEANUP NEEDED** - Old backup files should be removed.
 
@@ -229,11 +236,11 @@
 
 ### 3.9 heliosShield/Kush References
 
-| Reference | Location | Purpose | Status |
-|-----------|----------|---------|--------|
-| `heliosShield_AGENT_CONTEXT` | `.zshenv` | Environment variable | ✅ Legitimate |
-| `heliosShield_AGENT` | `.zshenv` | Environment variable | ✅ Legitimate |
-| `heliosShield` in docs | Various | Cross-project references | ✅ Legitimate |
+| Reference                    | Location  | Purpose                  | Status        |
+| ---------------------------- | --------- | ------------------------ | ------------- |
+| `heliosShield_AGENT_CONTEXT` | `.zshenv` | Environment variable     | ✅ Legitimate |
+| `heliosShield_AGENT`         | `.zshenv` | Environment variable     | ✅ Legitimate |
+| `heliosShield` in docs       | Various   | Cross-project references | ✅ Legitimate |
 
 **Status:** ✅ **GOOD** - heliosShield references are legitimate (cross-project integration).
 
@@ -244,6 +251,7 @@
 ### Phase 1: Script Consolidation (Immediate)
 
 **Tasks:**
+
 1. ⚠️ **Review `start_proxy_dev.sh`** - Currently referenced in docs but not used in process-compose
    - **Status:** process-compose uses `thegent serve` (handles proxy internally)
    - **Action:** Remove wrapper script, update docs to reference `thegent serve` or `start_proxy.py`
@@ -260,6 +268,7 @@
 ### Phase 2: Template Consolidation
 
 **Tasks:**
+
 1. ✅ **Consolidate VitePress templates** - Remove minimal variant
    - Remove `templates/vitepress/` (minimal)
    - Keep `templates/vitepress-full/` as canonical (comprehensive)
@@ -271,6 +280,7 @@
 ### Phase 3: Skills Directory Review
 
 **Tasks:**
+
 1. Audit `skills-cursor/` directory (if exists)
 2. Verify mapping logic in `install.py` is correct
 3. Ensure no duplicate skills directories
@@ -280,6 +290,7 @@
 ### Phase 4: Backup Cleanup
 
 **Tasks:**
+
 1. Remove old `.claude.json.backup.*` files
 2. Remove test backup files
 3. Review `.bak` files (keep if needed)
@@ -289,6 +300,7 @@
 ### Phase 5: Documentation Update
 
 **Tasks:**
+
 1. Update all references to removed scripts
 2. Update guides to reference canonical configs
 3. Remove "optimized" references
@@ -302,16 +314,19 @@
 ### 5.1 User vs Agent
 
 **Status:** ✅ **LEGITIMATE**
+
 - `.zshenv` has early return for agents
 - Different needs: agents need fast startup, users need full features
 
 **Implementation:**
+
 - Early return in `.zshenv` (already implemented)
 - Optional: Create `.zshrc.agent` if needed
 
 ### 5.2 Platform-Specific
 
 **Status:** ⚠️ **REVIEW**
+
 - Currently: Single config works for macOS/Linux
 - Future: May need Windows-specific configs
 
@@ -320,6 +335,7 @@
 ### 5.3 Feature Flags
 
 **Status:** ✅ **LEGITIMATE**
+
 - `USE_BUN_TOOLS`, `USE_FAST_RUNTIME`, etc.
 - Environment variables, not file variations
 
@@ -328,6 +344,7 @@
 ### 5.4 Install Targets
 
 **Status:** ✅ **LEGITIMATE**
+
 - `claude-code`, `cursor`, `droid`, etc.
 - Different tools need different file sets
 
@@ -340,26 +357,31 @@
 ### 6.1 Canonical Files
 
 **Pattern:** `{name}.{ext}`
+
 - Example: `.zshrc`, `start_proxy.py`, `fix_shell_corruption.py`
 
 ### 6.2 Templates
 
 **Pattern:** `{name}.template` or `{name}.example`
+
 - Example: `zshrc.local.template`, `.env.example`
 
 ### 6.3 Platform-Specific (If Needed)
 
 **Pattern:** `{name}.{platform}.{ext}`
+
 - Example: `.zshrc.mac`, `.zshrc.linux` (only if needed)
 
 ### 6.4 User vs Agent (If Needed)
 
 **Pattern:** `{name}.{context}.{ext}`
+
 - Example: `.zshrc.agent`, `.zshrc.user` (only if needed)
 
 ### 6.5 Forbidden Patterns
 
 **Never Use:**
+
 - `{name}.optimized.{ext}` - Canonical should BE optimal
 - `{name}.minimal.{ext}` - We want maximal, not minimal
 - `{name}.dev.{ext}` - Use environment variables or feature flags
@@ -400,16 +422,19 @@
 ## 8. Success Criteria
 
 **Consolidation:**
+
 - ✅ No "optimized", "minimal", "dev", "prod" file variations
 - ✅ Single canonical script per purpose
 - ✅ Variations only for legitimate use cases
 
 **Documentation:**
+
 - ✅ Clear canonical config guide
 - ✅ No references to removed variations
 - ✅ Updated script references
 
 **Functionality:**
+
 - ✅ All scripts work correctly
 - ✅ Install targets function
 - ✅ No broken references
@@ -546,11 +571,11 @@ name: Config Consolidation Check
 on:
   push:
     paths:
-      - '**.sh'
-      - '**.py'
-      - '**.toml'
-      - '**.yaml'
-      - '**.yml'
+      - "**.sh"
+      - "**.py"
+      - "**.toml"
+      - "**.yaml"
+      - "**.yml"
 
 jobs:
   check-canonical:

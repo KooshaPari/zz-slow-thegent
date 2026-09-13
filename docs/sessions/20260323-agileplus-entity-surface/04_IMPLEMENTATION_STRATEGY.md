@@ -23,4 +23,3 @@
 
 - Extend the same entity service to any new schema tables added later.
 - Add a future HTTP API only if a real consumer needs it; do not duplicate the service logic.
-

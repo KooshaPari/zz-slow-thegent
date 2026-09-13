@@ -10,12 +10,14 @@
 ## Executive Summary
 
 Design and implement a **comprehensive headless LSP setup** that:
+
 1. Manages multiple LSP servers (Python, TypeScript, Rust, Go, etc.)
 2. Integrates JetBrains IDE Ultimate CLI tools (format, inspect, diff, merge)
 3. Provides unified LSP interface for agents
 4. Supports JetBrains Gateway for headless backend access
 
 **Key Insight**: JetBrains doesn't provide native LSP servers, but we can:
+
 - Use standard LSP servers (pyright, rust-analyzer, etc.)
 - Integrate JetBrains CLI tools as complementary services
 - Use JetBrains Gateway for headless backend access to full IDE features
@@ -686,22 +688,26 @@ def lsp_inspect(
 ## Implementation Plan
 
 ### Phase 1: Core LSP Manager (Week 1)
+
 - ✅ Implement `HeadlessLSPManager`
 - ✅ Support Python, TypeScript, Rust, Go
 - ✅ Process lifecycle management
 - ✅ State persistence
 
 ### Phase 2: JetBrains CLI Integration (Week 1)
+
 - ✅ Implement `JetBrainsCLI` wrapper
 - ✅ Format, inspect, diff, merge commands
 - ✅ Auto-detect IDE installation
 
 ### Phase 3: Gateway Integration (Week 2)
+
 - ⏳ Implement `JetBrainsGateway` wrapper
 - ⏳ Local backend support
 - ⏳ SSH remote backend support
 
 ### Phase 4: CLI & MCP Integration (Week 2)
+
 - ⏳ Add `thegent lsp` commands
 - ⏳ Expose via MCP tools
 - ⏳ Documentation
@@ -711,6 +717,7 @@ def lsp_inspect(
 ## Usage Examples
 
 ### Start LSP Server
+
 ```bash
 # Start Python LSP
 thegent lsp start python
@@ -723,6 +730,7 @@ thegent lsp list
 ```
 
 ### Format Files
+
 ```bash
 # Format Python files
 thegent lsp format src/**/*.py --project /path/to/project
@@ -732,6 +740,7 @@ thegent lsp format src/**/*.ts --project /path/to/project
 ```
 
 ### Run Inspections
+
 ```bash
 # Run code inspections
 thegent lsp inspect /path/to/project --profile "Default"

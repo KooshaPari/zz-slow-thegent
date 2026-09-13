@@ -1,15 +1,18 @@
 # Workstream Autosync Zero-Touch Quick Start (WL-180)
 
 ## Goal
+
 Set up unattended workstream reflection between local `docs/reference/WORK_STREAM.md`, GitHub Projects, and Linear with deterministic verification.
 
 ## Prerequisites
+
 - Python environment is active for this repo.
 - `gh` CLI is installed and authenticated for project access.
 - Linear API key has permission for the target team.
 - Project board identifiers are known.
 
 ## 1) Configure Environment
+
 Set required variables before starting the autosync runner:
 
 ```bash
@@ -29,6 +32,7 @@ export THGENT_LINEAR_DIRECTION=bidirectional
 ```
 
 ## 2) Verify Config Resolution
+
 Run a quick Python check to confirm effective settings:
 
 ```bash
@@ -45,6 +49,7 @@ PY
 ```
 
 ## 3) Run Integration Safety Tests
+
 Validate connector behavior with deterministic fixtures before enabling unattended mode:
 
 ```bash
@@ -53,9 +58,11 @@ python -m pytest -q tests/integrations/test_wl179_linear_sync_integration.py
 ```
 
 ## 4) Enable Zero-Touch Operation
+
 Start the service path used by your environment and keep it running. Do not restart the full dev stack unless required by the user-managed TUI workflow.
 
 ## 5) Verify Health and Drift
+
 Check status snapshots and failure queue after at least one cycle:
 
 ```bash
@@ -64,11 +71,13 @@ cat docs/reference/workstream_autosync_failures.json
 ```
 
 Healthy indicators:
+
 - `health` is `ok`.
 - `last_error` is `null`.
 - `failure_queue_size` is `0`.
 
 ## Emergency Stop
+
 Use an explicit stop signal for write-capable sync paths:
 
 ```bash

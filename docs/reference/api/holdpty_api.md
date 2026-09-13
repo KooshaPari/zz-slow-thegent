@@ -12,7 +12,7 @@ Wraps a process in a PTY and exposes it via a Unix socket.
 
 ### Methods
 
-#### PTYHolder.__init__
+#### PTYHolder.**init**
 
 ```python
 __init__(self: Any, socket_path: Path, cmd: list[str], cwd: Any, env: Any)

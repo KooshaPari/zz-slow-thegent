@@ -26,15 +26,15 @@ task quality:dag:ci:junit JUNIT=.quality/junit.xml   # CI + JUnit XML
 
 ### 1.1 Components
 
-| Component | Location | Purpose |
-|-----------|----------|---------|
-| `quality_runner.py` | thegent (shared) + trace (local) | DAG executor, soft-fail, writes logs + last-run.json |
-| `quality_fix_planner.py` | thegent (shared) | Reads last-run.json, returns failed steps with logs |
-| `quality_fix_runner.py` | thegent (shared) + trace (local) | Runs fix commands for failed steps |
-| `quality-report.py` | trace only | Parses logs, action plan by file; hardcoded SPLIT_STEPS |
-| `QualityRunnerApp` (TUI) | trace only | Textual dashboard, live logs, step status |
-| `quality-dag.yaml` | per-project | Step dependencies and commands |
-| `quality-fix-dag.yaml` | per-project | Fix job commands per checker |
+| Component                | Location                         | Purpose                                                 |
+| ------------------------ | -------------------------------- | ------------------------------------------------------- |
+| `quality_runner.py`      | thegent (shared) + trace (local) | DAG executor, soft-fail, writes logs + last-run.json    |
+| `quality_fix_planner.py` | thegent (shared)                 | Reads last-run.json, returns failed steps with logs     |
+| `quality_fix_runner.py`  | thegent (shared) + trace (local) | Runs fix commands for failed steps                      |
+| `quality-report.py`      | trace only                       | Parses logs, action plan by file; hardcoded SPLIT_STEPS |
+| `QualityRunnerApp` (TUI) | trace only                       | Textual dashboard, live logs, step status               |
+| `quality-dag.yaml`       | per-project                      | Step dependencies and commands                          |
+| `quality-fix-dag.yaml`   | per-project                      | Fix job commands per checker                            |
 
 ### 1.2 Data Flow
 
@@ -48,32 +48,33 @@ quality_fix_runner.py → runs fix commands → .quality/fix-agents.json
 
 ### 1.3 Identified Gaps
 
-| Area | Issue | Impact |
-|------|-------|--------|
-| **Config validation** | No schema or cycle detection | Bad YAML → cryptic errors |
-| **Fix DAG deps** | `quality_fix_runner` ignores `deps` in fix-dag | Fix jobs run in arbitrary order |
-| **Progress.json** | `duration: 0` for all completed | TUI can't show real durations |
-| **Quality report** | Hardcoded SPLIT_STEPS, trace-only | Shared projects get no action plan |
-| **ROOT resolution** | Shared script uses `Path.cwd()` only | No --root, no env override |
-| **Error handling** | Minimal, no structured logging | Hard to debug failures |
-| **TUI sharing** | Trace TUI hardcodes ROOT | Other projects can't use TUI |
-| **Step filtering** | No --only / --skip | Must run full DAG |
-| **Timeout** | Fixed 600s per step | No per-step override |
-| **Dry-run** | None | Can't preview without running |
+| Area                  | Issue                                          | Impact                             |
+| --------------------- | ---------------------------------------------- | ---------------------------------- |
+| **Config validation** | No schema or cycle detection                   | Bad YAML → cryptic errors          |
+| **Fix DAG deps**      | `quality_fix_runner` ignores `deps` in fix-dag | Fix jobs run in arbitrary order    |
+| **Progress.json**     | `duration: 0` for all completed                | TUI can't show real durations      |
+| **Quality report**    | Hardcoded SPLIT_STEPS, trace-only              | Shared projects get no action plan |
+| **ROOT resolution**   | Shared script uses `Path.cwd()` only           | No --root, no env override         |
+| **Error handling**    | Minimal, no structured logging                 | Hard to debug failures             |
+| **TUI sharing**       | Trace TUI hardcodes ROOT                       | Other projects can't use TUI       |
+| **Step filtering**    | No --only / --skip                             | Must run full DAG                  |
+| **Timeout**           | Fixed 600s per step                            | No per-step override               |
+| **Dry-run**           | None                                           | Can't preview without running      |
 
 ---
 
 ## 2. Research: Comparable Tools
 
-| Tool | Pattern | Relevance |
-|------|---------|-----------|
-| **tox** | Env matrix, dependency ordering | Parallel envs, config-driven |
-| **nox** | Python tasks, session deps | Session = step, deps = DAG |
-| **make** | DAG of targets | Classic DAG execution |
-| **Task (Taskfile)** | Task deps, optional | Similar to our DAG |
-| **Earthly** | DAG builds, caching | Parallel tiers, soft-fail patterns |
+| Tool                | Pattern                         | Relevance                          |
+| ------------------- | ------------------------------- | ---------------------------------- |
+| **tox**             | Env matrix, dependency ordering | Parallel envs, config-driven       |
+| **nox**             | Python tasks, session deps      | Session = step, deps = DAG         |
+| **make**            | DAG of targets                  | Classic DAG execution              |
+| **Task (Taskfile)** | Task deps, optional             | Similar to our DAG                 |
+| **Earthly**         | DAG builds, caching             | Parallel tiers, soft-fail patterns |
 
 **Takeaways:**
+
 - Config validation (schema) is standard
 - Dry-run / list targets is common
 - Per-step timeout/retry is rare but useful
@@ -85,61 +86,61 @@ quality_fix_runner.py → runs fix commands → .quality/fix-agents.json
 
 ### 3.1 Optimizations
 
-| # | Improvement | Description | Effort |
-|---|-------------|-------------|--------|
-| O1 | **Parallel cap** | Add `max_workers` per tier (default: len(tier)) to avoid resource exhaustion | Low |
-| O2 | **Lazy log writes** | Buffer log writes, flush on step completion (reduce I/O) | Low |
-| O3 | **Progress.json batching** | Throttle writes (e.g. max 1/sec) during parallel runs | Low |
-| O4 | **Skip unchanged steps** | Optional: hash inputs, skip if cache hit (like make) | High |
+| #   | Improvement                | Description                                                                  | Effort |
+| --- | -------------------------- | ---------------------------------------------------------------------------- | ------ |
+| O1  | **Parallel cap**           | Add `max_workers` per tier (default: len(tier)) to avoid resource exhaustion | Low    |
+| O2  | **Lazy log writes**        | Buffer log writes, flush on step completion (reduce I/O)                     | Low    |
+| O3  | **Progress.json batching** | Throttle writes (e.g. max 1/sec) during parallel runs                        | Low    |
+| O4  | **Skip unchanged steps**   | Optional: hash inputs, skip if cache hit (like make)                         | High   |
 
 ### 3.2 Polish
 
-| # | Improvement | Description | Effort |
-|---|-------------|-------------|--------|
-| P1 | **Duration in progress.json** | Store actual `duration` in completed steps for TUI | Low |
-| P2 | **Step display names** | Use `display` from DAG in logs, progress, last-run | Low |
-| P3 | **Structured exit codes** | last-run.json: include `duration` per step | Low |
-| P4 | **Clearer error messages** | "Step X failed (exit 1)" with path to log | Low |
+| #   | Improvement                   | Description                                        | Effort |
+| --- | ----------------------------- | -------------------------------------------------- | ------ |
+| P1  | **Duration in progress.json** | Store actual `duration` in completed steps for TUI | Low    |
+| P2  | **Step display names**        | Use `display` from DAG in logs, progress, last-run | Low    |
+| P3  | **Structured exit codes**     | last-run.json: include `duration` per step         | Low    |
+| P4  | **Clearer error messages**    | "Step X failed (exit 1)" with path to log          | Low    |
 
 ### 3.3 Enhancements
 
-| # | Improvement | Description | Effort |
-|---|-------------|-------------|--------|
-| E1 | **--only / --skip** | `quality_runner --only py-lint,fe-lint` or `--skip py-test` | Medium |
-| E2 | **--dry-run** | Print tiers and commands, no execution | Low |
-| E3 | **--config / --root** | Override config path and project root | Low |
-| E4 | **Per-step timeout** | `timeout: 300` in quality-dag.yaml | Low |
-| E5 | **Retry on failure** | Optional `retries: 2` per step | Medium |
+| #   | Improvement           | Description                                                 | Effort |
+| --- | --------------------- | ----------------------------------------------------------- | ------ |
+| E1  | **--only / --skip**   | `quality_runner --only py-lint,fe-lint` or `--skip py-test` | Medium |
+| E2  | **--dry-run**         | Print tiers and commands, no execution                      | Low    |
+| E3  | **--config / --root** | Override config path and project root                       | Low    |
+| E4  | **Per-step timeout**  | `timeout: 300` in quality-dag.yaml                          | Low    |
+| E5  | **Retry on failure**  | Optional `retries: 2` per step                              | Medium |
 
 ### 3.4 Intuitiveness & Robustness
 
-| # | Improvement | Description | Effort |
-|---|-------------|-------------|--------|
-| I1 | **DAG config validation** | Validate schema, detect cycles, undefined deps | Medium |
-| I2 | **Graceful missing config** | If no quality-dag.yaml, suggest `task quality:gate` or link to docs | Low |
-| I3 | **Fix DAG ordering** | Run fix agents in topological order (respect deps) | Medium |
-| I4 | **Env var overrides** | `QUALITY_ROOT`, `QUALITY_CONFIG` for CI/scripts | Low |
-| I5 | **Pre-flight checks** | Warn if commands not found (e.g. `task`, `uv`) | Low |
+| #   | Improvement                 | Description                                                         | Effort |
+| --- | --------------------------- | ------------------------------------------------------------------- | ------ |
+| I1  | **DAG config validation**   | Validate schema, detect cycles, undefined deps                      | Medium |
+| I2  | **Graceful missing config** | If no quality-dag.yaml, suggest `task quality:gate` or link to docs | Low    |
+| I3  | **Fix DAG ordering**        | Run fix agents in topological order (respect deps)                  | Medium |
+| I4  | **Env var overrides**       | `QUALITY_ROOT`, `QUALITY_CONFIG` for CI/scripts                     | Low    |
+| I5  | **Pre-flight checks**       | Warn if commands not found (e.g. `task`, `uv`)                      | Low    |
 
 ### 3.5 Reliability, Extensibility, Maintainability
 
-| # | Improvement | Description | Effort |
-|---|-------------|-------------|--------|
-| R1 | **Unify trace + shared** | Trace uses shared scripts; single source of truth | Medium |
-| R2 | **Quality report from DAG** | Derive SPLIT_STEPS from quality-dag.yaml; share report | Medium |
-| R3 | **Config schema (JSON Schema)** | Document and optionally validate quality-dag.yaml | Medium |
-| R4 | **Structured logging** | Optional `--verbose` with timestamps, step names | Low |
-| R5 | **Test coverage** | Unit tests for topological_tiers, run_step, load_dag | Medium |
+| #   | Improvement                     | Description                                            | Effort |
+| --- | ------------------------------- | ------------------------------------------------------ | ------ |
+| R1  | **Unify trace + shared**        | Trace uses shared scripts; single source of truth      | Medium |
+| R2  | **Quality report from DAG**     | Derive SPLIT_STEPS from quality-dag.yaml; share report | Medium |
+| R3  | **Config schema (JSON Schema)** | Document and optionally validate quality-dag.yaml      | Medium |
+| R4  | **Structured logging**          | Optional `--verbose` with timestamps, step names       | Low    |
+| R5  | **Test coverage**               | Unit tests for topological_tiers, run_step, load_dag   | Medium |
 
 ### 3.6 Feature Extensions
 
-| # | Improvement | Description | Effort |
-|---|-------------|-------------|--------|
-| F1 | **TUI for shared projects** | QualityRunnerApp accepts ROOT; runnable from any project | Medium |
-| F2 | **CI summary output** | `--ci` mode: compact one-line summary, JUnit XML | Medium |
-| F3 | **Fix agent by-file** | Optional: spawn fix per file (from quality-report) | High |
-| F4 | **Watch mode** | Re-run DAG on file changes (like pytest-watch) | High |
-| F5 | **Quality baseline** | Compare to baseline, fail only on regressions | High |
+| #   | Improvement                 | Description                                              | Effort |
+| --- | --------------------------- | -------------------------------------------------------- | ------ |
+| F1  | **TUI for shared projects** | QualityRunnerApp accepts ROOT; runnable from any project | Medium |
+| F2  | **CI summary output**       | `--ci` mode: compact one-line summary, JUnit XML         | Medium |
+| F3  | **Fix agent by-file**       | Optional: spawn fix per file (from quality-report)       | High   |
+| F4  | **Watch mode**              | Re-run DAG on file changes (like pytest-watch)           | High   |
+| F5  | **Quality baseline**        | Compare to baseline, fail only on regressions            | High   |
 
 ---
 
@@ -185,14 +186,15 @@ quality_fix_runner.py → runs fix commands → .quality/fix-agents.json
 # quality-dag.yaml schema (conceptual)
 steps:
   <name>:
-    deps: [<name>]      # must reference existing steps
-    command: str        # required
-    display: str        # optional
-    timeout: int       # optional, seconds
-    retries: int       # optional, default 0
+    deps: [<name>] # must reference existing steps
+    command: str # required
+    display: str # optional
+    timeout: int # optional, seconds
+    retries: int # optional, default 0
 ```
 
 **Validation rules:**
+
 - No cycles (topological sort must consume all nodes)
 - All `deps` must exist in `steps`
 - `command` required, non-empty
@@ -210,8 +212,8 @@ Proposed: `tiers = topological_tiers(fix_config); for tier in tiers: run tier in
 {
   "running": ["py-lint"],
   "completed": {
-    "naming": {"code": 0, "duration": 0.23},
-    "go-proto": {"code": 0, "duration": 1.1}
+    "naming": { "code": 0, "duration": 0.23 },
+    "go-proto": { "code": 0, "duration": 1.1 }
   },
   "timestamp": "2026-02-16T09:00:00Z"
 }
@@ -255,12 +257,12 @@ Proposed: `tiers = topological_tiers(fix_config); for tier in tiers: run tier in
 
 ## 7. Risks & Mitigations
 
-| Risk | Mitigation |
-|------|------------|
-| Breaking trace TUI | Keep trace local scripts as fallback; migrate gradually |
-| Config schema drift | Add JSON Schema, validate in CI |
-| Performance regression | Benchmark before/after; keep O2/O3 optional |
-| Over-engineering | Phase A only; defer Phase D until needed |
+| Risk                   | Mitigation                                              |
+| ---------------------- | ------------------------------------------------------- |
+| Breaking trace TUI     | Keep trace local scripts as fallback; migrate gradually |
+| Config schema drift    | Add JSON Schema, validate in CI                         |
+| Performance regression | Benchmark before/after; keep O2/O3 optional             |
+| Over-engineering       | Phase A only; defer Phase D until needed                |
 
 ---
 

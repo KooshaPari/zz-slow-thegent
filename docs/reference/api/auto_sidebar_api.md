@@ -12,7 +12,7 @@ Generate sidebar automatically from directory structure.
 
 ### Methods
 
-#### AutoSidebarGenerator.__init__
+#### AutoSidebarGenerator.**init**
 
 ```python
 __init__(self: Any, docs_root: Path)

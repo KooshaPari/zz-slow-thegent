@@ -50,12 +50,12 @@
 
 ### Layers & Responsibilities
 
-| Layer | System | Role |
-|-------|--------|------|
-| **L1** | In-memory cache (LRU) | Hot artifacts for current session |
-| **L2** | Local disk cache | Warm artifacts for replay |
-| **L3** | Supermemory Knowledge Graph | Context relationships for replay |
-| **L4** | Supermemory Documents API | Immutable artifact storage |
+| Layer  | System                      | Role                              |
+| ------ | --------------------------- | --------------------------------- |
+| **L1** | In-memory cache (LRU)       | Hot artifacts for current session |
+| **L2** | Local disk cache            | Warm artifacts for replay         |
+| **L3** | Supermemory Knowledge Graph | Context relationships for replay  |
+| **L4** | Supermemory Documents API   | Immutable artifact storage        |
 
 ---
 
@@ -183,7 +183,7 @@ class HashChainValidator:
 
 **Responsibility**: Persist artifacts to Supermemory L4.
 
-```python
+````python
 # thegent/src/thegent/maif/storage.py
 
 class MAIFStorage:
@@ -271,7 +271,7 @@ is_significant_call() {
 }
 
 main "$@"
-```
+````
 
 ---
 
@@ -339,7 +339,7 @@ class MAIFArtifact(BaseModel):
   "agent_id": "agent-1",
   "id": "a1b2c3d4e5f6g7h8i9j0",
   "input_hash": "abc123...",
-  "metadata": {"file": "/path/to/file.py"},
+  "metadata": { "file": "/path/to/file.py" },
   "output_hash": "def456...",
   "previous_hash": "prev0ab...",
   "session_id": "session-xyz",
@@ -448,28 +448,28 @@ async def query_artifacts(
 
 ### 6.1 Artifact Creation Failures
 
-| Failure | Impact | Handling |
-|---------|--------|----------|
-| Signer unavailable | Critical | Queue for retry, alert |
-| Supermemory L4 unavailable | High | Fallback to local cache, circuit breaker |
-| Input/output data too large | Medium | Chunk and store separately |
-| Hash collision (impossible) | Low | Alert, investigate |
+| Failure                     | Impact   | Handling                                 |
+| --------------------------- | -------- | ---------------------------------------- |
+| Signer unavailable          | Critical | Queue for retry, alert                   |
+| Supermemory L4 unavailable  | High     | Fallback to local cache, circuit breaker |
+| Input/output data too large | Medium   | Chunk and store separately               |
+| Hash collision (impossible) | Low      | Alert, investigate                       |
 
 ### 6.2 Chain Verification Failures
 
-| Failure | Impact | Handling |
-|---------|--------|----------|
-| Hash mismatch | High | Quarantine session, alert |
-| Signature invalid | Critical | Reject artifact, investigate |
-| Missing artifact | Medium | Partial chain verification, log gap |
+| Failure           | Impact   | Handling                            |
+| ----------------- | -------- | ----------------------------------- |
+| Hash mismatch     | High     | Quarantine session, alert           |
+| Signature invalid | Critical | Reject artifact, investigate        |
+| Missing artifact  | Medium   | Partial chain verification, log gap |
 
 ### 6.3 Storage Failures
 
-| Failure | Impact | Handling |
-|---------|--------|----------|
-| L4 store fails | Medium | Retry with backoff, fallback to L2 |
-| L4 retrieve fails | Low | Fallback to L2 cache |
-| Network timeout | Medium | Retry, eventual consistency |
+| Failure           | Impact | Handling                           |
+| ----------------- | ------ | ---------------------------------- |
+| L4 store fails    | Medium | Retry with backoff, fallback to L2 |
+| L4 retrieve fails | Low    | Fallback to L2 cache               |
+| Network timeout   | Medium | Retry, eventual consistency        |
 
 ---
 
@@ -477,12 +477,12 @@ async def query_artifacts(
 
 ### 7.1 Latency Targets
 
-| Operation | Target | Baseline |
-|-----------|--------|----------|
-| Artifact creation | <1ms | Hashing: 0.1ms, Signing: 0.5ms, Store: 0.4ms |
-| Chain verification (1000 artifacts) | <100ms | Hashing: 50ms, Signature verify: 40ms |
-| Artifact retrieval | <100ms | L4 query: 80ms |
-| Audit query (10k artifacts) | <500ms | L4 query: 400ms |
+| Operation                           | Target | Baseline                                     |
+| ----------------------------------- | ------ | -------------------------------------------- |
+| Artifact creation                   | <1ms   | Hashing: 0.1ms, Signing: 0.5ms, Store: 0.4ms |
+| Chain verification (1000 artifacts) | <100ms | Hashing: 50ms, Signature verify: 40ms        |
+| Artifact retrieval                  | <100ms | L4 query: 80ms                               |
+| Audit query (10k artifacts)         | <500ms | L4 query: 400ms                              |
 
 ### 7.2 Storage Scaling
 

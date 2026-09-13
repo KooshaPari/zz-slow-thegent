@@ -12,7 +12,7 @@ Algolia search integration with suggestions.
 
 ### Methods
 
-#### AlgoliaSearchIntegration.__init__
+#### AlgoliaSearchIntegration.**init**
 
 ```python
 __init__(self: Any, app_id: str, api_key: str, index_name: str)

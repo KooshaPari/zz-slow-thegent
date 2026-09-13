@@ -37,6 +37,7 @@
 ### New file: `tests/test_wl080_inter_agent_protocol.py`
 
 32 tests across 6 test classes:
+
 - `TestInterAgentMessageDefaults` — id format, UUID4, created_at UTC, uniqueness, correlation_id=None, ttl_s=300
 - `TestInterAgentMessageTypes` — all 5 literals accepted, invalid type raises
 - `TestInterAgentMessageFields` — explicit field overrides

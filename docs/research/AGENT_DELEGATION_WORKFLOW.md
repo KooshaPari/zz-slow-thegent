@@ -28,6 +28,7 @@ thegent dex flash --print "Generate comprehensive research writeup for: <task-id
 ```
 
 **Use Cases:**
+
 - Research tasks that need deep analysis
 - Implementation plans from requirements
 - Migration strategies
@@ -46,6 +47,7 @@ thegent free --do-next --repeat 5
 ```
 
 **Use Cases:**
+
 - Code implementation from specs
 - Migration work
 - Feature development
@@ -58,11 +60,13 @@ thegent free --do-next --repeat 5
 ### Setup Requirements
 
 **Prerequisites:**
+
 1. ✅ Runtime infrastructure initialized (Phase 1-3 complete)
 2. ⚠️ CLIProxyAPIPlus service must be running for `thegent dex flash`
 3. ✅ `thegent free` should work independently
 
 **Proxy Service:**
+
 - Default port: `8317`
 - Start with: `thegent serve` or `thegent mcp up`
 - Check status: `thegent doctor`
@@ -91,11 +95,13 @@ thegent free --do-next --repeat 5
 ### Example 1: Library Migration Task
 
 **Step 1: Generate Writeup (Flash)**
+
 ```bash
 thegent dex flash --print "Generate research writeup for: research-library-retry - Migrate manual retry loops to tenacity (4 files). Include: 1) Audit of current retry implementations, 2) tenacity integration plan, 3) Migration steps for each file, 4) Testing strategy. Save to docs/research/LIBRARY_RETRY_MIGRATION_PLAN.md"
 ```
 
 **Step 2: Implement (Free)**
+
 ```bash
 thegent free "Implement research-library-retry migration based on docs/research/LIBRARY_RETRY_MIGRATION_PLAN.md. Migrate all 4 files to use tenacity."
 ```
@@ -103,11 +109,13 @@ thegent free "Implement research-library-retry migration based on docs/research/
 ### Example 2: Documentation Task
 
 **Step 1: Generate Writeup (Flash)**
+
 ```bash
 thegent dex flash --print "Generate implementation plan for: vitepress-vhs-setup - Set up VHS for terminal recordings. Include: 1) VHS installation, 2) VitePress integration, 3) Example workflows, 4) Automation scripts. Save to docs/research/VITEPRESS_VHS_SETUP_PLAN.md"
 ```
 
 **Step 2: Implement (Free)**
+
 ```bash
 thegent free "Set up VHS for terminal recordings based on docs/research/VITEPRESS_VHS_SETUP_PLAN.md"
 ```

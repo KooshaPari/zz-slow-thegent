@@ -5,6 +5,7 @@
 TraceRecorder: Async, non-blocking trace recording for agent execution.
 
 Records ToolCallRecord, DecisionRecord events to JSONL files with:
+
 - Async write worker (non-blocking)
 - Sensitive data redaction (API keys, passwords)
 - Result truncation (>10MB cap)
@@ -35,7 +36,7 @@ TTL-based cleanup of old trace files.
 
 ### Methods
 
-#### TraceCleanup.__init__
+#### TraceCleanup.**init**
 
 ```python
 __init__(self: Any, trace_dir: str, ttl_days: int)
@@ -58,7 +59,7 @@ Records agent execution traces with async non-blocking writes.
 
 ### Methods
 
-#### TraceRecorder.__init__
+#### TraceRecorder.**init**
 
 ```python
 __init__(self: Any, session_id: str, config: Any)

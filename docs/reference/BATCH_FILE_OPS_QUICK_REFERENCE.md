@@ -157,12 +157,12 @@ except BatchFileOpsError as e:
 
 ## Performance
 
-| Operation | Sequential | Batch | Improvement |
-|-----------|-----------|-------|------------|
-| 5 files read | 5 calls | 1 call | 5x fewer |
-| 5 files write | 5 calls | 1 call | 5x fewer |
-| 5 files edit | 5 calls | 1 call | 5x fewer |
-| Speed | ~500ms | ~50ms | 10x faster |
+| Operation     | Sequential | Batch  | Improvement |
+| ------------- | ---------- | ------ | ----------- |
+| 5 files read  | 5 calls    | 1 call | 5x fewer    |
+| 5 files write | 5 calls    | 1 call | 5x fewer    |
+| 5 files edit  | 5 calls    | 1 call | 5x fewer    |
+| Speed         | ~500ms     | ~50ms  | 10x faster  |
 
 ## Shell Usage
 
@@ -230,6 +230,7 @@ python3 scripts/batch_file_ops.py --write file "content" --verbose
 ## Integration Examples
 
 ### Hook Integration
+
 ```bash
 #!/usr/bin/env bash
 source "$(dirname "$0")/lib/batch_file_ops.sh"
@@ -237,6 +238,7 @@ batch_write_files "/path/file1:generated" "/path/file2:generated"
 ```
 
 ### Script Integration
+
 ```python
 from scripts.batch_file_ops import batch_edit_files
 
@@ -244,6 +246,7 @@ result = batch_edit_files([("file.py", "old", "new")])
 ```
 
 ### Agent Usage
+
 ```python
 # Reduce tool calls by 3-5x
 files = batch_read_files(50_files)  # 1 call instead of 50

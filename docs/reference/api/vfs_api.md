@@ -11,13 +11,14 @@ Virtual File System (VFS) adapter for efficient home directory management.
 Adapter for high-performance home directory creation.
 
 Supports:
+
 1. OverlayFS (Linux only) - Extremely fast, minimal disk usage.
 2. Reflink (macOS APFS / Btrfs) - Fast cloning without duplication.
 3. Fallback: Copy-on-Write (COW) or simple shutil.copytree.
 
 ### Methods
 
-#### VfsAdapter.__init__
+#### VfsAdapter.**init**
 
 ```python
 __init__(self: Any, base_skel_dir: Any)

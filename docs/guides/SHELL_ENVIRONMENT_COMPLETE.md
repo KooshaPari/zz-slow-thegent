@@ -82,40 +82,47 @@ src/thegent/
 ### 0. Advanced Features (NEW)
 
 #### Instant Prompt
+
 - **Goal**: Zero perceived startup lag (< 5ms)
 - **How**: Print prompt immediately, load everything else in background
 - **Benefits**: Can start typing immediately, zero perceived lag
 
 #### Async/Turbo Loading
+
 - **Goal**: 50-80% faster startup
 - **How**: Load plugins/tools asynchronously with wait conditions
 - **Wait conditions**: Time-based, condition-based, trigger-load
 - **Benefits**: Non-blocking initialization, progressive enhancement
 
 #### Advanced Caching
+
 - **Goal**: Near-instant tool detection
 - **How**: Multi-level caching (L1 memory, L2 file, eval cache)
 - **Features**: Predictive preloading, smart invalidation
 - **Benefits**: Reduced disk I/O, better performance
 
 #### Error Recovery
+
 - **Goal**: Resilient to transient failures
 - **How**: Circuit breakers, graceful degradation, retry logic
 - **Features**: Automatic recovery, health checks
 - **Benefits**: Better user experience during outages
 
 #### Background Job Management
+
 - **Goal**: Track and manage background initialization
 - **How**: Job registry, status monitoring, cleanup
 - **Benefits**: Prevents zombie processes, better visibility
 
 #### Cross-Platform Compatibility
+
 - **Goal**: Seamless operation everywhere
 - **How**: Platform detection, platform-specific optimizations
 - **Platforms**: macOS, Linux, Windows/WSL
 - **Benefits**: Single configuration works everywhere
 
 #### Advanced Monitoring
+
 - **Goal**: Detailed metrics and diagnostics
 - **How**: Metrics collection, performance tracking
 - **Features**: Cache statistics, error rates, performance timings
@@ -126,6 +133,7 @@ src/thegent/
 **Goal**: Zero perceived startup lag by printing prompt immediately.
 
 **How it works**:
+
 1. Print minimal prompt immediately on shell start
 2. Redirect stdout/stderr to temp file during initialization
 3. Load expensive plugins/tools in background
@@ -133,6 +141,7 @@ src/thegent/
 5. Replace prompt with full version once ready
 
 **Configuration**:
+
 ```bash
 # Enable/disable instant prompt (default: enabled)
 export THEGENT_INSTANT_PROMPT_ENABLED=1  # or 0 to disable
@@ -141,6 +150,7 @@ export THEGENT_INSTANT_PROMPT_ENABLED=1  # or 0 to disable
 **Cache Location**: `~/.cache/thegent/instant-prompt-${USER}.zsh`
 
 **Benefits**:
+
 - Zero perceived startup lag
 - Can start typing immediately
 - Background loading doesn't block interaction
@@ -150,12 +160,14 @@ export THEGENT_INSTANT_PROMPT_ENABLED=1  # or 0 to disable
 **Goal**: Load plugins/tools asynchronously with wait conditions.
 
 **Wait Conditions**:
+
 - `wait"0"` or `wait` (no value): Load immediately in background
 - `wait"N"`: Load after N seconds
 - `wait'[[ condition ]]'`: Load when condition is met
 - `trigger-load`: Create function that loads plugin on first call
 
 **Usage**:
+
 ```bash
 # Load plugin immediately in background
 _thegent_async_load "0" "_load_plugin" "arg1" "arg2"
@@ -171,6 +183,7 @@ _thegent_trigger_load "kubectl" "_load_kubectl"
 ```
 
 **Configuration**:
+
 ```bash
 # Enable/disable async loading (default: enabled)
 export THEGENT_ASYNC_LOADING_ENABLED=1  # or 0 to disable
@@ -183,16 +196,19 @@ export THEGENT_ASYNC_LOADING_ENABLED=1  # or 0 to disable
 **Goal**: Multi-level caching with predictive preloading.
 
 **Cache Levels**:
+
 - **L1 (Memory)**: Fastest, session-scoped, in-memory
 - **L2 (File)**: Fast, persistent across sessions, file-based
 - **Eval Cache**: Cached `eval "$(tool init -)"` outputs
 
 **Cache Locations**:
+
 - L1: In-memory (session-scoped)
 - L2: `~/.cache/thegent/advanced/cache-l2/`
 - Eval: `~/.cache/thegent/eval-cache/`
 
 **Management**:
+
 ```bash
 # View cache statistics
 thegent shell cache-stats
@@ -208,12 +224,14 @@ thegent shell clear-cache
 **Goal**: Circuit breakers, graceful degradation, retry logic.
 
 **Circuit Breaker Pattern**:
+
 - Tracks failures per service
 - Opens circuit after threshold failures
 - Cooldown period before retry
 - Automatic recovery
 
 **Configuration**:
+
 ```bash
 # Maximum retries (default: 3)
 export THEGENT_MAX_RETRIES=3
@@ -223,6 +241,7 @@ export THEGENT_RETRY_DELAY=1
 ```
 
 **Management**:
+
 ```bash
 # List all circuit breakers
 thegent shell circuit-breaker --list
@@ -240,6 +259,7 @@ thegent shell circuit-breaker --reset service_name
 **Job Registry**: `~/.cache/thegent/advanced/jobs/registry` (format: `job_name:PID`)
 
 **Management**:
+
 ```bash
 # View background jobs
 thegent shell jobs
@@ -252,11 +272,13 @@ thegent shell jobs
 **Platform Detection**: Automatically detects from `$OSTYPE` or `uname`, sets `THEGENT_PLATFORM` (`macos`, `linux`, `windows`, `unknown`)
 
 **Platform-Specific Optimizations**:
+
 - **macOS**: Uses `gtimeout` instead of `timeout`
 - **Linux**: Uses `timeout`
 - **Windows/WSL**: Limited timeout support, fallback to direct execution
 
 **Usage**:
+
 ```bash
 # Platform-specific timeout command
 _thegent_timeout_cmd 30 command find "$@"
@@ -272,6 +294,7 @@ thegent shell platform
 **Metrics Collected**: Cache hit/miss rates, tool detection counts, error rates, background job statistics, performance timings
 
 **Configuration**:
+
 ```bash
 # Enable/disable metrics (default: disabled)
 export THEGENT_METRICS_ENABLED=1  # or 0 to disable
@@ -280,6 +303,7 @@ export THEGENT_METRICS_ENABLED=1  # or 0 to disable
 **Metrics Location**: `~/.cache/thegent/advanced/metrics/stats`
 
 **Management**:
+
 ```bash
 # View metrics
 thegent shell metrics
@@ -294,16 +318,19 @@ thegent shell metrics
 **What it does**: Defers loading expensive tools (nvm, rbenv, pyenv, etc.) until first use.
 
 **Benefits**:
+
 - Saves 200-800ms on shell startup
 - Only loads tools when actually needed
 - Transparent to user (works automatically)
 
 **How it works**:
+
 - Wraps tool commands (node, npm, ruby, python, etc.)
 - On first use, loads the tool initialization
 - Subsequent uses are instant
 
 **Example**:
+
 ```zsh
 # Before: nvm loads at startup (~500ms)
 # After: nvm loads on first 'node' or 'npm' use (~50ms)
@@ -311,6 +338,7 @@ $ node --version  # Triggers nvm load, then runs node
 ```
 
 **Custom Lazy Loading**:
+
 ```zsh
 # In ~/.zshrc.local
 _thegent_lazy_load mytool "mytool" "mytool mycmd" "init" "-"
@@ -321,16 +349,19 @@ _thegent_lazy_load mytool "mytool" "mytool mycmd" "init" "-"
 **What it does**: Caches results of `eval "$(tool init -)"` commands.
 
 **Benefits**:
+
 - 80-90% faster on subsequent loads
 - Cache valid for 1 hour
 - Automatic invalidation on tool updates
 
 **How it works**:
+
 - First run: Executes command, caches output
 - Subsequent runs: Sources cached output (<10ms)
 - Cache key: Hash of command + arguments
 
 **Example**:
+
 ```zsh
 # First run: ~65ms
 _evalcache rbenv init -
@@ -340,6 +371,7 @@ _evalcache rbenv init -
 ```
 
 **Manual Eval Caching**:
+
 ```zsh
 _thegent_evalcache expensive-tool init -
 ```
@@ -351,11 +383,13 @@ _thegent_evalcache expensive-tool init -
 **What it does**: Measures and reports shell startup time.
 
 **Benefits**:
+
 - Identify slow-loading components
 - Track optimization improvements
 - Debug performance issues
 
 **Usage**:
+
 ```bash
 # Enable profiling
 thegent shell profile --enable
@@ -374,11 +408,13 @@ thegent shell profile --disable
 **What it does**: Measures average shell startup time over multiple iterations.
 
 **Usage**:
+
 ```bash
 thegent shell benchmark --iterations 10
 ```
 
 **Output**:
+
 ```
 Shell Startup Benchmark Results
 ┌─────────────┬──────────┐
@@ -404,16 +440,19 @@ Shell Startup Benchmark Results
 #### 2.1 Command Aliasing Protection (Detailed)
 
 **Problem**: Commands like `ls` get aliased to `lsd --tree` or similar, causing:
+
 - Recursive tree output when single-level is expected
 - Unwanted directories (node_modules, etc.) in output
 - Performance issues
 
 **Solution**:
+
 - Detects problematic aliases (containing `--tree`, `-R`, `recursive`)
 - Removes or overrides them
 - Provides safe wrapper that ensures single-level output by default
 
 **Example**:
+
 ```zsh
 # Before safeguard: ls shows tree
 $ ls
@@ -428,6 +467,7 @@ src/  file1.py  file2.py
 ```
 
 **Troubleshooting**: If `ls` still shows tree output:
+
 1. Check for aliases: `alias ls`
 2. Check for functions: `type ls`
 3. Reload safeguards: `source ~/.zsh_safeguards.zsh`
@@ -436,17 +476,20 @@ src/  file1.py  file2.py
 #### 2.2 Fork Explosion Prevention (Detailed)
 
 **Problem**: Scripts spawn too many processes, causing:
+
 - `fork: Resource temporarily unavailable` errors
 - System slowdown
 - Process limit exhaustion
 
 **Solution**:
+
 - Sets `ulimit -u 4096` (max processes per user)
 - Sets `ulimit -n 1024` (max open files)
 - Sets `ulimit -v 4194304` (4GB virtual memory)
 - Background monitor warns if process count > 3000
 
 **Configuration**:
+
 ```zsh
 # Limits are set automatically, but can be adjusted:
 ulimit -u 8192  # Increase if needed
@@ -455,6 +498,7 @@ ulimit -u 8192  # Increase if needed
 **Monitoring**: Checks process count every 120s, warns at 75%, critical at 90%
 
 **Troubleshooting**: If fork errors persist:
+
 1. Check current limits: `ulimit -a`
 2. Check process count: `ps -u $USER | wc -l`
 3. Kill stuck processes: `pkill -f <pattern>`
@@ -463,16 +507,19 @@ ulimit -u 8192  # Increase if needed
 #### 2.3 Timeout Safeguards (Detailed)
 
 **Problem**: Commands hang indefinitely, especially:
+
 - `find -exec` commands
 - Network operations
 - Long-running scripts
 
 **Solution**:
+
 - Wraps `find -exec` with 30s timeout
 - Uses `gtimeout` on macOS, `timeout` on Linux
 - Prevents infinite hangs
 
 **Example**:
+
 ```zsh
 # find -exec automatically gets 30s timeout
 find . -name "*.py" -exec python {} \;
@@ -480,6 +527,7 @@ find . -name "*.py" -exec python {} \;
 ```
 
 **Troubleshooting**: If timeouts too aggressive:
+
 1. Adjust timeout in safeguards file
 2. Or use `command find` to bypass wrapper
 3. Or set `THEGENT_TIMEOUT_DISABLED=1`
@@ -487,16 +535,19 @@ find . -name "*.py" -exec python {} \;
 #### 2.4 Eval Security (Detailed)
 
 **Problem**: `eval` executing file paths accidentally:
+
 - `eval $(find ...)` executes file paths as commands
 - `eval $(ls)` executes filenames
 - Security risk
 
 **Solution**:
+
 - Provides `_thegent_safe_eval()` helper function
 - Documents safe eval patterns
 - Detects file paths in eval arguments
 
 **Safe Pattern**:
+
 ```zsh
 # ✅ Safe: Variable assignment
 eval "$(command that outputs VAR=value)"
@@ -513,22 +564,26 @@ done
 #### 2.5 Resource Limits (Detailed)
 
 **Problem**: Resource exhaustion from:
+
 - Too many file descriptors
 - Memory leaks
 - Process accumulation
 
 **Solution**:
+
 - Sets reasonable defaults via `ulimit`
 - Monitors resource usage
 - Provides cleanup helpers
 
 **Default Limits**:
+
 - **Processes**: `ulimit -u 4096`
 - **File descriptors**: `ulimit -n 1024`
 - **Memory**: `ulimit -v 4GB`
 - **Dynamic**: Adjusts based on system capacity
 
 **Adjusting Limits**:
+
 ```zsh
 # In ~/.zshrc.local
 ulimit -u 8192  # Increase process limit
@@ -538,16 +593,19 @@ ulimit -n 2048  # Increase file descriptor limit
 ### 3. Cross-Platform Support
 
 #### macOS
+
 - Uses `gtimeout` (from coreutils)
 - Homebrew path detection
 - LaunchAgent service support
 
 #### Linux
+
 - Uses `timeout` (standard)
 - Standard PATH locations
 - systemd service support (future)
 
 #### Nix-Hybrid
+
 - Detects nix/direnv
 - Loads nix before thegent tools
 - Seamless integration
@@ -592,43 +650,43 @@ thegent shell reload             # Reload shell config
 
 ### Startup Time Reduction
 
-| Tool | Before | After (Lazy) | Improvement |
-|------|--------|--------------|-------------|
-| nvm | ~500ms | ~50ms | 90% |
-| rbenv | ~65ms | ~8ms | 88% |
-| jenv | ~45ms | ~6ms | 87% |
-| pyenv | ~55ms | ~7ms | 87% |
-| direnv | ~30ms | ~5ms | 83% |
-| **Total** | **~800ms** | **~150ms** | **81%** |
+| Tool      | Before     | After (Lazy) | Improvement |
+| --------- | ---------- | ------------ | ----------- |
+| nvm       | ~500ms     | ~50ms        | 90%         |
+| rbenv     | ~65ms      | ~8ms         | 88%         |
+| jenv      | ~45ms      | ~6ms         | 87%         |
+| pyenv     | ~55ms      | ~7ms         | 87%         |
+| direnv    | ~30ms      | ~5ms         | 83%         |
+| **Total** | **~800ms** | **~150ms**   | **81%**     |
 
 ### Resource Usage
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Process limit | Unlimited | 4096 | Controlled |
-| File descriptors | Unlimited | 1024 | Controlled |
-| Memory limit | Unlimited | 4GB | Controlled |
-| Fork explosions | Common | Prevented | 100% |
+| Metric           | Before    | After     | Improvement |
+| ---------------- | --------- | --------- | ----------- |
+| Process limit    | Unlimited | 4096      | Controlled  |
+| File descriptors | Unlimited | 1024      | Controlled  |
+| Memory limit     | Unlimited | 4GB       | Controlled  |
+| Fork explosions  | Common    | Prevented | 100%        |
 
 ## Security Coverage
 
 ### Command Protection Matrix
 
-| Command | Threat | Protection | Status |
-|---------|--------|------------|--------|
-| **ls** | Tree output | Wrapper + alias detection | ✅ |
-| **find** | Hanging -exec | Timeout wrapper | ✅ |
-| **git** | Agent routing | Passthrough system | ✅ |
-| **eval** | File path execution | Safe eval helper | ✅ |
+| Command  | Threat              | Protection                | Status |
+| -------- | ------------------- | ------------------------- | ------ |
+| **ls**   | Tree output         | Wrapper + alias detection | ✅     |
+| **find** | Hanging -exec       | Timeout wrapper           | ✅     |
+| **git**  | Agent routing       | Passthrough system        | ✅     |
+| **eval** | File path execution | Safe eval helper          | ✅     |
 
 ### Resource Protection Matrix
 
-| Resource | Threat | Protection | Status |
-|----------|--------|------------|--------|
-| **Processes** | Fork explosion | ulimit + monitoring | ✅ |
-| **File descriptors** | Exhaustion | ulimit | ✅ |
-| **Memory** | Exhaustion | ulimit | ✅ |
-| **CPU** | Infinite loops | Timeout wrappers | ✅ |
+| Resource             | Threat         | Protection          | Status |
+| -------------------- | -------------- | ------------------- | ------ |
+| **Processes**        | Fork explosion | ulimit + monitoring | ✅     |
+| **File descriptors** | Exhaustion     | ulimit              | ✅     |
+| **Memory**           | Exhaustion     | ulimit              | ✅     |
+| **CPU**              | Infinite loops | Timeout wrappers    | ✅     |
 
 ## Usage Examples
 
@@ -698,11 +756,13 @@ _thegent_job_wait "job_name"
 **Symptoms**: Tools still load at startup
 
 **Diagnosis**:
+
 ```bash
 thegent shell status  # Check if optimization is loaded
 ```
 
 **Fix**:
+
 ```bash
 thegent install --target system --mode force
 ```
@@ -712,6 +772,7 @@ thegent install --target system --mode force
 **Symptoms**: Stale cache, wrong versions
 
 **Fix**:
+
 ```bash
 thegent shell clear-cache
 ```
@@ -719,6 +780,7 @@ thegent shell clear-cache
 #### 3. Performance Not Improved
 
 **Diagnosis**:
+
 ```bash
 thegent shell profile --enable
 # Restart shell
@@ -726,6 +788,7 @@ zprof  # Check what's slow
 ```
 
 **Common Culprits**:
+
 - Oh My Zsh plugins
 - Custom .zshrc additions
 - Network calls during startup
@@ -735,12 +798,14 @@ zprof  # Check what's slow
 **Symptoms**: `fork: Resource temporarily unavailable`
 
 **Diagnosis**:
+
 ```bash
 ulimit -a  # Check limits
 ps aux | wc -l  # Check process count
 ```
 
 **Fix**:
+
 ```bash
 # Increase limit temporarily
 ulimit -u 8192
@@ -839,12 +904,14 @@ fi
 ### From Legacy Setup
 
 1. **Backup**:
+
    ```bash
    cp ~/.zshrc ~/.zshrc.backup
    cp ~/.zshenv ~/.zshenv.backup
    ```
 
 2. **Install**:
+
    ```bash
    thegent install --target system --mode smart
    ```
@@ -899,36 +966,43 @@ export THEGENT_OPTIMIZATION_DISABLED=1
 ## Advanced Troubleshooting
 
 ### Instant Prompt Not Working
+
 1. Check `THEGENT_INSTANT_PROMPT_ENABLED=1`
 2. Verify cache directory is writable
 3. Check for errors in `~/.cache/thegent/instant-prompt-*.zsh`
 
 ### Async Loading Not Working
+
 1. Check `THEGENT_ASYNC_LOADING_ENABLED=1`
 2. Verify background jobs are running: `thegent shell jobs`
 3. Check for errors in job registry
 
 ### Cache Issues
+
 1. Clear cache: `thegent shell clear-cache`
 2. Check cache statistics: `thegent shell cache-stats`
 3. Verify cache directory permissions
 
 ### Circuit Breaker Stuck Open
+
 1. List circuit breakers: `thegent shell circuit-breaker --list`
 2. Reset circuit breaker: `thegent shell circuit-breaker --reset SERVICE`
 3. Check failure counts in `~/.cache/thegent/advanced/circuit-breakers/`
 
 ### Platform Detection Issues
+
 1. Check platform: `thegent shell platform`
 2. Verify `$OSTYPE` or `uname` output
 3. Manually set `THEGENT_PLATFORM` if needed
 
 ### Performance Not Improved
+
 1. Run benchmark: `thegent shell benchmark`
 2. Enable profiling: `thegent shell profile --enable`
 3. Check `zprof` output for slow components
 
 **Common Culprits**:
+
 - Oh My Zsh plugins
 - Custom .zshrc additions
 - Network calls during startup
@@ -968,7 +1042,6 @@ The shell environment management system is **production-ready** and provides:
 
 All components are implemented, tested, and documented. The system is ready for production use with enterprise-grade features including instant prompt, async loading, advanced caching, error recovery, and comprehensive monitoring.
 
-
 ---
 
 ## EXTENSION_SUMMARY
@@ -977,15 +1050,18 @@ All components are implemented, tested, and documented. The system is ready for 
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

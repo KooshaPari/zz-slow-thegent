@@ -30,4 +30,3 @@ python -m pytest thegent/tests/test_unit_scrapers.py -k "Ante or scrape_ante" -q
 - `docs/reports/artifacts/2026-02-22-pyw1-002/lane-a-batch-regression.txt`
 - `docs/reports/artifacts/2026-02-22-pyw1-002/lane-b-code-evidence.txt`
 - `docs/reports/artifacts/2026-02-22-pyw1-002/lane-b-ante-tests.txt`
-

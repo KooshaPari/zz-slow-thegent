@@ -3,7 +3,7 @@
 **Status:** Accepted  
 **Date:** 2026-04-02  
 **Authors:** thegent Team  
-**Reviewers:** Sage Research Agent  
+**Reviewers:** Sage Research Agent
 
 ---
 
@@ -33,13 +33,13 @@ thegent needs to enable reproducible environment bootstrapping. New team members
 
 ### Alternatives Considered
 
-| Approach | Pros | Cons | Research |
-|----------|------|------|----------|
-| Shell scripts | Simple | Fragile, platform-specific | Anti-pattern |
-| Nix flakes | Reproducible | Nix-only, steep curve | Dolstra 2006 |
-| Ansible playbooks | Powerful | Imperative, heavy | Morris 2020 |
-| Docker images | Isolated | Not native, slow | Container research |
-| **Factory seeds (selected)** | Templated, multi-manager | New concept | DDD factories |
+| Approach                     | Pros                     | Cons                       | Research           |
+| ---------------------------- | ------------------------ | -------------------------- | ------------------ |
+| Shell scripts                | Simple                   | Fragile, platform-specific | Anti-pattern       |
+| Nix flakes                   | Reproducible             | Nix-only, steep curve      | Dolstra 2006       |
+| Ansible playbooks            | Powerful                 | Imperative, heavy          | Morris 2020        |
+| Docker images                | Isolated                 | Not native, slow           | Container research |
+| **Factory seeds (selected)** | Templated, multi-manager | New concept                | DDD factories      |
 
 ---
 

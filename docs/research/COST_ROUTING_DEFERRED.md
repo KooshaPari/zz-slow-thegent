@@ -19,12 +19,12 @@
 
 The following are **not implemented** and are documented as deferred:
 
-| Item | Description | Reference |
-|------|-------------|-----------|
-| Per-run cost tracking | Aggregate actual cost per run; budget alerts | FR-036, WP-Y4 |
-| Cost-per-quality optimization | RouteLLM-style provider selection; A/B cost-quality trade-off | WP-5003, NFR-016 |
-| Dynamic cost weights | Cost weights from live pricing or usage data | — |
-| Budget enforcement | Hard limits per run or per hour; throttle on overage | Risk registry TD-02 |
+| Item                          | Description                                                   | Reference           |
+| ----------------------------- | ------------------------------------------------------------- | ------------------- |
+| Per-run cost tracking         | Aggregate actual cost per run; budget alerts                  | FR-036, WP-Y4       |
+| Cost-per-quality optimization | RouteLLM-style provider selection; A/B cost-quality trade-off | WP-5003, NFR-016    |
+| Dynamic cost weights          | Cost weights from live pricing or usage data                  | —                   |
+| Budget enforcement            | Hard limits per run or per hour; throttle on overage          | Risk registry TD-02 |
 
 ---
 
@@ -41,13 +41,13 @@ When cost-based routing is prioritized:
 
 ## BACKLOG items (when cost-based routing prioritized)
 
-| ID | Title | Source | Priority | Depends |
-|----|-------|--------|----------|---------|
-| cost-wp-y4 | Per-run cost aggregation (orchestration/cost.py) | COST_ROUTING_DEFERRED.md §3 | P2 | — |
-| cost-budget-alerts | Budget alerts and cost-overage gates | COST_ROUTING_DEFERRED.md §3 | P2 | cost-wp-y4 |
-| cost-wp-5003 | Cost-quality optimization (RouteLLM-style); integrate with run registry | COST_ROUTING_DEFERRED.md §3, WP-5003 | P2 | cost-wp-y4 |
+| ID                 | Title                                                                   | Source                               | Priority | Depends    |
+| ------------------ | ----------------------------------------------------------------------- | ------------------------------------ | -------- | ---------- |
+| cost-wp-y4         | Per-run cost aggregation (orchestration/cost.py)                        | COST_ROUTING_DEFERRED.md §3          | P2       | —          |
+| cost-budget-alerts | Budget alerts and cost-overage gates                                    | COST_ROUTING_DEFERRED.md §3          | P2       | cost-wp-y4 |
+| cost-wp-5003       | Cost-quality optimization (RouteLLM-style); integrate with run registry | COST_ROUTING_DEFERRED.md §3, WP-5003 | P2       | cost-wp-y4 |
 
-*Run `thegent plan incorporate` to merge into [WORK_STREAM.md](../reference/WORK_STREAM.md).*
+_Run `thegent plan incorporate` to merge into [WORK_STREAM.md](../reference/WORK_STREAM.md)._
 
 ---
 

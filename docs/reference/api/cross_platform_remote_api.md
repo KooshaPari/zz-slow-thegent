@@ -12,7 +12,7 @@ Research for cross-platform remote compute.
 
 ### Methods
 
-#### CrossPlatformRemoteResearch.__init__
+#### CrossPlatformRemoteResearch.**init**
 
 ```python
 __init__(self: Any)

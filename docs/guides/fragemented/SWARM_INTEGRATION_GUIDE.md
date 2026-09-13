@@ -5,12 +5,14 @@ Guide for integrating the Self-Healing Swarm Controller with your agent executio
 ## Overview
 
 The Swarm Controller provides a standardized interface for:
+
 - Monitoring agent health and metrics
 - Detecting and auto-healing failures
 - Dynamic scaling based on queue depth
 - Resource-aware throttling
 
 Integration points:
+
 1. **Agent Metrics API**: Update agent status via CLI
 2. **Work Stream**: Read `docs/reference/WORK_STREAM.md` for queue depth
 3. **State File**: Read `.claude/swarm_state.json` for agent status
@@ -55,24 +57,27 @@ python3 scripts/swarm_controller.py --update-metrics $AGENT_ID \
 ### 2. Work Stream Integration
 
 The controller reads `docs/reference/WORK_STREAM.md` to:
+
 - Get queue depth (pending items)
 - Apply backpressure (if claimed > 10)
 - Scale agents based on demand
 
 **Your system should:**
+
 1. Update `docs/reference/WORK_STREAM.md` with work items
 2. Mark items as `CLAIMED` when agent takes them
 3. Mark items as `COMPLETED` when finished
 
 **Example work stream format:**
+
 ```markdown
 # WORK_STREAM
 
-| ID | Status | Agent | Description |
-|----|--------|-------|-------------|
-| WI-001 | PENDING | - | Task A |
-| WI-002 | CLAIMED | agent-1 | Task B |
-| WI-003 | COMPLETED | agent-1 | Task C |
+| ID     | Status    | Agent   | Description |
+| ------ | --------- | ------- | ----------- |
+| WI-001 | PENDING   | -       | Task A      |
+| WI-002 | CLAIMED   | agent-1 | Task B      |
+| WI-003 | COMPLETED | agent-1 | Task C      |
 ```
 
 ### 3. Metrics Update Pattern
@@ -407,6 +412,7 @@ if __name__ == "__main__":
 Adjust controller behavior for your workload:
 
 ### CPU-Bound Agents
+
 ```yaml
 config:
   # Tighter SLO, less aggressive scaling
@@ -416,6 +422,7 @@ config:
 ```
 
 ### I/O-Bound Agents
+
 ```yaml
 config:
   # Looser SLO, more aggressive scaling
@@ -425,6 +432,7 @@ config:
 ```
 
 ### High Reliability
+
 ```yaml
 config:
   # Conservative scaling, quick detection

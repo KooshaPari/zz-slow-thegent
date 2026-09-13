@@ -23,7 +23,7 @@ Orchestrates the self-authoring of agent architectures.
 
 ### Methods
 
-#### AutopoiesisManager.__init__
+#### AutopoiesisManager.**init**
 
 ```python
 __init__(self: Any, run_id: str)

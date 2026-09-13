@@ -5,9 +5,9 @@
 Distributed resource coordination backed by a file-locked JSON lease store.
 
 Coordinates resource usage across multiple thegent nodes/processes using a
-shared lease file at ``~/.thegent/resource_leases.json``.  A ``filelock``
+shared lease file at `~/.thegent/resource_leases.json`. A `filelock`
 advisory lock prevents concurrent writers from corrupting state; if
-``filelock`` is not installed the module falls back to a simple read/write
+`filelock` is not installed the module falls back to a simple read/write
 approach that is safe for single-process use.
 
 ---
@@ -16,12 +16,12 @@ approach that is safe for single-process use.
 
 Coordinate resource usage across thegent nodes via a shared lease file.
 
-Uses ``filelock.FileLock`` for mutual exclusion when available, otherwise
+Uses `filelock.FileLock` for mutual exclusion when available, otherwise
 falls back to a simple read/write approach (safe for single-process use).
 
 ### Methods
 
-#### DistributedResourceCoordinator.__init__
+#### DistributedResourceCoordinator.**init**
 
 ```python
 __init__(self: Any, lease_file: Any, resource_limits: Any, lock_timeout: float)
@@ -35,7 +35,7 @@ __init__(self: Any, lease_file: Any, resource_limits: Any, lock_timeout: float)
 acquire(self: Any, resource: str, amount: float, owner: str, ttl_s: float, total: Any)
 ```
 
-Acquire a lease on *amount* units of *resource*.
+Acquire a lease on _amount_ units of _resource_.
 
 **Parameters**:
 
@@ -43,10 +43,10 @@ Acquire a lease on *amount* units of *resource*.
 - `amount`: Quantity to reserve.
 - `owner`: Identifier for the entity claiming the lease.
 - `ttl_s`: Time-to-live in seconds before the lease automatically expires.
-- `total`: Override total capacity for this call.  Falls back to
-``resource_limits`` dict, then no limit (always succeeds).
+- `total`: Override total capacity for this call. Falls back to
+  `resource_limits` dict, then no limit (always succeeds).
 
-**Returns**: A :class:`ResourceLease` on success, or ``None`` if insufficient
+**Returns**: A :class:`ResourceLease` on success, or `None` if insufficient
 capacity is available.
 
 ---
@@ -76,7 +76,7 @@ Return non-expired leases, optionally filtered by resource name.
 - `resource`: When given, only leases for this resource are returned.
 
 **Returns**: List of active :class:`ResourceLease` instances sorted by
-``expires_at`` ascending.
+`expires_at` ascending.
 
 ---
 
@@ -86,15 +86,15 @@ Return non-expired leases, optionally filtered by resource name.
 get_available(self: Any, resource: str, total: float)
 ```
 
-Return available capacity for *resource* given a known *total*.
+Return available capacity for _resource_ given a known _total_.
 
 **Parameters**:
 
 - `resource`: Name of the resource.
 - `total`: Known total capacity for the resource.
 
-**Returns**: ``total`` minus the sum of active (non-expired) lease amounts for
-*resource*.  Never returns a negative value.
+**Returns**: `total` minus the sum of active (non-expired) lease amounts for
+_resource_. Never returns a negative value.
 
 ---
 
@@ -108,9 +108,9 @@ Release a lease by its identifier.
 
 **Parameters**:
 
-- `lease_id`: The ``lease_id`` of the :class:`ResourceLease` to remove.
+- `lease_id`: The `lease_id` of the :class:`ResourceLease` to remove.
 
-**Returns**: ``True`` if the lease was found and removed, ``False`` otherwise.
+**Returns**: `True` if the lease was found and removed, `False` otherwise.
 
 ---
 
@@ -168,7 +168,7 @@ Serialise to a plain dictionary.
 acquire(self: Any, resource: str, amount: float, owner: str, ttl_s: float, total: Any)
 ```
 
-Acquire a lease on *amount* units of *resource*.
+Acquire a lease on _amount_ units of _resource_.
 
 **Parameters**:
 
@@ -176,16 +176,16 @@ Acquire a lease on *amount* units of *resource*.
 - `amount`: Quantity to reserve.
 - `owner`: Identifier for the entity claiming the lease.
 - `ttl_s`: Time-to-live in seconds before the lease automatically expires.
-- `total`: Override total capacity for this call.  Falls back to
-``resource_limits`` dict, then no limit (always succeeds).
+- `total`: Override total capacity for this call. Falls back to
+  `resource_limits` dict, then no limit (always succeeds).
 
-**Returns**: A :class:`ResourceLease` on success, or ``None`` if insufficient
+**Returns**: A :class:`ResourceLease` on success, or `None` if insufficient
 capacity is available.
 
 **Raises**:
 
 - `ResourceCoordinationError`: If the lock cannot be acquired or
-storage I/O fails.
+  storage I/O fails.
 
 ---
 
@@ -224,7 +224,7 @@ Return non-expired leases, optionally filtered by resource name.
 - `resource`: When given, only leases for this resource are returned.
 
 **Returns**: List of active :class:`ResourceLease` instances sorted by
-``expires_at`` ascending.
+`expires_at` ascending.
 
 ---
 
@@ -234,15 +234,15 @@ Return non-expired leases, optionally filtered by resource name.
 get_available(self: Any, resource: str, total: float)
 ```
 
-Return available capacity for *resource* given a known *total*.
+Return available capacity for _resource_ given a known _total_.
 
 **Parameters**:
 
 - `resource`: Name of the resource.
 - `total`: Known total capacity for the resource.
 
-**Returns**: ``total`` minus the sum of active (non-expired) lease amounts for
-*resource*.  Never returns a negative value.
+**Returns**: `total` minus the sum of active (non-expired) lease amounts for
+_resource_. Never returns a negative value.
 
 ---
 
@@ -266,9 +266,9 @@ Release a lease by its identifier.
 
 **Parameters**:
 
-- `lease_id`: The ``lease_id`` of the :class:`ResourceLease` to remove.
+- `lease_id`: The `lease_id` of the :class:`ResourceLease` to remove.
 
-**Returns**: ``True`` if the lease was found and removed, ``False`` otherwise.
+**Returns**: `True` if the lease was found and removed, `False` otherwise.
 
 ---
 

@@ -14,7 +14,7 @@ Aggregates advanced metrics per agent and command.
 
 ### Methods
 
-#### AdvancedMetrics.__init__
+#### AdvancedMetrics.**init**
 
 ```python
 __init__(self: Any, metrics_file: Path)

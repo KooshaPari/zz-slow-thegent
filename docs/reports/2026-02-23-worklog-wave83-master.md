@@ -10,14 +10,14 @@ Scope request: sequential backlog `#101..#150` from `docs/reference/WORK_STREAM_
 
 ## Lane Assignment and Status
 
-| Lane | Requested range | Actual status | Report |
-|---|---|---|---|
-| A | #101..#109 | Completed (source-backed) | `docs/reports/2026-02-23-worklog-wave83-lane-a.md` |
-| B | #110..#118 | Blocked (source missing) | `docs/reports/2026-02-23-worklog-wave83-lane-b.md` |
-| C | #119..#127 | Blocked (source missing) | `docs/reports/2026-02-23-worklog-wave83-lane-c.md` |
-| D | #128..#135 | Blocked (source missing) | `docs/reports/2026-02-23-worklog-wave83-lane-d.md` |
-| E | #136..#143 | Blocked (source missing) | `docs/reports/2026-02-23-worklog-wave83-lane-e.md` |
-| F | #144..#150 | Blocked (source missing) | `docs/reports/2026-02-23-worklog-wave83-lane-f.md` |
+| Lane | Requested range | Actual status             | Report                                             |
+| ---- | --------------- | ------------------------- | -------------------------------------------------- |
+| A    | #101..#109      | Completed (source-backed) | `docs/reports/2026-02-23-worklog-wave83-lane-a.md` |
+| B    | #110..#118      | Blocked (source missing)  | `docs/reports/2026-02-23-worklog-wave83-lane-b.md` |
+| C    | #119..#127      | Blocked (source missing)  | `docs/reports/2026-02-23-worklog-wave83-lane-c.md` |
+| D    | #128..#135      | Blocked (source missing)  | `docs/reports/2026-02-23-worklog-wave83-lane-d.md` |
+| E    | #136..#143      | Blocked (source missing)  | `docs/reports/2026-02-23-worklog-wave83-lane-e.md` |
+| F    | #144..#150      | Blocked (source missing)  | `docs/reports/2026-02-23-worklog-wave83-lane-f.md` |
 
 ## Actionable Outcomes
 
@@ -36,4 +36,3 @@ Scope request: sequential backlog `#101..#150` from `docs/reference/WORK_STREAM_
 1. Regenerate the canonical work-stream export with full QOL rows (`#31..#81`), then rerun Wave 83 lanes B..F.
 2. Add a generation-time count-consistency check (hard fail when summary counts do not equal emitted section entries).
 3. Reconcile global item sequencing logic in reports so lane targeting cannot exceed source-backed rows.
-

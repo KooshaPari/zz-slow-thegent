@@ -7,6 +7,7 @@
 ## CPB Triage Entries
 
 ### CPB-0771
+
 - Title focus: Claude thinking/tool-use compatibility via `anthropic-beta` header handling.
 - Likely impacted paths:
   - `cliproxyapi-plusplus/pkg/llmproxy/translator/openai/claude/openai_claude_request.go`
@@ -15,6 +16,7 @@
 - Validation command: `rg -n "anthropic-beta|thinking|tool" cliproxyapi-plusplus/pkg/llmproxy/translator/openai/claude cliproxyapi-plusplus/pkg/llmproxy/thinking/provider/openai`
 
 ### CPB-0772
+
 - Title focus: Antigravity model reliability hardening for OpenCode CLI flows.
 - Likely impacted paths:
   - `cliproxyapi-plusplus/pkg/llmproxy/thinking/provider/antigravity/apply.go`
@@ -23,6 +25,7 @@
 - Validation command: `go test ./cliproxyapi-plusplus/pkg/llmproxy/thinking/provider/antigravity -run Test`
 
 ### CPB-0773
+
 - Title focus: Antigravity native-Gemini ops coverage for model listing and search availability.
 - Likely impacted paths:
   - `cliproxyapi-plusplus/pkg/llmproxy/config/providers.json`
@@ -31,6 +34,7 @@
 - Validation command: `rg -n "antigravity|gemini-3-pro-preview|models" cliproxyapi-plusplus/pkg/llmproxy/config/providers.json cliproxyapi-plusplus/sdk/api/handlers/gemini/gemini_handlers.go`
 
 ### CPB-0774
+
 - Title focus: System-instruction/cache-control block-limit handling generalized across translators.
 - Likely impacted paths:
   - `cliproxyapi-plusplus/pkg/llmproxy/misc/claude_code_instructions.go`
@@ -39,6 +43,7 @@
 - Validation command: `rg -n "checkSystemInstructions|cache_control|maximum of 4 blocks" cliproxyapi-plusplus/pkg/llmproxy/misc cliproxyapi-plusplus/pkg/llmproxy/translator/openai/claude`
 
 ### CPB-0775
+
 - Title focus: Thinking budget normalization (`max_tokens` vs `thinking.budget_tokens`) for OpenAI/Gemini compatibility.
 - Likely impacted paths:
   - `cliproxyapi-plusplus/pkg/llmproxy/translator/openai/common/reasoning.go`
@@ -47,6 +52,7 @@
 - Validation command: `go test ./cliproxyapi-plusplus/pkg/llmproxy/translator/openai/common -run Test.*Reasoning`
 
 ### CPB-0776
+
 - Title focus: Anthropic OAuth regression fallout triage plus quickstart/troubleshooting coverage.
 - Likely impacted paths:
   - `cliproxyapi-plusplus/pkg/llmproxy/auth/claude/oauth_server.go`
@@ -55,6 +61,7 @@
 - Validation command: `go test ./cliproxyapi-plusplus/pkg/llmproxy/auth/claude -run Test.*OAuth`
 
 ### CPB-0777
+
 - Title focus: Droid-provider QA parity for stream and non-stream response surfaces.
 - Likely impacted paths:
   - `cliproxyapi-plusplus/pkg/llmproxy/config/providers.json`
@@ -63,6 +70,7 @@
 - Validation command: `go test ./cliproxyapi-plusplus/sdk/api/handlers/openai -run "Test.*Stream|Test.*Responses"`
 
 ### CPB-0778
+
 - Title focus: Structured-output/JSON-schema translation boundary cleanup.
 - Likely impacted paths:
   - `cliproxyapi-plusplus/pkg/llmproxy/util/gemini_schema.go`
@@ -71,6 +79,7 @@
 - Validation command: `go test ./cliproxyapi-plusplus/pkg/llmproxy/util -run Test.*Schema`
 
 ### CPB-0779
+
 - Title focus: Thinking-path parity across OpenAI/Gemini/Claude with CLI command-surface implications.
 - Likely impacted paths:
   - `cliproxyapi-plusplus/pkg/llmproxy/runtime/executor/thinking_providers.go`
@@ -79,6 +88,7 @@
 - Validation command: `rg -n "sonnet-4-5|thinking|provider" cliproxyapi-plusplus/pkg/llmproxy/runtime/executor/thinking_providers.go cliproxyapi-plusplus/pkg/llmproxy/config/providers.json`
 
 ### CPB-0780
+
 - Title focus: Docker-deployed Gemini login metadata/naming consistency across docs and CLI UX.
 - Likely impacted paths:
   - `cliproxyapi-plusplus/docker-compose.yml`

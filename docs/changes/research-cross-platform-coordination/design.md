@@ -32,6 +32,7 @@
 **Location**: `thegent/platform/registry.py`
 
 **Data Model**:
+
 ```python
 @dataclass
 class PlatformCapabilities:
@@ -50,6 +51,7 @@ class PlatformCapabilities:
 ```
 
 **Tool Capability**:
+
 ```python
 @dataclass
 class ToolCapability:
@@ -66,6 +68,7 @@ class ToolCapability:
 **Location**: `thegent/platform/detector.py`
 
 **Responsibilities**:
+
 - Detect OS, architecture, Python version
 - Probe for tools (rg, fd, jq, docker, etc.) via which/where
 - Check environment variables, paths
@@ -74,6 +77,7 @@ class ToolCapability:
 - Cache results with TTL (default: 1 hour)
 
 **Detection Strategy**:
+
 ```python
 class CapabilityDetector:
     def detect_platform(self) -> PlatformCapabilities:
@@ -96,6 +100,7 @@ class CapabilityDetector:
 ```
 
 **Tool Detection**:
+
 - Fast path: Check PATH (avoid spawning subprocess if possible)
 - Fallback: Use `which` (Unix) or `where` (Windows)
 - Version extraction: Run tool with `--version` flag
@@ -107,10 +112,11 @@ class CapabilityDetector:
 **Location**: `thegent/platform/constraints.py`
 
 **Agent/Task Declaration**:
+
 ```yaml
 # In agent definition or task prompt
 platforms:
-  supported: [darwin, linux]  # exclude windows
+  supported: [darwin, linux] # exclude windows
   required_tools: [rg, fd, jq]
   min_memory_mb: 512
   requires_container: false
@@ -119,13 +125,14 @@ platforms:
 
 fallback_strategy:
   unavailable_tools:
-    rg: grep  # if rg unavailable, use grep instead
+    rg: grep # if rg unavailable, use grep instead
     fd: find
     jq: python json module
-  degraded_mode: reduced_parallelism  # if memory < threshold
+  degraded_mode: reduced_parallelism # if memory < threshold
 ```
 
 **Constraint Matching**:
+
 ```python
 def matches_constraints(caps: PlatformCapabilities, constraints: PlatformConstraints) -> MatchResult:
     """Check if platform satisfies task constraints"""
@@ -164,6 +171,7 @@ def matches_constraints(caps: PlatformCapabilities, constraints: PlatformConstra
 **Location**: `thegent/platform/dispatcher.py`
 
 **Dispatch Algorithm**:
+
 ```python
 class PlatformDispatcher:
     def dispatch(self, task: Task, available_executors: List[ExecutorInfo]) -> DispatchDecision:
@@ -225,12 +233,14 @@ class PlatformDispatcher:
 | `git` | Fail loudly | N/A | Required; no substitute |
 
 **Degraded Modes**:
+
 - **`reduced_parallelism`**: Reduce concurrent processes if memory < threshold
 - **`single_threaded`**: Run serially if CPU-bound constraints tight
 - **`readonly`**: Disable write operations in read-only mode
 - **`network_offline`**: Disable external calls if network unavailable
 
 **Graceful Handling**:
+
 ```python
 def execute_with_fallback(task: Task, executor: ExecutorInfo, fallback_strategy: FallbackStrategy) -> ExecutionResult:
     """Execute task with fallback handling"""
@@ -265,6 +275,7 @@ def execute_with_fallback(task: Task, executor: ExecutorInfo, fallback_strategy:
 ## Data Structures
 
 ### PlatformConstraints (YAML/JSON)
+
 ```json
 {
   "platforms": {
@@ -295,6 +306,7 @@ def execute_with_fallback(task: Task, executor: ExecutorInfo, fallback_strategy:
 ## Integration Points
 
 ### 1. CLI Commands
+
 ```bash
 # Show platform capabilities
 thegent platform detect
@@ -313,11 +325,13 @@ thegent platform dispatch-sim <task> --executors <executor-list>
 ```
 
 ### 2. MCP Tools
+
 - `thegent://platform/detect` — Get current platform capabilities
 - `thegent://platform/registry` — Access capability cache
 - `thegent://platform/constraints` — Declare task constraints
 
 ### 3. Agent Declarative API
+
 ```python
 # In agent skill or task
 from thegent.platform import PlatformConstraint, fallback
@@ -338,6 +352,7 @@ def my_agent_task():
 ## Error Handling & Diagnostics
 
 **Diagnostic Output**:
+
 ```
 DISPATCH FAILED: Cannot find compatible executor for task "audit-security"
 
@@ -362,17 +377,20 @@ Suggestions:
 ## Testing Strategy
 
 ### Unit Tests
+
 - Platform detection on mocked environments
 - Constraint matching algorithm with edge cases
 - Dispatch scoring and selection logic
 - Fallback strategy application
 
 ### Integration Tests
+
 - Multi-platform CI matrix (macOS, Linux, Windows)
 - Real tool detection (rg, fd, docker, etc.)
 - End-to-end dispatch with actual executors
 
 ### Scenario Tests
+
 - All tools available → perfect dispatch
 - One tool missing → fallback applied, task succeeds
 - Multiple tools missing → degraded mode or failure
@@ -384,16 +402,19 @@ Suggestions:
 ## Rollout Plan
 
 ### Phase 1: Core (Week 1)
+
 - [ ] Implement capability detector
 - [ ] Build platform registry (in-memory + disk cache)
 - [ ] Add constraint matching and fallback logic
 
 ### Phase 2: Integration (Week 2)
+
 - [ ] Wire dispatch into `thegent run` and `thegent bg`
 - [ ] Add CLI commands (`thegent platform *`)
 - [ ] Expose MCP tools
 
 ### Phase 3: Verification (Week 3)
+
 - [ ] Multi-platform CI matrix setup
 - [ ] Documentation and agent guide
 - [ ] Knowledge transfer and backlog closure
@@ -402,12 +423,12 @@ Suggestions:
 
 ## Risks & Mitigations
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|-----------|--------|-----------|
-| Detection overhead (slow startup) | Medium | Low | Cache with TTL; lazy detection on first use |
-| False negatives (tool detected but broken) | Low | Medium | Version validation; smoke tests on dispatch |
-| Platform-specific quirks | Medium | Medium | Comprehensive test matrix; community feedback |
-| Configuration complexity | Medium | Low | Sensible defaults; decorator API |
+| Risk                                       | Likelihood | Impact | Mitigation                                    |
+| ------------------------------------------ | ---------- | ------ | --------------------------------------------- |
+| Detection overhead (slow startup)          | Medium     | Low    | Cache with TTL; lazy detection on first use   |
+| False negatives (tool detected but broken) | Low        | Medium | Version validation; smoke tests on dispatch   |
+| Platform-specific quirks                   | Medium     | Medium | Comprehensive test matrix; community feedback |
+| Configuration complexity                   | Medium     | Low    | Sensible defaults; decorator API              |
 
 ---
 

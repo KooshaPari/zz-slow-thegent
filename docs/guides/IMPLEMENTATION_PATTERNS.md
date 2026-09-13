@@ -272,23 +272,22 @@ class TaskQueue:
 
 ### Patterns Added
 
-| # | Pattern | Use Case |
-|---|---------|----------|
-| 1 | Retry with tenacity | Network calls, API requests |
-| 2 | TTL/File caching | Expensive computations, API responses |
-| 3 | Circuit breaker | External service protection |
-| 4 | File watching | Directory monitoring, triggers |
-| 5 | Structured logging | Debugging, observability |
-| 6 | CLI commands | User-facing tools |
-| 7 | Plugin discovery | Extensibility |
-| 8 | Task queue | Async processing |
+| #   | Pattern             | Use Case                              |
+| --- | ------------------- | ------------------------------------- |
+| 1   | Retry with tenacity | Network calls, API requests           |
+| 2   | TTL/File caching    | Expensive computations, API responses |
+| 3   | Circuit breaker     | External service protection           |
+| 4   | File watching       | Directory monitoring, triggers        |
+| 5   | Structured logging  | Debugging, observability              |
+| 6   | CLI commands        | User-facing tools                     |
+| 7   | Plugin discovery    | Extensibility                         |
+| 8   | Task queue          | Async processing                      |
 
 ### Cross-References
 
 - [anti-patterns.md](./anti-patterns.md) - Anti-patterns these patterns solve
 - [TESTING.md](./TESTING.md) - Testing patterns
 - [architecture-enforcement.md](./architecture-enforcement.md) - Layer rules
-
 
 ---
 
@@ -298,15 +297,18 @@ class TaskQueue:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related documentation
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

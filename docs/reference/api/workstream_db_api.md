@@ -17,7 +17,7 @@ Canonical PM: DB is primary; WORK_STREAM.md is generated view.
 
 ### Methods
 
-#### WorkstreamDB.__init__
+#### WorkstreamDB.**init**
 
 ```python
 __init__(self: Any, db_path: Any, settings: Any)
@@ -253,6 +253,7 @@ sync_with_markdown(self: Any, work_stream_path: Path)
 Sync WORK_STREAM.md with the database.
 
 Bidirectional sync:
+
 1. Parse WORK_STREAM.md
 2. Update database workstream_items and dependencies
 3. (Optional) Could update markdown from DB if needed
@@ -506,6 +507,7 @@ sync_with_markdown(self: Any, work_stream_path: Path)
 Sync WORK_STREAM.md with the database.
 
 Bidirectional sync:
+
 1. Parse WORK_STREAM.md
 2. Update database workstream_items and dependencies
 3. (Optional) Could update markdown from DB if needed

@@ -12,7 +12,9 @@ Scope: Implement next 10 open cliproxy items after Lane I (`CPB-0001..CPB-0010`)
 ## Implemented Changes
 
 ### 1) Provider normalization and fail-fast login validation
+
 Updated `cliproxyapi-plusplus/cmd/cliproxyctl/main.go`:
+
 - Added canonical provider resolution helper: `resolveLoginProvider(...)`.
 - Added explicit supported-provider registry and deterministic sorted listing via `supportedProviders()`.
 - Hardened alias normalization in `normalizeProvider(...)` for common variants:
@@ -26,20 +28,26 @@ Updated `cliproxyapi-plusplus/cmd/cliproxyctl/main.go`:
   - fail loudly with supported-provider metadata when invalid.
 
 ### 2) Deterministic config-path remediation guardrails
+
 Updated `cliproxyapi-plusplus/cmd/cliproxyctl/main.go`:
+
 - Hardened `ensureConfigFile(...)` to fail fast when config path is empty or a directory.
 - Added writeability preflight via `ensureDirectoryWritable(...)` to avoid silent/late config write failures.
 - Preserved explicit remediation behavior for doctor-driven config creation paths.
 
 ### 3) Lane M regression coverage
+
 Updated `cliproxyapi-plusplus/cmd/cliproxyctl/main_test.go`:
+
 - Added/expanded login-provider normalization and validation tests.
 - Added deterministic directory-target config failure tests.
 - Added lane evidence suite: `TestCPB0011To0020LaneMRegressionEvidence` (10 subtests, one per `CPB-0011..CPB-0020`).
 - Stabilized pre-existing lane-I `CPB-0003` evidence test to use a temp profile file.
 
 ### 4) Board status updates
+
 Updated in `cliproxyapi-plusplus`:
+
 - `docs/planning/CLIPROXYAPI_1000_ITEM_BOARD_2026-02-22.csv`
   - Set `CPB-0011..CPB-0020` status -> `implemented-wave80-lane-m`
 - `docs/planning/CLIPROXYAPI_2000_ITEM_EXECUTION_BOARD_2026-02-22.csv`
@@ -55,6 +63,7 @@ go test ./cmd/cliproxyctl -count=1
 ```
 
 Result:
+
 - `ok   github.com/router-for-me/CLIProxyAPI/v6/cmd/cliproxyctl  1.450s`
 
 ## Evidence Mapping (CPB-0011..CPB-0020)

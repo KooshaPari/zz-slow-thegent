@@ -33,14 +33,14 @@ main.add_provider(provider)
 
 ### Built-in transforms
 
-| Transform | Purpose |
-|-----------|---------|
-| Namespace("prefix") | Prefix tool names (e.g. api_toolname) |
-| ToolTransform({name: config}) | Per-tool description/schema overrides |
-| ResourcesAsTools(provider) | Expose resources as list_resources / read_resource tools |
-| PromptsAsTools(provider) | Expose prompts as list_prompts / get_prompt tools |
-| VersionFilter(...) | Filter by client version |
-| Visibility | Enable/disable components by tags |
+| Transform                     | Purpose                                                  |
+| ----------------------------- | -------------------------------------------------------- |
+| Namespace("prefix")           | Prefix tool names (e.g. api_toolname)                    |
+| ToolTransform({name: config}) | Per-tool description/schema overrides                    |
+| ResourcesAsTools(provider)    | Expose resources as list_resources / read_resource tools |
+| PromptsAsTools(provider)      | Expose prompts as list_prompts / get_prompt tools        |
+| VersionFilter(...)            | Filter by client version                                 |
+| Visibility                    | Enable/disable components by tags                        |
 
 ---
 
@@ -64,11 +64,11 @@ event_store = EventStore(storage=redis_backend)
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| storage | AsyncKeyValue | None | MemoryStore() | Backend for event storage |
-| max_events_per_stream | int | 100 | Max events retained per stream |
-| ttl | int | None | 3600 | Event TTL in seconds; None = no expiration |
+| Parameter             | Type          | Default | Description                    |
+| --------------------- | ------------- | ------- | ------------------------------ | ------------------------------------------ |
+| storage               | AsyncKeyValue | None    | MemoryStore()                  | Backend for event storage                  |
+| max_events_per_stream | int           | 100     | Max events retained per stream |
+| ttl                   | int           | None    | 3600                           | Event TTL in seconds; None = no expiration |
 
 ### Usage with HTTP app
 
@@ -123,6 +123,7 @@ async def long_running_task(ctx: Context) -> str:
 Exposes resources as tools for clients that only support tools.
 
 Generated tools:
+
 - list_resources - Lists resources and templates (JSON)
 - read_resource - Reads a resource by URI (text or base64 for binary)
 
@@ -139,6 +140,7 @@ mcp.add_transform(ResourcesAsTools(mcp))
 Exposes prompts as tools for tool-only clients.
 
 Generated tools:
+
 - list_prompts - Lists prompts with metadata (JSON)
 - get_prompt - Renders a prompt by name with optional arguments
 
@@ -172,13 +174,13 @@ app = mcp.http_app(
 )
 ```
 
-| Parameter | Description |
-|-----------|-------------|
-| path | HTTP endpoint path |
-| transport | "http", "streamable-http", or "sse" |
-| event_store | For SSE polling/resumability (streamable-http only) |
-| retry_interval | Reconnect delay in ms (requires event_store) |
-| stateless_http | New transport per request for horizontal scaling |
+| Parameter      | Description                                         |
+| -------------- | --------------------------------------------------- |
+| path           | HTTP endpoint path                                  |
+| transport      | "http", "streamable-http", or "sse"                 |
+| event_store    | For SSE polling/resumability (streamable-http only) |
+| retry_interval | Reconnect delay in ms (requires event_store)        |
+| stateless_http | New transport per request for horizontal scaling    |
 
 ---
 
@@ -208,9 +210,9 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Deployment environment'
+        description: "Deployment environment"
         required: true
-        default: 'staging'
+        default: "staging"
         type: choice
         options:
           - staging
@@ -225,7 +227,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install dependencies
         run: |
@@ -325,11 +327,11 @@ spec:
   template:
     spec:
       containers:
-      - name: thegent-mcp
-        image: thegent-mcp:v1.0.0-blue
-        env:
-        - name: DEPLOYMENT_COLOR
-          value: "blue"
+        - name: thegent-mcp
+          image: thegent-mcp:v1.0.0-blue
+          env:
+            - name: DEPLOYMENT_COLOR
+              value: "blue"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -340,11 +342,11 @@ spec:
   template:
     spec:
       containers:
-      - name: thegent-mcp
-        image: thegent-mcp:v1.0.1-green
-        env:
-        - name: DEPLOYMENT_COLOR
-          value: "green"
+        - name: thegent-mcp
+          image: thegent-mcp:v1.0.1-green
+          env:
+            - name: DEPLOYMENT_COLOR
+              value: "green"
 ---
 apiVersion: v1
 kind: Service
@@ -353,28 +355,28 @@ metadata:
 spec:
   selector:
     app: thegent-mcp
-    deployment_color: blue  # Switch to "green" after verification
+    deployment_color: blue # Switch to "green" after verification
 ```
 
 **Deployment Strategy:**
 
-| Phase | Action | Verification |
-|-------|--------|--------------|
+| Phase        | Action                                | Verification          |
+| ------------ | ------------------------------------- | --------------------- |
 | Deploy green | Set green replicas=3, blue replicas=0 | Health check on green |
-| Verify | Run smoke tests against green | Pass rate > 99% |
-| Switch | Update service selector to green | Zero downtime |
-| Cleanup | Delete blue deployment | Resource cleanup |
+| Verify       | Run smoke tests against green         | Pass rate > 99%       |
+| Switch       | Update service selector to green      | Zero downtime         |
+| Cleanup      | Delete blue deployment                | Resource cleanup      |
 
 ### 11. Cross-Document References
 
-| Reference | Purpose |
-|-----------|---------|
+| Reference                         | Purpose                           |
+| --------------------------------- | --------------------------------- |
 | `FASTMCP_IMPLEMENTATION_GUIDE.md` | Complete deployment configuration |
-| `FASTMCP_SPEC_DEEP_DIVE.md` | Transform specifications |
-| `FASTMCP_MIDDLEWARE.md` | Middleware for production |
-| `FASTMCP_STORAGE_EVENTSTORE.md` | EventStore for SSE |
-| `hooks/qa-preflight.sh` | Pre-deployment quality checks |
-| `hooks/security-pipeline.sh` | Security validation |
+| `FASTMCP_SPEC_DEEP_DIVE.md`       | Transform specifications          |
+| `FASTMCP_MIDDLEWARE.md`           | Middleware for production         |
+| `FASTMCP_STORAGE_EVENTSTORE.md`   | EventStore for SSE                |
+| `hooks/qa-preflight.sh`           | Pre-deployment quality checks     |
+| `hooks/security-pipeline.sh`      | Security validation               |
 
 ---
 

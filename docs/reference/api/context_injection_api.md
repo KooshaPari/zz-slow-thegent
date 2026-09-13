@@ -14,7 +14,7 @@ Manages injection of context into agents.
 
 ### Methods
 
-#### ContextInjector.__init__
+#### ContextInjector.**init**
 
 ```python
 __init__(self: Any, project_root: Path)

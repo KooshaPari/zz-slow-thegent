@@ -17,7 +17,7 @@ Information about a single GPU device.
 Monitors GPU utilization using pynvml or nvidia-smi fallback.
 
 Tries pynvml (nvidia-ml-py) first for efficiency; falls back to
-parsing ``nvidia-smi --query-gpu`` CSV output if pynvml is absent.
+parsing `nvidia-smi --query-gpu` CSV output if pynvml is absent.
 When no GPU hardware is detected, all methods return empty/zero values
 rather than raising.
 

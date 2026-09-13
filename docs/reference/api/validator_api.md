@@ -12,7 +12,7 @@ Task validator using JSON Schema.
 
 ### Methods
 
-#### TaskValidator.__init__
+#### TaskValidator.**init**
 
 ```python
 __init__(self: Any, schema_path: Any)

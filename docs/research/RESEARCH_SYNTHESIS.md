@@ -45,6 +45,7 @@ After conducting **extreme depth research** across local codebase and web framew
    - Domain expertise
 
 **Evidence:**
+
 - **CrewAI**: Hierarchical process with manager agent
 - **SmolGents**: Manager-first task assignment
 - **CRUN**: Leader-Follower hierarchical coordination
@@ -73,6 +74,7 @@ After conducting **extreme depth research** across local codebase and web framew
    - Short-lived
 
 **Evidence:**
+
 - **CrewAI**: Crews as collaborative groups
 - **MetaGPT**: Software company teams
 - **Multi-Swarm**: Functional swarms (frontend-swarm, security-swarm)
@@ -100,6 +102,7 @@ After conducting **extreme depth research** across local codebase and web framew
    - Heartbeat-based failure detection
 
 **Evidence:**
+
 - **heliosShield**: File-based coordination protocol
 - **MetaGPT**: Global message pool
 - **CrewAI**: Manager coordination
@@ -109,17 +112,17 @@ After conducting **extreme depth research** across local codebase and web framew
 
 ## 2. Framework Comparison Matrix
 
-| Feature | CrewAI | MetaGPT | LangGraph | AutoGen | Our Design |
-|--------|--------|---------|-----------|---------|------------|
-| **Hierarchy** | ✅ Hierarchical process | ✅ Role-based | ⚠️ Custom | ⚠️ Group chat | ✅ Explicit 3-level |
-| **Manager Pattern** | ✅ Manager agent | ✅ Product Manager | ⚠️ User-defined | ❌ No explicit | ✅ Executive/Lead/Specialist |
-| **Delegation** | ✅ Built-in | ✅ SOP-driven | ⚠️ Custom | ✅ AgentTool | ✅ Explicit delegation |
-| **Team Management** | ✅ Crews | ✅ Software company | ❌ No teams | ❌ No teams | ✅ Functional/Project/Ad-hoc |
-| **Parent-Child** | ❌ No explicit | ❌ No explicit | ⚠️ Graph edges | ❌ No explicit | ✅ Explicit relationships |
-| **Cross-Team** | ❌ No | ❌ No | ⚠️ Custom | ⚠️ Group chat | ✅ Mediated collaboration |
-| **File-Based IPC** | ❌ No | ❌ No | ❌ No | ❌ No | ✅ Maildir pattern |
-| **State Persistence** | ✅ Memory | ✅ State | ✅ Durable execution | ✅ State | ✅ Hierarchy state |
-| **Visualization** | ⚠️ Limited | ❌ No | ✅ LangSmith | ⚠️ Studio | ✅ Hierarchy tree |
+| Feature               | CrewAI                  | MetaGPT             | LangGraph            | AutoGen        | Our Design                   |
+| --------------------- | ----------------------- | ------------------- | -------------------- | -------------- | ---------------------------- |
+| **Hierarchy**         | ✅ Hierarchical process | ✅ Role-based       | ⚠️ Custom            | ⚠️ Group chat  | ✅ Explicit 3-level          |
+| **Manager Pattern**   | ✅ Manager agent        | ✅ Product Manager  | ⚠️ User-defined      | ❌ No explicit | ✅ Executive/Lead/Specialist |
+| **Delegation**        | ✅ Built-in             | ✅ SOP-driven       | ⚠️ Custom            | ✅ AgentTool   | ✅ Explicit delegation       |
+| **Team Management**   | ✅ Crews                | ✅ Software company | ❌ No teams          | ❌ No teams    | ✅ Functional/Project/Ad-hoc |
+| **Parent-Child**      | ❌ No explicit          | ❌ No explicit      | ⚠️ Graph edges       | ❌ No explicit | ✅ Explicit relationships    |
+| **Cross-Team**        | ❌ No                   | ❌ No               | ⚠️ Custom            | ⚠️ Group chat  | ✅ Mediated collaboration    |
+| **File-Based IPC**    | ❌ No                   | ❌ No               | ❌ No                | ❌ No          | ✅ Maildir pattern           |
+| **State Persistence** | ✅ Memory               | ✅ State            | ✅ Durable execution | ✅ State       | ✅ Hierarchy state           |
+| **Visualization**     | ⚠️ Limited              | ❌ No               | ✅ LangSmith         | ⚠️ Studio      | ✅ Hierarchy tree            |
 
 ---
 
@@ -196,6 +199,7 @@ After conducting **extreme depth research** across local codebase and web framew
    - No direct worker-to-worker coordination
 
 **Our Implementation:**
+
 - ✅ Three-level hierarchy (Executive, Team Lead, Specialist)
 - ✅ Manager coordination (Team Lead coordinates team)
 - ✅ Partitioned work (Team boundaries, directory-level partitioning)
@@ -222,6 +226,7 @@ After conducting **extreme depth research** across local codebase and web framew
    - Clear team boundaries
 
 **Our Implementation:**
+
 - ✅ Functional teams (Frontend, Backend, DevOps)
 - ✅ Project teams (E-commerce MVP Team)
 - ✅ Ad-hoc teams (Security Audit Team)
@@ -249,6 +254,7 @@ After conducting **extreme depth research** across local codebase and web framew
    - Task-based delegation
 
 **Our Implementation:**
+
 - ✅ Indirect coordination (Handoff artifacts, message pool)
 - ✅ File-based IPC (Maildir, atomic operations)
 - ✅ Manager-mediated (Team Lead coordinates)
@@ -263,6 +269,7 @@ After conducting **extreme depth research** across local codebase and web framew
 **Gap**: No framework tracks explicit parent-child relationships
 
 **Our Solution:**
+
 - `AgentRelationship` dataclass
 - Relationship types (Direct, Team, Cross-Team)
 - Relationship graph tracking
@@ -277,6 +284,7 @@ After conducting **extreme depth research** across local codebase and web framew
 **Gap**: Frameworks have teams but no unified management API
 
 **Our Solution:**
+
 - `AgentTeam` dataclass
 - Team creation/management
 - Team membership tracking
@@ -291,6 +299,7 @@ After conducting **extreme depth research** across local codebase and web framew
 **Gap**: Frameworks don't handle cross-team explicitly
 
 **Our Solution:**
+
 - Cross-team delegation protocol
 - Mediated collaboration
 - Team boundaries with access control
@@ -305,6 +314,7 @@ After conducting **extreme depth research** across local codebase and web framew
 **Gap**: Frameworks use HTTP/API, not file-based IPC
 
 **Our Solution:**
+
 - Integrates with heliosShield file-based IPC
 - Maildir pattern for messages
 - Atomic operations for coordination
@@ -380,16 +390,19 @@ After conducting **extreme depth research** across local codebase and web framew
 ### 7.1 Validated Patterns (Low Risk)
 
 ✅ **Three-Level Hierarchy**
+
 - Confirmed by multiple frameworks
 - Validated by academic research
 - Production-proven patterns
 
 ✅ **Manager Coordination**
+
 - CrewAI uses this pattern
 - SmolGents implements it
 - CRUN validates it
 
 ✅ **Team Organization**
+
 - Functional teams proven
 - Project teams validated
 - Ad-hoc teams confirmed
@@ -399,16 +412,19 @@ After conducting **extreme depth research** across local codebase and web framew
 ### 7.2 Novel Features (Medium Risk)
 
 ⚠️ **Explicit Parent-Child Tracking**
+
 - No framework does this explicitly
 - But relationship tracking is common pattern
 - Low risk, high value
 
 ⚠️ **Cross-Team Collaboration**
+
 - Frameworks don't handle this
 - But mediation patterns exist
 - Medium risk, high value
 
 ⚠️ **File-Based IPC Integration**
+
 - Unique to our codebase
 - But Maildir pattern is proven
 - Low risk, high value
@@ -436,24 +452,28 @@ After conducting **extreme depth research** across local codebase and web framew
 ## 9. Next Steps
 
 ### Phase 1: Core Implementation (Week 1-2)
+
 - [ ] Implement `AgentHierarchyManager`
 - [ ] Extend `TeammateManager` with hierarchy
 - [ ] Add relationship tracking
 - [ ] Unit tests
 
 ### Phase 2: Team Management (Week 3-4)
+
 - [ ] Implement `TeamCoordinator`
 - [ ] Add team creation/management
 - [ ] Cross-team collaboration protocol
 - [ ] Integration tests
 
 ### Phase 3: Visualization (Week 5-6)
+
 - [ ] Hierarchy visualization
 - [ ] Team activity monitoring
 - [ ] Relationship graph
 - [ ] CLI improvements
 
 ### Phase 4: Advanced Features (Week 7-8)
+
 - [ ] Dynamic team creation
 - [ ] Team templates
 - [ ] Advanced coordination modes
@@ -464,18 +484,21 @@ After conducting **extreme depth research** across local codebase and web framew
 ## 10. Conclusion
 
 **Research Validation:**
+
 - ✅ Our design aligns with best practices
 - ✅ Fills gaps in existing frameworks
 - ✅ Builds on proven patterns
 - ✅ Adds unique value
 
 **Confidence Level: HIGH**
+
 - Multiple frameworks validate patterns
 - Academic research confirms approaches
 - Production systems prove concepts
 - Clear implementation path
 
 **Recommendation: PROCEED**
+
 - Design is research-validated
 - Implementation leverages existing code
 - Unique features add value
@@ -486,13 +509,16 @@ After conducting **extreme depth research** across local codebase and web framew
 ## References
 
 ### Local Research
+
 - `LOCAL_RESEARCH_AUDIT.md` - Complete local codebase audit
 - `AGENT_HIERARCHY_AND_TEAM_STRUCTURE.md` - Original design document
 
 ### Web Research
+
 - `WEB_RESEARCH_AUDIT.md` - Framework and production system analysis
 
 ### Key Documents
+
 - CRUN Deep Dive: Coordination strategies
 - SmolGents Architecture: Execution modes
 - Multi-Swarm Hierarchy: Swarm patterns

@@ -9,28 +9,31 @@
 
 ### 5 Concurrent Infrastructure Agents
 
-| # | Work Item | Target | Status | Notes |
-|---|-----------|--------|--------|-------|
-| 1 | research-library-circuit-breaker | `circuit_breaker.py` | ✅ Delegated | PID: 78918 |
-| 2 | research-library-yaml | `fast_yaml_parser.py` + 14 files | ✅ Delegated | PID: 6317 |
-| 3 | research-library-ansi | 5 files with `_strip_ansi()` | ✅ Delegated | PID: 6407 |
-| 4 | research-cross-platform-isolation | New isolation layer | ✅ Delegated | PID: 6501 |
-| 5 | scratch-thegent-shims | Rust shims project | ✅ Delegated | PID: 6596 |
+| #   | Work Item                         | Target                           | Status       | Notes      |
+| --- | --------------------------------- | -------------------------------- | ------------ | ---------- |
+| 1   | research-library-circuit-breaker  | `circuit_breaker.py`             | ✅ Delegated | PID: 78918 |
+| 2   | research-library-yaml             | `fast_yaml_parser.py` + 14 files | ✅ Delegated | PID: 6317  |
+| 3   | research-library-ansi             | 5 files with `_strip_ansi()`     | ✅ Delegated | PID: 6407  |
+| 4   | research-cross-platform-isolation | New isolation layer              | ✅ Delegated | PID: 6501  |
+| 5   | scratch-thegent-shims             | Rust shims project               | ✅ Delegated | PID: 6596  |
 
 ---
 
 ## Target Files Identified
 
 ### Circuit Breaker (1 file)
+
 - `src/thegent/orchestration/circuit_breaker.py`
 - Uses `CircuitBreakerRegistry` → Replace with `pybreaker`
 
 ### YAML (15 files)
+
 - Primary: `src/thegent/infra/fast_yaml_parser.py` (already supports ruamel.yaml)
 - 14 other files using `yaml.load()`/`yaml.dump()`
 - Make ruamel.yaml default instead of fallback
 
 ### ANSI Stripping (5 files)
+
 - `src/thegent/agents/codex_proxy.py` - line 39
 - `src/thegent/agents/droid.py` - line 13
 - `src/thegent/agents/direct_agents.py` - line 35
@@ -39,11 +42,13 @@
 - Replace `re.sub(r"\x1b\[[0-9;]*m", "", text)` with `rich.strip_control_codes()`
 
 ### Cross-Platform Isolation
+
 - New implementation needed
 - User isolation for hybrid Mac/Windows
 - Process and file system isolation
 
 ### Rust Shims
+
 - New Rust project: `thegent-shims`
 - Tools: git, grep, find, agent
 - Performance optimization
@@ -73,11 +78,13 @@ find src -name "*isolation*" -o -name "Cargo.toml"
 ## Expected Changes
 
 ### Dependencies
+
 - ✅ `pybreaker>=2.0.0` added to `pyproject.toml`
 - ✅ `ruamel.yaml>=0.18.0` added to `pyproject.toml`
 - ✅ `rich` already present (no change needed)
 
 ### Code Changes
+
 - Circuit breaker: `circuit_breaker.py` migrated to pybreaker
 - YAML: `fast_yaml_parser.py` default changed, 14 files migrated
 - ANSI: 5 `_strip_ansi()` functions replaced with `rich.strip_control_codes()`
@@ -90,6 +97,7 @@ find src -name "*isolation*" -o -name "Cargo.toml"
 
 **When**: In 5-10 minutes
 **What to Check**:
+
 1. Dependency additions in `pyproject.toml`
 2. Code changes in target files
 3. New files created

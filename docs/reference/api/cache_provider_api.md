@@ -44,6 +44,7 @@ Abstract base class for cache providers.
 
 Defines the interface that all cache implementations must follow.
 Implementations should support:
+
 - Key-value storage with optional TTL
 - Automatic expiration
 - Hit/miss tracking (optional)

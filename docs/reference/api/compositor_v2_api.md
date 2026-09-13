@@ -5,6 +5,7 @@
 TUI Compositor - Main application with PaneManager integration.
 
 A unified terminal user interface for thegent using Textual with support for:
+
 - Multi-pane layouts with split/merge operations
 - Session persistence
 - Layout management
@@ -16,6 +17,7 @@ A unified terminal user interface for thegent using Textual with support for:
 Main TUI application for thegent.
 
 Integrates:
+
 - PaneManager for multi-pane layout
 - SessionState for persistence
 - Textual widgets for UI
@@ -24,7 +26,7 @@ Integrates:
 
 ### Methods
 
-#### CompositorApp.__init__
+#### CompositorApp.**init**
 
 ```python
 __init__(self: Any, context: Any)
@@ -230,7 +232,7 @@ Context passed to all widgets/components.
 
 ### Methods
 
-#### TUIContext.__init__
+#### TUIContext.**init**
 
 ```python
 __init__(self: Any, session_id: Any, agent_name: Any, cwd: Any)

@@ -5,6 +5,7 @@
 Donut Architecture adapter for LiteLLM routing integration.
 
 Integrates the routing layer with the Donut shared layer, enabling:
+
 - Shared router instances across teammates
 - Model preference propagation from queue
 - Routing stats harvesting on session stop
@@ -21,6 +22,7 @@ and Augment Code.
 Adapter integrating routing with Donut shared layer.
 
 Provides:
+
 - Shared router instance management (singleton per policy)
 - Model preference reading from prompt queue
 - Routing stats harvesting on session stop
@@ -31,7 +33,7 @@ The adapter follows the Donut Architecture pattern where shared components
 
 ### Methods
 
-#### RoutingDonutAdapter.__init__
+#### RoutingDonutAdapter.**init**
 
 ```python
 __init__(self: Any, queue_path: Any, harvest_path: Any)
@@ -42,9 +44,9 @@ Initialize the Donut adapter.
 **Parameters**:
 
 - `queue_path`: Path to prompt queue JSONL file.
-Defaults to ~/.thegent/prompt_queue.jsonl
+  Defaults to ~/.thegent/prompt_queue.jsonl
 - `harvest_path`: Path to routing harvest JSONL file.
-Defaults to ~/.thegent/routing_harvest.jsonl
+  Defaults to ~/.thegent/routing_harvest.jsonl
 
 ---
 
@@ -100,6 +102,7 @@ to instantiate compatible routers. This enables coordinated
 routing decisions across a team of agents.
 
 **Returns**: Dictionary containing:
+
 - policies: List of available routing policies
 - default_policy: The default routing policy
 - queue_path: Path to the shared queue
@@ -157,8 +160,8 @@ field indicating which model should handle the task. This method reads
 from the Donut shared queue to extract that preference.
 
 Queue item format:
-    {"ts": "ISO8601", "prompt": "...", "preferred_model": "...",
-     "claimed_by": null, "lease_expires_at": null}
+{"ts": "ISO8601", "prompt": "...", "preferred_model": "...",
+"claimed_by": null, "lease_expires_at": null}
 
 **Returns**: The preferred_model string if found in an unclaimed item,
 otherwise None.
@@ -251,6 +254,7 @@ to instantiate compatible routers. This enables coordinated
 routing decisions across a team of agents.
 
 **Returns**: Dictionary containing:
+
 - policies: List of available routing policies
 - default_policy: The default routing policy
 - queue_path: Path to the shared queue
@@ -308,8 +312,8 @@ field indicating which model should handle the task. This method reads
 from the Donut shared queue to extract that preference.
 
 Queue item format:
-    {"ts": "ISO8601", "prompt": "...", "preferred_model": "...",
-     "claimed_by": null, "lease_expires_at": null}
+{"ts": "ISO8601", "prompt": "...", "preferred_model": "...",
+"claimed_by": null, "lease_expires_at": null}
 
 **Returns**: The preferred_model string if found in an unclaimed item,
 otherwise None.

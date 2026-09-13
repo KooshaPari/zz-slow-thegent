@@ -23,7 +23,7 @@ Manages global agent service listings and discovery.
 
 ### Methods
 
-#### GlobalServiceRegistry.__init__
+#### GlobalServiceRegistry.**init**
 
 ```python
 __init__(self: Any, storage_path: Path)

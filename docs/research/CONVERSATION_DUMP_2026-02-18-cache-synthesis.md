@@ -14,17 +14,18 @@ A complete research & design package exists for standardizing caching across the
 
 ### Key Documents
 
-| Document | Location | Purpose | Status |
-|----------|----------|---------|--------|
+| Document     | Location                                          | Purpose                                    | Status      |
+| ------------ | ------------------------------------------------- | ------------------------------------------ | ----------- |
 | **Proposal** | `docs/changes/research-library-cache/proposal.md` | Problem statement, goals, success criteria | ✅ Complete |
-| **Design** | `docs/changes/research-library-cache/design.md` | Architecture, wrapper API, patterns, files | ✅ Complete |
-| **Tasks** | `docs/changes/research-library-cache/tasks.md` | Phased work breakdown, acceptance criteria | ✅ Complete |
+| **Design**   | `docs/changes/research-library-cache/design.md`   | Architecture, wrapper API, patterns, files | ✅ Complete |
+| **Tasks**    | `docs/changes/research-library-cache/tasks.md`    | Phased work breakdown, acceptance criteria | ✅ Complete |
 
 ---
 
 ## Change Rationale
 
 ### Problem Statement
+
 - **Code duplication**: Multiple custom cache implementations across codebase
 - **Maintenance burden**: Custom cache logic scattered, difficult to audit
 - **Missing features**: No eviction policies, thread-safe decorators, statistics
@@ -33,13 +34,13 @@ A complete research & design package exists for standardizing caching across the
 
 ### Library Choice: cachetools v6.0.0
 
-| Criteria | Evaluation |
-|----------|-----------|
-| **Maturity** | ✅ 10+ years, widely used (100M+ downloads) |
-| **Dependencies** | ✅ Zero external deps (stdlib only) |
-| **Performance** | ✅ Hand-optimized C code in CPython |
-| **Policies** | ✅ TTL, LRU, LFU, custom eviction |
-| **Safety** | ✅ Thread-safe decorators available |
+| Criteria                   | Evaluation                                    |
+| -------------------------- | --------------------------------------------- |
+| **Maturity**               | ✅ 10+ years, widely used (100M+ downloads)   |
+| **Dependencies**           | ✅ Zero external deps (stdlib only)           |
+| **Performance**            | ✅ Hand-optimized C code in CPython           |
+| **Policies**               | ✅ TTL, LRU, LFU, custom eviction             |
+| **Safety**                 | ✅ Thread-safe decorators available           |
 | **Alternative considered** | ❌ diskcache (overkill for in-memory caching) |
 
 ---
@@ -74,15 +75,15 @@ Phase 6: Documentation & Cleanup (2 tasks)
 
 ### Effort Estimate
 
-| Phase | Time | Blocker |
-|-------|------|---------|
-| Setup | 2 min | None |
-| Wrapper | 5 min | Phase 1 |
-| Discovery | 3 min | None |
-| Migration | 10-15 min | Phase 2, 3 |
-| Validation | 5 min | Phase 4 |
-| Docs | 5 min | Phase 5 |
-| **Total** | **30-35 min** | Parallelizable |
+| Phase      | Time          | Blocker        |
+| ---------- | ------------- | -------------- |
+| Setup      | 2 min         | None           |
+| Wrapper    | 5 min         | Phase 1        |
+| Discovery  | 3 min         | None           |
+| Migration  | 10-15 min     | Phase 2, 3     |
+| Validation | 5 min         | Phase 4        |
+| Docs       | 5 min         | Phase 5        |
+| **Total**  | **30-35 min** | Parallelizable |
 
 ---
 
@@ -114,6 +115,7 @@ def get_cache_lfu(maxsize: int) -> LFUCache:
 ### Usage Patterns
 
 **Pattern 1: TTL Cache**
+
 ```python
 from src.lib.project_cache import get_cache_ttl
 from cachetools import cached
@@ -127,6 +129,7 @@ def get_data(item_id: str) -> dict:
 ```
 
 **Pattern 2: LRU Cache (Class Method)**
+
 ```python
 from src.lib.project_cache import get_cache_lru
 from cachetools import cached
@@ -141,6 +144,7 @@ class DataManager:
 ```
 
 **Pattern 3: Thread-Safe Caching**
+
 ```python
 from src.lib.project_cache import get_cache_ttl
 from cachetools import cached
@@ -162,6 +166,7 @@ def get_data_threadsafe(item_id: str):
 ### Current State
 
 **pyproject.toml already includes**:
+
 ```toml
 cachetools>=5.3.3
 diskcache>=5.0.0
@@ -170,6 +175,7 @@ diskcache>=5.0.0
 ✅ **cachetools is already a dependency!** No need to add.
 
 ### Action Required
+
 - Verify version is sufficient (>=5.3.3; proposal suggests pinning to 6.0.0 for consistency)
 - Consider: Keep at `>=5.3.3` or pin to `==6.0.0`?
   - **Recommendation**: Pin to `==6.0.0` for stability and to align with design document
@@ -198,6 +204,7 @@ diskcache>=5.0.0
 ### Phase 3: Discovery (1 task, 3 min)
 
 **Search for custom caches**:
+
 ```bash
 grep -r "class.*Cache" src/         # Find cache classes
 grep -r "dict.*timestamp\|ttl" src/ # Find TTL patterns
@@ -209,6 +216,7 @@ grep -r "LRU\|evict\|maxsize" src/  # Find eviction logic
 ### Phase 4: Migration (3-5 tasks, 10-15 min)
 
 For each discovered custom cache:
+
 1. Identify call sites (grep + type checking)
 2. Write baseline unit test
 3. Replace with cachetools equivalent
@@ -239,25 +247,25 @@ For each discovered custom cache:
 
 ## Key Design Decisions
 
-| Decision | Rationale | Alternative | Status |
-|----------|-----------|-------------|--------|
-| **Use cachetools** | Mature, zero deps, battle-tested | Custom/diskcache | ✅ Approved |
-| **Thin wrapper** | Consistency, project conventions | Direct cachetools usage | ✅ Approved |
-| **Location: src/lib/** | Standard library location | Other | ✅ Approved |
-| **Thread-safe lock** | Conditional (only if needed) | Always include | ✅ On-demand |
-| **TTL + LRU combo** | Separate caches (composition) | Single cache | ✅ Simple |
+| Decision               | Rationale                        | Alternative             | Status       |
+| ---------------------- | -------------------------------- | ----------------------- | ------------ |
+| **Use cachetools**     | Mature, zero deps, battle-tested | Custom/diskcache        | ✅ Approved  |
+| **Thin wrapper**       | Consistency, project conventions | Direct cachetools usage | ✅ Approved  |
+| **Location: src/lib/** | Standard library location        | Other                   | ✅ Approved  |
+| **Thread-safe lock**   | Conditional (only if needed)     | Always include          | ✅ On-demand |
+| **TTL + LRU combo**    | Separate caches (composition)    | Single cache            | ✅ Simple    |
 
 ---
 
 ## Risk Assessment & Mitigation
 
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|-----------|
-| Breaking change to cache interface | Low | Medium | Thorough test coverage |
-| Performance regression | Very Low | Medium | Benchmark before/after |
-| Memory overhead | Very Low | Low | Monitor with profiler |
-| Thread safety issues | Low | High | Use `lock` param in decorator |
-| Missed call sites | Low | High | grep + type checker verification |
+| Risk                               | Probability | Impact | Mitigation                       |
+| ---------------------------------- | ----------- | ------ | -------------------------------- |
+| Breaking change to cache interface | Low         | Medium | Thorough test coverage           |
+| Performance regression             | Very Low    | Medium | Benchmark before/after           |
+| Memory overhead                    | Very Low    | Low    | Monitor with profiler            |
+| Thread safety issues               | Low         | High   | Use `lock` param in decorator    |
+| Missed call sites                  | Low         | High   | grep + type checker verification |
 
 **Overall Risk**: 🟢 Low (isolated, well-tested library, comprehensive test coverage)
 
@@ -266,21 +274,25 @@ For each discovered custom cache:
 ## Testing Strategy
 
 ### Unit Tests (Per Module)
+
 - Cache hits/misses work
 - Eviction (size and TTL)
 - Thread safety (if applicable)
 - No functional regressions
 
 ### Integration Tests
+
 - Cache behavior across modules
 - Concurrent access patterns
 - Cache invalidation
 
 ### Regression Tests
+
 - All existing tests pass
 - Coverage threshold maintained (80%+)
 
 ### Coverage Target
+
 - Current: 80%+
 - After migration: 80%+ (maintained, not reduced)
 
@@ -288,26 +300,26 @@ For each discovered custom cache:
 
 ## Rollback Plan
 
-| Scenario | Action |
-|----------|--------|
-| Tests fail | Revert `src/lib/project_cache.py`, restore cache classes |
-| Performance regression | Profile with `py-spy`, optimize wrapper |
-| Production issues | `git revert` commit |
+| Scenario               | Action                                                   |
+| ---------------------- | -------------------------------------------------------- |
+| Tests fail             | Revert `src/lib/project_cache.py`, restore cache classes |
+| Performance regression | Profile with `py-spy`, optimize wrapper                  |
+| Production issues      | `git revert` commit                                      |
 
 ---
 
 ## Files Affected
 
-| File | Change | Type | Priority |
-|------|--------|------|----------|
-| `src/lib/project_cache.py` | Create wrapper | new | P0 |
-| `tests/test_project_cache.py` | Test wrapper | new | P0 |
-| Per-module cache files | Replace caches | modify | P1 |
-| Per-module tests | Update imports | modify | P1 |
-| `docs/reference/CACHE_DISCOVERY_MAP.md` | Discovery results | new | P2 |
-| `docs/guides/CACHE_PATTERNS.md` | Usage guide | new | P2 |
-| `docs/research/LIBRARY_FIRST_AUDIT_AND_PLAN.md` | Mark governed | modify | P2 |
-| `CLAUDE.md` | Add library preference | modify | P2 |
+| File                                            | Change                 | Type   | Priority |
+| ----------------------------------------------- | ---------------------- | ------ | -------- |
+| `src/lib/project_cache.py`                      | Create wrapper         | new    | P0       |
+| `tests/test_project_cache.py`                   | Test wrapper           | new    | P0       |
+| Per-module cache files                          | Replace caches         | modify | P1       |
+| Per-module tests                                | Update imports         | modify | P1       |
+| `docs/reference/CACHE_DISCOVERY_MAP.md`         | Discovery results      | new    | P2       |
+| `docs/guides/CACHE_PATTERNS.md`                 | Usage guide            | new    | P2       |
+| `docs/research/LIBRARY_FIRST_AUDIT_AND_PLAN.md` | Mark governed          | modify | P2       |
+| `CLAUDE.md`                                     | Add library preference | modify | P2       |
 
 ---
 
@@ -353,6 +365,7 @@ For each discovered custom cache:
 ### Should we proceed?
 
 **Criteria**:
+
 - ✅ Proposal is clear and complete
 - ✅ Design is detailed and implementable
 - ✅ Tasks are well-defined with acceptance criteria
@@ -378,17 +391,20 @@ For each discovered custom cache:
 ## Documentation References
 
 ### Governance & Standards
+
 - `docs/research/LIBRARY_FIRST_AUDIT_AND_PLAN.md` — Library-First Policy
 - `docs/guides/anti-patterns.md` — Custom cache as anti-pattern
 - `CLAUDE.md` — Project library preferences
 - `docs/research/PROACTIVE_GOVERNANCE_EVOLUTION_PLAN.md` — Governance mandate
 
 ### Cachetools Resources
+
 - Official docs: https://cachetools.readthedocs.io/
 - GitHub: https://github.com/tkem/cachetools/
 - PyPI: https://pypi.org/project/cachetools/
 
 ### Related Changes
+
 - `docs/changes/research-library-retry/` — Similar pattern (tenacity)
 - `docs/reference/LIBRARY_FIRST_AUDIT_AND_PLAN.md` — Other governed libraries
 
@@ -457,6 +473,7 @@ def custom_key_func(arg1, arg2, **kwargs):
 ## Conclusion
 
 The caching library standardization is a **low-risk, high-value** change that:
+
 - Aligns with Library-First Policy
 - Reduces code duplication (>150 LOC savings)
 - Improves maintainability and safety

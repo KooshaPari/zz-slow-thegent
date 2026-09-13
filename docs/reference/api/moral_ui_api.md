@@ -30,7 +30,7 @@ Manages the UI flow for moral arbitration.
 
 ### Methods
 
-#### MoralUI.__init__
+#### MoralUI.**init**
 
 ```python
 __init__(self: Any)

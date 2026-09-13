@@ -16,7 +16,7 @@ overrides where appropriate.
 
 ### Methods
 
-#### DesignLanguage.__init__
+#### DesignLanguage.**init**
 
 ```python
 __init__(self: Any)

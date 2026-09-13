@@ -31,11 +31,11 @@ Configuration for :class:`TerminalKeepalive`.
 
 Prints periodic keepalive dots/messages to stdout.
 
-Only prints when ``sys.stdout.isatty()`` returns *True* so CI/pipe
+Only prints when `sys.stdout.isatty()` returns _True_ so CI/pipe
 environments receive no spurious output.
 
 Thread safety: :meth:`start` and :meth:`stop` are safe to call from
-any thread.  The background printing thread is a daemon thread so the
+any thread. The background printing thread is a daemon thread so the
 process will not be blocked from exiting.
 
 Example::
@@ -45,7 +45,7 @@ Example::
 
 ### Methods
 
-#### TerminalKeepalive.__init__
+#### TerminalKeepalive.**init**
 
 ```python
 __init__(self: Any, config: Any)
@@ -61,8 +61,8 @@ start(self: Any)
 
 Start the background keepalive thread.
 
-If keepalive is disabled (``config.enabled is False``) or stdout
-is not a TTY, this is a no-op.  Calling :meth:`start` when the
+If keepalive is disabled (`config.enabled is False`) or stdout
+is not a TTY, this is a no-op. Calling :meth:`start` when the
 thread is already running is safe — the existing thread continues.
 
 ---
@@ -75,7 +75,7 @@ stop(self: Any)
 
 Stop the background keepalive thread and print a trailing newline.
 
-Safe to call multiple times.  Waits up to 1 second for the thread
+Safe to call multiple times. Waits up to 1 second for the thread
 to exit cleanly before returning.
 
 ---
@@ -109,8 +109,8 @@ start(self: Any)
 
 Start the background keepalive thread.
 
-If keepalive is disabled (``config.enabled is False``) or stdout
-is not a TTY, this is a no-op.  Calling :meth:`start` when the
+If keepalive is disabled (`config.enabled is False`) or stdout
+is not a TTY, this is a no-op. Calling :meth:`start` when the
 thread is already running is safe — the existing thread continues.
 
 ---
@@ -123,7 +123,7 @@ stop(self: Any)
 
 Stop the background keepalive thread and print a trailing newline.
 
-Safe to call multiple times.  Waits up to 1 second for the thread
+Safe to call multiple times. Waits up to 1 second for the thread
 to exit cleanly before returning.
 
 ---

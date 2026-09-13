@@ -27,4 +27,3 @@
 - Assumption: current schema tables are sufficient for the first canonical entity surface.
 - Risk: composite-key handling can be inconsistent across table types.
 - Uncertainty: additional API routes may be needed later, but they are not required for the first working slice.
-

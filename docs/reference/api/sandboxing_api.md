@@ -32,7 +32,7 @@ Generates and executes sandbox profiles.
 
 ### Methods
 
-#### SandboxProvider.__init__
+#### SandboxProvider.**init**
 
 ```python
 __init__(self: Any)

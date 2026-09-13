@@ -16,7 +16,7 @@ Immutable incident ledger with rolling hash chain (WP-15002).
 
 ### Methods
 
-#### IncidentLedger.__init__
+#### IncidentLedger.**init**
 
 ```python
 __init__(self: Any, ledger_path: Path)
@@ -60,7 +60,7 @@ Verifies the integrity of the action ledger using rolling hashes.
 
 ### Methods
 
-#### LedgerVerifier.__init__
+#### LedgerVerifier.**init**
 
 ```python
 __init__(self: Any, ledger_path: Path)

@@ -2,7 +2,7 @@
 
 **Date**: 2026-04-02  
 **Status**: Proposed  
-**Deciders**: Agent  
+**Deciders**: Agent
 
 ## Context
 
@@ -19,11 +19,11 @@ thegent needs to support multi-tenant deployments where multiple users/teams sha
 
 ### Isolation Models
 
-| Model | Isolation | Overhead | Complexity |
-|-------|-----------|----------|------------|
-| **Namespace** | Process | Low | Medium |
-| **Container** | Kernel | Medium | Medium |
-| **VM** | Hardware | High | High |
+| Model         | Isolation | Overhead | Complexity |
+| ------------- | --------- | -------- | ---------- |
+| **Namespace** | Process   | Low      | Medium     |
+| **Container** | Kernel    | Medium   | Medium     |
+| **VM**        | Hardware  | High     | High       |
 
 ## Decision
 
@@ -69,11 +69,13 @@ thegent needs to support multi-tenant deployments where multiple users/teams sha
 ## Consequences
 
 ### Positive
+
 - **Scalable**: Support many tenants
 - **Flexible**: Different isolation per tenant
 - **Efficient**: Shared control plane
 
 ### Negative
+
 - **Complex**: Multiple isolation mechanisms
 - **Security surface**: More to audit
 

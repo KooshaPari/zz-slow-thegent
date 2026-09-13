@@ -5,7 +5,7 @@
 SmolGents — minimalist agent hierarchy for thegent.
 
 Provides a lightweight agent framework for task decomposition, tool calling,
-memory, and parent/child delegation.  Designed to be "smol" by design:
+memory, and parent/child delegation. Designed to be "smol" by design:
 no heavy deps beyond the stdlib and existing thegent requirements.
 
 Public API::

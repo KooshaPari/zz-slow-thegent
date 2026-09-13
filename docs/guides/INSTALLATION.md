@@ -7,11 +7,13 @@ This guide provides step-by-step instructions for installing thegent on differen
 ## One Command for New Users
 
 **macOS / Linux:**
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/kooshapari/thegent/main/scripts/bootstrap.sh | sh -s -- install
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 irm https://raw.githubusercontent.com/kooshapari/thegent/main/scripts/install.ps1 | iex
 ```
@@ -61,11 +63,13 @@ pipx install thegent
 ### Bootstrap (one-liner)
 
 **Unix:**
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/kooshapari/thegent/main/scripts/bootstrap.sh | sh -s -- install
 ```
 
 **Windows:**
+
 ```powershell
 irm https://raw.githubusercontent.com/kooshapari/thegent/main/scripts/install.ps1 | iex
 ```
@@ -126,11 +130,13 @@ thegent doctor
 ### macOS
 
 #### Homebrew (Recommended)
+
 ```bash
 brew install thegent
 ```
 
 #### Nix
+
 ```bash
 nix profile install github:kooshapari/thegent
 ```
@@ -176,6 +182,7 @@ For MCP service and lock-cleanup timer via launchd:
 ```
 
 #### pip
+
 ```bash
 pip3 install thegent
 ```
@@ -183,22 +190,26 @@ pip3 install thegent
 ### Linux
 
 #### Ubuntu/Debian (apt)
+
 ```bash
 sudo apt update
 sudo apt install thegent
 ```
 
 #### CentOS/RHEL (yum)
+
 ```bash
 sudo yum install thegent
 ```
 
 #### Nix
+
 ```bash
 nix profile install github:kooshapari/thegent
 ```
 
 #### pip
+
 ```bash
 pip3 install thegent
 ```
@@ -206,21 +217,25 @@ pip3 install thegent
 ### Windows
 
 #### Bootstrap (one command)
+
 ```powershell
 irm https://raw.githubusercontent.com/kooshapari/thegent/main/scripts/install.ps1 | iex
 ```
 
 #### winget (Recommended)
+
 ```powershell
 winget install kooshapari.thegent
 ```
 
 #### pip
+
 ```powershell
 pip install thegent
 ```
 
 #### MSI Installer
+
 1. Download the latest `thegent-setup.exe` from the [GitHub Releases](https://github.com/kooshapari/thegent/releases) page.
 2. Run the installer and follow the on-screen instructions.
 
@@ -230,10 +245,10 @@ pip install thegent
 
 Configure your shell to enable autocompletion and path integration:
 
-| Platform | Command |
-|----------|---------|
-| **macOS** | `thegent install --target shell` (for zsh) |
-| **Linux** | `thegent install --target shell` (for bash/zsh) |
+| Platform    | Command                                           |
+| ----------- | ------------------------------------------------- |
+| **macOS**   | `thegent install --target shell` (for zsh)        |
+| **Linux**   | `thegent install --target shell` (for bash/zsh)   |
 | **Windows** | `thegent install --target shell` (for PowerShell) |
 
 ### Shell completion
@@ -334,7 +349,9 @@ Use thegent inside GitHub Codespaces or VS Code Dev Containers:
     "ghcr.io/devcontainers/features/python:1": {}
   },
   "postCreateCommand": "pip install uv && (uv tool install thegent 2>/dev/null || pip install thegent 2>/dev/null) || true",
-  "remoteEnv": { "PATH": "${containerEnv:PATH}:${containerEnv:HOME}/.local/bin" },
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:${containerEnv:HOME}/.local/bin"
+  },
   "forwardPorts": [3847]
 }
 ```

@@ -12,7 +12,7 @@ Research for tenacity retry migration.
 
 ### Methods
 
-#### LibraryRetryResearch.__init__
+#### LibraryRetryResearch.**init**
 
 ```python
 __init__(self: Any)

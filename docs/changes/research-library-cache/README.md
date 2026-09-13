@@ -15,6 +15,7 @@ This directory contains a complete research and design package for standardizing
 **Purpose**: Define the problem, goals, and rationale.
 
 **Covers**:
+
 - **Problem**: Code duplication, custom cache implementations, inconsistency
 - **Goals**: Replace all custom caches, reduce code by >150 LOC, improve safety
 - **Success Criteria**: 7 measurable checkpoints
@@ -30,6 +31,7 @@ This directory contains a complete research and design package for standardizing
 **Purpose**: Technical architecture, wrapper API, and implementation patterns.
 
 **Covers**:
+
 - **Architecture**: Thin wrapper pattern (<50 LOC) in `src/lib/project_cache.py`
 - **Wrapper API**:
   - `get_cache_ttl(maxsize, ttl)` → TTLCache
@@ -85,6 +87,7 @@ This directory contains a complete research and design package for standardizing
 **Purpose**: Executive summary, implementation readiness confirmation, and quick reference.
 
 **Covers**:
+
 - Executive summary of the entire change
 - Change rationale and library choice evaluation
 - Complete implementation plan with phased breakdown
@@ -134,13 +137,13 @@ This directory contains a complete research and design package for standardizing
 
 ## Key Decisions
 
-| Decision | Rationale | Status |
-|----------|-----------|--------|
-| Use cachetools v6.0.0 | Mature, zero deps, battle-tested | ✅ Approved |
-| Thin wrapper in src/lib/ | Project conventions, consistency | ✅ Approved |
-| <50 LOC wrapper | Minimize overhead | ✅ Target |
-| Phased implementation | Risk management, parallelization | ✅ Strategy |
-| >150 LOC reduction target | Justify refactoring effort | ✅ Success criterion |
+| Decision                  | Rationale                        | Status               |
+| ------------------------- | -------------------------------- | -------------------- |
+| Use cachetools v6.0.0     | Mature, zero deps, battle-tested | ✅ Approved          |
+| Thin wrapper in src/lib/  | Project conventions, consistency | ✅ Approved          |
+| <50 LOC wrapper           | Minimize overhead                | ✅ Target            |
+| Phased implementation     | Risk management, parallelization | ✅ Strategy          |
+| >150 LOC reduction target | Justify refactoring effort       | ✅ Success criterion |
 
 ---
 
@@ -161,31 +164,34 @@ This directory contains a complete research and design package for standardizing
 
 ## Success Metrics
 
-| Metric | Target | Tracking |
-|--------|--------|----------|
-| Custom cache classes removed | 100% | Count in discovery phase |
-| Code reduction (LOC) | >150 | Diff before/after |
-| Test pass rate | 100% | pytest output |
-| Coverage maintained | 80%+ | pytest --cov |
-| Quality gates | 0 errors | task quality output |
-| Wrapper size | <50 LOC | wc -l src/lib/project_cache.py |
-| New suppressions | 0 | ruff check output |
+| Metric                       | Target   | Tracking                       |
+| ---------------------------- | -------- | ------------------------------ |
+| Custom cache classes removed | 100%     | Count in discovery phase       |
+| Code reduction (LOC)         | >150     | Diff before/after              |
+| Test pass rate               | 100%     | pytest output                  |
+| Coverage maintained          | 80%+     | pytest --cov                   |
+| Quality gates                | 0 errors | task quality output            |
+| Wrapper size                 | <50 LOC  | wc -l src/lib/project_cache.py |
+| New suppressions             | 0        | ruff check output              |
 
 ---
 
 ## Related Documentation
 
 ### Governance & Standards
+
 - `docs/research/LIBRARY_FIRST_AUDIT_AND_PLAN.md` — Library-First Policy mandate
 - `docs/guides/anti-patterns.md` — Custom implementations as anti-pattern
 - `CLAUDE.md` — Project library preferences
 - `docs/research/PROACTIVE_GOVERNANCE_EVOLUTION_PLAN.md` — Governance evolution process
 
 ### Similar Changes
+
 - `docs/changes/research-library-retry/` — Using tenacity for retries
 - `docs/changes/research-library-watch/` — Using watchdog for file watching
 
 ### Implementation Support
+
 - `Taskfile.yml` — Build automation (task quality, task test)
 - `.pre-commit-config.yaml` — Linting and security checks
 - `pyproject.toml` — Project dependencies and tool config
@@ -207,6 +213,7 @@ pytest --co -q | head -5
 ### Step 2: Implement (20 min)
 
 Follow `tasks.md` phases in order:
+
 - Phase 1: Verify setup
 - Phase 2: Create wrapper
 - Phase 3: Discover custom caches
@@ -260,15 +267,15 @@ A: Yes. Tasks 6.1 updates the Library-First Audit and project CLAUDE.md. Docs cr
 
 ## Timeline
 
-| Phase | Tasks | Effort | Dependencies | Parallelizable? |
-|-------|-------|--------|--------------|-----------------|
-| Setup | 2 | 2 min | None | ✅ N/A (short) |
-| Wrapper | 2 | 5 min | Setup | ❌ Sequential |
-| Discovery | 1 | 3 min | None | ✅ Can run in parallel with Phases 1-2 |
-| Migration | 3-5 | 10-15 min | Wrapper + Discovery | ✅ Highly parallelizable |
-| Validation | 3 | 5 min | Migration | ❌ Sequential (aggregates results) |
-| Docs | 2 | 5 min | Validation | ✅ Can start after Phase 5 |
-| **Total** | **13-15** | **30-35 min** | — | **20-25 min critical path** |
+| Phase      | Tasks     | Effort        | Dependencies        | Parallelizable?                        |
+| ---------- | --------- | ------------- | ------------------- | -------------------------------------- |
+| Setup      | 2         | 2 min         | None                | ✅ N/A (short)                         |
+| Wrapper    | 2         | 5 min         | Setup               | ❌ Sequential                          |
+| Discovery  | 1         | 3 min         | None                | ✅ Can run in parallel with Phases 1-2 |
+| Migration  | 3-5       | 10-15 min     | Wrapper + Discovery | ✅ Highly parallelizable               |
+| Validation | 3         | 5 min         | Migration           | ❌ Sequential (aggregates results)     |
+| Docs       | 2         | 5 min         | Validation          | ✅ Can start after Phase 5             |
+| **Total**  | **13-15** | **30-35 min** | —                   | **20-25 min critical path**            |
 
 **Critical Path**: Setup → Wrapper → Discovery (parallel) → Migration (parallel) → Validation → Docs
 
@@ -294,21 +301,21 @@ A: Yes. Tasks 6.1 updates the Library-First Audit and project CLAUDE.md. Docs cr
 
 ## Document Index
 
-| File | Lines | Purpose |
-|------|-------|---------|
-| proposal.md | 70 | Problem, goals, rationale |
-| design.md | 241 | Architecture, patterns, files |
-| tasks.md | 245 | Phased breakdown, acceptance criteria |
-| synthesis.md | 462 | Executive summary, quick reference |
-| **Total** | **1018** | Complete implementation package |
+| File         | Lines    | Purpose                               |
+| ------------ | -------- | ------------------------------------- |
+| proposal.md  | 70       | Problem, goals, rationale             |
+| design.md    | 241      | Architecture, patterns, files         |
+| tasks.md     | 245      | Phased breakdown, acceptance criteria |
+| synthesis.md | 462      | Executive summary, quick reference    |
+| **Total**    | **1018** | Complete implementation package       |
 
 ---
 
 ## Version History
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0 | 2026-02-18 | Initial research completion, synthesis writeup |
+| Version | Date       | Changes                                        |
+| ------- | ---------- | ---------------------------------------------- |
+| 1.0     | 2026-02-18 | Initial research completion, synthesis writeup |
 
 ---
 

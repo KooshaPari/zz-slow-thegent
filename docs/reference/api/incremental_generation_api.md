@@ -12,7 +12,7 @@ Generate documentation only for changed files.
 
 ### Methods
 
-#### IncrementalGenerator.__init__
+#### IncrementalGenerator.**init**
 
 ```python
 __init__(self: Any, manifest_path: Any)

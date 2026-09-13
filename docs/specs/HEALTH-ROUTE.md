@@ -5,6 +5,7 @@
 ## Endpoint
 
 ### GET /health
+
 - returns 200 {status: "ok", version: <pkg.version>}
 - works in Vercel edge runtime
 - uses Astro endpoint (apps/landing/src/pages/health.ts)
@@ -24,7 +25,10 @@ export const prerender = true;
 export const GET: APIRoute = () =>
   new Response(JSON.stringify({ status: "ok", version }), {
     status: 200,
-    headers: { "content-type": "application/json", "cache-control": "public, max-age=0, must-revalidate" },
+    headers: {
+      "content-type": "application/json",
+      "cache-control": "public, max-age=0, must-revalidate",
+    },
   });
 ```
 

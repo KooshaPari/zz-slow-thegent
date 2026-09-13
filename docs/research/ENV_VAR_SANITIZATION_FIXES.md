@@ -26,10 +26,12 @@ Added environment sanitization to all `rg` invocations:
 ## Files Fixed
 
 ### Core Wrappers
+
 - ✅ `hooks/lib/grep-wrapper.sh` - Main grep→rg wrapper
 - ✅ `hooks/lib/common.sh` - `grep()` function
 
 ### Hook Scripts
+
 - ✅ `hooks/test-maturity.sh` - Changed `_RG` from array to sanitized function
 - ✅ `hooks/spec-verifier.sh` - Changed `_RG_CMD` to sanitized function
 - ✅ `hooks/quality-gate.sh` - Direct `rg` call sanitized
@@ -39,16 +41,19 @@ Added environment sanitization to all `rg` invocations:
 ## Pattern Applied
 
 **Before:**
+
 ```bash
 rg --no-config "$@"
 ```
 
 **After:**
+
 ```bash
 env -u GREP_OPTIONS -u GREP_COLOR -u GREP_COLORS rg --no-config "$@" 2> >(grep -v "grep config error" >&2)
 ```
 
 Or as a reusable function:
+
 ```bash
 _safe_rg() {
   env -u GREP_OPTIONS -u GREP_COLOR -u GREP_COLORS rg --no-config "$@" 2> >(grep -v "grep config error" >&2)

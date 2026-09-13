@@ -24,7 +24,7 @@ to extract contextual information for agent decision-making.
 
 ### Methods
 
-#### SensoryContextBridge.__init__
+#### SensoryContextBridge.**init**
 
 ```python
 __init__(self: Any)

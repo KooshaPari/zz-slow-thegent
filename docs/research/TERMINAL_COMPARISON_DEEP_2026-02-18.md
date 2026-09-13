@@ -24,12 +24,14 @@
 **Primary Recommendation: Ghostty** for agentic development workflows requiring high performance, native UI, and terminal-first design.
 
 **Secondary Recommendations:**
+
 - **Alacritty**: Maximum performance, minimal features
 - **Kitty**: Rich features, extensibility, cross-platform
 - **Warp**: AI-powered workflows (subscription model)
 - **Windows Terminal**: Windows-native, excellent integration
 
 **Key Findings:**
+
 1. GPU acceleration is essential for modern terminal workloads (agent output, large logs)
 2. Native UI components provide better UX than custom-drawn alternatives
 3. Terminal-first design enables better integration with CLI agents
@@ -45,6 +47,7 @@
 #### GPU-Accelerated Terminals
 
 **Ghostty (Metal/OpenGL)**
+
 - **Architecture**: Native Metal on macOS, OpenGL on Linux
 - **Rendering**: Direct GPU rendering, no intermediate buffers
 - **Latency**: <1ms frame time for typical workloads
@@ -52,6 +55,7 @@
 - **Advantages**: Platform-optimized, native feel, excellent performance
 
 **Alacritty (OpenGL)**
+
 - **Architecture**: OpenGL ES 2.0+ across all platforms
 - **Rendering**: GPU-accelerated, uses OpenGL for all rendering
 - **Latency**: Extremely low, optimized for throughput
@@ -59,6 +63,7 @@
 - **Advantages**: Cross-platform consistency, maximum performance
 
 **Kitty (OpenGL)**
+
 - **Architecture**: OpenGL-based, with extensive feature set
 - **Rendering**: GPU-accelerated with advanced features (images, animations)
 - **Latency**: Low, but slightly higher than Alacritty due to features
@@ -66,6 +71,7 @@
 - **Advantages**: Rich features, extensibility, protocol support
 
 **Warp (Metal)**
+
 - **Architecture**: Native Metal on macOS
 - **Rendering**: GPU-accelerated, optimized for macOS
 - **Latency**: Low, competitive with Ghostty
@@ -75,6 +81,7 @@
 #### CPU-Based Terminals
 
 **iTerm2 (CPU)**
+
 - **Architecture**: CPU-based rendering
 - **Rendering**: Software rendering, no GPU acceleration
 - **Latency**: Higher, especially with large outputs
@@ -82,6 +89,7 @@
 - **Disadvantages**: Slower, especially with heavy output
 
 **Terminal.app (macOS)**
+
 - **Architecture**: Native macOS rendering (Core Graphics)
 - **Rendering**: CPU-based with some GPU assist
 - **Latency**: Moderate, acceptable for light workloads
@@ -91,26 +99,31 @@
 ### Memory Architecture
 
 **Efficient (Low Memory Footprint):**
+
 - Ghostty: ~50-100MB typical
 - Alacritty: ~40-80MB typical
 - Terminal.app: ~30-60MB typical
 
 **Moderate:**
+
 - Kitty: ~100-200MB (due to features)
 - Warp: ~80-150MB
 - iTerm2: ~100-180MB
 
 **High (Feature-Rich):**
+
 - Windows Terminal: ~150-300MB (multiple profiles, tabs)
 
 ### Process Architecture
 
 **Single Process:**
+
 - Ghostty: Single process, efficient
 - Alacritty: Single process, minimal
 - Terminal.app: Single process
 
 **Multi-Process:**
+
 - Kitty: Main process + helper processes
 - Warp: Main process + AI service processes
 - Windows Terminal: Main process + tab processes
@@ -122,6 +135,7 @@
 ### Tier 1: GPU-Accelerated, Modern
 
 #### Ghostty ⭐⭐⭐⭐⭐
+
 - **Language**: Rust
 - **Stars**: ~5k+ (growing rapidly)
 - **Platform**: macOS, Linux (Windows planned)
@@ -138,6 +152,7 @@
 - **Weaknesses**: Windows support not yet available, smaller community than Alacritty
 
 #### Alacritty ⭐⭐⭐⭐⭐
+
 - **Language**: Rust
 - **Stars**: 62,476
 - **Platform**: macOS, Linux, Windows, BSD
@@ -151,6 +166,7 @@
 - **Weaknesses**: No built-in tabs/splits (use tmux), less feature-rich
 
 #### Kitty ⭐⭐⭐⭐
+
 - **Language**: Python + C
 - **Stars**: 31,299
 - **Platform**: macOS, Linux, Windows, BSD
@@ -164,6 +180,7 @@
 - **Weaknesses**: More complex configuration, higher memory usage
 
 #### Warp ⭐⭐⭐⭐
+
 - **Language**: Rust
 - **Stars**: ~30k+ (private repo)
 - **Platform**: macOS (Linux/Windows planned)
@@ -179,6 +196,7 @@
 ### Tier 2: Specialized & Emerging
 
 #### WezTerm ⭐⭐⭐⭐
+
 - **Language**: Rust
 - **Stars**: ~15k+
 - **Platform**: macOS, Linux, Windows
@@ -191,6 +209,7 @@
 - **Best For**: Cross-platform consistency, Lua config preference
 
 #### Tabby (formerly Terminus) ⭐⭐⭐
+
 - **Language**: TypeScript/Electron
 - **Stars**: ~30k+
 - **Platform**: macOS, Linux, Windows
@@ -203,6 +222,7 @@
 - **Weaknesses**: Electron overhead, slower performance
 
 #### Hyper ⭐⭐⭐
+
 - **Language**: JavaScript/Electron
 - **Stars**: ~40k+
 - **Platform**: macOS, Linux, Windows
@@ -215,6 +235,7 @@
 - **Weaknesses**: Electron overhead, slower performance
 
 #### Windows Terminal ⭐⭐⭐⭐
+
 - **Language**: C++
 - **Stars**: ~100k+ (Microsoft)
 - **Platform**: Windows (Linux via WSL)
@@ -228,6 +249,7 @@
 - **Weaknesses**: Windows-only
 
 #### Terminator ⭐⭐⭐
+
 - **Language**: Python/GTK
 - **Stars**: ~3k+
 - **Platform**: Linux
@@ -239,6 +261,7 @@
 - **Weaknesses**: Linux-only, CPU-based
 
 #### Tilix ⭐⭐⭐
+
 - **Language**: D/GTK
 - **Stars**: ~4k+
 - **Platform**: Linux
@@ -252,6 +275,7 @@
 ### Tier 3: Legacy & Specialized
 
 #### iTerm2 ⭐⭐⭐
+
 - **Language**: Objective-C
 - **Stars**: ~7k+
 - **Platform**: macOS
@@ -264,6 +288,7 @@
 - **Weaknesses**: No GPU acceleration, slower performance
 
 #### Terminal.app ⭐⭐
+
 - **Language**: Objective-C (Apple)
 - **Platform**: macOS
 - **Rendering**: CPU-based (Core Graphics)
@@ -274,6 +299,7 @@
 - **Weaknesses**: No GPU acceleration, limited features
 
 #### GNOME Terminal ⭐⭐
+
 - **Language**: C/GTK
 - **Platform**: Linux (GNOME)
 - **Rendering**: CPU-based (GTK)
@@ -284,6 +310,7 @@
 - **Weaknesses**: No GPU acceleration, limited features
 
 #### Konsole ⭐⭐
+
 - **Language**: C++/Qt
 - **Platform**: Linux (KDE)
 - **Rendering**: CPU-based (Qt)
@@ -300,71 +327,72 @@
 ### Benchmark Methodology
 
 **Tools:**
+
 - `vtebench`: Terminal throughput benchmarking
 - `hyperfine`: Command execution timing
 - Custom scripts: Large output rendering, scrolling performance
 
 ### Throughput Benchmarks (vtebench)
 
-| Terminal | Throughput (MB/s) | Relative Performance |
-|----------|-------------------|---------------------|
-| Alacritty | ~150-200 | 100% (baseline) |
-| Ghostty | ~140-190 | 95-98% |
-| Kitty | ~120-170 | 80-90% |
-| WezTerm | ~100-150 | 70-85% |
-| Warp | ~130-180 | 85-95% |
-| iTerm2 | ~40-60 | 25-35% |
-| Terminal.app | ~30-50 | 20-30% |
-| Hyper | ~20-40 | 15-25% |
+| Terminal     | Throughput (MB/s) | Relative Performance |
+| ------------ | ----------------- | -------------------- |
+| Alacritty    | ~150-200          | 100% (baseline)      |
+| Ghostty      | ~140-190          | 95-98%               |
+| Kitty        | ~120-170          | 80-90%               |
+| WezTerm      | ~100-150          | 70-85%               |
+| Warp         | ~130-180          | 85-95%               |
+| iTerm2       | ~40-60            | 25-35%               |
+| Terminal.app | ~30-50            | 20-30%               |
+| Hyper        | ~20-40            | 15-25%               |
 
 ### Latency Benchmarks (Frame Time)
 
-| Terminal | Average Frame Time | 99th Percentile |
-|----------|-------------------|-----------------|
-| Alacritty | <1ms | <2ms |
-| Ghostty | <1ms | <2ms |
-| Kitty | 1-2ms | 3-5ms |
-| WezTerm | 1-2ms | 3-5ms |
-| Warp | <1ms | <2ms |
-| iTerm2 | 5-10ms | 15-25ms |
-| Terminal.app | 8-15ms | 20-30ms |
+| Terminal     | Average Frame Time | 99th Percentile |
+| ------------ | ------------------ | --------------- |
+| Alacritty    | <1ms               | <2ms            |
+| Ghostty      | <1ms               | <2ms            |
+| Kitty        | 1-2ms              | 3-5ms           |
+| WezTerm      | 1-2ms              | 3-5ms           |
+| Warp         | <1ms               | <2ms            |
+| iTerm2       | 5-10ms             | 15-25ms         |
+| Terminal.app | 8-15ms             | 20-30ms         |
 
 ### Memory Usage (Typical Workload)
 
-| Terminal | Idle Memory | Active Memory (10 tabs) |
-|----------|-------------|------------------------|
-| Alacritty | 40-60MB | 80-120MB |
-| Ghostty | 50-80MB | 100-150MB |
-| Kitty | 100-150MB | 200-300MB |
-| WezTerm | 80-120MB | 150-250MB |
-| Warp | 80-120MB | 150-250MB |
-| iTerm2 | 100-150MB | 200-350MB |
-| Terminal.app | 30-50MB | 60-100MB |
-| Hyper | 200-300MB | 400-600MB |
+| Terminal     | Idle Memory | Active Memory (10 tabs) |
+| ------------ | ----------- | ----------------------- |
+| Alacritty    | 40-60MB     | 80-120MB                |
+| Ghostty      | 50-80MB     | 100-150MB               |
+| Kitty        | 100-150MB   | 200-300MB               |
+| WezTerm      | 80-120MB    | 150-250MB               |
+| Warp         | 80-120MB    | 150-250MB               |
+| iTerm2       | 100-150MB   | 200-350MB               |
+| Terminal.app | 30-50MB     | 60-100MB                |
+| Hyper        | 200-300MB   | 400-600MB               |
 
 ### Startup Time
 
-| Terminal | Cold Start | Warm Start |
-|----------|-----------|------------|
-| Alacritty | 50-100ms | 20-50ms |
-| Ghostty | 60-120ms | 30-60ms |
-| Kitty | 100-200ms | 50-100ms |
-| WezTerm | 80-150ms | 40-80ms |
-| Warp | 100-200ms | 50-100ms |
-| iTerm2 | 200-400ms | 100-200ms |
-| Terminal.app | 150-300ms | 80-150ms |
+| Terminal     | Cold Start | Warm Start |
+| ------------ | ---------- | ---------- |
+| Alacritty    | 50-100ms   | 20-50ms    |
+| Ghostty      | 60-120ms   | 30-60ms    |
+| Kitty        | 100-200ms  | 50-100ms   |
+| WezTerm      | 80-150ms   | 40-80ms    |
+| Warp         | 100-200ms  | 50-100ms   |
+| iTerm2       | 200-400ms  | 100-200ms  |
+| Terminal.app | 150-300ms  | 80-150ms   |
 
 ### Large Output Performance (10MB log file)
 
-| Terminal | Render Time | Scroll FPS | Memory Spike |
-|----------|-------------|------------|--------------|
-| Alacritty | 2-3s | 60 FPS | +50MB |
-| Ghostty | 2-4s | 60 FPS | +60MB |
-| Kitty | 3-5s | 50-60 FPS | +80MB |
-| WezTerm | 3-5s | 50-60 FPS | +70MB |
-| Warp | 2-4s | 60 FPS | +60MB |
-| iTerm2 | 10-20s | 20-30 FPS | +200MB |
-| Terminal.app | 15-30s | 15-25 FPS | +150MB |
+| Terminal     | Render Time | Scroll FPS | Memory Spike |
+| ------------ | ----------- | ---------- | ------------ |
+| Alacritty    | 2-3s        | 60 FPS     | +50MB        |
+| Ghostty      | 2-4s        | 60 FPS     | +60MB        |
+| Kitty        | 3-5s        | 50-60 FPS  | +80MB        |
+| WezTerm      | 3-5s        | 50-60 FPS  | +70MB        |
+| Warp         | 2-4s        | 60 FPS     | +60MB        |
+| iTerm2       | 10-20s      | 20-30 FPS  | +200MB       |
+| Terminal.app | 15-30s      | 15-25 FPS  | +150MB       |
 
 ---
 
@@ -375,12 +403,14 @@
 **Used By:** Ghostty, Warp
 
 **Advantages:**
+
 - Native macOS integration
 - Excellent performance
 - Low-level GPU access
 - Platform-optimized
 
 **Disadvantages:**
+
 - macOS-only
 - Platform-specific code
 
@@ -389,11 +419,13 @@
 **Used By:** Alacritty, Kitty, WezTerm
 
 **Advantages:**
+
 - Cross-platform
 - Well-documented
 - Mature ecosystem
 
 **Disadvantages:**
+
 - Less platform-specific optimization
 - Deprecated on macOS (Metal preferred)
 
@@ -402,11 +434,13 @@
 **Used By:** Windows Terminal
 
 **Advantages:**
+
 - Native Windows integration
 - Excellent performance on Windows
 - Modern API
 
 **Disadvantages:**
+
 - Windows-only
 
 ### CPU-Based (Core Graphics, GTK, Qt)
@@ -414,10 +448,12 @@
 **Used By:** iTerm2, Terminal.app, GNOME Terminal, Konsole
 
 **Advantages:**
+
 - Universal compatibility
 - No GPU requirements
 
 **Disadvantages:**
+
 - Slower performance
 - Higher CPU usage
 - Limited scalability
@@ -428,26 +464,26 @@
 
 ### Terminal Protocols
 
-| Protocol | Ghostty | Alacritty | Kitty | WezTerm | Warp | iTerm2 |
-|----------|---------|-----------|-------|---------|------|---------|
-| **ANSI** | ✅ Full | ✅ Full | ✅ Full | ✅ Full | ✅ Full | ✅ Full |
-| **Kitty Graphics** | ✅ Full | ❌ No | ✅ Full | ✅ Partial | ❌ No | ❌ No |
-| **Sixel** | ✅ Yes | ❌ No | ✅ Yes | ✅ Yes | ❌ No | ✅ Yes |
-| **iTerm2 Images** | ✅ Yes | ❌ No | ✅ Yes | ✅ Yes | ❌ No | ✅ Yes |
-| **OSC 777** | ✅ Yes | ❌ No | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Synchronized Output** | ✅ Yes | ❌ No | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
-| **Keyboard Protocol** | ✅ Yes | ❌ No | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
-| **Remote Control** | ❌ No | ❌ No | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| Protocol                | Ghostty | Alacritty | Kitty   | WezTerm    | Warp    | iTerm2  |
+| ----------------------- | ------- | --------- | ------- | ---------- | ------- | ------- |
+| **ANSI**                | ✅ Full | ✅ Full   | ✅ Full | ✅ Full    | ✅ Full | ✅ Full |
+| **Kitty Graphics**      | ✅ Full | ❌ No     | ✅ Full | ✅ Partial | ❌ No   | ❌ No   |
+| **Sixel**               | ✅ Yes  | ❌ No     | ✅ Yes  | ✅ Yes     | ❌ No   | ✅ Yes  |
+| **iTerm2 Images**       | ✅ Yes  | ❌ No     | ✅ Yes  | ✅ Yes     | ❌ No   | ✅ Yes  |
+| **OSC 777**             | ✅ Yes  | ❌ No     | ✅ Yes  | ✅ Yes     | ✅ Yes  | ✅ Yes  |
+| **Synchronized Output** | ✅ Yes  | ❌ No     | ✅ Yes  | ✅ Yes     | ❌ No   | ❌ No   |
+| **Keyboard Protocol**   | ✅ Yes  | ❌ No     | ✅ Yes  | ✅ Yes     | ❌ No   | ❌ No   |
+| **Remote Control**      | ❌ No   | ❌ No     | ✅ Yes  | ❌ No      | ❌ No   | ❌ No   |
 
 ### Shell Integration
 
-| Feature | Ghostty | Alacritty | Kitty | WezTerm | Warp | iTerm2 |
-|---------|---------|-----------|-------|---------|------|---------|
-| **Shell Integration** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Prompt Marking** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Command Detection** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Directory Tracking** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Git Status** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| Feature                | Ghostty | Alacritty | Kitty  | WezTerm | Warp   | iTerm2 |
+| ---------------------- | ------- | --------- | ------ | ------- | ------ | ------ |
+| **Shell Integration**  | ✅ Yes  | ✅ Yes    | ✅ Yes | ✅ Yes  | ✅ Yes | ✅ Yes |
+| **Prompt Marking**     | ✅ Yes  | ✅ Yes    | ✅ Yes | ✅ Yes  | ✅ Yes | ✅ Yes |
+| **Command Detection**  | ✅ Yes  | ✅ Yes    | ✅ Yes | ✅ Yes  | ✅ Yes | ✅ Yes |
+| **Directory Tracking** | ✅ Yes  | ✅ Yes    | ✅ Yes | ✅ Yes  | ✅ Yes | ✅ Yes |
+| **Git Status**         | ✅ Yes  | ✅ Yes    | ✅ Yes | ✅ Yes  | ✅ Yes | ✅ Yes |
 
 ---
 
@@ -456,6 +492,7 @@
 ### Workflow Pattern: Ghostty + Git Worktree + CLI Agents
 
 **Architecture:**
+
 ```
 Ghostty (Terminal Control Plane)
 ├── Worktree 1 (feature-branch)
@@ -471,6 +508,7 @@ Ghostty (Terminal Control Plane)
 ```
 
 **Benefits:**
+
 1. **True Parallelism**: Multiple agents work simultaneously
 2. **Isolation**: Each worktree has independent filesystem state
 3. **No Context Switching**: Monitor all agents in one terminal
@@ -480,6 +518,7 @@ Ghostty (Terminal Control Plane)
 ### Performance Requirements for Agentic Workflows
 
 **Critical Metrics:**
+
 - **Throughput**: >100 MB/s for large agent outputs
 - **Latency**: <2ms frame time for responsive UI
 - **Memory**: Efficient handling of multiple concurrent sessions
@@ -487,15 +526,15 @@ Ghostty (Terminal Control Plane)
 
 **Terminal Suitability:**
 
-| Terminal | Agentic Workflow Score | Notes |
-|----------|----------------------|-------|
-| Ghostty | ⭐⭐⭐⭐⭐ 95/100 | Excellent: Native UI, GPU, terminal-first |
-| Alacritty | ⭐⭐⭐⭐ 85/100 | Excellent performance, needs tmux for tabs |
-| Kitty | ⭐⭐⭐⭐ 80/100 | Rich features, slightly slower |
-| WezTerm | ⭐⭐⭐⭐ 75/100 | Good performance, cross-platform |
-| Warp | ⭐⭐⭐ 70/100 | AI conflicts with separate agents |
-| iTerm2 | ⭐⭐ 50/100 | Slow with large outputs |
-| Terminal.app | ⭐⭐ 45/100 | Too slow for heavy workloads |
+| Terminal     | Agentic Workflow Score | Notes                                      |
+| ------------ | ---------------------- | ------------------------------------------ |
+| Ghostty      | ⭐⭐⭐⭐⭐ 95/100      | Excellent: Native UI, GPU, terminal-first  |
+| Alacritty    | ⭐⭐⭐⭐ 85/100        | Excellent performance, needs tmux for tabs |
+| Kitty        | ⭐⭐⭐⭐ 80/100        | Rich features, slightly slower             |
+| WezTerm      | ⭐⭐⭐⭐ 75/100        | Good performance, cross-platform           |
+| Warp         | ⭐⭐⭐ 70/100          | AI conflicts with separate agents          |
+| iTerm2       | ⭐⭐ 50/100            | Slow with large outputs                    |
+| Terminal.app | ⭐⭐ 45/100            | Too slow for heavy workloads               |
 
 ---
 
@@ -504,6 +543,7 @@ Ghostty (Terminal Control Plane)
 ### Terminal Multiplexers
 
 **tmux Integration:**
+
 - ✅ Ghostty: Excellent (native tabs + tmux)
 - ✅ Alacritty: Excellent (designed for tmux)
 - ✅ Kitty: Excellent (remote control works with tmux)
@@ -511,6 +551,7 @@ Ghostty (Terminal Control Plane)
 - ⚠️ Warp: Limited (has built-in features)
 
 **Zellij Integration:**
+
 - ✅ Ghostty: Excellent
 - ✅ Alacritty: Excellent
 - ✅ Kitty: Excellent
@@ -520,34 +561,40 @@ Ghostty (Terminal Control Plane)
 ### Editor Integration
 
 **Neovim/Vim:**
+
 - ✅ All terminals: Good support
 - ✅ Ghostty: Native UI feels natural
 - ✅ Alacritty: Maximum performance
 - ✅ Kitty: Rich protocol support for advanced features
 
 **Helix:**
+
 - ✅ Ghostty: Excellent
 - ✅ Alacritty: Excellent
 - ✅ Kitty: Good
 
 **VS Code Terminal:**
+
 - ⚠️ All: Limited (xterm.js-based, slower)
 - ✅ Recommendation: Use external terminal for heavy workloads
 
 ### Shell Integration
 
 **zsh:**
+
 - ✅ All terminals: Excellent support
 - ✅ Ghostty: Native shell integration
 - ✅ Alacritty: Fast prompt rendering
 - ✅ Kitty: Advanced prompt features
 
 **bash:**
+
 - ✅ All terminals: Good support
 - ✅ Ghostty: Native integration
 - ✅ Alacritty: Fast rendering
 
 **fish:**
+
 - ✅ All terminals: Good support
 - ✅ Ghostty: Native integration
 - ✅ Kitty: Advanced features
@@ -555,18 +602,21 @@ Ghostty (Terminal Control Plane)
 ### Agent Tool Integration
 
 **Claude Code:**
+
 - ✅ Ghostty: Terminal-first, perfect fit
 - ✅ Alacritty: Fast rendering
 - ✅ Kitty: Rich protocol support
 - ⚠️ Warp: Conflicts with built-in AI
 
 **Codex:**
+
 - ✅ Ghostty: Terminal-first, perfect fit
 - ✅ Alacritty: Fast rendering
 - ✅ Kitty: Good support
 - ⚠️ Warp: Conflicts with built-in AI
 
 **OpenCode CLI:**
+
 - ✅ Ghostty: Terminal-first, perfect fit
 - ✅ Alacritty: Fast rendering
 - ✅ Kitty: Good support
@@ -577,17 +627,18 @@ Ghostty (Terminal Control Plane)
 
 ### Security Features
 
-| Feature | Ghostty | Alacritty | Kitty | WezTerm | Warp | iTerm2 |
-|---------|---------|-----------|-------|---------|------|---------|
-| **Secure Keyboard Entry** | ✅ macOS | ❌ No | ❌ No | ❌ No | ✅ macOS | ✅ macOS |
-| **Password Detection** | ✅ Yes | ❌ No | ❌ No | ❌ No | ✅ Yes | ✅ Yes |
-| **Sandboxing** | ✅ macOS | ❌ No | ❌ No | ❌ No | ✅ macOS | ✅ macOS |
-| **Memory Protection** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Network Isolation** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| Feature                   | Ghostty  | Alacritty | Kitty  | WezTerm | Warp     | iTerm2   |
+| ------------------------- | -------- | --------- | ------ | ------- | -------- | -------- |
+| **Secure Keyboard Entry** | ✅ macOS | ❌ No     | ❌ No  | ❌ No   | ✅ macOS | ✅ macOS |
+| **Password Detection**    | ✅ Yes   | ❌ No     | ❌ No  | ❌ No   | ✅ Yes   | ✅ Yes   |
+| **Sandboxing**            | ✅ macOS | ❌ No     | ❌ No  | ❌ No   | ✅ macOS | ✅ macOS |
+| **Memory Protection**     | ✅ Yes   | ✅ Yes    | ✅ Yes | ✅ Yes  | ✅ Yes   | ✅ Yes   |
+| **Network Isolation**     | ✅ Yes   | ✅ Yes    | ✅ Yes | ✅ Yes  | ✅ Yes   | ✅ Yes   |
 
 ### Privacy Considerations
 
 **Data Collection:**
+
 - **Ghostty**: No telemetry, no data collection
 - **Alacritty**: No telemetry, no data collection
 - **Kitty**: No telemetry, no data collection
@@ -596,6 +647,7 @@ Ghostty (Terminal Control Plane)
 - **iTerm2**: No telemetry, no data collection
 
 **AI Features:**
+
 - **Warp**: Built-in AI may send command history to cloud (check privacy policy)
 - **Others**: No AI features, no cloud data
 
@@ -603,13 +655,13 @@ Ghostty (Terminal Control Plane)
 
 ## Accessibility Features
 
-| Feature | Ghostty | Alacritty | Kitty | WezTerm | Warp | iTerm2 |
-|---------|---------|-----------|-------|---------|------|---------|
-| **Screen Reader** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| **High Contrast** | ✅ Themes | ✅ Themes | ✅ Themes | ✅ Themes | ✅ Themes | ✅ Themes |
-| **Font Scaling** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| Feature                 | Ghostty   | Alacritty | Kitty     | WezTerm   | Warp      | iTerm2    |
+| ----------------------- | --------- | --------- | --------- | --------- | --------- | --------- |
+| **Screen Reader**       | ✅ Yes    | ✅ Yes    | ✅ Yes    | ✅ Yes    | ✅ Yes    | ✅ Yes    |
+| **High Contrast**       | ✅ Themes | ✅ Themes | ✅ Themes | ✅ Themes | ✅ Themes | ✅ Themes |
+| **Font Scaling**        | ✅ Yes    | ✅ Yes    | ✅ Yes    | ✅ Yes    | ✅ Yes    | ✅ Yes    |
 | **Color Blind Support** | ✅ Themes | ✅ Themes | ✅ Themes | ✅ Themes | ✅ Themes | ✅ Themes |
-| **Keyboard Navigation** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Keyboard Navigation** | ✅ Yes    | ✅ Yes    | ✅ Yes    | ✅ Yes    | ✅ Yes    | ✅ Yes    |
 
 ---
 
@@ -620,6 +672,7 @@ Ghostty (Terminal Control Plane)
 **Location:** `~/.config/ghostty/config`
 
 **Advanced Configuration:**
+
 ```ini
 # Performance
 font-size = 14
@@ -658,6 +711,7 @@ secure-keyboard-entry = "auto"  # Auto-detect password prompts
 ```
 
 **MCP Integration:**
+
 ```bash
 # Install Ghostty MCP server
 # Enables programmatic terminal control
@@ -669,6 +723,7 @@ secure-keyboard-entry = "auto"  # Auto-detect password prompts
 **Location:** `~/.config/alacritty/alacritty.toml`
 
 **Advanced Configuration:**
+
 ```toml
 [window]
 padding = { x = 10, y = 10 }
@@ -706,6 +761,7 @@ TERM = "alacritty"
 **Location:** `~/.config/kitty/kitty.conf`
 
 **Advanced Configuration:**
+
 ```conf
 # Font
 font_family JetBrains Mono
@@ -749,12 +805,14 @@ listen_on unix:/tmp/mykitty
 ### Terminal Evolution
 
 **Current Generation (2024-2026):**
+
 - GPU acceleration standard
 - Native UI components
 - Shell integration
 - Protocol support
 
 **Next Generation (2026-2028):**
+
 - WebGPU rendering
 - Advanced AI integration
 - Better cross-platform native UI
@@ -767,40 +825,47 @@ listen_on unix:/tmp/mykitty
 ### Agentic Development
 
 **Primary:** Ghostty
+
 - Terminal-first design
 - Native UI
 - GPU acceleration
 - No AI conflicts
 
 **Secondary:** Alacritty + tmux
+
 - Maximum performance
 - Needs tmux for tabs
 
 ### Maximum Performance
 
 **Primary:** Alacritty
+
 - Highest throughput
 - Lowest latency
 - Minimal overhead
 
 **Secondary:** Ghostty
+
 - Excellent performance
 - Native UI benefits
 
 ### Feature-Rich Workflows
 
 **Primary:** Kitty
+
 - Rich feature set
 - Extensibility
 - Protocol support
 
 **Secondary:** WezTerm
+
 - Built-in multiplexing
 - Cross-platform
 
 ### AI-Powered Workflows
 
 **Primary:** Warp
+
 - Built-in AI
 - Modern UI
 - macOS optimized
@@ -810,21 +875,25 @@ listen_on unix:/tmp/mykitty
 ### Cross-Platform Consistency
 
 **Primary:** Alacritty
+
 - Consistent across platforms
 - OpenGL everywhere
 
 **Secondary:** Kitty
+
 - Rich features
 - Cross-platform
 
 ### Windows Users
 
 **Primary:** Windows Terminal
+
 - Native Windows integration
 - GPU acceleration
 - WSL integration
 
 **Secondary:** Alacritty
+
 - Cross-platform consistency
 
 ---
@@ -868,12 +937,14 @@ listen_on unix:/tmp/mykitty
 ### Key Community Patterns
 
 **Popular Stacks:**
+
 1. **Ghostty + Git Worktree + Claude Code/Codex/OpenCode** (Most popular for agentic dev)
 2. **Ghostty + Zellij + Neovim/Helix** (Power user stack)
 3. **Ghostty + tmux + OpenCode** (Remote server workflows)
 4. **Ghostty + Neovim** (Simplified stack)
 
 **Common Themes:**
+
 - Performance is the #1 differentiator (Ghostty wins)
 - AI separation is preferred (baked-in AI conflicts with separate agents)
 - Native UI feels better than custom-drawn
@@ -892,24 +963,28 @@ listen_on unix:/tmp/mykitty
 5. **Community**: Strong adoption in agentic development community, extensive real-world validation
 
 **CommanderAI Assessment:**
+
 - **Limited adoption** in agentic development community
 - **AI features conflict** with separate agent tools (Claude Code, Codex, OpenCode)
 - **Performance concerns** (no GPU acceleration mentioned)
 - **User preference**: Community strongly prefers keeping AI separate
 
 **Alternative choices:**
+
 - **Alacritty**: Maximum performance, needs tmux (less popular for agentic workflows)
 - **Kitty**: Rich features, extensibility (tested but Ghostty preferred)
 - **Warp**: AI features (but conflicts with separate agents, subscription model)
 - **Windows Terminal**: Good Windows alternative (can approximate Ghostty UI)
 
 **Key Takeaway**:
+
 - GPU acceleration is essential for modern terminal workloads
 - Native UI components provide better UX than custom-drawn alternatives
 - Terminal-first design enables better integration with CLI agents
 - **Community consensus**: Keep AI separate from terminal, use Ghostty for terminal performance
 
 **Real-World Validation:**
+
 - Multiple users report switching from iTerm2 to Ghostty with noticeable speed improvements
 - Ghostty + Git Worktree + CLI Agents is a proven, productive workflow
 - Community actively building tools (Agentastic.Dev) around Ghostty
@@ -917,5 +992,5 @@ listen_on unix:/tmp/mykitty
 
 ---
 
-*Research Date: 2026-02-18*
-*Sources: GitHub, terminal documentation, performance benchmarks, Reddit community discussions (r/ClaudeAI, r/opencodeCLI), real-world user experiences*
+_Research Date: 2026-02-18_
+_Sources: GitHub, terminal documentation, performance benchmarks, Reddit community discussions (r/ClaudeAI, r/opencodeCLI), real-world user experiences_

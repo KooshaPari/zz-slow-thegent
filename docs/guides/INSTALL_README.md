@@ -7,12 +7,14 @@ The `install.sh` script sets up your entire system for thegent, installing all r
 ## What Gets Installed
 
 ### Package Managers
+
 - **Homebrew** - System package manager for macOS
 - **mise** - Version manager (replaces pyenv, rbenv, nvm)
 - **tea** - Ephemeral package runner (like npmx for everything)
 - **chezmoi** - Dotfile manager for multi-device sync
 
 ### Development Tools
+
 - **Python 3.12.9** - Via mise
 - **Node.js 24.13.1** - Via mise
 - **Ruby 3.3.7** - Via mise
@@ -20,6 +22,7 @@ The `install.sh` script sets up your entire system for thegent, installing all r
 - **GitHub CLI (gh)** - GitHub integration
 
 ### Shell Tools
+
 - **fzf** - Fuzzy finder
 - **ripgrep (rg)** - Fast grep replacement
 - **fd** - Fast find replacement
@@ -29,11 +32,13 @@ The `install.sh` script sets up your entire system for thegent, installing all r
 - **starship** - Cross-shell prompt
 
 ### Utilities
+
 - **jq** - JSON processor
 - **yq** - YAML processor
 - **git-delta** - Git diff viewer
 
 ### Configuration Files Created
+
 - `~/.tool-versions` - Global tool versions for mise
 - `~/.mise.toml` - mise configuration
 - `~/tea.yml` - tea dependencies
@@ -41,6 +46,7 @@ The `install.sh` script sets up your entire system for thegent, installing all r
 - `~/.zshenv` - Shell environment setup
 
 ### Templates Created
+
 - `~/.templates/.tool-versions` - Project tool versions template
 - `~/.templates/.mise.toml` - mise config template
 - `~/.templates/tea.yml` - tea config template
@@ -48,6 +54,7 @@ The `install.sh` script sets up your entire system for thegent, installing all r
 - `~/.templates/README.md` - Project README template
 
 ### Helper Scripts
+
 - `~/.local/bin/check-legacy-tools` - Check migration status
 - `~/.local/bin/new-project` - Create new project with templates
 
@@ -178,6 +185,7 @@ brew bundle install
 ### Add More Packages
 
 Edit `~/Brewfile` and run:
+
 ```bash
 brew bundle install
 ```
@@ -185,12 +193,14 @@ brew bundle install
 ### Change Tool Versions
 
 Edit `~/.tool-versions`:
+
 ```
 python 3.13.0
 node 22.0.0
 ```
 
 Then run:
+
 ```bash
 mise install
 ```

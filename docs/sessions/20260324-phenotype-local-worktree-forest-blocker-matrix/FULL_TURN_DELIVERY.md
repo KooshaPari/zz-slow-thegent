@@ -6,14 +6,14 @@
 
 Each **full** automation turn **must** close with **at least one** of the following **per repo touched**, unless a written **exception** is recorded in `05_KNOWN_ISSUES.md` (blocked CI, policy hold, or destructive-op approval pending):
 
-| Gate | Requirement | Evidence |
-|------|-------------|----------|
-| **PR** | Open or update a PR with a scoped branch; base = `main` or `release/*` | `gh pr view <n> --json url,baseRefName,headRefName,mergeable` |
-| **CI** | Required checks **green** (or fix-forward in the same PR) | `gh pr checks <n>` / Actions URLs |
-| **Merge** | Merge to base after green (squash/merge per repo rules) | `gh pr merge` or GitHub UI merge event; `main` fast-forward or merge commit on remote |
-| **Changelog** | Entry under `## [Unreleased]` (or project template) for user-visible or policy-visible change | Diff in `CHANGELOG.md` / `docs/CHANGELOG.md` per `docs/guides/CHANGELOG_PROCESS.md` |
-| **Version** | Semver bump **when** the release policy says so (not every docs-only session): crate `Cargo.toml`, `pyproject.toml`, or tag | Same PR or follow-up release PR |
-| **Docs** | Session packs: update `00_SESSION_OVERVIEW.md` / `ACTIVE_BACKLOG.md`; product repos: public docs if behavior changed | Linked commit |
+| Gate          | Requirement                                                                                                                 | Evidence                                                                              |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| **PR**        | Open or update a PR with a scoped branch; base = `main` or `release/*`                                                      | `gh pr view <n> --json url,baseRefName,headRefName,mergeable`                         |
+| **CI**        | Required checks **green** (or fix-forward in the same PR)                                                                   | `gh pr checks <n>` / Actions URLs                                                     |
+| **Merge**     | Merge to base after green (squash/merge per repo rules)                                                                     | `gh pr merge` or GitHub UI merge event; `main` fast-forward or merge commit on remote |
+| **Changelog** | Entry under `## [Unreleased]` (or project template) for user-visible or policy-visible change                               | Diff in `CHANGELOG.md` / `docs/CHANGELOG.md` per `docs/guides/CHANGELOG_PROCESS.md`   |
+| **Version**   | Semver bump **when** the release policy says so (not every docs-only session): crate `Cargo.toml`, `pyproject.toml`, or tag | Same PR or follow-up release PR                                                       |
+| **Docs**      | Session packs: update `00_SESSION_OVERVIEW.md` / `ACTIVE_BACKLOG.md`; product repos: public docs if behavior changed        | Linked commit                                                                         |
 
 **Multiple merges per turn** are encouraged when CI allows: e.g. **docs PR** + **fix PR** in different repos, or stacked PRs in one repo.
 
@@ -50,8 +50,8 @@ gh pr list --repo <owner>/<repo> --state merged --limit 5
 
 ## Snapshot — `KooshaPari/thegent` (2026-03-24)
 
-| PR | Title | Base | Mergeable | CI |
-|----|--------|------|------------|-----|
+| PR                                                     | Title                                                     | Base   | Mergeable | CI                                                                                  |
+| ------------------------------------------------------ | --------------------------------------------------------- | ------ | --------- | ----------------------------------------------------------------------------------- |
 | [#549](https://github.com/KooshaPari/thegent/pull/549) | Migrate thegent-cache to phenotype-infrakit cache-adapter | `main` | MERGEABLE | **Red** — multiple failing workflows (Build wheels, Lint & Test, Policy Gate, etc.) |
 
 **Action:** **Do not merge** until CI is green and review threads resolved (org **CI completeness** policy). Next turn should **fix-forward** on `feat/migrate-cache` or rebase and re-run checks.

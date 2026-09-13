@@ -12,7 +12,7 @@ Aggregates and displays TRAFFIC KPIs (Throughput, Reliability, Availability, Fin
 
 ### Methods
 
-#### KPIDashboard.__init__
+#### KPIDashboard.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings)

@@ -27,7 +27,7 @@ Archive repository evidence for lane split handoff and PR readiness review.
 
 ## Archive workflow before done
 
-  1. Add artifact links (including `docs/sessions/20260302-phench-modularization/03_DAG_WBS.md` blocker section) and PR-anchor matrix with timestamped smoke matrix evidence.
+1. Add artifact links (including `docs/sessions/20260302-phench-modularization/03_DAG_WBS.md` blocker section) and PR-anchor matrix with timestamped smoke matrix evidence.
 2. Move this evidence set to `docs/changes/shared-modules/thegent-module-lane-bootstraps-v1/archive/` on finalization.
 3. Run `openspec archive <change-anchor> --yes` (if applicable by anchor).
 4. Move active worktree entries to done and run prune.

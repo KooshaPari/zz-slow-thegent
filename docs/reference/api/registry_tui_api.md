@@ -14,7 +14,7 @@ Unified Agent Registry TUI.
 
 ### Methods
 
-#### RegistryTUI.__init__
+#### RegistryTUI.**init**
 
 ```python
 __init__(self: Any)

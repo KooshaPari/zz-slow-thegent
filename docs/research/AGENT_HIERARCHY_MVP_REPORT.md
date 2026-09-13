@@ -13,16 +13,17 @@
 
 The codebase already has two distinct agent hierarchy layers:
 
-| Layer | Location | Purpose |
-|-------|----------|---------|
+| Layer                | Location                                    | Purpose                                                                                                                          |
+| -------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | Governance hierarchy | `src/thegent/governance/agent_hierarchy.py` | Persistence-backed (JSON files), role-based (EXECUTIVE / TEAM_LEAD / SPECIALIST), team management, delegation policy enforcement |
-| Research stub | `src/thegent/research/agent_hierarchy.py` | Minimal 60-line prototype — register + get_children + get_hierarchy_path |
-| Crew executor | `src/thegent/crew/executor.py` | TaskExecutor with topological DAG resolution; AgentAssigner strategies (RoundRobin, SkillBased, Hierarchical) |
-| Harness | `src/thegent/crew/harness.py` | Bridges crew tasks to CLI agents (codex/claude/copilot/gemini) via DirectAgentRunner |
+| Research stub        | `src/thegent/research/agent_hierarchy.py`   | Minimal 60-line prototype — register + get_children + get_hierarchy_path                                                         |
+| Crew executor        | `src/thegent/crew/executor.py`              | TaskExecutor with topological DAG resolution; AgentAssigner strategies (RoundRobin, SkillBased, Hierarchical)                    |
+| Harness              | `src/thegent/crew/harness.py`               | Bridges crew tasks to CLI agents (codex/claude/copilot/gemini) via DirectAgentRunner                                             |
 
 ### SmolAgents v1.24.0 Integration Points
 
 SmolAgents `ManagedAgent` was renamed in v1.x; the current API (v1.24.0) uses:
+
 - `MultiStepAgent` (base class) with `managed_agents: list[Agent]` parameter — the orchestrator loads sub-agents as callable tools automatically via `_setup_managed_agents`.
 - `CodeAgent` — writes and executes Python code as its action space.
 - `ToolCallingAgent` — uses JSON tool-call format (OpenAI-style).
@@ -33,6 +34,7 @@ Key discovery: When `managed_agents` are set on a `MultiStepAgent`, SmolAgents w
 ### Design Decision: New Module vs. Extending Governance
 
 The governance `AgentHierarchyManager` is tightly coupled to persistence (JSON files), role enums, and governance policy. The MVP needs:
+
 - In-memory operation (for speed and testability)
 - Capability-based routing (domain skills, not hierarchical roles)
 - SmolAgents smolagent attachment per node
@@ -47,17 +49,21 @@ The governance `AgentHierarchyManager` is tightly coupled to persistence (JSON f
 ### File: `/Users/kooshapari/temp-PRODVERCEL/485/kush/thegent/src/thegent/agents/hierarchy.py`
 
 #### AgentCapability Enum (10 members)
+
 ```
 CODE, RESEARCH, REVIEW, TEST, DEPLOY, PLAN, SECURITY, DATA, DOCUMENTATION, ORCHESTRATE
 ```
+
 Uses `auto()` for values; extensible by adding new enum members.
 
 #### AgentState Enum (5 members)
+
 ```
 IDLE, RUNNING, COMPLETED, FAILED, CANCELLED
 ```
 
 #### RoutingStrategy Enum (3 members)
+
 ```
 CAPABILITY_MATCH  — exact set match preferred, partial match fallback
 ROUND_ROBIN       — cycles through capable agents per capability bucket
@@ -65,7 +71,9 @@ LEAST_LOADED      — picks agent with lowest active_task_count
 ```
 
 #### AgentNode Dataclass
+
 Key fields:
+
 - `capabilities: set[AgentCapability]` — set operations for O(1) matching
 - `smolagent: Any | None` — live SmolAgents agent instance; excluded from `to_dict()` serialisation
 - `active_task_count: int` — live counter used by LEAST_LOADED routing
@@ -78,6 +86,7 @@ Helper methods: `has_capability()`, `has_any_capability()`, `to_dict()`
 #### AgentHierarchyManager
 
 Constructor parameters:
+
 - `routing_strategy: RoutingStrategy` — defaults to `CAPABILITY_MATCH`
 - `task_executor: Callable[[AgentNode, str, dict], TaskResult] | None` — injectable callback for testing/simulation without real LLM calls
 
@@ -86,6 +95,7 @@ Constructor parameters:
 **route_task()**: Selects agent from candidates matching required capabilities. Supports `exclude_ids` to skip busy or failed agents. Returns `None` if no match.
 
 **execute_task()**: Runs a task synchronously. Execution priority:
+
 1. `node.smolagent.run(task_description)` — real SmolAgents integration
 2. `self.task_executor(node, task, context)` — injectable mock/simulator
 3. `RuntimeError` — explicit failure (not swallowed as task failure)
@@ -112,21 +122,21 @@ Constructor parameters:
 
 ### Test Coverage by Category
 
-| Category | Tests | All Pass |
-|----------|-------|----------|
-| AgentCapability enum | 2 | Yes |
-| AgentState enum | 1 | Yes |
-| AgentNode creation/capability/serialisation | 8 | Yes |
-| spawn_agent (registration, wiring, validation) | 6 | Yes |
-| Agent registry (list/get/root) | 3 | Yes |
-| route_task (3 strategies + no-match + exclude) | 6 | Yes |
-| execute_task (success, failure, smolagent, state, counters) | 10 | Yes |
-| execute_parallel (ordering, concurrency, mixed success) | 3 | Yes |
-| collect_results (all, filtered, success-only, clear) | 4 | Yes |
-| Tree traversal (children, ancestors, descendants, tree dict) | 9 | Yes |
-| remove_agent | 3 | Yes |
-| summary | 2 | Yes |
-| End-to-end (orchestrator→specialist, parallel) | 2 | Yes |
+| Category                                                     | Tests | All Pass |
+| ------------------------------------------------------------ | ----- | -------- |
+| AgentCapability enum                                         | 2     | Yes      |
+| AgentState enum                                              | 1     | Yes      |
+| AgentNode creation/capability/serialisation                  | 8     | Yes      |
+| spawn_agent (registration, wiring, validation)               | 6     | Yes      |
+| Agent registry (list/get/root)                               | 3     | Yes      |
+| route_task (3 strategies + no-match + exclude)               | 6     | Yes      |
+| execute_task (success, failure, smolagent, state, counters)  | 10    | Yes      |
+| execute_parallel (ordering, concurrency, mixed success)      | 3     | Yes      |
+| collect_results (all, filtered, success-only, clear)         | 4     | Yes      |
+| Tree traversal (children, ancestors, descendants, tree dict) | 9     | Yes      |
+| remove_agent                                                 | 3     | Yes      |
+| summary                                                      | 2     | Yes      |
+| End-to-end (orchestrator→specialist, parallel)               | 2     | Yes      |
 
 ---
 
@@ -175,6 +185,7 @@ orchestrator.run("Research best sorting algorithms then implement the fastest on
 ### Combining Both Patterns
 
 The `AgentHierarchyManager` can wrap the above orchestrator as the root node, while each specialist (with its SmolAgents instance) is a child node. The manager then provides:
+
 - Capability-based routing (which specialist for which task type)
 - Parallel dispatch (`execute_parallel`)
 - Result collection and summary
@@ -184,15 +195,15 @@ The `AgentHierarchyManager` can wrap the above orchestrator as the root node, wh
 
 ## 5. Design Decisions
 
-| Decision | Rationale |
-|----------|-----------|
-| `set[AgentCapability]` for capabilities | O(1) intersection/subset checks; clean enum namespace |
-| Separate from governance hierarchy | Governance needs persistence + policy; this needs speed + SmolAgents attachment |
+| Decision                                                  | Rationale                                                                                                           |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `set[AgentCapability]` for capabilities                   | O(1) intersection/subset checks; clean enum namespace                                                               |
+| Separate from governance hierarchy                        | Governance needs persistence + policy; this needs speed + SmolAgents attachment                                     |
 | `RuntimeError` propagates, `Exception` creates TaskResult | Programming errors (no executor configured) should crash loudly; task execution errors should be handled gracefully |
-| `asyncio.gather` in thread when event loop running | Allows `execute_parallel` to be called from both sync and async contexts without forcing the caller to manage loops |
-| `task_executor` callback parameter | 100% test coverage without LLM API keys; production code swaps in real SmolAgents calls |
-| First spawned node is root | Minimal friction: single-orchestrator pattern is the common case |
-| ROUND_ROBIN bucketed per capability | Prevents one capability from monopolising a single index counter |
+| `asyncio.gather` in thread when event loop running        | Allows `execute_parallel` to be called from both sync and async contexts without forcing the caller to manage loops |
+| `task_executor` callback parameter                        | 100% test coverage without LLM API keys; production code swaps in real SmolAgents calls                             |
+| First spawned node is root                                | Minimal friction: single-orchestrator pattern is the common case                                                    |
+| ROUND_ROBIN bucketed per capability                       | Prevents one capability from monopolising a single index counter                                                    |
 
 ---
 

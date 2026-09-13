@@ -12,7 +12,7 @@ Cross-platform desktop automation.
 
 ### Methods
 
-#### DesktopAutomationProvider.__init__
+#### DesktopAutomationProvider.**init**
 
 ```python
 __init__(self: Any)

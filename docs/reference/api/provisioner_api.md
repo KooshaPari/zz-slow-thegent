@@ -15,7 +15,7 @@ Orchestrates self-provisioning of agent infrastructure.
 
 ### Methods
 
-#### InfraProvisioner.__init__
+#### InfraProvisioner.**init**
 
 ```python
 __init__(self: Any, provider: str)

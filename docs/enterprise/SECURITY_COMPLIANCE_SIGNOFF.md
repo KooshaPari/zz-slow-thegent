@@ -24,21 +24,21 @@ Thegent orchestration layer provides a unified control plane for agent execution
 
 ## 3. Compliance Framework
 
-| Requirement | Implementation | Status |
-|-------------|----------------|--------|
-| Audit Trail | RunRegistry hash-chaining | ✓ Compliant |
-| Immutable Logs | WORM-simulated storage | ✓ Compliant |
-| Policy Gating | PolicyEngine pre-check | ✓ Compliant |
-| Access Control | Env-scoped owner tags | ✓ Compliant |
+| Requirement    | Implementation            | Status      |
+| -------------- | ------------------------- | ----------- |
+| Audit Trail    | RunRegistry hash-chaining | ✓ Compliant |
+| Immutable Logs | WORM-simulated storage    | ✓ Compliant |
+| Policy Gating  | PolicyEngine pre-check    | ✓ Compliant |
+| Access Control | Env-scoped owner tags     | ✓ Compliant |
 
 ## 4. Threat Model & Mitigations
 
 - **Threat:** Agent prompt injection to leak API keys.
-  - *Mitigation:* System prompt constraints + tool-call budget injection.
+  - _Mitigation:_ System prompt constraints + tool-call budget injection.
 - **Threat:** Unauthorized access to session logs.
-  - *Mitigation:* OS-level isolation + ownership-tagged scopes.
+  - _Mitigation:_ OS-level isolation + ownership-tagged scopes.
 - **Threat:** Replay attacks on governance artifacts.
-  - *Mitigation:* RUN_ID correlation + timestamped hash chains.
+  - _Mitigation:_ RUN_ID correlation + timestamped hash chains.
 
 ## 5. Signoff
 
@@ -46,8 +46,8 @@ Thegent orchestration layer provides a unified control plane for agent execution
 - **Security:** [PENDING]
 - **Compliance:** [PENDING]
 
-
 ---
+
 ## See also
 
 - [WORK_STREAM.md](../reference/WORK_STREAM.md) — canonical backlog

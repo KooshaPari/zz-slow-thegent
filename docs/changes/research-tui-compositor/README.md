@@ -8,6 +8,7 @@ A terminal user interface compositor for the Thegent agent orchestration platfor
 ## Overview
 
 The TUI Compositor provides a GUI-like experience in the terminal with:
+
 - Menu bar for navigation
 - Status bar for real-time information
 - Terminal pane splitting (horizontal/vertical)
@@ -39,23 +40,25 @@ The TUI Compositor provides a GUI-like experience in the terminal with:
 
 ### Components
 
-| Component | Purpose | Status |
-|-----------|---------|--------|
-| CompositApp | Main application | ✅ P1.2 |
+| Component    | Purpose                   | Status  |
+| ------------ | ------------------------- | ------- |
+| CompositApp  | Main application          | ✅ P1.2 |
 | TerminalPane | PTY-based terminal widget | 🔲 P1.3 |
-| PaneManager | Split/merge tree logic | 🔲 P2.1 |
-| SessionState | Persistence layer | ✅ P1.1 |
-| Statusbar | Real-time status display | ✅ P1.2 |
+| PaneManager  | Split/merge tree logic    | 🔲 P2.1 |
+| SessionState | Persistence layer         | ✅ P1.1 |
+| Statusbar    | Real-time status display  | ✅ P1.2 |
 
 ## Phase Progress
 
 ### Phase 1: Foundation ✅ IN PROGRESS
+
 - [x] P1.1: Project Setup & Dependencies
 - [x] P1.2: CompositApp Skeleton
 - [ ] P1.3: TerminalPane Widget
 - [ ] P1.4: Basic Integration & Single-Pane Demo
 
 ### Phase 2: Compositor Integration (Week 2)
+
 - [ ] P2.1: PaneManager Foundation
 - [ ] P2.2: UI Integration for Pane Operations
 - [ ] P2.3: Layout Serialization
@@ -63,6 +66,7 @@ The TUI Compositor provides a GUI-like experience in the terminal with:
 - [ ] P2.5: Layout Management UI
 
 ### Phase 3: Advanced Features (Week 3)
+
 - [ ] P3.1: Floating Windows & Dialogs
 - [ ] P3.2: Theme Support
 - [ ] P3.3: Real-Time Process Monitoring (Optional)
@@ -70,14 +74,14 @@ The TUI Compositor provides a GUI-like experience in the terminal with:
 
 ## Key Bindings
 
-| Binding | Action |
-|---------|--------|
-| `Ctrl+N` | New Pane |
-| `Ctrl+V` | Split Vertical |
+| Binding  | Action           |
+| -------- | ---------------- |
+| `Ctrl+N` | New Pane         |
+| `Ctrl+V` | Split Vertical   |
 | `Ctrl+H` | Split Horizontal |
-| `Ctrl+X` | Close Pane |
-| `Ctrl+L` | Focus Next Pane |
-| `Ctrl+Q` | Quit |
+| `Ctrl+X` | Close Pane       |
+| `Ctrl+L` | Focus Next Pane  |
+| `Ctrl+Q` | Quit             |
 
 ## File Structure
 
@@ -140,6 +144,7 @@ python -m thegent.ui.compositor
 ## Development Roadmap
 
 ### Phase 1 Completion Criteria
+
 - [x] Module structure created and importable
 - [x] Tests discoverable and basic tests passing
 - [x] CompositApp renders with Header/Footer/Statusbar
@@ -147,6 +152,7 @@ python -m thegent.ui.compositor
 - [ ] Single pane interactive demo
 
 ### P1.3 Tasks (Next)
+
 1. Implement PTY allocation in TerminalPane
 2. Shell process spawning
 3. Input/output handling
@@ -154,6 +160,7 @@ python -m thegent.ui.compositor
 5. Unit tests for PTY operations
 
 ### P1.4 Tasks
+
 1. Integrate TerminalPane into CompositApp
 2. Implement action_new_pane()
 3. Verify interactive shell works
@@ -168,13 +175,13 @@ python -m thegent.ui.compositor
 
 ## Performance Targets
 
-| Metric | Target | Status |
-|--------|--------|--------|
-| App startup | <500ms | 🔲 To verify |
+| Metric        | Target | Status       |
+| ------------- | ------ | ------------ |
+| App startup   | <500ms | 🔲 To verify |
 | Pane creation | <100ms | 🔲 To verify |
-| Layout switch | <50ms | 🔲 To verify |
-| Idle memory | <100MB | 🔲 To verify |
-| Idle CPU | <2% | 🔲 To verify |
+| Layout switch | <50ms  | 🔲 To verify |
+| Idle memory   | <100MB | 🔲 To verify |
+| Idle CPU      | <2%    | 🔲 To verify |
 
 ## References
 

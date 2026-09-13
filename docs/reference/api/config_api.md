@@ -14,7 +14,7 @@ Manages TUI configuration.
 
 ### Methods
 
-#### ConfigManager.__init__
+#### ConfigManager.**init**
 
 ```python
 __init__(self: Any, config_dir: Any)

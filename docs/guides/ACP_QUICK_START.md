@@ -10,6 +10,7 @@
 **Agent Client Protocol (ACP)** is a standardized protocol for communication between code editors/IDEs and coding agents. It enables interoperability between different agents and editors.
 
 **Benefits**:
+
 - Use thegent agents in ACP-compatible clients (gsh, Zed)
 - Spawn external ACP agents from thegent
 - Bridge MCP and ACP ecosystems
@@ -30,6 +31,7 @@ This exposes thegent agents (claude, codex, copilot, etc.) as ACP-compatible age
 ### 2. Use with gsh
 
 **Step 1**: Install gsh (if not already installed)
+
 ```bash
 # macOS
 brew install gsh
@@ -40,6 +42,7 @@ cd gsh && make install
 ```
 
 **Step 2**: Configure gsh to use thegent
+
 ```gsh
 # ~/.gsh/repl.gsh
 acp Thegent {
@@ -49,6 +52,7 @@ acp Thegent {
 ```
 
 **Step 3**: Use in gsh REPL
+
 ```bash
 gsh> @thegent analyze my codebase and suggest improvements
 ```
@@ -73,6 +77,7 @@ Currently, the ACP server runs in stdio mode (JSON-RPC over stdin/stdout). Futur
 ### Available Agents
 
 The ACP server exposes these thegent agents:
+
 - `claude` - Claude (via Claude Code CLI)
 - `codex` - Codex (via Codex CLI)
 - `copilot` - GitHub Copilot
@@ -86,6 +91,7 @@ The ACP server exposes these thegent agents:
 ### Issue: "Agent 'X' not found"
 
 **Solution**: Ensure the agent is available in your PATH:
+
 ```bash
 # Check if agent CLI is available
 which claude
@@ -95,6 +101,7 @@ which codex
 ### Issue: ACP server not responding
 
 **Solution**: Check logs:
+
 ```bash
 # Run with debug logging
 GENT_DEBUG=1 thegent acp server
@@ -103,6 +110,7 @@ GENT_DEBUG=1 thegent acp server
 ### Issue: gsh can't connect to thegent
 
 **Solution**: Verify ACP configuration in `~/.gsh/repl.gsh`:
+
 ```gsh
 # Ensure command path is correct
 acp Thegent {
@@ -169,6 +177,7 @@ You can create custom ACP agents that work with thegent:
 **Current Status**: Initial implementation complete, testing pending
 
 **Known Limitations**:
+
 - Session management (multi-turn conversations) not yet implemented
 - Streaming responses not yet implemented
 - MCP ↔ ACP bridge not yet implemented

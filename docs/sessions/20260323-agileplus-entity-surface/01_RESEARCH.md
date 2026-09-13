@@ -15,4 +15,3 @@
 - Batch import/export should accept JSON and JSONL so agents can move records without hand-editing SQL.
 - The CLI should be the obvious human entry point.
 - MCP should mirror the CLI operation set instead of inventing a second vocabulary.
-

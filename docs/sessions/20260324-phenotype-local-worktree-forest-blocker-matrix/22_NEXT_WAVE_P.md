@@ -3,6 +3,7 @@
 **Follows** `07`–`21`. **Snapshot:** 2026-03-24. **Intent:** Final Verification & Closure.
 
 ## Slice 1 — Organization-Wide Standards (8)
+
 1. **Org**: Audit `github.com/Phenotype` repository visibility.
 2. **Access**: Review `Collaborator` and `Team` permissions.
 3. **Billing**: Audit `Plan` and `Credit` usage (GHA/Models).
@@ -13,6 +14,7 @@
 8. **Security**: Run `gitleaks` or `trufflehog` org-wide.
 
 ## Slice 2 — Final Task Audit & Cleanup (8)
+
 9. **Backlog**: Clear all `pending` items from `ACTIVE_BACKLOG.md`.
 10. **Issues**: Close or migrate all stale `GitHub Issues`.
 11. **PRs**: Merge or close all stale `Pull Requests`.
@@ -23,6 +25,7 @@
 16. **Changelog**: Consolidate `Unreleased` into a versioned tag.
 
 ## Slice 3 — Session Summary & Handoff (8)
+
 17. **Summary**: Create a comprehensive 'Session Recap' (2026-03-24).
 18. **Matrix**: Finalize the 'Forest Blocker Matrix' (05_KNOWN_ISSUES).
 19. **Snapshot**: Create a filesystem snapshot of `active` repos.
@@ -33,4 +36,5 @@
 24. **Archive**: Move all stale `session` docs to `.archive/`.
 
 ## Slice 4 — Meta (1)
+
 25. **Final Update**: Update `ACTIVE_BACKLOG.md` to reflect 100% completion.

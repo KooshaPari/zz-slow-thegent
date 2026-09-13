@@ -12,7 +12,7 @@ Manager for enterprise lifecycle and compliance.
 
 ### Methods
 
-#### EnterpriseLifecycleManager.__init__
+#### EnterpriseLifecycleManager.**init**
 
 ```python
 __init__(self: Any)

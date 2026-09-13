@@ -15,4 +15,3 @@ This lane reviewed translator and schema compatibility issues that can affect th
 1. Add regression tests for metadata leakage into payload arrays and nullable tool schemas.
 2. Add compatibility tests for Bash tool argument mapping.
 3. Draft a short triage note for external-only failure classes.
-

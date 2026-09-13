@@ -5,6 +5,7 @@
 Auto-launch system for workstream items.
 
 Event-driven system that automatically launches workstream items when:
+
 - Agent sessions complete
 - Dependencies are cleared
 - Capacity becomes available
@@ -20,7 +21,7 @@ Event-driven auto-launch system for workstream items.
 
 ### Methods
 
-#### AutoLaunchSystem.__init__
+#### AutoLaunchSystem.**init**
 
 ```python
 __init__(self: Any, settings: Any)

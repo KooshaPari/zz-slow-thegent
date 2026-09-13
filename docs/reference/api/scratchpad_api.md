@@ -15,7 +15,7 @@ Manages a persistent drafting buffer for CLI commands.
 
 ### Methods
 
-#### AIScratchpad.__init__
+#### AIScratchpad.**init**
 
 ```python
 __init__(self: Any, state_path: Any)

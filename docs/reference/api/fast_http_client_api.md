@@ -6,11 +6,13 @@ Fast HTTP client with optimized backends.
 
 This module provides a high-performance abstraction layer for HTTP requests
 that automatically selects the fastest available backend:
+
 - curl_cffi: 2-3x faster, libcurl-based, browser fingerprinting
 - httpx: Modern, well-maintained, good async/sync support
 - requests: Legacy fallback
 
 Performance improvements:
+
 - curl_cffi uses libcurl (2-3x faster than httpx)
 - Better connection pooling
 - Browser fingerprinting support
@@ -25,18 +27,20 @@ High-performance HTTP client with automatic backend selection and connection poo
 OPT-004: Connection pooling for provider HTTP clients (40% connection overhead reduction).
 
 Backend priority (fastest first):
+
 1. curl_cffi (if installed) - 2-3x faster, libcurl-based
 2. httpx (modern, well-maintained) - good balance, supports connection pooling
 3. requests (legacy fallback) - baseline, supports Session pooling
 
 Connection pooling:
+
 - httpx: Uses persistent Client with connection pool
 - requests: Uses Session with connection pool
 - curl_cffi: Uses persistent session (implicit pooling)
 
 ### Methods
 
-#### FastHTTPClient.__init__
+#### FastHTTPClient.**init**
 
 ```python
 __init__(self: Any, impersonate: Any)

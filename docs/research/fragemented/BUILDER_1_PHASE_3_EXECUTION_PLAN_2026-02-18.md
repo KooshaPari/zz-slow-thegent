@@ -17,13 +17,13 @@
 
 ### Task Breakdown
 
-| ID | Title | Depends On | Effort | Type | Status |
-|----|-------|-----------|--------|------|--------|
-| TGNT-P3.1 | Rebuild strategy (invalidation heuristics) | TGNT-P0.4 | ~8min | feature | PENDING |
-| TGNT-P3.2 | Partial rebuild (diff-aware re-execution) | TGNT-P3.1 | ~10min | feature | PENDING |
-| TGNT-P3.3 | Preload optimization (predict hot keys) | TGNT-P0.4 | ~8min | feature | PENDING |
-| TGNT-P3.4 | Build timing (profile hot paths, cutoff threshold) | TGNT-P3.1, TGNT-P3.2 | ~5min | feature | PENDING |
-| TGNT-P3.5 | Cache integration test (end-to-end scenario) | TGNT-P3.1 → TGNT-P3.4 | ~10min | feature | PENDING |
+| ID        | Title                                              | Depends On            | Effort | Type    | Status  |
+| --------- | -------------------------------------------------- | --------------------- | ------ | ------- | ------- |
+| TGNT-P3.1 | Rebuild strategy (invalidation heuristics)         | TGNT-P0.4             | ~8min  | feature | PENDING |
+| TGNT-P3.2 | Partial rebuild (diff-aware re-execution)          | TGNT-P3.1             | ~10min | feature | PENDING |
+| TGNT-P3.3 | Preload optimization (predict hot keys)            | TGNT-P0.4             | ~8min  | feature | PENDING |
+| TGNT-P3.4 | Build timing (profile hot paths, cutoff threshold) | TGNT-P3.1, TGNT-P3.2  | ~5min  | feature | PENDING |
+| TGNT-P3.5 | Cache integration test (end-to-end scenario)       | TGNT-P3.1 → TGNT-P3.4 | ~10min | feature | PENDING |
 
 ---
 
@@ -32,6 +32,7 @@
 ### Claiming Tasks
 
 **Process:**
+
 1. Read `docs/reference/WORK_STREAM.md` PENDING section
 2. Find highest-priority unclaimed task with met dependencies
 3. Add to CLAIMED table with timestamp
@@ -39,6 +40,7 @@
 5. Begin implementation
 
 **Format for CLAIMED entry:**
+
 ```
 | TGNT-P3.X | builder-1 | 2026-02-18T<HH:MM>:00Z | IN PROGRESS |
 ```
@@ -65,6 +67,7 @@
 **Content:** Current task, % complete, blockers, ETA
 
 **Example status update:**
+
 ```
 | builder-1 | L2 Worker | Phase 3 Building | ACTIVE | TGNT-P3.2 | -- | 2026-02-18T23:57:00Z | 2026-02-18T14:15:00Z | 45% | Partial rebuild implementation, handling diff detection |
 ```
@@ -72,12 +75,14 @@
 ### Blocker Handling
 
 **If blocked >5 min:**
+
 1. Document blocker in AGENTS_ACTIVE.md "Notes" column
 2. Check `docs/reference/FAILURE_RECOVERY_PLAYBOOK.md` for matching scenario
 3. Attempt recovery per playbook
 4. If unresolved after 10 min, escalate to L1
 
 **Example blocker entry:**
+
 ```
 | builder-1 | L2 Worker | Phase 3 Building | BLOCKED | TGNT-P3.3 | -- | 2026-02-18T<time>Z | 2026-02-18T<time>Z | -- | BLOCKER: Dependency TGNT-P3.1 not complete. Awaiting researcher-1. |
 ```
@@ -89,26 +94,31 @@
 ### Per-Task Criteria
 
 **TGNT-P3.1:** Invalidation heuristics implemented
+
 - [ ] Accepts cache key and diff
 - [ ] Returns boolean (invalidate all?) or list of affected keys
 - [ ] Covers 3+ heuristics (file change, timestamp, hash)
 
 **TGNT-P3.2:** Diff-aware partial rebuild
+
 - [ ] Detects changed files from prior state
 - [ ] Only re-executes affected downstream tasks
 - [ ] 30%+ faster than full rebuild (measured)
 
 **TGNT-P3.3:** Preload optimization
+
 - [ ] Analyzes prior execution patterns
 - [ ] Pre-loads N most-likely cache hits
 - [ ] Reduces hit latency by 20%+ (measured)
 
 **TGNT-P3.4:** Build timing profiling
+
 - [ ] Measures rebuild cost for hot paths
 - [ ] Identifies cutoff threshold (<10ms gain)
 - [ ] Logs timing metrics for analysis
 
 **TGNT-P3.5:** Integration test (critical gate)
+
 - [ ] End-to-end scenario testing cache layers
 - [ ] Validates ≥20% speedup vs. no-cache baseline
 - [ ] All Phases 3 dependencies satisfied
@@ -126,28 +136,28 @@
 
 ## Key Files & References
 
-| Document | Purpose | Location |
-|----------|---------|----------|
-| **EXECUTION_KICKOFF** | Phase 3 detailed spec | `docs/reference/EXECUTION_KICKOFF_2026-02-18.md` |
-| **WORK_STREAM** | Canonical task list | `docs/reference/WORK_STREAM.md` |
-| **COORDINATION** | Workflow protocols | `docs/reference/COORDINATION.md` |
-| **AGENTS_ACTIVE** | Status tracking | `docs/reference/AGENTS_ACTIVE.md` |
-| **FAILURE_RECOVERY** | Blocker handling | `docs/reference/FAILURE_RECOVERY_PLAYBOOK.md` |
-| **L1 Decision** | Scope confirmation | `docs/research/L1_DECISION_BLOCKER_001_2026-02-18.md` |
-| **Blocker Analysis** | Root cause analysis | `docs/research/BLOCKER_ANALYSIS_2026-02-18.md` |
+| Document              | Purpose               | Location                                              |
+| --------------------- | --------------------- | ----------------------------------------------------- |
+| **EXECUTION_KICKOFF** | Phase 3 detailed spec | `docs/reference/EXECUTION_KICKOFF_2026-02-18.md`      |
+| **WORK_STREAM**       | Canonical task list   | `docs/reference/WORK_STREAM.md`                       |
+| **COORDINATION**      | Workflow protocols    | `docs/reference/COORDINATION.md`                      |
+| **AGENTS_ACTIVE**     | Status tracking       | `docs/reference/AGENTS_ACTIVE.md`                     |
+| **FAILURE_RECOVERY**  | Blocker handling      | `docs/reference/FAILURE_RECOVERY_PLAYBOOK.md`         |
+| **L1 Decision**       | Scope confirmation    | `docs/research/L1_DECISION_BLOCKER_001_2026-02-18.md` |
+| **Blocker Analysis**  | Root cause analysis   | `docs/research/BLOCKER_ANALYSIS_2026-02-18.md`        |
 
 ---
 
 ## Timeline & Milestones
 
-| Time | Event | Target Status |
-|------|-------|----------------|
-| 2026-02-18 23:57 | Execution starts (TGNT-P3.1 claimed) | ACTIVE |
-| 2026-02-18 14:05 | TGNT-P3.1 complete (8 min) | COMPLETED |
-| 2026-02-18 14:15 | TGNT-P3.2 complete (10 min) | COMPLETED |
-| 2026-02-18 14:23 | TGNT-P3.3 complete (8 min) | COMPLETED |
-| 2026-02-18 14:28 | TGNT-P3.4 complete (5 min) | COMPLETED |
-| 2026-02-18 14:38 | TGNT-P3.5 complete + PASS (10 min) | ✅ BATCH COMPLETE |
+| Time             | Event                                | Target Status     |
+| ---------------- | ------------------------------------ | ----------------- |
+| 2026-02-18 23:57 | Execution starts (TGNT-P3.1 claimed) | ACTIVE            |
+| 2026-02-18 14:05 | TGNT-P3.1 complete (8 min)           | COMPLETED         |
+| 2026-02-18 14:15 | TGNT-P3.2 complete (10 min)          | COMPLETED         |
+| 2026-02-18 14:23 | TGNT-P3.3 complete (8 min)           | COMPLETED         |
+| 2026-02-18 14:28 | TGNT-P3.4 complete (5 min)           | COMPLETED         |
+| 2026-02-18 14:38 | TGNT-P3.5 complete + PASS (10 min)   | ✅ BATCH COMPLETE |
 
 **Adjusted for blocker:** +20 min overhead = target 14:58 UTC (acceptable)
 
@@ -201,4 +211,4 @@ When Phase 3 is complete, provide L1 with:
 **By:** builder-1 (L2 Worker, Phase 3)
 **Status:** READY FOR EXECUTION
 
-*Awaiting L1 signal to begin Batch 1 execution*
+_Awaiting L1 signal to begin Batch 1 execution_

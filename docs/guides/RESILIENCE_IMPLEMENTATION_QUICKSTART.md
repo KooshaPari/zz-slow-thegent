@@ -166,6 +166,7 @@ CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0"]
 ```
 
 **That's it!** You now have:
+
 - ✅ Retry with exponential backoff
 - ✅ Circuit breaker protection
 - ✅ Health checks
@@ -331,6 +332,7 @@ class Service:
 **Problem**: External API is flaky; occasional timeouts and errors.
 
 **Solution**:
+
 ```python
 class ExternalAPIClient:
     def __init__(self):
@@ -372,6 +374,7 @@ class ExternalAPIClient:
 **Problem**: Too many concurrent DB connections cause pool exhaustion.
 
 **Solution**:
+
 ```python
 from sqlalchemy.ext.asyncio import create_async_engine
 
@@ -404,6 +407,7 @@ async def get_user_with_timeout(user_id: int):
 **Problem**: Long-running tasks fail silently; need automatic retry and monitoring.
 
 **Solution**:
+
 ```python
 from celery import Celery
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -437,6 +441,7 @@ def process_batch(self, batch_id: str):
 **Problem**: System overloaded; need to reject requests gracefully.
 
 **Solution**:
+
 ```python
 from fastapi import FastAPI, Response
 from fastapi.responses import JSONResponse
@@ -491,6 +496,7 @@ async def process_request(response: Response):
 **Problem**: Load balancer doesn't know agent health; sends requests to slow/unhealthy agents.
 
 **Solution**:
+
 ```python
 import httpx
 import asyncio
@@ -553,6 +559,7 @@ class AgentPool:
 **Symptom**: Circuit breaker transitions to OPEN but never recovers.
 
 **Diagnosis**:
+
 ```python
 # Check circuit breaker state
 print(f"State: {breaker.state}")
@@ -561,6 +568,7 @@ print(f"Last failure: {breaker.last_failure_time}")
 ```
 
 **Fix**:
+
 ```python
 # Increase timeout or reset failures
 breaker = CircuitBreaker(
@@ -578,6 +586,7 @@ breaker.fail_counter = 0
 **Symptom**: Logs full of retry attempts; system hammering failing service.
 
 **Diagnosis**:
+
 ```python
 # Log retry attempts
 import logging
@@ -589,6 +598,7 @@ logging.getLogger("tenacity").setLevel(logging.DEBUG)
 ```
 
 **Fix**:
+
 ```python
 @retry(
     stop=stop_after_attempt(2),  # Reduce from 3
@@ -604,6 +614,7 @@ async def api_call():
 **Symptom**: `sqlite3.OperationalError: database is locked` or connection pool timeout.
 
 **Diagnosis**:
+
 ```python
 # Check pool status
 from sqlalchemy import event
@@ -621,6 +632,7 @@ def receive_checkout(dbapi_conn, connection_record, connection_proxy):
 ```
 
 **Fix**:
+
 ```python
 # Increase pool size
 engine = create_async_engine(
@@ -640,6 +652,7 @@ pool = AioPool(min_size=10, max_size=50)
 **Symptom**: Tasks timing out even though they're fast; false alarms.
 
 **Diagnosis**:
+
 ```python
 # Measure actual latency
 import time
@@ -651,6 +664,7 @@ print(f"Took {elapsed}s")
 ```
 
 **Fix**:
+
 ```python
 # Set timeout to P99 latency + buffer
 # If P99 is 3s, set timeout to 5-6s

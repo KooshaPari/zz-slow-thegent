@@ -12,7 +12,7 @@ Pareto-optimal routing with hysteresis.
 
 ### Methods
 
-#### ParetoRouting.__init__
+#### ParetoRouting.**init**
 
 ```python
 __init__(self: Any)

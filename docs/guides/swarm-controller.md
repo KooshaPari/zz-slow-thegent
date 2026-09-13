@@ -7,6 +7,7 @@
 ## What You're Getting
 
 A production-ready agent orchestration system that:
+
 - Monitors agent health every 10 seconds
 - Detects failures (stale, SLO breaches, errors)
 - Auto-heals via graceful pausing and intelligent restarting
@@ -21,28 +22,36 @@ A production-ready agent orchestration system that:
 ## Quick Navigation
 
 ### Want to Deploy?
+
 Start here: **`docs/guides/SWARM_CONTROLLER_README.md`**
+
 - Architecture overview
 - Quick start (5 minutes)
 - Installation
 - Running the controller
 
 ### Want to Understand It?
+
 Read: **`SWARM_CONTROLLER_DELIVERABLES.md`**
+
 - Complete feature list
 - All success criteria marked ✓
 - Code metrics and validation
 - Production readiness checklist
 
 ### Want Detailed Usage?
+
 Read: **`docs/guides/SWARM_CONTROLLER_USAGE.md`**
+
 - Configuration guide
 - All CLI commands
 - Health monitoring logic
 - Troubleshooting
 
 ### Want to Integrate?
+
 Read: **`docs/guides/SWARM_INTEGRATION_GUIDE.md`**
+
 - Integration patterns
 - Agent lifecycle integration
 - Code examples (thegent, Prefect, custom)
@@ -53,6 +62,7 @@ Read: **`docs/guides/SWARM_INTEGRATION_GUIDE.md`**
 ## 60-Second Overview
 
 ### What It Does
+
 ```
 ┌─────────────────────────────────────────────────────┐
 │         Swarm Controller (10s cycle)                 │
@@ -83,6 +93,7 @@ Read: **`docs/guides/SWARM_INTEGRATION_GUIDE.md`**
 ```
 
 ### How to Run
+
 ```bash
 # Install
 pip3 install psutil pyyaml
@@ -96,6 +107,7 @@ python3 scripts/swarm_controller.py --report
 ```
 
 ### Key Features
+
 - **Graceful Pause**: SIGSTOP (not kill) - preserves state
 - **Auto-Restart**: Exponential backoff, max 3 attempts
 - **Smart Scaling**: Queue-driven, resource-aware
@@ -108,44 +120,49 @@ python3 scripts/swarm_controller.py --report
 
 ## File Locations
 
-| File | Purpose |
-|------|---------|
-| `scripts/swarm_controller.py` | **Main controller (742 LOC)** |
-| `config/swarm_controller_config.yaml` | Configuration (all tunable) |
-| `scripts/test_swarm_controller.py` | Test suite (7 tests, all passing) |
-| `docs/guides/SWARM_CONTROLLER_README.md` | Overview and quick start |
-| `docs/guides/SWARM_CONTROLLER_USAGE.md` | Detailed usage guide |
-| `docs/guides/SWARM_INTEGRATION_GUIDE.md` | Integration patterns |
-| `docs/reference/AGENTS_ACTIVE.md` | Agent status tracking |
-| `.github/workflows/swarm-health.yml` | CI/CD automation |
-| `SWARM_CONTROLLER_DELIVERABLES.md` | Complete deliverables list |
-| `SWARM_CONTROLLER_SUMMARY.md` | Implementation summary |
+| File                                     | Purpose                           |
+| ---------------------------------------- | --------------------------------- |
+| `scripts/swarm_controller.py`            | **Main controller (742 LOC)**     |
+| `config/swarm_controller_config.yaml`    | Configuration (all tunable)       |
+| `scripts/test_swarm_controller.py`       | Test suite (7 tests, all passing) |
+| `docs/guides/SWARM_CONTROLLER_README.md` | Overview and quick start          |
+| `docs/guides/SWARM_CONTROLLER_USAGE.md`  | Detailed usage guide              |
+| `docs/guides/SWARM_INTEGRATION_GUIDE.md` | Integration patterns              |
+| `docs/reference/AGENTS_ACTIVE.md`        | Agent status tracking             |
+| `.github/workflows/swarm-health.yml`     | CI/CD automation                  |
+| `SWARM_CONTROLLER_DELIVERABLES.md`       | Complete deliverables list        |
+| `SWARM_CONTROLLER_SUMMARY.md`            | Implementation summary            |
 
 ---
 
 ## Common Tasks
 
 ### Start Monitoring
+
 ```bash
 python3 scripts/swarm_controller.py --monitor --auto-heal
 ```
 
 ### Check Swarm Health
+
 ```bash
 python3 scripts/swarm_controller.py --report
 ```
 
 ### Pause an Agent (Gracefully)
+
 ```bash
 python3 scripts/swarm_controller.py --pause-agent agent-1
 ```
 
 ### Resume an Agent
+
 ```bash
 python3 scripts/swarm_controller.py --resume-agent agent-1
 ```
 
 ### Update Agent Metrics
+
 ```bash
 python3 scripts/swarm_controller.py --update-metrics agent-1 \
   task_progress=5 \
@@ -153,6 +170,7 @@ python3 scripts/swarm_controller.py --update-metrics agent-1 \
 ```
 
 ### Get JSON Status
+
 ```bash
 python3 scripts/swarm_controller.py --status
 ```
@@ -162,6 +180,7 @@ python3 scripts/swarm_controller.py --status
 ## Test Results
 
 All tests passing:
+
 ```
 ✓ Configuration Loading
 ✓ Agent Metrics
@@ -175,6 +194,7 @@ TEST SUMMARY: 7/7 PASSED
 ```
 
 Run yourself:
+
 ```bash
 python3 scripts/test_swarm_controller.py
 ```
@@ -237,6 +257,7 @@ SwarmController (Main Orchestrator)
 ## State & Logging
 
 ### `.claude/swarm_state.json`
+
 JSON snapshot of all agent metrics (updated each cycle).
 
 ```json
@@ -252,6 +273,7 @@ JSON snapshot of all agent metrics (updated each cycle).
 ```
 
 ### `.claude/swarm_controller.log`
+
 Detailed log of all decisions.
 
 ```
@@ -296,6 +318,7 @@ No hardcoded values - fully customizable.
 ## Production Ready?
 
 Yes! This implementation includes:
+
 - [x] Comprehensive error handling
 - [x] State persistence
 - [x] Detailed logging
@@ -313,6 +336,7 @@ Yes! This implementation includes:
 ## Questions?
 
 See the relevant guide:
+
 - **How do I use it?** → `docs/guides/SWARM_CONTROLLER_USAGE.md`
 - **How do I integrate?** → `docs/guides/SWARM_INTEGRATION_GUIDE.md`
 - **What did you build?** → `SWARM_CONTROLLER_DELIVERABLES.md`

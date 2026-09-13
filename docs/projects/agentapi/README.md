@@ -27,6 +27,7 @@ agentapi/
 ## Quick Start
 
 ### Setup
+
 ```bash
 cd agentapi
 # Check pyproject.toml or setup.py for dependencies
@@ -36,11 +37,13 @@ pip install -e .
 ```
 
 ### Running Tests
+
 ```bash
 pytest tests/
 ```
 
 ### Starting the Server
+
 ```bash
 # Check examples/ or src/ for startup scripts
 python -m agentapi.server
@@ -56,6 +59,7 @@ python -m agentapi.server
 ## API Documentation
 
 API documentation is available through:
+
 - Interactive API documentation (when server is running) - Check `http://localhost:8000/docs`
 - Source code comments and docstrings
 - Example files in `examples/` directory

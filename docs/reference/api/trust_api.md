@@ -16,7 +16,7 @@ OPT-008: Uses LRU cache with TTL for repeated policy evaluations.
 
 ### Methods
 
-#### TrustBoundaryChecker.__init__
+#### TrustBoundaryChecker.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings, cache_ttl_sec: int)

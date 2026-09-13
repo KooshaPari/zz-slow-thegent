@@ -18,7 +18,7 @@ Supports callback registration for completion notifications.
 
 ### Methods
 
-#### BackgroundTaskWatcher.__init__
+#### BackgroundTaskWatcher.**init**
 
 ```python
 __init__(self: Any, session_dir: Any, poll_interval: float)

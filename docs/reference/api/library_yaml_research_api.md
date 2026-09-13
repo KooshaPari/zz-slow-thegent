@@ -12,7 +12,7 @@ Research for ruamel.yaml migration.
 
 ### Methods
 
-#### LibraryYAMLResearch.__init__
+#### LibraryYAMLResearch.**init**
 
 ```python
 __init__(self: Any)

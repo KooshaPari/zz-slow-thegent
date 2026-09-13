@@ -5,6 +5,7 @@ Scope executed: `WL-121`, `WL-123`, `WL-124`, `WL-125`, `WL-126`
 ## Completed Slices
 
 ### WL-121 — thegent-core Boundary Spec and Ownership Map
+
 - Completed code slice: refactored `scripts/check_thegent_core_boundary.py` from regex scanning to AST-based import parsing.
 - Added policy support for both allow-list and block-list imports from `config/thegent_core_boundary.toml`.
 - Added deterministic CLI args (`--core-dir`, `--config`) for targeted runs.
@@ -12,22 +13,26 @@ Scope executed: `WL-121`, `WL-123`, `WL-124`, `WL-125`, `WL-126`
 - Updated plan doc with wave-2 completion details.
 
 ### WL-123 — Retire Deprecated Quality Aliases
+
 - Completed unblock slice: added `scripts/check_deprecated_quality_aliases.py` as a deterministic pre-removal audit tool for Taskfile alias inventory.
 - Tool supports staged enforcement (`--strict`) for post-WL-122 removal gating.
 - Added tests: `tests/test_wl123_deprecated_quality_aliases.py`.
 - Updated plan doc with wave-2 unblock details.
 
 ### WL-124 — Monolith Split: `src/thegent/cli/commands/cli.py`
+
 - Completed unblock slice: added monolith baseline inventory via `scripts/collect_wl_monolith_baselines.py`.
 - Captured current baseline artifact at `.thegent/agent-batch/wave2-monolith-baseline.json`.
 - Updated plan doc with wave-2 dependency-unblock command and baseline usage.
 
 ### WL-125 — Monolith Split: `src/thegent/cli/commands/impl.py`
+
 - Completed unblock slice: included `impl.py` metrics in shared monolith baseline collector/artifact.
 - Baseline now captures line/function/class/async counts for extraction checkpointing.
 - Updated plan doc with wave-2 dependency-unblock details.
 
 ### WL-126 — Monolith Split: `src/thegent/mcp/server.py`
+
 - Completed unblock slice: included `server.py` metrics in shared monolith baseline collector/artifact.
 - Baseline now captures server extraction complexity signals for modular split planning.
 - Updated plan doc with wave-2 dependency-unblock details.
@@ -35,6 +40,7 @@ Scope executed: `WL-121`, `WL-123`, `WL-124`, `WL-125`, `WL-126`
 ## Validation
 
 Commands run:
+
 - `python -m py_compile scripts/check_thegent_core_boundary.py scripts/check_deprecated_quality_aliases.py scripts/collect_wl_monolith_baselines.py` (pass)
 - `python scripts/check_thegent_core_boundary.py` (pass)
 - `python scripts/check_deprecated_quality_aliases.py --format text` (pass; reports baseline deprecated alias inventory)

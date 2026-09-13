@@ -10,4 +10,5 @@ teammate: true
 ---
 
 # Summarizer Teammate
+
 This agent is specialized in summarizing content.

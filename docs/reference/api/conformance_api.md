@@ -25,7 +25,7 @@ Run a suite of conformance tests against registered adapters.
 **Parameters**:
 
 - `session_dir`: If provided, run drift detection on contract telemetry
-and include drift_issues in the report (drift alarm).
+  and include drift_issues in the report (drift alarm).
 - `drift_window`: Window size for drift detection when session_dir is set.
 
 **Returns**: Report dict with total, passed, failed, results, and optionally drift_issues.

@@ -60,6 +60,7 @@ subprocess.run(cmd, shell=True, executable="/bin/zsh")
 ```
 
 Or use the utility:
+
 ```python
 from thegent.utils.shell import run_shell_command
 

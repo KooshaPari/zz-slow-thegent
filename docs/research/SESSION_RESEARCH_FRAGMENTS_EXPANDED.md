@@ -35,29 +35,32 @@
 
 #### Memory Layers
 
-| Layer | Purpose | Provider | API |
-|-------|---------|----------|-----|
-| **L1** | Hot cache (in-memory) | Local LRU cache | `thegent-cache` crate |
-| **L2** | Warm cache (disk) | Local file cache | `thegent-cache` crate |
-| **L3** | Long-term memory | Supermemory Knowledge Graph | Conversations/Knowledge API |
-| **L4** | Archival storage | Supermemory Documents API | Documents API |
+| Layer  | Purpose               | Provider                    | API                         |
+| ------ | --------------------- | --------------------------- | --------------------------- |
+| **L1** | Hot cache (in-memory) | Local LRU cache             | `thegent-cache` crate       |
+| **L2** | Warm cache (disk)     | Local file cache            | `thegent-cache` crate       |
+| **L3** | Long-term memory      | Supermemory Knowledge Graph | Conversations/Knowledge API |
+| **L4** | Archival storage      | Supermemory Documents API   | Documents API               |
 
 #### Supermemory Integration
 
 **MCP Endpoint**: `https://mcp.supermemory.ai/mcp`
 
 **Authentication**:
+
 - API Key or OAuth
 - Multi-tenant isolation via `x-sm-project` header
 - Project-scoped access control
 
 **Knowledge Graph (L3)**:
+
 - Stores swarm relationships
 - Agent-to-agent connections
 - Session context graphs
 - Decision trees
 
 **Documents API (L4)**:
+
 - MAIF artifacts (signed, immutable)
 - Audit logs
 - Historical conversations
@@ -133,29 +136,32 @@ class MemoryManager:
 
 ### 1.4 Performance Characteristics
 
-| Operation | Latency | Throughput | Cost |
-|-----------|---------|------------|------|
-| L3 Store | <100ms | 1000 req/s | $0.001/req |
-| L3 Query | <50ms | 2000 req/s | $0.0005/req |
-| L4 Store | <200ms | 500 req/s | $0.002/req |
-| L4 Retrieve | <100ms | 1000 req/s | $0.001/req |
+| Operation   | Latency | Throughput | Cost        |
+| ----------- | ------- | ---------- | ----------- |
+| L3 Store    | <100ms  | 1000 req/s | $0.001/req  |
+| L3 Query    | <50ms   | 2000 req/s | $0.0005/req |
+| L4 Store    | <200ms  | 500 req/s  | $0.002/req  |
+| L4 Retrieve | <100ms  | 1000 req/s | $0.001/req  |
 
 ### 1.5 Failure Modes & Mitigation
 
 **Failure Mode**: Supermemory API unavailable
 **Mitigation**:
+
 - Fallback to local L2 cache
 - Queue writes for retry
 - Circuit breaker (fail after 3 consecutive failures)
 
 **Failure Mode**: Rate limiting
 **Mitigation**:
+
 - Exponential backoff
 - Request batching
 - Priority queuing
 
 **Failure Mode**: Data corruption
 **Mitigation**:
+
 - Hash verification on read
 - Immutable L4 storage
 - Periodic integrity checks
@@ -183,6 +189,7 @@ class MemoryManager:
 - **WP-4007**: Simulation replay (uses L3 for context)
 
 **See Also**:
+
 - [WORK_STREAM.md](../reference/WORK_STREAM.md)
 - [MAIF Action Artifacts](#4-maif-action-artifacts)
 - [Simulation & Sandbox](#5-simulation--sandbox)
@@ -203,20 +210,22 @@ class MemoryManager:
 
 #### Task Classification
 
-| Risk Level | Percentage | Route | Loop Type |
-|------------|------------|-------|-----------|
-| **Low Risk** | 80% | Lifecycle Loop | Fast, automated |
-| **High Risk** | 20% | The Gent Loop | Plan/Operator/Reviewer |
+| Risk Level    | Percentage | Route          | Loop Type              |
+| ------------- | ---------- | -------------- | ---------------------- |
+| **Low Risk**  | 80%        | Lifecycle Loop | Fast, automated        |
+| **High Risk** | 20%        | The Gent Loop  | Plan/Operator/Reviewer |
 
 #### Risk Factors
 
 **Low Risk Indicators**:
+
 - Simple refactoring
 - Well-defined requirements
 - No external dependencies
 - Low cost impact
 
 **High Risk Indicators**:
+
 - Complex architecture changes
 - Ambiguous requirements
 - External API dependencies
@@ -280,13 +289,13 @@ impl ParetoRouter {
 
 ### 2.4 Performance Characteristics
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| Routing latency | <1ms | TBD |
-| Lifecycle loop latency | <100ms | TBD |
-| The Gent loop latency | <500ms | TBD |
-| Hysteresis dwell time | 5 minutes | TBD |
-| Route accuracy | >95% | TBD |
+| Metric                 | Target    | Current |
+| ---------------------- | --------- | ------- |
+| Routing latency        | <1ms      | TBD     |
+| Lifecycle loop latency | <100ms    | TBD     |
+| The Gent loop latency  | <500ms    | TBD     |
+| Hysteresis dwell time  | 5 minutes | TBD     |
+| Route accuracy         | >95%      | TBD     |
 
 ### 2.5 Failure Modes & Mitigation
 
@@ -320,6 +329,7 @@ impl ParetoRouter {
 - **WP-5003**: Economic governance (informs risk calculation)
 
 **See Also**:
+
 - [Economic Governance](#3-economic-governance)
 - [WORK_STREAM.md](../reference/WORK_STREAM.md)
 
@@ -339,14 +349,15 @@ impl ParetoRouter {
 
 #### Provider Scoring
 
-| Provider | Reliability | Latency | Cost | Score |
-|----------|------------|---------|------|-------|
-| Gemini Flash | 0.95 | 200ms | $0.10/1M | 8.5 |
-| Claude Haiku | 0.98 | 300ms | $0.25/1M | 8.2 |
-| GPT-4o-mini | 0.97 | 250ms | $0.15/1M | 8.4 |
-| Claude Opus | 0.99 | 500ms | $15/1M | 6.0 |
+| Provider     | Reliability | Latency | Cost     | Score |
+| ------------ | ----------- | ------- | -------- | ----- |
+| Gemini Flash | 0.95        | 200ms   | $0.10/1M | 8.5   |
+| Claude Haiku | 0.98        | 300ms   | $0.25/1M | 8.2   |
+| GPT-4o-mini  | 0.97        | 250ms   | $0.15/1M | 8.4   |
+| Claude Opus  | 0.99        | 500ms   | $15/1M   | 6.0   |
 
 **Scoring Formula**:
+
 ```
 score = (reliability * 0.4) + (latency_score * 0.2) + (cost_score * 0.4)
 ```
@@ -388,6 +399,7 @@ class CostAwareRouter:
 **Location**: `thegent/src/thegent/governance/catalog.py`
 
 **Key Components**:
+
 - `CostAwareRouter`: Main routing logic
 - `ProviderScorer`: Provider scoring system
 - `ValueEstimator`: Task value estimation
@@ -395,12 +407,12 @@ class CostAwareRouter:
 
 ### 3.4 Performance Characteristics
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| Provider selection latency | <5ms | TBD |
-| Cost prediction accuracy | >90% | TBD |
-| Value estimation accuracy | >85% | TBD |
-| Cost savings | 30-50% | TBD |
+| Metric                     | Target | Current |
+| -------------------------- | ------ | ------- |
+| Provider selection latency | <5ms   | TBD     |
+| Cost prediction accuracy   | >90%   | TBD     |
+| Value estimation accuracy  | >85%   | TBD     |
+| Cost savings               | 30-50% | TBD     |
 
 ### 3.5 Failure Modes & Mitigation
 
@@ -434,6 +446,7 @@ class CostAwareRouter:
 - **WP-5001**: Lifecycle loop (cost-optimized)
 
 **See Also**:
+
 - [Pareto Routing & Hysteresis](#2-pareto-routing--hysteresis)
 - [WORK_STREAM.md](../reference/WORK_STREAM.md)
 
@@ -559,23 +572,25 @@ class MAIFStorage:
 ### 4.4 Verification & Audit
 
 **Hash Chain Verification**:
+
 - Each artifact references previous artifact's hash
 - Tampering breaks the chain
 - Immutable audit trail
 
 **Signature Verification**:
+
 - Cryptographic signatures prevent forgery
 - Agent identity verification
 - Non-repudiation
 
 ### 4.5 Performance Characteristics
 
-| Operation | Latency | Throughput | Cost |
-|-----------|---------|------------|------|
-| Create artifact | <1ms | 10,000/s | Negligible |
-| Store artifact | <200ms | 500/s | $0.002/artifact |
-| Verify chain | <10ms | 5,000/s | Negligible |
-| Retrieve artifact | <100ms | 1,000/s | $0.001/req |
+| Operation         | Latency | Throughput | Cost            |
+| ----------------- | ------- | ---------- | --------------- |
+| Create artifact   | <1ms    | 10,000/s   | Negligible      |
+| Store artifact    | <200ms  | 500/s      | $0.002/artifact |
+| Verify chain      | <10ms   | 5,000/s    | Negligible      |
+| Retrieve artifact | <100ms  | 1,000/s    | $0.001/req      |
 
 ### 4.6 Failure Modes & Mitigation
 
@@ -609,6 +624,7 @@ class MAIFStorage:
 - **WP-4007**: Simulation replay (uses artifacts)
 
 **See Also**:
+
 - [Supermemory.ai Universal Memory](#1-supermemoryai-universal-memory)
 - [Simulation & Sandbox](#5-simulation--sandbox)
 - [WORK_STREAM.md](../reference/WORK_STREAM.md)
@@ -670,12 +686,14 @@ class SimulationReplay:
 ### 5.3 Deterministic Replay
 
 **Requirements**:
+
 - Same input → same output
 - No external dependencies
 - Isolated environment
 - Time-travel debugging
 
 **Implementation**:
+
 - Sandboxed execution
 - Mocked external APIs
 - Deterministic random seeds
@@ -690,12 +708,12 @@ class SimulationReplay:
 
 ### 5.5 Performance Characteristics
 
-| Operation | Latency | Throughput |
-|-----------|---------|------------|
-| Context retrieval | <50ms | 2000/s |
-| Artifact retrieval | <100ms | 1000/s |
-| Replay execution | Variable | 100/s |
-| Environment reconstruction | <200ms | 500/s |
+| Operation                  | Latency  | Throughput |
+| -------------------------- | -------- | ---------- |
+| Context retrieval          | <50ms    | 2000/s     |
+| Artifact retrieval         | <100ms   | 1000/s     |
+| Replay execution           | Variable | 100/s      |
+| Environment reconstruction | <200ms   | 500/s      |
 
 ### 5.6 Failure Modes & Mitigation
 
@@ -729,6 +747,7 @@ class SimulationReplay:
 - **WP-3002**: MAIF artifacts (replay source)
 
 **See Also**:
+
 - [Supermemory.ai Universal Memory](#1-supermemoryai-universal-memory)
 - [MAIF Action Artifacts](#4-maif-action-artifacts)
 - [WORK_STREAM.md](../reference/WORK_STREAM.md)
@@ -772,14 +791,14 @@ class SimulationReplay:
 
 ### 6.3 Cross-Component Dependencies
 
-| Component | Depends On | Provides To |
-|-----------|------------|-------------|
-| Pareto Router | Economic Governance | Lifecycle/The Gent loops |
-| Economic Governance | Provider scores | Pareto Router |
-| MAIF Artifacts | Agent actions | Simulation, Audit |
-| Supermemory L3 | Knowledge Graph | Simulation, Context |
-| Supermemory L4 | Documents API | MAIF Storage, Audit |
-| Simulation | L3 + L4 | Debugging, Testing |
+| Component           | Depends On          | Provides To              |
+| ------------------- | ------------------- | ------------------------ |
+| Pareto Router       | Economic Governance | Lifecycle/The Gent loops |
+| Economic Governance | Provider scores     | Pareto Router            |
+| MAIF Artifacts      | Agent actions       | Simulation, Audit        |
+| Supermemory L3      | Knowledge Graph     | Simulation, Context      |
+| Supermemory L4      | Documents API       | MAIF Storage, Audit      |
+| Simulation          | L3 + L4             | Debugging, Testing       |
 
 ---
 
@@ -819,14 +838,14 @@ class SimulationReplay:
 
 ## 8. Performance Targets
 
-| Component | Metric | Target | Status |
-|-----------|--------|--------|--------|
-| Supermemory L3 | Query latency | <50ms | TBD |
-| Supermemory L4 | Store latency | <200ms | TBD |
-| Pareto Router | Routing latency | <1ms | TBD |
-| Economic Gov | Selection latency | <5ms | TBD |
-| MAIF Artifacts | Create latency | <1ms | TBD |
-| Simulation | Replay latency | <500ms | TBD |
+| Component      | Metric            | Target | Status |
+| -------------- | ----------------- | ------ | ------ |
+| Supermemory L3 | Query latency     | <50ms  | TBD    |
+| Supermemory L4 | Store latency     | <200ms | TBD    |
+| Pareto Router  | Routing latency   | <1ms   | TBD    |
+| Economic Gov   | Selection latency | <5ms   | TBD    |
+| MAIF Artifacts | Create latency    | <1ms   | TBD    |
+| Simulation     | Replay latency    | <500ms | TBD    |
 
 ---
 
@@ -834,20 +853,20 @@ class SimulationReplay:
 
 ### Technical Risks
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Supermemory API unavailable | High | Fallback to local cache |
-| Hash chain broken | Medium | Alert, quarantine, repair |
-| Replay non-deterministic | Low | Mark as non-replayable |
-| Cost estimation wrong | Medium | Learning, recalibration |
+| Risk                        | Impact | Mitigation                |
+| --------------------------- | ------ | ------------------------- |
+| Supermemory API unavailable | High   | Fallback to local cache   |
+| Hash chain broken           | Medium | Alert, quarantine, repair |
+| Replay non-deterministic    | Low    | Mark as non-replayable    |
+| Cost estimation wrong       | Medium | Learning, recalibration   |
 
 ### Operational Risks
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Cost overrun | High | Budget alerts, auto-throttling |
-| Performance degradation | Medium | Monitoring, auto-scaling |
-| Data loss | High | Redundancy, backups |
+| Risk                    | Impact | Mitigation                     |
+| ----------------------- | ------ | ------------------------------ |
+| Cost overrun            | High   | Budget alerts, auto-throttling |
+| Performance degradation | Medium | Monitoring, auto-scaling       |
+| Data loss               | High   | Redundancy, backups            |
 
 ---
 
@@ -892,15 +911,18 @@ Add to [WORK_STREAM.md](../reference/WORK_STREAM.md) BACKLOG:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added practical implementation patterns
 2. Added configuration examples
 3. Enhanced cross-references to related docs
 
 ### Cross-References Added
+
 - Related research and implementation guides
 - WORK_STREAM.md for tracking
 
 ### Practical Additions
+
 - Implementation templates
 - Configuration examples
 - Best practices

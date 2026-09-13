@@ -22,7 +22,7 @@ Orchestrates RBAC checks across the system.
 
 ### Methods
 
-#### RBACManager.__init__
+#### RBACManager.**init**
 
 ```python
 __init__(self: Any)

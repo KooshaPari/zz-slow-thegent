@@ -12,7 +12,7 @@ A safe fallback action for the operator.
 
 ### Methods
 
-#### FallbackOption.__init__
+#### FallbackOption.**init**
 
 ```python
 __init__(self: Any, id: str, label: str, description: str, command: str)
@@ -28,7 +28,7 @@ Registry of safe fallback options based on failure context.
 
 ### Methods
 
-#### FallbackRegistry.__init__
+#### FallbackRegistry.**init**
 
 ```python
 __init__(self: Any, settings: ThegentSettings)

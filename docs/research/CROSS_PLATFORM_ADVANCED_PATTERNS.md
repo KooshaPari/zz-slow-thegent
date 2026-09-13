@@ -151,6 +151,7 @@ class AutomationPipeline:
 ```
 
 **Optimization Strategies:**
+
 - Minimize app switching (group by app)
 - Minimize mouse movement (group by screen region)
 - Parallelize independent actions
@@ -615,19 +616,19 @@ class AutomationEventNotifier:
 
 ### Practical Examples Added
 
-| Pattern | File | Purpose |
-|---------|------|---------|
-| macOS AppleScript | `macos_provider.py` | UI automation via AppleScript |
-| Windows UI Automation | `windows_provider.py` | UI automation via pywinauto |
-| Linux AT-SPI | `linux_provider.py` | UI automation via pyatspi |
-| ConsensusCoordinator | `consensus_coordinator.py` | Multi-agent voting for automation |
-| AdaptiveTimeoutStrategy | `adaptive_timeout.py` | Dynamic timeout adjustment |
-| AutomationHealthChecker | `health_checker.py` | Provider health monitoring |
-| EncryptedAutomationStorage | `encrypted_storage.py` | Secure screenshot storage |
-| MockAutomationProvider | `mock_provider.py` | Testing mock for unit tests |
-| AutomationRecorder | `recorder.py` | Record/replay for testing |
-| AutomationProviderAdapter | `adapter.py` | Provider abstraction layer |
-| ProviderSelectionStrategy | `strategy.py` | Dynamic provider selection |
+| Pattern                    | File                       | Purpose                           |
+| -------------------------- | -------------------------- | --------------------------------- |
+| macOS AppleScript          | `macos_provider.py`        | UI automation via AppleScript     |
+| Windows UI Automation      | `windows_provider.py`      | UI automation via pywinauto       |
+| Linux AT-SPI               | `linux_provider.py`        | UI automation via pyatspi         |
+| ConsensusCoordinator       | `consensus_coordinator.py` | Multi-agent voting for automation |
+| AdaptiveTimeoutStrategy    | `adaptive_timeout.py`      | Dynamic timeout adjustment        |
+| AutomationHealthChecker    | `health_checker.py`        | Provider health monitoring        |
+| EncryptedAutomationStorage | `encrypted_storage.py`     | Secure screenshot storage         |
+| MockAutomationProvider     | `mock_provider.py`         | Testing mock for unit tests       |
+| AutomationRecorder         | `recorder.py`              | Record/replay for testing         |
+| AutomationProviderAdapter  | `adapter.py`               | Provider abstraction layer        |
+| ProviderSelectionStrategy  | `strategy.py`              | Dynamic provider selection        |
 
 ### Cross-References Added
 

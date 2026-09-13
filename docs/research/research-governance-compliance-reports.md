@@ -17,11 +17,13 @@ This document provides research and implementation guidance for automated compli
 **Approach**: Generate reports on a fixed schedule (daily, weekly, monthly)
 
 **Pros**:
+
 - Predictable workload
 - Easy to automate
 - Consistent reporting cadence
 
 **Cons**:
+
 - Delayed visibility
 - May miss urgent issues
 - Fixed format may not suit all needs
@@ -31,11 +33,13 @@ This document provides research and implementation guidance for automated compli
 **Approach**: Generate reports when requested via CLI/API
 
 **Pros**:
+
 - Immediate visibility
 - Flexible date ranges
 - Customizable content
 
 **Cons**:
+
 - Manual trigger required
 - Potential performance impact
 - No automatic distribution
@@ -45,11 +49,13 @@ This document provides research and implementation guidance for automated compli
 **Approach**: Continuous real-time compliance monitoring dashboard
 
 **Pros**:
+
 - Immediate visibility
 - Proactive issue detection
 - Interactive exploration
 
 **Cons**:
+
 - Higher resource usage
 - Requires dashboard infrastructure
 - May be overwhelming
@@ -59,6 +65,7 @@ This document provides research and implementation guidance for automated compli
 **Approach**: Combine scheduled reports with real-time dashboard
 
 **Benefits**:
+
 - Scheduled reports for audit trails and compliance evidence
 - Real-time dashboard for operational monitoring
 - Comprehensive coverage

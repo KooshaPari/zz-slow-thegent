@@ -3,6 +3,7 @@
 
 > **Status**: Complete | **Version**: 1.0 | **Date**: 2026-02-16
 > **Related**:
+>
 > - [Cross-Platform Multi-Tenant Implementation Plan](../plans/CROSS_PLATFORM_MULTI_TENANT_IMPLEMENTATION_PLAN.md)
 > - [Cross-Platform Master Index](../CROSS_PLATFORM_MASTER_INDEX.md)
 > - [Hybrid Environment Implementation Plan](../plans/HYBRID_ENV_IMPLEMENTATION_PLAN.md)
@@ -36,6 +37,7 @@ This document consolidates all cross-platform research into a single comprehensi
 ### 1.1 Research Scope
 
 **Platforms Covered**:
+
 - ✅ macOS (10.15+)
 - ✅ Linux (Ubuntu 20.04+, Debian 11+, RHEL 8+)
 - ✅ Windows (10/11)
@@ -44,6 +46,7 @@ This document consolidates all cross-platform research into a single comprehensi
 - ⚠️ Containers/Docker (headless mode)
 
 **Key Capabilities**:
+
 - Multi-tenant agent execution with user isolation
 - Cross-platform desktop automation
 - Remote compute offloading
@@ -61,6 +64,7 @@ This document consolidates all cross-platform research into a single comprehensi
 ### 1.3 Source Documents
 
 This consolidated guide synthesizes content from:
+
 - `CROSS_PLATFORM_MULTI_TENANT_DESKTOP_AUTOMATION_RESEARCH.md` (Main research, 3000+ lines)
 - `CROSS_PLATFORM_ADVANCED_PATTERNS.md` (Advanced patterns)
 - `CROSS_PLATFORM_PERFORMANCE_BENCHMARKS.md` (Performance SLAs)
@@ -77,34 +81,34 @@ This consolidated guide synthesizes content from:
 
 ### 2.1 Core Platform Support
 
-| Feature | macOS | Linux | Windows | WSL2 | Notes |
-|---------|-------|-------|---------|------|-------|
-| **Agent Execution** | ✅ | ✅ | ✅ | ✅ | All platforms supported |
-| **User Isolation** | ✅ | ✅ | ✅ | ⚠️ | WSL2 uses native Windows users |
-| **Desktop Automation** | ✅ | ✅ | ✅ | ❌ | WSL2 requires native Windows |
-| **File System** | ✅ | ✅ | ✅ | ⚠️ | WSL2 path translation needed |
-| **Network** | ✅ | ✅ | ✅ | ✅ | Full support |
-| **Process Management** | ✅ | ✅ | ✅ | ✅ | Full support |
-| **Remote Compute** | ✅ | ✅ | ✅ | ✅ | SSH-based |
+| Feature                | macOS | Linux | Windows | WSL2 | Notes                          |
+| ---------------------- | ----- | ----- | ------- | ---- | ------------------------------ |
+| **Agent Execution**    | ✅    | ✅    | ✅      | ✅   | All platforms supported        |
+| **User Isolation**     | ✅    | ✅    | ✅      | ⚠️   | WSL2 uses native Windows users |
+| **Desktop Automation** | ✅    | ✅    | ✅      | ❌   | WSL2 requires native Windows   |
+| **File System**        | ✅    | ✅    | ✅      | ⚠️   | WSL2 path translation needed   |
+| **Network**            | ✅    | ✅    | ✅      | ✅   | Full support                   |
+| **Process Management** | ✅    | ✅    | ✅      | ✅   | Full support                   |
+| **Remote Compute**     | ✅    | ✅    | ✅      | ✅   | SSH-based                      |
 
 ### 2.2 Desktop Automation APIs
 
-| Platform | Primary API | Fallback | Library |
-|----------|------------|----------|---------|
-| **macOS** | AppleScript/Apple Events | Accessibility API | `py-applescript` |
-| **Windows** | UI Automation (UIA) | MSAA | `pywinauto`, `uiautomation` |
-| **Linux** | AT-SPI | D-Bus | `pyatspi`, `dogtail` |
-| **WSL2** | N/A (use native Windows) | N/A | Via `wsl.exe` bridge |
+| Platform    | Primary API              | Fallback          | Library                     |
+| ----------- | ------------------------ | ----------------- | --------------------------- |
+| **macOS**   | AppleScript/Apple Events | Accessibility API | `py-applescript`            |
+| **Windows** | UI Automation (UIA)      | MSAA              | `pywinauto`, `uiautomation` |
+| **Linux**   | AT-SPI                   | D-Bus             | `pyatspi`, `dogtail`        |
+| **WSL2**    | N/A (use native Windows) | N/A               | Via `wsl.exe` bridge        |
 
 ### 2.3 Shell Support Matrix
 
-| Context | macOS | Linux | Windows (native) | Windows (WSL2) |
-|---------|-------|-------|------------------|----------------|
-| **Hooks** | Bash | Bash | WSL2 Bash or pwsh | Bash |
-| **Agent Subprocess** | Bash/zsh | Bash | pwsh or WSL2 Bash | Bash |
-| **OS User Creation** | `dscl`/`useradd` | `useradd` | `pwsh` (`New-LocalUser`) | N/A (use native) |
-| **Desktop Automation** | AppleScript | Python+AT-SPI | pwsh + UI Automation | N/A |
-| **thegent CLI** | Python (any) | Python (any) | Python (any) | Python (any) |
+| Context                | macOS            | Linux         | Windows (native)         | Windows (WSL2)   |
+| ---------------------- | ---------------- | ------------- | ------------------------ | ---------------- |
+| **Hooks**              | Bash             | Bash          | WSL2 Bash or pwsh        | Bash             |
+| **Agent Subprocess**   | Bash/zsh         | Bash          | pwsh or WSL2 Bash        | Bash             |
+| **OS User Creation**   | `dscl`/`useradd` | `useradd`     | `pwsh` (`New-LocalUser`) | N/A (use native) |
+| **Desktop Automation** | AppleScript      | Python+AT-SPI | pwsh + UI Automation     | N/A              |
+| **thegent CLI**        | Python (any)     | Python (any)  | Python (any)             | Python (any)     |
 
 ---
 
@@ -151,28 +155,34 @@ This consolidated guide synthesizes content from:
 ### 4.1 Isolation Options
 
 #### Option A: Sub-User Class (Default)
+
 **Implementation**: Model system user object without OS user creation
 
 **Pros**:
+
 - ✅ Fast (no OS calls)
 - ✅ No permissions required
 - ✅ Sufficient for development
 
 **Cons**:
+
 - ❌ No true OS-level isolation
 - ❌ Limited security boundaries
 
 **Use Case**: Development, low-risk agents
 
 #### Option B: OS Users (Opt-in)
+
 **Implementation**: Create actual OS users per agent
 
 **Pros**:
+
 - ✅ True OS-level isolation
 - ✅ Strong security boundaries
 - ✅ Suitable for production
 
 **Cons**:
+
 - ❌ Requires admin/root permissions
 - ❌ Slower (OS calls)
 - ❌ User management overhead
@@ -180,14 +190,17 @@ This consolidated guide synthesizes content from:
 **Use Case**: Production, high-risk agents
 
 #### Option C: Docker Containers (Future)
+
 **Implementation**: Container-based isolation
 
 **Pros**:
+
 - ✅ Strongest isolation
 - ✅ Resource limits
 - ✅ Easy cleanup
 
 **Cons**:
+
 - ❌ Complex setup
 - ❌ No desktop automation (headless)
 - ❌ Additional infrastructure
@@ -195,14 +208,16 @@ This consolidated guide synthesizes content from:
 **Use Case**: Headless agents, CI/CD
 
 #### Option D: Hybrid (Recommended) ✅
+
 **Implementation**: Sub-user default + OS user opt-in + Docker future
 
 **Configuration**:
+
 ```yaml
 isolation:
-  default_mode: "sub_user"  # sub_user | os_user | docker
+  default_mode: "sub_user" # sub_user | os_user | docker
   os_user_required_for: ["high_risk", "production"]
-  docker_enabled: false  # Future
+  docker_enabled: false # Future
 ```
 
 ### 4.2 Implementation
@@ -282,6 +297,7 @@ class OSUserManager(SystemUser):
 ### 4.3 Platform-Specific User Creation
 
 **macOS**:
+
 ```bash
 # Create user
 dscl . -create /Users/thegent_agent_123
@@ -292,12 +308,14 @@ dscl . -create /Users/thegent_agent_123 NFSHomeDirectory /Users/thegent_agent_12
 ```
 
 **Linux**:
+
 ```bash
 # Create user
 useradd -r -s /bin/bash -d /home/thegent_agent_123 -m thegent_agent_123
 ```
 
 **Windows** (PowerShell):
+
 ```powershell
 # Create user
 New-LocalUser -Name "thegent_agent_123" -Description "thegent agent user" -NoPassword
@@ -311,16 +329,19 @@ Add-LocalGroupMember -Group "Users" -Member "thegent_agent_123"
 ### 5.1 Coordination Mechanisms
 
 #### File-Level Coordination
+
 - **Edit Leases**: Extend existing `EditLeaseManager`
 - **Tenant-Aware**: Track which agent/user owns lease
 - **Conflict Resolution**: User priority + FIFO
 
 #### UI Automation Coordination
+
 - **Desktop Automation Coordinator**: Centralized coordination
 - **User Activity Detection**: Pause automation when user active
 - **Conflict Resolution**: User priority + queue
 
 #### Process Coordination
+
 - **Tenant-Aware Concurrency**: Extend `ConcurrencyController`
 - **Resource Limits**: Per-tenant limits
 - **Priority Queuing**: User > Agent priority
@@ -328,6 +349,7 @@ Add-LocalGroupMember -Group "Users" -Member "thegent_agent_123"
 ### 5.2 User Activity Detection
 
 **macOS**:
+
 ```python
 from Quartz import CGEventSourceSecondsSinceLastEventType, kCGEventKeyDown
 
@@ -338,6 +360,7 @@ def get_user_idle_time() -> float:
 ```
 
 **Linux** (X11):
+
 ```python
 import subprocess
 
@@ -349,6 +372,7 @@ def get_user_idle_time() -> float:
 ```
 
 **Windows**:
+
 ```python
 from ctypes import windll, Structure, c_uint32, byref
 
@@ -605,14 +629,17 @@ def _wsl_available() -> bool:
 ### 7.3 Cross-Platform Script Execution
 
 **Hook Execution**:
+
 - Always invoke via `bash -c` or `wsl bash -c` on Windows
 - Fallback to `pwsh -File` for Windows-specific hook logic
 
 **Agent Subprocess**:
+
 - Configurable `agent_shell`: `bash` | `pwsh` | `wsl-bash`
 - Default: Platform-appropriate
 
 **OS Admin**:
+
 - Platform-specific: `pwsh` on Windows, `bash+sudo` on Unix
 
 ---
@@ -680,6 +707,7 @@ class RemoteExecutor:
 ### 9.1 Threat Model
 
 **Attack Surfaces**:
+
 1. Agent-to-agent isolation
 2. Agent-to-user isolation
 3. Desktop automation permissions
@@ -687,6 +715,7 @@ class RemoteExecutor:
 5. File system access
 
 **Threat Actors**:
+
 - Malicious agents
 - Compromised agents
 - External attackers
@@ -712,12 +741,12 @@ class RemoteExecutor:
 
 ### 10.1 Performance SLAs
 
-| Metric | Target | Platform Notes |
-|--------|--------|----------------|
-| **Desktop Automation Latency** | < 100ms (p95) | Platform-dependent |
-| **User Activity Detection** | < 10ms | Fast polling |
-| **Remote Execution Overhead** | < 200ms | Network-dependent |
-| **Screenshot Capture** | < 500ms | Resolution-dependent |
+| Metric                         | Target        | Platform Notes       |
+| ------------------------------ | ------------- | -------------------- |
+| **Desktop Automation Latency** | < 100ms (p95) | Platform-dependent   |
+| **User Activity Detection**    | < 10ms        | Fast polling         |
+| **Remote Execution Overhead**  | < 200ms       | Network-dependent    |
+| **Screenshot Capture**         | < 500ms       | Resolution-dependent |
 
 ### 10.2 Optimization Strategies
 
@@ -741,6 +770,7 @@ class RemoteExecutor:
 ### 11.2 Failure Handling
 
 **Error Taxonomy**:
+
 - **Transient**: Retry with backoff
 - **Permission**: Fail fast, clear message
 - **State**: Re-find element, invalidate cache
@@ -748,6 +778,7 @@ class RemoteExecutor:
 - **Platform**: Version check, graceful degradation
 
 **Retry Strategy**:
+
 - Desktop automation: 3x with 0.5s backoff
 - Remote SSH: 2x with 2s backoff
 - Element find: 2x with 1s backoff
@@ -757,26 +788,31 @@ class RemoteExecutor:
 ## 12. Implementation Roadmap
 
 ### Phase 1: Foundation (Weeks 1-2)
+
 - User isolation abstraction
 - Shell detection utility
 - Platform detection
 
 ### Phase 2: Coordination (Weeks 3-4)
+
 - Multi-tenant coordination
 - User activity detection
 - Conflict resolution
 
 ### Phase 3: Desktop Automation (Weeks 5-7)
+
 - Platform-specific providers
 - Cross-platform abstraction
 - MCP integration
 
 ### Phase 4: Remote Compute (Week 8)
+
 - SSH execution
 - MCP bridge
 - Result synchronization
 
 ### Phase 5: Testing & Polish (Week 9)
+
 - Comprehensive testing
 - Performance optimization
 - Documentation
@@ -796,11 +832,11 @@ class RemoteExecutor:
 ### 13.2 Test Matrix
 
 | Platform | User Isolation | Desktop Automation | Remote Compute |
-|----------|---------------|-------------------|----------------|
-| macOS | ✅ | ✅ | ✅ |
-| Linux | ✅ | ✅ | ✅ |
-| Windows | ✅ | ✅ | ✅ |
-| WSL2 | ⚠️ | ❌ | ✅ |
+| -------- | -------------- | ------------------ | -------------- |
+| macOS    | ✅             | ✅                 | ✅             |
+| Linux    | ✅             | ✅                 | ✅             |
+| Windows  | ✅             | ✅                 | ✅             |
+| WSL2     | ⚠️             | ❌                 | ✅             |
 
 ---
 
@@ -809,16 +845,19 @@ class RemoteExecutor:
 ### 14.1 Common Issues
 
 **Issue**: Desktop automation fails
+
 - **Solution**: Check accessibility permissions
 - **Solution**: Verify platform-specific libraries installed
 - **Solution**: Check user activity detection
 
 **Issue**: Remote execution fails
+
 - **Solution**: Verify SSH connectivity
 - **Solution**: Check remote thegent installation
 - **Solution**: Verify network connectivity
 
 **Issue**: User isolation fails
+
 - **Solution**: Check permissions (admin/root)
 - **Solution**: Verify OS user creation
 - **Solution**: Check disk space
@@ -848,7 +887,7 @@ class RemoteExecutor:
 
 ---
 
-*Generated: 2026-02-16 | Version: 1.0 | Status: Complete*
+_Generated: 2026-02-16 | Version: 1.0 | Status: Complete_
 
 ---
 
@@ -858,27 +897,30 @@ class RemoteExecutor:
 **Extended by:** Claude Code
 
 ### Changes Made
+
 1. Added research findings summary
 2. Added practical implementations
 3. Enhanced cross-references
 
 ### Cross-References Added
+
 - Related research docs
 - Implementation guides
 
 ### Practical Additions
+
 - Research templates
 - Implementation examples
 
 ## Platform Decision Matrix
 
-| Execution Surface | macOS | Linux | Windows | WSL2 | Decision |
-|---|---|---|---|---|---|
-| Local shell + process control | Native (`zsh`/`bash`) | Native (`bash`) | Native (`pwsh`/`cmd`) | Linux shell on Windows host | Keep one command abstraction with per-OS adapters |
-| Desktop automation | Stable (AX API) | Stable (X11/Wayland-dependent) | Stable (UIA/Win32) | Not supported natively | Run desktop flows only on true host OS |
-| User/session isolation | Per-user accounts | Per-user + namespaces | Per-user sessions | Inherits Windows boundary | Use OS-native account/session model; avoid WSL2 for UI isolation |
-| Remote execution | SSH first-class | SSH first-class | SSH + WinRM fallback | SSH to Linux VM/context | Standardize on SSH transport with capability probes |
-| CI validation target | macOS runner | Linux runner | Windows runner | Optional compatibility lane | Gate release on tri-OS pass; WSL2 informational only |
+| Execution Surface             | macOS                 | Linux                          | Windows               | WSL2                        | Decision                                                         |
+| ----------------------------- | --------------------- | ------------------------------ | --------------------- | --------------------------- | ---------------------------------------------------------------- |
+| Local shell + process control | Native (`zsh`/`bash`) | Native (`bash`)                | Native (`pwsh`/`cmd`) | Linux shell on Windows host | Keep one command abstraction with per-OS adapters                |
+| Desktop automation            | Stable (AX API)       | Stable (X11/Wayland-dependent) | Stable (UIA/Win32)    | Not supported natively      | Run desktop flows only on true host OS                           |
+| User/session isolation        | Per-user accounts     | Per-user + namespaces          | Per-user sessions     | Inherits Windows boundary   | Use OS-native account/session model; avoid WSL2 for UI isolation |
+| Remote execution              | SSH first-class       | SSH first-class                | SSH + WinRM fallback  | SSH to Linux VM/context     | Standardize on SSH transport with capability probes              |
+| CI validation target          | macOS runner          | Linux runner                   | Windows runner        | Optional compatibility lane | Gate release on tri-OS pass; WSL2 informational only             |
 
 ## Rollout Constraints
 
@@ -920,12 +962,12 @@ class RemoteExecutor:
 
 ## Platform Test Matrix
 
-| Capability | macOS | Linux | Windows | WSL2 |
-|---|---|---|---|---|
-| Shell command execution | Required | Required | Required | Required (compute only) |
-| Desktop/UI automation | Required | Required | Required | Not supported |
-| Session/user isolation checks | Required | Required | Required | Required (host-derived) |
-| Remote transport validation | SSH | SSH | SSH + WinRM | SSH to Linux context |
+| Capability                    | macOS    | Linux    | Windows     | WSL2                    |
+| ----------------------------- | -------- | -------- | ----------- | ----------------------- |
+| Shell command execution       | Required | Required | Required    | Required (compute only) |
+| Desktop/UI automation         | Required | Required | Required    | Not supported           |
+| Session/user isolation checks | Required | Required | Required    | Required (host-derived) |
+| Remote transport validation   | SSH      | SSH      | SSH + WinRM | SSH to Linux context    |
 
 ## Degradation Boundary Rules
 
@@ -972,13 +1014,13 @@ class RemoteExecutor:
 
 ## Release Coordination Matrix
 
-| Coordination Area | macOS | Linux | Windows | WSL2 |
-|---|---|---|---|---|
-| Gate owner | Platform release lead | Platform release lead | Platform release lead | Compatibility lead |
-| Required pre-release checks | Shell + UI + isolation | Shell + UI + isolation | Shell + UI + isolation + WinRM | Shell + isolation only |
-| Launch decision rule | Must pass tri-OS parity window | Must pass tri-OS parity window | Must pass tri-OS parity window | Informational only |
-| Rollback trigger | SLO breach or capability drift | SLO breach or capability drift | SLO breach or capability drift | Host-impacting regression |
-| Post-release validation window | 24h stability watch | 24h stability watch | 24h stability watch | 24h compatibility watch |
+| Coordination Area              | macOS                          | Linux                          | Windows                        | WSL2                      |
+| ------------------------------ | ------------------------------ | ------------------------------ | ------------------------------ | ------------------------- |
+| Gate owner                     | Platform release lead          | Platform release lead          | Platform release lead          | Compatibility lead        |
+| Required pre-release checks    | Shell + UI + isolation         | Shell + UI + isolation         | Shell + UI + isolation + WinRM | Shell + isolation only    |
+| Launch decision rule           | Must pass tri-OS parity window | Must pass tri-OS parity window | Must pass tri-OS parity window | Informational only        |
+| Rollback trigger               | SLO breach or capability drift | SLO breach or capability drift | SLO breach or capability drift | Host-impacting regression |
+| Post-release validation window | 24h stability watch            | 24h stability watch            | 24h stability watch            | 24h compatibility watch   |
 
 ## Compatibility Debt Signals
 

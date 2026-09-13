@@ -17,11 +17,13 @@ This document provides research and implementation guidance for multi-tenant pol
 **Approach**: Single authoritative policy server for all tenants
 
 **Pros**:
+
 - Single source of truth
 - Easier consistency
 - Simplified conflict resolution
 
 **Cons**:
+
 - Single point of failure
 - Potential performance bottleneck
 - Network dependency
@@ -31,11 +33,13 @@ This document provides research and implementation guidance for multi-tenant pol
 **Approach**: Each tenant maintains local policy cache with consensus protocol
 
 **Pros**:
+
 - High availability
 - Better performance (local cache)
 - No single point of failure
 
 **Cons**:
+
 - Complex consensus logic
 - Potential inconsistency windows
 - Higher implementation complexity
@@ -45,11 +49,13 @@ This document provides research and implementation guidance for multi-tenant pol
 **Approach**: Centralized policy server with distributed caching and local overrides
 
 **Pros**:
+
 - Balance of consistency and performance
 - Local overrides for tenant-specific needs
 - Graceful degradation if server unavailable
 
 **Cons**:
+
 - More complex than pure centralized
 - Cache invalidation logic needed
 

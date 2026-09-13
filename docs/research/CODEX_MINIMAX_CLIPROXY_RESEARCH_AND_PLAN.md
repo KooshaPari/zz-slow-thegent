@@ -6,6 +6,7 @@
 **Scope**: Codex Responses API compatibility with CLIProxyAPIPlus (all providers)
 
 **Implementation (2026-02-16):**
+
 - Phase 2: Adapter (Responses API ↔ Chat Completions bridge), model alias mapping, debug logging, 10 unit tests
 
 ---
@@ -33,12 +34,12 @@
 
 **Source**: [MiniMax Codex CLI](https://platform.minimax.io/docs/coding-plan/codex-cli) — useful pattern for any custom provider:
 
-| Item | Value |
-|------|-------|
-| **Config** | `.codex/config.toml` with `[model_providers.<name>]` blocks |
-| **base_url** | Points to proxy (e.g. `http://127.0.0.1:8317/v1` for thegent) |
+| Item             | Value                                                          |
+| ---------------- | -------------------------------------------------------------- |
+| **Config**       | `.codex/config.toml` with `[model_providers.<name>]` blocks    |
+| **base_url**     | Points to proxy (e.g. `http://127.0.0.1:8317/v1` for thegent)  |
 | **Model naming** | Some providers use `codex-` prefix (e.g. `codex-MiniMax-M2.5`) |
-| **Profile** | `model = "..."`, `model_provider = "<name>"` |
+| **Profile**      | `model = "..."`, `model_provider = "<name>"`                   |
 
 Adapter maps provider-specific model IDs to CLIProxy backend IDs when needed.
 
@@ -67,20 +68,20 @@ Provider APIs (MiniMax, OpenAI, etc.)
 
 ### 1.4 CLIProxyAPIPlus Fork
 
-| Provider | Config block | Models |
-|----------|--------------|--------|
-| minimax | `minimax:` | minimax-m2, minimax-m2.1, minimax-m2.5 |
-| codex | `codex-api-key:` | GPT-5.x |
-| openai-compatibility | generic | Any OpenAI-compatible |
+| Provider             | Config block     | Models                                 |
+| -------------------- | ---------------- | -------------------------------------- |
+| minimax              | `minimax:`       | minimax-m2, minimax-m2.1, minimax-m2.5 |
+| codex                | `codex-api-key:` | GPT-5.x                                |
+| openai-compatibility | generic          | Any OpenAI-compatible                  |
 
 **Gap**: Fork exposes Chat Completions (`/v1/chat/completions`), not Responses API (`/v1/responses`).
 
 ### 1.5 thegent Adapter (`cliproxy_adapter.py`)
 
-| Capability | Implementation |
-|------------|----------------|
-| POST /v1/responses | Transforms to Chat Completions, proxies to backend |
-| Streaming (SSE) | Transforms Chat Completions chunks → Responses API format |
+| Capability              | Implementation                                                                            |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| POST /v1/responses      | Transforms to Chat Completions, proxies to backend                                        |
+| Streaming (SSE)         | Transforms Chat Completions chunks → Responses API format                                 |
 | WebSocket /v1/responses | Accepts WS, sends JSON; bridges to HTTP stream; sends `response.output_item.added` events |
 
 **Potential bugs** (to verify):
@@ -97,13 +98,13 @@ Some providers (e.g. MiniMax) document model names like `codex-MiniMax-M2.5`. Ad
 
 ## 2. Gap Analysis
 
-| Gap | Severity | Owner |
-|-----|----------|-------|
-| CLIProxyAPIPlus lacks /v1/responses | High | Adapter (workaround exists) |
-| Adapter WebSocket/URL bugs | High | thegent |
-| Provider model aliases (codex-* → backend IDs) | Low | Adapter |
-| Codex version compatibility (0.57.0 vs latest) | Medium | User config |
-| Claude harness works, Codex doesn't | — | Confirms Chat Completions path works |
+| Gap                                             | Severity | Owner                                |
+| ----------------------------------------------- | -------- | ------------------------------------ |
+| CLIProxyAPIPlus lacks /v1/responses             | High     | Adapter (workaround exists)          |
+| Adapter WebSocket/URL bugs                      | High     | thegent                              |
+| Provider model aliases (codex-\* → backend IDs) | Low      | Adapter                              |
+| Codex version compatibility (0.57.0 vs latest)  | Medium   | User config                          |
+| Claude harness works, Codex doesn't             | —        | Confirms Chat Completions path works |
 
 ---
 
@@ -111,44 +112,44 @@ Some providers (e.g. MiniMax) document model names like `codex-MiniMax-M2.5`. Ad
 
 ### Phase 1: Diagnose (2–4 tool calls, ~5 min)
 
-| Task | Action |
-|------|--------|
-| P1.1 | Enable adapter: `THGENT_CLIPROXY_ADAPTER=1` |
-| P1.2 | Run `codex exec - "echo hi" --model <any-cliproxy-model>` with proxy |
+| Task | Action                                                                     |
+| ---- | -------------------------------------------------------------------------- |
+| P1.1 | Enable adapter: `THGENT_CLIPROXY_ADAPTER=1`                                |
+| P1.2 | Run `codex exec - "echo hi" --model <any-cliproxy-model>` with proxy       |
 | P1.3 | Capture request path and body (Codex → adapter) via logging or proxy trace |
-| P1.4 | Verify: Does Codex use POST /v1/responses or POST /v1/chat/completions? |
-| P1.5 | If WebSocket: capture WS URL and message format |
+| P1.4 | Verify: Does Codex use POST /v1/responses or POST /v1/chat/completions?    |
+| P1.5 | If WebSocket: capture WS URL and message format                            |
 
 **Deliverable**: Clear picture of Codex request flow (HTTP vs WS, Responses vs Chat Completions).
 
 ### Phase 2: Fix Adapter (6–12 tool calls, ~10–15 min)
 
-| Task | Action | Depends |
-|------|--------|---------|
-| P2.1 | Fix `_proxy_stream` URL when `transform_responses=True` | P1 |
-| P2.2 | Add model alias mapping for provider-specific IDs (e.g. codex-* → backend) | P1 |
-| P2.3 | Harden WebSocket handler: handle connection lifecycle, timeouts, errors | P1 |
-| P2.4 | Add unit tests for Responses ↔ Chat Completions transforms | — |
-| P2.5 | Add integration test: mock backend, assert adapter output format | — |
+| Task | Action                                                                      | Depends |
+| ---- | --------------------------------------------------------------------------- | ------- |
+| P2.1 | Fix `_proxy_stream` URL when `transform_responses=True`                     | P1      |
+| P2.2 | Add model alias mapping for provider-specific IDs (e.g. codex-\* → backend) | P1      |
+| P2.3 | Harden WebSocket handler: handle connection lifecycle, timeouts, errors     | P1      |
+| P2.4 | Add unit tests for Responses ↔ Chat Completions transforms                 | —       |
+| P2.5 | Add integration test: mock backend, assert adapter output format            | —       |
 
 **Deliverable**: Adapter correctly bridges Codex (Responses/WS) to CLIProxyAPIPlus (Chat Completions).
 
 ### Phase 3: CLIProxyAPIPlus Fork Updates (if needed)
 
-| Task | Action | Depends |
-|------|--------|---------|
-| P3.1 | Assess: Can fork add native /v1/responses? (OpenAI Responses API spec) | P2 |
-| P3.2 | If yes: implement Responses API in fork; deprecate adapter for that path | P3.1 |
-| P3.3 | Add model aliases in fork config if needed | P2 |
+| Task | Action                                                                   | Depends |
+| ---- | ------------------------------------------------------------------------ | ------- |
+| P3.1 | Assess: Can fork add native /v1/responses? (OpenAI Responses API spec)   | P2      |
+| P3.2 | If yes: implement Responses API in fork; deprecate adapter for that path | P3.1    |
+| P3.3 | Add model aliases in fork config if needed                               | P2      |
 
 **Deliverable**: Fork optionally supports Responses API natively; or adapter remains the bridge.
 
 ### Phase 4: Documentation
 
-| Task | Action | Depends |
-|------|--------|---------|
-| P4.1 | Document Codex + CLIProxy (all providers) in PROVIDER_SETUP_GUIDE | P2 |
-| P4.2 | Reference MiniMax guide as config pattern for custom providers | — |
+| Task | Action                                                            | Depends |
+| ---- | ----------------------------------------------------------------- | ------- |
+| P4.1 | Document Codex + CLIProxy (all providers) in PROVIDER_SETUP_GUIDE | P2      |
+| P4.2 | Reference MiniMax guide as config pattern for custom providers    | —       |
 
 **Deliverable**: Users can run Codex with any CLIProxy provider via thegent adapter.
 
@@ -174,12 +175,12 @@ P1.1 ─┬─ P1.2 ─ P1.3 ─ P1.4 ─ P1.5
 
 ## 5. Reference Links
 
-| Resource | URL |
-|----------|-----|
+| Resource                           | URL                                                    |
+| ---------------------------------- | ------------------------------------------------------ |
 | MiniMax Codex CLI (config pattern) | https://platform.minimax.io/docs/coding-plan/codex-cli |
-| thegent adapter | `src/thegent/cliproxy_adapter.py` |
-| cliproxyapi-plusplus | `../cliproxyapi-plusplus/` |
-| Catalog alignment | `docs/plans/CATALOG_CLIPROXY_FORK_ALIGNMENT.md` |
+| thegent adapter                    | `src/thegent/cliproxy_adapter.py`                      |
+| cliproxyapi-plusplus               | `../cliproxyapi-plusplus/`                             |
+| Catalog alignment                  | `docs/plans/CATALOG_CLIPROXY_FORK_ALIGNMENT.md`        |
 
 ---
 
@@ -194,14 +195,14 @@ P1.1 ─┬─ P1.2 ─ P1.3 ─ P1.4 ─ P1.5
 
 ## 7. Development Plan (Implementation)
 
-| ID | Task | Status |
-|----|------|--------|
-| D1 | ensure_proxy_running: use settings.cliproxy_adapter when env not set | ✓ |
-| D2 | CodexProxyRunner: set THGENT_CLIPROXY_ADAPTER=1 before ensure_proxy_running | ✓ |
-| D3 | WebSocket handler: add timeout, handle disconnect, improve error handling | ✓ |
-| D4 | start_proxy_with_adapter: pass THGENT_CLIPROXY_ADAPTER to spawned env | ✓ |
-| D5 | Integration test: adapter transform pipeline | ✓ |
-| D6 | Run full test suite, verify adapter unit tests | ✓ (53 passed) |
+| ID  | Task                                                                        | Status        |
+| --- | --------------------------------------------------------------------------- | ------------- |
+| D1  | ensure_proxy_running: use settings.cliproxy_adapter when env not set        | ✓             |
+| D2  | CodexProxyRunner: set THGENT_CLIPROXY_ADAPTER=1 before ensure_proxy_running | ✓             |
+| D3  | WebSocket handler: add timeout, handle disconnect, improve error handling   | ✓             |
+| D4  | start_proxy_with_adapter: pass THGENT_CLIPROXY_ADAPTER to spawned env       | ✓             |
+| D5  | Integration test: adapter transform pipeline                                | ✓             |
+| D6  | Run full test suite, verify adapter unit tests                              | ✓ (53 passed) |
 
 ---
 
@@ -343,12 +344,12 @@ resolved_models:
 
 ### 9.1 Common Issues
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Double path in URL | `backend` already has `/v1` | Strip `/v1` before appending |
-| WebSocket timeout | No heartbeat | Add ping/pong interval |
-| Empty responses | Model not found | Check alias mapping |
-| Stream stalls | Buffer full | Increase buffer or flush interval |
+| Issue              | Cause                       | Solution                          |
+| ------------------ | --------------------------- | --------------------------------- |
+| Double path in URL | `backend` already has `/v1` | Strip `/v1` before appending      |
+| WebSocket timeout  | No heartbeat                | Add ping/pong interval            |
+| Empty responses    | Model not found             | Check alias mapping               |
+| Stream stalls      | Buffer full                 | Increase buffer or flush interval |
 
 ### 9.2 Debug Commands
 

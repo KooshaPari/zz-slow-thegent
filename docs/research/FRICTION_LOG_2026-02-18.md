@@ -6,11 +6,13 @@
 **Context**: `thegent plan do-next` returns "No pending items found" but BACKLOG has many unclaimed P2 items.
 
 **Root Cause**:
+
 - Agents completed P1 items (flash-swarm, free-swarm) and added to COMPLETED section
 - BACKLOG still lists P1 items as available
 - `thegent plan do-next` logic unclear - may be filtering by CLAIMED only, or confused by duplicate entries
 
 **Evidence**:
+
 ```
 BACKLOG:
 | research-hook-rust-phase3 | Make ...gent-hooks default... | P1 | ... |
@@ -21,11 +23,13 @@ COMPLETED:
 ```
 
 **Impact**:
+
 - Dependent P2 items (research-hook-rust-phase4) remain blocked
 - P2 items with no dependencies (research-library-cache, etc.) not picked up
 - Work stream stuck despite available work
 
 **Fix Applied**:
+
 - Cleaned up CLAIMED section (removed 5 completed flash-1 through flash-5 items)
 - P2 items now should be discoverable
 
@@ -38,17 +42,20 @@ COMPLETED:
 **Context**: Running `thegent install` failed with `ImportError: cannot import name 'get_bundle_manifest_path' from 'thegent.install'`
 
 **Root Cause**: `main.py` was importing functions from `install.py` that didn't exist:
+
 - `get_bundle_manifest_path`
 - `list_bundle_names`
 - `validate_bundle_manifest`
 - Missing `bundle_conflict_policy` parameter in `run_install()`
 
 **Impact**:
+
 - User-facing CLI error
 - No indication of which functions were missing
 - Required manual file exploration to understand the issue
 
 **Fix Applied**:
+
 1. Added `get_bundle_manifest_path(bundle_manifest=None)` with optional param
 2. Added `list_bundle_names(bundle_manifest=None)`
 3. Added `validate_bundle_manifest(bundle_manifest=None)`
@@ -82,11 +89,13 @@ COMPLETED:
 **Evidence**: Pattern `_proxy=|CURSOR_SANDBOX|SUDO_ASKPASS|CURSOR_ASKPASS` suggests environment variable filtering
 
 **Impact**:
+
 - Blocks search operations in some contexts
 - Unclear source of error (environment-specific)
 - Hard to reproduce consistently
 
 **Fix Applied**:
+
 1. Created `scripts/diagnose-rg-error.sh` - Diagnosis script to identify source:
    - Checks shell aliases for rg/grep
    - Checks shell functions
@@ -100,6 +109,7 @@ COMPLETED:
    - Avoids shell alias/config interference
 
 **Usage**:
+
 ```bash
 # Run diagnosis
 ./scripts/diagnose-rg-error.sh

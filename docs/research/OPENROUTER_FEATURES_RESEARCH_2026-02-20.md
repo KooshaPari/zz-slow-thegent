@@ -47,7 +47,7 @@ Added to the request body alongside `model` and `messages`. All fields are optio
 ```json
 {
   "model": "meta-llama/llama-3.3-70b-instruct",
-  "messages": [{"role": "user", "content": "Hello"}],
+  "messages": [{ "role": "user", "content": "Hello" }],
   "provider": {
     "order": ["anthropic", "openai"],
     "allow_fallbacks": true,
@@ -61,39 +61,41 @@ Added to the request body alongside `model` and `messages`. All fields are optio
       "by": "price",
       "partition": "model"
     },
-    "preferred_min_throughput": {"p90": 50},
-    "preferred_max_latency": {"p90": 3},
-    "max_price": {"prompt": 2, "completion": 5}
+    "preferred_min_throughput": { "p90": 50 },
+    "preferred_max_latency": { "p90": 3 },
+    "max_price": { "prompt": 2, "completion": 5 }
   }
 }
 ```
 
 ### Full `provider` Object Schema
 
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `order` | `string[]` | - | Provider slugs to try in priority order |
-| `allow_fallbacks` | `boolean` | `true` | Enable backup providers when primary is unavailable |
-| `require_parameters` | `boolean` | `false` | Only route to providers supporting ALL request parameters |
-| `data_collection` | `"allow" \| "deny"` | `"allow"` | Filter by data storage policy |
-| `zdr` | `boolean` | - | Restrict to Zero Data Retention endpoints only |
-| `enforce_distillable_text` | `boolean` | - | Route only to models permitting text distillation |
-| `only` | `string[]` | - | Allowlist: only these providers |
-| `ignore` | `string[]` | - | Blocklist: never use these providers |
-| `quantizations` | `string[]` | - | Filter by quantization: `int4`, `int8`, `fp4`, `fp6`, `fp8`, `fp16`, `bf16`, `fp32`, `unknown` |
-| `sort` | `string \| object` | - | Sort strategy (see below) |
-| `preferred_min_throughput` | `number \| object` | - | Min tokens/sec threshold (soft preference) |
-| `preferred_max_latency` | `number \| object` | - | Max latency threshold (soft preference) |
-| `max_price` | `object` | - | Hard price ceiling (blocks requests exceeding it) |
+| Field                      | Type                | Default   | Description                                                                                    |
+| -------------------------- | ------------------- | --------- | ---------------------------------------------------------------------------------------------- |
+| `order`                    | `string[]`          | -         | Provider slugs to try in priority order                                                        |
+| `allow_fallbacks`          | `boolean`           | `true`    | Enable backup providers when primary is unavailable                                            |
+| `require_parameters`       | `boolean`           | `false`   | Only route to providers supporting ALL request parameters                                      |
+| `data_collection`          | `"allow" \| "deny"` | `"allow"` | Filter by data storage policy                                                                  |
+| `zdr`                      | `boolean`           | -         | Restrict to Zero Data Retention endpoints only                                                 |
+| `enforce_distillable_text` | `boolean`           | -         | Route only to models permitting text distillation                                              |
+| `only`                     | `string[]`          | -         | Allowlist: only these providers                                                                |
+| `ignore`                   | `string[]`          | -         | Blocklist: never use these providers                                                           |
+| `quantizations`            | `string[]`          | -         | Filter by quantization: `int4`, `int8`, `fp4`, `fp6`, `fp8`, `fp16`, `bf16`, `fp32`, `unknown` |
+| `sort`                     | `string \| object`  | -         | Sort strategy (see below)                                                                      |
+| `preferred_min_throughput` | `number \| object`  | -         | Min tokens/sec threshold (soft preference)                                                     |
+| `preferred_max_latency`    | `number \| object`  | -         | Max latency threshold (soft preference)                                                        |
+| `max_price`                | `object`            | -         | Hard price ceiling (blocks requests exceeding it)                                              |
 
 ### Sorting Options
 
 **Simple string values** (disables load balancing, tries providers sequentially):
+
 - `"price"` — sort cheapest first
 - `"throughput"` — sort fastest first
 - `"latency"` — sort lowest latency first
 
 **Object-based sorting** (enables cross-model optimization):
+
 ```json
 {
   "sort": {
@@ -102,21 +104,24 @@ Added to the request body alongside `model` and `messages`. All fields are optio
   }
 }
 ```
+
 Setting `"partition": "none"` removes model-level grouping, allowing global endpoint ranking across all fallback models.
 
 ### Performance Thresholds with Percentiles
 
 Percentiles track rolling 5-minute metrics. Unmet thresholds deprioritize (not exclude) endpoints:
+
 ```json
 {
-  "preferred_min_throughput": {"p50": 100, "p90": 50},
-  "preferred_max_latency": {"p50": 1, "p90": 3}
+  "preferred_min_throughput": { "p50": 100, "p90": 50 },
+  "preferred_max_latency": { "p50": 1, "p90": 3 }
 }
 ```
 
 ### Price Hard Ceiling
 
 Unlike performance preferences, `max_price` hard-blocks requests:
+
 ```json
 {
   "max_price": {
@@ -127,6 +132,7 @@ Unlike performance preferences, `max_price` hard-blocks requests:
   }
 }
 ```
+
 Units are USD per million tokens (or per request/image where applicable).
 
 ### What Changes in Response
@@ -136,6 +142,7 @@ No structural changes to the response format. The `model` field in the response 
 ### Proxy Implications
 
 The `provider` object passes through transparently to OpenRouter. A proxy does NOT need to transform this field — OpenRouter interprets it. However, the proxy should be aware that:
+
 - `require_parameters: true` may cause 503 errors if the proxy adds parameters the chosen provider does not support
 - `max_price` may cause 503 if all providers exceed the ceiling
 
@@ -160,7 +167,7 @@ Instead of a single `model` string, provide a `models` array listing models in p
     "openai/gpt-4o",
     "gryphe/mythomax-l2-13b"
   ],
-  "messages": [{"role": "user", "content": "What is the meaning of life?"}]
+  "messages": [{ "role": "user", "content": "What is the meaning of life?" }]
 }
 ```
 
@@ -169,6 +176,7 @@ If the first model fails, OpenRouter tries the next in sequence. Requests are pr
 ### Fallback Triggers
 
 Any of these cause automatic fallback to the next model:
+
 - Context length validation errors
 - Moderation flags (model filtered the input)
 - Rate limiting
@@ -236,7 +244,7 @@ Enables reasoning tokens (thinking tokens) for models that support them. OpenRou
 ```json
 {
   "model": "anthropic/claude-sonnet-4-5",
-  "messages": [{"role": "user", "content": "Solve this step by step..."}],
+  "messages": [{ "role": "user", "content": "Solve this step by step..." }],
   "reasoning": {
     "effort": "high",
     "max_tokens": 8000,
@@ -250,23 +258,23 @@ Enables reasoning tokens (thinking tokens) for models that support them. OpenRou
 
 ### Full `reasoning` Object Schema
 
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `effort` | `string` | - | `"xhigh"`, `"high"`, `"medium"`, `"low"`, `"minimal"`, `"none"` |
-| `max_tokens` | `number` | - | Direct token budget for reasoning |
-| `exclude` | `boolean` | `false` | If `true`, model still reasons but output is hidden from response |
-| `enabled` | `boolean` | inferred | Activate reasoning with medium effort defaults |
+| Field        | Type      | Default  | Description                                                       |
+| ------------ | --------- | -------- | ----------------------------------------------------------------- |
+| `effort`     | `string`  | -        | `"xhigh"`, `"high"`, `"medium"`, `"low"`, `"minimal"`, `"none"`   |
+| `max_tokens` | `number`  | -        | Direct token budget for reasoning                                 |
+| `exclude`    | `boolean` | `false`  | If `true`, model still reasons but output is hidden from response |
+| `enabled`    | `boolean` | inferred | Activate reasoning with medium effort defaults                    |
 
 ### Effort Level to Token Ratio
 
 | Effort Level | Approximate Token % of `max_tokens` |
-|-------------|--------------------------------------|
-| `xhigh` | ~95% |
-| `high` | ~80% |
-| `medium` | ~50% |
-| `low` | ~20% |
-| `minimal` | ~10% |
-| `none` | Disabled |
+| ------------ | ----------------------------------- |
+| `xhigh`      | ~95%                                |
+| `high`       | ~80%                                |
+| `medium`     | ~50%                                |
+| `low`        | ~20%                                |
+| `minimal`    | ~10%                                |
+| `none`       | Disabled                            |
 
 ### Provider-Specific Mappings
 
@@ -281,26 +289,29 @@ Enables reasoning tokens (thinking tokens) for models that support them. OpenRou
 Reasoning appears in two places in the response:
 
 **Non-streaming:**
+
 ```json
 {
-  "choices": [{
-    "message": {
-      "role": "assistant",
-      "content": "The answer is 42.",
-      "reasoning": "Let me think through this...",
-      "reasoning_details": [
-        {
-          "type": "reasoning.text",
-          "id": "rs_abc123",
-          "format": "anthropic-claude-v1",
-          "index": 0,
-          "text": "First, I'll consider...",
-          "signature": "ErUkwi..."
-        }
-      ]
-    },
-    "finish_reason": "stop"
-  }],
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "The answer is 42.",
+        "reasoning": "Let me think through this...",
+        "reasoning_details": [
+          {
+            "type": "reasoning.text",
+            "id": "rs_abc123",
+            "format": "anthropic-claude-v1",
+            "index": 0,
+            "text": "First, I'll consider...",
+            "signature": "ErUkwi..."
+          }
+        ]
+      },
+      "finish_reason": "stop"
+    }
+  ],
   "usage": {
     "completion_tokens": 50,
     "completion_tokens_details": {
@@ -314,10 +325,10 @@ Reasoning appears in two places in the response:
 
 ### `reasoning_details` Object Types
 
-| `type` | Description |
-|--------|-------------|
-| `reasoning.text` | Plaintext reasoning, optionally with `signature` for verification |
-| `reasoning.summary` | Summarized reasoning (provider may summarize long chains) |
+| `type`                | Description                                                               |
+| --------------------- | ------------------------------------------------------------------------- |
+| `reasoning.text`      | Plaintext reasoning, optionally with `signature` for verification         |
+| `reasoning.summary`   | Summarized reasoning (provider may summarize long chains)                 |
 | `reasoning.encrypted` | Encrypted reasoning (required for multi-turn continuation with Anthropic) |
 
 `format` values: `"anthropic-claude-v1"`, `"openai-responses-v1"`, `"google-gemini-v1"`, and others.
@@ -351,6 +362,7 @@ The entire sequence of consecutive reasoning blocks MUST match the model's origi
 ### Proxy Implications
 
 The proxy needs to:
+
 1. Pass `reasoning` object through to OpenRouter transparently
 2. Forward `reasoning_details` in responses to the client
 3. Support clients passing `reasoning_details` back in message history
@@ -370,10 +382,11 @@ Augments any model's response with real-time web search results before generatin
 ### How to Enable
 
 **Method 1: `plugins` array** (explicit, configurable):
+
 ```json
 {
   "model": "openai/gpt-4o",
-  "messages": [{"role": "user", "content": "What happened today in tech?"}],
+  "messages": [{ "role": "user", "content": "What happened today in tech?" }],
   "plugins": [
     {
       "id": "web",
@@ -385,21 +398,22 @@ Augments any model's response with real-time web search results before generatin
 ```
 
 **Method 2: `:online` model suffix** (shorthand, uses defaults):
+
 ```json
 {
   "model": "openai/gpt-4o:online",
-  "messages": [{"role": "user", "content": "What happened today in tech?"}]
+  "messages": [{ "role": "user", "content": "What happened today in tech?" }]
 }
 ```
 
 ### Plugin Configuration Options
 
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `id` | `"web"` | required | Plugin identifier |
-| `max_results` | `number` | 5 | Number of search results to fetch |
-| `search_prompt` | `string` | - | Custom text prepended to search results in the prompt |
-| `enabled` | `boolean` | `true` | Set `false` to disable a default-configured plugin for this request |
+| Field           | Type      | Default  | Description                                                         |
+| --------------- | --------- | -------- | ------------------------------------------------------------------- |
+| `id`            | `"web"`   | required | Plugin identifier                                                   |
+| `max_results`   | `number`  | 5        | Number of search results to fetch                                   |
+| `search_prompt` | `string`  | -        | Custom text prepended to search results in the prompt               |
+| `enabled`       | `boolean` | `true`   | Set `false` to disable a default-configured plugin for this request |
 
 ### Pricing
 
@@ -408,9 +422,10 @@ $4 per 1,000 results. With the default of 5 results per prompt, this is approxim
 ### Disabling a Default Plugin
 
 If web search is configured as a default at the account level:
+
 ```json
 {
-  "plugins": [{"id": "web", "enabled": false}]
+  "plugins": [{ "id": "web", "enabled": false }]
 }
 ```
 
@@ -422,10 +437,7 @@ The response is structurally identical to standard chat completions. The search 
 
 ```json
 {
-  "plugins": [
-    {"id": "web", "max_results": 3},
-    {"id": "response-healing"}
-  ]
+  "plugins": [{ "id": "web", "max_results": 3 }, { "id": "response-healing" }]
 }
 ```
 
@@ -454,6 +466,7 @@ Pre-processes the message array before sending to the model. Currently only one 
 ```
 
 To disable transforms explicitly:
+
 ```json
 {
   "transforms": [],
@@ -463,8 +476,8 @@ To disable transforms explicitly:
 
 ### Available Transform Values
 
-| Value | Description |
-|-------|-------------|
+| Value          | Description                                                                                 |
+| -------------- | ------------------------------------------------------------------------------------------- |
 | `"middle-out"` | Removes/truncates messages from the middle of the conversation to fit within context window |
 
 Only `"middle-out"` is currently supported. More transforms are planned.
@@ -484,6 +497,7 @@ Two compression mechanisms:
 ### Default Behavior
 
 Models with **8,192 tokens or fewer** context length have `middle-out` applied by default. To disable this automatic behavior for short-context models:
+
 ```json
 {
   "transforms": []
@@ -497,6 +511,7 @@ When `middle-out` is enabled, OpenRouter prioritizes models whose context length
 ### Proxy Implications
 
 The proxy must forward the `transforms` array as-is. If the proxy does not pass `transforms: []`, short-context models will have `middle-out` applied by default — which may be undesirable if the client expects their full message history to be sent. This is a significant proxy consideration: the proxy should either:
+
 - Always forward `transforms` from the client request
 - Add `transforms: []` if context compression is not desired for the proxy use case
 
@@ -561,17 +576,19 @@ Ensures model responses conform to a specific JSON schema. OpenRouter normalizes
 Set `response_format` in the request body:
 
 **JSON object mode** (valid JSON, no specific schema):
+
 ```json
 {
-  "response_format": {"type": "json_object"}
+  "response_format": { "type": "json_object" }
 }
 ```
 
 **JSON schema mode** (strict schema conformance):
+
 ```json
 {
   "model": "openai/gpt-4o",
-  "messages": [{"role": "user", "content": "Extract user info"}],
+  "messages": [{ "role": "user", "content": "Extract user info" }],
   "response_format": {
     "type": "json_schema",
     "json_schema": {
@@ -580,9 +597,9 @@ Set `response_format` in the request body:
       "schema": {
         "type": "object",
         "properties": {
-          "name": {"type": "string"},
-          "age": {"type": "integer"},
-          "email": {"type": "string", "format": "email"}
+          "name": { "type": "string" },
+          "age": { "type": "integer" },
+          "email": { "type": "string", "format": "email" }
         },
         "required": ["name", "age", "email"],
         "additionalProperties": false
@@ -641,6 +658,7 @@ The response structure is unchanged. The `content` field of the assistant messag
 ### Proxy Implications
 
 The proxy must:
+
 1. Forward `response_format` as-is
 2. Forward the `structured-outputs-2025-11-13` header if the client sends it (for strict tool use)
 3. Not strip unknown fields from `response_format.json_schema`
@@ -662,7 +680,9 @@ Standard OpenAI tool calling format works unchanged:
 ```json
 {
   "model": "google/gemini-3-flash-preview",
-  "messages": [{"role": "user", "content": "What are some James Joyce books?"}],
+  "messages": [
+    { "role": "user", "content": "What are some James Joyce books?" }
+  ],
   "tools": [
     {
       "type": "function",
@@ -672,7 +692,7 @@ Standard OpenAI tool calling format works unchanged:
         "parameters": {
           "type": "object",
           "properties": {
-            "query": {"type": "string", "description": "Search query"}
+            "query": { "type": "string", "description": "Search query" }
           },
           "required": ["query"]
         }
@@ -685,45 +705,50 @@ Standard OpenAI tool calling format works unchanged:
 
 ### `tool_choice` Values
 
-| Value | Description |
-|-------|-------------|
-| `"none"` | Model will not call any tool |
-| `"auto"` | Model decides whether to call tools |
-| `"required"` | Model must call one or more tools |
-| `{"type": "function", "function": {"name": "my_func"}}` | Force a specific tool |
+| Value                                                   | Description                         |
+| ------------------------------------------------------- | ----------------------------------- |
+| `"none"`                                                | Model will not call any tool        |
+| `"auto"`                                                | Model decides whether to call tools |
+| `"required"`                                            | Model must call one or more tools   |
+| `{"type": "function", "function": {"name": "my_func"}}` | Force a specific tool               |
 
 ### `parallel_tool_calls`
 
 Controls whether the model can call multiple tools simultaneously:
+
 ```json
 {
   "parallel_tool_calls": false
 }
 ```
+
 Default: `true` for most models. Set `false` for sequential tool execution.
 
 ### What Changes in Response
 
 When a tool is called, the response includes:
+
 ```json
 {
-  "choices": [{
-    "message": {
-      "role": "assistant",
-      "content": null,
-      "tool_calls": [
-        {
-          "id": "call_abc123",
-          "type": "function",
-          "function": {
-            "name": "search_gutenberg_books",
-            "arguments": "{\"query\": \"James Joyce\"}"
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_abc123",
+            "type": "function",
+            "function": {
+              "name": "search_gutenberg_books",
+              "arguments": "{\"query\": \"James Joyce\"}"
+            }
           }
-        }
-      ]
-    },
-    "finish_reason": "tool_calls"
-  }]
+        ]
+      },
+      "finish_reason": "tool_calls"
+    }
+  ]
 }
 ```
 
@@ -752,6 +777,7 @@ Note: The `tools` parameter must be included again in the follow-up request.
 ### Key Difference from Native OpenAI
 
 OpenRouter's provider transformation layer is entirely unique. When routing to Anthropic Claude, Gemini, or other non-OpenAI providers, OpenRouter converts the OpenAI tool schema to the provider's native format. This abstraction means:
+
 - The same request JSON works with any provider
 - Provider-specific quirks are handled by OpenRouter
 - `finish_reason: "tool_calls"` is normalized across all providers
@@ -773,11 +799,13 @@ Reduces latency and cost by caching portions of the prompt that remain constant 
 ### Two Modes of Caching
 
 **Implicit caching** (Google Gemini 2.5 Pro/Flash, some others):
+
 - Fully automatic, no configuration required
 - OpenRouter handles routing to the same provider transparently
 - No `cache_control` markers needed
 
 **Explicit caching** (Anthropic Claude, some Gemini models):
+
 - Requires `cache_control` breakpoints in message content
 - Must use multipart content format (not plain text strings)
 
@@ -798,7 +826,7 @@ Up to 4 `cache_control` breakpoints per request. Cache breakpoints can only be i
         {
           "type": "text",
           "text": "<LARGE DOCUMENT CONTENT HERE - 10,000+ tokens>",
-          "cache_control": {"type": "ephemeral"}
+          "cache_control": { "type": "ephemeral" }
         },
         {
           "type": "text",
@@ -812,10 +840,10 @@ Up to 4 `cache_control` breakpoints per request. Cache breakpoints can only be i
 
 ### Cache TTL Options (Anthropic)
 
-| `cache_control` | TTL | Write Cost | Use Case |
-|-----------------|-----|------------|----------|
-| `{"type": "ephemeral"}` | 5 minutes | 1.25x base input price | Short sessions |
-| `{"type": "ephemeral", "ttl": "1h"}` | 1 hour | 2x base input price | Long sessions |
+| `cache_control`                      | TTL       | Write Cost             | Use Case       |
+| ------------------------------------ | --------- | ---------------------- | -------------- |
+| `{"type": "ephemeral"}`              | 5 minutes | 1.25x base input price | Short sessions |
+| `{"type": "ephemeral", "ttl": "1h"}` | 1 hour    | 2x base input price    | Long sessions  |
 
 ### Gemini-Specific Caching
 
@@ -827,11 +855,11 @@ Up to 4 `cache_control` breakpoints per request. Cache breakpoints can only be i
 
 ### Minimum Token Requirements (Anthropic)
 
-| Model | Minimum tokens for cache write |
-|-------|-------------------------------|
-| Claude Opus 4.5 | 4,096 tokens |
-| Claude Haiku 4.5 | 4,096 tokens |
-| Other Claude models | 1,024 tokens |
+| Model               | Minimum tokens for cache write |
+| ------------------- | ------------------------------ |
+| Claude Opus 4.5     | 4,096 tokens                   |
+| Claude Haiku 4.5    | 4,096 tokens                   |
+| Other Claude models | 1,024 tokens                   |
 
 ### Response Usage Fields for Caching
 
@@ -851,11 +879,11 @@ Up to 4 `cache_control` breakpoints per request. Cache breakpoints can only be i
 }
 ```
 
-| Field | Description |
-|-------|-------------|
-| `cached_tokens` | Tokens read from cache (cheaper) |
+| Field                | Description                                 |
+| -------------------- | ------------------------------------------- |
+| `cached_tokens`      | Tokens read from cache (cheaper)            |
 | `cache_write_tokens` | Tokens written to cache (incurs write cost) |
-| `cache_discount` | Total savings from caching operations |
+| `cache_discount`     | Total savings from caching operations       |
 
 ### Maximizing Cache Hits
 
@@ -864,6 +892,7 @@ Keep the initial portion of your message arrays consistent between requests. Pus
 ### Proxy Implications
 
 The proxy must:
+
 1. Forward `cache_control` inside multipart content arrays without stripping it
 2. Recognize that content must be in multipart format (array of objects), not plain strings, for `cache_control` to work
 3. Forward `prompt_tokens_details` and `cache_discount` in the response to the client
@@ -880,6 +909,7 @@ All multimodal inputs use the standard `/api/v1/chat/completions` endpoint.
 ### Image Inputs
 
 **URL format** (recommended for publicly accessible images):
+
 ```json
 {
   "messages": [
@@ -903,6 +933,7 @@ All multimodal inputs use the standard `/api/v1/chat/completions` endpoint.
 ```
 
 **Base64 format** (for local/private images):
+
 ```json
 {
   "type": "image_url",
@@ -929,21 +960,24 @@ For models that generate images (check `output_modalities: ["image"]`):
 ```
 
 Response structure for generated images:
+
 ```json
 {
-  "choices": [{
-    "message": {
-      "role": "assistant",
-      "content": "Here is the image:",
-      "images": [
-        {
-          "image_url": {
-            "url": "data:image/png;base64,iVBORw0KGgo..."
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "Here is the image:",
+        "images": [
+          {
+            "image_url": {
+              "url": "data:image/png;base64,iVBORw0KGgo..."
+            }
           }
-        }
-      ]
+        ]
+      }
     }
-  }]
+  ]
 }
 ```
 
@@ -973,11 +1007,12 @@ PDFs use the `file` content type:
       ]
     }
   ],
-  "plugins": [{"id": "file-parser"}]
+  "plugins": [{ "id": "file-parser" }]
 }
 ```
 
 **Base64 PDF:**
+
 ```json
 {
   "type": "file",
@@ -989,11 +1024,13 @@ PDFs use the `file` content type:
 ```
 
 **PDF Processing Engines** (configure via `plugins`):
+
 ```json
 {
-  "plugins": [{"id": "file-parser", "engine": "mistral-ocr"}]
+  "plugins": [{ "id": "file-parser", "engine": "mistral-ocr" }]
 }
 ```
+
 `"mistral-ocr"` is the recommended engine for scanned documents.
 
 **Re-using parsed PDFs** (file annotations):
@@ -1042,6 +1079,7 @@ Audio MUST be base64-encoded (direct URLs are not supported):
 ### Proxy Implications
 
 The proxy must:
+
 1. Forward multipart `content` arrays without collapsing them to plain strings
 2. Handle `file` content type (not standard OpenAI)
 3. Forward the `message.images` field from responses (not standard OpenAI)
@@ -1069,6 +1107,7 @@ The proxy must:
 Standard OpenAI SSE format: `data: {json}\n\n`, terminated by `data: [DONE]\n\n`.
 
 **OpenRouter-specific keep-alive comment** (sent periodically to prevent timeouts):
+
 ```
 : OPENROUTER PROCESSING
 ```
@@ -1084,14 +1123,16 @@ This is an SSE comment (starts with `:`). Per SSE spec, comments must be ignored
   "created": 1708444800,
   "model": "openai/gpt-4o",
   "provider": "OpenAI",
-  "choices": [{
-    "index": 0,
-    "delta": {
-      "role": "assistant",
-      "content": "Hello"
-    },
-    "finish_reason": null
-  }]
+  "choices": [
+    {
+      "index": 0,
+      "delta": {
+        "role": "assistant",
+        "content": "Hello"
+      },
+      "finish_reason": null
+    }
+  ]
 }
 ```
 
@@ -1125,17 +1166,20 @@ If an error occurs after streaming has started, the HTTP status code remains 200
     "code": "server_error",
     "message": "Provider returned an error"
   },
-  "choices": [{
-    "index": 0,
-    "delta": {"content": ""},
-    "finish_reason": "error"
-  }]
+  "choices": [
+    {
+      "index": 0,
+      "delta": { "content": "" },
+      "finish_reason": "error"
+    }
+  ]
 }
 ```
 
 ### Proxy Implications
 
 The proxy must:
+
 1. Forward SSE keep-alive comments (`: OPENROUTER PROCESSING`) or strip them — but NOT attempt to parse them as JSON
 2. Handle mid-stream errors gracefully (HTTP 200 but error in body)
 3. Forward the final usage chunk
@@ -1167,20 +1211,21 @@ HTTP status code matches `error.code`.
 
 ### Error Codes
 
-| HTTP Code | Meaning |
-|-----------|---------|
-| 400 | Bad request: invalid/missing params, CORS |
-| 401 | Invalid credentials: OAuth expired, disabled/invalid API key |
-| 402 | Insufficient credits |
-| 403 | Input flagged by moderation |
-| 408 | Request timeout |
-| 429 | Rate limited |
-| 502 | Model provider unavailable or returned invalid response |
-| 503 | No available provider matching routing requirements |
+| HTTP Code | Meaning                                                      |
+| --------- | ------------------------------------------------------------ |
+| 400       | Bad request: invalid/missing params, CORS                    |
+| 401       | Invalid credentials: OAuth expired, disabled/invalid API key |
+| 402       | Insufficient credits                                         |
+| 403       | Input flagged by moderation                                  |
+| 408       | Request timeout                                              |
+| 429       | Rate limited                                                 |
+| 502       | Model provider unavailable or returned invalid response      |
+| 503       | No available provider matching routing requirements          |
 
 ### Error Metadata
 
 **Moderation error (403)**:
+
 ```json
 {
   "error": {
@@ -1197,6 +1242,7 @@ HTTP status code matches `error.code`.
 ```
 
 **Provider error (502)**:
+
 ```json
 {
   "error": {
@@ -1213,6 +1259,7 @@ HTTP status code matches `error.code`.
 ### Rate Limit Headers (429 Responses)
 
 When rate limited, the error response metadata includes:
+
 - `X-RateLimit-Limit`: Maximum requests allowed
 - `X-RateLimit-Remaining`: Remaining requests in window
 - `X-RateLimit-Reset`: Unix millisecond timestamp when limit resets
@@ -1235,6 +1282,7 @@ Inspect the transformed request that OpenRouter sends to the upstream provider. 
 ```
 
 Debug chunks arrive first in the stream with empty `choices` arrays. They contain the `debug.echo_upstream_body` object showing:
+
 - Parameter transformations applied
 - Message formatting changes
 - Applied defaults
@@ -1243,6 +1291,7 @@ Debug chunks arrive first in the stream with empty `choices` arrays. They contai
 ### Proxy Implications
 
 The proxy must:
+
 1. Forward error metadata to clients (especially `provider_name` and `raw` for debugging)
 2. Parse rate limit headers from error responses and surface them
 3. Handle the `debug.echo_upstream_body` field if proxy clients use it (requires streaming)
@@ -1303,23 +1352,23 @@ Every response includes these non-standard fields:
 
 ### Field-by-Field Description
 
-| Field | Location | Description |
-|-------|----------|-------------|
-| `provider` | root | Which provider handled the request (e.g., `"OpenAI"`, `"Anthropic"`) |
-| `native_finish_reason` | `choices[].` | Provider's raw finish reason before normalization |
-| `finish_reason` | `choices[].` | Normalized to: `tool_calls`, `stop`, `length`, `content_filter`, `error` |
-| `reasoning` | `choices[].message.` | Plaintext reasoning (when reasoning is enabled) |
-| `reasoning_details` | `choices[].message.` | Structured reasoning with type/format/id |
-| `images` | `choices[].message.` | Array of generated images (image generation models) |
-| `file_annotations` | `choices[].message.` | Parsed PDF metadata for re-use |
-| `cost` | `usage.` | Total credits charged (USD) |
-| `cost_details.upstream_inference_cost` | `usage.` | Actual upstream provider cost (BYOK only) |
-| `cached_tokens` | `usage.prompt_tokens_details.` | Tokens read from provider cache |
-| `cache_write_tokens` | `usage.prompt_tokens_details.` | Tokens written to provider cache |
-| `cache_discount` | `usage.` | Total savings from caching |
-| `reasoning_tokens` | `usage.completion_tokens_details.` | Tokens used for reasoning |
-| `audio_tokens` | `usage.prompt_tokens_details.` | Audio input tokens |
-| `is_byok` | `usage.` (optional) | Boolean: Bring Your Own Key request |
+| Field                                  | Location                           | Description                                                              |
+| -------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------ |
+| `provider`                             | root                               | Which provider handled the request (e.g., `"OpenAI"`, `"Anthropic"`)     |
+| `native_finish_reason`                 | `choices[].`                       | Provider's raw finish reason before normalization                        |
+| `finish_reason`                        | `choices[].`                       | Normalized to: `tool_calls`, `stop`, `length`, `content_filter`, `error` |
+| `reasoning`                            | `choices[].message.`               | Plaintext reasoning (when reasoning is enabled)                          |
+| `reasoning_details`                    | `choices[].message.`               | Structured reasoning with type/format/id                                 |
+| `images`                               | `choices[].message.`               | Array of generated images (image generation models)                      |
+| `file_annotations`                     | `choices[].message.`               | Parsed PDF metadata for re-use                                           |
+| `cost`                                 | `usage.`                           | Total credits charged (USD)                                              |
+| `cost_details.upstream_inference_cost` | `usage.`                           | Actual upstream provider cost (BYOK only)                                |
+| `cached_tokens`                        | `usage.prompt_tokens_details.`     | Tokens read from provider cache                                          |
+| `cache_write_tokens`                   | `usage.prompt_tokens_details.`     | Tokens written to provider cache                                         |
+| `cache_discount`                       | `usage.`                           | Total savings from caching                                               |
+| `reasoning_tokens`                     | `usage.completion_tokens_details.` | Tokens used for reasoning                                                |
+| `audio_tokens`                         | `usage.prompt_tokens_details.`     | Audio input tokens                                                       |
+| `is_byok`                              | `usage.` (optional)                | Boolean: Bring Your Own Key request                                      |
 
 ### The `id` Field and `/api/v1/generation` Endpoint
 
@@ -1338,17 +1387,18 @@ This returns full token counts, cost, and timing data — useful for async audit
 
 ### Standard OpenRouter Headers
 
-| Header | Required | Description |
-|--------|----------|-------------|
-| `Authorization: Bearer KEY` | Yes | API key authentication |
-| `Content-Type: application/json` | Yes | Request body format |
-| `HTTP-Referer: https://myapp.com` | No | App URL for rankings/analytics |
-| `X-Title: My App Name` | No | App display name for rankings |
-| `x-session-id: SESSION_ID` | No | Groups related requests for observability (max 128 chars) |
+| Header                            | Required | Description                                               |
+| --------------------------------- | -------- | --------------------------------------------------------- |
+| `Authorization: Bearer KEY`       | Yes      | API key authentication                                    |
+| `Content-Type: application/json`  | Yes      | Request body format                                       |
+| `HTTP-Referer: https://myapp.com` | No       | App URL for rankings/analytics                            |
+| `X-Title: My App Name`            | No       | App display name for rankings                             |
+| `x-session-id: SESSION_ID`        | No       | Groups related requests for observability (max 128 chars) |
 
 ### `HTTP-Referer` and `X-Title`
 
 Both are optional but enabling both unlocks attribution features:
+
 - Public app rankings on openrouter.ai
 - Appearance on model pages showing which apps use which models
 - Detailed analytics access
@@ -1365,12 +1415,14 @@ Groups related requests (e.g., a single conversation or agent workflow) for obse
 ### Provider-Pass-Through Headers
 
 OpenRouter forwards certain vendor-specific headers to providers:
+
 - `x-anthropic-beta`: Passes Anthropic beta feature flags directly (e.g., `interleaved-thinking-2025-05-14`)
 - Other vendor params like `safe_prompt` (Mistral), `raw_mode` (Hyperbolic) can be included in the request body and OpenRouter forwards them
 
 ### Proxy Implications
 
 The proxy should:
+
 1. Forward `HTTP-Referer` and `X-Title` from client requests (or set its own for the proxy app)
 2. Forward `x-session-id` if provided by clients
 3. Forward `x-anthropic-beta` and other vendor-specific headers/params
@@ -1510,6 +1562,7 @@ Automatically validates and repairs malformed JSON from AI models.
 ### Activation Requirements
 
 All three conditions must be met:
+
 1. Non-streaming request (does not work with `stream: true`)
 2. `response_format` set to `json_schema` or `json_object`
 3. `response-healing` plugin included in `plugins` array
@@ -1535,14 +1588,14 @@ A separate stateless API endpoint that mirrors OpenAI's Responses API format. Be
 
 ### How It Differs from Chat Completions
 
-| Aspect | Chat Completions | Responses API |
-|--------|-----------------|---------------|
-| State | Stateless | Stateless (no server-side state) |
-| Input field | `messages` array | `input` string |
-| Architecture | Conversation management by client | Same |
-| Reasoning | `reasoning` parameter | Integrated |
-| Tool calling | `tools` + `tool_choice` | Integrated |
-| Web search | `plugins: [{id: "web"}]` | Integrated |
+| Aspect       | Chat Completions                  | Responses API                    |
+| ------------ | --------------------------------- | -------------------------------- |
+| State        | Stateless                         | Stateless (no server-side state) |
+| Input field  | `messages` array                  | `input` string                   |
+| Architecture | Conversation management by client | Same                             |
+| Reasoning    | `reasoning` parameter             | Integrated                       |
+| Tool calling | `tools` + `tool_choice`           | Integrated                       |
+| Web search   | `plugins: [{id: "web"}]`          | Integrated                       |
 
 ### Basic Request
 
@@ -1556,6 +1609,7 @@ A separate stateless API endpoint that mirrors OpenAI's Responses API format. Be
 ### Streaming Error Events (Responses API)
 
 The Responses API uses typed events for errors:
+
 - `response.failed`
 - `response.error`
 - `error`
@@ -1570,14 +1624,14 @@ The Responses API is at a different path (`/api/v1/responses` vs `/api/v1/chat/c
 
 These suffixes modify routing behavior without changing the `provider` object:
 
-| Suffix | Effect | Equivalent |
-|--------|--------|------------|
-| `:nitro` | Sort providers by throughput | `provider.sort: "throughput"` |
-| `:floor` | Sort providers by price | `provider.sort: "price"` |
-| `:online` | Enable web search | `plugins: [{id: "web"}]` |
-| `:thinking` | Enable reasoning (model must support it) | `reasoning: {enabled: true}` |
-| `:free` | Use free tier variant | Model-specific free access |
-| `:extended` | Use extended context variant | Model-specific long context |
+| Suffix      | Effect                                   | Equivalent                    |
+| ----------- | ---------------------------------------- | ----------------------------- |
+| `:nitro`    | Sort providers by throughput             | `provider.sort: "throughput"` |
+| `:floor`    | Sort providers by price                  | `provider.sort: "price"`      |
+| `:online`   | Enable web search                        | `plugins: [{id: "web"}]`      |
+| `:thinking` | Enable reasoning (model must support it) | `reasoning: {enabled: true}`  |
+| `:free`     | Use free tier variant                    | Model-specific free access    |
+| `:extended` | Use extended context variant             | Model-specific long context   |
 
 ### Examples
 
@@ -1607,7 +1661,7 @@ Powered by NotDiamond. Analyzes the prompt and automatically selects the optimal
 ```json
 {
   "model": "openrouter/auto",
-  "messages": [{"role": "user", "content": "Your prompt here"}]
+  "messages": [{ "role": "user", "content": "Your prompt here" }]
 }
 ```
 
@@ -1658,34 +1712,34 @@ The auto router requires the `messages` array format. The `prompt` string format
 
 These OpenRouter-specific request fields can be forwarded as-is without any proxy-side transformation:
 
-| Field | Proxy Action |
-|-------|-------------|
-| `provider` | Forward as-is |
-| `models` (array) | Forward as-is |
-| `reasoning` | Forward as-is |
-| `plugins` | Forward as-is |
-| `transforms` | Forward as-is (or inject `[]` to disable) |
-| `response_format` | Forward as-is |
-| `tools`, `tool_choice`, `parallel_tool_calls` | Forward as-is |
-| `debug` | Forward as-is |
-| `modalities` | Forward as-is |
+| Field                                         | Proxy Action                              |
+| --------------------------------------------- | ----------------------------------------- |
+| `provider`                                    | Forward as-is                             |
+| `models` (array)                              | Forward as-is                             |
+| `reasoning`                                   | Forward as-is                             |
+| `plugins`                                     | Forward as-is                             |
+| `transforms`                                  | Forward as-is (or inject `[]` to disable) |
+| `response_format`                             | Forward as-is                             |
+| `tools`, `tool_choice`, `parallel_tool_calls` | Forward as-is                             |
+| `debug`                                       | Forward as-is                             |
+| `modalities`                                  | Forward as-is                             |
 
 ### Response Fields the Proxy Must NOT Strip
 
-| Field | Reason |
-|-------|--------|
-| `provider` (root) | Which provider handled the request |
-| `native_finish_reason` | Provider's raw finish reason |
-| `choices[].message.reasoning` | Reasoning text |
-| `choices[].message.reasoning_details` | Structured reasoning |
-| `choices[].message.images` | Generated images |
-| `choices[].message.file_annotations` | PDF parse cache |
-| `usage.cost` | Cost tracking |
-| `usage.cost_details` | BYOK cost breakdown |
-| `usage.cache_discount` | Caching savings |
-| `usage.prompt_tokens_details` | Cache hit/write counts |
-| `usage.completion_tokens_details.reasoning_tokens` | Reasoning token count |
-| `usage.is_byok` | BYOK flag |
+| Field                                              | Reason                             |
+| -------------------------------------------------- | ---------------------------------- |
+| `provider` (root)                                  | Which provider handled the request |
+| `native_finish_reason`                             | Provider's raw finish reason       |
+| `choices[].message.reasoning`                      | Reasoning text                     |
+| `choices[].message.reasoning_details`              | Structured reasoning               |
+| `choices[].message.images`                         | Generated images                   |
+| `choices[].message.file_annotations`               | PDF parse cache                    |
+| `usage.cost`                                       | Cost tracking                      |
+| `usage.cost_details`                               | BYOK cost breakdown                |
+| `usage.cache_discount`                             | Caching savings                    |
+| `usage.prompt_tokens_details`                      | Cache hit/write counts             |
+| `usage.completion_tokens_details.reasoning_tokens` | Reasoning token count              |
+| `usage.is_byok`                                    | BYOK flag                          |
 
 ### Behaviors That Require Active Proxy Handling
 

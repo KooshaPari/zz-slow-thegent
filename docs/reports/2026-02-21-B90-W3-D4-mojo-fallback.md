@@ -98,11 +98,11 @@ produces identical outputs when available.
 
 ## Gate Decision
 
-| Condition | Decision |
-|-----------|----------|
-| Mojo not installed | SKIP Mojo-subprocess tests; PASS all Python-bridge tests |
-| Mojo installed | PASS all tests including deterministic replay |
-| JSON contract/fixture malformed | FAIL (hard failure; contract must be valid) |
+| Condition                       | Decision                                                 |
+| ------------------------------- | -------------------------------------------------------- |
+| Mojo not installed              | SKIP Mojo-subprocess tests; PASS all Python-bridge tests |
+| Mojo installed                  | PASS all tests including deterministic replay            |
+| JSON contract/fixture malformed | FAIL (hard failure; contract must be valid)              |
 
 ## Backmatter
 

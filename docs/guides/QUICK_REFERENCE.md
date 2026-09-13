@@ -6,17 +6,17 @@ Top commands and common workflows for `thegent`.
 
 ## 🚀 Common Tasks
 
-| Task | Command |
-|------|---------|
-| **Run a task** | `thegent run "Your prompt" free` |
-| **Verify health** | `thegent doctor` |
-| **Auto-fix issues** | `thegent doctor --fix` |
-| **Configure providers** | `thegent setup` |
-| **Check config** | `thegent config show` |
-| **Next work item** | `thegent plan do-next` |
-| **Start MCP server** | `thegent serve` |
-| **List agents** | `thegent agents list` |
-| **Show sessions** | `thegent sessions list` |
+| Task                    | Command                          |
+| ----------------------- | -------------------------------- |
+| **Run a task**          | `thegent run "Your prompt" free` |
+| **Verify health**       | `thegent doctor`                 |
+| **Auto-fix issues**     | `thegent doctor --fix`           |
+| **Configure providers** | `thegent setup`                  |
+| **Check config**        | `thegent config show`            |
+| **Next work item**      | `thegent plan do-next`           |
+| **Start MCP server**    | `thegent serve`                  |
+| **List agents**         | `thegent agents list`            |
+| **Show sessions**       | `thegent sessions list`          |
 
 ---
 

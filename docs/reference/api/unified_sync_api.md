@@ -12,7 +12,7 @@ Unified sync/update command.
 
 ### Methods
 
-#### UnifiedSyncCommand.__init__
+#### UnifiedSyncCommand.**init**
 
 ```python
 __init__(self: Any)

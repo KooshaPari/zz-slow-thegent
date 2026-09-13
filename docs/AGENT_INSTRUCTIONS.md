@@ -8,12 +8,12 @@ This document defines the universal agent rules that apply across all projects i
 
 Every rule here was selected based on observed failure modes in agent-generated code. Each rule has a measurable enforcement mechanism -- no aspirational guidelines, only verifiable constraints.
 
-| Evidence Source | Finding | Rule Category |
-|----------------|---------|---------------|
-| Hook-backed rules | 3x better adherence than documentation-only | All enforced rules below |
-| Decision tables | 1.8x fewer "wrong library" mistakes | Library Preferences |
-| Few-shot examples | 2x fewer anti-pattern occurrences | Code Quality examples |
-| Verifiable constraints | 2.5x adherence over vague guidelines | Complexity, coverage, security |
+| Evidence Source        | Finding                                     | Rule Category                  |
+| ---------------------- | ------------------------------------------- | ------------------------------ |
+| Hook-backed rules      | 3x better adherence than documentation-only | All enforced rules below       |
+| Decision tables        | 1.8x fewer "wrong library" mistakes         | Library Preferences            |
+| Few-shot examples      | 2x fewer anti-pattern occurrences           | Code Quality examples          |
+| Verifiable constraints | 2.5x adherence over vague guidelines        | Complexity, coverage, security |
 
 ---
 
@@ -48,15 +48,15 @@ Every rule here was selected based on observed failure modes in agent-generated 
 
 ## 2. Library Preferences (Decision Table)
 
-| Need | Use | NOT | Why |
-|------|-----|-----|-----|
-| Retry/resilience | tenacity | Custom retry loops | Tenacity handles exponential backoff, jitter, stop conditions |
-| HTTP client | httpx | Custom wrappers | Async-native, connection pooling, timeout management |
-| Logging | structlog | print() or logging.getLogger | Structured output, context binding, processor pipeline |
-| Config | pydantic-settings | Manual env parsing | Type-safe, validation, nested config, env prefix |
-| CLI | typer | argparse | Type hints as CLI args, auto-generated help, rich output |
-| Validation | pydantic (Python) / zod (TS) | Manual if/else | Schema validation, serialization, error messages |
-| Rate limiting | tenacity + asyncio.Semaphore | Custom rate limiter class | Composable, well-tested, no custom state management |
+| Need             | Use                          | NOT                          | Why                                                           |
+| ---------------- | ---------------------------- | ---------------------------- | ------------------------------------------------------------- |
+| Retry/resilience | tenacity                     | Custom retry loops           | Tenacity handles exponential backoff, jitter, stop conditions |
+| HTTP client      | httpx                        | Custom wrappers              | Async-native, connection pooling, timeout management          |
+| Logging          | structlog                    | print() or logging.getLogger | Structured output, context binding, processor pipeline        |
+| Config           | pydantic-settings            | Manual env parsing           | Type-safe, validation, nested config, env prefix              |
+| CLI              | typer                        | argparse                     | Type hints as CLI args, auto-generated help, rich output      |
+| Validation       | pydantic (Python) / zod (TS) | Manual if/else               | Schema validation, serialization, error messages              |
+| Rate limiting    | tenacity + asyncio.Semaphore | Custom rate limiter class    | Composable, well-tested, no custom state management           |
 
 **Enforcement:** The `post-edit-checker.sh` hook scans for anti-pattern imports (argparse, manual os.environ.get patterns) and emits warnings.
 
@@ -125,14 +125,14 @@ LOG_DIR="${APP_LOG_DIR:-/tmp/app/logs}"
 
 ## 4. Verifiable Constraints
 
-| Metric | Threshold | Enforcement | Command |
-|--------|-----------|-------------|---------|
-| Test coverage | >= 80% | pytest cov-fail-under | `pytest --cov-fail-under=80` |
-| Cyclomatic complexity | <= 10 | complexity-ratchet hook | Hook auto-runs on Stop |
-| Cognitive complexity | <= 15 | complexity-ratchet hook | Hook auto-runs on Stop |
-| Code duplication | < 5% | jscpd threshold | `jscpd --threshold 5` |
-| Security findings | 0 high/critical | security-pipeline hook | bandit + gitleaks on Stop |
-| Dead code | 0 unused imports | quality-gate hook | ruff F401 / oxlint |
+| Metric                | Threshold        | Enforcement             | Command                      |
+| --------------------- | ---------------- | ----------------------- | ---------------------------- |
+| Test coverage         | >= 80%           | pytest cov-fail-under   | `pytest --cov-fail-under=80` |
+| Cyclomatic complexity | <= 10            | complexity-ratchet hook | Hook auto-runs on Stop       |
+| Cognitive complexity  | <= 15            | complexity-ratchet hook | Hook auto-runs on Stop       |
+| Code duplication      | < 5%             | jscpd threshold         | `jscpd --threshold 5`        |
+| Security findings     | 0 high/critical  | security-pipeline hook  | bandit + gitleaks on Stop    |
+| Dead code             | 0 unused imports | quality-gate hook       | ruff F401 / oxlint           |
 
 ---
 
@@ -142,12 +142,12 @@ LOG_DIR="${APP_LOG_DIR:-/tmp/app/logs}"
 
 The enforcement system operates through lifecycle hooks that fire at specific events:
 
-| Event | What Fires | What It Checks |
-|-------|-----------|----------------|
-| PreToolUse:Write | suppression-blocker, pre-write-validator, doc-location-guard | New suppressions, syntax, doc placement |
-| PreToolUse:Edit | suppression-blocker, pre-write-validator | New suppressions, syntax |
-| PostToolUse:Write/Edit | post-edit-checker, change-doc-tracker | AI slop, complexity, doc updates |
-| Stop | quality-gate, complexity-ratchet, security-pipeline, spec-verifier | Full quality audit |
+| Event                  | What Fires                                                         | What It Checks                          |
+| ---------------------- | ------------------------------------------------------------------ | --------------------------------------- |
+| PreToolUse:Write       | suppression-blocker, pre-write-validator, doc-location-guard       | New suppressions, syntax, doc placement |
+| PreToolUse:Edit        | suppression-blocker, pre-write-validator                           | New suppressions, syntax                |
+| PostToolUse:Write/Edit | post-edit-checker, change-doc-tracker                              | AI slop, complexity, doc updates        |
+| Stop                   | quality-gate, complexity-ratchet, security-pipeline, spec-verifier | Full quality audit                      |
 
 ### Verification Flow
 
@@ -171,6 +171,7 @@ Code Change --> PreToolUse hooks (block bad changes)
 ### Shared Patterns
 
 All projects share these patterns:
+
 - **Provider registry** for extensible services (not hardcoded switch statements)
 - **Port/adapter boundaries** (hexagonal architecture) for external dependencies
 - **Config-driven behavior** via pydantic-settings (not env var parsing)
@@ -179,21 +180,21 @@ All projects share these patterns:
 
 ### Project-Specific Overrides
 
-| Project | Stack | Build | Package Manager | Extra Tools |
-|---------|-------|-------|-----------------|-------------|
-| trace | Bash + Python | Taskfile | uv | shellcheck, shfmt |
-| heliosShield | Multi-language | Taskfile | uv + bun | shellcheck |
-| thegent | Python (MCP) | Taskfile | uv | tach, FastMCP |
-| jobhunter | Python + TypeScript | Taskfile | uv + bun | process-compose |
+| Project      | Stack               | Build    | Package Manager | Extra Tools       |
+| ------------ | ------------------- | -------- | --------------- | ----------------- |
+| trace        | Bash + Python       | Taskfile | uv              | shellcheck, shfmt |
+| heliosShield | Multi-language      | Taskfile | uv + bun        | shellcheck        |
+| thegent      | Python (MCP)        | Taskfile | uv              | tach, FastMCP     |
+| jobhunter    | Python + TypeScript | Taskfile | uv + bun        | process-compose   |
 
 ### Where to Find Domain Rules
 
-| Project | CLAUDE.md | Deep-Dive Guide |
-|---------|-----------|----------------|
-| trace | `trace/CLAUDE.md` | Bash scripting toolkit, orchestration patterns |
+| Project      | CLAUDE.md                | Deep-Dive Guide                                  |
+| ------------ | ------------------------ | ------------------------------------------------ |
+| trace        | `trace/CLAUDE.md`        | Bash scripting toolkit, orchestration patterns   |
 | heliosShield | `heliosShield/CLAUDE.md` | `docs/guides/AGENT_INSTRUCTIONS_heliosShield.md` |
-| thegent | `thegent/CLAUDE.md` | `docs/guides/AGENT_INSTRUCTIONS_THEGENT.md` |
-| jobhunter | `jobhunter/CLAUDE.md` | `docs/guides/AGENT_INSTRUCTIONS_JOBHUNTER.md` |
+| thegent      | `thegent/CLAUDE.md`      | `docs/guides/AGENT_INSTRUCTIONS_THEGENT.md`      |
+| jobhunter    | `jobhunter/CLAUDE.md`    | `docs/guides/AGENT_INSTRUCTIONS_JOBHUNTER.md`    |
 
 ---
 
