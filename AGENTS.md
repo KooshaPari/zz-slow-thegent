@@ -28,9 +28,7 @@ task dev:tui    # Start services with interactive TUI dashboard
 
 ## Do Not Touch
 
-- `apps/byteport/backend/api/.archive/thegent-test-deduplication/**` — Go work in progress, not ported
-- `apps/byteport/**/auth_handlers*.go` — security refactor in flight
-- `apps/byteport/**/*_test.go` in any .archive/ subdir
+- `services/colab/` — submodule (git@github.com:KooshaPari/colab.git); do not edit in-place
 
 ## ⛔ FORBIDDEN: Killing Agent or Terminal Processes
 
